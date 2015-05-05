@@ -39,7 +39,6 @@
 #include <QFileInfo>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
-#include <QVector>
 
 using namespace KDUpdater;
 
@@ -87,7 +86,7 @@ struct PackagesInfo::PackagesInfoData
     QString applicationVersion;
     bool modified;
 
-    QVector<PackageInfo> packageInfoList;
+    QHash<QString, PackageInfo> m_packageInfoHash;
 
     void addPackageFrom(const QDomElement &packageE);
     void setInvalidContentError(const QString &detail);
@@ -204,41 +203,24 @@ QString PackagesInfo::applicationVersion() const
 */
 int PackagesInfo::packageInfoCount() const
 {
-    return d->packageInfoList.count();
+    return d->m_packageInfoHash.count();
 }
 
 /*!
-    Returns the package info structure at \a index. If an invalid index is passed, the
+    Returns the package info structure whose name is \a pkgName. If no such package was found, this
     function returns a \l{default-constructed value}.
 */
-PackageInfo PackagesInfo::packageInfo(int index) const
+PackageInfo PackagesInfo::packageInfo(const QString &pkgName) const
 {
-    if (index < 0 || index >= d->packageInfoList.count())
-        return PackageInfo();
-
-    return d->packageInfoList.at(index);
-}
-
-/*!
-    Returns the index of the package whose name is \a pkgName. If no such package was found, this
-    function returns -1.
-*/
-int PackagesInfo::findPackageInfo(const QString &pkgName) const
-{
-    for (int i = 0; i < d->packageInfoList.count(); i++) {
-        if (d->packageInfoList[i].name == pkgName)
-            return i;
-    }
-
-    return -1;
+    return d->m_packageInfoHash.value(pkgName);
 }
 
 /*!
     Returns all package info structures.
 */
-QVector<PackageInfo> PackagesInfo::packageInfos() const
+QList<PackageInfo> PackagesInfo::packageInfos() const
 {
-    return d->packageInfoList;
+    return d->m_packageInfoHash.values();
 }
 
 /*!
@@ -251,7 +233,7 @@ void PackagesInfo::refresh()
     // First clear internal variables
     d->applicationName.clear();
     d->applicationVersion.clear();
-    d->packageInfoList.clear();
+    d->m_packageInfoHash.clear();
     d->modified = false;
 
     QFile file(d->fileName);
@@ -289,7 +271,8 @@ void PackagesInfo::refresh()
     // Now populate information from the XML file.
     QDomElement rootE = doc.documentElement();
     if (rootE.tagName() != QLatin1String("Packages")) {
-        d->setInvalidContentError(tr("Root element %1 unexpected, should be 'Packages'.").arg(rootE.tagName()));
+        d->setInvalidContentError(tr("Root element %1 unexpected, should be 'Packages'.")
+            .arg(rootE.tagName()));
         return;
     }
 
@@ -327,58 +310,39 @@ bool PackagesInfo::addPackage(const QString &name, const QString &version,
                                   bool virtualComp, quint64 uncompressedSize,
                                   const QString &inheritVersionFrom)
 {
-    if (findPackageInfo(name) != -1)
-        return updatePackage(name, version, QDate::currentDate());
-
-    PackageInfo info;
-    info.name = name;
-    info.version = version;
-    info.inheritVersionFrom = inheritVersionFrom;
-    info.installDate = QDate::currentDate();
-    info.title = title;
-    info.description = description;
-    info.dependencies = dependencies;
-    info.forcedInstallation = forcedInstallation;
-    info.virtualComp = virtualComp;
-    info.uncompressedSize = uncompressedSize;
-    d->packageInfoList.push_back(info);
+    // TODO: This somewhat unexpected, remove?
+    if (d->m_packageInfoHash.contains(name)) {
+        // TODO: What about the other fields, update?
+        d->m_packageInfoHash[name].version = version;
+        d->m_packageInfoHash[name].lastUpdateDate = QDate::currentDate();
+    } else {
+        PackageInfo info;
+        info.name = name;
+        info.version = version;
+        info.inheritVersionFrom = inheritVersionFrom;
+        info.installDate = QDate::currentDate();
+        info.title = title;
+        info.description = description;
+        info.dependencies = dependencies;
+        info.forcedInstallation = forcedInstallation;
+        info.virtualComp = virtualComp;
+        info.uncompressedSize = uncompressedSize;
+        d->m_packageInfoHash.insert(name, info);
+    }
     d->modified = true;
-    return true;
+    return d->modified;
 }
 
 /*!
-    Updates the package specified by \a name and sets its version to \a version
-    and the last update date to \a date.
-
-    Returns \c false if the package is not found.
-*/
-bool PackagesInfo::updatePackage(const QString &name, const QString &version, const QDate &date)
-{
-    int index = findPackageInfo(name);
-
-    if (index == -1)
-        return false;
-
-    d->packageInfoList[index].version = version;
-    d->packageInfoList[index].lastUpdateDate = date;
-    d->modified = true;
-    return true;
-}
-
-/*!
-    Removes the package specified by \a name.
-
-    Returns \c false if the package is not found.
+    Removes the package specified by \a name. Returns \c false if the package is not found.
 */
 bool PackagesInfo::removePackage(const QString &name)
 {
-    const int index = findPackageInfo(name);
-    if (index == -1)
+    if (d->m_packageInfoHash.remove(name) <= 0)
         return false;
 
-    d->packageInfoList.remove(index);
     d->modified = true;
-    return true;
+    return d->modified;
 }
 
 static void addTextChildHelper(QDomNode *node,
@@ -401,7 +365,7 @@ static void addTextChildHelper(QDomNode *node,
 */
 void PackagesInfo::writeToDisk()
 {
-    if (d->modified && (!d->packageInfoList.isEmpty() || QFile::exists(d->fileName))) {
+    if (d->modified && (!d->m_packageInfoHash.isEmpty() || QFile::exists(d->fileName))) {
         QDomDocument doc;
         QDomElement root = doc.createElement(QLatin1String("Packages")) ;
         doc.appendChild(root);
@@ -409,7 +373,7 @@ void PackagesInfo::writeToDisk()
         addTextChildHelper(&root, QLatin1String("ApplicationName"), d->applicationName);
         addTextChildHelper(&root, QLatin1String("ApplicationVersion"), d->applicationVersion);
 
-        Q_FOREACH (const PackageInfo &info, d->packageInfoList) {
+        Q_FOREACH (const PackageInfo &info, d->m_packageInfoHash) {
             QDomElement package = doc.createElement(QLatin1String("Package"));
 
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
@@ -421,13 +385,15 @@ void PackagesInfo::writeToDisk()
             else
                 addTextChildHelper(&package, QLatin1String("Version"), info.version,
                                    QLatin1String("inheritVersionFrom"), info.inheritVersionFrom);
-            addTextChildHelper(&package, QLatin1String("LastUpdateDate"), info.lastUpdateDate.toString(Qt::ISODate));
-            addTextChildHelper(&package, QLatin1String("InstallDate"), info.installDate.toString(Qt::ISODate));
-            addTextChildHelper(&package, QLatin1String("Size"), QString::number(info.uncompressedSize));
+            addTextChildHelper(&package, QLatin1String("LastUpdateDate"), info.lastUpdateDate
+                .toString(Qt::ISODate));
+            addTextChildHelper(&package, QLatin1String("InstallDate"), info.installDate
+                .toString(Qt::ISODate));
+            addTextChildHelper(&package, QLatin1String("Size"),
+                QString::number(info.uncompressedSize));
             QString assembledDependencies = QLatin1String("");
-            Q_FOREACH (const QString & val, info.dependencies) {
+            Q_FOREACH (const QString & val, info.dependencies)
                 assembledDependencies += val + QLatin1String(",");
-            }
             if (info.dependencies.count() > 0)
                 assembledDependencies.chop(1);
             addTextChildHelper(&package, QLatin1String("Dependencies"), assembledDependencies);
@@ -494,8 +460,7 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
         else if (childNodeE.tagName() == QLatin1String("InstallDate"))
             info.installDate = QDate::fromString(childNodeE.text(), Qt::ISODate);
     }
-
-    this->packageInfoList.append(info);
+    m_packageInfoHash.insert(info.name, info);
 }
 
 /*!
@@ -503,7 +468,7 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
 */
 void PackagesInfo::clearPackageInfoList()
 {
-    d->packageInfoList.clear();
+    d->m_packageInfoHash.clear();
     d->modified = true;
 }
 

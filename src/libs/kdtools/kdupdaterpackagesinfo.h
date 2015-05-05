@@ -40,7 +40,7 @@
 
 #include <QCoreApplication>
 #include <QDate>
-#include <QVariant>
+#include <QStringList>
 
 namespace KDUpdater {
 
@@ -80,34 +80,37 @@ public:
     };
 
     bool isValid() const;
-    QString errorString() const;
+
     Error error() const;
-    void clearPackageInfoList();
+    QString errorString() const;
 
-    void setFileName(const QString &fileName);
     QString fileName() const;
+    void setFileName(const QString &fileName);
 
-    void setApplicationName(const QString &name);
     QString applicationName() const;
+    void setApplicationName(const QString &name);
 
-    void setApplicationVersion(const QString &version);
     QString applicationVersion() const;
+    void setApplicationVersion(const QString &version);
 
+    void clearPackageInfoList();
     int packageInfoCount() const;
-    PackageInfo packageInfo(int index) const;
-    int findPackageInfo(const QString &pkgName) const;
-    QVector<KDUpdater::PackageInfo> packageInfos() const;
-    void writeToDisk();
 
-    bool addPackage(const QString &pkgName, const QString &version, const QString &title = QString(),
-        const QString &description = QString(), const QStringList &dependencies = QStringList(),
-        bool forcedInstallation = false, bool virtualComp = false, quint64 uncompressedSize = 0,
-        const QString &inheritVersionFrom = QString());
+    QList<PackageInfo> packageInfos() const;
+    PackageInfo packageInfo(const QString &pkgName) const;
 
-    bool updatePackage(const QString &pkgName, const QString &version, const QDate &date);
+    bool addPackage(const QString &pkgName, const QString &version, // mandatory
+                    const QString &title = QString(),
+                    const QString &description = QString(),
+                    const QStringList &dependencies = QStringList(),
+                    bool forcedInstallation = false,
+                    bool virtualComp = false,
+                    quint64 uncompressedSize = 0,
+                    const QString &inheritVersionFrom = QString());
     bool removePackage(const QString &pkgName);
 
     void refresh();
+    void writeToDisk();
 
 private:
     struct PackagesInfoData;
