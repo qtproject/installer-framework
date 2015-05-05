@@ -34,11 +34,11 @@
 ****************************************************************************/
 
 #include "kdupdaterupdatefinder.h"
-#include "kdupdaterpackagesinfo.h"
 #include "kdupdaterupdate.h"
 #include "kdupdaterfiledownloader.h"
 #include "kdupdaterfiledownloaderfactory.h"
 #include "kdupdaterupdatesinfo_p.h"
+#include "localpackagehub.h"
 
 #include "fileutils.h"
 #include "globals.h"

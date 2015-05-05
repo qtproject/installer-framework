@@ -39,7 +39,7 @@
 
 #include <kdupdaterupdate.h>
 #include <kdupdaterupdateoperation.h>
-#include <kdupdaterpackagesinfo.h>
+#include "localpackagehub.h"
 
 namespace QInstaller {
 

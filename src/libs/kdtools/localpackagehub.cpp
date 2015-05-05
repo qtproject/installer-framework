@@ -33,7 +33,7 @@
 **
 ****************************************************************************/
 
-#include "kdupdaterpackagesinfo.h"
+#include "localpackagehub.h"
 #include "globals.h"
 
 #include <QDomDocument>

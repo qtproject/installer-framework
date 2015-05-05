@@ -23,7 +23,7 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterfiledownloader.h \
     $$PWD/kdupdaterfiledownloader_p.h \
     $$PWD/kdupdaterfiledownloaderfactory.h \
-    $$PWD/kdupdaterpackagesinfo.h \
+    $$PWD/localpackagehub.h \
     $$PWD/kdupdaterupdate.h \
     $$PWD/kdupdaterupdateoperation.h \
     $$PWD/kdupdaterupdateoperationfactory.h \
@@ -36,7 +36,7 @@ HEADERS += $$PWD/kdupdater.h \
 
 SOURCES += $$PWD/kdupdaterfiledownloader.cpp \
     $$PWD/kdupdaterfiledownloaderfactory.cpp \
-    $$PWD/kdupdaterpackagesinfo.cpp \
+    $$PWD/localpackagehub.cpp \
     $$PWD/kdupdaterupdate.cpp \
     $$PWD/kdupdaterupdateoperation.cpp \
     $$PWD/kdupdaterupdateoperationfactory.cpp \
