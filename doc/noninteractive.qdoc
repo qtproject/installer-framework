@@ -63,7 +63,7 @@
         {
             var widget = gui.currentPageWidget(); // get the current wizard page
             if (widget != null) {
-                widget.setColoredTitle("New title."); // set the page title
+                widget.title = "New title."; // set the page title
                 widget.MessageLabel.setText("New Message."); // set the welcome text
             }
         }
