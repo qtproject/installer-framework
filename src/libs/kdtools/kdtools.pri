@@ -28,7 +28,6 @@ HEADERS += $$PWD/kdupdater.h \
     $$PWD/kdupdaterupdateoperation.h \
     $$PWD/kdupdaterupdateoperationfactory.h \
     $$PWD/kdupdaterupdateoperations.h \
-    $$PWD/kdupdaterupdatesourcesinfo.h \
     $$PWD/kdupdatertask.h \
     $$PWD/kdupdaterupdatefinder.h \
     $$PWD/kdupdaterupdatesinfo_p.h \
@@ -42,7 +41,6 @@ SOURCES += $$PWD/kdupdaterfiledownloader.cpp \
     $$PWD/kdupdaterupdateoperation.cpp \
     $$PWD/kdupdaterupdateoperationfactory.cpp \
     $$PWD/kdupdaterupdateoperations.cpp \
-    $$PWD/kdupdaterupdatesourcesinfo.cpp \
     $$PWD/kdupdatertask.cpp \
     $$PWD/kdupdaterupdatefinder.cpp \
     $$PWD/kdupdaterupdatesinfo.cpp \

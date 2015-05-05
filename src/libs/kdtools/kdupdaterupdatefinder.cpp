@@ -34,7 +34,6 @@
 ****************************************************************************/
 
 #include "kdupdaterupdatefinder.h"
-#include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterpackagesinfo.h"
 #include "kdupdaterupdate.h"
 #include "kdupdaterfiledownloader.h"
@@ -48,6 +47,7 @@
 #include <QFileInfo>
 
 using namespace KDUpdater;
+using namespace QInstaller;
 
 /*!
     \inmodule kdupdater
@@ -86,10 +86,10 @@ public:
     struct Data {
         Data()
             : downloader(0) {}
-        Data(const UpdateSourceInfo &i, FileDownloader *d = 0)
+        Data(const PackageSource &i, FileDownloader *d = 0)
             : info(i), downloader(d) {}
 
-        UpdateSourceInfo info;
+        PackageSource info;
         FileDownloader *downloader;
     };
     UpdateFinder *q;
@@ -108,11 +108,11 @@ public:
     bool computeApplicableUpdates();
 
     QList<UpdateInfo> applicableUpdates(UpdatesInfo *updatesInfo);
-    void createUpdateObjects(const UpdateSourceInfo &sourceInfo, const QList<UpdateInfo> &updateInfoList);
-    Resolution checkPriorityAndVersion(const UpdateSourceInfo &sourceInfo, const QVariantHash &data) const;
+    void createUpdateObjects(const PackageSource &source, const QList<UpdateInfo> &updateInfoList);
+    Resolution checkPriorityAndVersion(const PackageSource &source, const QVariantHash &data) const;
     void slotDownloadDone();
 
-    UpdateSourcesInfo m_updateSourcesInfo;
+    QSet<PackageSource> packageSources;
     std::weak_ptr<PackagesInfo> m_packagesInfo;
 };
 
@@ -153,7 +153,7 @@ void UpdateFinder::Private::clear()
 
    This method computes the updates that can be applied on the application by
    studying the application's KDUpdater::PackagesInfo object and the UpdateXML files
-   from each of the update sources described in KDUpdater::UpdateSourcesInfo.
+   from each of the update sources described in QInstaller::PackageSource.
 
    This function can take a long time to complete. The following signals are emitted
    during the execution of this function
@@ -161,7 +161,7 @@ void UpdateFinder::Private::clear()
    The function creates KDUpdater::Update objects on the stack. All KDUpdater::Update objects
    are made children of the application associated with this finder.
 
-   The update sources are fetched from the KDUpdater::UpdateSourcesInfo object associated with
+   The update sources are fetched from the QInstaller::PackageSource object associated with
    the application. Package information is extracted from the KDUpdater::PackagesInfo object
    associated with the application.
 
@@ -189,9 +189,9 @@ void UpdateFinder::Private::computeUpdates()
         return;
     }
 
-    // Now do some quick sanity checks on the update sources info
-    if (m_updateSourcesInfo.updateSourceInfoCount() <= 0) {
-        q->reportError(tr("No update sources information set for this application."));
+    // Now do some quick sanity checks on the package sources.
+    if (packageSources.count() <= 0) {
+        q->reportError(tr("No package sources set for this application."));
         return;
     }
 
@@ -244,14 +244,9 @@ void UpdateFinder::Private::cancelComputeUpdates()
 */
 bool UpdateFinder::Private::downloadUpdateXMLFiles()
 {
-    if (m_updateSourcesInfo.updateSourceInfoCount() <= 0)
-        return false;
-
     // create UpdatesInfo for each update source
-    for (int i = 0; i < m_updateSourcesInfo.updateSourceInfoCount(); i++) {
-        const UpdateSourceInfo info = m_updateSourcesInfo.updateSourceInfo(i);
+    foreach (const PackageSource &info, packageSources) {
         const QUrl url = QString::fromLatin1("%1/Updates.xml").arg(info.url.toString());
-
         if (url.scheme() != QLatin1String("resource") && url.scheme() != QLatin1String("file")) {
             // create FileDownloader (except for local files and resources)
             FileDownloader *downloader = FileDownloaderFactory::instance().create(url.scheme(), q);
@@ -299,8 +294,8 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
         const Data data = m_updatesInfoList.value(updatesInfo);
         if (data.downloader) {
             if (!data.downloader->isDownloaded()) {
-                q->reportError(tr("Could not download update source %1 from ('%2')").arg(data.info
-                    .name, data.info.url.toString()));
+                q->reportError(tr("Could not download package source %1 from ('%2')").arg(data
+                    .downloader->url().fileName(), data.info.url.toString()));
             } else {
                 updatesInfo->setFileName(data.downloader->downloadedFileName());
             }
@@ -345,7 +340,7 @@ bool UpdateFinder::Private::computeApplicableUpdates()
 
         if (cancel)
             return false;
-        const UpdateSourceInfo updateSource = m_updatesInfoList.value(updatesInfo).info;
+        const PackageSource updateSource = m_updatesInfoList.value(updatesInfo).info;
 
         // Create Update objects for updates that have a valid
         // UpdateFile
@@ -392,11 +387,11 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
     return updatesInfo->updatesInfo();
 }
 
-void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceInfo,
+void UpdateFinder::Private::createUpdateObjects(const PackageSource &source,
     const QList<UpdateInfo> &updateInfoList)
 {
     foreach (const UpdateInfo &info, updateInfoList) {
-        const Resolution value = checkPriorityAndVersion(sourceInfo, info.data);
+        const Resolution value = checkPriorityAndVersion(source, info.data);
         if (value == Resolution::KeepExisting)
             continue;
 
@@ -405,7 +400,7 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
             delete updates.take(name);
 
         // Create and register the update
-        updates.insert(name, new Update(sourceInfo.priority, sourceInfo.url, info.data));
+        updates.insert(name, new Update(source.priority, source.url, info.data));
     }
 }
 
@@ -415,7 +410,7 @@ void UpdateFinder::Private::createUpdateObjects(const UpdateSourceInfo &sourceIn
     priority, use the new new package, otherwise keep the already existing package.
 */
 UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion(
-    const UpdateSourceInfo &sourceInfo, const QVariantHash &newPackage) const
+    const PackageSource &source, const QVariantHash &newPackage) const
 {
     const QString name = newPackage.value(QLatin1String("Name")).toString();
     if (Update *existingPackage = updates.value(name)) {
@@ -431,18 +426,18 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
                 .arg(name, existingPackage->data(QLatin1String("Version")).toString(),
                     QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
                     name, newPackage.value(QLatin1String("Version")).toString(),
-                    QFileInfo(sourceInfo.url.toLocalFile()).fileName());
+                    QFileInfo(source.url.toLocalFile()).fileName());
             return Resolution::RemoveExisting;
         }
 
-        if ((match == 0) && (sourceInfo.priority > existingPackage->priority())) {
+        if ((match == 0) && (source.priority > existingPackage->priority())) {
             // new package version equals but priority is higher, use
             qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Priority: %2, Source: %3' "
                 "found a package with higher priority 'Name: %4, Priority: %5, Source: %6'")
                 .arg(name, QString::number(existingPackage->priority()),
                     QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
-                    name, QString::number(sourceInfo.priority),
-                    QFileInfo(sourceInfo.url.toLocalFile()).fileName());
+                    name, QString::number(source.priority),
+                    QFileInfo(source.url.toLocalFile()).fileName());
             return Resolution::RemoveExisting;
         }
         return Resolution::KeepExisting; // otherwise keep existing
@@ -485,11 +480,11 @@ void UpdateFinder::setPackagesInfo(std::weak_ptr<PackagesInfo> info)
 }
 
 /*!
-    Sets the update sources information to use when searching for updates.
+    Sets the package sources information to use when searching for applicable packages.
 */
-void UpdateFinder::setUpdateSourcesInfo(const UpdateSourcesInfo &sources)
+void UpdateFinder::setPackageSources(const QSet<PackageSource> &sources)
 {
-    d->m_updateSourcesInfo = sources;
+    d->packageSources = sources;
 }
 
 /*!

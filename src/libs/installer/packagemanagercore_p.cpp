@@ -57,7 +57,6 @@
 
 #include "kdselfrestarter.h"
 #include "kdupdaterfiledownloaderfactory.h"
-#include "kdupdaterupdatesourcesinfo.h"
 #include "kdupdaterupdateoperationfactory.h"
 
 #include <productkeycheck.h>
@@ -571,11 +570,8 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     if (isInstaller() || m_packagesInfo->applicationVersion().isEmpty())
         m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
-    if (isInstaller()) {
-        // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
-        m_updateSourcesInfo.addUpdateSource(m_data.settings().applicationName(), m_data.settings()
-            .applicationName(), QString(), QUrl(QLatin1String("resource://metadata/")), 0);
-    }
+    if (isInstaller())
+        m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
 
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
@@ -2096,7 +2092,7 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     m_updateFinder = new KDUpdater::UpdateFinder;
     m_updateFinder->setAutoDelete(false);
     m_updateFinder->setPackagesInfo(m_packagesInfo);
-    m_updateFinder->setUpdateSourcesInfo(m_updateSourcesInfo);
+    m_updateFinder->setPackageSources(m_packageSources);
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {
@@ -2189,16 +2185,13 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         return m_updateSourcesAdded;
     }
 
-    m_updateSourcesInfo.clear();
-    if (isInstaller()) {
-        m_updateSourcesInfo.addUpdateSource(m_data.settings().applicationName(), m_data.settings()
-            .applicationName(), QString(), QUrl(QLatin1String("resource://metadata/")), 0);
-    }
+    m_packageSources.clear();
+    if (isInstaller())
+        m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
 
     m_updates = false;
     m_updateSourcesAdded = false;
 
-    const QString &appName = m_data.settings().applicationName();
     foreach (const Metadata &data, metadata) {
         if (statusCanceledOrFailed())
             return false;
@@ -2232,12 +2225,11 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!checksum.isNull())
                 m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        m_updateSourcesInfo.addUpdateSource(appName, appName, QString(), QUrl::fromLocalFile(data
-            .directory), 1);
+        m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
         ProductKeyCheck::instance()->addPackagesFromXml(data.directory + QLatin1String("/Updates.xml"));
     }
 
-    if (m_updateSourcesInfo.updateSourceInfoCount() == 0) {
+    if (m_packageSources.count() == 0) {
         setStatus(PackageManagerCore::Failure, tr("Could not find any update source information."));
         return false;
     }

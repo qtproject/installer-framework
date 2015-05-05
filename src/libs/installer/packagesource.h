@@ -1,6 +1,5 @@
-/****************************************************************************
+/**************************************************************************
 **
-** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
 ** Copyright (C) 2015 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
@@ -31,52 +30,34 @@
 **
 ** $QT_END_LICENSE$
 **
-****************************************************************************/
+**************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_SOURCES_INFO_H
-#define KD_UPDATER_UPDATE_SOURCES_INFO_H
+#ifndef PACKAGESOURCE_H
+#define PACKAGESOURCE_H
 
-#include "kdtoolsglobal.h"
+#include "installer_global.h"
 
 #include <QUrl>
 
-namespace KDUpdater {
+namespace QInstaller {
 
-struct KDTOOLS_EXPORT UpdateSourceInfo
+struct INSTALLER_EXPORT PackageSource
 {
-    UpdateSourceInfo() : priority(-1) { }
+    PackageSource()
+        : priority(-1)
+    {}
+    PackageSource(const QUrl &u, int p)
+        : url(u)
+        , priority(p)
+    {}
 
-    QString name;
-    QString title;
-    QString description;
     QUrl url;
     int priority;
 };
 
-KDTOOLS_EXPORT bool operator==(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs);
+INSTALLER_EXPORT uint qHash(const PackageSource &key, uint seed);
+INSTALLER_EXPORT bool operator==(const PackageSource &lhs, const PackageSource &rhs);
 
-inline bool operator!=(const UpdateSourceInfo &lhs, const UpdateSourceInfo &rhs)
-{
-    return !operator==(lhs, rhs);
-}
+} // namespace QInstaller
 
-class KDTOOLS_EXPORT UpdateSourcesInfo
-{
-public:
-    int updateSourceInfoCount() const;
-    UpdateSourceInfo updateSourceInfo(int index) const;
-
-    void addUpdateSourceInfo(const UpdateSourceInfo &info);
-    void addUpdateSource(const QString &name, const QString &title,
-        const QString &description, const QUrl &url, int priority);
-
-    void clear();
-    void removeUpdateSourceInfo(const UpdateSourceInfo &info);
-
-private:
-    QList<UpdateSourceInfo> m_updateSourceInfoList;
-};
-
-} // namespace KDUpdater
-
-#endif // KD_UPDATER_UPDATE_SOURCES_INFO_H
+#endif // PACKAGESOURCE_H

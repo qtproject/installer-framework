@@ -39,11 +39,11 @@
 #include "packagemanagercore.h"
 #include "packagemanagercoredata.h"
 #include "packagemanagerproxyfactory.h"
+#include "packagesource.h"
 #include "qinstallerglobal.h"
 
 #include "kdsysinfo.h"
 #include "kdupdaterupdatefinder.h"
-#include "kdupdaterupdatesourcesinfo.h"
 
 #include <QObject>
 
@@ -176,7 +176,7 @@ signals:
 
 public:
     UpdateFinder *m_updateFinder;
-    UpdateSourcesInfo m_updateSourcesInfo;
+    QSet<PackageSource> m_packageSources;
     std::shared_ptr<PackagesInfo> m_packagesInfo;
     QStringList m_filesForDelayedDeletion;
 
