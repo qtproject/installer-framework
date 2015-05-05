@@ -246,7 +246,7 @@ Component::~Component()
 /*!
     Sets variables according to the values set in the package.xml file of a local \a package.
 */
-void Component::loadDataFromPackage(const LocalPackage &package)
+void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 {
     setValue(scName, package.name);
     // pixmap ???

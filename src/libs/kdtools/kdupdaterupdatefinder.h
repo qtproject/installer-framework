@@ -43,7 +43,7 @@
 
 namespace KDUpdater {
 
-class PackagesInfo;
+class LocalPackageHub;
 class Update;
 
 class KDTOOLS_EXPORT UpdateFinder : public Task
@@ -57,7 +57,7 @@ public:
 
     QList<Update *> updates() const;
 
-    void setPackagesInfo(std::weak_ptr<PackagesInfo> info);
+    void setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub);
     void setPackageSources(const QSet<QInstaller::PackageSource> &sources);
 
 private:

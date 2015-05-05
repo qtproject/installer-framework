@@ -36,16 +36,16 @@
 #include "kdupdaterpackagesinfo.h"
 #include "globals.h"
 
+#include <QDomDocument>
+#include <QDomElement>
 #include <QFileInfo>
-#include <QtXml/QDomDocument>
-#include <QtXml/QDomElement>
 
 using namespace KDUpdater;
 
 /*!
     \inmodule kdupdater
-    \class KDUpdater::PackagesInfo
-    \brief The PackagesInfo class provides access to information about packages installed on the
+    \class KDUpdater::LocalPackageHub
+    \brief The LocalPackageHub class provides access to information about packages installed on the
         application side.
 
     This class parses the \e {installation information} XML file specified via the setFileName()
@@ -59,7 +59,7 @@ using namespace KDUpdater;
 */
 
 /*!
-    \enum PackagesInfo::Error
+    \enum LocalPackageHub::Error
     Error codes related to retrieving information about installed packages:
 
     \value NoError                          No error occurred.
@@ -73,61 +73,71 @@ using namespace KDUpdater;
                                             descriptions.
 */
 
-struct PackagesInfo::PackagesInfoData
+struct LocalPackageHub::PackagesInfoData
 {
     PackagesInfoData() :
-        error(PackagesInfo::NotYetReadError),
+        error(LocalPackageHub::NotYetReadError),
         modified(false)
     {}
     QString errorMessage;
-    PackagesInfo::Error error;
+    LocalPackageHub::Error error;
     QString fileName;
     QString applicationName;
     QString applicationVersion;
     bool modified;
 
-    QHash<QString, PackageInfo> m_packageInfoHash;
+    QHash<QString, LocalPackage> m_packageInfoHash;
 
     void addPackageFrom(const QDomElement &packageE);
     void setInvalidContentError(const QString &detail);
 };
 
-void PackagesInfo::PackagesInfoData::setInvalidContentError(const QString &detail)
+void LocalPackageHub::PackagesInfoData::setInvalidContentError(const QString &detail)
 {
-    error = PackagesInfo::InvalidContentError;
+    error = LocalPackageHub::InvalidContentError;
     errorMessage = tr("%1 contains invalid content: %2").arg(fileName, detail);
 }
 
 /*!
-   \internal
+    Constructs a local package hub. To fully setup the class you have to call setFileName().
+
+    \sa setFileName
 */
-PackagesInfo::PackagesInfo()
+LocalPackageHub::LocalPackageHub()
     : d(new PackagesInfoData())
 {
 }
 
 /*!
-   \internal
+    Destructor
 */
-PackagesInfo::~PackagesInfo()
+LocalPackageHub::~LocalPackageHub()
 {
     writeToDisk();
     delete d;
 }
 
 /*!
-    Returns \c true if PackagesInfo is valid; otherwise returns \c false. You
+    Returns \c true if LocalPackageHub is valid; otherwise returns \c false. You
     can use the errorString() method to receive a descriptive error message.
 */
-bool PackagesInfo::isValid() const
+bool LocalPackageHub::isValid() const
 {
     return d->error <= NotYetReadError;
 }
 
 /*!
+    Returns a list of all local installed packages.
+*/
+QStringList LocalPackageHub::packageNames() const
+{
+    return d->m_packageInfoHash.keys();
+}
+
+/*!
     Returns a human-readable description of the last error that occurred.
 */
-QString PackagesInfo::errorString() const
+QString LocalPackageHub::errorString() const
 {
     return d->errorMessage;
 }
@@ -136,7 +146,7 @@ QString PackagesInfo::errorString() const
     Returns the error that was found during the processing of the installation information XML file.
     If no error was found, returns NoError.
 */
-PackagesInfo::Error PackagesInfo::error() const
+LocalPackageHub::Error LocalPackageHub::error() const
 {
     return d->error;
 }
@@ -145,7 +155,7 @@ PackagesInfo::Error PackagesInfo::error() const
     Sets the complete file name of the installation information XML file to \a fileName. The function
     also issues a call to refresh() to reload installation information from the XML file.
 */
-void PackagesInfo::setFileName(const QString &fileName)
+void LocalPackageHub::setFileName(const QString &fileName)
 {
     if (d->fileName == fileName)
         return;
@@ -157,7 +167,7 @@ void PackagesInfo::setFileName(const QString &fileName)
 /*!
     Returns the name of the installation information XML file that this class refers to.
 */
-QString PackagesInfo::fileName() const
+QString LocalPackageHub::fileName() const
 {
     return d->fileName;
 }
@@ -166,7 +176,7 @@ QString PackagesInfo::fileName() const
     Sets the application name to \a name. By default, this is the name specified in the
     \c <ApplicationName> element of the installation information XML file.
 */
-void PackagesInfo::setApplicationName(const QString &name)
+void LocalPackageHub::setApplicationName(const QString &name)
 {
     d->applicationName = name;
 }
@@ -174,7 +184,7 @@ void PackagesInfo::setApplicationName(const QString &name)
 /*!
     Returns the application name.
 */
-QString PackagesInfo::applicationName() const
+QString LocalPackageHub::applicationName() const
 {
     return d->applicationName;
 }
@@ -183,7 +193,7 @@ QString PackagesInfo::applicationName() const
     Sets the application version to \a version. By default, this is the version specified in the
     \c <ApplicationVersion> element of the installation information XML file.
 */
-void PackagesInfo::setApplicationVersion(const QString &version)
+void LocalPackageHub::setApplicationVersion(const QString &version)
 {
     d->applicationVersion = version;
 }
@@ -191,15 +201,15 @@ void PackagesInfo::setApplicationVersion(const QString &version)
 /*!
     Returns the application version.
 */
-QString PackagesInfo::applicationVersion() const
+QString LocalPackageHub::applicationVersion() const
 {
     return d->applicationVersion;
 }
 
 /*!
-    Returns the number of KDUpdater::PackageInfo objects contained in this class.
+    Returns the number of KDUpdater::LocalPackage objects contained in this class.
 */
-int PackagesInfo::packageInfoCount() const
+int LocalPackageHub::packageInfoCount() const
 {
     return d->m_packageInfoHash.count();
 }
@@ -208,7 +218,7 @@ int PackagesInfo::packageInfoCount() const
     Returns the package info structure whose name is \a pkgName. If no such package was found, this
     function returns a \l{default-constructed value}.
 */
-PackageInfo PackagesInfo::packageInfo(const QString &pkgName) const
+LocalPackage LocalPackageHub::packageInfo(const QString &pkgName) const
 {
     return d->m_packageInfoHash.value(pkgName);
 }
@@ -216,7 +226,7 @@ PackageInfo PackagesInfo::packageInfo(const QString &pkgName) const
 /*!
     Returns all package info structures.
 */
-QList<PackageInfo> PackagesInfo::packageInfos() const
+QList<LocalPackage> LocalPackageHub::packageInfos() const
 {
     return d->m_packageInfoHash.values();
 }
@@ -226,7 +236,7 @@ QList<PackageInfo> PackagesInfo::packageInfos() const
     and applicationVersion() are lost after this function returns. The function emits a reset()
     signal after completion.
 */
-void PackagesInfo::refresh()
+void LocalPackageHub::refresh()
 {
     // First clear internal variables
     d->applicationName.clear();
@@ -302,7 +312,7 @@ void PackagesInfo::refresh()
     Returns \c true if the installation information was modified.
 
 */
-bool PackagesInfo::addPackage(const QString &name, const QString &version,
+bool LocalPackageHub::addPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
                                   const QStringList &dependencies, bool forcedInstallation,
                                   bool virtualComp, quint64 uncompressedSize,
@@ -314,7 +324,7 @@ bool PackagesInfo::addPackage(const QString &name, const QString &version,
         d->m_packageInfoHash[name].version = version;
         d->m_packageInfoHash[name].lastUpdateDate = QDate::currentDate();
     } else {
-        PackageInfo info;
+        LocalPackage info;
         info.name = name;
         info.version = version;
         info.inheritVersionFrom = inheritVersionFrom;
@@ -334,7 +344,7 @@ bool PackagesInfo::addPackage(const QString &name, const QString &version,
 /*!
     Removes the package specified by \a name. Returns \c false if the package is not found.
 */
-bool PackagesInfo::removePackage(const QString &name)
+bool LocalPackageHub::removePackage(const QString &name)
 {
     if (d->m_packageInfoHash.remove(name) <= 0)
         return false;
@@ -361,7 +371,7 @@ static void addTextChildHelper(QDomNode *node,
 /*!
     Writes the installation information file to disk.
 */
-void PackagesInfo::writeToDisk()
+void LocalPackageHub::writeToDisk()
 {
     if (d->modified && (!d->m_packageInfoHash.isEmpty() || QFile::exists(d->fileName))) {
         QDomDocument doc;
@@ -371,7 +381,7 @@ void PackagesInfo::writeToDisk()
         addTextChildHelper(&root, QLatin1String("ApplicationName"), d->applicationName);
         addTextChildHelper(&root, QLatin1String("ApplicationVersion"), d->applicationVersion);
 
-        Q_FOREACH (const PackageInfo &info, d->m_packageInfoHash) {
+        Q_FOREACH (const LocalPackage &info, d->m_packageInfoHash) {
             QDomElement package = doc.createElement(QLatin1String("Package"));
 
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
@@ -414,7 +424,7 @@ void PackagesInfo::writeToDisk()
     }
 }
 
-void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
+void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
 {
     if (packageE.isNull())
         return;
@@ -423,7 +433,7 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
     if (childNodes.count() == 0)
         return;
 
-    PackageInfo info;
+    LocalPackage info;
     info.forcedInstallation = false;
     info.virtualComp = false;
     for (int i = 0; i < childNodes.count(); i++) {
@@ -464,7 +474,7 @@ void PackagesInfo::PackagesInfoData::addPackageFrom(const QDomElement &packageE)
 /*!
     Clears the installed package list.
 */
-void PackagesInfo::clearPackageInfoList()
+void LocalPackageHub::clearPackageInfos()
 {
     d->m_packageInfoHash.clear();
     d->modified = true;
@@ -472,8 +482,8 @@ void PackagesInfo::clearPackageInfoList()
 
 /*!
     \inmodule kdupdater
-    \class KDUpdater::PackageInfo
-    \brief The PackageInfo class describes a single installed package in the application.
+    \class KDUpdater::LocalPackage
+    \brief The LocalPackage class describes a single installed package in the application.
 
     This class contains information about a single installed package in the application. The
     information contained in this class corresponds to the information described by the <Package>
@@ -481,30 +491,30 @@ void PackagesInfo::clearPackageInfoList()
 */
 
 /*!
-    \variable PackageInfo::name
+    \variable LocalPackage::name
     \brief The name of the package.
 */
 
 /*!
-    \variable PackageInfo::pixmap
+    \variable LocalPackage::pixmap
 */
 
 /*!
-    \variable PackageInfo::title
+    \variable LocalPackage::title
 */
 
 /*!
-    \variable PackageInfo::description
+    \variable LocalPackage::description
 */
 
 /*!
-    \variable PackageInfo::version
+    \variable LocalPackage::version
 */
 
 /*!
-    \variable PackageInfo::lastUpdateDate
+    \variable LocalPackage::lastUpdateDate
 */
 
 /*!
-    \variable PackageInfo::installDate
+    \variable LocalPackage::installDate
 */

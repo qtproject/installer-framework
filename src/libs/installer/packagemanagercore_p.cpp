@@ -186,7 +186,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
-    , m_packagesInfo(std::make_shared<PackagesInfo>())
+    , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_core(core)
     , m_updates(false)
     , m_repoFetched(false)
@@ -207,7 +207,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations)
     : m_updateFinder(0)
-    , m_packagesInfo(std::make_shared<PackagesInfo>())
+    , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
     , m_testChecksum(false)
@@ -560,15 +560,15 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
 
     if (!isInstaller())
-        m_packagesInfo->setFileName(componentsXmlPath());
+        m_localPackageHub->setFileName(componentsXmlPath());
 
-    if (isInstaller() || m_packagesInfo->applicationName().isEmpty()) {
+    if (isInstaller() || m_localPackageHub->applicationName().isEmpty()) {
         // TODO: this seems to be wrong, we should ask for ProductName defaulting to applicationName...
-        m_packagesInfo->setApplicationName(m_data.settings().applicationName());
+        m_localPackageHub->setApplicationName(m_data.settings().applicationName());
     }
 
-    if (isInstaller() || m_packagesInfo->applicationVersion().isEmpty())
-        m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+    if (isInstaller() || m_localPackageHub->applicationVersion().isEmpty())
+        m_localPackageHub->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
     if (isInstaller())
         m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
@@ -1478,13 +1478,13 @@ bool PackageManagerCorePrivate::runInstaller()
             componentsInstallPartProgressSize = double(1);
 
         // Force an update on the components xml as the install dir might have changed.
-        m_packagesInfo->setFileName(componentsXmlPath());
+        m_localPackageHub->setFileName(componentsXmlPath());
         // Clear the packages as we might install into an already existing installation folder.
-        m_packagesInfo->clearPackageInfoList();
+        m_localPackageHub->clearPackageInfos();
         // also update the application name, might be set from a script as well
-        m_packagesInfo->setApplicationName(m_data.value(QLatin1String("ProductName"),
+        m_localPackageHub->setApplicationName(m_data.value(QLatin1String("ProductName"),
             m_data.settings().applicationName()).toString());
-        m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+        m_localPackageHub->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
         const int progressOperationCount = countProgressOperations(componentsToInstall)
             // add one more operation as we support progress
@@ -1900,12 +1900,12 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    m_packagesInfo->addPackage(component->name(), component->value(scVersion),
+    m_localPackageHub->addPackage(component->name(), component->value(scVersion),
         component->value(scDisplayName),
         component->value(scDescription), component->dependencies(), component->forcedInstallation(),
         component->isVirtual(), component->value(scUncompressedSize).toULongLong(),
         component->value(scInheritVersion));
-    m_packagesInfo->writeToDisk();
+    m_localPackageHub->writeToDisk();
 
     component->setInstalled();
     component->markAsPerformedInstallation();
@@ -2061,7 +2061,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                     component = componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    m_packagesInfo->removePackage(component->name());
+                    m_localPackageHub->removePackage(component->name());
                 }
             }
 
@@ -2072,13 +2072,13 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 delete undoOperation;
         }
     } catch (const Error &error) {
-        m_packagesInfo->writeToDisk();
+        m_localPackageHub->writeToDisk();
         throw Error(error.message());
     } catch (...) {
-        m_packagesInfo->writeToDisk();
+        m_localPackageHub->writeToDisk();
         throw Error(tr("Unknown error"));
     }
-    m_packagesInfo->writeToDisk();
+    m_localPackageHub->writeToDisk();
 }
 
 PackagesList PackageManagerCorePrivate::remotePackages()
@@ -2091,8 +2091,8 @@ PackagesList PackageManagerCorePrivate::remotePackages()
 
     m_updateFinder = new KDUpdater::UpdateFinder;
     m_updateFinder->setAutoDelete(false);
-    m_updateFinder->setPackagesInfo(m_packagesInfo);
     m_updateFinder->setPackageSources(m_packageSources);
+    m_updateFinder->setLocalPackageHub(m_localPackageHub);
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {
@@ -2116,24 +2116,24 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
         return LocalPackagesHash();
 
     LocalPackagesHash installedPackages;
-    if (m_packagesInfo->error() != PackagesInfo::NoError) {
-        if (m_packagesInfo->fileName().isEmpty())
-            m_packagesInfo->setFileName(componentsXmlPath());
+    if (m_localPackageHub->error() != LocalPackageHub::NoError) {
+        if (m_localPackageHub->fileName().isEmpty())
+            m_localPackageHub->setFileName(componentsXmlPath());
         else
-            m_packagesInfo->refresh();
+            m_localPackageHub->refresh();
 
-        if (m_packagesInfo->applicationName().isEmpty())
-            m_packagesInfo->setApplicationName(m_data.settings().applicationName());
-        if (m_packagesInfo->applicationVersion().isEmpty())
-            m_packagesInfo->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+        if (m_localPackageHub->applicationName().isEmpty())
+            m_localPackageHub->setApplicationName(m_data.settings().applicationName());
+        if (m_localPackageHub->applicationVersion().isEmpty())
+            m_localPackageHub->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
     }
 
-    if (m_packagesInfo->error() != PackagesInfo::NoError) {
+    if (m_localPackageHub->error() != LocalPackageHub::NoError) {
         setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.")
             .arg(componentsXmlPath()));
     }
 
-    foreach (const LocalPackage &package, m_packagesInfo->packageInfos()) {
+    foreach (const LocalPackage &package, m_localPackageHub->packageInfos()) {
         if (statusCanceledOrFailed())
             break;
         installedPackages.insert(package.name, package);

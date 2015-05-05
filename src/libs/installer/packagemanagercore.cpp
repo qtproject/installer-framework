@@ -363,7 +363,7 @@ void PackageManagerCore::writeMaintenanceTool()
                 gainAdminRights();
                 gainedAdminRights = true;
             }
-            d->m_packagesInfo->writeToDisk();
+            d->m_localPackageHub->writeToDisk();
             if (gainedAdminRights)
                 dropAdminRights();
             d->m_needToWriteMaintenanceTool = false;
@@ -659,14 +659,14 @@ void PackageManagerCore::rollBackInstallation()
                     component = d->componentsToReplace().value(componentName).second;
                 if (component) {
                     component->setUninstalled();
-                    d->m_packagesInfo->removePackage(component->name());
+                    d->m_localPackageHub->removePackage(component->name());
                 }
             }
 
-            d->m_packagesInfo->writeToDisk();
+            d->m_localPackageHub->writeToDisk();
             if (isInstaller()) {
-                if (d->m_packagesInfo->packageInfoCount() == 0) {
-                    QFile file(d->m_packagesInfo->fileName());
+                if (d->m_localPackageHub->packageInfoCount() == 0) {
+                    QFile file(d->m_localPackageHub->fileName());
                     file.remove();
                 }
             }

@@ -46,11 +46,6 @@
 
 QT_FORWARD_DECLARE_CLASS(QDebug)
 
-namespace KDUpdater {
-    class Update;
-    struct PackageInfo;
-}
-
 namespace QInstaller {
 
 class PackageManagerCore;
@@ -94,7 +89,7 @@ public:
     };
 
     void loadDataFromPackage(const Package &package);
-    void loadDataFromPackage(const LocalPackage &package);
+    void loadDataFromPackage(const KDUpdater::LocalPackage &package);
 
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);

@@ -177,7 +177,7 @@ signals:
 public:
     UpdateFinder *m_updateFinder;
     QSet<PackageSource> m_packageSources;
-    std::shared_ptr<PackagesInfo> m_packagesInfo;
+    std::shared_ptr<LocalPackageHub> m_localPackageHub;
     QStringList m_filesForDelayedDeletion;
 
     int m_status;

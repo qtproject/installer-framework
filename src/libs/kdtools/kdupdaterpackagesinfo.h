@@ -44,7 +44,7 @@
 
 namespace KDUpdater {
 
-struct KDTOOLS_EXPORT PackageInfo
+struct KDTOOLS_EXPORT LocalPackage
 {
     QString name;
     QString pixmap;
@@ -61,14 +61,14 @@ struct KDTOOLS_EXPORT PackageInfo
     quint64 uncompressedSize;
 };
 
-class KDTOOLS_EXPORT PackagesInfo
+class KDTOOLS_EXPORT LocalPackageHub
 {
-    Q_DISABLE_COPY(PackagesInfo)
-    Q_DECLARE_TR_FUNCTIONS(PackagesInfo)
+    Q_DISABLE_COPY(LocalPackageHub)
+    Q_DECLARE_TR_FUNCTIONS(LocalPackageHub)
 
 public:
-    PackagesInfo();
-    ~PackagesInfo();
+    LocalPackageHub();
+    ~LocalPackageHub();
 
     enum Error
     {
@@ -80,6 +80,7 @@ public:
     };
 
     bool isValid() const;
+    QStringList packageNames() const;
 
     Error error() const;
     QString errorString() const;
@@ -93,11 +94,11 @@ public:
     QString applicationVersion() const;
     void setApplicationVersion(const QString &version);
 
-    void clearPackageInfoList();
+    void clearPackageInfos();
     int packageInfoCount() const;
 
-    QList<PackageInfo> packageInfos() const;
-    PackageInfo packageInfo(const QString &pkgName) const;
+    QList<LocalPackage> packageInfos() const;
+    LocalPackage packageInfo(const QString &pkgName) const;
 
     bool addPackage(const QString &pkgName, const QString &version, // mandatory
                     const QString &title = QString(),

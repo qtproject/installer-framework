@@ -113,7 +113,7 @@ public:
     void slotDownloadDone();
 
     QSet<PackageSource> packageSources;
-    std::weak_ptr<PackagesInfo> m_packagesInfo;
+    std::weak_ptr<LocalPackageHub> m_localPackageHub;
 };
 
 
@@ -178,7 +178,7 @@ void UpdateFinder::Private::computeUpdates()
     cancel = false;
 
     // First do some quick sanity checks on the packages info
-    std::shared_ptr<PackagesInfo> packages = m_packagesInfo.lock();
+    std::shared_ptr<LocalPackageHub> packages = m_localPackageHub.lock();
     if (!packages) {
         q->reportError(tr("Could not access the package information of this application."));
         return;
@@ -364,7 +364,7 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
     if (!updatesInfo || updatesInfo->updateInfoCount() == 0)
         return dummy;
 
-    std::shared_ptr<PackagesInfo> packages = m_packagesInfo.lock();
+    std::shared_ptr<LocalPackageHub> packages = m_localPackageHub.lock();
     if (!packages)
         return dummy;
 
@@ -474,9 +474,9 @@ QList<Update *> UpdateFinder::updates() const
     return d->updates.values();
 }
 
-void UpdateFinder::setPackagesInfo(std::weak_ptr<PackagesInfo> info)
+void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 {
-    d->m_packagesInfo = std::move(info);
+    d->m_localPackageHub = std::move(hub);
 }
 
 /*!
