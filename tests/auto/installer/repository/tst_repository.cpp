@@ -1,5 +1,6 @@
 #include "repository.h"
 
+#include <QDataStream>
 #include <QString>
 #include <QTest>
 

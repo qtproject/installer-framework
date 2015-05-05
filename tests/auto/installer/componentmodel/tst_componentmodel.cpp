@@ -1,9 +1,6 @@
 #include "component.h"
 #include "componentmodel.h"
-
 #include "kdupdaterupdatesinfo_p.h"
-#include "kdupdaterupdatesourcesinfo.h"
-
 #include "packagemanagercore.h"
 
 #include <QTest>
