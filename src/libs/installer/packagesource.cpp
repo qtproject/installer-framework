@@ -75,7 +75,7 @@ namespace QInstaller {
 /*!
     Returns the hash value for the \a key, using \a seed to seed the calculation.
 */
-uint QInstaller::qHash(const PackageSource &key, uint seed)
+uint qHash(const PackageSource &key, uint seed)
 {
     return qHash(key.url, seed) ^ key.priority;
 }
@@ -83,7 +83,7 @@ uint QInstaller::qHash(const PackageSource &key, uint seed)
 /*!
     Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
 */
-bool QInstaller::operator==(const PackageSource &lhs, const PackageSource &rhs)
+bool operator==(const PackageSource &lhs, const PackageSource &rhs)
 {
     return lhs.url == rhs.url && lhs.priority == rhs.priority;
 }
