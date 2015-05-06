@@ -1383,7 +1383,7 @@ QString PackageManagerCorePrivate::registerPath()
     }
 
     QString path = QLatin1String("HKEY_CURRENT_USER");
-    if (m_data.value(QLatin1String("AllUsers"), scFalse).toString() == scTrue)
+    if (m_data.value(scAllUsers, scFalse).toString() == scTrue)
         path = QLatin1String("HKEY_LOCAL_MACHINE");
 
     return path + QLatin1String("\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\")

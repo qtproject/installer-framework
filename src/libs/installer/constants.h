@@ -87,6 +87,7 @@ static const QLatin1String scTitleColor("TitleColor");
 static const QLatin1String scWizardDefaultWidth("WizardDefaultWidth");
 static const QLatin1String scWizardDefaultHeight("WizardDefaultHeight");
 static const QLatin1String scProductUUID("ProductUUID");
+static const QLatin1String scAllUsers("AllUsers");
 }
 
 #endif  // CONSTANTS_H

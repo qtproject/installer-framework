@@ -34,6 +34,7 @@
 
 #include "registerfiletypeoperation.h"
 
+#include "constants.h"
 #include "packagemanagercore.h"
 #include "qsettingswrapper.h"
 
@@ -103,7 +104,7 @@ bool RegisterFileTypeOperation::performOperation()
 
     bool allUsers = false;
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
-    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+    if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
@@ -167,7 +168,7 @@ bool RegisterFileTypeOperation::undoOperation()
 
     bool allUsers = false;
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
-    if (core && core->value(QLatin1String("AllUsers")) == QLatin1String("true"))
+    if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")

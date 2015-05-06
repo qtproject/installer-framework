@@ -2437,7 +2437,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 
     startMenuPath = core->value(QLatin1String("UserStartMenuProgramsPath"));
     QStringList dirs = QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-    if (core->value(QLatin1String("AllUsers")) == scTrue) {
+    if (core->value(scAllUsers, scFalse) == scTrue) {
         startMenuPath = core->value(QLatin1String("AllUsersStartMenuProgramsPath"));
         dirs += QDir(startMenuPath).entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
     }

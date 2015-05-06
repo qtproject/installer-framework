@@ -93,7 +93,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     const QString allPrograms = system.value(QLatin1String("Common Programs"), QString()).toString();
 
     QString desktop;
-    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
+    if (m_variables.value(scAllUsers) == scTrue) {
         desktop = system.value(QLatin1String("Desktop")).toString();
     } else {
         desktop = user.value(QLatin1String("Desktop")).toString();
