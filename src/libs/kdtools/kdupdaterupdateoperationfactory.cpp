@@ -33,11 +33,12 @@
 ****************************************************************************/
 
 #include "kdupdaterupdateoperationfactory.h"
-#include "kdupdaterupdateoperations.h"
 
-#include <QHash>
+#include "kdupdaterupdateoperations.h"
+#include "packagemanagercore.h"
 
 using namespace KDUpdater;
+using namespace QInstaller;
 
 /*!
     \inmodule kdupdater
@@ -91,4 +92,12 @@ UpdateOperationFactory::UpdateOperationFactory()
     registerUpdateOperation<RmdirOperation>(QLatin1String("Rmdir"));
     registerUpdateOperation<AppendFileOperation>(QLatin1String("AppendFile"));
     registerUpdateOperation<PrependFileOperation>(QLatin1String("PrependFile"));
+}
+
+UpdateOperation *UpdateOperationFactory::create(const QString &name, PackageManagerCore *core) const
+{
+    UpdateOperation *operation = KDGenericFactory<UpdateOperation>::create(name);
+    if (operation)
+        operation->setValue(QLatin1String("installer"), QVariant::fromValue(core));
+    return operation;
 }

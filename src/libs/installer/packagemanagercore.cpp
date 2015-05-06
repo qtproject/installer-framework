@@ -335,8 +335,6 @@ static bool sNoForceInstallation = false;
 static bool sVirtualComponentsVisible = false;
 static bool sCreateLocalRepositoryFromBinary = false;
 
-PackageManagerCore *PackageManagerCore::m_instance = 0;
-
 static bool componentMatches(const Component *component, const QString &name,
     const QString &version = QString())
 {
@@ -720,9 +718,6 @@ bool PackageManagerCore::fileExists(const QString &filePath) const
 PackageManagerCore::PackageManagerCore()
     : d(new PackageManagerCorePrivate(this))
 {
-    Q_ASSERT_X(m_instance == 0, Q_FUNC_INFO, "PackageManagerCore called more then once.");
-    m_instance = this;
-
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
@@ -732,9 +727,6 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
         const QString &socketName, const QString &key, Protocol::Mode mode)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
-    Q_ASSERT_X(m_instance == 0, Q_FUNC_INFO, "PackageManagerCore called more then once.");
-    m_instance = this;
-
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
@@ -783,7 +775,6 @@ PackageManagerCore::~PackageManagerCore()
         QInstaller::VerboseWriter::instance()->setFileName(logFileName);
     }
     delete d;
-    m_instance = 0;
 
     RemoteClient::instance().setActive(false);
     RemoteClient::instance().shutdown();
@@ -1681,7 +1672,7 @@ bool PackageManagerCore::operationExists(const QString &name)
     static QSet<QString> existingOperations;
     if (existingOperations.contains(name))
         return true;
-    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
+    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name, this));
     if (!op.data())
         return false;
     existingOperations.insert(name);
@@ -1695,7 +1686,7 @@ bool PackageManagerCore::operationExists(const QString &name)
 */
 bool PackageManagerCore::performOperation(const QString &name, const QStringList &arguments)
 {
-    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name));
+    QScopedPointer<Operation> op(KDUpdater::UpdateOperationFactory::instance().create(name, this));
     if (!op.data())
         return false;
 

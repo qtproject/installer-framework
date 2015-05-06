@@ -60,7 +60,7 @@ int OperationRunner::runOperation(QStringList arguments, RunMode mode)
     try {
         const QString name = arguments.takeFirst();
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
-            .create(name));
+            .create(name, m_core));
         if (!op) {
             std::cerr << "Cannot instantiate operation: " << qPrintable(name) << std::endl;
             return EXIT_FAILURE;
@@ -72,8 +72,6 @@ int OperationRunner::runOperation(QStringList arguments, RunMode mode)
                 connect(object, SIGNAL(outputTextChanged(QString)), this, SLOT(print(QString)));
         }
         op->setArguments(arguments);
-        op->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
-
 
         bool readyPerformed = false;
         if (mode == RunMode::Do)

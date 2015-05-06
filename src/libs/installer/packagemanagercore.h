@@ -71,11 +71,6 @@ public:
         Protocol::Mode mode = Protocol::Mode::Production);
     ~PackageManagerCore();
 
-    static PackageManagerCore *instance() {
-        Q_ASSERT_X(m_instance != 0, Q_FUNC_INFO, "PackageManagerCore call to instance before "
-            "constructor call."); return m_instance;
-    }
-
     // status
     enum Status {
         Success = EXIT_SUCCESS,
@@ -346,7 +341,6 @@ private:
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
-    static PackageManagerCore *m_instance;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

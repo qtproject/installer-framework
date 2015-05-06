@@ -99,8 +99,8 @@ UpdateOperation::UpdateOperation()
 UpdateOperation::~UpdateOperation()
 {
     using namespace QInstaller;
-    if (PackageManagerCore *app = PackageManagerCore::instance())
-        app->addFilesForDelayedDeletion(filesForDelayedDeletion());
+    if (auto *core = value(QLatin1String("installer")).value<PackageManagerCore*>())
+        core->addFilesForDelayedDeletion(filesForDelayedDeletion());
 }
 
 /*!

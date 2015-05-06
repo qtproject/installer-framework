@@ -35,9 +35,13 @@
 #ifndef KD_UPDATER_UPDATE_OPERATION_FACTORY_H
 #define KD_UPDATER_UPDATE_OPERATION_FACTORY_H
 
-#include <kdgenericfactory.h>
+#include "kdgenericfactory.h"
 
 #include "kdupdater.h"
+
+namespace QInstaller {
+class PackageManagerCore;
+}
 
 namespace KDUpdater {
 
@@ -55,6 +59,7 @@ public:
     {
         registerProduct<T>(name);
     }
+    UpdateOperation *create(const QString &name, QInstaller::PackageManagerCore *core) const;
 
 protected:
     UpdateOperationFactory();

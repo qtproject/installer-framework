@@ -901,15 +901,14 @@ OperationList Component::operations() const
 
         if (!d->m_minimumProgressOperation) {
             d->m_minimumProgressOperation = KDUpdater::UpdateOperationFactory::instance()
-                .create(QLatin1String("MinimumProgress"));
+                .create(QLatin1String("MinimumProgress"), d->m_core);
             d->m_minimumProgressOperation->setValue(QLatin1String("component"), name());
             d->m_operations.append(d->m_minimumProgressOperation);
         }
 
         if (!d->m_licenses.isEmpty()) {
             d->m_licenseOperation = KDUpdater::UpdateOperationFactory::instance()
-                .create(QLatin1String("License"));
-            d->m_licenseOperation->setValue(QLatin1String("installer"), QVariant::fromValue(d->m_core));
+                .create(QLatin1String("License"), d->m_core);
             d->m_licenseOperation->setValue(QLatin1String("component"), name());
 
             QVariantMap licenses;
@@ -983,7 +982,8 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
 
 Operation *Component::createOperation(const QString &operationName, const QStringList &parameters)
 {
-    Operation *operation = KDUpdater::UpdateOperationFactory::instance().create(operationName);
+    Operation *operation = KDUpdater::UpdateOperationFactory::instance().create(operationName,
+        d->m_core);
     if (operation == 0) {
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -996,7 +996,6 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
 
     if (operation->name() == QLatin1String("Delete"))
         operation->setValue(QLatin1String("performUndo"), false);
-    operation->setValue(QLatin1String("installer"), qVariantFromValue(d->m_core));
 
     operation->setArguments(d->m_core->replaceVariables(parameters));
     operation->setValue(QLatin1String("component"), name());

@@ -233,7 +233,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
-            .create(operation.name));
+            .create(operation.name, core));
         if (op.isNull()) {
             qWarning() << QString::fromLatin1("Failed to load unknown operation %1")
                 .arg(operation.name);
@@ -551,9 +551,6 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
     processFilesForDelayedDeletion();
 
-    foreach (Operation *currentOperation, m_performedOperationsOld)
-        currentOperation->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
-
     disconnect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
     connect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
     disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
@@ -649,7 +646,7 @@ QByteArray PackageManagerCorePrivate::replaceVariables(const QByteArray &ba) con
  */
 Operation *PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 {
-    m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type));
+    m_ownedOperations.append(KDUpdater::UpdateOperationFactory::instance().create(type, m_core));
     return m_ownedOperations.last();
 }
 
@@ -1512,7 +1509,6 @@ bool PackageManagerCorePrivate::runInstaller()
                 binaryFile = resourcePath.filePath(QLatin1String("installer.dat"));
 #endif
                 createRepo->setValue(QLatin1String("uninstall-only"), true);
-                createRepo->setValue(QLatin1String("installer"), QVariant::fromValue(m_core));
                 createRepo->setArguments(QStringList() << binaryFile << target
                     + QLatin1String("/repository"));
 
@@ -1892,7 +1888,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
     if (!component->stopProcessForUpdateRequests().isEmpty()) {
         Operation *stopProcessForUpdatesOp = KDUpdater::UpdateOperationFactory::instance()
-            .create(QLatin1String("FakeStopProcessForUpdate"));
+            .create(QLatin1String("FakeStopProcessForUpdate"), m_core);
         const QStringList arguments(component->stopProcessForUpdateRequests().join(QLatin1String(",")));
         stopProcessForUpdatesOp->setArguments(arguments);
         addPerformed(stopProcessForUpdatesOp);
