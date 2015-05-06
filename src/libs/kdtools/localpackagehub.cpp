@@ -86,7 +86,7 @@ struct LocalPackageHub::PackagesInfoData
     QString applicationVersion;
     bool modified;
 
-    QHash<QString, LocalPackage> m_packageInfoHash;
+    QMap<QString, LocalPackage> m_packageInfoMap;
 
     void addPackageFrom(const QDomElement &packageE);
     void setInvalidContentError(const QString &detail);
@@ -131,7 +131,7 @@ bool LocalPackageHub::isValid() const
 */
 QStringList LocalPackageHub::packageNames() const
 {
-    return d->m_packageInfoHash.keys();
+    return d->m_packageInfoMap.keys();
 }
 
 /*!
@@ -211,7 +211,7 @@ QString LocalPackageHub::applicationVersion() const
 */
 int LocalPackageHub::packageInfoCount() const
 {
-    return d->m_packageInfoHash.count();
+    return d->m_packageInfoMap.count();
 }
 
 /*!
@@ -220,7 +220,7 @@ int LocalPackageHub::packageInfoCount() const
 */
 LocalPackage LocalPackageHub::packageInfo(const QString &pkgName) const
 {
-    return d->m_packageInfoHash.value(pkgName);
+    return d->m_packageInfoMap.value(pkgName);
 }
 
 /*!
@@ -228,7 +228,7 @@ LocalPackage LocalPackageHub::packageInfo(const QString &pkgName) const
 */
 QList<LocalPackage> LocalPackageHub::packageInfos() const
 {
-    return d->m_packageInfoHash.values();
+    return d->m_packageInfoMap.values();
 }
 
 /*!
@@ -241,7 +241,7 @@ void LocalPackageHub::refresh()
     // First clear internal variables
     d->applicationName.clear();
     d->applicationVersion.clear();
-    d->m_packageInfoHash.clear();
+    d->m_packageInfoMap.clear();
     d->modified = false;
 
     QFile file(d->fileName);
@@ -308,21 +308,18 @@ void LocalPackageHub::refresh()
     \a version, \a title, \a description, \a dependencies, \a forcedInstallation,
     \a virtualComp, \a uncompressedSize, and \a inheritVersionFrom for the
     package.
-
-    Returns \c true if the installation information was modified.
-
 */
-bool LocalPackageHub::addPackage(const QString &name, const QString &version,
+void LocalPackageHub::addPackage(const QString &name, const QString &version,
                                   const QString &title, const QString &description,
                                   const QStringList &dependencies, bool forcedInstallation,
                                   bool virtualComp, quint64 uncompressedSize,
                                   const QString &inheritVersionFrom)
 {
     // TODO: This somewhat unexpected, remove?
-    if (d->m_packageInfoHash.contains(name)) {
+    if (d->m_packageInfoMap.contains(name)) {
         // TODO: What about the other fields, update?
-        d->m_packageInfoHash[name].version = version;
-        d->m_packageInfoHash[name].lastUpdateDate = QDate::currentDate();
+        d->m_packageInfoMap[name].version = version;
+        d->m_packageInfoMap[name].lastUpdateDate = QDate::currentDate();
     } else {
         LocalPackage info;
         info.name = name;
@@ -335,10 +332,9 @@ bool LocalPackageHub::addPackage(const QString &name, const QString &version,
         info.forcedInstallation = forcedInstallation;
         info.virtualComp = virtualComp;
         info.uncompressedSize = uncompressedSize;
-        d->m_packageInfoHash.insert(name, info);
+        d->m_packageInfoMap.insert(name, info);
     }
     d->modified = true;
-    return d->modified;
 }
 
 /*!
@@ -346,11 +342,11 @@ bool LocalPackageHub::addPackage(const QString &name, const QString &version,
 */
 bool LocalPackageHub::removePackage(const QString &name)
 {
-    if (d->m_packageInfoHash.remove(name) <= 0)
+    if (d->m_packageInfoMap.remove(name) <= 0)
         return false;
 
     d->modified = true;
-    return d->modified;
+    return true;
 }
 
 static void addTextChildHelper(QDomNode *node,
@@ -373,7 +369,7 @@ static void addTextChildHelper(QDomNode *node,
 */
 void LocalPackageHub::writeToDisk()
 {
-    if (d->modified && (!d->m_packageInfoHash.isEmpty() || QFile::exists(d->fileName))) {
+    if (d->modified && (!d->m_packageInfoMap.isEmpty() || QFile::exists(d->fileName))) {
         QDomDocument doc;
         QDomElement root = doc.createElement(QLatin1String("Packages")) ;
         doc.appendChild(root);
@@ -381,7 +377,7 @@ void LocalPackageHub::writeToDisk()
         addTextChildHelper(&root, QLatin1String("ApplicationName"), d->applicationName);
         addTextChildHelper(&root, QLatin1String("ApplicationVersion"), d->applicationVersion);
 
-        Q_FOREACH (const LocalPackage &info, d->m_packageInfoHash) {
+        Q_FOREACH (const LocalPackage &info, d->m_packageInfoMap) {
             QDomElement package = doc.createElement(QLatin1String("Package"));
 
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
@@ -468,7 +464,7 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
         else if (childNodeE.tagName() == QLatin1String("InstallDate"))
             info.installDate = QDate::fromString(childNodeE.text(), Qt::ISODate);
     }
-    m_packageInfoHash.insert(info.name, info);
+    m_packageInfoMap.insert(info.name, info);
 }
 
 /*!
@@ -476,7 +472,7 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
 */
 void LocalPackageHub::clearPackageInfos()
 {
-    d->m_packageInfoHash.clear();
+    d->m_packageInfoMap.clear();
     d->modified = true;
 }
 

@@ -100,7 +100,7 @@ public:
     QList<LocalPackage> packageInfos() const;
     LocalPackage packageInfo(const QString &pkgName) const;
 
-    bool addPackage(const QString &pkgName, const QString &version, // mandatory
+    void addPackage(const QString &pkgName, const QString &version, // mandatory
                     const QString &title = QString(),
                     const QString &description = QString(),
                     const QStringList &dependencies = QStringList(),
