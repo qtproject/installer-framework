@@ -159,13 +159,14 @@
 /*!
     \qmlsignal component::selectedChanged(boolean isSelected)
 
-    Emitted when the component selection has changed to \a isSelected.
+    Emitted when the component selection changes to \a isSelected.
 */
 
 /*!
     \qmlsignal component::valueChanged(string key, string value)
 
-    Emitted when the variable with name \a key has changed to \a value.
+    Emitted when the value of the variable with the name \a key changes to
+    \a value.
 
     \sa setValue
 */
@@ -180,8 +181,9 @@
     \qmlmethod string component::value(string key, string value = "")
 
     Returns the value of variable name \a key. If \a key is not known yet, \a defaultValue is returned.
-    Note: If a component is virtual and you ask for the component value with key "Default", it will always
-    return \c false.
+
+    \note If a component is virtual and you ask for the component value with the
+    key "Default", it will always return \c false.
 */
 
 /*!
@@ -199,7 +201,8 @@
 /*!
     \qmlmethod QWidget component::userInterface(string name)
 
-    Returns the QWidget created for \a name or 0 if the widget already has been deleted or cannot be found.
+    Returns the QWidget created for \a name or \c 0 if the widget has been
+    deleted or cannot be found.
 */
 
 /*!
@@ -207,11 +210,12 @@
 
     Creates all operations needed to install this component's \a path. \a path is a full qualified
     filename including the component's name. This method gets called from
-    component::createOperationsForArchive. You can override it by providing a method with
+    createOperationsForArchive. You can override it by providing a method with
     the same name in the component script.
 
     \note RSA signature files are omitted by this method.
-    \note If you call this method from a script, it won't call the scripts method with the same name.
+    \note If you call this method from a script, it will not call the script's
+    method with the same name.
 
     The default implementation is recursively creating Copy and Mkdir operations for all files
     and folders within \a path.
@@ -221,10 +225,11 @@
     \qmlmethod void component::createOperationsForArchive(string archive)
 
     Creates all operations needed to install this component's \a archive. This method gets called
-    from component::createOperations. You can override this method by providing a method with the
+    from createOperations. You can override this method by providing a method with the
     same name in the component script.
 
-    \note If you call this method from a script, it won't call the scripts method with the same name.
+    \note If you call this method from a script, it will not call the script's
+    method with the same name.
 
     The default implementation calls createOperationsForPath for everything contained in the archive.
     If \a archive is a compressed archive known to the installer system, an Extract operation is
@@ -253,7 +258,8 @@
     Creates all operations needed to install this component.
     You can override this method by providing a method with the same name in the component script.
 
-    \note If you call this method from a script, it won't call the scripts method with the same name.
+    \note If you call this method from a script, it will not call the script's
+    method with the same name.
 
     The default implementation calls createOperationsForArchive for all archives in this component.
 */
@@ -288,8 +294,8 @@
 /*!
     \qmlmethod void component::addStopProcessForUpdateRequest(string process)
 
-    Adds a request for quitting the process \a process before installing/updating/uninstalling the
-    component.
+    Adds a request for quitting the process \a process before installing,
+    updating, or uninstalling the component.
 */
 
 /*!
@@ -301,7 +307,9 @@
 /*!
     \qmlmethod void component::setStopProcessForUpdateRequest(string process, boolean requested)
 
-    Convenience: Add/remove request depending on \a requested (add if \c true, remove if \c false).
+    A convenience method for adding or removing the request for stopping
+    \a process depending on whether \a requested is \c true (add) or \c false
+    (remove).
 */
 
 /*!
@@ -355,7 +363,7 @@
 /*!
     \qmlmethod boolean component::isAutoDependOn(QSet<string> componentsToInstall)
 
-    Determines if the component comes as an auto dependency. Returns \c true if the component needs
+    Determines whether the component comes as an auto dependency. Returns \c true if the component needs
     to be installed.
 */
 
@@ -372,31 +380,32 @@
 /*!
     \qmlmethod boolean component::isInstalled()
 
-    Determines if the component is installed.
+    Determines whether the component is installed.
 */
 
 /*!
     \qmlmethod boolean component::installationRequested()
 
-    Determines if the user wants to install the component
+    Determines whether the user wants to install the component.
 */
 
 /*!
     \qmlmethod void component::setUpdateAvailable(boolean isUpdateAvailable)
 
-    Sets a flag that the core found an update
+    Sets a flag that the core found an update.
 */
 
 /*!
     \qmlmethod boolean component::updateRequested()
 
-    Determines if the user wants to install the update for this component
+    Determines whether the user wants to install the update for this component.
 */
 
 /*!
     \qmlmethod boolean component::componentChangeRequested()
 
-    Returns \c true if that component will be changed (update/installation/uninstallation).
+    Returns \c true if this component will be changed (update, installation, or
+    uninstallation).
 */
 
 /*!
@@ -408,13 +417,13 @@
 /*!
     \qmlmethod boolean component::isUninstalled()
 
-    Determines if the component is uninstalled.
+    Determines whether the component is uninstalled.
 */
 
 /*!
     \qmlmethod boolean component::uninstallationRequested()
 
-    Determines if the user wants to uninstall the component.
+    Determines whether the user wants to uninstall the component.
 */
 
 /*!
