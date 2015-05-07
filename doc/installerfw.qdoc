@@ -548,11 +548,12 @@
         \row
             \li DisplayName
             \li Human-readable name of the component. Required.
+                Specify translations for the name of the component as values of additional
+                DisplayName tags, with the xml:lang attribute set to the correct locale.
         \row
             \li Description
             \li Human-readable description of the component. Required.
-                Specify translations for the description as values of additional
-                Description tags, with the xml:lang attribute set to the correct locale.
+                Translations may be specified similarly to DisplayName tag.
                 If a localization that matches the locale is not found and an untranslated
                 version exists, that one will be used. Otherwise no Description will be
                 shown for that locale.

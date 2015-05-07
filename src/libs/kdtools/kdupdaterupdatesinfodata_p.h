@@ -62,6 +62,9 @@ public:
     bool parsePackageUpdateElement(const QDomElement &updateE);
 
     void setInvalidContentError(const QString &detail);
+
+private:
+    void processLocalizedTag(const QDomElement &childE, QHash<QString, QVariant> &info) const;
 };
 
 } // namespace KDUpdater

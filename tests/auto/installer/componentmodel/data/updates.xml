@@ -5,6 +5,8 @@
     <PackageUpdate>
         <Name>com.vendor.product</Name>
         <DisplayName>The root component</DisplayName>
+        <DisplayName xml:lang="ru_RU">Корневая компонента</DisplayName>
+        <DisplayName xml:lang="de_DE">Wurzel Komponente</DisplayName>
         <Description>Install this example.</Description>
         <Version>0.1.0-1</Version>
         <ReleaseDate>2010-09-21</ReleaseDate>

@@ -140,14 +140,10 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
             info.data.insert(QLatin1String("inheritVersionFrom"),
                 childE.attribute(QLatin1String("inheritVersionFrom")));
             info.data[childE.tagName()] = childE.text();
+        } else if (childE.tagName() == QLatin1String("DisplayName")) {
+            processLocalizedTag(childE, info.data);
         } else if (childE.tagName() == QLatin1String("Description")) {
-            QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
-            if (!info.data.contains(QLatin1String("Description")) && (languageAttribute.isEmpty()))
-                info.data[childE.tagName()] = childE.text();
-
-            // overwrite default if we have a language specific description
-            if (languageAttribute == QLocale().name().toLower())
-                info.data[childE.tagName()] = childE.text();
+            processLocalizedTag(childE, info.data);
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
             info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
@@ -171,6 +167,17 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
 
     updateInfoList.append(info);
     return true;
+}
+
+void UpdatesInfoData::processLocalizedTag(const QDomElement &childE, QHash<QString, QVariant> &info) const
+{
+    QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
+    if (!info.contains(childE.tagName()) && (languageAttribute.isEmpty()))
+        info[childE.tagName()] = childE.text();
+
+    // overwrite default if we have a language specific description
+    if (QLocale().name().startsWith(languageAttribute, Qt::CaseInsensitive))
+        info[childE.tagName()] = childE.text();
 }
 
 

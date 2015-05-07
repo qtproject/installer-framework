@@ -4,6 +4,7 @@
 #include "packagemanagercore.h"
 
 #include <QTest>
+#include <QtCore/QLocale>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -19,6 +20,12 @@ static const char vendorSecondProductVirtual[] = "com.vendor.second.product.virt
 static const char vendorSecondProductSubnode[] = "com.vendor.second.product.subnode";
 static const char vendorSecondProductSubnodeSub[] = "com.vendor.second.product.subnode.sub";
 static const char vendorThirdProductVirtual[] = "com.vendor.third.product.virtual";
+
+static const QMap<QString, QString> rootComponentDisplayNames = {
+    {"", QLatin1String("The root component")},
+    {"ru_ru", QString::fromUtf8("Корневая компонента")},
+    {"de_de", QString::fromUtf8("Wurzel Komponente")}
+};
 
 class tst_ComponentModel : public QObject
 {
@@ -309,6 +316,31 @@ private slots:
 
         foreach (Component *const component, rootComponents)
             delete component;
+    }
+
+    void testComponentsLocalization()
+    {
+        QStringList localesToTest = { "en_US", "ru_RU", "de_DE", "fr_FR" };
+        foreach (const QString &localeToTest, localesToTest) {
+            QLocale::setDefault(localeToTest);
+            QString expectedName = rootComponentDisplayNames.contains(localeToTest.toLower())
+                ? rootComponentDisplayNames[localeToTest.toLower()]
+                : rootComponentDisplayNames[QString()];
+
+            setPackageManagerOptions(NoFlags);
+
+            QList<Component*> rootComponents = loadComponents();
+            testComponentsLoaded(rootComponents);
+
+            // setup the model with 1 column
+            ComponentModel model(1, &m_core);
+            model.setRootComponents(rootComponents);
+
+            const QModelIndex root = model.indexFromComponentName(vendorProduct);
+            QCOMPARE(model.data(root, Qt::DisplayRole).toString(), expectedName);
+
+            qDeleteAll(rootComponents);
+        }
     }
 
 private:
