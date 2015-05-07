@@ -310,7 +310,7 @@ void Component::loadDataFromPackage(const Package &package)
         setCheckState(Qt::Checked);
     }
 
-    setLocalTempPath(QInstaller::pathFromUrl(package.sourceInfoUrl()));
+    setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!uis.isEmpty())

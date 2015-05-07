@@ -35,8 +35,8 @@
 #ifndef KD_UPDATER_UPDATE_H
 #define KD_UPDATER_UPDATE_H
 
-#include <QHash>
-#include <QUrl>
+#include <packagesource.h>
+#include <kdupdaterupdatesinfo_p.h>
 #include <QVariant>
 
 namespace KDUpdater {
@@ -46,17 +46,15 @@ class Update
 public:
     QVariant data(const QString &name, const QVariant &defaultValue = QVariant()) const;
 
-    int priority() const;
-    QUrl sourceInfoUrl() const;
+    QInstaller::PackageSource packageSource() const {return m_packageSource; }
 
 private:
     friend class UpdateFinder;
-    Update(int p, const QUrl &sourceInfoUrl, const QHash<QString, QVariant> &data);
+    Update(const QInstaller::PackageSource &packageSource, const UpdateInfo &updateInfo);
 
 private:
-    int m_priority;
-    QUrl m_sourceInfoUrl;
-    QHash<QString, QVariant> m_data;
+    QInstaller::PackageSource m_packageSource;
+    UpdateInfo m_updateInfo;
 };
 
 } // namespace KDUpdater

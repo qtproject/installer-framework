@@ -400,7 +400,7 @@ void UpdateFinder::Private::createUpdateObjects(const PackageSource &source,
             delete updates.take(name);
 
         // Create and register the update
-        updates.insert(name, new Update(source.priority, source.url, info.data));
+        updates.insert(name, new Update(source, info));
     }
 }
 
@@ -424,18 +424,18 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
             qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Version: %2, Source: %3' "
                 "found a package with higher version 'Name: %4, Version: %5, Source: %6'")
                 .arg(name, existingPackage->data(QLatin1String("Version")).toString(),
-                    QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
+                    QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName(),
                     name, newPackage.value(QLatin1String("Version")).toString(),
                     QFileInfo(source.url.toLocalFile()).fileName());
             return Resolution::RemoveExisting;
         }
 
-        if ((match == 0) && (source.priority > existingPackage->priority())) {
+        if ((match == 0) && (source.priority > existingPackage->packageSource().priority)) {
             // new package version equals but priority is higher, use
             qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Priority: %2, Source: %3' "
                 "found a package with higher priority 'Name: %4, Priority: %5, Source: %6'")
-                .arg(name, QString::number(existingPackage->priority()),
-                    QFileInfo(existingPackage->sourceInfoUrl().toLocalFile()).fileName(),
+                .arg(name, QString::number(existingPackage->packageSource().priority),
+                    QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName(),
                     name, QString::number(source.priority),
                     QFileInfo(source.url.toLocalFile()).fileName());
             return Resolution::RemoveExisting;
