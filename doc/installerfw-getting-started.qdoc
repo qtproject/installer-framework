@@ -71,11 +71,12 @@
 
     \section3 Configuring Qt for Windows
 
-    Before running configure you should tweak Qt to statically link in the C
+    Usually, you want to tweak Qt to statically link in the C
     runtime library. This can be done by changing the default mkspec of
-    your compiler.
+    your compiler (Qt 5.4) or by passing \c{-static-runtime} to configure (Qt 5.5
+    and newer).
 
-    If you are using e.g. the Microsoft Visual Studio 2013 compiler, you edit
+    For Qt 5.4, you need to edit
     \c{mkspecs\win32-msvc2013\qmake.conf} and replace in the CFLAGS sections
     '-MD' with '-MT':
 
