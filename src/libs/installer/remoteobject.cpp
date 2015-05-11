@@ -106,6 +106,7 @@ bool RemoteObject::connectToServer(const QVariantList &arguments)
         out << arg;
 
     sendPacket(m_socket, Protocol::Create, data);
+    m_socket->flush();
 
     return true;
 }
