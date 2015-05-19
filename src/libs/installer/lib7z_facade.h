@@ -36,11 +36,9 @@
 
 #include "installer_global.h"
 
-#include <QCoreApplication>
 #include <QDateTime>
 #include <QFile>
 #include <QPoint>
-#include <QRunnable>
 #include <QString>
 #include <QVariant>
 #include <QVector>
@@ -192,96 +190,6 @@ namespace Lib7z {
      * @throws Lib7z::SevenZipException
      */
     bool INSTALLER_EXPORT isSupportedArchive(const QString& archive);
-
-    enum Error {
-        NoError=0,
-        Failed=1,
-        UserDefinedError=128
-    };
-
-    class ExtractCallbackJobImpl;
-
-    class INSTALLER_EXPORT Job : public QObject, public QRunnable
-    {
-        friend class ::Lib7z::ExtractCallbackJobImpl;
-        Q_OBJECT
-    public:
-
-        explicit Job( QObject* parent=0 );
-        ~Job();
-        void start();
-        int error() const;
-        bool hasError() const;
-        QString errorString() const;
-
-        /* reimp */ void run();
-
-    protected:
-        void emitResult();
-        void setError( int code );
-        void setErrorString( const QString& err );
-        void emitProgress( qint64 completed, qint64 total );
-
-    Q_SIGNALS:
-        void finished( Lib7z::Job* job );
-        void progress( qint64 completed, qint64 total );
-
-    private Q_SLOTS:
-        virtual void doStart() = 0;
-
-    private:
-        class Private;
-        Private* const d;
-    };
-
-    class INSTALLER_EXPORT ListArchiveJob : public Job {
-        Q_OBJECT
-    public:
-
-        explicit ListArchiveJob( QObject* parent=0 );
-        ~ListArchiveJob();
-
-        QFileDevice* archive() const;
-        void setArchive(QFileDevice* archive);
-
-        QVector<File> index() const;
-
-    private:
-        /* reimp */ void doStart();
-
-    private:
-        class Private;
-        Private* const d;
-    };
-
-    class INSTALLER_EXPORT ExtractItemJob : public Job {
-        Q_OBJECT
-        friend class ::Lib7z::ExtractCallback;
-    public:
-
-        explicit ExtractItemJob( QObject* parent=0 );
-        ~ExtractItemJob();
-
-        File item() const;
-        void setItem( const File& item );
-
-        QFileDevice* archive() const;
-        void setArchive(QFileDevice* archive);
-
-        QString targetDirectory() const;
-        void setTargetDirectory( const QString& dir );
-
-        void setTarget(QFileDevice* dev);
-
-    private:
-        /* reimp */ void doStart();
-
-    private:
-        class Private;
-        Private* const d;
-    };
-
-    QByteArray INSTALLER_EXPORT formatKeyValuePairs( const QVariantList& l );
 }
 
 #endif // LIB7Z_FACADE_H

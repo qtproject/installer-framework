@@ -40,6 +40,7 @@
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 
+#include <QRunnable>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QPair>

@@ -50,6 +50,7 @@
 #include "Windows/PropVariant.h"
 #include "Windows/PropVariantConversions.h"
 
+#include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QIODevice>
@@ -212,16 +213,6 @@ static QString generateTempFileName()
     }
     return QDir::toNativeSeparators(tmp.fileName());
 }
-
-/*
-static QStringList UStringVector2QStringList(const UStringVector& vec)
-{
-QStringList res;
-for (int i = 0; i < vec.Size(); ++i)
-res += UString2QString(vec[i]);
-return res;
-}
-*/
 
 static NCOM::CPropVariant readProperty(IInArchive* archive, int index, int propId)
 {
@@ -514,121 +505,6 @@ bool File::operator==(const File& other) const
         || other.permissions == static_cast< QFile::Permissions >(-1));
 }
 
-QByteArray Lib7z::formatKeyValuePairs(const QVariantList& l)
-{
-    assert(l.size() % 2 == 0);
-    QByteArray res;
-    for (QVariantList::ConstIterator it = l.constBegin(); it != l.constEnd(); ++it) {
-        if (!res.isEmpty())
-            res += ", ";
-        res += qPrintable(it->toString()) + QByteArray(" = ");
-        ++it;
-        res += qPrintable(it->toString());
-    }
-    return res;
-}
-
-class Job::Private
-{
-public:
-    Private()
-        : error(Lib7z::NoError)
-    {}
-
-    int error;
-    QString errorString;
-};
-
-Job::Job(QObject* parent)
-    : QObject(parent)
-    , QRunnable()
-    , d(new Private)
-{
-}
-
-Job::~Job()
-{
-    delete d;
-}
-
-void Job::emitResult()
-{
-    emit finished(this);
-}
-
-void Job::setError(int code)
-{
-    d->error = code;
-}
-
-void Job::setErrorString(const QString &str)
-{
-    d->errorString = str;
-}
-
-void Job::emitProgress(qint64 completed, qint64 total)
-{
-    emit progress(completed, total);
-}
-
-int Job::error() const
-{
-    return d->error;
-}
-
-bool Job::hasError() const
-{
-    return d->error != NoError;
-}
-
-void Job::run()
-{
-    doStart();
-}
-
-QString Job::errorString() const
-{
-    return d->errorString;
-}
-
-void Job::start()
-{
-    QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
-}
-
-class ListArchiveJob::Private
-{
-public:
-    QPointer<QFileDevice> archive;
-    QVector<File> files;
-};
-
-ListArchiveJob::ListArchiveJob(QObject* parent)
-    : Job(parent)
-    , d(new Private)
-{
-}
-
-ListArchiveJob::~ListArchiveJob()
-{
-    delete d;
-}
-
-QFileDevice* ListArchiveJob::archive() const
-{
-    return d->archive;
-}
-
-void ListArchiveJob::setArchive(QFileDevice* device)
-{
-    d->archive = device;
-}
-
-QVector<File> ListArchiveJob::index() const
-{
-    return d->files;
-}
-
 class OpenArchiveInfo
 {
 private:
@@ -747,22 +623,6 @@ QVector<File> Lib7z::listArchive(QFileDevice* archive)
             "Unknown exception caught (%1)").arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
     return QVector<File>(); // never reached
-}
-
-void ListArchiveJob::doStart()
-{
-    try {
-        if (!d->archive)
-            throw SevenZipException(tr("Could not list archive: QIODevice already destroyed."));
-        d->files = listArchive(d->archive);
-    } catch (const SevenZipException& e) {
-        setError(Failed);
-        setErrorString(e.message());
-    } catch (...) {
-        setError(Failed);
-        setErrorString(tr("Unknown exception caught (%1)").arg(tr("Failed")));
-    }
-    emitResult();
 }
 
 class Lib7z::ExtractCallbackImpl : public IArchiveExtractCallback, public CMyUnknownImp
@@ -1046,24 +906,6 @@ bool ExtractCallback::prepareForFile(const QString&)
     return true;
 }
 
-class Lib7z::ExtractCallbackJobImpl : public ExtractCallback
-{
-public:
-    explicit ExtractCallbackJobImpl(ExtractItemJob* j)
-        : ExtractCallback()
-        , job(j)
-    {}
-
-private:
-    /* reimp */ HRESULT setCompleted(quint64 c, quint64 t)
-    {
-        emit job->progress(c, t);
-        return S_OK;
-    }
-
-    ExtractItemJob* const job;
-};
-
 class Lib7z::UpdateCallbackImpl : public IUpdateCallbackUI2, public CMyUnknownImp
 {
 public:
@@ -1213,71 +1055,6 @@ void UpdateCallback::setSourcePaths(const QStringList &paths)
 void UpdateCallback::setTarget(QFileDevice* target)
 {
     d->impl()->setTarget(target);
-}
-
-class ExtractItemJob::Private
-{
-public:
-    Private(ExtractItemJob* qq)
-        : q(qq)
-        , target(0)
-        , callback(new ExtractCallbackJobImpl(q))
-    {
-    }
-
-    ExtractItemJob* q;
-    File item;
-    QPointer<QFileDevice> archive;
-    QString targetDirectory;
-    QFileDevice* target;
-    ExtractCallback* callback;
-};
-
-ExtractItemJob::ExtractItemJob(QObject* parent)
-    : Job(parent)
-    , d(new Private(this))
-{
-}
-
-ExtractItemJob::~ExtractItemJob()
-{
-    delete d;
-}
-
-File ExtractItemJob::item() const
-{
-    return d->item;
-}
-
-void ExtractItemJob::setItem(const File& item)
-{
-    d->item = item;
-}
-
-QFileDevice* ExtractItemJob::archive() const
-{
-    return d->archive;
-}
-
-void ExtractItemJob::setArchive(QFileDevice* archive)
-{
-    d->archive = archive;
-}
-
-QString ExtractItemJob::targetDirectory() const
-{
-    return d->targetDirectory;
-}
-
-void ExtractItemJob::setTargetDirectory(const QString &dir)
-{
-    d->targetDirectory = dir;
-    d->target = 0;
-}
-
-void ExtractItemJob::setTarget(QFileDevice* dev)
-{
-    d->target = dev;
 }
 
 namespace{
@@ -1568,25 +1345,4 @@ bool Lib7z::isSupportedArchive(QFileDevice* archive)
             .arg(QString::fromLatin1(Q_FUNC_INFO)));
     }
     return false; // never reached
-}
-
-void ExtractItemJob::doStart()
-{
-    try {
-        if (!d->archive)
-            throw SevenZipException(tr("Could not list archive: QIODevice not set or already destroyed."));
-        if (d->target)
-            extractFileFromArchive(d->archive, d->item, d->target, d->callback);
-        else if (!d->item.path.isEmpty())
-            extractFileFromArchive(d->archive, d->item, d->targetDirectory, d->callback);
-        else
-            extractArchive(d->archive, d->targetDirectory, d->callback);
-    } catch (const SevenZipException& e) {
-        setError(Failed);
-        setErrorString(tr("Error while extracting '%1': %2").arg(d->item.path, e.message()));
-    } catch (...) {
-        setError(Failed);
-        setErrorString(tr("Unknown exception caught (%1)").arg(tr("Failed")));
-    }
-    emitResult();
 }
