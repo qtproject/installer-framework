@@ -35,6 +35,7 @@
 #define LIB7Z_FACADE_H
 
 #include "installer_global.h"
+#include "errors.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -45,25 +46,22 @@
 
 #include "Common/MyWindows.h"
 
-#include <stdexcept>
-#include <string>
-
 QT_BEGIN_NAMESPACE
 class QStringList;
 template <typename T> class QVector;
 QT_END_NAMESPACE
 
 namespace Lib7z {
-    class INSTALLER_EXPORT SevenZipException : public std::runtime_error {
+    class INSTALLER_EXPORT SevenZipException : public QInstaller::Error
+    {
     public:
-        explicit SevenZipException( const QString& msg ) : std::runtime_error( msg.toStdString() ), m_message( msg ) {}
-        explicit SevenZipException( const char* msg ) : std::runtime_error( msg ), m_message( QString::fromLocal8Bit( msg ) ) {}
-        explicit SevenZipException( const std::string& msg ) : std::runtime_error( msg ), m_message( QString::fromLocal8Bit( msg.c_str() ) ) {}
+        explicit SevenZipException(const QString &msg)
+            : QInstaller::Error(msg)
+        {}
 
-        ~SevenZipException() throw() {}
-        QString message() const { return m_message; }
-    private:
-        QString m_message;
+        explicit SevenZipException(const char *msg)
+            : QInstaller::Error(QString::fromLocal8Bit(msg))
+        {}
     };
 
     class INSTALLER_EXPORT File

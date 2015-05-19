@@ -45,13 +45,15 @@ namespace QInstaller {
 class Error : public std::exception
 {
 public:
-    Error() {}
+    Error()
+    {}
+
     explicit Error(const QString &message)
         : m_message(message)
-    {
-        qDebug() << "create Error-Exception:" << message;
-    }
-    virtual ~Error() throw() {}
+    {}
+
+    virtual ~Error() throw()
+    {}
 
     QString message() const { return m_message; }
 
