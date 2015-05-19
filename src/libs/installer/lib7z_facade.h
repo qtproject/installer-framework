@@ -66,13 +66,14 @@ namespace Lib7z {
         QString m_message;
     };
 
-    class INSTALLER_EXPORT File {
+    class INSTALLER_EXPORT File
+    {
     public:
         File();
         QVector<File> subtreeInPreorder() const;
 
-        bool operator<( const File& other ) const;
-        bool operator==( const File& other ) const;
+        bool operator<(const File &other) const;
+        bool operator==(const File &other) const;
 
         QFile::Permissions permissions;
         QString path;
@@ -87,31 +88,33 @@ namespace Lib7z {
     class ExtractCallbackPrivate;
     class ExtractCallbackImpl;
 
-    class ExtractCallback {
+    class ExtractCallback
+    {
         friend class ::Lib7z::ExtractCallbackImpl;
     public:
         ExtractCallback();
         virtual ~ExtractCallback();
 
-        void setTarget(QFileDevice* archive);
-        void setTarget(const QString& dir );
+        void setTarget(QFileDevice *archive);
+        void setTarget(const QString &dir);
 
     protected:
-        /**
-         * Reimplement to prepare for file @p filename to be extracted, e.g. by renaming existing files.
-         * @return @p true if the preparation was successful and extraction can be continued.
-         * If @p false is returned, the extraction will be aborted. Default implementation returns @p true.
-         */
-        virtual bool prepareForFile( const QString& filename );
-        virtual void setCurrentFile( const QString& filename );
-        virtual HRESULT setCompleted( quint64 completed, quint64 total );
+        /*!
+            Reimplement to prepare for file @p filename to be extracted, e.g. by renaming existing
+            files. @return @p true if the preparation was successful and extraction can be continued.
+            If @p false is returned, the extraction will be aborted. Default implementation returns
+            @p true.
+        */
+        virtual bool prepareForFile(const QString &filename);
+        virtual void setCurrentFile(const QString &filename);
+        virtual HRESULT setCompleted(quint64 completed, quint64 total);
 
     public: //for internal use
-        const ExtractCallbackImpl* impl() const;
-        ExtractCallbackImpl* impl();
+        const ExtractCallbackImpl *impl() const;
+        ExtractCallbackImpl *impl();
 
     private:
-        ExtractCallbackPrivate* const d;
+        ExtractCallbackPrivate *const d;
     };
 
     class UpdateCallbackPrivate;
@@ -124,21 +127,24 @@ namespace Lib7z {
         UpdateCallback();
         virtual ~UpdateCallback();
 
-        void setTarget(QFileDevice* archive);
-        void setSourcePaths(const QStringList& paths);
+        void setTarget(QFileDevice *archive);
+        void setSourcePaths(const QStringList &paths);
 
-        virtual UpdateCallbackImpl* impl();
+        virtual UpdateCallbackImpl *impl();
 
     private:
-        UpdateCallbackPrivate* const d;
+        UpdateCallbackPrivate *const d;
     };
 
-    class OpenArchiveInfoCleaner : public QObject {
-            Q_OBJECT
-        public:
-            OpenArchiveInfoCleaner() {}
-        private Q_SLOTS:
-            void deviceDestroyed(QObject*);
+    class OpenArchiveInfoCleaner : public QObject
+    {
+        Q_OBJECT
+    public:
+        OpenArchiveInfoCleaner()
+        {}
+
+    private Q_SLOTS :
+        void deviceDestroyed(QObject*);
     };
 
     /*!
@@ -147,8 +153,8 @@ namespace Lib7z {
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice* archive, const File& item,
-        QFileDevice* out, ExtractCallback* callback=0 );
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &item,
+        QFileDevice *out, ExtractCallback *callback = 0);
 
     /*!
         Extracts the given File \a file from \a archive into target directory \a targetDirectory
@@ -157,8 +163,8 @@ namespace Lib7z {
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice* archive, const File& item,
-        const QString& targetDirectory, ExtractCallback* callback = 0);
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &item,
+        const QString &targetDirectory, ExtractCallback *callback = 0);
 
     /*!
         Extracts the given \a archive content into target directory \a targetDirectory using the
@@ -167,29 +173,29 @@ namespace Lib7z {
 
         Throws Lib7z::SevenZipException on error.
     */
-    void INSTALLER_EXPORT extractArchive(QFileDevice* archive, const QString& targetDirectory,
-        ExtractCallback* callback = 0);
+    void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
+        ExtractCallback *callback = 0);
 
     /*
-     * @thows Lib7z::SevenZipException
-     */
-    void INSTALLER_EXPORT createArchive(QFileDevice* archive, const QStringList& sourcePaths,
-        UpdateCallback* callback = 0 );
+        @thows Lib7z::SevenZipException
+    */
+    void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sourcePaths,
+        UpdateCallback *callback = 0);
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice* archive);
+    /*!
+        @thows Lib7z::SevenZipException
+    */
+    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    bool INSTALLER_EXPORT isSupportedArchive(QFileDevice* archive);
+    /*!
+        @throws Lib7z::SevenZipException
+    */
+    bool INSTALLER_EXPORT isSupportedArchive(QFileDevice *archive);
 
-    /*
-     * @throws Lib7z::SevenZipException
-     */
-    bool INSTALLER_EXPORT isSupportedArchive(const QString& archive);
+    /*!
+        @throws Lib7z::SevenZipException
+    */
+    bool INSTALLER_EXPORT isSupportedArchive(const QString &archive);
 }
 
 #endif // LIB7Z_FACADE_H

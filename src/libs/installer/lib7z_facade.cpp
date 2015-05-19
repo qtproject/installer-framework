@@ -71,7 +71,7 @@
 #define S_IFLNK 0120000
 #define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
 
-typedef BOOL (WINAPI *CREATEHARDLINK)(LPCSTR dst, LPCSTR str, LPSECURITY_ATTRIBUTES sa);
+typedef BOOL(WINAPI *CREATEHARDLINK)(LPCSTR dst, LPCSTR str, LPSECURITY_ATTRIBUTES sa);
 
 bool CreateHardLinkWrapper(const QString &dest, const QString &file)
 {
@@ -88,9 +88,7 @@ bool CreateHardLinkWrapper(const QString &dest, const QString &file)
         return false;
     QString target = file;
     if (!QFileInfo(file).isAbsolute())
-    {
         target = QFileInfo(dest).dir().absoluteFilePath(file);
-    }
     const QString link = QDir::toNativeSeparators(dest);
     const QString existingFile = QDir::toNativeSeparators(target);
     return proc(link.toLocal8Bit(), existingFile.toLocal8Bit(), 0);
@@ -128,10 +126,11 @@ namespace Lib7z {
 }
 
 namespace {
-/**
-* RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
+/*!
+    RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
 */
-struct DirectoryGuard {
+struct DirectoryGuard
+{
     explicit DirectoryGuard(const QString &path)
         : m_path(path)
         , m_created(false)
@@ -149,11 +148,12 @@ struct DirectoryGuard {
             qWarning() << "Could not delete directory " << m_path;
     }
 
-    /**
-    * Tries to create the directorie structure.
-    * Returns a list of every directory created.
+    /*!
+        Tries to create the directory structure.
+        Returns a list of every directory created.
     */
-    QStringList tryCreate() {
+    QStringList tryCreate()
+    {
         if (m_path.isEmpty())
             return QStringList();
 
@@ -167,8 +167,7 @@ struct DirectoryGuard {
         QStringList created;
 
         QDir toCreate(m_path);
-        while (!toCreate.exists())
-        {
+        while (!toCreate.exists()) {
             QString p = toCreate.absolutePath();
             created.push_front(p);
             p = p.section(QLatin1Char('/'), 0, -2);
@@ -184,7 +183,8 @@ struct DirectoryGuard {
         return created;
     }
 
-    void release() {
+    void release()
+    {
         m_released = true;
     }
 
@@ -214,7 +214,7 @@ static QString generateTempFileName()
     return QDir::toNativeSeparators(tmp.fileName());
 }
 
-static NCOM::CPropVariant readProperty(IInArchive* archive, int index, int propId)
+static NCOM::CPropVariant readProperty(IInArchive *archive, int index, int propId)
 {
     NCOM::CPropVariant prop;
     if (archive->GetProperty(index, propId, &prop) != S_OK) {
@@ -230,9 +230,9 @@ static bool IsFileTimeZero(const FILETIME *lpFileTime)
     return (lpFileTime->dwLowDateTime == 0) && (lpFileTime->dwHighDateTime == 0);
 }
 
-static bool IsDST(const QDateTime& datetime = QDateTime())
+static bool IsDST(const QDateTime &datetime = QDateTime())
 {
-    const time_t seconds = static_cast< time_t >(datetime.isValid() ? datetime.toTime_t()
+    const time_t seconds = static_cast<time_t>(datetime.isValid() ? datetime.toTime_t()
         : QDateTime::currentDateTime().toTime_t());
 #if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
     struct tm t;
@@ -243,7 +243,7 @@ static bool IsDST(const QDateTime& datetime = QDateTime())
     return t.tm_isdst;
 }
 
-static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, FILETIME *fileTime)
+static bool getFileTimeFromProperty(IInArchive *archive, int index, int propId, FILETIME *fileTime)
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt != VT_FILETIME) {
@@ -259,7 +259,7 @@ static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, 
 }
 
 static
-QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const QDateTime& defaultValue)
+QDateTime getDateTimeProperty(IInArchive *archive, int index, int propId, const QDateTime &defaultValue)
 {
     FILETIME fileTime;
     if (!getFileTimeFromProperty(archive, index, propId, &fileTime))
@@ -279,7 +279,7 @@ QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const 
     const QTime time(st.wHour, st.wMinute, st.wSecond);
     QDateTime result(date, time);
 
-    // fix daylight saving time
+    // TODO: fix daylight saving time.
     const bool dst = IsDST();
     if (dst != IsDST(result))
         result = result.addSecs(dst ? -3600 : 3600);
@@ -287,7 +287,7 @@ QDateTime getDateTimeProperty(IInArchive* archive, int index, int propId, const 
     return result;
 }
 
-static quint64 getUInt64Property(IInArchive* archive, int index, int propId, quint64 defaultValue=0)
+static quint64 getUInt64Property(IInArchive *archive, int index, int propId, quint64 defaultValue = 0)
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt == VT_EMPTY)
@@ -295,26 +295,26 @@ static quint64 getUInt64Property(IInArchive* archive, int index, int propId, qui
     return static_cast<quint64>(ConvertPropVariantToUInt64(prop));
 }
 
-static quint32 getUInt32Property(IInArchive* archive, int index, int propId, quint32 defaultValue=0)
+static quint32 getUInt32Property(IInArchive *archive, int index, int propId, quint32 defaultValue = 0)
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt == VT_EMPTY)
         return defaultValue;
-    return static_cast< quint32 >(prop.ulVal);
+    return static_cast<quint32>(prop.ulVal);
 }
 
-static QFile::Permissions getPermissions(IInArchive* archive, int index, bool* hasPermissions = 0)
+static QFile::Permissions getPermissions(IInArchive *archive, int index, bool *hasPermissions = 0)
 {
     quint32 attributes = getUInt32Property(archive, index, kpidAttrib, 0);
     QFile::Permissions permissions = 0;
     if (attributes & FILE_ATTRIBUTE_UNIX_EXTENSION) {
         if (hasPermissions != 0)
             *hasPermissions = true;
-        // filter the unix permissions
+        // filter the Unix permissions
         attributes = (attributes >> 16) & 0777;
-        permissions |= static_cast< QFile::Permissions >((attributes & 0700) << 2);  // owner rights
-        permissions |= static_cast< QFile::Permissions >((attributes & 0070) << 1);  // group
-        permissions |= static_cast< QFile::Permissions >((attributes & 0007) << 0);  // and world rights
+        permissions |= static_cast<QFile::Permissions>((attributes & 0700) << 2);  // owner rights
+        permissions |= static_cast<QFile::Permissions>((attributes & 0070) << 1);  // group
+        permissions |= static_cast<QFile::Permissions>((attributes & 0007) << 0);  // and world rights
     } else if (hasPermissions != 0) {
         *hasPermissions = false;
     }
@@ -331,11 +331,11 @@ public:
     };
 
     MY_UNKNOWN_IMP
-    explicit QIODeviceSequentialOutStream(QIODevice* device, Behavior behavior);
+    explicit QIODeviceSequentialOutStream(QIODevice *device, Behavior behavior);
     ~QIODeviceSequentialOutStream();
     QString errorString() const;
 
-    /* reimp */ STDMETHOD(Write)(const void* data, UInt32 size, UInt32* processedSize);
+    STDMETHOD(Write)(const void *data, UInt32 size, UInt32 *processedSize);
 
 private:
     Behavior m_behavior;
@@ -343,7 +343,7 @@ private:
     QPointer<QIODevice> m_device;
 };
 
-QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice* device, Behavior behavior)
+QIODeviceSequentialOutStream::QIODeviceSequentialOutStream(QIODevice *device, Behavior behavior)
     : ISequentialOutStream()
     , CMyUnknownImp()
     , m_behavior(behavior)
@@ -369,7 +369,7 @@ QString QIODeviceSequentialOutStream::errorString() const
     return m_errorString;
 }
 
-HRESULT QIODeviceSequentialOutStream::Write(const void* data, UInt32 size, UInt32* processedSize)
+HRESULT QIODeviceSequentialOutStream::Write(const void *data, UInt32 size, UInt32 *processedSize)
 {
     if (!m_device) {
         if (processedSize)
@@ -407,13 +407,16 @@ class QIODeviceInStream : public IInStream, public CMyUnknownImp
 public:
     MY_UNKNOWN_IMP
 
-    explicit QIODeviceInStream(QIODevice* device)  : IInStream(), CMyUnknownImp(), m_device(device)
+    explicit QIODeviceInStream(QIODevice *device)
+        : IInStream()
+        , CMyUnknownImp()
+        , m_device(device)
     {
         assert(m_device);
         assert(!m_device->isSequential());
     }
 
-    /* reimp */ STDMETHOD(Read)(void* data, UInt32 size, UInt32* processedSize)
+    STDMETHOD(Read)(void *data, UInt32 size, UInt32 *processedSize)
     {
         assert(m_device);
         assert(m_device->isReadable());
@@ -424,7 +427,7 @@ public:
         return actual >= 0 ? S_OK : E_FAIL;
     }
 
-    /* reimp */ STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64* newPosition)
+    STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition)
     {
         assert(m_device);
         assert(!m_device->isSequential());
@@ -432,18 +435,18 @@ public:
         if (seekOrigin > STREAM_SEEK_END)
             return STG_E_INVALIDFUNCTION;
         UInt64 np = 0;
-        switch(seekOrigin) {
-        case STREAM_SEEK_SET:
-            np = offset;
-            break;
-        case STREAM_SEEK_CUR:
-            np = m_device->pos() + offset;
-            break;
-        case STREAM_SEEK_END:
-            np = m_device->size() + offset;
-            break;
-        default:
-            return STG_E_INVALIDFUNCTION;
+        switch (seekOrigin) {
+            case STREAM_SEEK_SET:
+                np = offset;
+                break;
+            case STREAM_SEEK_CUR:
+                np = m_device->pos() + offset;
+                break;
+            case STREAM_SEEK_END:
+                np = m_device->size() + offset;
+                break;
+            default:
+                return STG_E_INVALIDFUNCTION;
         }
 
         np = qBound(static_cast<UInt64>(0), np, static_cast<UInt64>(m_device->size() - 1));
@@ -470,12 +473,12 @@ QVector<File> File::subtreeInPreorder() const
 {
     QVector<File> res;
     res += *this;
-    Q_FOREACH (const File& child, children)
+    Q_FOREACH (const File &child, children)
         res += child.subtreeInPreorder();
     return res;
 }
 
-bool File::operator<(const File& other) const
+bool File::operator<(const File &other) const
 {
     if (path != other.path)
         return path < other.path;
@@ -492,7 +495,7 @@ bool File::operator<(const File& other) const
     return false;
 }
 
-bool File::operator==(const File& other) const
+bool File::operator==(const File &other) const
 {
     return mtime == other.mtime
         && path == other.path
@@ -501,14 +504,14 @@ bool File::operator==(const File& other) const
         && isDirectory == other.isDirectory
         && children == other.children
         && (permissions == other.permissions
-        || permissions == static_cast< QFile::Permissions >(-1)
-        || other.permissions == static_cast< QFile::Permissions >(-1));
+        || permissions == static_cast<QFile::Permissions>(-1)
+        || other.permissions == static_cast<QFile::Permissions>(-1));
 }
 
 class OpenArchiveInfo
 {
 private:
-    OpenArchiveInfo(QFileDevice* device)
+    OpenArchiveInfo(QFileDevice *device)
         : codecs(new CCodecs)
     {
         if (codecs->Load() != S_OK) {
@@ -538,7 +541,7 @@ public:
         m_cleaner->deleteLater();
     }
 
-    static OpenArchiveInfo* value(QFileDevice* device)
+    static OpenArchiveInfo *value(QFileDevice *device)
     {
         QMutexLocker _(&m_mutex);
         if (!instances.contains(device))
@@ -546,7 +549,7 @@ public:
         return instances.value(device);
     }
 
-    static OpenArchiveInfo* take(QFileDevice *device)
+    static OpenArchiveInfo *take(QFileDevice *device)
     {
         QMutexLocker _(&m_mutex);
         if (instances.contains(device))
@@ -563,30 +566,30 @@ private:
     OpenArchiveInfoCleaner *m_cleaner;
 
     static QMutex m_mutex;
-    static QHash< QIODevice*, OpenArchiveInfo* > instances;
+    static QHash< QIODevice*, OpenArchiveInfo *> instances;
 };
 
 QMutex OpenArchiveInfo::m_mutex;
-QHash< QIODevice*, OpenArchiveInfo* > OpenArchiveInfo::instances;
+QHash< QIODevice*, OpenArchiveInfo *> OpenArchiveInfo::instances;
 
-void OpenArchiveInfoCleaner::deviceDestroyed(QObject* dev)
+void OpenArchiveInfoCleaner::deviceDestroyed(QObject *dev)
 {
-    QFileDevice* device = static_cast<QFileDevice*>(dev);
+    QFileDevice *device = static_cast<QFileDevice*>(dev);
     Q_ASSERT(device);
     delete OpenArchiveInfo::take(device);
 }
 
-QVector<File> Lib7z::listArchive(QFileDevice* archive)
+QVector<File> Lib7z::listArchive(QFileDevice *archive)
 {
     assert(archive);
     try {
-        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
+        const OpenArchiveInfo *const openArchive = OpenArchiveInfo::value(archive);
 
         QVector<File> flat;
 
         for (int i = 0; i < openArchive->archiveLink.Arcs.Size(); ++i) {
-            const CArc& arc = openArchive->archiveLink.Arcs[i];
-            IInArchive* const arch = arc.Archive;
+            const CArc &arc = openArchive->archiveLink.Arcs[i];
+            IInArchive *const arch = arc.Archive;
 
             UInt32 numItems = 0;
             if (arch->GetNumberOfItems(&numItems) != S_OK) {
@@ -614,7 +617,7 @@ QVector<File> Lib7z::listArchive(QFileDevice* archive)
             }
         }
         return flat;
-    } catch (const SevenZipException& e) {
+    } catch (const SevenZipException &e) {
         throw e;
     } catch (const char *err) {
         throw SevenZipException(err);
@@ -629,7 +632,7 @@ class Lib7z::ExtractCallbackImpl : public IArchiveExtractCallback, public CMyUnk
 {
 public:
     MY_UNKNOWN_IMP
-        explicit ExtractCallbackImpl(ExtractCallback* qq)
+        explicit ExtractCallbackImpl(ExtractCallback *qq)
         : q(qq)
         , currentIndex(0)
         , arc(0)
@@ -639,7 +642,7 @@ public:
     {
     }
 
-    void setTarget(QIODevice* dev)
+    void setTarget(QIODevice *dev)
     {
         device = dev;
     }
@@ -651,7 +654,7 @@ public:
 
     // this method will be called by CFolderOutStream::OpenFile to stream via
     // CDecoder::CodeSpec extracted content to an output stream.
-    /* reimp */ STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream** outStream, Int32 askExtractMode)
+    STDMETHOD(GetStream)(UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode)
     {
         Q_UNUSED(askExtractMode)
         *outStream = 0;
@@ -707,7 +710,8 @@ public:
                 }
 #endif
                 QIODeviceSequentialOutStream *qOutStream = new QIODeviceSequentialOutStream(
-                    new QFile(fi.absoluteFilePath()), QIODeviceSequentialOutStream::CloseAndDeleteDevice);
+                    new QFile(fi.absoluteFilePath())
+                    , QIODeviceSequentialOutStream::CloseAndDeleteDevice);
                 if (!qOutStream->errorString().isEmpty()) {
                     Lib7z::setLastError(QCoreApplication::translate("ExtractCallbackImpl",
                         "Could not open file %1: %2.").arg(fi.absoluteFilePath(),
@@ -725,19 +729,20 @@ public:
         return E_FAIL;
     }
 
-    /* reimp */ STDMETHOD(PrepareOperation)(Int32 askExtractMode)
+    STDMETHOD(PrepareOperation)(Int32 askExtractMode)
     {
         Q_UNUSED(askExtractMode)
         return S_OK;
     }
 
-    /* reimp */ STDMETHOD(SetOperationResult)(Int32 resultEOperationResult)
+    STDMETHOD(SetOperationResult)(Int32 resultEOperationResult)
     {
         Q_UNUSED(resultEOperationResult)
 
         if (!targetDir.isEmpty()) {
             bool hasPerm = false;
-            const QFile::Permissions permissions = getPermissions(arc->Archive, currentIndex, &hasPerm);
+            const QFile::Permissions permissions = getPermissions(arc->Archive, currentIndex,
+                &hasPerm);
 
             UString s;
             if (arc->GetItemPath(currentIndex, s) != S_OK) {
@@ -758,9 +763,9 @@ public:
                 qFatal(QString::fromLatin1("Creating a link from archive is not implemented for windows. "
                     "Link filename: %1").arg(absFilePath).toLatin1());
                 // TODO
-//                if (!CreateHardLinkWrapper(absFilePath, QLatin1String(symlinkTarget))) {
-//                    return S_FALSE;
-//                }
+                // if (!CreateHardLinkWrapper(absFilePath, QLatin1String(symlinkTarget))) {
+                //     return S_FALSE;
+                // }
 #else
                 QFileInfo symlinkPlaceHolderFileInfo(absFilePath);
                 if (symlinkPlaceHolderFileInfo.isSymLink()) {
@@ -792,10 +797,10 @@ public:
 
             try {
                 if (!absFilePath.isEmpty()) {
-                    // This might fail for archives without all properties, we can only be sure about
-                    // modification time, as it's always stored by default in 7z archives. Also note that
-                    // we restore modification time on Unix only, as access time and change time are
-                    // supposed to be set to the time of installation.
+                    // This might fail for archives without all properties, we can only be sure
+                    // about modification time, as it's always stored by default in 7z archives.
+                    // Also note that we restore modification time on Unix only, as access time
+                    // and change time are supposed to be set to the time of installation.
                     FILETIME mTime;
                     if (getFileTimeFromProperty(arc->Archive, currentIndex, kpidMTime, &mTime)) {
                         NWindows::NFile::NIO::COutFile file;
@@ -821,13 +826,13 @@ public:
         return S_OK;
     }
 
-    /* reimp */ STDMETHOD(SetTotal)(UInt64 t)
+    STDMETHOD(SetTotal)(UInt64 t)
     {
         total = t;
         return S_OK;
     }
 
-    /* reimp */ STDMETHOD(SetCompleted)(const UInt64* c)
+    STDMETHOD(SetCompleted)(const UInt64 *c)
     {
         completed = *c;
         if (total > 0)
@@ -835,15 +840,15 @@ public:
         return S_OK;
     }
 
-    void setArchive(const CArc* archive)
+    void setArchive(const CArc *archive)
     {
         arc = archive;
     }
 
 private:
-    ExtractCallback* const q;
+    ExtractCallback *const q;
     UInt32 currentIndex;
-    const CArc* arc;
+    const CArc *arc;
     UInt64 total;
     UInt64 completed;
     QPointer<QIODevice> device;
@@ -854,7 +859,7 @@ private:
 class Lib7z::ExtractCallbackPrivate
 {
 public:
-    explicit ExtractCallbackPrivate(ExtractCallback* qq)
+    explicit ExtractCallbackPrivate(ExtractCallback *qq)
     {
         impl = new ExtractCallbackImpl(qq);
     }
@@ -872,17 +877,17 @@ ExtractCallback::~ExtractCallback()
     delete d;
 }
 
-ExtractCallbackImpl* ExtractCallback::impl()
+ExtractCallbackImpl *ExtractCallback::impl()
 {
     return d->impl;
 }
 
-const ExtractCallbackImpl* ExtractCallback::impl() const
+const ExtractCallbackImpl *ExtractCallback::impl() const
 {
     return d->impl;
 }
 
-void ExtractCallback::setTarget(QFileDevice* dev)
+void ExtractCallback::setTarget(QFileDevice *dev)
 {
     d->impl->setTarget(dev);
 }
@@ -913,105 +918,116 @@ public:
     UpdateCallbackImpl()
     {
     }
+
     virtual ~UpdateCallbackImpl()
     {
     }
-    /**
-    * \reimp
-    */
+
     HRESULT SetTotal(UInt64)
     {
         return S_OK;
     }
-    /**
-    * \reimp
-    */
+
     HRESULT SetCompleted(const UInt64*)
     {
         return S_OK;
     }
+
     HRESULT SetRatioInfo(const UInt64*, const UInt64*)
     {
         return S_OK;
     }
+
     HRESULT CheckBreak()
     {
         return S_OK;
     }
+
     HRESULT Finilize()
     {
         return S_OK;
     }
+
     HRESULT SetNumFiles(UInt64)
     {
         return S_OK;
     }
+
     HRESULT GetStream(const wchar_t*, bool)
     {
         return S_OK;
     }
+
     HRESULT OpenFileError(const wchar_t*, DWORD)
     {
         return S_OK;
     }
-    HRESULT CryptoGetTextPassword2(Int32* passwordIsDefined, OLECHAR** password)
+
+    HRESULT CryptoGetTextPassword2(Int32 *passwordIsDefined, OLECHAR **password)
     {
         *password = 0;
         *passwordIsDefined = false;
         return S_OK;
     }
+
     HRESULT CryptoGetTextPassword(OLECHAR**)
     {
         return E_NOTIMPL;
     }
+
     HRESULT OpenResult(const wchar_t*, LONG)
     {
         return S_OK;
     }
+
     HRESULT StartScanning()
     {
         return S_OK;
     }
+
     HRESULT ScanProgress(UInt64, UInt64, const wchar_t*)
     {
         return S_OK;
     }
+
     HRESULT CanNotFindError(const wchar_t*, DWORD)
     {
         return S_OK;
     }
+
     HRESULT FinishScanning()
     {
         return S_OK;
     }
+
     HRESULT StartArchive(const wchar_t*, bool)
     {
         return S_OK;
     }
+
     HRESULT FinishArchive()
     {
         return S_OK;
     }
 
-    /**
-    * \reimp
-    */
     HRESULT SetOperationResult(Int32)
     {
-        // TODO!
+        // TODO! What?
         return S_OK;
     }
+
     void setSourcePaths(const QStringList &paths)
     {
         sourcePaths = paths;
     }
-    void setTarget(QIODevice* archive)
+
+    void setTarget(QIODevice *archive)
     {
         target = archive;
     }
 
 private:
-    QIODevice* target;
+    QIODevice *target;
     QStringList sourcePaths;
 };
 
@@ -1023,7 +1039,7 @@ public:
         m_impl = new UpdateCallbackImpl;
     }
 
-    UpdateCallbackImpl* impl()
+    UpdateCallbackImpl *impl()
     {
         return m_impl;
     }
@@ -1042,7 +1058,7 @@ UpdateCallback::~UpdateCallback()
     delete d;
 }
 
-UpdateCallbackImpl* UpdateCallback::impl()
+UpdateCallbackImpl *UpdateCallback::impl()
 {
     return d->impl();
 }
@@ -1052,13 +1068,13 @@ void UpdateCallback::setSourcePaths(const QStringList &paths)
     d->impl()->setSourcePaths(paths);
 }
 
-void UpdateCallback::setTarget(QFileDevice* target)
+void UpdateCallback::setTarget(QFileDevice *target)
 {
     d->impl()->setTarget(target);
 }
 
 namespace{
-    QString errorMessageFrom7zResult(const LONG & extractResult)
+    QString errorMessageFrom7zResult(const LONG  &extractResult)
     {
         if (!Lib7z::lastError().isEmpty())
             return Lib7z::lastError();
@@ -1097,7 +1113,7 @@ namespace{
     }
 }
 
-void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, UpdateCallback* callback)
+void Lib7z::createArchive(QFileDevice *archive, const QStringList &sourcePaths, UpdateCallback *callback)
 {
     assert(archive);
 
@@ -1188,8 +1204,8 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
     }
 }
 
-void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFileDevice* target,
-    ExtractCallback* callback)
+void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFileDevice *target,
+    ExtractCallback *callback)
 {
     assert(archive);
     assert(target);
@@ -1199,15 +1215,15 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFile
         callback = dummyCallback.get();
 
     try {
-        const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
+        const OpenArchiveInfo *const openArchive = OpenArchiveInfo::value(archive);
 
         const int arcIdx = item.archiveIndex.x();
         if (arcIdx < 0 || arcIdx >= openArchive->archiveLink.Arcs.Size()) {
             throw SevenZipException(QCoreApplication::translate("Lib7z",
                 "CArc index %1 out of bounds [0, %2]").arg(openArchive->archiveLink.Arcs.Size() - 1));
         }
-        const CArc& arc = openArchive->archiveLink.Arcs[arcIdx];
-        IInArchive* const parchive = arc.Archive;
+        const CArc &arc = openArchive->archiveLink.Arcs[arcIdx];
+        IInArchive *const parchive = arc.Archive;
 
         const UInt32 itemIdx = item.archiveIndex.y();
         UInt32 numItems = 0;
@@ -1236,7 +1252,7 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFile
 
     } catch (const char *err) {
         throw SevenZipException(err);
-    } catch (const Lib7z::SevenZipException& e) {
+    } catch (const Lib7z::SevenZipException &e) {
         throw e;
     } catch (...) {
         throw SevenZipException(QCoreApplication::translate("Lib7z", "Unknown exception caught (%1)")
@@ -1244,8 +1260,8 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item, QFile
     }
 }
 
-void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item,
-    const QString &targetDirectory, ExtractCallback* callback)
+void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item,
+    const QString &targetDirectory, ExtractCallback *callback)
 {
     assert(archive);
 
@@ -1268,8 +1284,8 @@ void Lib7z::extractFileFromArchive(QFileDevice* archive, const File& item,
     outDir.release();
 }
 
-void Lib7z::extractArchive(QFileDevice* archive, const QString &targetDirectory,
-    ExtractCallback* callback)
+void Lib7z::extractArchive(QFileDevice *archive, const QString &targetDirectory,
+    ExtractCallback *callback)
 {
     assert(archive);
 
@@ -1283,14 +1299,13 @@ void Lib7z::extractArchive(QFileDevice* archive, const QString &targetDirectory,
     DirectoryGuard outDir(fi.absolutePath());
     outDir.tryCreate();
 
-    const OpenArchiveInfo* const openArchive = OpenArchiveInfo::value(archive);
+    const OpenArchiveInfo *const openArchive = OpenArchiveInfo::value(archive);
 
-    for (int a = 0; a < openArchive->archiveLink.Arcs.Size(); ++a)
-    {
-        const CArc& arc = openArchive->archiveLink.Arcs[a];
-        IInArchive* const arch = arc.Archive;
+    for (int a = 0; a < openArchive->archiveLink.Arcs.Size(); ++a) {
+        const CArc &arc = openArchive->archiveLink.Arcs[a];
+        IInArchive *const arch = arc.Archive;
         callback->impl()->setArchive(&arc);
-        const LONG extractResult = arch->Extract(0, static_cast< UInt32 >(-1), false, callback->impl());
+        const LONG extractResult = arch->Extract(0, static_cast<UInt32>(-1), false, callback->impl());
 
         if (extractResult != S_OK)
             throw SevenZipException(errorMessageFrom7zResult(extractResult));
@@ -1308,7 +1323,7 @@ bool Lib7z::isSupportedArchive(const QString &archive)
     return isSupportedArchive(&file);
 }
 
-bool Lib7z::isSupportedArchive(QFileDevice* archive)
+bool Lib7z::isSupportedArchive(QFileDevice *archive)
 {
     assert(archive);
     assert(!archive->isSequential());
@@ -1325,7 +1340,7 @@ bool Lib7z::isSupportedArchive(QFileDevice* archive)
                 "Could not retrieve default format"));
         }
         CArchiveLink archiveLink;
-        //CMyComPtr is needed, otherwise it crashes in OpenStream()
+        // CMyComPtr is needed, otherwise it crashes in OpenStream()
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);
 
         const HRESULT result = archiveLink.Open2(codecs.data(), formatIndices, /*stdInMode*/false, stream,
@@ -1333,7 +1348,7 @@ bool Lib7z::isSupportedArchive(QFileDevice* archive)
 
         archive->seek(initialPos);
         return result == S_OK;
-    } catch (const SevenZipException& e) {
+    } catch (const SevenZipException &e) {
         archive->seek(initialPos);
         throw e;
     } catch (const char *err) {
