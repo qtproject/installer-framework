@@ -97,12 +97,6 @@ namespace Lib7z {
         void setTarget(const QString &dir);
 
     protected:
-        /*!
-            Reimplement to prepare for file @p filename to be extracted, e.g. by renaming existing
-            files. @return @p true if the preparation was successful and extraction can be continued.
-            If @p false is returned, the extraction will be aborted. Default implementation returns
-            @p true.
-        */
         virtual bool prepareForFile(const QString &filename);
         virtual void setCurrentFile(const QString &filename);
         virtual HRESULT setCompleted(quint64 completed, quint64 total);
@@ -145,54 +139,21 @@ namespace Lib7z {
         void deviceDestroyed(QObject*);
     };
 
-    /*!
-        Extracts the given File \a file from \a archive into output device \a out using the
-        provided extract callback \a callback.
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &file,
+        QFileDevice *target, ExtractCallback *callback = 0);
 
-        Throws Lib7z::SevenZipException on error.
-    */
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &item,
-        QFileDevice *out, ExtractCallback *callback = 0);
-
-    /*!
-        Extracts the given File \a file from \a archive into target directory \a targetDirectory
-        using the provided extract callback \a callback. The output filename is deduced from the
-        \a file path name.
-
-        Throws Lib7z::SevenZipException on error.
-    */
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &item,
+    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &file,
         const QString &targetDirectory, ExtractCallback *callback = 0);
 
-    /*!
-        Extracts the given \a archive content into target directory \a targetDirectory using the
-        provided extract callback \a callback. The output filenames are deduced from the \a archive
-        content.
-
-        Throws Lib7z::SevenZipException on error.
-    */
     void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
         ExtractCallback *callback = 0);
 
-    /*
-        @thows Lib7z::SevenZipException
-    */
     void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sourcePaths,
         UpdateCallback *callback = 0);
 
-    /*!
-        @thows Lib7z::SevenZipException
-    */
     QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
 
-    /*!
-        @throws Lib7z::SevenZipException
-    */
     bool INSTALLER_EXPORT isSupportedArchive(QFileDevice *archive);
-
-    /*!
-        @throws Lib7z::SevenZipException
-    */
     bool INSTALLER_EXPORT isSupportedArchive(const QString &archive);
 }
 

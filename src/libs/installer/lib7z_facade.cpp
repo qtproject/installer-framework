@@ -906,8 +906,15 @@ void ExtractCallback::setCurrentFile(const QString&)
 {
 }
 
-bool ExtractCallback::prepareForFile(const QString&)
+/*!
+    Reimplement to prepare for file \a filename to be extracted, e.g. by renaming existing
+    files. Return \c true if the preparation was successful and extraction can be continued.
+    If \c false is returned, the extraction will be aborted. Default implementation returns
+    \c true.
+*/
+bool ExtractCallback::prepareForFile(const QString &filename)
 {
+    Q_UNUSED(filename)
     return true;
 }
 
@@ -1205,7 +1212,11 @@ void Lib7z::createArchive(QFileDevice *archive, const QStringList &sourcePaths, 
     }
 }
 
-void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFileDevice *target,
+/*!
+    Extracts the given File \a file from \a archive into output device \a target using
+    the provided extract callback \a callback. Throws Lib7z::SevenZipException on error.
+*/
+void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &file, QFileDevice *target,
     ExtractCallback *callback)
 {
     assert(archive);
@@ -1218,7 +1229,7 @@ void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFile
     try {
         const OpenArchiveInfo *const openArchive = OpenArchiveInfo::value(archive);
 
-        const int arcIdx = item.archiveIndex.x();
+        const int arcIdx = file.archiveIndex.x();
         if (arcIdx < 0 || arcIdx >= openArchive->archiveLink.Arcs.Size()) {
             throw SevenZipException(QCoreApplication::translate("Lib7z",
                 "CArc index %1 out of bounds [0, %2]").arg(openArchive->archiveLink.Arcs.Size() - 1));
@@ -1226,7 +1237,7 @@ void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFile
         const CArc &arc = openArchive->archiveLink.Arcs[arcIdx];
         IInArchive *const parchive = arc.Archive;
 
-        const UInt32 itemIdx = item.archiveIndex.y();
+        const UInt32 itemIdx = file.archiveIndex.y();
         UInt32 numItems = 0;
         if (parchive->GetNumberOfItems(&numItems) != S_OK) {
             throw SevenZipException(QCoreApplication::translate("Lib7z",
@@ -1243,7 +1254,7 @@ void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFile
             throw SevenZipException(QCoreApplication::translate("Lib7z",
                 "Could not retrieve path of archive item %1").arg(itemIdx));
         }
-        assert(item.path == UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/')));
+        assert(file.path == UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         callback->setTarget(target);
         const LONG extractResult = parchive->Extract(&itemIdx, 1, /*testmode=*/0, callback->impl());
@@ -1261,31 +1272,13 @@ void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item, QFile
     }
 }
 
-void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &item,
-    const QString &targetDirectory, ExtractCallback *callback)
-{
-    assert(archive);
+/*!
+    Extracts the given File \a file from \a archive into target directory \a directory using the
+    provided extract callback \a callback. The output filename is deduced from the \a file path
+    name. Throws Lib7z::SevenZipException on error.
+*/
 
-    QScopedPointer<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
-    if (!callback)
-        callback = dummyCallback.data();
-
-    QFileInfo fi(targetDirectory + QLatin1String("/") + item.path);
-    DirectoryGuard outDir(fi.absolutePath());
-    outDir.tryCreate();
-    QFile out(fi.absoluteFilePath());
-    if (!out.open(QIODevice::WriteOnly)) { //TODO use tmp file
-        throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Could not create output file for writing: %1").arg(fi.absoluteFilePath()));
-    }
-    callback->setTarget(&out);
-    extractFileFromArchive(archive, item, &out, callback);
-    if (item.permissions)
-        out.setPermissions(item.permissions);
-    outDir.release();
-}
-
-void Lib7z::extractArchive(QFileDevice *archive, const QString &targetDirectory,
+void Lib7z::extractFileFromArchive(QFileDevice *archive, const File &file, const QString &directory,
     ExtractCallback *callback)
 {
     assert(archive);
@@ -1294,9 +1287,38 @@ void Lib7z::extractArchive(QFileDevice *archive, const QString &targetDirectory,
     if (!callback)
         callback = dummyCallback.data();
 
-    callback->setTarget(targetDirectory);
+    QFileInfo fi(directory + QLatin1String("/") + file.path);
+    DirectoryGuard outDir(fi.absolutePath());
+    outDir.tryCreate();
+    QFile out(fi.absoluteFilePath());
+    if (!out.open(QIODevice::WriteOnly)) { //TODO use tmp file
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Could not create output file for writing: %1").arg(fi.absoluteFilePath()));
+    }
+    callback->setTarget(&out);
+    extractFileFromArchive(archive, file, &out, callback);
+    if (file.permissions)
+        out.setPermissions(file.permissions);
+    outDir.release();
+}
 
-    const QFileInfo fi(targetDirectory);
+/*!
+    Extracts the given \a archive content into target directory \a directory using the provided
+    extract callback \a callback. The output filenames are deduced from the \a archive content.
+    Throws Lib7z::SevenZipException on error.
+*/
+
+void Lib7z::extractArchive(QFileDevice *archive, const QString &directory, ExtractCallback *callback)
+{
+    assert(archive);
+
+    QScopedPointer<ExtractCallback> dummyCallback(callback ? 0 : new ExtractCallback);
+    if (!callback)
+        callback = dummyCallback.data();
+
+    callback->setTarget(directory);
+
+    const QFileInfo fi(directory);
     DirectoryGuard outDir(fi.absolutePath());
     outDir.tryCreate();
 
@@ -1315,6 +1337,10 @@ void Lib7z::extractArchive(QFileDevice *archive, const QString &targetDirectory,
     outDir.release();
 }
 
+/*!
+    Returns \c true if the given \a archive is supported; otherwise returns \c false. Throws
+    Lib7z::SevenZipException on error.
+*/
 bool Lib7z::isSupportedArchive(const QString &archive)
 {
     QFile file(archive);
@@ -1324,6 +1350,10 @@ bool Lib7z::isSupportedArchive(const QString &archive)
     return isSupportedArchive(&file);
 }
 
+/*!
+    Returns \c true if the given \a archive is supported; otherwise returns \c false. Throws
+    Lib7z::SevenZipException on error.
+*/
 bool Lib7z::isSupportedArchive(QFileDevice *archive)
 {
     assert(archive);
