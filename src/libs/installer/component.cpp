@@ -190,14 +190,6 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 */
 
 /*!
-    \fn Component::selectedChanged(bool selected)
-
-    Emitted when the component selection changes to \a selected.
-
-    \sa {component::selectedChanged}{component.selectedChanged}
-*/
-
-/*!
     \fn Component::valueChanged(const QString &key, const QString &value)
 
     Emitted when the value of the variable with the name \a key changes to \a value.

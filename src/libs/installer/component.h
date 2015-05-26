@@ -208,7 +208,6 @@ public Q_SLOTS:
 Q_SIGNALS:
     void loaded();
     void virtualStateChanged();
-    void selectedChanged(bool selected);
     void valueChanged(const QString &key, const QString &value);
 
 private Q_SLOTS:

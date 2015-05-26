@@ -157,12 +157,6 @@
 */
 
 /*!
-    \qmlsignal component::selectedChanged(boolean isSelected)
-
-    Emitted when the component selection changes to \a isSelected.
-*/
-
-/*!
     \qmlsignal component::valueChanged(string key, string value)
 
     Emitted when the value of the variable with the name \a key changes to
