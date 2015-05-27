@@ -244,13 +244,12 @@
     components that do not overwrite the component::createOperations() method. See also
     component::autoCreateOperations.
 
-    If errors occur, you can test operations manually on the uninstaller or
-    installer. However, variables are not resolved, so you need to use absolute
-    values.
+    If errors occur, you can test operations manually using the \c devtool. However,
+    variables are not resolved, so you need to use absolute values.
 
     For example, to test copying a file:
     \code
-    Installer --runoperation "Copy" "<source>" "<target>"
+    devtool --operation DO,Copy,<source>,<target>
     \endcode
 
 */
