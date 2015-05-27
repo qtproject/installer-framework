@@ -319,6 +319,10 @@ QJSValue ScriptEngine::newQObject(QObject *object)
     return jsValue;
 }
 
+/*!
+    Creates a JavaScript object of class Array with the specified \a length.
+*/
+
 QJSValue ScriptEngine::newArray(uint length)
 {
   return m_engine.newArray(length);
