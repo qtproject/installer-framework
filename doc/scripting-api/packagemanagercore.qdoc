@@ -33,7 +33,11 @@
 */
 
 /*!
-    \qmlproperty array installer::components
+    \qmlmethod array installer::components()
+
+    Returns an array of all available components.
+
+    \sa component
 */
 
 /*!
