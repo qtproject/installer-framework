@@ -710,6 +710,8 @@
 
         \li \l archivegen
 
+        \li \l devtool
+
     \endlist
 
     \section1 installerbase
@@ -930,6 +932,53 @@
     Where \e <name.7z> is the path and file name of the archive to create and
     \e <data> contains the paths and names of the files or directories to
     package into the archive, separated by spaces.
+
+    \section1 devtool
+
+    You can use \c devtool to update an existing installer or maintenance tool
+    with a new installer base, to dump binary content from an installer or
+    maintenance tool to a target, and to execute operations. For a summary of
+    available operations, see \l {Operations}.
+
+    \c devtool expects the following parameters in the following order:
+
+    \code
+    devtool [options] binary
+    \endcode
+
+    Where \e binary is the path and name of an existing installer or maintenance
+    tool.
+
+    \section2 Summary of devtool Parameters
+
+    \table
+        \header
+            \li Parameter
+            \li Use
+        \row
+            \li -?, -h, --help
+            \li Display help.
+        \row
+            \li -v, --version
+            \li Display version information.
+        \row
+            \li --verbose
+            \li Display additional information.
+        \row
+            \li --update <file>
+            \li Update an existing installer or maintenance tool with a new
+                installer base.
+        \row
+            \li --dump <folder>
+            \li Dump the binary content that belongs to an installer or
+                maintenance tool into the target.
+        \row
+            \li --operation <mode,name,args,...>
+            \li Execute an operation with a list of arguments.
+
+                \c mode can be \c DO or \c UNDO, depending on whether the step
+                contains instructions for the installer or uninstaller.
+    \endtable
 */
 
 /*!
