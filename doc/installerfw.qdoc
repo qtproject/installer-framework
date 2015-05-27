@@ -731,7 +731,7 @@
     ###TODO insert link here.
 
     For information about how to implement data integration into the
-    installer binary, see \c QInstaller::BinaryContent ###TODO insert link here.
+    installer binary, see QInstaller::BinaryContent.
 
     \note If you change this configuration, you must recompile the
     \c installerbase tool.
