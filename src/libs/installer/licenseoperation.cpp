@@ -68,8 +68,8 @@ bool LicenseOperation::performOperation()
         return false;
     }
 
-    QString targetDir = QString::fromLatin1("%1/%2").arg(core->value(scTargetDir),
-        QLatin1String("Licenses"));
+    QString targetDir = QString::fromLatin1("%1%2%3").arg(core->value(scTargetDir),
+        QDir::separator(), QLatin1String("Licenses"));
 
     QDir dir;
     dir.mkpath(targetDir);
