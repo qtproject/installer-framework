@@ -50,6 +50,11 @@
 
 #include <iostream>
 
+#if defined(Q_OS_OSX)
+#  include <unistd.h>
+#  include <sys/types.h>
+#endif
+
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
 #define VERSION "IFW Version: \"" QUOTE(IFW_VERSION_STR) "\""
@@ -143,6 +148,14 @@ int main(int argc, char *argv[])
             std::cerr << "Wrong argument(s) for option --startserver." << std::endl;
             return EXIT_FAILURE;
         }
+
+#if defined(Q_OS_OSX)
+        // make sure effective == real user id.
+        uid_t realUserId = getuid();
+        uid_t effectiveUserId = geteuid();
+        if (realUserId != effectiveUserId)
+            setreuid(effectiveUserId, -1);
+#endif
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
         QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
