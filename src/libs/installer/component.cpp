@@ -59,7 +59,6 @@
 using namespace QInstaller;
 
 static const QLatin1String scScriptTag("Script");
-static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scVirtual("Virtual");
 static const QLatin1String scInstalled("Installed");
 static const QLatin1String scUpdateText("UpdateText");
@@ -243,7 +242,6 @@ Component::~Component()
 void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 {
     setValue(scName, package.name);
-    // pixmap ???
     setValue(scDisplayName, package.title);
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
@@ -252,14 +250,8 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(QLatin1String("LastUpdateDate"), package.lastUpdateDate.toString());
     setValue(QLatin1String("InstallDate"), package.installDate.toString());
     setValue(scUncompressedSize, QString::number(package.uncompressedSize));
-
-    QString dependstr;
-    foreach (const QString &val, package.dependencies)
-        dependstr += val + QLatin1String(",");
-
-    if (package.dependencies.count() > 0)
-        dependstr.chop(1);
-    setValue(scDependencies, dependstr);
+    setValue(scDependencies, package.dependencies.join(QLatin1String(",")));
+    setValue(scAutoDependOn, package.autoDependencies.join(QLatin1String(",")));
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
     if (package.forcedInstallation & !PackageManagerCore::noForceInstallation()) {

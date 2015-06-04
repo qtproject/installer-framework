@@ -35,12 +35,14 @@
 
 #include "localpackagehub.h"
 #include "globals.h"
+#include "constants.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileInfo>
 
 using namespace KDUpdater;
+using namespace QInstaller;
 
 /*!
     \inmodule kdupdater
@@ -305,15 +307,26 @@ void LocalPackageHub::refresh()
 
 /*!
     Marks the package specified by \a name as installed. Sets the values of
-    \a version, \a title, \a description, \a dependencies, \a forcedInstallation,
-    \a virtualComp, \a uncompressedSize, and \a inheritVersionFrom for the
-    package.
+    \a version,
+    \a title,
+    \a description,
+    \a dependencies,
+    \a autoDependencies,
+    \a forcedInstallation,
+    \a virtualComp,
+    \a uncompressedSize,
+    and \a inheritVersionFrom for the package.
 */
-void LocalPackageHub::addPackage(const QString &name, const QString &version,
-                                  const QString &title, const QString &description,
-                                  const QStringList &dependencies, bool forcedInstallation,
-                                  bool virtualComp, quint64 uncompressedSize,
-                                  const QString &inheritVersionFrom)
+void LocalPackageHub::addPackage(const QString &name,
+                                 const QString &version,
+                                 const QString &title,
+                                 const QString &description,
+                                 const QStringList &dependencies,
+                                 const QStringList &autoDependencies,
+                                 bool forcedInstallation,
+                                 bool virtualComp,
+                                 quint64 uncompressedSize,
+                                 const QString &inheritVersionFrom)
 {
     // TODO: This somewhat unexpected, remove?
     if (d->m_packageInfoMap.contains(name)) {
@@ -329,6 +342,7 @@ void LocalPackageHub::addPackage(const QString &name, const QString &version,
         info.title = title;
         info.description = description;
         info.dependencies = dependencies;
+        info.autoDependencies = autoDependencies;
         info.forcedInstallation = forcedInstallation;
         info.virtualComp = virtualComp;
         info.uncompressedSize = uncompressedSize;
@@ -381,7 +395,6 @@ void LocalPackageHub::writeToDisk()
             QDomElement package = doc.createElement(QLatin1String("Package"));
 
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
-            addTextChildHelper(&package, QLatin1String("Pixmap"), info.pixmap);
             addTextChildHelper(&package, QLatin1String("Title"), info.title);
             addTextChildHelper(&package, QLatin1String("Description"), info.description);
             if (info.inheritVersionFrom.isEmpty())
@@ -395,12 +408,11 @@ void LocalPackageHub::writeToDisk()
                 .toString(Qt::ISODate));
             addTextChildHelper(&package, QLatin1String("Size"),
                 QString::number(info.uncompressedSize));
-            QString assembledDependencies = QLatin1String("");
-            Q_FOREACH (const QString & val, info.dependencies)
-                assembledDependencies += val + QLatin1String(",");
-            if (info.dependencies.count() > 0)
-                assembledDependencies.chop(1);
-            addTextChildHelper(&package, QLatin1String("Dependencies"), assembledDependencies);
+
+            if (info.dependencies.count())
+                addTextChildHelper(&package, scDependencies, info.dependencies.join(QLatin1String(",")));
+            if (info.autoDependencies.count())
+                addTextChildHelper(&package, scAutoDependOn, info.autoDependencies.join(QLatin1String(",")));
             if (info.forcedInstallation)
                 addTextChildHelper(&package, QLatin1String("ForcedInstallation"), QLatin1String("true"));
             if (info.virtualComp)
@@ -440,8 +452,6 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
 
         if (childNodeE.tagName() == QLatin1String("Name"))
             info.name = childNodeE.text();
-        else if (childNodeE.tagName() == QLatin1String("Pixmap"))
-            info.pixmap = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Title"))
             info.title = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Description"))
@@ -456,6 +466,9 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.uncompressedSize = childNodeE.text().toULongLong();
         else if (childNodeE.tagName() == QLatin1String("Dependencies")) {
             info.dependencies = childNodeE.text().split(QInstaller::commaRegExp(),
+                QString::SkipEmptyParts);
+        } else if (childNodeE.tagName() == QLatin1String("AutoDependOn")) {
+            info.autoDependencies = childNodeE.text().split(QInstaller::commaRegExp(),
                 QString::SkipEmptyParts);
         } else if (childNodeE.tagName() == QLatin1String("ForcedInstallation"))
             info.forcedInstallation = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;

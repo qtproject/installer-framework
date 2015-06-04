@@ -1905,11 +1905,16 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     }
 
     // now mark the component as installed
-    m_localPackageHub->addPackage(component->name(), component->value(scVersion),
-        component->value(scDisplayName),
-        component->value(scDescription), component->dependencies(), component->forcedInstallation(),
-        component->isVirtual(), component->value(scUncompressedSize).toULongLong(),
-        component->value(scInheritVersion));
+    m_localPackageHub->addPackage(component->name(),
+                                  component->value(scVersion),
+                                  component->value(scDisplayName),
+                                  component->value(scDescription),
+                                  component->dependencies(),
+                                  component->autoDependencies(),
+                                  component->forcedInstallation(),
+                                  component->isVirtual(),
+                                  component->value(scUncompressedSize).toULongLong(),
+                                  component->value(scInheritVersion));
     m_localPackageHub->writeToDisk();
 
     component->setInstalled();

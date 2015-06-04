@@ -58,6 +58,7 @@ static const QLatin1String scReleaseDate("ReleaseDate");
 static const QLatin1String scDescription("Description");
 static const QLatin1String scDisplayName("DisplayName");
 static const QLatin1String scDependencies("Dependencies");
+static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scNewComponent("NewComponent");
 static const QLatin1String scRepositories("Repositories");
 static const QLatin1String scCompressedSize("CompressedSize");

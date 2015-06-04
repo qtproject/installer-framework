@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <Package>
-    <DisplayName>Component G (default, depends on A)</DisplayName>
-    <Description>By default, this component is selected for installation. It depends on component A.</Description>
+    <DisplayName>Component G (default, depends on A, dependency added dynamically)</DisplayName>
+    <Description>By default, this component is selected for installation. It depends on component A. Dependency is added from inside component script.</Description>
     <Default>true</Default>
     <Version>1.0.0</Version>
     <ReleaseDate>2014-08-25</ReleaseDate>
-    <Dependencies>componentA</Dependencies>
+    <Script>installscript.js</Script>
     <SortingPriority>30</SortingPriority>
 </Package>

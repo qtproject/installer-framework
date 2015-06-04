@@ -47,13 +47,12 @@ namespace KDUpdater {
 struct KDTOOLS_EXPORT LocalPackage
 {
     QString name;
-    QString pixmap;
     QString title;
     QString description;
     QString version;
     QString inheritVersionFrom;
     QStringList dependencies;
-    QStringList translations;
+    QStringList autoDependencies;
     QDate lastUpdateDate;
     QDate installDate;
     bool forcedInstallation;
@@ -100,14 +99,16 @@ public:
     QList<LocalPackage> packageInfos() const;
     LocalPackage packageInfo(const QString &pkgName) const;
 
-    void addPackage(const QString &pkgName, const QString &version, // mandatory
-                    const QString &title = QString(),
-                    const QString &description = QString(),
-                    const QStringList &dependencies = QStringList(),
-                    bool forcedInstallation = false,
-                    bool virtualComp = false,
-                    quint64 uncompressedSize = 0,
-                    const QString &inheritVersionFrom = QString());
+    void addPackage(const QString &pkgName,
+                    const QString &version, // mandatory
+                    const QString &title,
+                    const QString &description,
+                    const QStringList &dependencies,
+                    const QStringList &autoDependencies,
+                    bool forcedInstallation,
+                    bool virtualComp,
+                    quint64 uncompressedSize,
+                    const QString &inheritVersionFrom);
     bool removePackage(const QString &pkgName);
 
     void refresh();
