@@ -59,4 +59,6 @@
             A custom button.
     \value  buttons.CustomButton3
             A custom button.
+
+    \sa {Controller Scripting}
 */

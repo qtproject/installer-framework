@@ -250,28 +250,27 @@ public:
 
 /*!
     \fn void PackageManagerGui::interrupted()
-    This signal is emitted when the end user chooses to cancel the installation
-    and quit the installer.
+    \sa {gui::interrupted}{gui.interrupted}
 */
 
 /*!
     \fn void PackageManagerGui::languageChanged()
-    This signal is emitted when the application language changes.
+    \sa {gui::languageChanged}{gui.languageChanged}
 */
 
 /*!
     \fn void PackageManagerGui::finishButtonClicked()
-    This signal is emitted when the \uicontrol Finish button is clicked.
+    \sa {gui::finishButtonClicked}{gui.finishButtonClicked}
 */
 
 /*!
     \fn void PackageManagerGui::gotRestarted()
-    This signal is emitted when the installer is restarted.
+    \sa {gui::gotRestarted}{gui.gotRestarted}
 */
 
 /*!
     \fn void PackageManagerGui::settingsButtonClicked()
-    This signal is emitted when the \uicontrol Settings button is clicked.
+    \sa {gui::settingsButtonClicked}{gui.settingsButtonClicked}
 */
 
 /*!
@@ -411,6 +410,8 @@ void PackageManagerGui::setAutomatedPageSwitchEnabled(bool request)
 
 /*!
     Returns the default text for the button specified by \a wizardButton.
+
+    \sa {gui::defaultButtonText}{gui.defaultButtonText}
 */
 QString PackageManagerGui::defaultButtonText(int wizardButton) const
 {
@@ -439,6 +440,8 @@ static bool swapFinishButton(PackageManagerCore *core, int currentId, int button
 
 /*!
     Clicks the button specified by \a wb after the delay specified by \a delay.
+
+    \sa {gui::clickButton}{gui.clickButton}
 */
 void PackageManagerGui::clickButton(int wb, int delay)
 {
@@ -456,6 +459,8 @@ void PackageManagerGui::clickButton(int wb, int delay)
 /*!
     Returns \c true if the button specified by \a wb is enabled. Returns \c false
     if a button of the specified type is not found.
+
+    \sa {gui::isButtonEnabled}{gui.isButtonEnabled}
 */
 bool PackageManagerGui::isButtonEnabled(int wb)
 {
@@ -661,6 +666,8 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
 
 /*!
     Returns the page specified by \a id.
+
+    \sa {gui::pageById}{gui.pageById}
 */
 QWidget *PackageManagerGui::pageById(int id) const
 {
@@ -669,6 +676,8 @@ QWidget *PackageManagerGui::pageById(int id) const
 
 /*!
     Returns the page specified by the object name \a name from a UI file.
+
+    \sa {gui::pageByObjectName}{gui.pageByObjectName}
 */
 QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
 {
@@ -683,7 +692,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
 }
 
 /*!
-    Returns the current page.
+    \sa {gui::currentPageWidget}{gui.currentPageWidget}
 */
 QWidget *PackageManagerGui::currentPageWidget() const
 {
@@ -693,6 +702,8 @@ QWidget *PackageManagerGui::currentPageWidget() const
 /*!
     For dynamic pages, returns the widget specified by \a name read from the UI
     file.
+
+    \sa {gui::pageWidgetByObjectName}{gui.pageWidgetByObjectName}
 */
 QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 {
@@ -709,8 +720,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 }
 
 /*!
-    Asks end users whether they want to cancel the operation and quit the installer, uninstaller,
-    or package manager.
+    \sa {gui::cancelButtonClicked}{gui.cancelButtonClicked}
 */
 void PackageManagerGui::cancelButtonClicked()
 {
@@ -752,8 +762,7 @@ void PackageManagerGui::cancelButtonClicked()
 }
 
 /*!
-    Quits the installer, uninstaller, or package manager without asking end
-    users for confirmation.
+   \sa {gui::rejectWithoutPrompt}{gui.rejectWithoutPrompt}
 */
 void PackageManagerGui::rejectWithoutPrompt()
 {
@@ -777,7 +786,7 @@ void PackageManagerGui::setModified(bool value)
 }
 
 /*!
-    Shows the next page.
+    \sa {gui::showFinishedPage}{gui.showFinishedPage}
 */
 void PackageManagerGui::showFinishedPage()
 {
@@ -790,6 +799,8 @@ void PackageManagerGui::showFinishedPage()
 
 /*!
     Shows the \uicontrol Settings button if \a show is \c true.
+
+    \sa {gui::showSettingsButton}{gui.showSettingsButton}
 */
 void PackageManagerGui::showSettingsButton(bool show)
 {
@@ -841,6 +852,8 @@ void PackageManagerGui::updateButtonLayout()
 
 /*!
     Enables the \uicontrol Settings button by setting \a enabled to \c true.
+
+    \sa {gui::setSettingsButtonEnabled}{gui.setSettingsButtonEnabled}
 */
 void PackageManagerGui::setSettingsButtonEnabled(bool enabled)
 {

@@ -89,6 +89,7 @@ void registerArc7z();
 void registerCodecBCJ();
 void registerCodecBCJ2();
 
+void registerCodecCopy();
 void registerCodecLZMA();
 void registerCodecLZMA2();
 
@@ -107,6 +108,8 @@ static void initArchives()
 
     registerCodecBCJ();
     registerCodecBCJ2();
+
+    registerCodecCopy();
     registerCodecLZMA();
     registerCodecLZMA2();
 

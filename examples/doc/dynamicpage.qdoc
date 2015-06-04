@@ -91,6 +91,10 @@
     \printuntil }
     \dots
 
+    \l installer::addWizardPage() registers a new page to the installer. \l gui::pageWidgetByObjectName()
+    is then used to retrieve the root widget of the new page, with its name being \c "Dynamic" + the object
+    name of the root widget as set in the .ui file.
+
     \section1 Generating the Example Installer
 
     To create the example installer, switch to the example source directory on

@@ -34,7 +34,11 @@
     \title Controller Scripting
 
     For each installer, you can specify a control script that interacts with certain parts of
-    the installer's UI or functionality. The script format has to be compatible with QJSEngine.
+    the installer's UI or functionality. The control script can add and remove pages to the
+    wizard, change existing pages, do additional checks, and interact with the UI by
+    simulating user clicks. This allows for example unattended installations.
+
+    The script format has to be compatible with QJSEngine.
 
     This section describes the functions that are called to implement such a control script.
     It also gives an overview of installer pages and the widgets that are available on each
@@ -63,7 +67,7 @@
         {
             var widget = gui.currentPageWidget(); // get the current wizard page
             if (widget != null) {
-                widget.setColoredTitle("New title."); // set the page title
+                widget.title = "New title."; // set the page title
                 widget.MessageLabel.setText("New Message."); // set the welcome text
             }
         }

@@ -121,6 +121,10 @@
     component::addOperation(). If you need to run an operation that requires
     administrative rights, use component::addElevatedOperation() instead.
 
+    Operations need to be added before the actual installation step. Override
+    \l component::createOperations() to register custom operations for a
+    component.
+
     Each operation has a unique key used for identification and can take up to
     five parameters. In the parameter values, you can use variables as set in
     installer::setValue(). For more information, see \l{Predefined Variables}.
