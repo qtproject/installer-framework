@@ -2278,20 +2278,15 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
         const QString componentName = operation->value(QLatin1String("component")).toString();
         if (componentName.isEmpty())
             sortedOperations.append(operation);
-        else {
-            OperationList componentOperationList = componentOperationHash.value(componentName);
-            componentOperationList.append(operation);
-            componentOperationHash.insert(operation->value(QLatin1String("component")).toString(),
-                componentOperationList);
-        }
+        else
+            componentOperationHash[componentName].append(operation);
     }
 
-    const QString empty;
     const QRegExp dash(QLatin1String("-.*"));
     Graph<QString> componentGraph;  // create the complete component graph
     foreach (const Component* node, m_core->components(PackageManagerCore::ComponentType::All)) {
         componentGraph.addNode(node->name());
-        componentGraph.addEdges(node->name(), node->dependencies().replaceInStrings(dash, empty));
+        componentGraph.addEdges(node->name(), node->dependencies().replaceInStrings(dash, QString()));
     }
 
     const QStringList resolvedComponents = componentGraph.sort();
