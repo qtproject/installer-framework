@@ -151,6 +151,7 @@ private:
             out << arg3;
 
         sendPacket(m_socket, name.toLatin1(), data);
+        m_socket->flush();
     }
 
 private:

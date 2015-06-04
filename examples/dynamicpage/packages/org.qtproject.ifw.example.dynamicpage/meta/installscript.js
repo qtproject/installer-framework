@@ -162,9 +162,10 @@ Component.prototype.readyToInstallWidgetEntered = function () {
     var widget = gui.pageWidgetByObjectName("DynamicReadyToInstallWidget");
     if (widget != null) {
         var html = "<b>Components to install:</b><ul>";
-        for (i = 0; i < installer.components.length; ++i) {
-            if (installer.components[i].installationRequested())
-                html = html + "<li>" + installer.components[i].displayName + "</li>"
+        var components = installer.components();
+        for (i = 0; i < components.length; ++i) {
+            if (components[i].installationRequested())
+                html = html + "<li>" + components[i].displayName + "</li>"
         }
         html = html + "</ul>";
         widget.showDetailsBrowser.html = html;

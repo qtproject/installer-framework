@@ -90,7 +90,12 @@ class tst_PackageManagerCore : public QObject
 private:
     void setIgnoreMessage(const QString &testDirectory)
     {
+#if QT_VERSION < QT_VERSION_CHECK(5, 5, 0)
         const QString message = "\"\t- arguments: %1\" ";
+#else
+        const QString message = "\"\\t- arguments: %1\" ";
+#endif
+        QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
         QTest::ignoreMessage(QtDebugMsg, "\"backup  operation: Mkdir\" ");
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(testDirectory)));
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(testDirectory)));
@@ -233,6 +238,7 @@ private slots:
     void testRequiredDiskSpace()
     {
         // test installer
+        QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
         PackageManagerCore core(QInstaller::BinaryContent::MagicInstallerMarker,
             QList<QInstaller::OperationBlob>());
 

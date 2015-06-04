@@ -165,6 +165,7 @@ void RemoteServerConnection::run()
                 if (m_signalReceiver) {
                     QMutexLocker _(&m_signalReceiver->m_lock);
                     sendData(&socket, m_signalReceiver->m_receivedSignals);
+                    socket.flush();
                     m_signalReceiver->m_receivedSignals.clear();
                 }
                 continue;
@@ -179,6 +180,7 @@ void RemoteServerConnection::run()
             } else {
                 qDebug() << "Unknown command:" << command;
             }
+            socket.flush();
         } else {
             // authorization failed, connection not wanted
             socket.close();

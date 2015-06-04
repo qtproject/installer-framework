@@ -5,7 +5,12 @@
 - Fix --checkupdates mode.
 - Prevent disabled component to be selected using the Select All button. (QTIFW-635)
 - Windows: Fix crashes in elevated installation. (QTIFW-6656, QTIFW-659)
+- OS X: Fix problems with writing settings in elevated installation (QTIFW-709)
 - Fix crash on exit for Windows XP, Vista. (QTIFW-652)
+- Re-add handling of zero compression level files supported by 7z.
+- Improve Proxy Credentials dialog.
+- Make component checker warning optional (set QT_LOGGING_RULES=ifw.componentChecker=true to enable).
+- Make code ready to be compiled with Qt 5.5.
 - Documentation updates.
 
 2.0.0

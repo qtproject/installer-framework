@@ -133,7 +133,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 
     The URLs are prefixed with \c {installer://}.
 
-    \sa addDownloadableArchive, removeDownloadableArchive
+    \sa addDownloadableArchive(), removeDownloadableArchive()
 */
 
 /*!
@@ -185,13 +185,7 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 /*!
     \fn Component::loaded()
 
-    Emitted when the component has been loaded.
-*/
-
-/*!
-    \fn Component::selectedChanged(bool selected)
-
-    Emitted when the component selection changes to \a selected.
+    \sa {component::loaded}{component.loaded}
 */
 
 /*!
@@ -199,13 +193,13 @@ static const QLatin1String scForcedInstallation("ForcedInstallation");
 
     Emitted when the value of the variable with the name \a key changes to \a value.
 
-    \sa setValue
+    \sa {component::valueChanged}{component.valueChanged}, setValue()
 */
 
 /*!
     \fn Component::virtualStateChanged()
 
-    Emitted when the virtual state of the component changes.
+    \sa {component::virtualStateChanged}{component.virtualStateChanged}
 */
 
 
@@ -384,7 +378,9 @@ QString Component::value(const QString &key, const QString &defaultValue) const
 }
 
 /*!
-    Sets the value of the variable \a key to \a value.
+    Sets the value of the variable with \a key to \a value.
+
+    \sa {component::setValue}{component.setValue}
 */
 void Component::setValue(const QString &key, const QString &value)
 {
@@ -653,6 +649,8 @@ QHash<QString, QPair<QString, QString> > Component::licenses() const
 /*!
     Returns the QWidget created for \a name or \c 0 if the widget has been deleted or cannot
     be found.
+
+    \sa {component::userInterface}{component.userInterface}
 */
 QWidget *Component::userInterface(const QString &name) const
 {
@@ -662,7 +660,7 @@ QWidget *Component::userInterface(const QString &name) const
 /*!
     Creates all operations needed to install this component's \a path. \a path is a fully qualified
     filename including the component's name. This method gets called from
-    Component::createOperationsForArchive. You can override it by providing a method with
+    createOperationsForArchive. You can override it by providing a method with
     the same name in the component script.
 
     \note RSA signature files are omitted by this method.
@@ -671,6 +669,8 @@ QWidget *Component::userInterface(const QString &name) const
 
     The default implementation is recursively creating Copy and Mkdir operations for all files
     and folders within \a path.
+
+    \sa {component::createOperationsForPath}{component.createOperationsForPath}
 */
 void Component::createOperationsForPath(const QString &path)
 {
@@ -715,6 +715,8 @@ void Component::createOperationsForPath(const QString &path)
     The default implementation calls createOperationsForPath for everything contained in the archive.
     If \a archive is a compressed archive known to the installer system, an Extract operation is
     created, instead.
+
+    \sa {component::createOperationsForArchive}{component.createOperationsForArchive}
 */
 void Component::createOperationsForArchive(const QString &archive)
 {
@@ -741,18 +743,7 @@ void Component::createOperationsForArchive(const QString &archive)
 }
 
 /*!
-    Starts the component installation.
-    You can override this method by providing a method with the same name in the component script.
-
-    \code
-    Component.prototype.beginInstallation = function()
-    {
-        // call default implementation
-        component.beginInstallation();
-        // ...
-    }
-    \endcode
-
+    \sa {component::beginInstallation}{component.beginInstallation}
 */
 void Component::beginInstallation()
 {
@@ -761,14 +752,8 @@ void Component::beginInstallation()
 }
 
 /*!
-    Creates all operations needed to install this component.
-    You can override this method by providing a method with the same name in the component script.
-
-    \note If you call this method from a script, it will not call the script's method with the same
-    name.
-
-    The default implementation calls createOperationsForArchive() for all archives in this
-    component.
+    \sa {component::createOperations}{component.createOperations}
+    \sa createOperationsForArchive()
 */
 void Component::createOperations()
 {
@@ -789,6 +774,8 @@ void Component::createOperations()
     Registers the file or directory at \a path for being removed when this component gets uninstalled.
     In case of a directory, this will be recursive. If \a wipe is set to \c true, the directory will
     also be deleted if it contains changes made by the user after installation.
+
+    \sa {component::registerPathForUninstallation}{component.registerPathForUninstallation}
 */
 void Component::registerPathForUninstallation(const QString &path, bool wipe)
 {
@@ -822,7 +809,8 @@ QStringList Component::archives() const
     downloaded from an online repository. When adding \a path, it will be downloaded from the
     repository when the installation starts.
 
-    \sa removeDownloadableArchive, fromOnlineRepository, archives
+    \sa {component::addDownloadableArchive}{component.addDownloadableArchive}
+    \sa removeDownloadableArchive(), fromOnlineRepository, archives
 */
 void Component::addDownloadableArchive(const QString &path)
 {
@@ -836,7 +824,8 @@ void Component::addDownloadableArchive(const QString &path)
     Removes the archive \a path previously added via addDownloadableArchive() from this component.
     This can only be called if this component was downloaded from an online repository.
 
-    \sa addDownloadableArchive, fromOnlineRepository, archives
+    \sa {component::removeDownloadableArchive}{component.removeDownloadableArchive}
+    \sa addDownloadableArchive(), fromOnlineRepository, archives
 */
 void Component::removeDownloadableArchive(const QString &path)
 {
@@ -855,6 +844,8 @@ QStringList Component::downloadableArchives() const
 /*!
     Adds a request for quitting the process \a process before installing, updating, or uninstalling
     the component.
+
+    \sa {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest}
 */
 void Component::addStopProcessForUpdateRequest(const QString &process)
 {
@@ -863,6 +854,8 @@ void Component::addStopProcessForUpdateRequest(const QString &process)
 
 /*!
     Removes the request for quitting the process \a process again.
+
+    \sa {component::removeStopProcessForUpdateRequest}{component.removeStopProcessForUpdateRequest}
 */
 void Component::removeStopProcessForUpdateRequest(const QString &process)
 {
@@ -872,6 +865,8 @@ void Component::removeStopProcessForUpdateRequest(const QString &process)
 /*!
     A convenience function for adding or removing the request for stopping \a process depending on
     whether \a requested is \c true (add) or \c false (remove).
+
+    \sa {component::setStopProcessForUpdateRequest}{component.addStopProcessForUpdateReques}
 */
 void Component::setStopProcessForUpdateRequest(const QString &process, bool requested)
 {
@@ -1006,6 +1001,8 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     Convenience method for calling the operation \a operation with up to ten parameters:
     \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
+
+    \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
     const QString &parameter3, const QString &parameter4, const QString &parameter5, const QString &parameter6,
@@ -1039,6 +1036,8 @@ bool Component::addOperation(const QString &operation, const QStringList &parame
     Convenience method for calling the elevated operation \a operation with up to ten parameters:
     \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
+
+    \sa {component::addElevatedOperation}{component.addElevatedOperation}
 */
 bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
@@ -1074,6 +1073,8 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
     Specifies whether operations should be automatically created when the installation starts. This
     would be done by calling createOperations(). If you set this to \c false, it is completely up
     to the component's script to create all operations.
+
+    \sa {component::autoCreateOperations}{component.autoCreateOperations}
 */
 bool Component::autoCreateOperations() const
 {
@@ -1131,6 +1132,7 @@ bool Component::validatePage()
 /*!
     Adds the component specified by \a newDependency to the list of dependencies.
 
+    \sa {component::addDependency}{component.addDependency}
     \sa dependencies
 */
 
@@ -1154,8 +1156,7 @@ QStringList Component::autoDependencies() const
 }
 
 /*!
-
-    Sets the component's state to installed.
+    \sa {component::setInstalled}{component.setInstalled}
 */
 void Component::setInstalled()
 {
@@ -1166,6 +1167,8 @@ void Component::setInstalled()
     Determines whether the component comes as an auto dependency. Returns \c true if all components
     in \a componentsToInstall are already installed or selected for installation and this component
     thus needs to be installed as well.
+
+    \sa {component::isAutoDependOn}{component.isAutoDependOn}
 */
 bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
 {
@@ -1225,7 +1228,9 @@ bool Component::isInstalled() const
 }
 
 /*!
-   Returns whether the user wants to install the component
+   Returns whether the user wants to install the component.
+
+   \sa {component::installationRequested}{component.installationRequested}
 */
 bool Component::installationRequested() const
 {
@@ -1242,6 +1247,8 @@ bool Component::isSelectedForInstallation() const
 
 /*!
     Sets the \a isUpdateAvailable flag to \c true to indicate that the core found an update.
+
+   \sa {component::setUpdateAvailable}{component.setUpdateAvailable}
 */
 void Component::setUpdateAvailable(bool isUpdateAvailable)
 {
@@ -1249,7 +1256,9 @@ void Component::setUpdateAvailable(bool isUpdateAvailable)
 }
 
 /*!
-    Returns whether the user wants to install the update for this component
+    Returns whether the user wants to install the update for this component.
+
+    \sa {component::updateRequested}{component.updateRequested}
 */
 bool Component::updateRequested()
 {
@@ -1258,6 +1267,8 @@ bool Component::updateRequested()
 
 /*!
     Returns \c true if that component will be changed (update, installation, or uninstallation).
+
+    \sa {component::componentChangeRequested}{component.componentChangeRequested}
 */
 bool Component::componentChangeRequested()
 {
@@ -1266,7 +1277,7 @@ bool Component::componentChangeRequested()
 
 
 /*!
-    Sets the component state to uninstalled.
+    \sa {component::setUninstalled}{component.setUninstalled}
 */
 void Component::setUninstalled()
 {
@@ -1275,6 +1286,8 @@ void Component::setUninstalled()
 
 /*!
     Returns whether the component is uninstalled.
+
+    \sa {component::isUninstalled}{component.isUninstalled}
 */
 bool Component::isUninstalled() const
 {
@@ -1283,6 +1296,8 @@ bool Component::isUninstalled() const
 
 /*!
     Returns whether the user wants to uninstall the component.
+
+    \sa {component::uninstallationRequested}{component.uninstallationRequested}
 */
 bool Component::uninstallationRequested() const
 {
@@ -1294,7 +1309,8 @@ bool Component::uninstallationRequested() const
 /*!
     Returns whether this component has been loaded from an online repository.
 
-    \sa addDownloadableArchive, fromOnlineRepository
+    \sa {component::isFromOnlineRepository}{component.isFromOnlineRepository}
+    \sa addDownloadableArchive(), fromOnlineRepository
 */
 bool Component::isFromOnlineRepository() const
 {

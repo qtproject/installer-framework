@@ -997,6 +997,15 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
         QInstaller::appendInt64(&dataOut, BinaryContent::MagicUninstallerMarker);
         QInstaller::appendInt64(&dataOut, BinaryContent::MagicCookie);
+
+        {
+            QFile dummy(resourcePath.filePath(QLatin1String("installer.dat")));
+            if (dummy.exists() && !dummy.remove()) {
+                throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+                    dummy.errorString()));
+            }
+        }
+
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
             throw Error(tr("Could not write maintenance tool data to %1: %2").arg(out.fileName(),
                 out.errorString()));

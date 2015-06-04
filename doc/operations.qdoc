@@ -114,10 +114,8 @@
                 In addition, a special argument, UNDOEXECUTE, separates the DO step of the operation
                 from the UNDO step.
 
-                example:
-                \code
-                component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")
-                \endcode
+                Example:
+                \c{component.addOperation("Execute", "touch", "test.txt", "UNDOEXECUTE", "rm", "test.txt")}
         \row
             \li CreateShortcut
             \li "CreateShortcut" \c filename \c linkname [\c arguments]
@@ -127,7 +125,7 @@
                 \c arguments. On Unix, this creates a symbolic link.
         \row
             \li CreateDesktopEntry
-            \li "CreateDesktopEntry" \c filename \c "key=value[\nkey2=value2[\nkey3=value3]]]"
+            \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
             \li Creates a .desktop initialization file, as specified by
                 freedesktop.org.
 
@@ -173,7 +171,7 @@
                 registry) or by \c application and \c company name. Set \c scope
                 to "SystemScope" to create an entry in the system scope.
 
-                \note: The operation is using QSettings to store the key value pair. QSettings
+                \note The operation is using QSettings to store the key value pair. QSettings
                 always treats backslash as a special character and provides no API for reading
                 or writing such entries. Do not use slashes ('/' and '\') in section or key names;
                 the backslash character is used to separate sub keys. On windows, '\' are converted

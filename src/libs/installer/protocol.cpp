@@ -65,8 +65,6 @@ void sendPacket(QIODevice *device, const QByteArray &command, const QByteArray &
             break;
         packet.remove(0, bytesWritten);
     }
-    // needed for big packages over TCP on Windows
-    device->waitForBytesWritten(-1);
 }
 
 /*!

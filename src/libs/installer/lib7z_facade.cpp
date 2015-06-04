@@ -1141,12 +1141,13 @@ void Lib7z::createArchive(QFileDevice *archive, const QStringList &sourcePaths, 
 
         NWildcard::CCensor censor;
         foreach (const QString &path, sourcePaths) {
-            const UString sourcePath = QString2UString(QDir::toNativeSeparators(path));
-            if (UString2QString(sourcePath) != QDir::toNativeSeparators(path))
-                throw UString2QString(sourcePath).toLatin1().data();
-            // Only pass recursive with true if path is a directory, otherwise we include the file and
-            // possible folders located on the same directory level as the file into the created archive.
-            censor.AddItem(true, sourcePath, QFileInfo(path).isDir());
+            const QString cleanPath = QDir::toNativeSeparators(QDir::cleanPath(path));
+            const UString nativePath = QString2UString(cleanPath);
+            if (UString2QString(nativePath) != cleanPath) {
+                throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not convert"
+                    "path: %1.").arg(path));
+            }
+            censor.AddItem(true /* always include item */, nativePath, false /* never recurse*/);
         }
         callback->setSourcePaths(sourcePaths);
 
