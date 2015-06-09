@@ -40,7 +40,9 @@
 #include <errors.h>
 #include <fileio.h>
 #include <fileutils.h>
+#include <lib7z_extract.h>
 #include <lib7z_facade.h>
+#include <lib7z_list.h>
 
 #include <QDir>
 #include <QFutureWatcher>

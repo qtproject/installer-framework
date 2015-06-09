@@ -36,6 +36,10 @@
 
 #include "errors.h"
 #include "fileio.h"
+
+#include "lib7z_create.h"
+#include "lib7z_extract.h"
+#include "lib7z_list.h"
 #include "lib7z_guid.h"
 
 #ifndef Q_OS_WIN

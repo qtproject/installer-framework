@@ -31,43 +31,43 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "common/repositorygen.h"
+#ifndef LIB7Z_CREATE_H
+#define LIB7Z_CREATE_H
 
-#include <errors.h>
-#include <init.h>
-#include <lib7z_create.h>
-#include <utils.h>
+#include "installer_global.h"
 
-#include <QCoreApplication>
-#include <QFileInfo>
+#include <Common/MyCom.h>
+#include <7zip/UI/Common/Update.h>
 
-#include <iostream>
+QT_BEGIN_NAMESPACE
+class QFileDevice;
+class QStringList;
+QT_END_NAMESPACE
 
-using namespace QInstaller;
-
-static void printUsage()
+namespace Lib7z
 {
-    std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory.7z [files | directories]" << std::endl;
-}
+    enum struct QTmpFile {
+        No,
+        Yes
+    };
 
-int main(int argc, char *argv[])
-{
-    try {
-        QCoreApplication app(argc, argv);
+    class INSTALLER_EXPORT UpdateCallback : public IUpdateCallbackUI2, public CMyUnknownImp
+    {
+        Q_DISABLE_COPY(UpdateCallback)
 
-        if (app.arguments().count() < 3) {
-            printUsage();
-            return EXIT_FAILURE;
-        }
+    public:
+        UpdateCallback() = default;
+        virtual ~UpdateCallback() = default;
 
-        QInstaller::init();
-        QInstaller::setVerbose(true);
-        const QStringList sourceDirectories = app.arguments().mid(2);
-        Lib7z::createArchive(app.arguments().at(1), sourceDirectories, Lib7z::QTmpFile::No);
-        return EXIT_SUCCESS;
-    } catch (const QInstaller::Error &e) {
-        std::cerr << "Caught exception: " << e.message() << std::endl;
-    }
-    return EXIT_FAILURE;
-}
+        MY_UNKNOWN_IMP
+        INTERFACE_IUpdateCallbackUI2(;)
+    };
+
+    void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
+        UpdateCallback *callback = 0);
+    void INSTALLER_EXPORT createArchive(const QString &archive, const QStringList &sources,
+        QTmpFile mode, UpdateCallback *callback = 0);
+
+} // namespace Lib7z
+
+#endif // LIB7Z_CREATE_H

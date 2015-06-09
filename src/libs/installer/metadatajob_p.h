@@ -35,8 +35,11 @@
 #ifndef METADATAJOB_P_H
 #define METADATAJOB_P_H
 
+#include "lib7z_extract.h"
 #include "lib7z_facade.h"
 #include "metadatajob.h"
+
+#include <QFile>
 
 namespace QInstaller{
 

@@ -40,6 +40,7 @@
 #include "fileio.h"
 #include "fileutils.h"
 #include "copydirectoryoperation.h"
+#include "lib7z_create.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"

@@ -31,43 +31,55 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "common/repositorygen.h"
+#ifndef LIB7Z_EXTRACT_H
+#define LIB7Z_EXTRACT_H
 
-#include <errors.h>
-#include <init.h>
-#include <lib7z_create.h>
-#include <utils.h>
+#include "installer_global.h"
 
-#include <QCoreApplication>
-#include <QFileInfo>
+#include <Common/MyCom.h>
+#include <7zip/Archive/IArchive.h>
 
-#include <iostream>
+#include <QString>
 
-using namespace QInstaller;
+class CArc;
 
-static void printUsage()
+QT_BEGIN_NAMESPACE
+class QFileDevice;
+QT_END_NAMESPACE
+
+namespace Lib7z
 {
-    std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory.7z [files | directories]" << std::endl;
-}
+    class INSTALLER_EXPORT ExtractCallback : public IArchiveExtractCallback, public CMyUnknownImp
+    {
+        Q_DISABLE_COPY(ExtractCallback)
 
-int main(int argc, char *argv[])
-{
-    try {
-        QCoreApplication app(argc, argv);
+    public:
+        ExtractCallback() = default;
+        virtual ~ExtractCallback() = default;
 
-        if (app.arguments().count() < 3) {
-            printUsage();
-            return EXIT_FAILURE;
-        }
+        void setArchive(CArc *carc) { arc = carc; }
+        void setTarget(const QString &dir) { targetDir = dir; }
 
-        QInstaller::init();
-        QInstaller::setVerbose(true);
-        const QStringList sourceDirectories = app.arguments().mid(2);
-        Lib7z::createArchive(app.arguments().at(1), sourceDirectories, Lib7z::QTmpFile::No);
-        return EXIT_SUCCESS;
-    } catch (const QInstaller::Error &e) {
-        std::cerr << "Caught exception: " << e.message() << std::endl;
-    }
-    return EXIT_FAILURE;
-}
+        MY_UNKNOWN_IMP
+        INTERFACE_IArchiveExtractCallback(;)
+
+    protected:
+        virtual bool prepareForFile(const QString & /*filename*/) { return true; }
+        virtual void setCurrentFile(const QString &filename) { Q_UNUSED(filename) }
+        virtual HRESULT setCompleted(quint64 /*completed*/, quint64 /*total*/) { return S_OK; }
+
+    private:
+        CArc *arc = 0;
+
+        QString targetDir;
+        quint64 total = 0;
+        quint64 completed = 0;
+        quint32 currentIndex = 0;
+    };
+
+    void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
+        ExtractCallback *callback = 0);
+
+} // namespace Lib7z
+
+#endif // LIB7Z_EXTRACT_H

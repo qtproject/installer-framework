@@ -37,7 +37,9 @@
 #include <fileutils.h>
 #include <errors.h>
 #include <globals.h>
+#include <lib7z_create.h>
 #include <lib7z_facade.h>
+#include <lib7z_list.h>
 #include <settings.h>
 #include <qinstallerglobal.h>
 #include <utils.h>

@@ -31,43 +31,32 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "common/repositorygen.h"
+#ifndef LIB7Z_LIST_H
+#define LIB7Z_LIST_H
 
-#include <errors.h>
-#include <init.h>
-#include <lib7z_create.h>
-#include <utils.h>
+#include "installer_global.h"
 
-#include <QCoreApplication>
-#include <QFileInfo>
+#include <QDateTime>
+#include <QFile>
+#include <QPoint>
 
-#include <iostream>
-
-using namespace QInstaller;
-
-static void printUsage()
+namespace Lib7z
 {
-    std::cout << "Usage: " << QFileInfo(QCoreApplication::applicationFilePath()).fileName()
-        << " directory.7z [files | directories]" << std::endl;
-}
+    struct INSTALLER_EXPORT File
+    {
+    public:
+        QString path;
+        QDateTime mtime;
+        QPoint archiveIndex;
+        bool isDirectory = false;
+        quint64 compressedSize = 0;
+        quint64 uncompressedSize = 0;
+        QFile::Permissions permissions = 0;
+    };
+    INSTALLER_EXPORT bool operator==(const File &lhs, const File &rhs);
 
-int main(int argc, char *argv[])
-{
-    try {
-        QCoreApplication app(argc, argv);
+    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
 
-        if (app.arguments().count() < 3) {
-            printUsage();
-            return EXIT_FAILURE;
-        }
+} // namespace Lib7z
 
-        QInstaller::init();
-        QInstaller::setVerbose(true);
-        const QStringList sourceDirectories = app.arguments().mid(2);
-        Lib7z::createArchive(app.arguments().at(1), sourceDirectories, Lib7z::QTmpFile::No);
-        return EXIT_SUCCESS;
-    } catch (const QInstaller::Error &e) {
-        std::cerr << "Caught exception: " << e.message() << std::endl;
-    }
-    return EXIT_FAILURE;
-}
+#endif // LIB7Z_LIST_H

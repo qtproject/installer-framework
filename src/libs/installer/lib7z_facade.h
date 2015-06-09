@@ -37,17 +37,15 @@
 #include "installer_global.h"
 #include "errors.h"
 
-#include <QDateTime>
-#include <QFile>
-#include <QPoint>
-#include <QString>
-#include <QVector>
+QT_BEGIN_NAMESPACE
+class QFileDevice;
+QT_END_NAMESPACE
 
-#include <Common/MyCom.h>
-#include <7zip/UI/Common/Update.h>
-
-namespace Lib7z {
+namespace Lib7z
+{
     void INSTALLER_EXPORT initSevenZ();
+    bool INSTALLER_EXPORT isSupportedArchive(QFileDevice *archive);
+    bool INSTALLER_EXPORT isSupportedArchive(const QString &archive);
 
     class INSTALLER_EXPORT SevenZipException : public QInstaller::Error
     {
@@ -61,76 +59,6 @@ namespace Lib7z {
         {}
     };
 
-    struct INSTALLER_EXPORT File
-    {
-    public:
-        QString path;
-        QDateTime mtime;
-        QPoint archiveIndex;
-        bool isDirectory = false;
-        quint64 compressedSize = 0;
-        quint64 uncompressedSize = 0;
-        QFile::Permissions permissions = 0;
-    };
-    INSTALLER_EXPORT bool operator==(const File &lhs, const File &rhs);
-
-    class INSTALLER_EXPORT ExtractCallback : public IArchiveExtractCallback, public CMyUnknownImp
-    {
-        Q_DISABLE_COPY(ExtractCallback)
-
-    public:
-        ExtractCallback() = default;
-        virtual ~ExtractCallback() = default;
-
-        void setArchive(CArc *carc) { arc = carc; }
-        void setTarget(const QString &dir) { targetDir = dir; }
-
-        MY_UNKNOWN_IMP
-        INTERFACE_IArchiveExtractCallback(;)
-
-    protected:
-        virtual bool prepareForFile(const QString & /*filename*/) { return true; }
-        virtual void setCurrentFile(const QString &filename) { Q_UNUSED(filename) }
-        virtual HRESULT setCompleted(quint64 /*completed*/, quint64 /*total*/) { return S_OK; }
-
-    private:
-        CArc *arc = 0;
-
-        QString targetDir;
-        quint64 total = 0;
-        quint64 completed = 0;
-        quint32 currentIndex = 0;
-    };
-
-    class INSTALLER_EXPORT UpdateCallback : public IUpdateCallbackUI2, public CMyUnknownImp
-    {
-        Q_DISABLE_COPY(UpdateCallback)
-
-    public:
-        UpdateCallback() = default;
-        virtual ~UpdateCallback() = default;
-
-        MY_UNKNOWN_IMP
-        INTERFACE_IUpdateCallbackUI2(;)
-    };
-
-    enum struct QTmpFile {
-        No,
-        Yes
-    };
-
-    bool INSTALLER_EXPORT isSupportedArchive(QFileDevice *archive);
-    bool INSTALLER_EXPORT isSupportedArchive(const QString &archive);
-
-    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
-
-    void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
-        UpdateCallback *callback = 0);
-    void INSTALLER_EXPORT createArchive(const QString &archive, const QStringList &sources,
-        QTmpFile mode, UpdateCallback *callback = 0);
-
-    void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
-        ExtractCallback *callback = 0);
-}
+} // namespace Lib7z
 
 #endif // LIB7Z_FACADE_H

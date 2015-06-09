@@ -52,7 +52,6 @@
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
 
-using namespace Lib7z;
 using namespace QInstaller;
 
 static void printUsage()

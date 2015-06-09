@@ -37,6 +37,7 @@
 #include "extractarchiveoperation.h"
 
 #include "fileutils.h"
+#include "lib7z_extract.h"
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 
