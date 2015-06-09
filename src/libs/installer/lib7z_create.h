@@ -51,6 +51,15 @@ namespace Lib7z
         Yes
     };
 
+    enum struct Compression {
+        Non = 0,
+        Fastest = 1,
+        Fast = 3,
+        Normal = 5,
+        Maximum = 7,
+        Ultra = 9
+    };
+
     class INSTALLER_EXPORT UpdateCallback : public IUpdateCallbackUI2, public CMyUnknownImp
     {
         Q_DISABLE_COPY(UpdateCallback)
@@ -64,9 +73,9 @@ namespace Lib7z
     };
 
     void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
-        UpdateCallback *callback = 0);
+        Compression level = Compression::Normal, UpdateCallback *callback = 0);
     void INSTALLER_EXPORT createArchive(const QString &archive, const QStringList &sources,
-        QTmpFile mode, UpdateCallback *callback = 0);
+        QTmpFile mode, Compression level = Compression::Normal, UpdateCallback *callback = 0);
 
 } // namespace Lib7z
 

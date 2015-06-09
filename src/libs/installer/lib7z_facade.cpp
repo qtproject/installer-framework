@@ -873,9 +873,10 @@ static QString createTmp7z()
 }
 
 /*!
-    Creates an archive using the the given file device \a archive. \a sourcePaths can contain
-    one or more files, one or more directories or a combination of files and folders. Also the
-    \c * wildcard is supported.The \a callback can be used to get information about the archive
+    Creates an archive using the given file device \a archive. \a sourcePaths can contain one or
+    more files, one or more directories or a combination of files and folders. The \c * wildcard
+    is supported also. The value of \a level specifies the compression ratio, the default is set
+    to \c 5 (Normal compression). The \a callback can be used to get information about the archive
     creation process. If no \a callback is given, an empty implementation is used.
 
     \note Throws SevenZipException on error.
@@ -883,12 +884,12 @@ static QString createTmp7z()
     \note The ownership of \a callback is transferred to the function and gets delete on exit.
 */
 void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
-    UpdateCallback *callback)
+    Compression level, UpdateCallback *callback)
 {
     LIB7Z_ASSERTS(archive, Writable)
 
     const QString tmpArchive = createTmp7z();
-    Lib7z::createArchive(tmpArchive, sources, QTmpFile::No, callback);
+    Lib7z::createArchive(tmpArchive, sources, QTmpFile::No, level, callback);
 
     try {
         QFile source(tmpArchive);
@@ -903,8 +904,9 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
     Creates an archive with the given filename \a archive. \a sourcePaths can contain one or more
     files, one or more directories or a combination of files and folders. Also the \c * wildcard
     is supported. To be able to use the function during an elevated installation, set \a mode to
-    \c QTmpFile::Yes. The \a callback can be used to get information about the archive creation
-    process. If no \a callback is given, an empty implementation is used.
+    \c QTmpFile::Yes. The value of \a level specifies the compression ratio, the default is set
+    to \c 5 (Normal compression). The \a callback can be used to get information about the archive
+    creation process. If no \a callback is given, an empty implementation is used.
 
     \note Throws SevenZipException on error.
     \note If \a archive exists, it will be overwritten.
@@ -912,7 +914,7 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
     \note The ownership of \a callback is transferred to the function and gets delete on exit.
 */
 void createArchive(const QString &archive, const QStringList &sources, QTmpFile mode,
-    UpdateCallback *callback)
+    Compression level, UpdateCallback *callback)
 {
     try {
         QString target = archive;
@@ -925,6 +927,7 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
 #ifdef Q_OS_WIN
             + QLatin1String("-sccUTF-8 ") // (files: case-sensitive|UTF8)
 #endif
+            + QString::fromLatin1("-mx=%1 ").arg(int(level)) // (compression: level)
             + QDir::toNativeSeparators(target) + QLatin1Char(' ')
             + QDir::toNativeSeparators(sources.join(QLatin1Char(' ')))
         );
