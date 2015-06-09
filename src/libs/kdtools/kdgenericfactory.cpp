@@ -166,6 +166,12 @@
 */
 
 /*!
+    \fn bool KDGenericFactory::containsProduct(const T_Identifier &name) const
+
+    Returns \c true if the factory contains a product with the \a name; otherwise returns false.
+*/
+
+/*!
    \fn KDGenericFactory::create( const T_Identifier& name ) const
 
    Creates and returns a product of the type T identified by \a name.

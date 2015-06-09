@@ -59,6 +59,11 @@ public:
         map.insert(name, function);
     }
 
+    bool containsProduct(const T_Identifier &name) const
+    {
+        return map.contains(name) | map2.contains(name);
+    }
+
     T_Product *create(const T_Identifier &name) const
     {
         const typename QHash<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
