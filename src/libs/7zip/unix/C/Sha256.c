@@ -2,6 +2,8 @@
 2010-06-11 : Igor Pavlov : Public domain
 This code is based on public domain code from Wei Dai's Crypto++ library. */
 
+#include "Precomp.h"
+
 #include "RotateDefs.h"
 #include "Sha256.h"
 
@@ -133,7 +135,7 @@ static void Sha256_Transform(UInt32 *state, const UInt32 *data)
   for (j = 0; j < 8; j++)
     state[j] += T[j];
   #endif
-  
+
   /* Wipe variables */
   /* memset(W, 0, sizeof(W)); */
   /* memset(T, 0, sizeof(T)); */

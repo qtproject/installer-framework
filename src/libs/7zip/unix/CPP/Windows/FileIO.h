@@ -15,12 +15,6 @@
 #define FILE_END	SEEK_END
 #define INVALID_SET_FILE_POINTER	((DWORD)-1)
 
-#define CREATE_NEW	  1
-#define CREATE_ALWAYS	  2
-#define OPEN_EXISTING	  3
-#define OPEN_ALWAYS	  4
-/* #define TRUNCATE_EXISTING 5 */
-
 #endif
 
 namespace NWindows {
@@ -83,6 +77,7 @@ public:
   bool Open(LPCTSTR fileName, DWORD shareMode, DWORD creationDisposition, DWORD flagsAndAttributes);
   bool Open(LPCTSTR fileName, DWORD creationDisposition);
   bool Create(LPCTSTR fileName, bool createAlways);
+  bool CreateAlways(LPCTSTR fileName, DWORD flagsAndAttributes);
 
   #ifndef _UNICODE
   bool Open(LPCWSTR fileName, DWORD shareMode, DWORD creationDisposition, DWORD flagsAndAttributes);

@@ -32,19 +32,20 @@
 **
 **************************************************************************/
 
-#include <QDebug>
-#include <QDateTime>
 #include "windows.h"
+
+#include <QDateTime>
+
+#include <chrono>
 
 void FileTimeToDateTime(const FILETIME *source, QDateTime *target)
 {
     ULARGE_INTEGER store;
-    QDateTime tempDateTime(QDate(1601, 1, 1));
-
     store.QuadPart  = source->dwHighDateTime;
     store.QuadPart  = store.QuadPart << 32;
     store.QuadPart += source->dwLowDateTime;
 
+    const QDateTime tempDateTime(QDate(1601, 1, 1), QTime(0, 0, 0, 0), Qt::UTC);
     *target = tempDateTime.addMSecs(store.QuadPart / 10000);
 }
 
@@ -60,27 +61,19 @@ void DateTimeToSystemTime(const QDateTime *source, SYSTEMTIME *target)
     target->wMilliseconds = source->time().msec();
 }
 
+void DateTimeToFileTime(const QDateTime &dateTime, FILETIME *target)
+{
+    const qint64 nsecs = QDateTime(QDate(1601, 1, 1), QTime(0, 0, 0, 0), Qt::UTC)
+        .msecsTo(dateTime) * 10000;
+    target->dwLowDateTime = nsecs;
+    target->dwHighDateTime = nsecs >> 32;
+}
 
 BOOL WINAPI FileTimeToSystemTime(CONST FILETIME *source,SYSTEMTIME *target)
 {
     QDateTime tempDateTime;
     FileTimeToDateTime(source, &tempDateTime);
     DateTimeToSystemTime(&tempDateTime, target);
-
-    return TRUE;
-}
-
-BOOL WINAPI SystemTimeToFileTime(const SYSTEMTIME *source,FILETIME *target)
-{
-    // TODO: Implementation!
-    // This doesn't seem to be called at all
-
-    qDebug() << "SystemTimeToFileTime";
-
-    target->dwHighDateTime = 0;
-    target->dwLowDateTime = 0;
-
-    qWarning() << Q_FUNC_INFO;
 
     return TRUE;
 }
@@ -136,4 +129,15 @@ VOID WINAPI GetSystemTime(SYSTEMTIME *st)
 {
     QDateTime nowDateTime = QDateTime::currentDateTimeUtc();
     DateTimeToSystemTime(&nowDateTime, st);
+}
+
+VOID WINAPI GetSystemTimeAsFileTime(FILETIME *time)
+{
+    DateTimeToFileTime(QDateTime::currentDateTimeUtc(), time);
+}
+
+DWORD WINAPI GetTickCount()
+{
+    using namespace std::chrono;
+    return duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count();
 }

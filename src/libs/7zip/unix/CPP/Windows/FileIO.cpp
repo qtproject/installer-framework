@@ -37,10 +37,10 @@ CFileBase::~CFileBase()
 }
 
 bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
-    DWORD /*dwShareMode*/, DWORD dwCreationDisposition, DWORD /*dwFlagsAndAttributes*/,bool ignoreSymbolicLink)
+    DWORD dwShareMode, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes,bool ignoreSymbolicLink)
 {
   Close();
-  
+
   int   flags = 0;
   const char * name = nameWindowToUnix(filename);
 
@@ -98,7 +98,7 @@ bool CFileBase::Create(LPCSTR filename, DWORD dwDesiredAccess,
     UString ustr = MultiByteToUnicodeString(AString(name), 0);
     AString resultString;
     int is_good = 1;
-    for (int i = 0; i < ustr.Length(); i++)
+    for (int i = 0; i < ustr.Len(); i++)
     {
       if (ustr[i] >= 256) {
         is_good = 0;
@@ -126,7 +126,7 @@ bool CFileBase::Create(LPCWSTR fileName, DWORD desiredAccess,
     DWORD shareMode, DWORD creationDisposition, DWORD flagsAndAttributes,bool ignoreSymbolicLink)
 {
   Close();
-    return Create(UnicodeStringToMultiByte(fileName, CP_ACP), 
+    return Create(UnicodeStringToMultiByte(fileName, CP_ACP),
       desiredAccess, shareMode, creationDisposition, flagsAndAttributes,ignoreSymbolicLink);
 }
 
@@ -180,7 +180,7 @@ bool CFileBase::GetLength(UINT64 &length) const
      return false;
   }
 
-#ifdef ENV_HAVE_LSTAT  
+#ifdef ENV_HAVE_LSTAT
   if (_fd == FD_LINK) {
     length = _size;
     return true;
@@ -254,24 +254,24 @@ bool CFileBase::Seek(UINT64 position, UINT64 &newPosition)
 /////////////////////////
 // CInFile
 
-bool CInFile::Open(LPCTSTR fileName, DWORD shareMode, 
+bool CInFile::Open(LPCTSTR fileName, DWORD shareMode,
     DWORD creationDisposition,  DWORD flagsAndAttributes)
 {
-  return Create(fileName, GENERIC_READ, shareMode, 
+  return Create(fileName, GENERIC_READ, shareMode,
       creationDisposition, flagsAndAttributes);
 }
 
 bool CInFile::Open(LPCTSTR fileName,bool ignoreSymbolicLink)
 {
-  return Create(fileName, GENERIC_READ , FILE_SHARE_READ, OPEN_EXISTING, 
+  return Create(fileName, GENERIC_READ , FILE_SHARE_READ, OPEN_EXISTING,
      FILE_ATTRIBUTE_NORMAL,ignoreSymbolicLink);
 }
 
 #ifndef _UNICODE
-bool CInFile::Open(LPCWSTR fileName, DWORD shareMode, 
+bool CInFile::Open(LPCWSTR fileName, DWORD shareMode,
     DWORD creationDisposition,  DWORD flagsAndAttributes)
 {
-  return Create(fileName, GENERIC_READ, shareMode, 
+  return Create(fileName, GENERIC_READ, shareMode,
       creationDisposition, flagsAndAttributes);
 }
 
@@ -282,8 +282,8 @@ bool CInFile::Open(LPCWSTR fileName,bool ignoreSymbolicLink)
 #endif
 
 // ReadFile and WriteFile functions in Windows have BUG:
-// If you Read or Write 64MB or more (probably min_failure_size = 64MB - 32KB + 1) 
-// from/to Network file, it returns ERROR_NO_SYSTEM_RESOURCES 
+// If you Read or Write 64MB or more (probably min_failure_size = 64MB - 32KB + 1)
+// from/to Network file, it returns ERROR_NO_SYSTEM_RESOURCES
 // (Insufficient system resources exist to complete the requested service).
 
 // static UINT32 kChunkSizeMax = (1 << 24);
@@ -339,10 +339,10 @@ bool CInFile::Read(void *buffer, UINT32 bytesToRead, UINT32 &bytesRead)
 /////////////////////////
 // COutFile
 
-bool COutFile::Open(LPCTSTR fileName, DWORD shareMode, 
+bool COutFile::Open(LPCTSTR fileName, DWORD shareMode,
     DWORD creationDisposition, DWORD flagsAndAttributes)
 {
-  return CFileBase::Create(fileName, GENERIC_WRITE, shareMode, 
+  return CFileBase::Create(fileName, GENERIC_WRITE, shareMode,
       creationDisposition, flagsAndAttributes);
 }
 
@@ -351,7 +351,7 @@ static inline DWORD GetCreationDisposition(bool createAlways)
 
 bool COutFile::Open(LPCTSTR fileName, DWORD creationDisposition)
 {
-  return Open(fileName, FILE_SHARE_READ, 
+  return Open(fileName, FILE_SHARE_READ,
       creationDisposition, FILE_ATTRIBUTE_NORMAL);
 }
 
@@ -360,18 +360,23 @@ bool COutFile::Create(LPCTSTR fileName, bool createAlways)
   return Open(fileName, GetCreationDisposition(createAlways));
 }
 
+bool COutFile::CreateAlways(LPCTSTR fileName, DWORD /* flagsAndAttributes */ )
+{
+  return Open(fileName, true); // FIXME
+}
+
 #ifndef _UNICODE
 
-bool COutFile::Open(LPCWSTR fileName, DWORD shareMode, 
+bool COutFile::Open(LPCWSTR fileName, DWORD shareMode,
     DWORD creationDisposition, DWORD flagsAndAttributes)
 {
-  return CFileBase::Create(fileName, GENERIC_WRITE, shareMode, 
+  return CFileBase::Create(fileName, GENERIC_WRITE, shareMode,
       creationDisposition, flagsAndAttributes);
 }
 
 bool COutFile::Open(LPCWSTR fileName, DWORD creationDisposition)
 {
-  return Open(fileName, FILE_SHARE_READ, 
+  return Open(fileName, FILE_SHARE_READ,
       creationDisposition, FILE_ATTRIBUTE_NORMAL);
 }
 

@@ -38,9 +38,8 @@
 #include <lib7z_facade.h>
 #include <utils.h>
 
-#include <QtCore/QCoreApplication>
-#include <QtCore/QFileInfo>
-#include <QtCore/QStringList>
+#include <QCoreApplication>
+#include <QFileInfo>
 
 #include <iostream>
 
@@ -66,12 +65,10 @@ int main(int argc, char *argv[])
         QInstaller::init();
         QInstaller::setVerbose(true);
         const QStringList sourceDirectories = app.arguments().mid(2);
-        QInstallerTools::compressPaths(sourceDirectories, app.arguments().at(1));
+        Lib7z::createArchive(app.arguments().at(1), sourceDirectories, Lib7z::QTmpFile::No);
         return EXIT_SUCCESS;
-    } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << "caught 7zip exception: " << e.message() << std::endl;
     } catch (const QInstaller::Error &e) {
-        std::cerr << "caught exception: " << e.message() << std::endl;
+        std::cerr << "Caught exception: " << e.message() << std::endl;
     }
     return EXIT_FAILURE;
 }

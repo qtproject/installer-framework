@@ -125,7 +125,8 @@ HEADERS += packagemanagercore.h \
     keepaliveobject.h \
     systeminfo.h \
     localsocket.h \
-    packagesource.h
+    packagesource.h \
+    lib7z_guid.h
 
 SOURCES += packagemanagercore.cpp \
     packagemanagercore_p.cpp \

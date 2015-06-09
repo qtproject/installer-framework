@@ -3,7 +3,7 @@
 #ifndef __WINDOWS_FILENAME_H
 #define __WINDOWS_FILENAME_H
 
-#include "../../C/Types.h"
+#include "../../C/7zTypes.h"
 
 #include "../Common/MyString.h"
 
@@ -19,8 +19,10 @@ void NormalizeDirPathPrefix(CSysString &dirPath); // ensures that it ended with 
 void NormalizeDirPathPrefix(UString &dirPath); // ensures that it ended with '\\'
 #endif
 
-void SplitNameToPureNameAndExtension(const UString &fullName,
-    UString &pureName, UString &extensionDelimiter, UString &extension);
+bool IsAbsolutePath(const wchar_t *s);
+
+bool GetFullPath(CFSTR dirPrefix, CFSTR path, FString &fullPath);
+// FIXME bool GetFullPath(CFSTR path, FString &fullPath);
 
 }}}
 

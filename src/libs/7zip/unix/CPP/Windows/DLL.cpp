@@ -28,14 +28,9 @@
 namespace NWindows {
 namespace NDLL {
 
-CLibrary::~CLibrary()
-{
-  Free();
-}
-
 bool CLibrary::Free()
 {
-TRACEN((printf("CLibrary::Free(%p)\n",(void *)_module)))
+TRACEN((printf("CLibrary::Free(this=%p,%p)\n",(void *)this,(void *)_module)))
   if (_module == 0)
     return true;
 
@@ -86,18 +81,11 @@ FARPROC CLibrary::GetProc(LPCSTR lpProcName) const
   return local_GetProcAddress(_module,lpProcName);
 }
 
-bool CLibrary::LoadOperations(HMODULE newModule)
-{
-  if (newModule == NULL)
-    return false;
-  if(!Free())
-    return false;
-  _module = newModule;
-  return true;
-}
-
 bool CLibrary::Load(LPCTSTR lpLibFileName)
 {
+  if(!Free())
+    return false;
+
   void *handler = 0;
   char  name[MAX_PATHNAME_LEN+1];
 #ifdef _UNICODE
@@ -106,14 +94,14 @@ bool CLibrary::Load(LPCTSTR lpLibFileName)
 #else
   strcpy(name,nameWindowToUnix(lpLibFileName));
 #endif
-  
+
   // replace ".dll" with ".so"
   size_t len = strlen(name);
   if ((len >=4) && (strcmp(name+len-4,".dll") == 0)) {
     strcpy(name+len-4,".so");
   }
 
-  TRACEN((printf("CLibrary::Load(%ls) => %s\n",lpLibFileName,name)))
+  TRACEN((printf("CLibrary::Load(this=%p,%ls) => %s\n",(void *)this,lpLibFileName,name)))
 
 #ifdef __APPLE_CC__
   NSObjectFileImage image;
@@ -184,10 +172,30 @@ TRACEN((printf("load_add_on(%s)=%d\n",p.Path(),(int)image)))
 #else
     printf("Can't load '%ls' (%s)\n", lpLibFileName,dlerror());
 #endif
-  } 
+  }
 
-  return LoadOperations(handler);
+  _module = handler;
+  TRACEN((printf("CLibrary::Load(this=%p,%ls) => _module=%p\n",(void *)this,lpLibFileName,_module)))
+
+  return true;
 }
+
+#ifndef _SFX
+
+FString GetModuleDirPrefix()
+{
+  FString s;
+
+  const char *p7zip_home_dir = getenv("P7ZIP_HOME_DIR");
+  if (p7zip_home_dir) {
+    return MultiByteToUnicodeString(p7zip_home_dir,CP_ACP);
+  }
+
+  return FTEXT(".") FSTRING_PATH_SEPARATOR;
+}
+
+#endif
+
 
 }}
 

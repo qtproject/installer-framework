@@ -29,7 +29,7 @@ public:
   ~CSynchro() {}
   void Enter() { Lock(); }
   void Leave() { Unlock(); }
-  void WaitCond() { 
+  void WaitCond() {
     _waiting[index_waiting++] = find_thread(NULL); // _waiting.push_back(find_thread(NULL));
     thread_id sender;
     Unlock();
@@ -84,16 +84,16 @@ public:
     ::pthread_mutex_init(&_object,0);
     ::pthread_cond_init(&_cond,0);
   }
-  void Enter() { 
+  void Enter() {
      ::pthread_mutex_lock(&_object);
   }
   void Leave() {
     ::pthread_mutex_unlock(&_object);
   }
-  void WaitCond() { 
+  void WaitCond() {
     ::pthread_cond_wait(&_cond, &_object);
   }
-  void LeaveAndSignal() { 
+  void LeaveAndSignal() {
     ::pthread_cond_broadcast(&_cond);
     ::pthread_mutex_unlock(&_object);
   }
@@ -119,7 +119,7 @@ class CBaseEventWFMO : public CBaseHandleWFMO
 public:
 
   bool IsCreated()  { return (this->_sync != 0); }
-  CBaseEventWFMO()  { this->_sync = 0; } 
+  CBaseEventWFMO()  { this->_sync = 0; }
   ~CBaseEventWFMO() { Close(); }
 
   WRes Close() { this->_sync = 0; return S_OK; }
@@ -178,7 +178,7 @@ class CSemaphoreWFMO : public CBaseHandleWFMO
   LONG _maxCount;
 
 public:
-  CSemaphoreWFMO() : _count(0), _maxCount(0) { this->_sync=0;} 
+  CSemaphoreWFMO() : _count(0), _maxCount(0) { this->_sync=0;}
   WRes Create(CSynchro *sync,LONG initiallyCount, LONG maxCount)
   {
     if ((initiallyCount < 0) || (initiallyCount > maxCount) || (maxCount < 1)) return S_FALSE;

@@ -3,10 +3,9 @@
 #ifndef __ARCHIVE_OPEN_CALLBACK_H
 #define __ARCHIVE_OPEN_CALLBACK_H
 
-#include "Common/MyCom.h"
-#include "Common/MyString.h"
+#include "../../../Common/MyCom.h"
 
-#include "Windows/FileFind.h"
+#include "../../../Windows/FileFind.h"
 
 #ifndef _NO_CRYPTO
 #include "../../IPassword.h"
@@ -21,10 +20,10 @@
 
 #define INTERFACE_IOpenCallbackUI_Crypto(x) \
   virtual HRESULT Open_CryptoGetTextPassword(BSTR *password) x; \
-  virtual HRESULT Open_GetPasswordIfAny(UString &password) x; \
+  virtual HRESULT Open_GetPasswordIfAny(bool &passwordIsDefined, UString &password) x; \
   virtual bool Open_WasPasswordAsked() x; \
   virtual void Open_ClearPasswordWasAskedFlag() x; \
-  
+
 #endif
 
 #define INTERFACE_IOpenCallbackUI(x) \
@@ -72,32 +71,41 @@ public:
   {
     _subArchiveMode = true;
     _subArchiveName = name;
-    TotalSize = 0;
-    return  S_OK;
+    // TotalSize = 0;
+    return S_OK;
   }
 
 private:
-  UString _folderPrefix;
-  NWindows::NFile::NFind::CFileInfoW _fileInfo;
+  FString _folderPrefix;
+  NWindows::NFile::NFind::CFileInfo _fileInfo;
   bool _subArchiveMode;
   UString _subArchiveName;
+
 public:
   UStringVector FileNames;
+  CBoolVector FileNames_WasUsed;
+  CRecordVector<UInt64> FileSizes;
+
   IOpenCallbackUI *Callback;
   CMyComPtr<IArchiveOpenCallback> ReOpenCallback;
-  UInt64 TotalSize;
+  // UInt64 TotalSize;
 
   COpenCallbackImp(): Callback(NULL) {}
-  void Init(const UString &folderPrefix, const UString &fileName)
+  void Init(const FString &folderPrefix, const FString &fileName)
   {
     _folderPrefix = folderPrefix;
     if (!_fileInfo.Find(_folderPrefix + fileName))
-      throw 1;
+      throw 20121118;
     FileNames.Clear();
+    FileNames_WasUsed.Clear();
+    FileSizes.Clear();
     _subArchiveMode = false;
-    TotalSize = 0;
+    // TotalSize = 0;
   }
-  int FindName(const UString &name);
+  bool SetSecondFileInfo(CFSTR newName)
+  {
+    return _fileInfo.Find(newName) && !_fileInfo.IsDir();
+  }
 };
 
 #endif

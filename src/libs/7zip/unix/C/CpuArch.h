@@ -1,10 +1,10 @@
 /* CpuArch.h -- CPU specific code
-2010-10-26: Igor Pavlov : Public domain */
+2013-11-12: Igor Pavlov : Public domain */
 
 #ifndef __CPU_ARCH_H
 #define __CPU_ARCH_H
 
-#include "Types.h"
+#include "7zTypes.h"
 
 EXTERN_C_BEGIN
 
@@ -16,7 +16,7 @@ MY_CPU_LE_UNALIGN means that CPU is LITTLE ENDIAN and CPU supports unaligned mem
 If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of platform.
 */
 
-#if defined(_M_X64) || defined(_M_AMD64) || defined(__x86_64__)
+#if defined(_M_X64) || defined(_M_AMD64) || defined(__x86_64__) || defined(__AMD64__) || defined(__amd64__)
 #define MY_CPU_AMD64
 #endif
 
@@ -52,7 +52,7 @@ If MY_CPU_LE_UNALIGN is not defined, we don't know about these properties of pla
 #define MY_CPU_LE
 #endif
 
-#if defined(__BIG_ENDIAN__)
+#if defined(__BIG_ENDIAN__) || defined(__m68k__) ||  defined(__ARMEB__) || defined(__MIPSEB__)
 #define MY_CPU_BE
 #endif
 
@@ -62,9 +62,9 @@ Stop_Compiling_Bad_Endian
 
 #ifdef MY_CPU_LE_UNALIGN
 
-#define GetUi16(p) (*(const UInt16 *)(p))
-#define GetUi32(p) (*(const UInt32 *)(p))
-#define GetUi64(p) (*(const UInt64 *)(p))
+#define GetUi16(p) (*(const UInt16 *)(const void *)(p))
+#define GetUi32(p) (*(const UInt32 *)(const void *)(p))
+#define GetUi64(p) (*(const UInt64 *)(const void *)(p))
 #define SetUi16(p, d) *(UInt16 *)(p) = (d);
 #define SetUi32(p, d) *(UInt32 *)(p) = (d);
 #define SetUi64(p, d) *(UInt64 *)(p) = (d);
@@ -99,6 +99,8 @@ Stop_Compiling_Bad_Endian
 
 #if defined(MY_CPU_LE_UNALIGN) && defined(_WIN64) && (_MSC_VER >= 1300)
 
+#include <stdlib.h>
+
 #pragma intrinsic(_byteswap_ulong)
 #pragma intrinsic(_byteswap_uint64)
 #define GetBe32(p) _byteswap_ulong(*(const UInt32 *)(const Byte *)(p))
@@ -116,10 +118,11 @@ Stop_Compiling_Bad_Endian
 
 #endif
 
-#define GetBe16(p) (((UInt16)((const Byte *)(p))[0] << 8) | ((const Byte *)(p))[1])
+#define GetBe16(p) ((UInt16)(((UInt16)((const Byte *)(p))[0] << 8) | ((const Byte *)(p))[1]))
 
 
 #ifdef MY_CPU_X86_OR_AMD64
+#ifdef P7ZIP_USE_ASM
 
 typedef struct
 {
@@ -148,6 +151,7 @@ int x86cpuid_GetFirm(const Cx86cpuid *p);
 Bool CPU_Is_InOrder();
 Bool CPU_Is_Aes_Supported();
 
+#endif
 #endif
 
 EXTERN_C_END

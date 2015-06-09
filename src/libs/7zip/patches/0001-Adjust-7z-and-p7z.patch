@@ -1,0 +1,517 @@
+From f643c01e4e8534f26a5a2d260caa566d23cdcb13 Mon Sep 17 00:00:00 2001
+From: Karsten Heimrich <karsten.heimrich@theqtcompany.com>
+Date: Thu, 4 Jun 2015 15:41:51 +0200
+Subject: [PATCH 1/1] Adjust 7z and p7z.
+
+Change-Id: I3b96d2b02e5a0908fb4cf5b4262cb33516a10098
+---
+ src/libs/7zip/7zip.pri                             | 11 ++++-
+ src/libs/7zip/7zip.pro                             | 14 +-----
+ src/libs/7zip/unix/CPP/7zip/Archive/7z/7zOut.cpp   |  2 -
+ src/libs/7zip/unix/CPP/7zip/Common/RegisterArc.h   | 32 ++++++++++---
+ src/libs/7zip/unix/CPP/7zip/Common/RegisterCodec.h | 29 ++++++++---
+ src/libs/7zip/unix/CPP/7zip/UI/Common/Extract.cpp  |  2 -
+ .../unix/CPP/include_windows/include_windows.pri   |  3 ++
+ .../unix/CPP/myWindows/myCommandLineParser.cpp     | 56 ++++++++++++++++++++++
+ src/libs/7zip/unix/CPP/myWindows/myDateAndTime.cpp | 42 ++++++++--------
+ src/libs/7zip/unix/CPP/myWindows/myWindows.pri     |  7 +++
+ src/libs/7zip/win/CPP/7zip/Archive/7z/7zOut.cpp    |  2 -
+ src/libs/7zip/win/CPP/7zip/Common/RegisterArc.h    | 32 ++++++++++---
+ src/libs/7zip/win/CPP/7zip/Common/RegisterCodec.h  | 29 ++++++++---
+ src/libs/7zip/win/CPP/7zip/UI/Common/Extract.cpp   |  2 -
+ 14 files changed, 194 insertions(+), 69 deletions(-)
+ create mode 100644 src/libs/7zip/unix/CPP/include_windows/include_windows.pri
+ create mode 100644 src/libs/7zip/unix/CPP/myWindows/myCommandLineParser.cpp
+ create mode 100644 src/libs/7zip/unix/CPP/myWindows/myWindows.pri
+
+diff --git a/src/libs/7zip/7zip.pri b/src/libs/7zip/7zip.pri
+index 823e3ab..85574ce 100644
+--- a/src/libs/7zip/7zip.pri
++++ b/src/libs/7zip/7zip.pri
+@@ -1,7 +1,11 @@
++DEFINES += _UNICODE _NO_CRYPTO
++
+ win32 {
+     7ZIP_BASE=$$PWD/win
+     INCLUDEPATH += $$7ZIP_BASE/C $$7ZIP_BASE/CPP
+-    DEFINES += WIN_LONG_PATH _UNICODE _NO_CRYPTO
++    DEFINES += WIN_LONG_PATH _CRT_SECURE_NO_WARNINGS
++    win32-g++*:QMAKE_CXXFLAGS += -w -fvisibility=hidden
++
+     QMAKE_CXXFLAGS_RELEASE -= -Zc:strictStrings
+     QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -Zc:strictStrings
+ }
+@@ -14,6 +18,9 @@ unix {
+         $$7ZIP_BASE/CPP/myWindows \
+         $$7ZIP_BASE/CPP/include_windows
+ 
++    QMAKE_CFLAGS += -w
++    QMAKE_CXXFLAGS += -fvisibility=hidden -w
++
+     macx:DEFINES += ENV_MACOSX
+-    DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX UNICODE _UNICODE _NO_CRYPTO
++    DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX UNICODE
+ }
+diff --git a/src/libs/7zip/7zip.pro b/src/libs/7zip/7zip.pro
+index 01b69da..70a51c0 100644
+--- a/src/libs/7zip/7zip.pro
++++ b/src/libs/7zip/7zip.pro
+@@ -7,15 +7,5 @@ CONFIG += staticlib
+ DESTDIR = $$IFW_LIB_PATH
+ 
+ include(7zip.pri)
+-win32 {
+-    DEFINES += _CRT_SECURE_NO_WARNINGS
+-    win32-g++*:QMAKE_CXXFLAGS += -w -fvisibility=hidden
+-    CONFIG += no_batch # this is needed because we have a same named *.c and *.cpp file -> 7in
+-    include($$7ZIP_BASE/win.pri)    #this is 7zip
+-}
+-
+-unix {
+-    QMAKE_CFLAGS += -w
+-    QMAKE_CXXFLAGS += -fvisibility=hidden -w
+-    include($$7ZIP_BASE/unix.pri)   #this is p7zip
+-}
++win32:include($$7ZIP_BASE/win.pri) #7zip
++unix:include($$7ZIP_BASE/unix.pri) #p7zip
+diff --git a/src/libs/7zip/unix/CPP/7zip/Archive/7z/7zOut.cpp b/src/libs/7zip/unix/CPP/7zip/Archive/7z/7zOut.cpp
+index 8af28b9..e20858e 100644
+--- a/src/libs/7zip/unix/CPP/7zip/Archive/7z/7zOut.cpp
++++ b/src/libs/7zip/unix/CPP/7zip/Archive/7z/7zOut.cpp
+@@ -4,8 +4,6 @@
+ 
+ #include "../../../../C/7zCrc.h"
+ 
+-#include "../../../Common/AutoPtr.h"
+-
+ #include "../../Common/StreamObjects.h"
+ 
+ #include "7zOut.h"
+diff --git a/src/libs/7zip/unix/CPP/7zip/Common/RegisterArc.h b/src/libs/7zip/unix/CPP/7zip/Common/RegisterArc.h
+index 1e9bf14..82bd096 100644
+--- a/src/libs/7zip/unix/CPP/7zip/Common/RegisterArc.h
++++ b/src/libs/7zip/unix/CPP/7zip/Common/RegisterArc.h
+@@ -5,6 +5,8 @@
+ 
+ #include "../Archive/IArchive.h"
+ 
++#include <mutex>
++
+ struct CArcInfo
+ {
+   const char *Name;
+@@ -24,19 +26,35 @@ struct CArcInfo
+   Func_IsArc IsArc;
+ 
+   bool IsMultiSignature() const { return (Flags & NArcInfoFlags::kMultiSignature) != 0; }
++
++  std::once_flag once;
+ };
+ 
+ void RegisterArc(const CArcInfo *arcInfo) throw();
+ 
+ #define REGISTER_ARC_NAME(x) CRegister ## x
+ 
+-#define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
+-    REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
+-
+-#define REGISTER_ARC_DEC_SIG(x) struct REGISTER_ARC_NAME(x) { \
+-    REGISTER_ARC_NAME(x)() { g_ArcInfo.Signature[0]--; RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
++#define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) \
++    { \
++        REGISTER_ARC_NAME(x)() \
++        { \
++            std::call_once(g_ArcInfo.once, [] { RegisterArc(&g_ArcInfo); }); \
++        } \
++    }; \
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
++
++#define REGISTER_ARC_DEC_SIG(x) struct REGISTER_ARC_NAME(x) \
++    { \
++        REGISTER_ARC_NAME(x)() { \
++            std::call_once(g_ArcInfo.once, [] { \
++                g_ArcInfo.Signature[0]--; \
++                RegisterArc(&g_ArcInfo); \
++            }); \
++        } \
++    }; \
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArcDec##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
+ 
+ 
+ #define IMP_CreateArcIn_2(c) \
+diff --git a/src/libs/7zip/unix/CPP/7zip/Common/RegisterCodec.h b/src/libs/7zip/unix/CPP/7zip/Common/RegisterCodec.h
+index 4222a30..0c6662a 100644
+--- a/src/libs/7zip/unix/CPP/7zip/Common/RegisterCodec.h
++++ b/src/libs/7zip/unix/CPP/7zip/Common/RegisterCodec.h
+@@ -6,6 +6,8 @@
+ #include "../Common/MethodId.h"
+ #include "../ICoder.h"
+ 
++#include <mutex>
++
+ typedef void * (*CreateCodecP)();
+ struct CCodecInfo
+ {
+@@ -15,21 +17,34 @@ struct CCodecInfo
+   const wchar_t *Name;
+   UInt32 NumInStreams;
+   bool IsFilter;
++  std::once_flag once;
+ };
+ 
+ void RegisterCodec(const CCodecInfo *codecInfo) throw();
+ 
+ #define REGISTER_CODEC_NAME(x) CRegisterCodec ## x
+ 
+-#define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) { \
+-    REGISTER_CODEC_NAME(x)() { RegisterCodec(&g_CodecInfo); }}; \
+-    static REGISTER_CODEC_NAME(x) g_RegisterCodec;
++#define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) \
++    { \
++        REGISTER_CODEC_NAME(x)() \
++        { \
++            std::call_once(g_CodecInfo.once, [] { RegisterCodec(&g_CodecInfo); }); \
++        } \
++    }; \
++    static REGISTER_CODEC_NAME(x) g_RegisterCodec; \
++    void registerCodec##x() { static REGISTER_CODEC_NAME(x) g_RegisterCodecs; }
+ 
+ #define REGISTER_CODECS_NAME(x) CRegisterCodecs ## x
+-#define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) { \
+-    REGISTER_CODECS_NAME(x)() { for (unsigned i = 0; i < ARRAY_SIZE(g_CodecsInfo); i++) \
+-    RegisterCodec(&g_CodecsInfo[i]); }}; \
+-    static REGISTER_CODECS_NAME(x) g_RegisterCodecs;
++#define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) \
++    { \
++        REGISTER_CODECS_NAME(x)() \
++        { \
++            for (unsigned i = 0; i < ARRAY_SIZE(g_CodecsInfo); i++) \
++                std::call_once(g_CodecsInfo[i].once, [&i] { RegisterCodec(&g_CodecsInfo[i]); }); \
++        } \
++    }; \
++    static REGISTER_CODECS_NAME(x) g_RegisterCodecs; \
++    void registerCodec##x() { static REGISTER_CODECS_NAME(x) g_RegisterCodecs; }
+ 
+ 
+ struct CHasherInfo
+diff --git a/src/libs/7zip/unix/CPP/7zip/UI/Common/Extract.cpp b/src/libs/7zip/unix/CPP/7zip/UI/Common/Extract.cpp
+index 03f31fa..5f94254 100644
+--- a/src/libs/7zip/unix/CPP/7zip/UI/Common/Extract.cpp
++++ b/src/libs/7zip/unix/CPP/7zip/UI/Common/Extract.cpp
+@@ -2,8 +2,6 @@
+ 
+ #include "StdAfx.h"
+ 
+-#include "../../../../C/Sort.h"
+-
+ #include "../../../Common/StringConvert.h"
+ 
+ #include "../../../Windows/FileDir.h"
+diff --git a/src/libs/7zip/unix/CPP/include_windows/include_windows.pri b/src/libs/7zip/unix/CPP/include_windows/include_windows.pri
+new file mode 100644
+index 0000000..5ef72fd
+--- /dev/null
++++ b/src/libs/7zip/unix/CPP/include_windows/include_windows.pri
+@@ -0,0 +1,3 @@
++HEADERS += $$7ZIP_BASE/CPP/include_windows/basetyps.h \
++    $$7ZIP_BASE/CPP/include_windows/tchar.h \
++    $$7ZIP_BASE/CPP/include_windows/windows.h
+diff --git a/src/libs/7zip/unix/CPP/myWindows/myCommandLineParser.cpp b/src/libs/7zip/unix/CPP/myWindows/myCommandLineParser.cpp
+new file mode 100644
+index 0000000..5d7f6fd
+--- /dev/null
++++ b/src/libs/7zip/unix/CPP/myWindows/myCommandLineParser.cpp
+@@ -0,0 +1,56 @@
++/**************************************************************************
++**
++** Copyright (C) 2015 The Qt Company Ltd.
++** Contact: http://www.qt.io/licensing/
++**
++** This file is part of the Qt Installer Framework.
++**
++** $QT_BEGIN_LICENSE:LGPL$
++** Commercial License Usage
++** Licensees holding valid commercial Qt licenses may use this file in
++** accordance with the commercial license agreement provided with the
++** Software or, alternatively, in accordance with the terms contained in
++** a written agreement between you and The Qt Company. For licensing terms
++** and conditions see http://qt.io/terms-conditions. For further
++** information use the contact form at http://www.qt.io/contact-us.
++**
++** GNU Lesser General Public License Usage
++** Alternatively, this file may be used under the terms of the GNU Lesser
++** General Public License version 2.1 or version 3 as published by the Free
++** Software Foundation and appearing in the file LICENSE.LGPLv21 and
++** LICENSE.LGPLv3 included in the packaging of this file. Please review the
++** following information to ensure the GNU Lesser General Public License
++** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
++** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
++**
++** As a special exception, The Qt Company gives you certain additional
++** rights. These rights are described in The Qt Company LGPL Exception
++** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
++**
++**
++** $QT_END_LICENSE$
++**
++**************************************************************************/
++
++#include "../CPP/Common/MyString.h"
++
++#include <QStringList>
++
++namespace NCommandLineParser {
++
++void SplitCommandLine(const UString &s, UStringVector &parts)
++{
++    parts.Clear();
++
++    const QString cmdLine = QString::fromStdWString(static_cast<const wchar_t*>(s));
++    const QStringList args = cmdLine.simplified().split(QLatin1Char(' '), QString::SkipEmptyParts);
++    foreach (QString arg, args) {
++        if (arg.startsWith(QLatin1Char('\"')))
++            arg = arg.mid(1);
++        if (arg.endsWith(QLatin1Char('\"')))
++            arg = arg.mid(1);
++        parts.Add(arg.toStdWString().c_str());
++    }
++}
++
++} // namespace NCommandLineParser
+diff --git a/src/libs/7zip/unix/CPP/myWindows/myDateAndTime.cpp b/src/libs/7zip/unix/CPP/myWindows/myDateAndTime.cpp
+index 96554c9..9ebfe37 100644
+--- a/src/libs/7zip/unix/CPP/myWindows/myDateAndTime.cpp
++++ b/src/libs/7zip/unix/CPP/myWindows/myDateAndTime.cpp
+@@ -32,19 +32,18 @@
+ **
+ **************************************************************************/
+ 
+-#include <QDebug>
+-#include <QDateTime>
+ #include "windows.h"
+ 
++#include <QDateTime>
++
+ void FileTimeToDateTime(const FILETIME *source, QDateTime *target)
+ {
+     ULARGE_INTEGER store;
+-    QDateTime tempDateTime(QDate(1601, 1, 1));
+-
+     store.QuadPart  = source->dwHighDateTime;
+     store.QuadPart  = store.QuadPart << 32;
+     store.QuadPart += source->dwLowDateTime;
+ 
++    const QDateTime tempDateTime(QDate(1601, 1, 1), QTime(0, 0, 0, 0), Qt::UTC);
+     *target = tempDateTime.addMSecs(store.QuadPart / 10000);
+ }
+ 
+@@ -60,6 +59,13 @@ void DateTimeToSystemTime(const QDateTime *source, SYSTEMTIME *target)
+     target->wMilliseconds = source->time().msec();
+ }
+ 
++void DateTimeToFileTime(const QDateTime &dateTime, FILETIME *target)
++{
++    const qint64 nsecs = QDateTime(QDate(1601, 1, 1), QTime(0, 0, 0, 0), Qt::UTC)
++        .msecsTo(dateTime) * 10000;
++    target->dwLowDateTime = nsecs;
++    target->dwHighDateTime = nsecs >> 32;
++}
+ 
+ BOOL WINAPI FileTimeToSystemTime(CONST FILETIME *source,SYSTEMTIME *target)
+ {
+@@ -70,21 +76,6 @@ BOOL WINAPI FileTimeToSystemTime(CONST FILETIME *source,SYSTEMTIME *target)
+     return TRUE;
+ }
+ 
+-BOOL WINAPI SystemTimeToFileTime(const SYSTEMTIME *source,FILETIME *target)
+-{
+-    // TODO: Implementation!
+-    // This doesn't seem to be called at all
+-
+-    qDebug() << "SystemTimeToFileTime";
+-
+-    target->dwHighDateTime = 0;
+-    target->dwLowDateTime = 0;
+-
+-    qWarning() << Q_FUNC_INFO;
+-
+-    return TRUE;
+-}
+-
+ BOOL WINAPI FileTimeToLocalFileTime(CONST FILETIME *source,FILETIME *target)
+ {
+     target->dwHighDateTime = source->dwHighDateTime;
+@@ -137,3 +128,16 @@ VOID WINAPI GetSystemTime(SYSTEMTIME *st)
+     QDateTime nowDateTime = QDateTime::currentDateTimeUtc();
+     DateTimeToSystemTime(&nowDateTime, st);
+ }
++
++VOID WINAPI GetSystemTimeAsFileTime(FILETIME *time)
++{
++    DateTimeToFileTime(QDateTime::currentDateTimeUtc(), time);
++}
++
++DWORD WINAPI GetTickCount()
++{
++    struct timespec ts;
++    if (clock_gettime(CLOCK_MONOTONIC, &ts))
++        return DWORD(ts.tv_sec * 1000 + ts.tv_nsec / 1000000);
++    return DWORD(QDateTime::currentMSecsSinceEpoch());
++}
+diff --git a/src/libs/7zip/unix/CPP/myWindows/myWindows.pri b/src/libs/7zip/unix/CPP/myWindows/myWindows.pri
+new file mode 100644
+index 0000000..0875fdb
+--- /dev/null
++++ b/src/libs/7zip/unix/CPP/myWindows/myWindows.pri
+@@ -0,0 +1,7 @@
++HEADERS += $$7ZIP_BASE/CPP/myWindows/StdAfx.h \
++    $$7ZIP_BASE/CPP/myWindows/config.h \
++    $$7ZIP_BASE/CPP/myWindows/initguid.h \
++    $$7ZIP_BASE/CPP/myWindows/myPrivate.h
++
++SOURCES += $$7ZIP_BASE/CPP/myWindows/myDateAndTime.cpp \
++    $$7ZIP_BASE/CPP/myWindows/myCommandLineParser.cpp
+diff --git a/src/libs/7zip/win/CPP/7zip/Archive/7z/7zOut.cpp b/src/libs/7zip/win/CPP/7zip/Archive/7z/7zOut.cpp
+index 8af28b9..e20858e 100644
+--- a/src/libs/7zip/win/CPP/7zip/Archive/7z/7zOut.cpp
++++ b/src/libs/7zip/win/CPP/7zip/Archive/7z/7zOut.cpp
+@@ -4,8 +4,6 @@
+ 
+ #include "../../../../C/7zCrc.h"
+ 
+-#include "../../../Common/AutoPtr.h"
+-
+ #include "../../Common/StreamObjects.h"
+ 
+ #include "7zOut.h"
+diff --git a/src/libs/7zip/win/CPP/7zip/Common/RegisterArc.h b/src/libs/7zip/win/CPP/7zip/Common/RegisterArc.h
+index 1e9bf14..82bd096 100644
+--- a/src/libs/7zip/win/CPP/7zip/Common/RegisterArc.h
++++ b/src/libs/7zip/win/CPP/7zip/Common/RegisterArc.h
+@@ -5,6 +5,8 @@
+ 
+ #include "../Archive/IArchive.h"
+ 
++#include <mutex>
++
+ struct CArcInfo
+ {
+   const char *Name;
+@@ -24,19 +26,35 @@ struct CArcInfo
+   Func_IsArc IsArc;
+ 
+   bool IsMultiSignature() const { return (Flags & NArcInfoFlags::kMultiSignature) != 0; }
++
++  std::once_flag once;
+ };
+ 
+ void RegisterArc(const CArcInfo *arcInfo) throw();
+ 
+ #define REGISTER_ARC_NAME(x) CRegister ## x
+ 
+-#define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) { \
+-    REGISTER_ARC_NAME(x)() { RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
+-
+-#define REGISTER_ARC_DEC_SIG(x) struct REGISTER_ARC_NAME(x) { \
+-    REGISTER_ARC_NAME(x)() { g_ArcInfo.Signature[0]--; RegisterArc(&g_ArcInfo); }}; \
+-    static REGISTER_ARC_NAME(x) g_RegisterArc;
++#define REGISTER_ARC(x) struct REGISTER_ARC_NAME(x) \
++    { \
++        REGISTER_ARC_NAME(x)() \
++        { \
++            std::call_once(g_ArcInfo.once, [] { RegisterArc(&g_ArcInfo); }); \
++        } \
++    }; \
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArc##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
++
++#define REGISTER_ARC_DEC_SIG(x) struct REGISTER_ARC_NAME(x) \
++    { \
++        REGISTER_ARC_NAME(x)() { \
++            std::call_once(g_ArcInfo.once, [] { \
++                g_ArcInfo.Signature[0]--; \
++                RegisterArc(&g_ArcInfo); \
++            }); \
++        } \
++    }; \
++    static REGISTER_ARC_NAME(x) g_RegisterArc; \
++    void registerArcDec##x() { static REGISTER_ARC_NAME(x) g_RegisterArc; }
+ 
+ 
+ #define IMP_CreateArcIn_2(c) \
+diff --git a/src/libs/7zip/win/CPP/7zip/Common/RegisterCodec.h b/src/libs/7zip/win/CPP/7zip/Common/RegisterCodec.h
+index 4222a30..0c6662a 100644
+--- a/src/libs/7zip/win/CPP/7zip/Common/RegisterCodec.h
++++ b/src/libs/7zip/win/CPP/7zip/Common/RegisterCodec.h
+@@ -6,6 +6,8 @@
+ #include "../Common/MethodId.h"
+ #include "../ICoder.h"
+ 
++#include <mutex>
++
+ typedef void * (*CreateCodecP)();
+ struct CCodecInfo
+ {
+@@ -15,21 +17,34 @@ struct CCodecInfo
+   const wchar_t *Name;
+   UInt32 NumInStreams;
+   bool IsFilter;
++  std::once_flag once;
+ };
+ 
+ void RegisterCodec(const CCodecInfo *codecInfo) throw();
+ 
+ #define REGISTER_CODEC_NAME(x) CRegisterCodec ## x
+ 
+-#define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) { \
+-    REGISTER_CODEC_NAME(x)() { RegisterCodec(&g_CodecInfo); }}; \
+-    static REGISTER_CODEC_NAME(x) g_RegisterCodec;
++#define REGISTER_CODEC(x) struct REGISTER_CODEC_NAME(x) \
++    { \
++        REGISTER_CODEC_NAME(x)() \
++        { \
++            std::call_once(g_CodecInfo.once, [] { RegisterCodec(&g_CodecInfo); }); \
++        } \
++    }; \
++    static REGISTER_CODEC_NAME(x) g_RegisterCodec; \
++    void registerCodec##x() { static REGISTER_CODEC_NAME(x) g_RegisterCodecs; }
+ 
+ #define REGISTER_CODECS_NAME(x) CRegisterCodecs ## x
+-#define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) { \
+-    REGISTER_CODECS_NAME(x)() { for (unsigned i = 0; i < ARRAY_SIZE(g_CodecsInfo); i++) \
+-    RegisterCodec(&g_CodecsInfo[i]); }}; \
+-    static REGISTER_CODECS_NAME(x) g_RegisterCodecs;
++#define REGISTER_CODECS(x) struct REGISTER_CODECS_NAME(x) \
++    { \
++        REGISTER_CODECS_NAME(x)() \
++        { \
++            for (unsigned i = 0; i < ARRAY_SIZE(g_CodecsInfo); i++) \
++                std::call_once(g_CodecsInfo[i].once, [&i] { RegisterCodec(&g_CodecsInfo[i]); }); \
++        } \
++    }; \
++    static REGISTER_CODECS_NAME(x) g_RegisterCodecs; \
++    void registerCodec##x() { static REGISTER_CODECS_NAME(x) g_RegisterCodecs; }
+ 
+ 
+ struct CHasherInfo
+diff --git a/src/libs/7zip/win/CPP/7zip/UI/Common/Extract.cpp b/src/libs/7zip/win/CPP/7zip/UI/Common/Extract.cpp
+index df86620..13d2ad2 100644
+--- a/src/libs/7zip/win/CPP/7zip/UI/Common/Extract.cpp
++++ b/src/libs/7zip/win/CPP/7zip/UI/Common/Extract.cpp
+@@ -2,8 +2,6 @@
+ 
+ #include "StdAfx.h"
+ 
+-#include "../../../../C/Sort.h"
+-
+ #include "../../../Common/StringConvert.h"
+ 
+ #include "../../../Windows/FileDir.h"
+-- 
+2.3.7.windows.1
+

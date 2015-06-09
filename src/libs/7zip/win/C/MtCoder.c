@@ -1,6 +1,8 @@
 /* MtCoder.c -- Multi-thread Coder
 2010-09-24 : Igor Pavlov : Public domain */
 
+#include "Precomp.h"
+
 #include <stdio.h>
 
 #include "MtCoder.h"
@@ -190,9 +192,9 @@ static SRes MtThread_Process(CMtThread *p, Bool *stop)
   *stop = True;
   if (Event_Wait(&p->canRead) != 0)
     return SZ_ERROR_THREAD;
-  
+
   next = GET_NEXT_THREAD(p);
-  
+
   if (p->stopReading)
   {
     next->stopReading = True;

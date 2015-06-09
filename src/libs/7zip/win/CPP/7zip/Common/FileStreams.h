@@ -1,11 +1,13 @@
 // FileStreams.h
 
-#ifndef __FILESTREAMS_H
-#define __FILESTREAMS_H
+#ifndef __FILE_STREAMS_H
+#define __FILE_STREAMS_H
 
 #ifdef _WIN32
 #define USE_WIN_FILE
 #endif
+
+#include "../../Common/MyString.h"
 
 #ifdef USE_WIN_FILE
 #include "../../Windows/FileIO.h"
@@ -20,47 +22,63 @@
 class CInFileStream:
   public IInStream,
   public IStreamGetSize,
+  #ifdef USE_WIN_FILE
+  public IStreamGetProps,
+  public IStreamGetProps2,
+  #endif
   public CMyUnknownImp
 {
 public:
   #ifdef USE_WIN_FILE
   NWindows::NFile::NIO::CInFile File;
+
   #ifdef SUPPORT_DEVICE_FILE
   UInt64 VirtPos;
   UInt64 PhyPos;
-  UInt64 BufferStartPos;
-  Byte *Buffer;
-  UInt32 BufferSize;
+  UInt64 BufStartPos;
+  Byte *Buf;
+  UInt32 BufSize;
   #endif
+
   #else
   NC::NFile::NIO::CInFile File;
   #endif
+
+  bool SupportHardLinks;
+
   virtual ~CInFileStream();
 
   #ifdef SUPPORT_DEVICE_FILE
   CInFileStream();
   #endif
-  
-  bool Open(LPCTSTR fileName);
-  #ifdef USE_WIN_FILE
-  #ifndef _UNICODE
-  bool Open(LPCWSTR fileName);
-  #endif
-  #endif
 
-  bool OpenShared(LPCTSTR fileName, bool shareForWrite);
-  #ifdef USE_WIN_FILE
-  #ifndef _UNICODE
-  bool OpenShared(LPCWSTR fileName, bool shareForWrite);
-  #endif
-  #endif
+  bool Open(CFSTR fileName)
+  {
+    return File.Open(fileName);
+  }
 
-  MY_UNKNOWN_IMP2(IInStream, IStreamGetSize)
+  bool OpenShared(CFSTR fileName, bool shareForWrite)
+  {
+    return File.OpenShared(fileName, shareForWrite);
+  }
+
+  MY_QUERYINTERFACE_BEGIN2(IInStream)
+  MY_QUERYINTERFACE_ENTRY(IStreamGetSize)
+  #ifdef USE_WIN_FILE
+  MY_QUERYINTERFACE_ENTRY(IStreamGetProps)
+  MY_QUERYINTERFACE_ENTRY(IStreamGetProps2)
+  #endif
+  MY_QUERYINTERFACE_END
+  MY_ADDREF_RELEASE
 
   STDMETHOD(Read)(void *data, UInt32 size, UInt32 *processedSize);
   STDMETHOD(Seek)(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition);
 
   STDMETHOD(GetSize)(UInt64 *size);
+  #ifdef USE_WIN_FILE
+  STDMETHOD(GetProps)(UInt64 *size, FILETIME *cTime, FILETIME *aTime, FILETIME *mTime, UInt32 *attrib);
+  STDMETHOD(GetProps2)(CStreamFileProps *props);
+  #endif
 };
 
 class CStdInFileStream:
@@ -78,40 +96,26 @@ class COutFileStream:
   public IOutStream,
   public CMyUnknownImp
 {
+public:
   #ifdef USE_WIN_FILE
   NWindows::NFile::NIO::COutFile File;
   #else
   NC::NFile::NIO::COutFile File;
   #endif
-public:
   virtual ~COutFileStream() {}
-  bool Create(LPCTSTR fileName, bool createAlways)
+  bool Create(CFSTR fileName, bool createAlways)
   {
     ProcessedSize = 0;
     return File.Create(fileName, createAlways);
   }
-  bool Open(LPCTSTR fileName, DWORD creationDisposition)
+  bool Open(CFSTR fileName, DWORD creationDisposition)
   {
     ProcessedSize = 0;
     return File.Open(fileName, creationDisposition);
   }
-  #ifdef USE_WIN_FILE
-  #ifndef _UNICODE
-  bool Create(LPCWSTR fileName, bool createAlways)
-  {
-    ProcessedSize = 0;
-    return File.Create(fileName, createAlways);
-  }
-  bool Open(LPCWSTR fileName, DWORD creationDisposition)
-  {
-    ProcessedSize = 0;
-    return File.Open(fileName, creationDisposition);
-  }
-  #endif
-  #endif
 
   HRESULT Close();
-  
+
   UInt64 ProcessedSize;
 
   #ifdef USE_WIN_FILE

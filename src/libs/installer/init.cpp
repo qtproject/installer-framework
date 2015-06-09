@@ -54,74 +54,19 @@
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
 
-
+#include "lib7z_facade.h"
 #include "utils.h"
 
 #include "kdupdaterupdateoperationfactory.h"
 #include "kdupdaterfiledownloaderfactory.h"
-
-#include "7zCrc.h"
 
 #include <QtPlugin>
 #include <QElapsedTimer>
 
 #include <iostream>
 
-namespace NArchive {
-    namespace NXz {
-        void registerArcxz();
-    }
-    namespace NSplit {
-        void registerArcSplit();
-    }
-    namespace NLzma {
-        namespace NLzmaAr {
-            void registerArcLzma();
-        }
-        namespace NLzma86Ar {
-            void registerArcLzma86();
-        }
-    }
-}
-
-void registerArc7z();
-
-void registerCodecBCJ();
-void registerCodecBCJ2();
-
-void registerCodecCopy();
-void registerCodecLZMA();
-void registerCodecLZMA2();
-
-void registerCodecDelta();
-void registerCodecBranch();
-void registerCodecByteSwap();
-
 using namespace KDUpdater;
 using namespace QInstaller;
-
-static void initArchives()
-{
-    CrcGenerateTable();
-
-    registerArc7z();
-
-    registerCodecBCJ();
-    registerCodecBCJ2();
-
-    registerCodecCopy();
-    registerCodecLZMA();
-    registerCodecLZMA2();
-
-    registerCodecDelta();
-    registerCodecBranch();
-    registerCodecByteSwap();
-
-    NArchive::NXz::registerArcxz();
-    NArchive::NSplit::registerArcSplit();
-    NArchive::NLzma::NLzmaAr::registerArcLzma();
-    NArchive::NLzma::NLzma86Ar::registerArcLzma86();
-}
 
 #if defined(QT_STATIC)
 static void initResources()
@@ -199,7 +144,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
 void QInstaller::init()
 {
-    ::initArchives();
+    Lib7z::initSevenZ();
+
 #if defined(QT_STATIC)
     ::initResources();
 #endif

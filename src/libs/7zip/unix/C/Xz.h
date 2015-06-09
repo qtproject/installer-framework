@@ -1,5 +1,5 @@
 /* Xz.h - Xz interface
-2010-09-17 : Igor Pavlov : Public domain */
+2014-12-30 : Igor Pavlov : Public domain */
 
 #ifndef __XZ_H
 #define __XZ_H
@@ -199,7 +199,7 @@ typedef struct
   unsigned indexPreSize;
 
   CXzStreamFlags streamFlags;
-  
+
   UInt32 blockHeaderSize;
   UInt64 packSize;
   UInt64 unpackSize;
@@ -209,7 +209,9 @@ typedef struct
   UInt64 indexPos;
   UInt64 padSize;
 
-  UInt64 numStreams;
+  UInt64 numStartedStreams;
+  UInt64 numFinishedStreams;
+  UInt64 numTotalBlocks;
 
   UInt32 crc;
   CMixCoder decoder;
@@ -220,32 +222,53 @@ typedef struct
   Byte buf[XZ_BLOCK_HEADER_SIZE_MAX];
 } CXzUnpacker;
 
-SRes XzUnpacker_Create(CXzUnpacker *p, ISzAlloc *alloc);
+void XzUnpacker_Construct(CXzUnpacker *p, ISzAlloc *alloc);
+void XzUnpacker_Init(CXzUnpacker *p);
 void XzUnpacker_Free(CXzUnpacker *p);
 
 /*
 finishMode:
   It has meaning only if the decoding reaches output limit (*destLen).
-  LZMA_FINISH_ANY - use smallest number of input bytes
-  LZMA_FINISH_END - read EndOfStream marker after decoding
+  CODER_FINISH_ANY - use smallest number of input bytes
+  CODER_FINISH_END - read EndOfStream marker after decoding
 
 Returns:
   SZ_OK
     status:
-      LZMA_STATUS_FINISHED_WITH_MARK
-      LZMA_STATUS_NOT_FINISHED
-  SZ_ERROR_DATA - Data error
+      CODER_STATUS_NOT_FINISHED,
+      CODER_STATUS_NEEDS_MORE_INPUT - maybe there are more xz streams,
+                                      call XzUnpacker_IsStreamWasFinished to check that current stream was finished
   SZ_ERROR_MEM  - Memory allocation error
-  SZ_ERROR_UNSUPPORTED - Unsupported properties
-  SZ_ERROR_INPUT_EOF - It needs more bytes in input buffer (src).
+  SZ_ERROR_DATA - Data error
+  SZ_ERROR_UNSUPPORTED - Unsupported method or method properties
+  SZ_ERROR_CRC  - CRC error
+  // SZ_ERROR_INPUT_EOF - It needs more bytes in input buffer (src).
+
+  SZ_ERROR_NO_ARCHIVE - the error with xz Stream Header with one of the following reasons:
+     - xz Stream Signature failure
+     - CRC32 of xz Stream Header is failed
+     - The size of Stream padding is not multiple of four bytes.
+    It's possible to get that error, if xz stream was finished and the stream
+    contains some another data. In that case you can call XzUnpacker_GetExtraSize()
+    function to get real size of xz stream.
 */
 
 
 SRes XzUnpacker_Code(CXzUnpacker *p, Byte *dest, SizeT *destLen,
-    const Byte *src, SizeT *srcLen, /* int srcWasFinished, */ int finishMode,
+    const Byte *src, SizeT *srcLen, ECoderFinishMode finishMode,
     ECoderStatus *status);
 
 Bool XzUnpacker_IsStreamWasFinished(CXzUnpacker *p);
+
+/*
+Call XzUnpacker_GetExtraSize after XzUnpacker_Code function to detect real size of
+xz stream in two cases:
+XzUnpacker_Code() returns:
+  res == SZ_OK && status == CODER_STATUS_NEEDS_MORE_INPUT
+  res == SZ_ERROR_NO_ARCHIVE
+*/
+
+UInt64 XzUnpacker_GetExtraSize(CXzUnpacker *p);
 
 EXTERN_C_END
 

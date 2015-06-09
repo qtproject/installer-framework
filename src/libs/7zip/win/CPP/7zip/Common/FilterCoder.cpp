@@ -48,10 +48,10 @@ STDMETHODIMP CFilterCoder::Code(ISequentialInStream *inStream, ISequentialOutStr
   while (!_outSizeIsDefined || _nowPos64 < _outSize)
   {
     size_t processedSize = kBufferSize - bufferPos;
-    
+
     // Change it: It can be optimized using ReadPart
     RINOK(ReadStream(inStream, _buffer + bufferPos, &processedSize));
-    
+
     UInt32 endPos = bufferPos + (UInt32)processedSize;
 
     bufferPos = Filter->Filter(_buffer, endPos);
@@ -153,10 +153,16 @@ STDMETHODIMP CFilterCoder::Flush()
 }
 
 
-STDMETHODIMP CFilterCoder::SetInStream(ISequentialInStream *inStream)
+void CFilterCoder::SetInStream_NoSubFilterInit(ISequentialInStream *inStream)
 {
   _convertedPosBegin = _convertedPosEnd = _bufferPos = 0;
   _inStream = inStream;
+  Init2();
+}
+
+STDMETHODIMP CFilterCoder::SetInStream(ISequentialInStream *inStream)
+{
+  SetInStream_NoSubFilterInit(inStream);
   return Init();
 }
 
@@ -210,10 +216,22 @@ STDMETHODIMP CFilterCoder::Read(void *data, UInt32 size, UInt32 *processedSize)
 }
 
 #ifndef _NO_CRYPTO
+
 STDMETHODIMP CFilterCoder::CryptoSetPassword(const Byte *data, UInt32 size)
 {
   return _setPassword->CryptoSetPassword(data, size);
 }
+
+STDMETHODIMP CFilterCoder::SetKey(const Byte *data, UInt32 size)
+{
+  return _cryptoProperties->SetKey(data, size);
+}
+
+STDMETHODIMP CFilterCoder::SetInitVector(const Byte *data, UInt32 size)
+{
+  return _cryptoProperties->SetInitVector(data, size);
+}
+
 #endif
 
 #ifndef EXTRACT_ONLY

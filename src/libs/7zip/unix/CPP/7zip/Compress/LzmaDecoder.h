@@ -62,7 +62,7 @@ public:
   STDMETHOD(SetOutBufSize)(UInt32 streamIndex, UInt32 size);
 
   #ifndef NO_READ_FROM_CODER
-  
+
   STDMETHOD(SetInStream)(ISequentialInStream *inStream);
   STDMETHOD(ReleaseInStream)();
   STDMETHOD(Read)(void *data, UInt32 size, UInt32 *processedSize);
@@ -73,10 +73,14 @@ public:
 
   #endif
 
-  bool FinishStream;
+  bool FinishStream; // set it before decoding, if you need to decode full LZMA stream
+
+  bool NeedMoreInput; // it's set by decoder, if it needs more input data to decode stream
 
   CDecoder();
   virtual ~CDecoder();
+
+  UInt64 GetOutputProcessedSize() const { return _outSizeProcessed; }
 };
 
 }}

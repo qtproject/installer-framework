@@ -31,7 +31,9 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+
 #include "unziptask.h"
+#include "lib7z_facade.h"
 
 #ifdef Q_OS_UNIX
 # include "StdAfx.h"
@@ -40,20 +42,14 @@
 // TODO: include once we switch from lib7z_fascade.h
 //#include "Common/MyInitGuid.h"
 
-#include "7zip/IPassword.h"
+#include "7zip/Archive/IArchive.h"
 #include "7zip/Common/FileStreams.h"
 #include "7zip/UI/Common/OpenArchive.h"
 
 #include "Windows/FileDir.h"
 #include "Windows/PropVariant.h"
 
-#include "7zCrc.h"
-
 #include <QDir>
-
-void registerArc7z();
-void registerCodecLZMA();
-void registerCodecLZMA2();
 
 namespace QInstaller {
 
@@ -105,11 +101,11 @@ public:
             return E_FAIL;
 
         bool isDir = false;
-        if (IsArchiveItemFolder(m_arc.Archive, m_currentIndex, isDir) != S_OK)
+        if (Archive_IsItem_Folder(m_arc.Archive, m_currentIndex, isDir) != S_OK)
             return E_FAIL;
 
         bool isEncrypted = false;
-        if (GetArchiveItemBoolProp(m_arc.Archive, m_currentIndex, kpidEncrypted, isEncrypted) != S_OK)
+        if (Archive_GetItemBoolProp(m_arc.Archive, m_currentIndex, kpidEncrypted, isEncrypted) != S_OK)
             return E_FAIL;
 
         if (isDir || isEncrypted)
@@ -155,7 +151,7 @@ public:
             default:    // fall through and bail
             case NArchive::NExtract::NOperationResult::kCRCError:
             case NArchive::NExtract::NOperationResult::kDataError:
-            case NArchive::NExtract::NOperationResult::kUnSupportedMethod:
+            case NArchive::NExtract::NOperationResult::kUnsupportedMethod:
                 m_outFileStream->Close();
                 m_outFileStreamComPtr.Release();
                 return E_FAIL;
@@ -163,7 +159,7 @@ public:
 
         UInt32 attributes;
         if (GetAttributes(&attributes))
-            NWindows::NFile::NDirectory::MySetFileAttributes((wchar_t*)(m_currentTarget.utf16()), attributes);
+            NWindows::NFile::NDir::SetFileAttrib((wchar_t*)(m_currentTarget.utf16()), attributes);
 
         FILETIME accessTime, creationTime, modificationTime;
         const bool writeAccessTime = GetTime(kpidATime, &accessTime);
@@ -240,13 +236,7 @@ UnzipTask::UnzipTask(const QString &source, const QString &target)
     : m_source(source)
     , m_target(target)
 {
-    {
-        CrcGenerateTable();
-
-        registerArc7z();
-        registerCodecLZMA();
-        registerCodecLZMA2();
-    }
+    Lib7z::initSevenZ();
 }
 
 void UnzipTask::doTask(QFutureInterface<QString> &fi)
@@ -257,19 +247,29 @@ void UnzipTask::doTask(QFutureInterface<QString> &fi)
     if (codecs.Load() != S_OK)
         return;
 
-    CIntVector formatIndices;
-    if (!codecs.FindFormatForArchiveType(L"", formatIndices))
-        return;
 
-    CInFileStream *fileStream = new CInFileStream;
+    COpenOptions op;
+    op.codecs = &codecs;
+
+    CObjectVector<COpenType> types;
+    op.types = &types;  // Empty, because we use a stream.
+
+    CIntVector excluded;
+    op.excludedFormats = &excluded;
+
+    const CMyComPtr<CInFileStream> fileStream = new CInFileStream;
     fileStream->Open((wchar_t*) (m_source.utf16()));
+    op.stream = fileStream; // CMyComPtr is needed, otherwise it crashes in OpenStream().
+
+    CObjectVector<CProperty> properties;
+    op.props = &properties;
 
     CArchiveLink archiveLink;
-    if (archiveLink.Open2(&codecs, formatIndices, false, fileStream, UString(), 0) != S_OK)
+    if (archiveLink.Open2(op, nullptr) != S_OK)
         return;
 
     UINT32 count = 0;
-    for (int i = 0; i < archiveLink.Arcs.Size(); ++i) {
+    for (unsigned i = 0; i < archiveLink.Arcs.Size(); ++i) {
         const CArc& arc = archiveLink.Arcs[i];
         UInt32 numItems = 0;
         if (arc.Archive->GetNumberOfItems(&numItems) != S_OK)
@@ -278,7 +278,7 @@ void UnzipTask::doTask(QFutureInterface<QString> &fi)
     }
     fi.setExpectedResultCount(count);
 
-    for (int i = 0; i < archiveLink.Arcs.Size(); ++i) {
+    for (unsigned i = 0; i < archiveLink.Arcs.Size(); ++i) {
         if (fi.isCanceled())
             break;
         if (fi.isPaused())

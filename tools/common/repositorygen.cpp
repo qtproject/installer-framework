@@ -93,13 +93,6 @@ void QInstallerTools::copyWithException(const QString &source, const QString &ta
     qDebug() << "done.\n";
 }
 
-void QInstallerTools::compressPaths(const QStringList &paths, const QString &archivePath)
-{
-    QFile archive(archivePath);
-    QInstaller::openForWrite(&archive);
-    Lib7z::createArchive(&archive, paths);
-}
-
 static QStringList copyFilesFromNode(const QString &parentNode, const QString &childNode, const QString &attr,
     const QString &kind, const QDomNode &package, const PackageInfo &info, const QString &targetDir)
 {
@@ -533,7 +526,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        compressPaths(QStringList() << absPath, tmpTarget);
+        Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::QTmpFile::No);
 
         // remove the files that got compressed
         QInstaller::removeFiles(absPath, true);
@@ -592,7 +585,8 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                 } else if (fileInfo.isDir()) {
                     qDebug() << "Compressing data directory" << entry;
                     QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
-                    QInstallerTools::compressPaths(QStringList() << dataDir.absoluteFilePath(entry), target);
+                    Lib7z::createArchive(target, QStringList() << dataDir.absoluteFilePath(entry),
+                        Lib7z::QTmpFile::No);
                     compressedFiles.append(target);
                 } else if (fileInfo.isSymLink()) {
                     filesToCompress.append(dataDir.absoluteFilePath(entry));
@@ -604,7 +598,7 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
             qDebug() << "Compressing files found in data directory:" << filesToCompress;
             QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, QLatin1String("content.7z"),
                 info.version);
-            QInstallerTools::compressPaths(filesToCompress, target);
+            Lib7z::createArchive(target, filesToCompress, Lib7z::QTmpFile::No);
             compressedFiles.append(target);
         }
 

@@ -66,7 +66,7 @@ STDMETHODIMP CDecoder::SetOutStreamSize(const UInt64 *outSize)
     _outSize = *outSize;
 
   Lzma2Dec_Init(&_state);
-  
+
   _inPos = _inSize = 0;
   _inSizeProcessed = _outSizeProcessed = 0;
   return S_OK;
@@ -93,7 +93,7 @@ STDMETHODIMP CDecoder::Code(ISequentialInStream *inStream,
     const UInt32 kStepSize = ((UInt32)1 << 22);
     if (curSize > kStepSize)
       curSize = (SizeT)kStepSize;
-    
+
     ELzmaFinishMode finishMode = LZMA_FINISH_ANY;
     if (_outSizeDefined)
     {

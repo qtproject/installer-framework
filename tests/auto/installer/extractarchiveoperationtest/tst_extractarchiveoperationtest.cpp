@@ -86,7 +86,8 @@ private slots:
         QVERIFY(op.undoOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
-        QCOMPARE(op.errorString(), QString("Error while extracting ':///data/invalid.7z': Could not open archive"));
+        QCOMPARE(op.errorString(), QString("Error while extracting ':///data/invalid.7z': Could "
+            "not open archive ':///data/invalid.7z'."));
     }
 };
 

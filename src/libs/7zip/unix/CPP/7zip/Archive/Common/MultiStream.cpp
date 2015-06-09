@@ -11,10 +11,10 @@ STDMETHODIMP CMultiStream::Read(void *data, UInt32 size, UInt32 *processedSize)
   if (size == 0)
     return S_OK;
   if (_pos >= _totalLength)
-    return (_pos == _totalLength) ? S_OK : E_FAIL;
+    return S_OK;
 
   {
-    int left = 0, mid = _streamIndex, right = Streams.Size();
+    unsigned left = 0, mid = _streamIndex, right = Streams.Size();
     for (;;)
     {
       CSubStreamInfo &m = Streams[mid];
@@ -31,7 +31,7 @@ STDMETHODIMP CMultiStream::Read(void *data, UInt32 size, UInt32 *processedSize)
     }
     _streamIndex = mid;
   }
-  
+
   CSubStreamInfo &s = Streams[_streamIndex];
   UInt64 localPos = _pos - s.GlobalOffset;
   if (localPos != s.LocalPos)
@@ -48,18 +48,21 @@ STDMETHODIMP CMultiStream::Read(void *data, UInt32 size, UInt32 *processedSize)
     *processedSize = size;
   return result;
 }
-  
+
 STDMETHODIMP CMultiStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition)
 {
-  switch(seekOrigin)
+  switch (seekOrigin)
   {
-    case STREAM_SEEK_SET: _pos = offset; break;
-    case STREAM_SEEK_CUR: _pos = _pos + offset; break;
-    case STREAM_SEEK_END: _pos = _totalLength + offset; break;
+    case STREAM_SEEK_SET: break;
+    case STREAM_SEEK_CUR: offset += _pos; break;
+    case STREAM_SEEK_END: offset += _totalLength; break;
     default: return STG_E_INVALIDFUNCTION;
   }
-  if (newPosition != 0)
-    *newPosition = _pos;
+  if (offset < 0)
+    return HRESULT_WIN32_ERROR_NEGATIVE_SEEK;
+  _pos = offset;
+  if (newPosition)
+    *newPosition = offset;
   return S_OK;
 }
 
@@ -69,7 +72,7 @@ class COutVolumeStream:
   public ISequentialOutStream,
   public CMyUnknownImp
 {
-  int _volIndex;
+  unsigned _volIndex;
   UInt64 _volSize;
   UInt64 _curPos;
   CMyComPtr<ISequentialOutStream> _volumeStream;
@@ -88,12 +91,12 @@ public:
     _file.Name = name;
     _file.IsStartPosDefined = true;
     _file.StartPos = 0;
-    
+
     VolumeCallback = volumeCallback;
     _volIndex = 0;
     _volSize = 0;
   }
-  
+
   HRESULT Flush();
   STDMETHOD(Write)(const void *data, UInt32 size, UInt32 *processedSize);
 };
@@ -116,9 +119,9 @@ HRESULT COutVolumeStream::Flush()
 /*
 STDMETHODIMP COutMultiStream::Write(const void *data, UInt32 size, UInt32 *processedSize)
 {
-  if(processedSize != NULL)
+  if (processedSize != NULL)
     *processedSize = 0;
-  while(size > 0)
+  while (size > 0)
   {
     if (_streamIndex >= Streams.Size())
     {
@@ -154,7 +157,7 @@ STDMETHODIMP COutMultiStream::Write(const void *data, UInt32 size, UInt32 *proce
     _absPos += realProcessed;
     if (_absPos > _length)
       _length = _absPos;
-    if(processedSize != NULL)
+    if (processedSize != NULL)
       *processedSize += realProcessed;
     if (subStream.Pos == subStream.Size)
     {
@@ -169,22 +172,20 @@ STDMETHODIMP COutMultiStream::Write(const void *data, UInt32 size, UInt32 *proce
 
 STDMETHODIMP COutMultiStream::Seek(Int64 offset, UInt32 seekOrigin, UInt64 *newPosition)
 {
-  if(seekOrigin >= 3)
-    return STG_E_INVALIDFUNCTION;
-  switch(seekOrigin)
+  switch (seekOrigin)
   {
-    case STREAM_SEEK_SET:
-      _absPos = offset;
-      break;
-    case STREAM_SEEK_CUR:
-      _absPos += offset;
-      break;
-    case STREAM_SEEK_END:
-      _absPos = _length + offset;
-      break;
+    case STREAM_SEEK_SET: break;
+    case STREAM_SEEK_CUR: offset += _absPos; break;
+    case STREAM_SEEK_END: offset += _length; break;
+    default: return STG_E_INVALIDFUNCTION;
   }
+  if (offset < 0)
+    return HRESULT_WIN32_ERROR_NEGATIVE_SEEK;
+  _absPos = offset;
   _offsetPos = _absPos;
   _streamIndex = 0;
+  if (newPosition)
+    *newPosition = offset;
   return S_OK;
 }
 */

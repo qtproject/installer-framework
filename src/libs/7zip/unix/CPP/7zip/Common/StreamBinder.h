@@ -1,38 +1,35 @@
 // StreamBinder.h
 
-#ifndef __STREAMBINDER_H
-#define __STREAMBINDER_H
+#ifndef __STREAM_BINDER_H
+#define __STREAM_BINDER_H
+
+#include "../../Windows/Synchronization.h"
 
 #include "../IStream.h"
-#include "../../Windows/Synchronization.h"
 
 class CStreamBinder
 {
-  NWindows::NSynchronization::CManualResetEventWFMO _allBytesAreWritenEvent;
-  NWindows::NSynchronization::CManualResetEvent _thereAreBytesToReadEvent;
-  NWindows::NSynchronization::CManualResetEventWFMO _readStreamIsClosedEvent;
-  NWindows::NSynchronization::CSynchro * _synchroFor_allBytesAreWritenEvent_and_readStreamIsClosedEvent;
-  UInt32 _bufferSize;
-  const void *_buffer;
+  NWindows::NSynchronization::CManualResetEventWFMO _canWrite_Event;
+  NWindows::NSynchronization::CManualResetEvent _canRead_Event;
+  NWindows::NSynchronization::CManualResetEventWFMO _readingWasClosed_Event;
+  NWindows::NSynchronization::CSynchro * _synchroFor_canWrite_Event_and_readingWasClosed_Event;
+  bool _waitWrite;
+  UInt32 _bufSize;
+  const void *_buf;
 public:
-  // bool ReadingWasClosed;
   UInt64 ProcessedSize;
-  CStreamBinder() { _synchroFor_allBytesAreWritenEvent_and_readStreamIsClosedEvent = 0; }
-  ~CStreamBinder() {
-	if (_synchroFor_allBytesAreWritenEvent_and_readStreamIsClosedEvent)
-		delete _synchroFor_allBytesAreWritenEvent_and_readStreamIsClosedEvent;
-	_synchroFor_allBytesAreWritenEvent_and_readStreamIsClosedEvent = 0;
-  }
-  HRes CreateEvents();
 
-  void CreateStreams(ISequentialInStream **inStream,
-      ISequentialOutStream **outStream);
-  HRESULT Read(void *data, UInt32 size, UInt32 *processedSize);
-  void CloseRead();
-
-  HRESULT Write(const void *data, UInt32 size, UInt32 *processedSize);
-  void CloseWrite();
+  WRes CreateEvents();
+  void CreateStreams(ISequentialInStream **inStream, ISequentialOutStream **outStream);
   void ReInit();
+  HRESULT Read(void *data, UInt32 size, UInt32 *processedSize);
+  HRESULT Write(const void *data, UInt32 size, UInt32 *processedSize);
+  void CloseRead() { _readingWasClosed_Event.Set(); }
+  void CloseWrite()
+  {
+    // _bufSize must be = 0
+    _canRead_Event.Set();
+  }
 };
 
 #endif

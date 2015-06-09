@@ -73,7 +73,7 @@ namespace NSynchronization {
     }
     _isValid = false;
   }
-  void CSynchro::Enter() { 
+  void CSynchro::Enter() {
     TRACEN((printf("\nT%d : E1-CSynchro::Enter(%p)\n",(int)pthread_self(),(void *)&_object)))
     int ret = ::pthread_mutex_lock(&_object);
     if (ret != 0) {

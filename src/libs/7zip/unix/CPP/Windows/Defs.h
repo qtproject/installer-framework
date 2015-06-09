@@ -3,6 +3,7 @@
 #ifndef __WINDOWS_DEFS_H
 #define __WINDOWS_DEFS_H
 
+#include "../myWindows/StdAfx.h"
 #include "../Common/MyWindows.h"
 
 // #ifdef _WIN32

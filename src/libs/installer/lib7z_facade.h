@@ -41,17 +41,14 @@
 #include <QFile>
 #include <QPoint>
 #include <QString>
-#include <QVariant>
 #include <QVector>
 
-#include "Common/MyWindows.h"
-
-QT_BEGIN_NAMESPACE
-class QStringList;
-template <typename T> class QVector;
-QT_END_NAMESPACE
+#include <Common/MyCom.h>
+#include <7zip/UI/Common/Update.h>
 
 namespace Lib7z {
+    void INSTALLER_EXPORT initSevenZ();
+
     class INSTALLER_EXPORT SevenZipException : public QInstaller::Error
     {
     public:
@@ -64,97 +61,76 @@ namespace Lib7z {
         {}
     };
 
-    class INSTALLER_EXPORT File
+    struct INSTALLER_EXPORT File
     {
     public:
-        File();
-        QVector<File> subtreeInPreorder() const;
-
-        bool operator<(const File &other) const;
-        bool operator==(const File &other) const;
-
-        QFile::Permissions permissions;
         QString path;
         QDateTime mtime;
-        quint64 uncompressedSize;
-        quint64 compressedSize;
-        bool isDirectory;
-        QVector<File> children;
         QPoint archiveIndex;
+        bool isDirectory = false;
+        quint64 compressedSize = 0;
+        quint64 uncompressedSize = 0;
+        QFile::Permissions permissions = 0;
     };
+    INSTALLER_EXPORT bool operator==(const File &lhs, const File &rhs);
 
-    class ExtractCallbackPrivate;
-    class ExtractCallbackImpl;
-
-    class ExtractCallback
+    class INSTALLER_EXPORT ExtractCallback : public IArchiveExtractCallback, public CMyUnknownImp
     {
-        friend class ::Lib7z::ExtractCallbackImpl;
-    public:
-        ExtractCallback();
-        virtual ~ExtractCallback();
+        Q_DISABLE_COPY(ExtractCallback)
 
-        void setTarget(QFileDevice *archive);
-        void setTarget(const QString &dir);
+    public:
+        ExtractCallback() = default;
+        virtual ~ExtractCallback() = default;
+
+        void setArchive(CArc *carc) { arc = carc; }
+        void setTarget(const QString &dir) { targetDir = dir; }
+
+        MY_UNKNOWN_IMP
+        INTERFACE_IArchiveExtractCallback(;)
 
     protected:
-        virtual bool prepareForFile(const QString &filename);
-        virtual void setCurrentFile(const QString &filename);
-        virtual HRESULT setCompleted(quint64 completed, quint64 total);
-
-    public: //for internal use
-        const ExtractCallbackImpl *impl() const;
-        ExtractCallbackImpl *impl();
+        virtual bool prepareForFile(const QString & /*filename*/) { return true; }
+        virtual void setCurrentFile(const QString &filename) { Q_UNUSED(filename) }
+        virtual HRESULT setCompleted(quint64 /*completed*/, quint64 /*total*/) { return S_OK; }
 
     private:
-        ExtractCallbackPrivate *const d;
+        CArc *arc = 0;
+
+        QString targetDir;
+        quint64 total = 0;
+        quint64 completed = 0;
+        quint32 currentIndex = 0;
     };
 
-    class UpdateCallbackPrivate;
-    class UpdateCallbackImpl;
-
-    class UpdateCallback
+    class INSTALLER_EXPORT UpdateCallback : public IUpdateCallbackUI2, public CMyUnknownImp
     {
-        friend class ::Lib7z::UpdateCallbackImpl;
+        Q_DISABLE_COPY(UpdateCallback)
+
     public:
-        UpdateCallback();
-        virtual ~UpdateCallback();
+        UpdateCallback() = default;
+        virtual ~UpdateCallback() = default;
 
-        void setTarget(QFileDevice *archive);
-        void setSourcePaths(const QStringList &paths);
-
-        virtual UpdateCallbackImpl *impl();
-
-    private:
-        UpdateCallbackPrivate *const d;
+        MY_UNKNOWN_IMP
+        INTERFACE_IUpdateCallbackUI2(;)
     };
 
-    class OpenArchiveInfoCleaner : public QObject
-    {
-        Q_OBJECT
-    public:
-        OpenArchiveInfoCleaner()
-        {}
-
-    private Q_SLOTS :
-        void deviceDestroyed(QObject*);
+    enum struct QTmpFile {
+        No,
+        Yes
     };
-
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &file,
-        QFileDevice *target, ExtractCallback *callback = 0);
-
-    void INSTALLER_EXPORT extractFileFromArchive(QFileDevice *archive, const File &file,
-        const QString &targetDirectory, ExtractCallback *callback = 0);
-
-    void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
-        ExtractCallback *callback = 0);
-
-    void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sourcePaths,
-        UpdateCallback *callback = 0);
-
-    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
 
     bool INSTALLER_EXPORT isSupportedArchive(QFileDevice *archive);
     bool INSTALLER_EXPORT isSupportedArchive(const QString &archive);
+
+    QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
+
+    void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
+        UpdateCallback *callback = 0);
+    void INSTALLER_EXPORT createArchive(const QString &archive, const QStringList &sources,
+        QTmpFile mode, UpdateCallback *callback = 0);
+
+    void INSTALLER_EXPORT extractArchive(QFileDevice *archive, const QString &targetDirectory,
+        ExtractCallback *callback = 0);
 }
 
 #endif // LIB7Z_FACADE_H

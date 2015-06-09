@@ -2,12 +2,42 @@
 
 #include "StdAfx.h"
 
-#include "PropVariant.h"
-
 #include "../Common/Defs.h"
+
+#include "PropVariant.h"
 
 namespace NWindows {
 namespace NCOM {
+
+HRESULT PropVarEm_Alloc_Bstr(PROPVARIANT *p, unsigned numChars) throw()
+{
+  p->bstrVal = ::SysAllocStringLen(0, numChars);
+  if (!p->bstrVal)
+  {
+    p->vt = VT_ERROR;
+    p->scode = E_OUTOFMEMORY;
+    return E_OUTOFMEMORY;
+  }
+  p->vt = VT_BSTR;
+  return S_OK;
+}
+
+HRESULT PropVarEm_Set_Str(PROPVARIANT *p, const char *s) throw()
+{
+  UINT len = (UINT)strlen(s);
+  p->bstrVal = ::SysAllocStringLen(0, len);
+  if (!p->bstrVal)
+  {
+    p->vt = VT_ERROR;
+    p->scode = E_OUTOFMEMORY;
+    return E_OUTOFMEMORY;
+  }
+  p->vt = VT_BSTR;
+  BSTR dest = p->bstrVal;
+  for (UINT i = 0; i <= len; i++)
+    dest[i] = s[i];
+  return S_OK;
+}
 
 CPropVariant::CPropVariant(const PROPVARIANT &varSrc)
 {
@@ -58,7 +88,7 @@ CPropVariant& CPropVariant::operator=(LPCOLESTR lpszSrc)
   vt = VT_BSTR;
   wReserved1 = 0;
   bstrVal = ::SysAllocString(lpszSrc);
-  if (bstrVal == NULL && lpszSrc != NULL)
+  if (!bstrVal && lpszSrc)
   {
     throw kMemException;
     // vt = VT_ERROR;
@@ -67,15 +97,14 @@ CPropVariant& CPropVariant::operator=(LPCOLESTR lpszSrc)
   return *this;
 }
 
-
 CPropVariant& CPropVariant::operator=(const char *s)
 {
   InternalClear();
   vt = VT_BSTR;
   wReserved1 = 0;
   UINT len = (UINT)strlen(s);
-  bstrVal = ::SysAllocStringByteLen(0, (UINT)len * sizeof(OLECHAR));
-  if (bstrVal == NULL)
+  bstrVal = ::SysAllocStringLen(0, len);
+  if (!bstrVal)
   {
     throw kMemException;
     // vt = VT_ERROR;
@@ -89,7 +118,7 @@ CPropVariant& CPropVariant::operator=(const char *s)
   return *this;
 }
 
-CPropVariant& CPropVariant::operator=(bool bSrc)
+CPropVariant& CPropVariant::operator=(bool bSrc) throw()
 {
   if (vt != VT_BOOL)
   {
@@ -100,22 +129,40 @@ CPropVariant& CPropVariant::operator=(bool bSrc)
   return *this;
 }
 
+BSTR CPropVariant::AllocBstr(unsigned numChars)
+{
+  if (vt != VT_EMPTY)
+    InternalClear();
+  vt = VT_BSTR;
+  wReserved1 = 0;
+  bstrVal = ::SysAllocStringLen(0, numChars);
+  if (!bstrVal)
+  {
+    throw kMemException;
+    // vt = VT_ERROR;
+    // scode = E_OUTOFMEMORY;
+  }
+  return bstrVal;
+}
+
 #define SET_PROP_FUNC(type, id, dest) \
-  CPropVariant& CPropVariant::operator=(type value) \
+  CPropVariant& CPropVariant::operator=(type value) throw() \
   { if (vt != id) { InternalClear(); vt = id; } \
     dest = value; return *this; }
 
 SET_PROP_FUNC(Byte, VT_UI1, bVal)
-SET_PROP_FUNC(Int16, VT_I2, iVal)
+// SET_PROP_FUNC(Int16, VT_I2, iVal)
 SET_PROP_FUNC(Int32, VT_I4, lVal)
 SET_PROP_FUNC(UInt32, VT_UI4, ulVal)
 SET_PROP_FUNC(UInt64, VT_UI8, uhVal.QuadPart)
+SET_PROP_FUNC(Int64, VT_I8, hVal.QuadPart)
 SET_PROP_FUNC(const FILETIME &, VT_FILETIME, filetime)
 
-static HRESULT MyPropVariantClear(PROPVARIANT *prop)
+HRESULT PropVariant_Clear(PROPVARIANT *prop) throw()
 {
-  switch(prop->vt)
+  switch (prop->vt)
   {
+    case VT_EMPTY:
     case VT_UI1:
     case VT_I1:
     case VT_I2:
@@ -134,17 +181,24 @@ static HRESULT MyPropVariantClear(PROPVARIANT *prop)
     case VT_DATE:
       prop->vt = VT_EMPTY;
       prop->wReserved1 = 0;
+      prop->wReserved2 = 0;
+      prop->wReserved3 = 0;
+      prop->uhVal.QuadPart = 0;
       return S_OK;
   }
   return ::VariantClear((VARIANTARG *)prop);
+  // return ::PropVariantClear(prop);
+  // PropVariantClear can clear VT_BLOB.
 }
 
-HRESULT CPropVariant::Clear()
+HRESULT CPropVariant::Clear() throw()
 {
-  return MyPropVariantClear(this);
+  if (vt == VT_EMPTY)
+    return S_OK;
+  return PropVariant_Clear(this);
 }
 
-HRESULT CPropVariant::Copy(const PROPVARIANT* pSrc)
+HRESULT CPropVariant::Copy(const PROPVARIANT* pSrc) throw()
 {
   ::VariantClear((tagVARIANT *)this);
   switch(pSrc->vt)
@@ -172,7 +226,7 @@ HRESULT CPropVariant::Copy(const PROPVARIANT* pSrc)
 }
 
 
-HRESULT CPropVariant::Attach(PROPVARIANT *pSrc)
+HRESULT CPropVariant::Attach(PROPVARIANT *pSrc) throw()
 {
   HRESULT hr = Clear();
   if (FAILED(hr))
@@ -182,18 +236,23 @@ HRESULT CPropVariant::Attach(PROPVARIANT *pSrc)
   return S_OK;
 }
 
-HRESULT CPropVariant::Detach(PROPVARIANT *pDest)
+HRESULT CPropVariant::Detach(PROPVARIANT *pDest) throw()
 {
-  HRESULT hr = MyPropVariantClear(pDest);
-  if (FAILED(hr))
-    return hr;
+  if (pDest->vt != VT_EMPTY)
+  {
+    HRESULT hr = PropVariant_Clear(pDest);
+    if (FAILED(hr))
+      return hr;
+  }
   memcpy(pDest, this, sizeof(PROPVARIANT));
   vt = VT_EMPTY;
   return S_OK;
 }
 
-HRESULT CPropVariant::InternalClear()
+HRESULT CPropVariant::InternalClear() throw()
 {
+  if (vt == VT_EMPTY)
+    return S_OK;
   HRESULT hr = Clear();
   if (FAILED(hr))
   {
@@ -215,7 +274,7 @@ void CPropVariant::InternalCopy(const PROPVARIANT *pSrc)
   }
 }
 
-int CPropVariant::Compare(const CPropVariant &a)
+int CPropVariant::Compare(const CPropVariant &a) throw()
 {
   if (vt != a.vt)
     return MyCompare(vt, a.vt);
@@ -233,9 +292,7 @@ int CPropVariant::Compare(const CPropVariant &a)
     case VT_UI8: return MyCompare(uhVal.QuadPart, a.uhVal.QuadPart);
     case VT_BOOL: return -MyCompare(boolVal, a.boolVal);
     case VT_FILETIME: return ::CompareFileTime(&filetime, &a.filetime);
-    case VT_BSTR:
-      return 0; // Not implemented
-      // return MyCompare(aPropVarint.cVal);
+    case VT_BSTR: return 0; // Not implemented
     default: return 0;
   }
 }
