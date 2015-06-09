@@ -34,6 +34,7 @@
 
 #include "kdupdaterupdatesinfo_p.h"
 
+#include <QDomDocument>
 #include <QFile>
 #include <QLocale>
 #include <QUrl>

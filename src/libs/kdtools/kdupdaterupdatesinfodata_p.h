@@ -36,8 +36,9 @@
 #define KD_UPDATER_UPDATE_INFO_DATA_H
 
 #include <QCoreApplication>
-#include <QDomElement>
 #include <QSharedData>
+
+QT_FORWARD_DECLARE_CLASS(QDomElement)
 
 namespace KDUpdater {
 
