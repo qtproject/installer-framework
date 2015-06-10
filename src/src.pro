@@ -1,6 +1,7 @@
-CONFIG += ordered
 TEMPLATE = subdirs
 SUBDIRS += libs sdk
+sdk.depends = libs
+
 TRANSLATIONS += sdk/translations/de.ts \
     sdk/translations/en.ts \
     sdk/translations/fr.ts \
