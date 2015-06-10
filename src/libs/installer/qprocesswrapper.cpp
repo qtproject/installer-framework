@@ -56,7 +56,6 @@ QProcessWrapper::QProcessWrapper(QObject *parent)
     connect(&process, SIGNAL(error(QProcess::ProcessError)), SIGNAL(error(QProcess::ProcessError)));
     connect(&process, SIGNAL(readyReadStandardOutput()), SIGNAL(readyReadStandardOutput()));
     connect(&process, SIGNAL(readyReadStandardError()), SIGNAL(readyReadStandardError()));
-    connect(&process, SIGNAL(finished(int)), SIGNAL(finished(int)));
     connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)),
         SIGNAL(finished(int,QProcess::ExitStatus)));
     connect(&process, SIGNAL(readyRead()), SIGNAL(readyRead()));
@@ -103,7 +102,6 @@ void QProcessWrapper::processSignals()
             emit stateChanged(static_cast<QProcess::ProcessState> (receivedSignals.takeFirst()
                 .toInt()));
         } else if (name == QLatin1String(Protocol::QProcessSignalFinished)) {
-            emit finished(receivedSignals.first().toInt());
             emit finished(receivedSignals.takeFirst().toInt(),
                 static_cast<QProcess::ExitStatus> (receivedSignals.takeFirst().toInt()));
         }
