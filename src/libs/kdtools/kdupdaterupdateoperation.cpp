@@ -408,6 +408,10 @@ QDomDocument UpdateOperation::toXml() const
     // append all values set with setValue
     QDomElement values = doc.createElement(QLatin1String("values"));
     for (QVariantMap::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
+        // the installer can't be put into XML, ignore
+        if (it.key() == QLatin1String("installer"))
+            continue;
+
         QDomElement value = doc.createElement(QLatin1String("value"));
         const QVariant& variant = it.value();
         value.setAttribute(QLatin1String("name"), it.key());
@@ -432,7 +436,7 @@ QDomDocument UpdateOperation::toXml() const
 
 /*!
     Restores operation arguments and values from the XML document \a doc. Returns \c true on
-    success, otherwise \c false.
+    success, otherwise \c false. \note: Clears all previously set values and arguments.
 */
 bool UpdateOperation::fromXml(const QDomDocument &doc)
 {

@@ -244,6 +244,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
             qWarning() << "Failed to load XML for operation:" << operation.name;
             continue;
         }
+        op->setValue(QLatin1String("installer"), QVariant::fromValue(core));
         m_performedOperationsOld.append(op.take());
     }
 
@@ -1085,9 +1086,6 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
     const qint64 operationsStart = output->pos();
     QInstaller::appendInt64(output, performedOperations.count());
     foreach (Operation *operation, performedOperations) {
-        // the installer can't be put into XML, remove it first
-        operation->clearValue(QLatin1String("installer"));
-
         QInstaller::appendString(output, operation->name());
         QInstaller::appendString(output, operation->toXml().toString());
 
