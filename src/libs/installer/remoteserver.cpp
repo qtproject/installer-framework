@@ -81,13 +81,13 @@ void RemoteServer::start()
 
     d->m_localServer = new LocalServer(d->m_socketName, d->m_key);
     d->m_localServer->moveToThread(&d->m_thread);
-    connect(&d->m_thread, SIGNAL(finished()), d->m_localServer, SLOT(deleteLater()));
-    connect(d->m_localServer, SIGNAL(newIncomingConnection()), this, SLOT(restartWatchdog()));
-    connect(d->m_localServer, SIGNAL(shutdownRequested()), this, SLOT(deleteLater()));
+    connect(&d->m_thread, &QThread::finished, d->m_localServer, &QObject::deleteLater);
+    connect(d->m_localServer, &LocalServer::newIncomingConnection, this, &RemoteServer::restartWatchdog);
+    connect(d->m_localServer, &LocalServer::shutdownRequested, this, &QObject::deleteLater);
     d->m_thread.start();
 
     if (d->m_mode == Protocol::Mode::Production) {
-        connect(d->m_watchdog.data(), SIGNAL(timeout()), this, SLOT(deleteLater()));
+        connect(d->m_watchdog.data(), &QTimer::timeout, this, &QObject::deleteLater);
         d->m_watchdog->start();
     }
 }

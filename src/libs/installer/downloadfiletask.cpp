@@ -55,7 +55,7 @@ AuthenticationRequiredException::AuthenticationRequiredException(Type type, cons
 Downloader::Downloader()
     : m_finished(0)
 {
-    connect(&m_nam, SIGNAL(finished(QNetworkReply*)), SLOT(onFinished(QNetworkReply*)));
+    connect(&m_nam, &QNetworkAccessManager::finished, this, &Downloader::onFinished);
 }
 
 Downloader::~Downloader()
@@ -78,11 +78,11 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
     fi.setExpectedResultCount(items.count());
 
     m_nam.setProxyFactory(networkProxyFactory);
-    connect(&m_nam, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)), this,
-        SLOT(onAuthenticationRequired(QNetworkReply*,QAuthenticator*)));
-    connect(&m_nam, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)), this,
-            SLOT(onProxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
-    QTimer::singleShot(0, this, SLOT(doDownload()));
+    connect(&m_nam, &QNetworkAccessManager::authenticationRequired, this,
+        &Downloader::onAuthenticationRequired);
+    connect(&m_nam, &QNetworkAccessManager::proxyAuthenticationRequired, this,
+            &Downloader::onProxyAuthenticationRequired);
+    QTimer::singleShot(0, this, &Downloader::doDownload);
 }
 
 void Downloader::doDownload()
@@ -345,14 +345,13 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
 
-    connect(reply, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    connect(reply, &QIODevice::readyRead, this, &Downloader::onReadyRead);
     connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
         SLOT(onError(QNetworkReply::NetworkError)));
 #ifndef QT_NO_SSL
-    connect(reply, SIGNAL(sslErrors(QList<QSslError>)), SLOT(onSslErrors(QList<QSslError>)));
+    connect(reply, &QNetworkReply::sslErrors, this, &Downloader::onSslErrors);
 #endif
-    connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(onDownloadProgress(qint64,
-        qint64)));
+    connect(reply, &QNetworkReply::downloadProgress, this, &Downloader::onDownloadProgress);
     return reply;
 }
 
@@ -399,7 +398,7 @@ void DownloadFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
 {
     QEventLoop el;
     Downloader downloader;
-    connect(&downloader, SIGNAL(finished()), &el, SLOT(quit()));
+    connect(&downloader, &Downloader::finished, &el, &QEventLoop::quit);
 
     QList<FileTaskItem> items = taskItems();
     if (!m_authenticator.isNull()) {

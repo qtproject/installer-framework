@@ -165,16 +165,16 @@ int main(int argc, char *argv[])
         loader->setProxyFactory(new ProxyFactory());
 
         Receiver r;
-        r.connect(loader, SIGNAL(downloadStarted()), &r, SLOT(downloadStarted()));
-        r.connect(loader, SIGNAL(downloadCanceled()), &r, SLOT(downloadFinished()));
-        r.connect(loader, SIGNAL(downloadCompleted()), &r, SLOT(downloadFinished()));
-        r.connect(loader, SIGNAL(downloadAborted(QString)), &r, SLOT(downloadAborted(QString)));
+        r.connect(loader, &KDUpdater::FileDownloader::downloadStarted, &r, &Receiver::downloadStarted);
+        r.connect(loader, &KDUpdater::FileDownloader::downloadCanceled, &r, &Receiver::downloadFinished);
+        r.connect(loader, &KDUpdater::FileDownloader::downloadCompleted, &r, &Receiver::downloadFinished);
+        r.connect(loader, &KDUpdater::FileDownloader::downloadAborted, &r, &Receiver::downloadAborted);
 
-        r.connect(loader, SIGNAL(downloadSpeed(qint64)), &r, SLOT(downloadSpeed(qint64)));
-        r.connect(loader, SIGNAL(downloadStatus(QString)), &r, SLOT(downloadStatus(QString)));
+        r.connect(loader, &KDUpdater::FileDownloader::downloadSpeed, &r, &Receiver::downloadSpeed);
+        r.connect(loader, &KDUpdater::FileDownloader::downloadStatus, &r, &Receiver::downloadStatus);
         r.connect(loader, SIGNAL(downloadProgress(double)), &r, SLOT(downloadProgress(double)));
-        r.connect(loader, SIGNAL(estimatedDownloadTime(int)), &r, SLOT(estimatedDownloadTime(int)));
-        r.connect(loader, SIGNAL(downloadProgress(qint64, qint64)), &r, SLOT(downloadProgress(qint64, qint64)));
+        r.connect(loader, &KDUpdater::FileDownloader::estimatedDownloadTime, &r, &Receiver::estimatedDownloadTime);
+        r.connect(loader, SIGNAL(downloadProgress(qint64,qint64)), &r, SLOT(downloadProgress(qint64,qint64)));
 
         loader->download();
         while (!r.downloaded())

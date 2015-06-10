@@ -126,8 +126,8 @@ void DownloadArchivesJob::fetchNextArchiveHash()
             return;
         }
 
-        connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(finishedHashDownload()),
-            Qt::QueuedConnection);
+        connect(m_downloader, &FileDownloader::downloadCompleted,
+                this, &DownloadArchivesJob::finishedHashDownload, Qt::QueuedConnection);
         m_downloader->download();
     } else {
         QMetaObject::invokeMethod(this, "fetchNextArchive", Qt::QueuedConnection);
@@ -174,7 +174,8 @@ void DownloadArchivesJob::fetchNextArchive()
 
     emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
     connect(m_downloader, SIGNAL(downloadProgress(double)), this, SLOT(emitDownloadProgress(double)));
-    connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(registerFile()), Qt::QueuedConnection);
+    connect(m_downloader, &FileDownloader::downloadCompleted,
+            this, &DownloadArchivesJob::registerFile, Qt::QueuedConnection);
 
     m_downloader->download();
 }
@@ -292,10 +293,10 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
             auth.setPassword(component->value(QLatin1String("password")));
             downloader->setAuthenticator(auth);
 
-            connect(downloader, SIGNAL(downloadCanceled()), this, SLOT(downloadCanceled()));
-            connect(downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadFailed(QString)),
+            connect(downloader, &FileDownloader::downloadCanceled, this, &DownloadArchivesJob::downloadCanceled);
+            connect(downloader, &FileDownloader::downloadAborted, this, &DownloadArchivesJob::downloadFailed,
                 Qt::QueuedConnection);
-            connect(downloader, SIGNAL(downloadStatus(QString)), this, SIGNAL(downloadStatusChanged(QString)));
+            connect(downloader, &FileDownloader::downloadStatus, this, &DownloadArchivesJob::downloadStatusChanged);
 
             if (FileDownloaderFactory::isSupportedScheme(scheme)) {
                 downloader->setDownloadedFileName(component->localTempPath() + QLatin1Char('/')

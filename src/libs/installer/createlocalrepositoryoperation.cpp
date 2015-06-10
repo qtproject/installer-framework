@@ -190,7 +190,8 @@ bool CreateLocalRepositoryOperation::performOperation()
         // copy the whole meta data into local repository
         CopyDirectoryOperation copyDirOp;
         copyDirOp.setArguments(QStringList() << QLatin1String(":/metadata/") << repoPath);
-        connect(&copyDirOp, SIGNAL(outputTextChanged(QString)), this, SIGNAL(outputTextChanged(QString)));
+        connect(&copyDirOp, &CopyDirectoryOperation::outputTextChanged,
+                this, &CreateLocalRepositoryOperation::outputTextChanged);
 
         const bool success = copyDirOp.performOperation();
         helper.m_files = copyDirOp.value(QLatin1String("files")).toStringList();

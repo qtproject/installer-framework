@@ -55,7 +55,7 @@ public:
         , processedAmount(0)
         , m_timeout(-1)
     {
-        connect(&m_timer, SIGNAL(timeout()), q, SLOT(cancel()));
+        connect(&m_timer, &QTimer::timeout, q, &KDJob::cancel);
     }
 
     ~Private()
@@ -99,7 +99,7 @@ KDJob::KDJob(QObject *parent)
     : QObject(parent),
       d(new Private(this))
 {
-    connect(this, SIGNAL(finished(KDJob*)), this, SLOT(onFinished()));
+    connect(this, &KDJob::finished, this, &KDJob::onFinished);
 }
 
 KDJob::~KDJob()

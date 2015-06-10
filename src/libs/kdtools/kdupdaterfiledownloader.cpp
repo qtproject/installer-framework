@@ -1059,7 +1059,7 @@ struct KDUpdater::HttpDownloader::Private
 
     void shutDown()
     {
-        disconnect(http, SIGNAL(finished()), q, SLOT(httpReqFinished()));
+        disconnect(http, &QNetworkReply::finished, q, &HttpDownloader::httpReqFinished);
         http->deleteLater();
         http = 0;
         destination->close();
@@ -1077,11 +1077,11 @@ KDUpdater::HttpDownloader::HttpDownloader(QObject *parent)
     , d(new Private(this))
 {
 #ifndef QT_NO_SSL
-    connect(&d->manager, SIGNAL(sslErrors(QNetworkReply*, QList<QSslError>)),
-        this, SLOT(onSslErrors(QNetworkReply*, QList<QSslError>)));
+    connect(&d->manager, &QNetworkAccessManager::sslErrors,
+            this, &HttpDownloader::onSslErrors);
 #endif
-    connect(&d->manager, SIGNAL(authenticationRequired(QNetworkReply*, QAuthenticator*)), this,
-        SLOT(onAuthenticationRequired(QNetworkReply*, QAuthenticator*)));
+    connect(&d->manager, &QNetworkAccessManager::authenticationRequired,
+            this, &HttpDownloader::onAuthenticationRequired);
 }
 
 /*!
@@ -1293,12 +1293,12 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     d->manager.setProxyFactory(proxyFactory());
     d->http = d->manager.get(QNetworkRequest(url));
 
-    connect(d->http, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
-    connect(d->http, SIGNAL(downloadProgress(qint64, qint64)), this,
-        SLOT(httpReadProgress(qint64, qint64)));
-    connect(d->http, SIGNAL(finished()), this, SLOT(httpReqFinished()));
-    connect(d->http, SIGNAL(error(QNetworkReply::NetworkError)), this,
-        SLOT(httpError(QNetworkReply::NetworkError)));
+    connect(d->http, &QIODevice::readyRead, this, &HttpDownloader::httpReadyRead);
+    connect(d->http, &QNetworkReply::downloadProgress,
+            this, &HttpDownloader::httpReadProgress);
+    connect(d->http, &QNetworkReply::finished, this, &HttpDownloader::httpReqFinished);
+    void (QNetworkReply::*errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
+    connect(d->http, errorSignal, this, &HttpDownloader::httpError);
 
     if (d->destFileName.isEmpty()) {
         QTemporaryFile *file = new QTemporaryFile(this);

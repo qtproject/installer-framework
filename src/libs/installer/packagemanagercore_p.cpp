@@ -247,10 +247,14 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         m_performedOperationsOld.append(op.take());
     }
 
-    connect(this, SIGNAL(installationStarted()), m_core, SIGNAL(installationStarted()));
-    connect(this, SIGNAL(installationFinished()), m_core, SIGNAL(installationFinished()));
-    connect(this, SIGNAL(uninstallationStarted()), m_core, SIGNAL(uninstallationStarted()));
-    connect(this, SIGNAL(uninstallationFinished()), m_core, SIGNAL(uninstallationFinished()));
+    connect(this, &PackageManagerCorePrivate::installationStarted,
+            m_core, &PackageManagerCore::installationStarted);
+    connect(this, &PackageManagerCorePrivate::installationFinished,
+            m_core, &PackageManagerCore::installationFinished);
+    connect(this, &PackageManagerCorePrivate::uninstallationStarted,
+            m_core, &PackageManagerCore::uninstallationStarted);
+    connect(this, &PackageManagerCorePrivate::uninstallationFinished,
+            m_core, &PackageManagerCore::uninstallationFinished);
 }
 
 PackageManagerCorePrivate::~PackageManagerCorePrivate()
@@ -312,7 +316,8 @@ bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation, O
     const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type);
 
     QEventLoop loop;
-    loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
+    QObject::connect(&futureWatcher, &decltype(futureWatcher)::finished, &loop, &QEventLoop::quit,
+                     Qt::QueuedConnection);
     futureWatcher.setFuture(future);
 
     if (!future.isFinished())
@@ -551,10 +556,14 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
     processFilesForDelayedDeletion();
 
-    disconnect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
-    connect(this, SIGNAL(installationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
-    disconnect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
-    connect(this, SIGNAL(uninstallationStarted()), ProgressCoordinator::instance(), SLOT(reset()));
+    disconnect(this, &PackageManagerCorePrivate::installationStarted,
+               ProgressCoordinator::instance(), &ProgressCoordinator::reset);
+    connect(this, &PackageManagerCorePrivate::installationStarted,
+            ProgressCoordinator::instance(), &ProgressCoordinator::reset);
+    disconnect(this, &PackageManagerCorePrivate::uninstallationStarted,
+               ProgressCoordinator::instance(), &ProgressCoordinator::reset);
+    connect(this, &PackageManagerCorePrivate::uninstallationStarted,
+            ProgressCoordinator::instance(), &ProgressCoordinator::reset);
 
     if (!isInstaller())
         m_localPackageHub->setFileName(componentsXmlPath());
@@ -573,10 +582,8 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
     m_metadataJob.setPackageManagerCore(m_core);
-    connect(&m_metadataJob, SIGNAL(infoMessage(KDJob*, QString)), this,
-        SLOT(infoMessage(KDJob*, QString)));
-    connect(&m_metadataJob, SIGNAL(progress(KDJob *, quint64, quint64)), this,
-        SLOT(infoProgress(KDJob *, quint64, quint64)));
+    connect(&m_metadataJob, &KDJob::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
+    connect(&m_metadataJob, &KDJob::progress, this, &PackageManagerCorePrivate::infoProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 

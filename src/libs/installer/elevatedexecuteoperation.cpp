@@ -161,12 +161,12 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     if (showStandardError)
         process->setProcessChannelMode(QProcessWrapper::MergedChannels);
 
-    connect(q, SIGNAL(cancelProcess()), process, SLOT(cancel()));
+    connect(q, &ElevatedExecuteOperation::cancelProcess, process, &QProcessWrapper::cancel);
 
     //we still like the none blocking possibility to perform this operation without threads
     QEventLoop loop;
     if (QThread::currentThread() == qApp->thread()) {
-        QObject::connect(process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+        QObject::connect(process, &QProcessWrapper::finished, &loop, &QEventLoop::quit);
     }
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);

@@ -270,7 +270,7 @@ void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
 {
     RemoveDirectoryThread thread(path, ignoreErrors);
     QEventLoop loop;
-    QObject::connect(&thread, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(&thread, &RemoveDirectoryThread::finished, &loop, &QEventLoop::quit);
     thread.start();
     loop.exec();
     if (!thread.error().isEmpty())

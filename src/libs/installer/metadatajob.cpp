@@ -50,9 +50,9 @@ MetadataJob::MetadataJob(QObject *parent)
     , m_core(0)
 {
     setCapabilities(Cancelable);
-    connect(&m_xmlTask, SIGNAL(finished()), this, SLOT(xmlTaskFinished()));
-    connect(&m_metadataTask, SIGNAL(finished()), this, SLOT(metadataTaskFinished()));
-    connect(&m_metadataTask, SIGNAL(progressValueChanged(int)), this, SLOT(progressChanged(int)));
+    connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
+    connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
+    connect(&m_metadataTask, &QFutureWatcherBase::progressValueChanged, this, &MetadataJob::progressChanged);
 }
 
 MetadataJob::~MetadataJob()
@@ -244,7 +244,7 @@ void MetadataJob::metadataTaskFinished()
 
                 QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
                 m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));
-                connect(watcher, SIGNAL(finished()), this, SLOT(unzipTaskFinished()));
+                connect(watcher, &QFutureWatcherBase::finished, this, &MetadataJob::unzipTaskFinished);
                 watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
             }
         } else {

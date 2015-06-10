@@ -67,7 +67,7 @@ RepositoryManager::RepositoryManager(QObject *parent) :
     QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
-    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(receiveRepository(QNetworkReply*)));
+    connect(manager, &QNetworkAccessManager::finished, this, &RepositoryManager::receiveRepository);
     productionMap.clear();
     updateMap.clear();
 }

@@ -266,7 +266,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
         setGuiQObject(core->guiObject());
         QQmlEngine::setObjectOwnership(core, QQmlEngine::CppOwnership);
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(core));
-        connect(core, SIGNAL(guiObjectChanged(QObject*)), this, SLOT(setGuiQObject(QObject*)));
+        connect(core, &PackageManagerCore::guiObjectChanged, this, &ScriptEngine::setGuiQObject);
     } else {
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }

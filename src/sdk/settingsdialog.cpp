@@ -227,13 +227,18 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     m_ui->m_httpProxy->setText(httpProxy.hostName());
     m_ui->m_httpProxyPort->setValue(httpProxy.port());
 
-    connect(m_ui->m_addRepository, SIGNAL(clicked()), this, SLOT(addRepository()));
-    connect(m_ui->m_showPasswords, SIGNAL(clicked()), this, SLOT(updatePasswords()));
-    connect(m_ui->m_removeRepository, SIGNAL(clicked()), this, SLOT(removeRepository()));
-    connect(m_ui->m_useTmpRepositories, SIGNAL(clicked(bool)), this, SLOT(useTmpRepositoriesOnly(bool)));
-    connect(m_ui->m_repositoriesView, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-        this, SLOT(currentRepositoryChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
-    connect(m_ui->m_testRepository, SIGNAL(clicked()), this, SLOT(testRepository()));
+    connect(m_ui->m_addRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::addRepository);
+    connect(m_ui->m_showPasswords, &QAbstractButton::clicked,
+            this, &SettingsDialog::updatePasswords);
+    connect(m_ui->m_removeRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::removeRepository);
+    connect(m_ui->m_useTmpRepositories, &QAbstractButton::clicked,
+            this, &SettingsDialog::useTmpRepositoriesOnly);
+    connect(m_ui->m_repositoriesView, &QTreeWidget::currentItemChanged,
+        this, &SettingsDialog::currentRepositoryChanged);
+    connect(m_ui->m_testRepository, &QAbstractButton::clicked,
+            this, &SettingsDialog::testRepository);
 
     useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());

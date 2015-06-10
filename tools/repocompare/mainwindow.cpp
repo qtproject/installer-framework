@@ -78,11 +78,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->productionRepo->insertItems(0, settings.value(productionIdentifier).toStringList());
     ui->updateRepo->insertItems(0, settings.value(updateIdentifier).toStringList());
 
-    connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(ui->productionButton, SIGNAL(clicked()), this, SLOT(getProductionRepository()));
-    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(getUpdateRepository()));
-    connect(ui->exportButton, SIGNAL(clicked()), this, SLOT(createExportFile()));
-    connect(&manager, SIGNAL(repositoriesCompared()), this, SLOT(displayRepositories()));
+    connect(ui->actionExit, &QAction::triggered, this, &QWidget::close);
+    connect(ui->productionButton, &QAbstractButton::clicked, this, &MainWindow::getProductionRepository);
+    connect(ui->updateButton, &QAbstractButton::clicked, this, &MainWindow::getUpdateRepository);
+    connect(ui->exportButton, &QAbstractButton::clicked, this, &MainWindow::createExportFile);
+    connect(&manager, &RepositoryManager::repositoriesCompared, this, &MainWindow::displayRepositories);
 }
 
 MainWindow::~MainWindow()

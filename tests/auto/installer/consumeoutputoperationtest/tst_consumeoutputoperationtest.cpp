@@ -114,7 +114,7 @@ private:
         QEventLoop loop;
         QProcess process;
 
-        QObject::connect(&process, SIGNAL(finished(int, QProcess::ExitStatus)), &loop, SLOT(quit()));
+        QObject::connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)), &loop, SLOT(quit()));
         process.start(binary, arguments, QIODevice::ReadOnly);
 
         if (process.state() != QProcess::NotRunning)

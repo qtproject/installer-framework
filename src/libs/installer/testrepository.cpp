@@ -92,11 +92,12 @@ void TestRepository::doStart()
     auth.setPassword(m_repository.password());
     m_downloader->setAuthenticator(auth);
 
-    connect(m_downloader, SIGNAL(downloadCompleted()), this, SLOT(downloadCompleted()));
-    connect(m_downloader, SIGNAL(downloadAborted(QString)), this, SLOT(downloadAborted(QString)),
-        Qt::QueuedConnection);
-    connect(m_downloader, SIGNAL(authenticatorChanged(QAuthenticator)), this,
-        SLOT(onAuthenticatorChanged(QAuthenticator)));
+    connect(m_downloader, &KDUpdater::FileDownloader::downloadCompleted,
+            this, &TestRepository::downloadCompleted);
+    connect(m_downloader, &KDUpdater::FileDownloader::downloadAborted,
+            this, &TestRepository::downloadAborted, Qt::QueuedConnection);
+    connect(m_downloader, &KDUpdater::FileDownloader::authenticatorChanged,
+            this, &TestRepository::onAuthenticatorChanged);
 
     m_downloader->setAutoRemoveDownloadedFile(true);
     m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml")));

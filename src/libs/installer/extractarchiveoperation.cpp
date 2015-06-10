@@ -64,21 +64,20 @@ bool ExtractArchiveOperation::performOperation()
     Receiver receiver;
     Callback callback;
 
-    connect(&callback, SIGNAL(currentFileChanged(QString)), this, SLOT(fileFinished(QString)));
-    connect(&callback, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
+    connect(&callback, &Callback::currentFileChanged, this, &ExtractArchiveOperation::fileFinished);
+    connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
     if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
-        connect(core, SIGNAL(statusChanged(QInstaller::PackageManagerCore::Status)), &callback,
-            SLOT(statusChanged(QInstaller::PackageManagerCore::Status)));
+        connect(core, &PackageManagerCore::statusChanged, &callback, &Callback::statusChanged);
     }
 
     //Runnable is derived from QRunable which will be deleted by the ThreadPool -> no parent is needed
     Runnable *runnable = new Runnable(archivePath, targetDir, &callback);
-    connect(runnable, SIGNAL(finished(bool,QString)), &receiver, SLOT(runnableFinished(bool,QString)),
+    connect(runnable, &Runnable::finished, &receiver, &Receiver::runnableFinished,
         Qt::QueuedConnection);
 
     QEventLoop loop;
-    connect(&receiver, SIGNAL(finished()), &loop, SLOT(quit()));
+    connect(&receiver, &Receiver::finished, &loop, &QEventLoop::quit);
     if (QThreadPool::globalInstance()->tryStart(runnable)) {
         loop.exec();
     } else {
@@ -113,11 +112,11 @@ bool ExtractArchiveOperation::undoOperation()
     const QStringList files = value(QLatin1String("files")).toStringList();
 
     WorkerThread *const thread = new WorkerThread(this, files);
-    connect(thread, SIGNAL(currentFileChanged(QString)), this, SIGNAL(outputTextChanged(QString)));
-    connect(thread, SIGNAL(progressChanged(double)), this, SIGNAL(progressChanged(double)));
+    connect(thread, &WorkerThread::currentFileChanged, this, &ExtractArchiveOperation::outputTextChanged);
+    connect(thread, &WorkerThread::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
     QEventLoop loop;
-    connect(thread, SIGNAL(finished()), &loop, SLOT(quit()), Qt::QueuedConnection);
+    connect(thread, &QThread::finished, &loop, &QEventLoop::quit, Qt::QueuedConnection);
     thread->start();
     loop.exec();
     thread->deleteLater();

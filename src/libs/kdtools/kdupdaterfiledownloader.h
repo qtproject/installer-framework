@@ -110,10 +110,6 @@ Q_SIGNALS:
     void downloadStatus(const QString &status);
     void downloadProgress(qint64 bytesReceived, qint64 bytesToReceive);
     void authenticatorChanged(const QAuthenticator &authenticator);
-
-#ifndef Q_MOC_RUN
-private:
-#endif
     void downloadCompleted();
     void downloadAborted(const QString &errorMessage);
 

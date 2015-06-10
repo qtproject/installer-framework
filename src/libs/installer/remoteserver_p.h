@@ -85,9 +85,9 @@ private:
         if (m_shutdown)
             return;
 
-        QThread *const thread = new RemoteServerConnection(socketDescriptor, m_key, this);
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-        connect(thread, SIGNAL(shutdownRequested()), this, SLOT(shutdown()));
+        RemoteServerConnection *thread = new RemoteServerConnection(socketDescriptor, m_key, this);
+        connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+        connect(thread, &RemoteServerConnection::shutdownRequested, this, &LocalServer::shutdown);
         thread->start();
         emit newIncomingConnection();
     }

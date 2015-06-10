@@ -639,11 +639,11 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     DownloadArchivesJob archivesJob(this);
     archivesJob.setAutoDelete(false);
     archivesJob.setArchivesToDownload(archivesToDownload);
-    connect(this, SIGNAL(installationInterrupted()), &archivesJob, SLOT(cancel()));
-    connect(&archivesJob, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
-        SLOT(emitLabelAndDetailTextChanged(QString)));
-    connect(&archivesJob, SIGNAL(downloadStatusChanged(QString)), ProgressCoordinator::instance(),
-        SIGNAL(downloadStatusChanged(QString)));
+    connect(this, &PackageManagerCore::installationInterrupted, &archivesJob, &KDJob::cancel);
+    connect(&archivesJob, &DownloadArchivesJob::outputTextChanged,
+            ProgressCoordinator::instance(), &ProgressCoordinator::emitLabelAndDetailTextChanged);
+    connect(&archivesJob, &DownloadArchivesJob::downloadStatusChanged,
+            ProgressCoordinator::instance(), &ProgressCoordinator::downloadStatusChanged);
 
     ProgressCoordinator::instance()->registerPartProgress(&archivesJob,
         SIGNAL(progressChanged(double)), partProgressSize);
@@ -1617,8 +1617,8 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
     }
-    connect(this, SIGNAL(finishAllComponentsReset(QList<QInstaller::Component*>)), d->m_defaultModel,
-        SLOT(setRootComponents(QList<QInstaller::Component*>)));
+    connect(this, &PackageManagerCore::finishAllComponentsReset, d->m_defaultModel,
+        &ComponentModel::setRootComponents);
     return d->m_defaultModel;
 }
 
@@ -1632,8 +1632,8 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
     }
-    connect(this, SIGNAL(finishUpdaterComponentsReset(QList<QInstaller::Component*>)), d->m_updaterModel,
-        SLOT(setRootComponents(QList<QInstaller::Component*>)));
+    connect(this, &PackageManagerCore::finishUpdaterComponentsReset, d->m_updaterModel,
+        &ComponentModel::setRootComponents);
     return d->m_updaterModel;
 }
 
@@ -1708,7 +1708,8 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
             const QFuture<bool> future = QtConcurrent::run(KDUpdater::killProcess, process, 30000);
 
             QEventLoop loop;
-            loop.connect(&futureWatcher, SIGNAL(finished()), SLOT(quit()), Qt::QueuedConnection);
+            connect(&futureWatcher, &QFutureWatcher<bool>::finished,
+                    &loop, &QEventLoop::quit, Qt::QueuedConnection);
             futureWatcher.setFuture(future);
 
             if (!future.isFinished())

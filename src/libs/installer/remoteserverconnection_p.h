@@ -52,19 +52,21 @@ private:
     explicit QProcessSignalReceiver(QProcess *process)
         : QObject(process)
     {
-        connect(process, SIGNAL(bytesWritten(qint64)), SLOT(onBytesWritten(qint64)));
-        connect(process, SIGNAL(aboutToClose()), SLOT(onAboutToClose()));
-        connect(process, SIGNAL(readChannelFinished()), SLOT(onReadChannelFinished()));
+        connect(process, &QIODevice::bytesWritten, this, &QProcessSignalReceiver::onBytesWritten);
+        connect(process, &QIODevice::aboutToClose, this, &QProcessSignalReceiver::onAboutToClose);
+        connect(process, &QIODevice::readChannelFinished, this, &QProcessSignalReceiver::onReadChannelFinished);
         connect(process, SIGNAL(error(QProcess::ProcessError)),
             SLOT(onError(QProcess::ProcessError)));
-        connect(process, SIGNAL(readyReadStandardOutput()), SLOT(onReadyReadStandardOutput()));
-        connect(process, SIGNAL(readyReadStandardError()), SLOT(onReadyReadStandardError()));
-        connect(process, SIGNAL(finished(int, QProcess::ExitStatus)),
-            SLOT(onFinished(int, QProcess::ExitStatus)));
-        connect(process, SIGNAL(readyRead()), SLOT(onReadyRead()));
-        connect(process, SIGNAL(started()), SLOT(onStarted()));
-        connect(process, SIGNAL(stateChanged(QProcess::ProcessState)),
-            SLOT(onStateChanged(QProcess::ProcessState)));
+        connect(process, &QProcess::readyReadStandardOutput,
+                this, &QProcessSignalReceiver::onReadyReadStandardOutput);
+        connect(process, &QProcess::readyReadStandardError,
+                this, &QProcessSignalReceiver::onReadyReadStandardError);
+        connect(process, SIGNAL(finished(int,QProcess::ExitStatus)),
+                SLOT(onFinished(int,QProcess::ExitStatus)));
+        connect(process, &QIODevice::readyRead, this, &QProcessSignalReceiver::onReadyRead);
+        connect(process, &QProcess::started, this, &QProcessSignalReceiver::onStarted);
+        connect(process, &QProcess::stateChanged,
+            this, &QProcessSignalReceiver::onStateChanged);
     }
 
 private Q_SLOTS:

@@ -87,7 +87,8 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     }
 
     IntroductionPage *intro = new IntroductionPage(core);
-    connect(intro, SIGNAL(packageManagerCoreTypeChanged()), this, SLOT(updateRestartPage()));
+    connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
+            this, &MaintenanceGui::updateRestartPage);
 
     setPage(PackageManagerCore::Introduction, intro);
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
@@ -97,7 +98,7 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
     RestartPage *p = new RestartPage(core);
-    connect(p, SIGNAL(restart()), this, SIGNAL(gotRestarted()));
+    connect(p, &RestartPage::restart, this, &PackageManagerGui::gotRestarted);
     setPage(PackageManagerCore::InstallationFinished + 1, p);
 
     if (core->isUninstaller())

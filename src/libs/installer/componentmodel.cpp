@@ -107,7 +107,7 @@ ComponentModel::ComponentModel(int columns, PackageManagerCore *core)
     , m_modelState(DefaultChecked)
 {
     m_headerData.insert(0, columns, QVariant());
-    connect(this, SIGNAL(modelReset()), this, SLOT(slotModelReset()));
+    connect(this, &QAbstractItemModel::modelReset, this, &ComponentModel::slotModelReset);
 }
 
 /*!
@@ -413,7 +413,7 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
     // show virtual components only in case we run as updater or if the core engine is set to show them
     const bool showVirtuals = m_core->isUpdater() || m_core->virtualComponentsVisible();
     foreach (Component *const component, rootComponents) {
-        connect(component, SIGNAL(virtualStateChanged()), this, SLOT(onVirtualStateChanged()));
+        connect(component, &Component::virtualStateChanged, this, &ComponentModel::onVirtualStateChanged);
         if ((!showVirtuals) && component->isVirtual())
             continue;
         m_rootComponentList.append(component);
@@ -473,7 +473,7 @@ void ComponentModel::slotModelReset()
     foreach (Component *const component, components) {
         if (component->checkState() == Qt::Checked)
             checked.insert(component);
-        connect(component, SIGNAL(virtualStateChanged()), this, SLOT(onVirtualStateChanged()));
+        connect(component, &Component::virtualStateChanged, this, &ComponentModel::onVirtualStateChanged);
     }
 
     updateCheckedState(checked, Qt::Checked);

@@ -49,19 +49,17 @@ QProcessWrapper::QProcessWrapper(QObject *parent)
     qRegisterMetaType<QProcess::ProcessState>();
 
     m_timer.start(250);
-    connect(&m_timer, SIGNAL(timeout()), this, SLOT(processSignals()));
-    connect(&process, SIGNAL(bytesWritten(qint64)), SIGNAL(bytesWritten(qint64)));
-    connect(&process, SIGNAL(aboutToClose()), SIGNAL(aboutToClose()));
-    connect(&process, SIGNAL(readChannelFinished()), SIGNAL(readChannelFinished()));
+    connect(&m_timer, &QTimer::timeout, this, &QProcessWrapper::processSignals);
+    connect(&process, &QIODevice::bytesWritten, this, &QProcessWrapper::bytesWritten);
+    connect(&process, &QIODevice::aboutToClose, this, &QProcessWrapper::aboutToClose);
+    connect(&process, &QIODevice::readChannelFinished, this, &QProcessWrapper::readChannelFinished);
     connect(&process, SIGNAL(error(QProcess::ProcessError)), SIGNAL(error(QProcess::ProcessError)));
-    connect(&process, SIGNAL(readyReadStandardOutput()), SIGNAL(readyReadStandardOutput()));
-    connect(&process, SIGNAL(readyReadStandardError()), SIGNAL(readyReadStandardError()));
-    connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)),
-        SIGNAL(finished(int,QProcess::ExitStatus)));
-    connect(&process, SIGNAL(readyRead()), SIGNAL(readyRead()));
-    connect(&process, SIGNAL(started()), SIGNAL(started()));
-    connect(&process, SIGNAL(stateChanged(QProcess::ProcessState)),
-        SIGNAL(stateChanged(QProcess::ProcessState)));
+    connect(&process, &QProcess::readyReadStandardOutput, this, &QProcessWrapper::readyReadStandardOutput);
+    connect(&process, &QProcess::readyReadStandardError, this, &QProcessWrapper::readyReadStandardError);
+    connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)), SIGNAL(finished(int,QProcess::ExitStatus)));
+    connect(&process, &QIODevice::readyRead, this, &QProcessWrapper::readyRead);
+    connect(&process, &QProcess::started, this, &QProcessWrapper::started);
+    connect(&process, &QProcess::stateChanged, this, &QProcessWrapper::stateChanged);
 }
 
 QProcessWrapper::~QProcessWrapper()

@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 #endif
 
         QInstaller::RemoteServer *server = new QInstaller::RemoteServer;
-        QObject::connect(server, SIGNAL(destroyed()), &app, SLOT(quit()));
+        QObject::connect(server, &QInstaller::RemoteServer::destroyed, &app, &decltype(app)::quit);
         server->init(socketName, key, (production ? QInstaller::Protocol::Mode::Production
             : QInstaller::Protocol::Mode::Debug));
 

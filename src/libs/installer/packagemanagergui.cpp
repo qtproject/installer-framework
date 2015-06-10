@@ -319,45 +319,49 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
 
-    connect(this, SIGNAL(rejected()), m_core, SLOT(setCanceled()));
-    connect(this, SIGNAL(interrupted()), m_core, SLOT(interrupt()));
+    connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
+    connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
 
     // both queued to show the finished page once everything is done
-    connect(m_core, SIGNAL(installationFinished()), this, SLOT(showFinishedPage()),
+    connect(m_core, &PackageManagerCore::installationFinished,
+            this, &PackageManagerGui::showFinishedPage,
         Qt::QueuedConnection);
-    connect(m_core, SIGNAL(uninstallationFinished()), this, SLOT(showFinishedPage()),
+    connect(m_core, &PackageManagerCore::uninstallationFinished,
+            this, &PackageManagerGui::showFinishedPage,
         Qt::QueuedConnection);
 
-    connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(currentPageChanged(int)));
-    connect(this, SIGNAL(currentIdChanged(int)), m_core, SIGNAL(currentPageChanged(int)));
-    connect(button(QWizard::FinishButton), SIGNAL(clicked()), this, SIGNAL(finishButtonClicked()));
-    connect(button(QWizard::FinishButton), SIGNAL(clicked()), m_core, SIGNAL(finishButtonClicked()));
+    connect(this, &QWizard::currentIdChanged, this, &PackageManagerGui::currentPageChanged);
+    connect(this, &QWizard::currentIdChanged, m_core, &PackageManagerCore::currentPageChanged);
+    connect(button(QWizard::FinishButton), &QAbstractButton::clicked,
+            this, &PackageManagerGui::finishButtonClicked);
+    connect(button(QWizard::FinishButton), &QAbstractButton::clicked,
+            m_core, &PackageManagerCore::finishButtonClicked);
 
     // make sure the QUiLoader's retranslateUi is executed first, then the script
-    connect(this, SIGNAL(languageChanged()), m_core, SLOT(languageChanged()), Qt::QueuedConnection);
-    connect(this, SIGNAL(languageChanged()), this, SLOT(onLanguageChanged()), Qt::QueuedConnection);
+    connect(this, &PackageManagerGui::languageChanged,
+            m_core, &PackageManagerCore::languageChanged, Qt::QueuedConnection);
+    connect(this, &PackageManagerGui::languageChanged,
+            this, &PackageManagerGui::onLanguageChanged, Qt::QueuedConnection);
 
     connect(m_core,
-        SIGNAL(wizardPageInsertionRequested(QWidget*,QInstaller::PackageManagerCore::WizardPage)),
-        this, SLOT(wizardPageInsertionRequested(QWidget*,QInstaller::PackageManagerCore::WizardPage)));
-    connect(m_core, SIGNAL(wizardPageRemovalRequested(QWidget*)), this,
-        SLOT(wizardPageRemovalRequested(QWidget*)));
-    connect(m_core,
-        SIGNAL(wizardWidgetInsertionRequested(QWidget*,QInstaller::PackageManagerCore::WizardPage)),
-        this, SLOT(wizardWidgetInsertionRequested(QWidget*,QInstaller::PackageManagerCore::WizardPage)));
-    connect(m_core, SIGNAL(wizardWidgetRemovalRequested(QWidget*)), this,
-        SLOT(wizardWidgetRemovalRequested(QWidget*)));
-    connect(m_core, SIGNAL(wizardPageVisibilityChangeRequested(bool,int)), this,
-        SLOT(wizardPageVisibilityChangeRequested(bool,int)), Qt::QueuedConnection);
+        &PackageManagerCore::wizardPageInsertionRequested,
+        this, &PackageManagerGui::wizardPageInsertionRequested);
+    connect(m_core, &PackageManagerCore::wizardPageRemovalRequested,
+            this, &PackageManagerGui::wizardPageRemovalRequested);
+    connect(m_core, &PackageManagerCore::wizardWidgetInsertionRequested,
+        this, &PackageManagerGui::wizardWidgetInsertionRequested);
+    connect(m_core, &PackageManagerCore::wizardWidgetRemovalRequested,
+            this, &PackageManagerGui::wizardWidgetRemovalRequested);
+    connect(m_core, &PackageManagerCore::wizardPageVisibilityChangeRequested,
+            this, &PackageManagerGui::wizardPageVisibilityChangeRequested, Qt::QueuedConnection);
 
-    connect(m_core,
-        SIGNAL(setValidatorForCustomPageRequested(QInstaller::Component*,QString,QString)), this,
-        SLOT(setValidatorForCustomPageRequested(QInstaller::Component*,QString,QString)));
+    connect(m_core, &PackageManagerCore::setValidatorForCustomPageRequested,
+            this, &PackageManagerGui::setValidatorForCustomPageRequested);
 
-    connect(m_core, SIGNAL(setAutomatedPageSwitchEnabled(bool)), this,
-        SLOT(setAutomatedPageSwitchEnabled(bool)));
+    connect(m_core, &PackageManagerCore::setAutomatedPageSwitchEnabled,
+            this, &PackageManagerGui::setAutomatedPageSwitchEnabled);
 
-    connect(this, SIGNAL(customButtonClicked(int)), this, SLOT(customButtonClicked(int)));
+    connect(this, &QWizard::customButtonClicked, this, &PackageManagerGui::customButtonClicked);
 
     for (int i = QWizard::BackButton; i < QWizard::CustomButton1; ++i)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
@@ -451,7 +455,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
         wb = QWizard::CancelButton;
 
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
-        QTimer::singleShot(delay, b, SLOT(click()));
+        QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
         qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
 }
@@ -1216,20 +1220,22 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
-    connect(m_packageManager, SIGNAL(toggled(bool)), this, SLOT(setPackageManager(bool)));
+    connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
     m_updateComponents = new QRadioButton(tr("Update components"), this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     boxLayout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(core->isUpdater());
-    connect(m_updateComponents, SIGNAL(toggled(bool)), this, SLOT(setUpdater(bool)));
+    connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
     m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     boxLayout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(core->isUninstaller());
-    connect(m_removeAllComponents, SIGNAL(toggled(bool)), this, SLOT(setUninstaller(bool)));
-    connect(m_removeAllComponents, SIGNAL(toggled(bool)), core, SLOT(setCompleteUninstallation(bool)));
+    connect(m_removeAllComponents, &QAbstractButton::toggled,
+            this, &IntroductionPage::setUninstaller);
+    connect(m_removeAllComponents, &QAbstractButton::toggled,
+            core, &PackageManagerCore::setCompleteUninstallation);
 
     boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
@@ -1257,16 +1263,18 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 
     core->setCompleteUninstallation(core->isUninstaller());
 
-    connect(core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
-    connect(core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
-    connect(core, SIGNAL(coreNetworkSettingsChanged()), this, SLOT(onCoreNetworkSettingsChanged()));
+    connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
+    connect(core, &PackageManagerCore::metaJobInfoMessage, this, &IntroductionPage::setMessage);
+    connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
+            this, &IntroductionPage::onCoreNetworkSettingsChanged);
 
     m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
 
 #ifdef Q_OS_WIN
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
         m_taskButton = new QWinTaskbarButton(this);
-        connect(core, SIGNAL(metaJobProgress(int)), m_taskButton->progress(), SLOT(setValue(int)));
+        connect(core, &PackageManagerCore::metaJobProgress,
+                m_taskButton->progress(), &QWinTaskbarProgress::setValue);
     } else {
         m_taskButton = 0;
     }
@@ -1641,8 +1649,8 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
     m_licenseListWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
-    connect(m_licenseListWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-        this, SLOT(currentItemChanged(QListWidgetItem*)));
+    connect(m_licenseListWidget, &QListWidget::currentItemChanged,
+        this, &LicenseAgreementPage::currentItemChanged);
 
     m_textBrowser = new QTextBrowser(this);
     m_textBrowser->setReadOnly(true);
@@ -1650,7 +1658,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
     m_textBrowser->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
-    connect(m_textBrowser, SIGNAL(anchorClicked(QUrl)), this, SLOT(openLicenseUrl(QUrl)));
+    connect(m_textBrowser, &QTextBrowser::anchorClicked, this, &LicenseAgreementPage::openLicenseUrl);
 
     QHBoxLayout *licenseBoxLayout = new QHBoxLayout();
     licenseBoxLayout->addWidget(m_licenseListWidget);
@@ -1689,8 +1697,8 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     gridLayout->addWidget(m_rejectLabel, 1, 1);
     layout->addLayout(gridLayout);
 
-    connect(m_acceptRadioButton, SIGNAL(toggled(bool)), this, SIGNAL(completeChanged()));
-    connect(m_rejectRadioButton, SIGNAL(toggled(bool)), this, SIGNAL(completeChanged()));
+    connect(m_acceptRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
+    connect(m_rejectRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
 
     m_rejectRadioButton->setChecked(true);
 }
@@ -1817,7 +1825,8 @@ public:
         layout->addLayout(hlayout, 1);
 
         m_checkDefault = new QPushButton;
-        connect(m_checkDefault, SIGNAL(clicked()), this, SLOT(selectDefault()));
+        connect(m_checkDefault, &QAbstractButton::clicked,
+                this, &ComponentSelectionPage::Private::selectDefault);
         if (m_core->isInstaller()) {
             m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
             m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A",
@@ -1835,7 +1844,8 @@ public:
 
         m_checkAll = new QPushButton;
         hlayout->addWidget(m_checkAll);
-        connect(m_checkAll, SIGNAL(clicked()), this, SLOT(selectAll()));
+        connect(m_checkAll, &QAbstractButton::clicked,
+                this, &ComponentSelectionPage::Private::selectAll);
         m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
         m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
             "select all components")));
@@ -1843,7 +1853,8 @@ public:
 
         m_uncheckAll = new QPushButton;
         hlayout->addWidget(m_uncheckAll);
-        connect(m_uncheckAll, SIGNAL(clicked()), this, SLOT(deselectAll()));
+        connect(m_uncheckAll, &QAbstractButton::clicked,
+                this, &ComponentSelectionPage::Private::deselectAll);
         m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
         m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
             "deselect all components")));
@@ -1858,8 +1869,8 @@ public:
     {
         m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
         if (m_treeView->selectionModel()) {
-            disconnect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                this, SLOT(currentSelectedChanged(QModelIndex)));
+            disconnect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
+                this, &ComponentSelectionPage::Private::currentSelectedChanged);
         }
 
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
@@ -1900,8 +1911,8 @@ public:
             hasChildren = m_currentModel->hasChildren(m_currentModel->index(row, 0));
         m_treeView->setRootIsDecorated(hasChildren);
 
-        connect(m_treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(currentSelectedChanged(QModelIndex)));
+        connect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &ComponentSelectionPage::Private::currentSelectedChanged);
 
         m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
     }
@@ -2155,12 +2166,12 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
-    connect(m_lineEdit, SIGNAL(textChanged(QString)), this, SIGNAL(completeChanged()));
+    connect(m_lineEdit, &QLineEdit::textChanged, this, &QWizardPage::completeChanged);
     hlayout->addWidget(m_lineEdit);
 
     QPushButton *browseButton = new QPushButton(this);
     browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
-    connect(browseButton, SIGNAL(clicked()), this, SLOT(dirRequested()));
+    connect(browseButton, &QAbstractButton::clicked, this, &TargetDirectoryPage::dirRequested);
     browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
     browseButton->setText(tr("B&rowse..."));
     hlayout->addWidget(browseButton);
@@ -2466,8 +2477,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 
     setLayout(layout);
 
-    connect(m_listWidget, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this,
-        SLOT(currentItemChanged(QListWidgetItem*)));
+    connect(m_listWidget, &QListWidget::currentItemChanged, this,
+        &StartMenuDirectoryPage::currentItemChanged);
 }
 
 /*!
@@ -2774,22 +2785,27 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     m_performInstallationForm->setupUi(this);
 
-    connect(ProgressCoordinator::instance(), SIGNAL(detailTextChanged(QString)),
-        m_performInstallationForm, SLOT(appendProgressDetails(QString)));
-    connect(ProgressCoordinator::instance(), SIGNAL(detailTextResetNeeded()),
-        m_performInstallationForm, SLOT(clearDetailsBrowser()));
-    connect(m_performInstallationForm, SIGNAL(showDetailsChanged()), this,
-        SLOT(toggleDetailsWereChanged()));
+    connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextChanged,
+        m_performInstallationForm, &PerformInstallationForm::appendProgressDetails);
+    connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextResetNeeded,
+        m_performInstallationForm, &PerformInstallationForm::clearDetailsBrowser);
+    connect(m_performInstallationForm, &PerformInstallationForm::showDetailsChanged,
+            this, &PerformInstallationPage::toggleDetailsWereChanged);
 
-    connect(core, SIGNAL(installationStarted()), this, SLOT(installationStarted()));
-    connect(core, SIGNAL(installationFinished()), this, SLOT(installationFinished()));
+    connect(core, &PackageManagerCore::installationStarted,
+            this, &PerformInstallationPage::installationStarted);
+    connect(core, &PackageManagerCore::installationFinished,
+            this, &PerformInstallationPage::installationFinished);
 
-    connect(core, SIGNAL(uninstallationStarted()), this, SLOT(uninstallationStarted()));
-    connect(core, SIGNAL(uninstallationFinished()), this, SLOT(uninstallationFinished()));
+    connect(core, &PackageManagerCore::uninstallationStarted,
+            this, &PerformInstallationPage::uninstallationStarted);
+    connect(core, &PackageManagerCore::uninstallationFinished,
+            this, &PerformInstallationPage::uninstallationFinished);
 
-    connect(core, SIGNAL(titleMessageChanged(QString)), this, SLOT(setTitleMessage(QString)));
-    connect(this, SIGNAL(setAutomatedPageSwitchEnabled(bool)), core,
-        SIGNAL(setAutomatedPageSwitchEnabled(bool)));
+    connect(core, &PackageManagerCore::titleMessageChanged,
+            this, &PerformInstallationPage::setTitleMessage);
+    connect(this, &PerformInstallationPage::setAutomatedPageSwitchEnabled,
+            core, &PackageManagerCore::setAutomatedPageSwitchEnabled);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
@@ -2954,7 +2970,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 void FinishedPage::entering()
 {
     if (m_commitButton) {
-        disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+        disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
         m_commitButton = 0;
     }
 
@@ -2967,13 +2983,13 @@ void FinishedPage::entering()
             cancel->setEnabled(true);
             cancel->setVisible(true);
             // we don't use the usual FinishButton so we need to connect the misused CancelButton
-            connect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
-            connect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
+            connect(cancel, &QAbstractButton::clicked, gui(), &PackageManagerGui::finishButtonClicked);
+            connect(cancel, &QAbstractButton::clicked, packageManagerCore(), &PackageManagerCore::finishButtonClicked);
             // for the moment we don't want the rejected signal connected
-            disconnect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+            disconnect(gui(), &QDialog::rejected, packageManagerCore(), &PackageManagerCore::setCanceled);
 
-            connect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
-                SLOT(cleanupChangedConnects()));
+            connect(gui()->button(QWizard::CommitButton), &QAbstractButton::clicked,
+                    this, &FinishedPage::cleanupChangedConnects);
         }
         setButtonText(QWizard::CommitButton, tr("Restart"));
         setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::FinishButton));
@@ -2992,8 +3008,8 @@ void FinishedPage::entering()
     gui()->updateButtonLayout();
 
     if (m_commitButton) {
-        disconnect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
-        connect(m_commitButton, SIGNAL(clicked()), this, SLOT(handleFinishClicked()));
+        disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
+        connect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
     }
 
     if (packageManagerCore()->status() == PackageManagerCore::Success) {
@@ -3060,12 +3076,12 @@ void FinishedPage::cleanupChangedConnects()
 {
     if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
         // remove the workaround connect from entering page
-        disconnect(cancel, SIGNAL(clicked()), gui(), SIGNAL(finishButtonClicked()));
-        disconnect(cancel, SIGNAL(clicked()), packageManagerCore(), SIGNAL(finishButtonClicked()));
-        connect(gui(), SIGNAL(rejected()), packageManagerCore(), SLOT(setCanceled()));
+        disconnect(cancel, &QAbstractButton::clicked, gui(), &PackageManagerGui::finishButtonClicked);
+        disconnect(cancel, &QAbstractButton::clicked, packageManagerCore(), &PackageManagerCore::finishButtonClicked);
+        connect(gui(), &QDialog::rejected, packageManagerCore(), &PackageManagerCore::setCanceled);
 
-        disconnect(gui()->button(QWizard::CommitButton), SIGNAL(clicked()), this,
-            SLOT(cleanupChangedConnects()));
+        disconnect(gui()->button(QWizard::CommitButton), &QAbstractButton::clicked,
+                   this, &FinishedPage::cleanupChangedConnects);
     }
 }
 
