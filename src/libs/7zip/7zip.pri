@@ -4,7 +4,6 @@ win32 {
     7ZIP_BASE=$$PWD/win
     INCLUDEPATH += $$7ZIP_BASE/C $$7ZIP_BASE/CPP
     DEFINES += WIN_LONG_PATH _CRT_SECURE_NO_WARNINGS
-    win32-g++*:QMAKE_CXXFLAGS += -w -fvisibility=hidden
 
     QMAKE_CXXFLAGS_RELEASE -= -Zc:strictStrings
     QMAKE_CXXFLAGS_RELEASE_WITH_DEBUGINFO -= -Zc:strictStrings
@@ -18,9 +17,11 @@ unix {
         $$7ZIP_BASE/CPP/myWindows \
         $$7ZIP_BASE/CPP/include_windows
 
-    QMAKE_CFLAGS += -w
-    QMAKE_CXXFLAGS += -fvisibility=hidden -w
-
     macx:DEFINES += ENV_MACOSX
     DEFINES += _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT ENV_UNIX UNICODE
+}
+
+unix|win32-g++* {
+    QMAKE_CFLAGS += -w
+    QMAKE_CXXFLAGS += -w
 }

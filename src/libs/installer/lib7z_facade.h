@@ -37,6 +37,9 @@
 #include "installer_global.h"
 #include "errors.h"
 
+#include <Common/MyWindows.h>
+#include <7zip/UI/Console/PercentPrinter.h>
+
 QT_BEGIN_NAMESPACE
 class QFileDevice;
 QT_END_NAMESPACE
@@ -57,6 +60,21 @@ namespace Lib7z
         explicit SevenZipException(const char *msg)
             : QInstaller::Error(QString::fromLocal8Bit(msg))
         {}
+    };
+
+    class INSTALLER_EXPORT PercentPrinter : public CPercentPrinter
+    {
+    public:
+        PercentPrinter() : CPercentPrinter(1 << 16) {
+            OutStream = &g_StdOut;
+        }
+
+        void PrintRatio() { CPercentPrinter::PrintRatio(); }
+        void ClosePrint() { CPercentPrinter::ClosePrint(); }
+        void RePrintRatio() { CPercentPrinter::RePrintRatio(); }
+        void PrintNewLine() { CPercentPrinter::PrintNewLine(); }
+        void PrintString(const char *s) { CPercentPrinter::PrintString(s); }
+        void PrintString(const wchar_t *s) { CPercentPrinter::PrintString(s); }
     };
 
 } // namespace Lib7z

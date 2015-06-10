@@ -7,6 +7,7 @@ include(../../installerfw.pri)
 QT -= gui
 QT += qml xml
 
+LIBS += -l7z
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 
