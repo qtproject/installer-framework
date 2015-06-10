@@ -96,8 +96,6 @@ void tst_Settings::loadFullConfig()
 
 void tst_Settings::loadEmptyConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Missing or empty <Name> tag in "
-                         ":/data/empty_config.xml.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/empty_config.xml", ":/data");
     } catch (const Error &error) {
@@ -109,9 +107,6 @@ void tst_Settings::loadEmptyConfig()
 
 void tst_Settings::loadNotExistingConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Could not open settings file "
-                         ":/data/inexisting_config.xml for reading: "
-                         "Unknown error\" ");
     try {
         Settings::fromFileAndPrefix(":/data/inexisting_config.xml", ":/data");
     } catch (const Error &error) {
@@ -125,8 +120,6 @@ void tst_Settings::loadNotExistingConfig()
 
 void tst_Settings::loadMalformedConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/malformed_config.xml, "
-                         "line 9, column 0: Premature end of document.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/malformed_config.xml", ":/data");
     } catch (const Error &error) {
@@ -139,8 +132,6 @@ void tst_Settings::loadMalformedConfig()
 
 void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in :/data/unknown_element_config.xml, "
-        "line 5, column 13: Unexpected element 'unknown'.\" ");
     try {
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
     } catch (const Error &error) {
@@ -178,10 +169,6 @@ void tst_Settings::loadMinimalConfigTagDefaults()
 
 void tst_Settings::loadUnexpectedAttributeConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
-        ":///data/unexpectedattribute_config.xml, line 6, column 27: Unexpected attribute "
-        "for element 'Argument'.\" ");
-
     try {
         Settings::fromFileAndPrefix(":///data/unexpectedattribute_config.xml", ":///data");
     } catch (const Error &error) {
@@ -196,9 +183,6 @@ void tst_Settings::loadUnexpectedAttributeConfig()
 
 void tst_Settings::loadUnexpectedTagConfig()
 {
-    QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Error in "
-        ":///data/unexpectedtag_config.xml, line 6, column 12: Unexpected element 'Foo'.\" ");
-
     try {
         Settings::fromFileAndPrefix(":///data/unexpectedtag_config.xml", ":///data");
     } catch (const Error &error) {

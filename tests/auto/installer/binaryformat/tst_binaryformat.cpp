@@ -123,8 +123,6 @@ private slots:
 
     void findMagicCookieWithError()
     {
-        QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"No marker found, stopped after 71.00 KiB.\" ");
-
         QTemporaryFile file;
         file.open();
 

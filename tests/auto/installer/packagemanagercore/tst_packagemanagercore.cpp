@@ -102,9 +102,6 @@ private:
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(testDirectory)));
         QTest::ignoreMessage(QtDebugMsg, "\"perform  operation: Mkdir\" ");
         QTest::ignoreMessage(QtDebugMsg, "Install size: 1 components ");
-        QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Force crash to test rollback!\" ");
-        QTest::ignoreMessage(QtDebugMsg, "\"created critical message box installationError: 'Error"
-            "', Force crash to test rollback!\" ");
         QTest::ignoreMessage(QtDebugMsg, "ROLLING BACK operations= 1 ");
         QTest::ignoreMessage(QtDebugMsg, "\"undo  operation: Mkdir\" ");
         QTest::ignoreMessage(QtDebugMsg, "Done ");
@@ -208,8 +205,6 @@ private slots:
 
             Component *root = new NamedComponent(&core, QLatin1String("root1"));
             try {
-                QTest::ignoreMessage(QtDebugMsg, "create Error-Exception: \"Components cannot "
-                    "have children in updater mode.\" ");
                 root->appendComponent(new NamedComponent(&core, QLatin1String("root1.foo")));
                 QFAIL("Components cannot have children in updater mode.");
             } catch (const QInstaller::Error &error) {

@@ -360,16 +360,15 @@ private slots:
         // m_core becomes the owner of testComponent, it will delete it in the destructor
         m_core.appendRootComponent(testComponent);
 
-        const QString debugMesssage(
-            "create Error-Exception: \"Exception while loading the component script '"
-            ":///data/component2.qs'. (ReferenceError: broken is not defined)\"");
         try {
             // ignore Output from script
             setExpectedScriptOutput("\"script function: Component\"");
-            setExpectedScriptOutput(qPrintable(debugMesssage));
             testComponent->loadComponentScript(":///data/component2.qs");
         } catch (const Error &error) {
-            QVERIFY2(debugMesssage.contains(error.message()), "(ReferenceError: broken is not defined)");
+            const QString debugMessage(
+                "create Error-Exception: \"Exception while loading the component script '"
+                ":///data/component2.qs'. (ReferenceError: broken is not defined)\"");
+            QVERIFY2(debugMessage.contains(error.message()), "(ReferenceError: broken is not defined)");
         }
     }
 
