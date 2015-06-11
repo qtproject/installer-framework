@@ -107,6 +107,12 @@ int InstallerBase::run()
     QInstaller::BinaryContent::readBinaryContent(&binary, &oldOperations, &manager, &magicMarker,
         cookie);
 
+    // Usually resources simply get mapped into memory and therefore the file does not need to be
+    // kept open during application runtime. Though in case of offline installers we need to access
+    // the appended binary content (packages etc.), so we close only in maintenance mode.
+    if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
+        binary.close();
+
     CommandLineParser parser;
     parser.parse(arguments());
 
