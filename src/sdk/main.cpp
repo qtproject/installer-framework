@@ -57,9 +57,9 @@
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-#define VERSION "IFW Version: \"" QUOTE(IFW_VERSION_STR) "\""
-#define BUILDDATE "Build date: " QUOTE(__DATE__)
-#define SHA "Installer Framework SHA1: \"" QUOTE(_GIT_SHA1_) "\""
+#define VERSION "IFW Version: " QUOTE(IFW_VERSION_STR) ", built with Qt " QT_VERSION_STR "."
+#define BUILDDATE "Build date: " __DATE__
+#define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
 int main(int argc, char *argv[])
