@@ -77,7 +77,7 @@ bool CopyDirectoryOperation::performOperation()
             overwrite = true;
         } else {
             setError(InvalidArguments);
-            setErrorString(tr("Invalid argument in %0: Third argument needs to be forceOverwrite, "
+            setErrorString(tr("Invalid argument in %1: Third argument needs to be forceOverwrite, "
                               "if specified").arg(name()));
             return false;
         }
@@ -87,7 +87,7 @@ bool CopyDirectoryOperation::performOperation()
     const QFileInfo targetInfo(targetPath);
     if (!sourceInfo.exists() || !sourceInfo.isDir() || !targetInfo.exists() || !targetInfo.isDir()) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: Directories are invalid: %1 %2").arg(name())
+        setErrorString(tr("Invalid arguments in %1: Directories are invalid: %2 %3").arg(name())
             .arg(sourcePath).arg(targetPath));
         return false;
     }
@@ -120,7 +120,7 @@ bool CopyDirectoryOperation::performOperation()
         } else if (itemInfo.isDir()) {
             if (!targetDir.mkpath(targetDir.absoluteFilePath(relativePath))) {
                 setError(InvalidArguments);
-                setErrorString(tr("Could not create %0").arg(targetDir.absoluteFilePath(relativePath)));
+                setErrorString(tr("Could not create %1").arg(targetDir.absoluteFilePath(relativePath)));
                 return false;
             }
         } else {
@@ -133,7 +133,7 @@ bool CopyDirectoryOperation::performOperation()
             QFile file(sourceDir.absoluteFilePath(itemName));
             if (!file.copy(absolutePath)) {
                 setError(UserDefinedError);
-                setErrorString(tr("Could not copy %0 to %1, error was: %3").arg(sourceDir.absoluteFilePath(itemName),
+                setErrorString(tr("Could not copy %1 to %2, error was: %3").arg(sourceDir.absoluteFilePath(itemName),
                                targetDir.absoluteFilePath(relativePath),
                                file.errorString()));
                 return false;
@@ -154,7 +154,7 @@ bool CopyDirectoryOperation::undoOperation()
     foreach (const QString &file, files) {
         if (!QFile::remove(file)) {
             setError(InvalidArguments);
-            setErrorString(tr("Could not remove %0").arg(file));
+            setErrorString(tr("Could not remove %1").arg(file));
             return false;
         }
         dir.rmpath(QFileInfo(file).absolutePath());

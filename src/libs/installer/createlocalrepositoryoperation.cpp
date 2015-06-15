@@ -332,10 +332,10 @@ bool CreateLocalRepositoryOperation::undoOperation()
     QDir dir;
     const QStringList files = value(QLatin1String("files")).toStringList();
     foreach (const QString &file, files) {
-        emit outputTextChanged(tr("Removing file: %0").arg(file));
+        emit outputTextChanged(tr("Removing file: %1").arg(file));
         if (!QFile::remove(file)) {
             setError(InvalidArguments);
-            setErrorString(tr("Could not remove %0.").arg(file));
+            setErrorString(tr("Could not remove %1.").arg(file));
             return false;
         }
         dir.rmpath(QFileInfo(file).absolutePath());

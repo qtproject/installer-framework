@@ -218,7 +218,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 
         if (foundDefault && foundVirtual) {
             throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
-                "mutually exclusive. File: '%0'").arg(packageXmlPath));
+                "mutually exclusive. File: '%1'").arg(packageXmlPath));
         }
 
         if (!foundDisplayName) {
