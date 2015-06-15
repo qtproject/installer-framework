@@ -95,12 +95,8 @@ bool RegisterFileTypeOperation::performOperation()
     QStringList args = arguments();
     QString progId = takeProgIdArgument(args);
 
-    if (args.count() < 2 || args.count() > 5) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %0: %1 arguments given, %2 expected%3.")
-            .arg(name()).arg(arguments().count()).arg(tr("2 to 5"), QLatin1String("")));
+    if (!checkArgumentCount(2, 5, tr("<extension> <command> [description [contentType [icon]]]")))
         return false;
-    }
 
     bool allUsers = false;
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
