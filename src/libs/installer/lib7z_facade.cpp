@@ -921,7 +921,7 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
         if (mode == QTmpFile::Yes)
             target = createTmp7z();
 
-        static const UString command = QString2UString(
+        const UString command = QString2UString(
             // (mode: add) (type: 7z) (time: modified|creation|access) (threads: multi-threaded)
             QLatin1String("a -t7z -mtm=on -mtc=on -mta=on -mmt=on ")
 #ifdef Q_OS_WIN
