@@ -1,3 +1,8 @@
+2.0.2
+- Fix .dat file that gets deleted after multiple component changes on Windows.
+- Fix maintenance tool upgrade on OS X.
+- Documentation updates.
+
 2.0.1
 - Do not throw exception on empty translation files.
 - Fix --checkupdates mode.
