@@ -66,6 +66,8 @@ namespace QInstaller {
     QString createCommandline(const QString &program, const QStringList &arguments);
 #endif
 
+    QStringList INSTALLER_EXPORT localeCandidates(const QString &locale);
+
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
 

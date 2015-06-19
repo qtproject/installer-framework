@@ -33,9 +33,12 @@
 ****************************************************************************/
 
 #include "kdupdaterupdatesinfo_p.h"
+#include "utils.h"
 
 #include <QFile>
 #include <QLocale>
+#include <QPair>
+#include <QVector>
 #include <QUrl>
 
 using namespace KDUpdater;
@@ -116,6 +119,7 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
         return false;
 
     UpdateInfo info;
+    QMap<QString, QString> localizedDescriptions;
     for (int i = 0; i < updateE.childNodes().count(); i++) {
         QDomElement childE = updateE.childNodes().at(i).toElement();
         if (childE.isNull())
@@ -141,18 +145,25 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
                 childE.attribute(QLatin1String("inheritVersionFrom")));
             info.data[childE.tagName()] = childE.text();
         } else if (childE.tagName() == QLatin1String("Description")) {
-            QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
-            if (!info.data.contains(QLatin1String("Description")) && (languageAttribute.isEmpty()))
-                info.data[childE.tagName()] = childE.text();
-
-            // overwrite default if we have a language specific description
-            if (languageAttribute == QLocale().name().toLower())
-                info.data[childE.tagName()] = childE.text();
+            if (!childE.hasAttribute(QLatin1String("xml:lang")))
+                info.data[QLatin1String("Description")] = childE.text();
+            QString languageAttribute = childE.attribute(QLatin1String("xml:lang"), QLatin1String("en"));
+            localizedDescriptions.insert(languageAttribute.toLower(), childE.text());
         } else if (childE.tagName() == QLatin1String("UpdateFile")) {
             info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
             info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
         } else {
             info.data[childE.tagName()] = childE.text();
+        }
+    }
+
+    QStringList candidates;
+    foreach (const QString &lang, QLocale().uiLanguages())
+        candidates << QInstaller::localeCandidates(lang.toLower());
+    foreach (const QString &candidate, candidates) {
+        if (localizedDescriptions.contains(candidate)) {
+            info.data[QLatin1String("Description")] = localizedDescriptions.value(candidate);
+            break;
         }
     }
 

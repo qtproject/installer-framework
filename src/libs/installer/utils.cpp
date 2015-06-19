@@ -114,6 +114,23 @@ bool QInstaller::startDetached(const QString &program, const QStringList &argume
     return success;
 }
 
+// Returns ["en-us", "en"] for "en-us"
+QStringList QInstaller::localeCandidates(const QString &locale_)
+{
+    QStringList candidates;
+    QString locale = locale_;
+    candidates.reserve(locale.count(QLatin1Char('-')));
+    forever {
+        candidates.append(locale);
+        int r = locale.lastIndexOf(QLatin1Char('-'));
+        if (r <= 0)
+            break;
+        locale.truncate(r);
+    }
+    return candidates;
+}
+
+
 static bool verb = false;
 
 void QInstaller::setVerbose(bool v)
@@ -400,3 +417,5 @@ QString QInstaller::windowsErrorString(int errorCode)
 }
 
 #endif
+
+

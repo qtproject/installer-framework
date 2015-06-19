@@ -42,6 +42,7 @@
 #include "packagemanagercore.h"
 #include "remoteclient.h"
 #include "settings.h"
+#include "utils.h"
 
 #include <kdupdaterupdatesourcesinfo.h>
 #include <kdupdaterupdateoperationfactory.h>
@@ -604,23 +605,32 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
         if (!ProductKeyCheck::instance()->isValidLicenseTextFile(fileName))
             continue;
 
-        QFileInfo fileInfo(fileName);
-        QFile file(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
-            QLocale().name().toLower(), fileInfo.completeSuffix()));
-        if (!file.exists()) {
-            file.setFileName(QString::fromLatin1("%1%2_%3.%4").arg(directory, fileInfo.baseName(),
-                QLocale().name().left(2), fileInfo.completeSuffix()));
+        QFileInfo fileInfo(directory, fileName);
+        foreach (const QString &lang, QLocale().uiLanguages()) {
+            if (QLocale(lang).language() == QLocale::English) // we assume English is the default language
+                break;
+
+            QList<QFileInfo> fileCandidates;
+            foreach (const QString &locale, QInstaller::localeCandidates(lang.toLower())) {
+                fileCandidates << QFileInfo(QString::fromLatin1("%1%2_%3.%4").arg(
+                                                directory, fileInfo.baseName(), locale,
+                                                fileInfo.completeSuffix()));
+            }
+
+            auto fInfo = std::find_if(fileCandidates.constBegin(), fileCandidates.constEnd(),
+                                      [](const QFileInfo &file) {
+                                           return file.exists();
+                                       });
+            if (fInfo != fileCandidates.constEnd()) {
+                fileInfo = *fInfo;
+                break;
+            }
         }
 
+        QFile file(fileInfo.filePath());
         if (!file.open(QIODevice::ReadOnly)) {
-            // No translated license, use untranslated file
-            qDebug().nospace() << "Unable to open translated license file" << file.fileName()
-                << ". Using untranslated fallback.";
-            file.setFileName(directory + fileName);
-            if (!file.open(QIODevice::ReadOnly)) {
-                throw Error(tr("Could not open the requested license file '%1'. Error: %2").arg(fileName,
-                    file.errorString()));
-            }
+            throw Error(tr("Could not open the requested license file '%1'. Error: %2").arg(
+                            file.fileName(), file.errorString()));
         }
         QTextStream stream(&file);
         stream.setCodec("UTF-8");
