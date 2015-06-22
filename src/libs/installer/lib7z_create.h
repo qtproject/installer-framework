@@ -66,7 +66,7 @@ namespace Lib7z
 
     public:
         UpdateCallback() = default;
-        virtual ~UpdateCallback() = default;
+        virtual ~UpdateCallback() {}
 
         MY_UNKNOWN_IMP
         INTERFACE_IUpdateCallbackUI2(;)
