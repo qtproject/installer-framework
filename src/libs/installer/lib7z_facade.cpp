@@ -284,7 +284,7 @@ static NCOM::CPropVariant readProperty(IInArchive *archive, int index, int propI
 {
     NCOM::CPropVariant prop;
     if (archive->GetProperty(index, propId, &prop) != S_OK) {
-        throw SevenZipException(QCoreApplication::translate("QInstaller",
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
             "Could not retrieve property %1 for item %2").arg(QString::number(propId),
             QString::number(index)));
     }
@@ -296,61 +296,38 @@ static bool IsFileTimeZero(const FILETIME *lpFileTime)
     return (lpFileTime->dwLowDateTime == 0) && (lpFileTime->dwHighDateTime == 0);
 }
 
-static bool IsDST(const QDateTime &datetime = QDateTime())
-{
-    const time_t seconds = static_cast<time_t>(datetime.isValid() ? datetime.toTime_t()
-        : QDateTime::currentDateTime().toTime_t());
-#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
-    struct tm t;
-    localtime_s(&t, &seconds);
-#else
-    const struct tm &t = *localtime(&seconds);
-#endif
-    return t.tm_isdst;
-}
-
-static bool getFileTimeFromProperty(IInArchive *archive, int index, int propId, FILETIME *fileTime)
+static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, FILETIME *ft)
 {
     const NCOM::CPropVariant prop = readProperty(archive, index, propId);
     if (prop.vt != VT_FILETIME) {
-        throw SevenZipException(QCoreApplication::translate("QInstaller",
-            "Property %1 for item %2 not of type VT_FILETIME but %3").arg(QString::number(propId),
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Property %1 for item %2 not of type VT_FILETIME but %3.").arg(QString::number(propId),
             QString::number(index), QString::number(prop.vt)));
     }
-    *fileTime = prop.filetime;
-
-    if (IsFileTimeZero(fileTime))
-        return false;
-    return true;
+    *ft = prop.filetime;
+    return !IsFileTimeZero(ft);
 }
 
-static
-QDateTime getDateTimeProperty(IInArchive *archive, int index, int propId, const QDateTime &defaultValue)
+static bool getDateTimeProperty(IInArchive *arc, int index, int id, QDateTime *value)
 {
-    FILETIME fileTime;
-    if (!getFileTimeFromProperty(archive, index, propId, &fileTime))
-        return defaultValue;
+    FILETIME ft7z;
+    if (!getFileTimeFromProperty(arc, index, id, &ft7z))
+        return false;
 
-    FILETIME localFileTime;
-    if (!FileTimeToLocalFileTime(&fileTime, &localFileTime)) {
-        throw SevenZipException(QCoreApplication::translate("QInstaller",
-            "Could not convert file time to local time"));
+    FILETIME ft;
+    if (!FileTimeToLocalFileTime(&ft7z, &ft)) {
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Could not convert 7z stored file time to local time."));
     }
+
     SYSTEMTIME st;
-    if (!BOOLToBool(FileTimeToSystemTime(&localFileTime, &st))) {
-        throw SevenZipException(QCoreApplication::translate("QInstaller",
-            "Could not convert local file time to system time"));
+    if (!BOOLToBool(FileTimeToSystemTime(&ft, &st))) {
+        throw SevenZipException(QCoreApplication::translate("Lib7z",
+            "Could not convert local file time to system time."));
     }
-    const QDate date(st.wYear, st.wMonth, st.wDay);
-    const QTime time(st.wHour, st.wMinute, st.wSecond);
-    QDateTime result(date, time);
-
-    // TODO: fix daylight saving time.
-    const bool dst = IsDST();
-    if (dst != IsDST(result))
-        result = result.addSecs(dst ? -3600 : 3600);
-
-    return result;
+    *value = QDateTime(QDate(st.wYear, st.wMonth, st.wDay), QTime(st.wHour, st.wMinute,
+        st.wSecond));
+    return value->isValid();
 }
 
 static quint64 getUInt64Property(IInArchive *archive, int index, int propId, quint64 defaultValue)
@@ -556,7 +533,7 @@ QVector<File> listArchive(QFileDevice *archive)
                 f.path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 Archive_IsItem_Folder(arch, item, f.isDirectory);
                 f.permissions = getPermissions(arch, item, 0);
-                f.mtime = getDateTimeProperty(arch, item, kpidMTime, QDateTime());
+                getDateTimeProperty(arch, item, kpidMTime, &(f.mtime));
                 f.uncompressedSize = getUInt64Property(arch, item, kpidSize, 0);
                 f.compressedSize = getUInt64Property(arch, item, kpidPackSize, 0);
                 flat.append(f);
