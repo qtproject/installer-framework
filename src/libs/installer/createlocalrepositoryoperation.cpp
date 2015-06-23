@@ -165,7 +165,7 @@ bool CreateLocalRepositoryOperation::performOperation()
         const QString repoPath = QFileInfo(args.at(1)).absoluteFilePath() + QLatin1Char('/');
 
         // check if this is an offline version, otherwise there will be no binary data
-        PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+        PackageManagerCore *const core = packageManager();
         if (core && !core->isOfflineOnly()) {
             throw QInstaller::Error(tr("Installer at \"%1\" needs to be an offline one.")
                 .arg(QDir::toNativeSeparators(binaryPath)));

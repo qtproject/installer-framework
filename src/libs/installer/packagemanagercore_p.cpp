@@ -244,7 +244,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
             qWarning() << "Failed to load XML for operation:" << operation.name;
             continue;
         }
-        op->setValue(QLatin1String("installer"), QVariant::fromValue(core));
+        op->setPackageManager(core);
         m_performedOperationsOld.append(op.take());
     }
 

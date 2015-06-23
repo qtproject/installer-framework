@@ -98,8 +98,7 @@ UpdateOperation::UpdateOperation()
 */
 UpdateOperation::~UpdateOperation()
 {
-    using namespace QInstaller;
-    if (auto *core = value(QLatin1String("installer")).value<PackageManagerCore*>())
+    if (auto *core = packageManager())
         core->addFilesForDelayedDeletion(filesForDelayedDeletion());
 }
 
@@ -311,6 +310,16 @@ void UpdateOperation::clear()
 QStringList UpdateOperation::filesForDelayedDeletion() const
 {
     return m_delayedDeletionFiles;
+}
+
+QInstaller::PackageManagerCore *UpdateOperation::packageManager() const
+{
+    return value(QLatin1String("installer")).value<QInstaller::PackageManagerCore*>();
+}
+
+void UpdateOperation::setPackageManager(QInstaller::PackageManagerCore *core)
+{
+    setValue(QLatin1String("installer"), QVariant::fromValue(core));
 }
 
 /*!

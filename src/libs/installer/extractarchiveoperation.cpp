@@ -67,7 +67,7 @@ bool ExtractArchiveOperation::performOperation()
     connect(&callback, &Callback::currentFileChanged, this, &ExtractArchiveOperation::fileFinished);
     connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
-    if (PackageManagerCore *core = this->value(QLatin1String("installer")).value<PackageManagerCore*>()) {
+    if (PackageManagerCore *core = packageManager()) {
         connect(core, &PackageManagerCore::statusChanged, &callback, &Callback::statusChanged);
     }
 

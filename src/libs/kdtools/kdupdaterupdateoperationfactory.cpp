@@ -98,6 +98,6 @@ UpdateOperation *UpdateOperationFactory::create(const QString &name, PackageMana
 {
     UpdateOperation *operation = KDGenericFactory<UpdateOperation>::create(name);
     if (operation)
-        operation->setValue(QLatin1String("installer"), QVariant::fromValue(core));
+        operation->setPackageManager(core);
     return operation;
 }

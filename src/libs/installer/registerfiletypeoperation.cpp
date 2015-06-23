@@ -99,7 +99,7 @@ bool RegisterFileTypeOperation::performOperation()
         return false;
 
     bool allUsers = false;
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
     if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 
@@ -163,7 +163,7 @@ bool RegisterFileTypeOperation::undoOperation()
     }
 
     bool allUsers = false;
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
     if (core && core->value(scAllUsers) == scTrue)
         allUsers = true;
 

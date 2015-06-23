@@ -42,6 +42,10 @@
 #include <QVariant>
 #include <QtXml/QDomDocument>
 
+namespace QInstaller {
+    class PackageManagerCore;
+}
+
 namespace KDUpdater {
 
 class KDTOOLS_EXPORT UpdateOperation
@@ -73,6 +77,9 @@ public:
     QString errorString() const;
     int error() const;
     QStringList filesForDelayedDeletion() const;
+
+    QInstaller::PackageManagerCore *packageManager() const;
+    void setPackageManager(QInstaller::PackageManagerCore *core);
 
     virtual void backup() = 0;
     virtual bool performOperation() = 0;

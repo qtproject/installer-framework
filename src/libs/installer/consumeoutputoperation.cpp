@@ -64,7 +64,7 @@ bool ConsumeOutputOperation::performOperation()
                                            "<executable> [argument1] [argument2] [...]")))
         return false;
 
-    PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
+    PackageManagerCore *const core = packageManager();
     if (!core) {
         setError(UserDefinedError);
         setErrorString(tr("Needed installer object in %1 operation is empty.").arg(name()));
