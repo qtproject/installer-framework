@@ -90,9 +90,6 @@ private slots:
 
             QVector<Lib7z::File> files = Lib7z::listArchive(&file);
             QCOMPARE(files.count(), 1);
-#ifdef Q_OS_UNIX
-            QSKIP("This test requires the time handling to be repaired first.");
-#endif
             QCOMPARE(files.first(), m_file);
         } catch (...) {
             QFAIL("Unexpected error during list archive.");
