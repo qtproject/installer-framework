@@ -77,7 +77,7 @@ QString InstallerCalculator::installReason(Component *component) const
                 "Components added as automatic dependencies:");
         case Dependent:
             return QCoreApplication::translate("InstallerCalculator", "Components added as "
-                "dependency for '%1':").arg(installReasonReferencedComponent(component));
+                "dependency for \"%1\":").arg(installReasonReferencedComponent(component));
         case Resolved:
             return QCoreApplication::translate("InstallerCalculator",
                 "Components that have resolved dependencies:");
@@ -108,8 +108,8 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component)
 
 QString InstallerCalculator::recursionError(Component *component)
 {
-    return QCoreApplication::translate("InstallerCalculator", "Recursion detected, component '%1' "
-        "already added with reason: '%2'").arg(component->name(), installReason(component));
+    return QCoreApplication::translate("InstallerCalculator", "Recursion detected, component \"%1\" "
+        "already added with reason: \"%2\"").arg(component->name(), installReason(component));
 }
 
 bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &components)
@@ -171,7 +171,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
             PackageManagerCore::componentByName(dependencyComponentName, m_allComponents);
         if (!dependencyComponent) {
             const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
-                "Cannot find missing dependency '%1' for '%2'.").arg(dependencyComponentName,
+                "Cannot find missing dependency \"%1\" for \"%2\".").arg(dependencyComponentName,
                 component->name());
             qWarning() << errorMessage;
             m_componentsToInstallError.append(errorMessage);

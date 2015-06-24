@@ -74,8 +74,8 @@ bool ConsumeOutputOperation::performOperation()
     const QString installerKeyName = arguments().at(0);
     if (installerKeyName.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("Can not save the output of %1 to an empty installer key value.").arg(
-            arguments().at(1)));
+        setErrorString(tr("Cannot save the output of \"%1\" to an empty installer key value.").arg(
+            QDir::toNativeSeparators(arguments().at(1))));
         return false;
     }
 
@@ -88,7 +88,7 @@ bool ConsumeOutputOperation::performOperation()
 
     if (!executable.exists() || !executable.isExecutable()) {
         setError(UserDefinedError);
-        setErrorString(tr("File '%1' does not exist or is not an executable binary.").arg(
+        setErrorString(tr("File \"%1\" does not exist or is not an executable binary.").arg(
             QDir::toNativeSeparators(executable.absoluteFilePath())));
         return false;
     }
@@ -109,7 +109,7 @@ bool ConsumeOutputOperation::performOperation()
                            << "standard output: " << process.readAllStandardOutput()
                            << "error output: " << process.readAllStandardError();
                 setError(UserDefinedError);
-                setErrorString(tr("Running '%1' resulted in a crash.").arg(
+                setErrorString(tr("Running \"%1\" resulted in a crash.").arg(
                     QDir::toNativeSeparators(executable.absoluteFilePath())));
                 return false;
             }
@@ -127,7 +127,7 @@ bool ConsumeOutputOperation::performOperation()
 
     }
     if (executableOutput.isEmpty()) {
-        qWarning() << QString::fromLatin1("Cannot get any query output from executable: '%1'").arg(
+        qWarning() << QString::fromLatin1("Cannot get any query output from executable \"%1\".").arg(
             executable.absoluteFilePath());
     }
     core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));

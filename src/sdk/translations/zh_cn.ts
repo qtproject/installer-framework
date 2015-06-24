@@ -15,26 +15,26 @@
 <context>
     <name>BinaryContent</name>
     <message>
-        <source>Could not seek to %1 to read the operation data.</source>
+        <source>Cannot seek to %1 to read the operation data.</source>
         <translation>无法找到 %1 以读取操作数据。</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection block.</source>
+        <source>Cannot seek to %1 to read the resource collection block.</source>
         <translation>无法找到 %1 以读取资源集合块。</translation>
     </message>
     <message>
-        <source>Could not open meta resource. Error: %1</source>
+        <source>Cannot open meta resource. Error: %1</source>
         <translation>无法打开元资源。错误：%1</translation>
     </message>
 </context>
 <context>
     <name>BinaryLayout</name>
     <message>
-        <source>Could not seek to %1 to read the embedded meta data count.</source>
+        <source>Cannot seek to %1 to read the embedded meta data count.</source>
         <translation>无法找到 %1 以读取嵌入元信息数据总量。</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection segment.</source>
+        <source>Cannot seek to %1 to read the resource collection segment.</source>
         <translation>无法找到 %1 以读取资源集片段。</translation>
     </message>
     <message>
@@ -72,34 +72,34 @@
         <translation>路径存在，但不是文件夹：%1</translation>
     </message>
     <message>
-        <source>Could not create folder: %1</source>
+        <source>Cannot create folder: %1</source>
         <translation>无法创建文件夹：%1</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>无法获取存档项目 %1 的路径</translation>
     </message>
     <message>
-        <source>Could not remove already existing symlink. %1</source>
+        <source>Cannot remove already existing symlink. %1</source>
         <translation>无法删除已经存在的符号链接。%1</translation>
     </message>
     <message>
-        <source>Could not open file: %1 (%2)</source>
+        <source>Cannot open file: %1 (%2)</source>
         <translation>无法打开文件：%1 (%2)</translation>
     </message>
     <message>
-        <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
         <translation>无法在“%1”创建符号链接。另一个符号链接已经存在。</translation>
     </message>
     <message>
-        <source>Could not read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
         <translation>无法从文件“%1”中读取符号链接目标。</translation>
     </message>
     <message>
-        <source>Could not create symlink at %1. %2</source>
+        <source>Cannot create symlink at %1. %2</source>
         <translation>无法在 %1 创建符号链接。%2</translation>
     </message>
 </context>
@@ -140,19 +140,19 @@
 <context>
     <name>KDLockFile</name>
     <message>
-        <source>Could not create lock file &apos;%1&apos;: %2</source>
+        <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>无法创建锁文件“%1”：%2</translation>
     </message>
     <message>
-        <source>Could not write PID to lock file &apos;%1&apos;: %2</source>
+        <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
         <translation>无法将 PID 写入锁文件“%1”：%2</translation>
     </message>
     <message>
-        <source>Could not obtain the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
         <translation>无法为文件“%1”获取锁：“%2”</translation>
     </message>
     <message>
-        <source>Could not release the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
         <translation>无法为文件“%1”释放锁：%2</translation>
     </message>
 </context>
@@ -167,11 +167,11 @@
         <translation>无法找到 %1 的备份文件。</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1.</source>
+        <source>Cannot restore backup file for %1.</source>
         <translation>无法恢复 %1 的备份文件。</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1: %2</source>
+        <source>Cannot restore backup file for %1: %2</source>
         <translation>无法恢复 %1 的备份文件:%2</translation>
     </message>
     <message>
@@ -183,14 +183,14 @@
         <translation>恰好 2 个</translation>
     </message>
     <message>
-        <source>Could not open file &apos;%1&apos; for writing: %2</source>
+        <source>Cannot open file &apos;%1&apos; for writing: %2</source>
         <translation>无法打开文件“%1”进行写入：%2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>无法备份文件 %1。</translation>
     </message>
     <message>
@@ -198,23 +198,23 @@
         <translation>参数无效：已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>无法删除目标文件 %1：%2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>无法将 %1 复制到 %2：%3</translation>
     </message>
     <message>
-        <source>Could not delete file %1: %2</source>
+        <source>Cannot delete file %1: %2</source>
         <translation>无法删除文件 %1：%2</translation>
     </message>
     <message>
-        <source>Could not restore backup file into %1: %2</source>
+        <source>Cannot restore backup file into %1: %2</source>
         <translation>无法将备份文件恢复到 %1 中：%2</translation>
     </message>
     <message>
-        <source>Could not copy a non-existent file: %1</source>
+        <source>Cannot copy a non-existent file: %1</source>
         <translation>无法复制不存在的文件：%1</translation>
     </message>
 </context>
@@ -299,7 +299,7 @@
         <translation>无法下载 %1：写入文件“%2”失败：%3</translation>
     </message>
     <message>
-        <source>Cannot download %1: Could not create %2: %3</source>
+        <source>Cannot download %1: Cannot create %2: %3</source>
         <translation>无法下载 %1：无法创建 %2:%3</translation>
     </message>
     <message>
@@ -353,7 +353,7 @@
         <translation>参数无效：已给定 %1 个参数，应为 1 个。</translation>
     </message>
     <message>
-        <source>Could not create folder %1: Unknown error.</source>
+        <source>Cannot create folder %1: Unknown error.</source>
         <translation>无法创建文件夹 %1：未知错误。</translation>
     </message>
     <message>
@@ -364,7 +364,7 @@
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>无法备份文件 %1。</translation>
     </message>
     <message>
@@ -372,11 +372,11 @@
         <translation>参数无效：已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>无法删除目标文件 %1：%2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>无法将 %1 复制到 %2：%3</translation>
     </message>
     <message>
@@ -403,7 +403,7 @@
         <translation>文件 %1 不存在。</translation>
     </message>
     <message>
-        <source>Could not open %1.</source>
+        <source>Cannot open %1.</source>
         <translation>无法打开 %1。</translation>
     </message>
     <message>
@@ -426,11 +426,11 @@
         <translation>参数无效：已给定 %1 个参数，应为 2 个。</translation>
     </message>
     <message>
-        <source>Could not open file %1 for reading: %2</source>
+        <source>Cannot open file %1 for reading: %2</source>
         <translation>无法打开文件 %1 进行读取：%2</translation>
     </message>
     <message>
-        <source>Could not open file %1 for writing: %2</source>
+        <source>Cannot open file %1 for writing: %2</source>
         <translation>无法打开文件 %1 进行写入：%2</translation>
     </message>
     <message>
@@ -449,7 +449,7 @@
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Could not read resource file &quot;%1&quot;. Reason:</source>
+        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
         <translation>无法读取源文件“%1”。原因：</translation>
     </message>
 </context>
@@ -460,11 +460,11 @@
         <translation>参数无效：已给定 %1 个参数，应为 1 个。</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: The folder does not exist.</source>
+        <source>Cannot remove folder %1: The folder does not exist.</source>
         <translation>无法删除文件夹 %1：该文件夹不存在。</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>无法删除文件夹 %1：%2</translation>
     </message>
     <message>
@@ -506,11 +506,11 @@
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
-        <source>Could not access the package information of this application.</source>
+        <source>Cannot access the package information of this application.</source>
         <translation>无法访问此应用程序的包信息。</translation>
     </message>
     <message>
-        <source>Could not access the update sources information of this application.</source>
+        <source>Cannot access the update sources information of this application.</source>
         <translation>无法访问此应用程序的更新源信息。</translation>
     </message>
     <message>
@@ -536,7 +536,7 @@
         </translation>
     </message>
     <message>
-        <source>Could not download update source %1 from (&apos;%2&apos;)</source>
+        <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
         <translation>无法从（“%2”）下载更新资源 %1</translation>
     </message>
 </context>
@@ -547,7 +547,7 @@
         <translation>%1 包含无效的内容：%2</translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>无法读取“%1”</translation>
     </message>
     <message>
@@ -559,7 +559,7 @@
         <translation>根元素 %1 与预期不符，应为“更新源”</translation>
     </message>
     <message>
-        <source>Could not save changes to &quot;%1&quot;: %2</source>
+        <source>Cannot save changes to &quot;%1&quot;: %2</source>
         <translation>无法将更改保存到“%1”：%2</translation>
     </message>
 </context>
@@ -570,7 +570,7 @@
         <translation>Updates.xml 包含无效的内容：%1</translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>无法读取“%1”</translation>
     </message>
     <message>
@@ -605,11 +605,11 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>Could not retrieve number of items in archive</source>
+        <source>Cannot retrieve number of items in archive</source>
         <translation>无法检索存档中的项目数量</translation>
     </message>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>无法获取存档项目 %1 的路径</translation>
     </message>
     <message>
@@ -629,15 +629,15 @@
         <translation>错误：%1</translation>
     </message>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>无法加载解码器</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>无法检索默认格式</translation>
     </message>
     <message>
-        <source>Could not create archive %1. %2</source>
+        <source>Cannot create archive %1. %2</source>
         <translation>无法创建存档 %1。%2</translation>
     </message>
     <message>
@@ -649,14 +649,14 @@
         <translation>项目索引 %1 超出 [0, %2] 的范围</translation>
     </message>
     <message>
-        <source>Could not create output file for writing: %1</source>
+        <source>Cannot create output file for writing: %1</source>
         <translation>无法创建输出文件进行写入：%1</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
-        <source>Could not list archive: QIODevice not set or already destroyed.</source>
+        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
         <translation>无法列出存档：QIODevice 尚未设置或已损坏。</translation>
     </message>
     <message>
@@ -675,7 +675,7 @@
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
-        <source>Could not list archive: QIODevice already destroyed.</source>
+        <source>Cannot list archive: QIODevice already destroyed.</source>
         <translation>无法列出存档：QIODevice 已损坏。</translation>
     </message>
     <message>
@@ -690,15 +690,15 @@
 <context>
     <name>OpenArchiveInfo</name>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>无法加载解码器</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>无法检索默认格式</translation>
     </message>
     <message>
-        <source>Could not open archive</source>
+        <source>Cannot open archive</source>
         <translation>无法打开存档</translation>
     </message>
     <message>
@@ -777,43 +777,43 @@
         <translation>YB</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>无法删除文件 %1：%2</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>无法删除文件夹 %1：%2</translation>
     </message>
     <message>
-        <source>Could not create folder %1</source>
+        <source>Cannot create folder %1</source>
         <translation>无法创建文件夹 %1</translation>
     </message>
     <message>
-        <source>Could not copy file from %1 to %2: %3</source>
+        <source>Cannot copy file from %1 to %2: %3</source>
         <translation>无法将文件从 %1 复制到 %2：%3</translation>
     </message>
     <message>
-        <source>Could not move file from %1 to %2: %3</source>
+        <source>Cannot move file from %1 to %2: %3</source>
         <translation>无法将文件从 %1 移动到 %2：%3</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2</source>
+        <source>Cannot create folder %1: %2</source>
         <translation>无法创建文件夹 %1：%2</translation>
     </message>
     <message>
-        <source>Could not open temporary file: %1</source>
+        <source>Cannot open temporary file: %1</source>
         <translation>无法打开临时文件：%1</translation>
     </message>
     <message>
-        <source>Could not open temporary file for template %1: %2</source>
+        <source>Cannot open temporary file for template %1: %2</source>
         <translation>无法打开模板 %1 的临时文件：%2</translation>
     </message>
     <message>
-        <source>Could not create temporary file</source>
+        <source>Cannot create temporary file</source>
         <translation>无法创建临时文件</translation>
     </message>
     <message>
-        <source>Could not retrieve property %1 for item %2</source>
+        <source>Cannot retrieve property %1 for item %2</source>
         <translation>无法检索 %2 项目的 %1 属性</translation>
     </message>
     <message>
@@ -821,11 +821,11 @@
         <translation>%2 项目的 %1 属性不属于 VT_FILETIME 类型，而是 %3</translation>
     </message>
     <message>
-        <source>Could not convert file time to local time</source>
+        <source>Cannot convert file time to local time</source>
         <translation>无法将文件时间转换为本地时间</translation>
     </message>
     <message>
-        <source>Could not convert local file time to system time</source>
+        <source>Cannot convert local file time to system time</source>
         <translation>无法将本地文件时间转换为系统时间</translation>
     </message>
     <message>
@@ -860,19 +860,19 @@
         <translation>在升级模式下组件无法含有子组件。</translation>
     </message>
     <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
+        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
         <translation>无法打开请求的翻译文件“%1”。</translation>
     </message>
     <message>
-        <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>无法打开请求的UI文件“%1”。错误：%2</translation>
     </message>
     <message>
-        <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>无法加载请求的UI文件“%1”。错误：%2</translation>
     </message>
     <message>
-        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
         <translation>无法打开请求的许可文件“%1”。错误：%2</translation>
     </message>
     <message>
@@ -1036,7 +1036,7 @@
         <translation>%0 中存在无效的参数:目录无效：%1 %2</translation>
     </message>
     <message>
-        <source>Could not create %0</source>
+        <source>Cannot create %0</source>
         <translation>无法创建 %0</translation>
     </message>
     <message>
@@ -1044,11 +1044,11 @@
         <translation>覆盖 %1 失败</translation>
     </message>
     <message>
-        <source>Could not copy %0 to %1, error was: %3</source>
+        <source>Cannot copy %0 to %1, error was: %3</source>
         <translation>无法将 %0 复制到 %1，错误为：%3</translation>
     </message>
     <message>
-        <source>Could not remove %0</source>
+        <source>Cannot remove %0</source>
         <translation>无法删除 %0</translation>
     </message>
 </context>
@@ -1059,11 +1059,11 @@
         <translation>无效的任务项总数。</translation>
     </message>
     <message>
-        <source>Could not open source &apos;%1&apos; for read. Error: %2.</source>
+        <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
         <translation>无法打开文件“%1”进行读取。错误：%2。</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <translation>无法打开目标“%1”进行写入。错误：%2。</translation>
     </message>
     <message>
@@ -1086,11 +1086,11 @@
         <translation>覆盖 %1 失败</translation>
     </message>
     <message>
-        <source>Could not write Desktop Entry at %1</source>
+        <source>Cannot write Desktop Entry at %1</source>
         <translation>无法写入位于 %1 的桌面条目</translation>
     </message>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>无法备份文件 %1: %2</translation>
     </message>
 </context>
@@ -1105,22 +1105,22 @@
         <translation>恰好 2 个</translation>
     </message>
     <message>
-        <source>Could not create link from %1 to %2.</source>
+        <source>Cannot create link from %1 to %2.</source>
         <translation>无法创建从 %1 到 %2 的链接。</translation>
     </message>
     <message>
-        <source>Could not remove link from %1 to %2.</source>
+        <source>Cannot remove link from %1 to %2.</source>
         <translation>无法删除从 %1 到 %2 的链接。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Could not set file permissions %1!</source>
+        <source>Cannot set file permissions %1!</source>
         <translation>无法设置文件权限 %1!</translation>
     </message>
     <message>
-        <source>Could not move file %1 to %2. Error: %3</source>
+        <source>Cannot move file %1 to %2. Error: %3</source>
         <translation>无法将文件 %1 移动到 %2。错误：%3</translation>
     </message>
     <message>
@@ -1136,19 +1136,19 @@
         <translation>安装程序必须为离线版本：%1.</translation>
     </message>
     <message>
-        <source>Could not open file: %1</source>
+        <source>Cannot open file: %1</source>
         <translation>无法打开文件：%1</translation>
     </message>
     <message>
-        <source>Could not read: %1. Error: %2</source>
+        <source>Cannot read: %1. Error: %2</source>
         <translation>无法读取：%1.错误：%2</translation>
     </message>
     <message>
-        <source>Could not open file: %1. Error: %2</source>
+        <source>Cannot open file: %1. Error: %2</source>
         <translation>无法打开文件：%1.错误：%2</translation>
     </message>
     <message>
-        <source>Could not create target dir: %1.</source>
+        <source>Cannot create target dir: %1.</source>
         <translation>无法创建目标目录：%1.</translation>
     </message>
     <message>
@@ -1160,7 +1160,7 @@
         <translation>正在删除文件：%0</translation>
     </message>
     <message>
-        <source>Could not remove %0.</source>
+        <source>Cannot remove %0.</source>
         <translation>无法删除 %0。</translation>
     </message>
     <message>
@@ -1168,7 +1168,7 @@
         <translation>无法删除目录 %1：%2</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>无法删除文件 %1：%2</translation>
     </message>
 </context>
@@ -1183,11 +1183,11 @@
         <translation>2 或 3 个</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2.</source>
+        <source>Cannot create folder %1: %2.</source>
         <translation>无法创建文件夹 %1：%2.</translation>
     </message>
     <message>
-        <source>Could not create link %1: %2</source>
+        <source>Cannot create link %1: %2</source>
         <translation>无法创建链接 %1：%2</translation>
     </message>
     <message>
@@ -1218,15 +1218,15 @@
         <translation>下载时的散列验证失败。这是一个临时错误，请重试。</translation>
     </message>
     <message>
-        <source>Could not verify Hash</source>
+        <source>Cannot verify Hash</source>
         <translation>无法验证散列</translation>
     </message>
     <message>
-        <source>Could not download archive: %1 : %2</source>
+        <source>Cannot download archive: %1 : %2</source>
         <translation>无法下载存档：%1：%2</translation>
     </message>
     <message>
-        <source>Could not fetch archives: %1
+        <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation>无法提取存档：%1
 加载 %2 时出现错误</translation>
@@ -1236,7 +1236,7 @@ Error while loading %2</source>
         <translation>不支持的方案：%1 (%2)</translation>
     </message>
     <message>
-        <source>Could not find component for: %1.</source>
+        <source>Cannot find component for: %1.</source>
         <translation>无法下载以下项目的组件：%1.</translation>
     </message>
     <message>
@@ -1288,7 +1288,7 @@ Error while loading %2</source>
         <translation>目标文件“%1”已存在，但它不是一个文件。</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>无法打开目标“%1”以进行写入。错误：%2。</translation>
     </message>
@@ -1304,7 +1304,7 @@ Error while loading %2</source>
         <translation>至少 1 个</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
+        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
         <translation>执行失败：无法开始分离：“%1”</translation>
     </message>
     <message>
@@ -1316,7 +1316,7 @@ Error while loading %2</source>
         <translation>执行失败(意外退出代码：%1)：“%2”</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
+        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
         <translation>执行失败：无法启动：“%1”（%2）</translation>
     </message>
 </context>
@@ -1345,7 +1345,7 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Could not open %1 for reading: %2.</source>
+        <source>Cannot open %1 for reading: %2.</source>
         <translation>无法打开 %1 进行读取：%2.</translation>
     </message>
     <message>
@@ -1364,7 +1364,7 @@ Error while loading %2</source>
         <translation>参数数量不匹配：需要一个</translation>
     </message>
     <message>
-        <source>Could not get package manager core.</source>
+        <source>Cannot get package manager core.</source>
         <translation>无法获得包管理器内核。</translation>
     </message>
     <message>
@@ -1488,7 +1488,7 @@ Error while loading %2</source>
         <translation>参数无效：源文件夹不得为空。</translation>
     </message>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>无法备份文件 %1：%2</translation>
     </message>
     <message>
@@ -1500,7 +1500,7 @@ Error while loading %2</source>
         <translation>复制文件 %1 失败：%2</translation>
     </message>
     <message>
-        <source>Could not create folder at %1: %2</source>
+        <source>Cannot create folder at %1: %2</source>
         <translation>无法在 %1 创建文件夹：%2</translation>
     </message>
 </context>
@@ -1677,7 +1677,7 @@ Error while loading %2</source>
         <translation>提取 %1 时捕获未知异常。</translation>
     </message>
     <message>
-        <source>Could not open %1 for reading. Error: %2</source>
+        <source>Cannot open %1 for reading. Error: %2</source>
         <translation>无法打开 %1 读取。错误：%2</translation>
     </message>
 </context>
@@ -1765,7 +1765,7 @@ Downloading packages...</source>
         <translation>格式错误</translation>
     </message>
     <message>
-        <source>Could not write installer configuration to %1: %2</source>
+        <source>Cannot write installer configuration to %1: %2</source>
         <translation>无法将安装程序配置写入 %1：%2</translation>
     </message>
     <message>
@@ -1867,7 +1867,7 @@ Installing component %1</source>
         <translation>未知错误</translation>
     </message>
     <message>
-        <source>Could not retrieve remote tree: %1.</source>
+        <source>Cannot retrieve remote tree: %1.</source>
         <translation>无法检索远程树：%1.</translation>
     </message>
     <message>
@@ -1875,15 +1875,15 @@ Installing component %1</source>
         <translation>未能从以下位置读取包：%1.</translation>
     </message>
     <message>
-        <source>Could not retrieve meta information: %1</source>
+        <source>Cannot retrieve meta information: %1</source>
         <translation>无法检索元信息：%1</translation>
     </message>
     <message>
-        <source>Could not add temporary update source information.</source>
+        <source>Cannot add temporary update source information.</source>
         <translation>无法添加临时更新源信息。</translation>
     </message>
     <message>
-        <source>Could not find any update source information.</source>
+        <source>Cannot find any update source information.</source>
         <translation>无法找到任何更新源信息。</translation>
     </message>
     <message>
@@ -1903,19 +1903,19 @@ Installing component %1</source>
         <translation>维护工具不是捆绑套件</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool data to %1: %2</source>
+        <source>Cannot write maintenance tool data to %1: %2</source>
         <translation>无法将维护工具数据写入到 %1：%2</translation>
     </message>
     <message>
-        <source>Could not remove data file &apos;%1&apos;: %2</source>
+        <source>Cannot remove data file &apos;%1&apos;: %2</source>
         <translation>无法删除数据文件“%1”：%2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool to %1: %2</source>
+        <source>Cannot write maintenance tool to %1: %2</source>
         <translation>无法将维护工具写入到 %1：%2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool binary data to %1: %2</source>
+        <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>无法将维护工具二进制数据写入 %1：%2</translation>
     </message>
     <message>
@@ -2142,14 +2142,14 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>发送命令： %1 后无法读取所有数据。 期望： %2字节， 收到： %3字节。 错误： %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>发送命令： %1 后无法读取所有数据。 期望： %2字节， 收到： %3字节。 错误： %4</translation>
     </message>
 </context>
@@ -2175,7 +2175,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::Resource</name>
     <message>
-        <source>Could not open Resource &apos;%1&apos; read-only.</source>
+        <source>Cannot open Resource &apos;%1&apos; read-only.</source>
         <translation>无法以只读方式打开资源“%1”。</translation>
     </message>
     <message>
@@ -2197,7 +2197,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Could not open the requested script file at %1: %2.</source>
+        <source>Cannot open the requested script file at %1: %2.</source>
         <translation>无法打开位于 %1 的请求脚本文件：%2。</translation>
     </message>
     <message>
@@ -2394,7 +2394,7 @@ Do you want to continue?</source>
         <translation>测试：“%1”时超时</translation>
     </message>
     <message>
-        <source>Could not parse Updates.xml! Error: %1.</source>
+        <source>Cannot parse Updates.xml! Error: %1.</source>
         <translation>无法解析 Updates.xml! 错误：%1。</translation>
     </message>
     <message>
@@ -2424,11 +2424,11 @@ Do you want to continue?</source>
 <context>
     <name>RemoteClient</name>
     <message>
-        <source>Could not get authorization.</source>
+        <source>Cannot get authorization.</source>
         <translation>无法获得授权。</translation>
     </message>
     <message>
-        <source>Could not get authorization that is needed for continuing the installation.
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
@@ -2443,14 +2443,14 @@ as root and then clicking OK.</source>
 <context>
     <name>ResourceCollectionManager</name>
     <message>
-        <source>Could not open resource %1: %2</source>
+        <source>Cannot open resource %1: %2</source>
         <translation>无法打开资源 %1：%2</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <source>Could not open settings file %1 for reading: %2</source>
+        <source>Cannot open settings file %1 for reading: %2</source>
         <translation>无法打开设置文件 %1 进行读取：%2</translation>
     </message>
 </context>
@@ -2580,7 +2580,7 @@ as root and then clicking OK.</source>
         <translation>注册路径 %1 不可写入</translation>
     </message>
     <message>
-        <source>Could not write to registry path %1</source>
+        <source>Cannot write to registry path %1</source>
         <translation>无法写入注册路径 %1</translation>
     </message>
     <message>

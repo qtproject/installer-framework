@@ -84,19 +84,19 @@ int BinaryReplace::replace(const QString &source, const QString &target)
                         .path;
                     result = EXIT_SUCCESS;
                 } catch (const Lib7z::SevenZipException& e) {
-                    std::cerr << qPrintable(QString::fromLatin1("Error while extracting '%1': %2.")
-                        .arg(newInstallerBasePath, e.message())) << std::endl;
+                    std::cerr << qPrintable(QString::fromLatin1("Error while extracting \"%1\": %2")
+                        .arg(QDir::toNativeSeparators(newInstallerBasePath), e.message())) << std::endl;
                 } catch (...) {
                     std::cerr << qPrintable(QString::fromLatin1("Unknown exception caught while "
-                        "extracting '%1'.").arg(newInstallerBasePath)) << std::endl;
+                        "extracting \"%1\".").arg(QDir::toNativeSeparators(newInstallerBasePath))) << std::endl;
                 }
             } else {
-                std::cerr << qPrintable(QString::fromLatin1("Could not open '%1' for reading: %2.")
-                    .arg(newInstallerBasePath, archive.errorString())) << std::endl;
+                std::cerr << qPrintable(QString::fromLatin1("Cannot open \"%1\" for reading: %2")
+                    .arg(QDir::toNativeSeparators(newInstallerBasePath), archive.errorString())) << std::endl;
             }
             if (!archive.remove()) {
-                std::cerr << qPrintable(QString::fromLatin1("Could not delete file '%1': %2.")
-                    .arg(newInstallerBasePath, archive.errorString())) << std::endl;
+                std::cerr << qPrintable(QString::fromLatin1("Cannot delete file \"%1\": %2")
+                    .arg(QDir::toNativeSeparators(newInstallerBasePath), archive.errorString())) << std::endl;
             }
             if (result != EXIT_SUCCESS)
                 return result;
@@ -133,19 +133,19 @@ int BinaryReplace::replace(const QString &source, const QString &target)
 #endif
             QFile backup(installerBaseOld.fileName() + QLatin1String(".bak"));
             if (backup.exists() && (!backup.remove())) {
-                std::cerr << qPrintable(QString::fromLatin1("Could not delete '%1'. %2")
-                    .arg(backup.fileName(), backup.errorString())) << std::endl;
+                std::cerr << qPrintable(QString::fromLatin1("Cannot delete \"%1\": %2")
+                    .arg(QDir::toNativeSeparators(backup.fileName()), backup.errorString())) << std::endl;
             }
 
             const QString oldBasePath = installerBaseOld.fileName();
             if (!installerBaseOld.rename(oldBasePath + QLatin1String(".bak"))) {
-                std::cerr << qPrintable(QString::fromLatin1("Could not rename '%1' to '%2'. %3")
+                std::cerr << qPrintable(QString::fromLatin1("Cannot rename \"%1\" to \"%2\": %3")
                     .arg(oldBasePath, oldBasePath + QLatin1String(".bak"),
                     installerBaseOld.errorString())) << std::endl;
             }
 
             if (!installerBaseNew.rename(oldBasePath)) {
-                std::cerr << qPrintable(QString::fromLatin1("Could not copy '%1' to '%2'. %3")
+                std::cerr << qPrintable(QString::fromLatin1("Cannot copy \"%1\" to \"%2\": %3")
                     .arg(installerBaseNew.fileName(), oldBasePath, installerBaseNew.errorString()))
                     << std::endl;
             } else {

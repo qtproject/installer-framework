@@ -36,6 +36,7 @@
 #include "kdlockfile_p.h"
 
 #include <QCoreApplication>
+#include <QDir>
 
 #include <cerrno>
 #include <sys/file.h>
@@ -50,8 +51,8 @@ bool KDLockFile::Private::lock()
     errno = 0;
     handle = open(filename.toLatin1().constData(), O_CREAT | O_RDWR | O_NONBLOCK, 0600);
     if (handle == -1) {
-        errorString = QCoreApplication::translate("KDLockFile", "Could not create lock file '%1': "
-            "%2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+        errorString = QCoreApplication::translate("KDLockFile", "Cannot create lock file \"%1\": "
+            "%2").arg(QDir::toNativeSeparators(filename), QString::fromLocal8Bit(strerror(errno)));
         return false;
     }
     const QString pid = QString::number(qApp->applicationPid());
@@ -61,8 +62,8 @@ bool KDLockFile::Private::lock()
     while (written < data.size()) {
         const qint64 n = write(handle, data.constData() + written, data.size() - written);
         if (n < 0) {
-            errorString = QCoreApplication::translate("KDLockFile", "Could not write PID to lock "
-                "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+            errorString = QCoreApplication::translate("KDLockFile", "Cannot write PID to lock "
+                "file \"%1\": %2").arg(QDir::toNativeSeparators(filename), QString::fromLocal8Bit(strerror(errno)));
             return false;
         }
         written += n;
@@ -70,8 +71,8 @@ bool KDLockFile::Private::lock()
     errno = 0;
     locked = flock(handle, LOCK_NB | LOCK_EX) != -1;
     if (!locked) {
-        errorString = QCoreApplication::translate("KDLockFile", "Could not obtain the lock for "
-            "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+        errorString = QCoreApplication::translate("KDLockFile", "Cannot obtain the lock for "
+            "file \"%1\": %2").arg(QDir::toNativeSeparators(filename), QString::fromLocal8Bit(strerror(errno)));
     }
     return locked;
 }
@@ -85,8 +86,8 @@ bool KDLockFile::Private::unlock()
     errno = 0;
     locked = flock(handle, LOCK_UN | LOCK_NB) == -1;
     if (locked) {
-        errorString = QCoreApplication::translate("KDLockFile", "Could not release the lock for "
-            "file '%1': %2").arg(filename, QString::fromLocal8Bit(strerror(errno)));
+        errorString = QCoreApplication::translate("KDLockFile", "Cannot release the lock for "
+            "file \"%1\": %2").arg(QDir::toNativeSeparators(filename), QString::fromLocal8Bit(strerror(errno)));
     } else {
         unlink(filename.toLatin1());
     }

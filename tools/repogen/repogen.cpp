@@ -193,7 +193,7 @@ int main(int argc, char** argv)
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
             throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                "Repository target folder %1 already exists!").arg(repositoryDir));
+                "Repository target directory \"%1\" already exists.").arg(QDir::toNativeSeparators(repositoryDir)));
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
@@ -206,7 +206,7 @@ int main(int argc, char** argv)
                 const QDomElement root = doc.documentElement();
                 if (root.tagName() != QLatin1String("Updates")) {
                     throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                        "Invalid content in '%1'.").arg(file.fileName()));
+                        "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
                 }
                 file.close(); // close the file, we read the content already
 
@@ -239,7 +239,7 @@ int main(int argc, char** argv)
                 }
 
                 if (packages.isEmpty()) {
-                    std::cout << QString::fromLatin1("Could not find new components to update '%1'.")
+                    std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
                         .arg(repositoryDir) << std::endl;
                     return EXIT_SUCCESS;
                 }

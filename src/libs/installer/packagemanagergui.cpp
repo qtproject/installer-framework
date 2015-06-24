@@ -2159,7 +2159,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     QLabel *msgLabel = new QLabel(this);
     msgLabel->setWordWrap(true);
     msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    msgLabel->setText(tr("Please specify the folder where %1 will be installed.").arg(productName()));
+    msgLabel->setText(tr("Please specify the directory where %1 will be installed.").arg(productName()));
     layout->addWidget(msgLabel);
 
     QHBoxLayout *hlayout = new QHBoxLayout;
@@ -2267,14 +2267,14 @@ bool TargetDirectoryPage::validatePage()
 
         QFileInfo fi2(targetDir + QDir::separator() + fileName);
         if (fi2.exists()) {
-            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The folder you selected already "
+            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The directory you selected already "
                 "exists and contains an installation. Choose a different target for installation."));
         }
 
         return askQuestion(QLatin1String("OverwriteTargetDirectory"),
-            tr("You have selected an existing, non-empty folder for installation.\nNote that it will be "
+            tr("You have selected an existing, non-empty directory for installation.\nNote that it will be "
             "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
-            "this folder as installation might fail.\nDo you want to continue?"));
+            "this directory as installation might fail.\nDo you want to continue?"));
     } else if (fi.isFile() || fi.isSymLink()) {
         return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
             "or symlink, please choose a different target for installation."));
@@ -2329,7 +2329,7 @@ bool TargetDirectoryPage::isComplete() const
 QString TargetDirectoryPage::targetDirWarning() const
 {
     if (targetDir().isEmpty())
-        return tr("The installation path cannot be empty, please specify a valid folder.");
+        return tr("The installation path cannot be empty, please specify a valid directory.");
 
     QDir target(targetDir());
     if (target.isRelative())
@@ -2392,7 +2392,7 @@ QString TargetDirectoryPage::targetDirWarning() const
     }
 
     if (nativeTargetDir.endsWith(QLatin1Char('.')))
-        return tr("The installation path must not end with '.', please specify a valid folder.");
+        return tr("The installation path must not end with '.', please specify a valid directory.");
 
     QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
         "|(\\\\CON)|(\\\\PRN)|(\\\\AUX)|(\\\\NUL)|(\\\\COM\\d)|(\\\\LPT\\d)");
@@ -2407,8 +2407,8 @@ QString TargetDirectoryPage::targetDirWarning() const
     // check if there are not allowed characters in the target path
     QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
     if (match.hasMatch()) {
-        return tr("The installation path must not contain '%1', "
-            "please specify a valid folder.").arg(match.captured(0));
+        return tr("The installation path must not contain \"%1\", "
+            "please specify a valid directory.").arg(match.captured(0));
     }
 
     return QString();
@@ -2453,7 +2453,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setColoredTitle(tr("Start Menu shortcuts"));
     setColoredSubTitle(tr("Select the Start Menu in which you would like to create the program's "
-        "shortcuts. You can also enter a name to create a new folder."));
+        "shortcuts. You can also enter a name to create a new directory."));
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setText(core->value(scStartMenuDir, productName()));
@@ -2610,7 +2610,7 @@ void ReadyForInstallationPage::entering()
 
     // at the moment there is no better way to check this
     if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
-        qDebug() << QString::fromLatin1("Could not determine available space on device. Volume "
+        qDebug() << QString::fromLatin1("Cannot determine available space on device. Volume "
             "descriptor: %1, Mount path: %2. Continue silently.").arg(targetVolume
             .volumeDescriptor(), targetVolume.mountPath());
         return;     // TODO: Shouldn't this also disable the "Next" button?
@@ -2618,11 +2618,11 @@ void ReadyForInstallationPage::entering()
 
     const bool tempOnSameVolume = (targetVolume == tempVolume);
     if (tempOnSameVolume) {
-        qDebug() << "Tmp and install folder are on the same volume. Volume mount point:"
+        qDebug() << "Tmp and install directories are on the same volume. Volume mount point:"
             << targetVolume.mountPath() << "Free space available:"
             << humanReadableSize(installVolumeAvailableSize);
     } else {
-        qDebug() << "Tmp is on a different volume than the install folder. Tmp volume mount point:"
+        qDebug() << "Tmp is on a different volume than the installation directory. Tmp volume mount point:"
             << tempVolume.mountPath() << "Free space available:"
             << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
             << targetVolume.mountPath() << "Free space available:"
@@ -2654,7 +2654,7 @@ void ReadyForInstallationPage::entering()
 
     if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
         m_msgLabel->setText(tr("Not enough disk space to store temporary files and the "
-            "installation! Available space: %1, at least required %2.")
+            "installation. %1 are available, while %2 are at least required.")
             .arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required + tempRequired)));
         setComplete(false);
@@ -2662,16 +2662,16 @@ void ReadyForInstallationPage::entering()
     }
 
     if (installVolumeAvailableSize < required) {
-        m_msgLabel->setText(tr("Not enough disk space to store all selected components! Available "
-            "space: %1, at least required: %2.").arg(humanReadableSize(installVolumeAvailableSize),
+        m_msgLabel->setText(tr("Not enough disk space to store all selected components! %1 are available "
+            "while %2 are at least required.").arg(humanReadableSize(installVolumeAvailableSize),
             humanReadableSize(required)));
         setComplete(false);
         return;
     }
 
     if (tempVolumeAvailableSize < tempRequired) {
-        m_msgLabel->setText(tr("Not enough disk space to store temporary files! Available space: "
-            "%1, at least required: %2.").arg(humanReadableSize(tempVolumeAvailableSize),
+        m_msgLabel->setText(tr("Not enough disk space to store temporary files! %1 are available "
+            "while %2 are at least required.").arg(humanReadableSize(tempVolumeAvailableSize),
             humanReadableSize(tempRequired)));
         setComplete(false);
         return;

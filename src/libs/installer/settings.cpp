@@ -104,7 +104,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
         switch (token) {
             case QXmlStreamReader::StartElement: {
                 if (!reader.attributes().isEmpty()) {
-                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".")
                         .arg(reader.name().toString()), parseMode);
                     return arguments;
                 } else {
@@ -112,7 +112,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
                         (lc) ? arguments.append(reader.readElementText().toLower()) :
                                arguments.append(reader.readElementText());
                     } else {
-                        raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                        raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name()
                             .toString()), parseMode);
                         return arguments;
                     }
@@ -154,23 +154,23 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                 } else if (reader.name() == QLatin1String("Enabled")) {
                     repo.setEnabled(bool(reader.readElementText().toInt()));
                 } else {
-                    raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name()
+                    raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name()
                         .toString()), parseMode);
                 }
 
                 if (!reader.attributes().isEmpty()) {
-                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.")
+                    raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".")
                         .arg(reader.name().toString()), parseMode);
                 }
             }
             set.insert(repo);
         } else {
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(reader.name().toString()),
+            raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name().toString()),
                 parseMode);
         }
 
         if (!reader.attributes().isEmpty()) {
-            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(reader
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".").arg(reader
                 .name().toString()), parseMode);
         }
     }
@@ -237,12 +237,12 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         file.setFileName(overrideConfig.fileName());
 
     if (!file.open(QIODevice::ReadOnly))
-        throw Error(tr("Could not open settings file %1 for reading: %2").arg(path, file.errorString()));
+        throw Error(tr("Cannot open settings file %1 for reading: %2").arg(path, file.errorString()));
 
     QXmlStreamReader reader(&file);
     if (reader.readNextStartElement()) {
         if (reader.name() != QLatin1String("Installer")) {
-            reader.raiseError(QString::fromLatin1("Unexpected element '%1' as root element.").arg(reader
+            reader.raiseError(QString::fromLatin1("Unexpected element \"%1\" as root element.").arg(reader
                 .name().toString()));
         }
     }
@@ -265,15 +265,15 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
         if (!elementList.contains(name))
-            raiseError(reader, QString::fromLatin1("Unexpected element '%1'.").arg(name), parseMode);
+            raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(name), parseMode);
 
         if (!reader.attributes().isEmpty()) {
-            raiseError(reader, QString::fromLatin1("Unexpected attribute for element '%1'.").arg(name),
+            raiseError(reader, QString::fromLatin1("Unexpected attribute for element \"%1\".").arg(name),
                 parseMode);
         }
 
         if (s.d->m_data.contains(name))
-            reader.raiseError(QString::fromLatin1("Element '%1' has been defined before.").arg(name));
+            reader.raiseError(QString::fromLatin1("Element \"%1\" has been defined before.").arg(name));
 
         if (name == scTranslations) {
             s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));

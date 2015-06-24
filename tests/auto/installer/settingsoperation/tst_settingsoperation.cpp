@@ -122,7 +122,7 @@ private slots:
 
         QVERIFY2(settingsOperation.performOperation(), settingsOperation.errorString().toLatin1());
 
-        QVERIFY2(compareFiles(verifyFilePath, testFilePath), QString("'%1' and '%2' are different")
+        QVERIFY2(compareFiles(verifyFilePath, testFilePath), QString("\"%1\" and \"%2\" are different.")
             .arg(verifyFilePath, testFilePath).toLatin1());
     }
 

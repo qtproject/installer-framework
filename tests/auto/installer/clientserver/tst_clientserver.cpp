@@ -213,7 +213,7 @@ private slots:
 
         QLocalSocket socket;
         socket.connectToServer(socketName);
-        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QVERIFY2(socket.waitForConnected(), "Cannot connect to server.");
         QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         sendCommand(&socket, Protocol::Authorize, QString(Protocol::DefaultAuthorizationKey));
@@ -246,7 +246,7 @@ private slots:
 
         QLocalSocket socket;
         socket.connectToServer(socketName);
-        QVERIFY2(socket.waitForConnected(), "Could not connect to server.");
+        QVERIFY2(socket.waitForConnected(), "Cannot connect to server.");
         QCOMPARE(socket.state() == QLocalSocket::ConnectedState, true);
 
         sendCommand(&socket, Protocol::Authorize, QString::fromLatin1("SomeKey"));

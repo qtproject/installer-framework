@@ -170,7 +170,7 @@ bool Resource::open()
     }
 
     if (!QIODevice::open(QIODevice::ReadOnly)) {
-        setErrorString(tr("Could not open Resource '%1' read-only.").arg(QString::fromUtf8(m_name)));
+        setErrorString(tr("Cannot open resource %1 for reading.").arg(QString::fromUtf8(m_name)));
         return false;
     }
     return true;
@@ -398,7 +398,7 @@ Range<qint64> ResourceCollectionManager::write(QFileDevice *out, qint64 offset) 
 
         foreach (const QSharedPointer<Resource> &resource, collection.resources()) {
             if (!resource->open()) {
-                throw QInstaller::Error(tr("Could not open resource %1: %2")
+                throw QInstaller::Error(tr("Cannot open resource %1: %2")
                     .arg(QString::fromUtf8(resource->name()), resource->errorString()));
             }
             resource->copyData(out);

@@ -219,11 +219,11 @@ bool CreateShortcutOperation::performOperation()
 #if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
         char msg[128];
         if (strerror_s(msg, sizeof msg, errno) != 0) {
-            setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
+            setErrorString(tr("Cannot create directory \"%1\": %2").arg(QDir::toNativeSeparators(linkPath),
                 QString::fromLocal8Bit(msg)));
         }
 #else
-        setErrorString(tr("Could not create folder %1: %2.").arg(QDir::toNativeSeparators(linkPath),
+        setErrorString(tr("Cannot create directory \"%1\": %2").arg(QDir::toNativeSeparators(linkPath),
             QString::fromLocal8Bit(strerror(errno))));
 #endif
         return false;
@@ -233,7 +233,7 @@ bool CreateShortcutOperation::performOperation()
     QString errorString;
     if (QFile::exists(linkLocation) && !deleteFileNowOrLater(linkLocation, &errorString)) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to overwrite %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+        setErrorString(tr("Failed to overwrite \"%1\": %2").arg(QDir::toNativeSeparators(linkLocation),
             errorString));
         return false;
     }
@@ -241,7 +241,7 @@ bool CreateShortcutOperation::performOperation()
     const bool linked = createLink(linkTarget, linkLocation, m_workingDir, targetArguments, m_iconPath, m_iconId);
     if (!linked) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create link %1: %2").arg(QDir::toNativeSeparators(linkLocation),
+        setErrorString(tr("Cannot create link \"%1\": %2").arg(QDir::toNativeSeparators(linkLocation),
             qt_error_string()));
         return false;
     }

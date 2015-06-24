@@ -61,7 +61,7 @@ void UpdatesInfoData::parseFile(const QString &updateXmlFile)
     QFile file(updateXmlFile);
     if (!file.open(QFile::ReadOnly)) {
         error = UpdatesInfo::CouldNotReadUpdateInfoFileError;
-        errorMessage = tr("Could not read \"%1\"").arg(updateXmlFile);
+        errorMessage = tr("Cannot read \"%1\"").arg(updateXmlFile);
         return;
     }
 

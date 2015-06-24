@@ -15,26 +15,26 @@
 <context>
     <name>BinaryContent</name>
     <message>
-        <source>Could not seek to %1 to read the operation data.</source>
+        <source>Cannot seek to %1 to read the operation data.</source>
         <translation>Konnte nicht bis zur Anweisungsliste an Position %1 springen.</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection block.</source>
+        <source>Cannot seek to %1 to read the resource collection block.</source>
         <translation>Konnte nicht bis zur Resourcensammlung an Position %1 suchen.</translation>
     </message>
     <message>
-        <source>Could not open meta resource. Error: %1</source>
+        <source>Cannot open meta resource. Error: %1</source>
         <translation>Konnte Metainformationen nicht öffnen. Fehlermeldung: %1</translation>
     </message>
 </context>
 <context>
     <name>BinaryLayout</name>
     <message>
-        <source>Could not seek to %1 to read the embedded meta data count.</source>
+        <source>Cannot seek to %1 to read the embedded meta data count.</source>
         <translation>Konnte nicht bis %1 suchen, um die eingebettete Metadatenanzahl zu lesen.</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection segment.</source>
+        <source>Cannot seek to %1 to read the resource collection segment.</source>
         <translation>Konnte nicht bis %1 suchen, um die Resourcensammlung zu lesen.</translation>
     </message>
     <message>
@@ -72,34 +72,34 @@
         <translation>Pfad %1 existiert, aber ist kein Ordner.</translation>
     </message>
     <message>
-        <source>Could not create folder: %1</source>
+        <source>Cannot create folder: %1</source>
         <translation>Konnte Ordner %1 nicht anlegen.</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
     </message>
     <message>
-        <source>Could not remove already existing symlink. %1</source>
+        <source>Cannot remove already existing symlink. %1</source>
         <translation>Konnte existierende Verknüpfung (Symlink) %1 nicht entfernen.</translation>
     </message>
     <message>
-        <source>Could not open file: %1 (%2)</source>
+        <source>Cannot open file: %1 (%2)</source>
         <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
         <translation>Konnte Verknüpfung (Symlink) &apos;%1&apos; nicht erstellen. Es existiert bereits eine an dieser Stelle.</translation>
     </message>
     <message>
-        <source>Could not read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
         <translation>Konnte Ziel der Verknüpfung (Symlink) &apos;%1&apos; nicht lesen.</translation>
     </message>
     <message>
-        <source>Could not create symlink at %1. %2</source>
+        <source>Cannot create symlink at %1. %2</source>
         <translation>Konnte keine Dateisystemverknüpfung (Symlink) %1 anlegen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -140,19 +140,19 @@
 <context>
     <name>KDLockFile</name>
     <message>
-        <source>Could not create lock file &apos;%1&apos;: %2</source>
+        <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>Konnte keine Sperrdatei %1 anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not write PID to lock file &apos;%1&apos;: %2</source>
+        <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
         <translation>Konnte PID nicht in die Sperrdatei %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not obtain the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
         <translation>Konnte Sperre für Datei &apos;%1&apos; nicht anlegen: &apos;%2&apos;</translation>
     </message>
     <message>
-        <source>Could not release the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
         <translation>Konnte Sperre für Datei &apos;%1&apos; nicht aufheben: &apos;%2&apos;</translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
         <translation>genau 2</translation>
     </message>
     <message>
-        <source>Could not open file &apos;%1&apos; for writing: %2</source>
+        <source>Cannot open file &apos;%1&apos; for writing: %2</source>
         <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -179,11 +179,11 @@
         <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1.</source>
+        <source>Cannot restore backup file for %1.</source>
         <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1: %2</source>
+        <source>Cannot restore backup file for %1: %2</source>
         <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -194,27 +194,27 @@
         <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
     </message>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>Konnte Datei %1 nicht sichern.</translation>
     </message>
     <message>
-        <source>Could not copy a non-existent file: %1</source>
+        <source>Cannot copy a non-existent file: %1</source>
         <translation>Konnte nicht existierende Datei nicht kopieren: %1</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <source>Could not delete file %1: %2</source>
+        <source>Cannot delete file %1: %2</source>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not restore backup file into %1: %2</source>
+        <source>Cannot restore backup file into %1: %2</source>
         <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -303,7 +303,7 @@
         <translation>Konnte %1 nicht herunterladen. Schreiben in Datei &apos;%2&apos; fehlgeschlagen. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <source>Cannot download %1: Could not create %2: %3</source>
+        <source>Cannot download %1: Cannot create %2: %3</source>
         <translation>Konnte %1 nicht herunterladen. Erstellen der Datei %2 fehlgeschlagen. Fehlermeldung: %3</translation>
     </message>
     <message>
@@ -357,7 +357,7 @@
         <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
     </message>
     <message>
-        <source>Could not create folder %1: Unknown error.</source>
+        <source>Cannot create folder %1: Unknown error.</source>
         <translation>Konnte Ordner %1 nicht anlegen. Unbekannter Fehler.</translation>
     </message>
     <message>
@@ -368,7 +368,7 @@
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>Konnte Datei %1 nicht sichern.</translation>
     </message>
     <message>
@@ -376,11 +376,11 @@
         <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
@@ -407,7 +407,7 @@
         <translation>Datei %1 existiert nicht.</translation>
     </message>
     <message>
-        <source>Could not open %1.</source>
+        <source>Cannot open %1.</source>
         <translation>Konnte Datei %1 nicht öffnen.</translation>
     </message>
     <message>
@@ -430,11 +430,11 @@
         <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
     </message>
     <message>
-        <source>Could not open file %1 for reading: %2</source>
+        <source>Cannot open file %1 for reading: %2</source>
         <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not open file %1 for writing: %2</source>
+        <source>Cannot open file %1 for writing: %2</source>
         <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -453,7 +453,7 @@
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Could not read resource file &quot;%1&quot;. Reason:</source>
+        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
         <translation>Konnte Ressourcendatei %1 nicht zum Lesen öffnen. Grund:</translation>
     </message>
 </context>
@@ -464,11 +464,11 @@
         <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: The folder does not exist.</source>
+        <source>Cannot remove folder %1: The folder does not exist.</source>
         <translation>Konnte Ordner %1 nicht entfernen. Der Ordner existiert nicht.</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -510,11 +510,11 @@
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
-        <source>Could not access the package information of this application.</source>
+        <source>Cannot access the package information of this application.</source>
         <translation>Konnte nicht auf die Paketinformationen dieser Anwendung zugreifen.</translation>
     </message>
     <message>
-        <source>Could not access the update sources information of this application.</source>
+        <source>Cannot access the update sources information of this application.</source>
         <translation>Konnte nicht auf die Aktualisierungsinformationen dieser Anwendung zugreifen.</translation>
     </message>
     <message numerus="yes">
@@ -529,7 +529,7 @@
         <translation>Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
     </message>
     <message>
-        <source>Could not download update source %1 from (&apos;%2&apos;)</source>
+        <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
         <translation>Konnte Aktualisierungen nicht von %1 (&apos;%2&apos;) herunterladen.</translation>
     </message>
     <message>
@@ -552,7 +552,7 @@
         <translation>Datei %1 enthält ungültige Inhalte: %2</translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
     </message>
     <message>
@@ -564,14 +564,14 @@
         <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;UpdateSources&quot;.</translation>
     </message>
     <message>
-        <source>Could not save changes to &quot;%1&quot;: %2</source>
+        <source>Cannot save changes to &quot;%1&quot;: %2</source>
         <translation>Konnte Änderungen nicht in Datei %1 speichern. Fehlermeldung: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdatesInfoData</name>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
     </message>
     <message>
@@ -610,11 +610,11 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>Could not retrieve number of items in archive</source>
+        <source>Cannot retrieve number of items in archive</source>
         <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
     </message>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
     </message>
     <message>
@@ -634,15 +634,15 @@
         <translation>Fehler: %1</translation>
     </message>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>Konnte Codecs nicht laden.</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>Konnte Standardformat nicht finden.</translation>
     </message>
     <message>
-        <source>Could not create archive %1. %2</source>
+        <source>Cannot create archive %1. %2</source>
         <translation>Konnte kein Archiv %1 anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -654,14 +654,14 @@
         <translation>Itemindex %1 ausserhalb der Grenzen [0, %2].</translation>
     </message>
     <message>
-        <source>Could not create output file for writing: %1</source>
+        <source>Cannot create output file for writing: %1</source>
         <translation>Konnte Ausgabedatei nicht zum Schreiben öffnen. Fehlermeldung: %1</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
-        <source>Could not list archive: QIODevice not set or already destroyed.</source>
+        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
         <translation>Kann Archiv nicht anzeigen: QIODevice ist nicht gesetzt oder bereits zerstört.</translation>
     </message>
     <message>
@@ -680,7 +680,7 @@
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
-        <source>Could not list archive: QIODevice already destroyed.</source>
+        <source>Cannot list archive: QIODevice already destroyed.</source>
         <translation>Kann Archiv nicht anzeigen: QIODevice ist bereits zerstört.</translation>
     </message>
     <message>
@@ -695,15 +695,15 @@
 <context>
     <name>OpenArchiveInfo</name>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>Konnte Codecs nicht laden.</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>Konnte Standardformat nicht finden.</translation>
     </message>
     <message>
-        <source>Could not open archive</source>
+        <source>Cannot open archive</source>
         <translation>Konnte Archiv nicht öffnen.</translation>
     </message>
     <message>
@@ -757,35 +757,35 @@
         <translation>YiB</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create folder %1</source>
+        <source>Cannot create folder %1</source>
         <translation>Konnte Ordner %1 nicht anlegen.</translation>
     </message>
     <message>
-        <source>Could not copy file from %1 to %2: %3</source>
+        <source>Cannot copy file from %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <source>Could not move file from %1 to %2: %3</source>
+        <source>Cannot move file from %1 to %2: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2</source>
+        <source>Cannot create folder %1: %2</source>
         <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not open temporary file: %1</source>
+        <source>Cannot open temporary file: %1</source>
         <translation>Konnte temporäre Datei nicht öffnen. Fehlermeldung: %1</translation>
     </message>
     <message>
-        <source>Could not open temporary file for template %1: %2</source>
+        <source>Cannot open temporary file for template %1: %2</source>
         <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -813,11 +813,11 @@
         <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create temporary file</source>
+        <source>Cannot create temporary file</source>
         <translation>Konnte temporäre Datei nicht anlegen.</translation>
     </message>
     <message>
-        <source>Could not retrieve property %1 for item %2</source>
+        <source>Cannot retrieve property %1 for item %2</source>
         <translation>Konnte Eigenschaft %1 von %2 nicht erhalten.</translation>
     </message>
     <message>
@@ -825,11 +825,11 @@
         <translation>Eigenschaft %1 von %2 ist nicht vom Typ VT_FILETIME, sondern vom Typ %3.</translation>
     </message>
     <message>
-        <source>Could not convert file time to local time</source>
+        <source>Cannot convert file time to local time</source>
         <translation>Konnte die Dateizeit nicht in die lokale Zeit umwandeln.</translation>
     </message>
     <message>
-        <source>Could not convert local file time to system time</source>
+        <source>Cannot convert local file time to system time</source>
         <translation>Konnte die lokale Dateizeit nicht in die Systemzeit umwandeln.</translation>
     </message>
     <message>
@@ -852,19 +852,19 @@
         <translation>Komponenten können im Updater Modus keine Kinder haben.</translation>
     </message>
     <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
+        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
         <translation>Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
     </message>
     <message>
-        <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
         <translation>Konnte angeforderte Lizenzdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1040,7 +1040,7 @@
         <translation>Ungültige Argumentein %0: Ordner %1 und %2 ungültig.</translation>
     </message>
     <message>
-        <source>Could not create %0</source>
+        <source>Cannot create %0</source>
         <translation>Konnte Ordner &quot;%1&quot; nicht anlegen.</translation>
     </message>
     <message>
@@ -1048,11 +1048,11 @@
         <translation>Konnte Datei %1 nicht überschreiben</translation>
     </message>
     <message>
-        <source>Could not copy %0 to %1, error was: %3</source>
+        <source>Cannot copy %0 to %1, error was: %3</source>
         <translation>Konnte %0 nicht nach %1 kopieren. Fehlermeldung: %3</translation>
     </message>
     <message>
-        <source>Could not remove %0</source>
+        <source>Cannot remove %0</source>
         <translation>Konnte Datei %0 nicht löschen.</translation>
     </message>
 </context>
@@ -1063,11 +1063,11 @@
         <translation>Ungültige Anzahl task items.</translation>
     </message>
     <message>
-        <source>Could not open source &apos;%1&apos; for read. Error: %2.</source>
+        <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
         <translation>Konnte Quelle &apos;%1&apos; nicht zum Lesen öffnen. Fehlermeldung: %2.</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2.</translation>
     </message>
     <message>
@@ -1078,7 +1078,7 @@
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1094,7 +1094,7 @@
         <translation>Konnte Datei %1 nicht überschreiben.</translation>
     </message>
     <message>
-        <source>Could not write Desktop Entry at %1</source>
+        <source>Cannot write Desktop Entry at %1</source>
         <translation>Konnte keinen Eintrag %1 auf dem Arbeitsplatz anlegen.</translation>
     </message>
 </context>
@@ -1109,26 +1109,26 @@
         <translation>genau 2</translation>
     </message>
     <message>
-        <source>Could not create link from %1 to %2.</source>
+        <source>Cannot create link from %1 to %2.</source>
         <translation>Konnte keinen Link von %1 nach %2 erstellen.</translation>
     </message>
     <message>
-        <source>Could not remove link from %1 to %2.</source>
+        <source>Cannot remove link from %1 to %2.</source>
         <translation>Konnte Link von %1 nach %2 nicht entfernen.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Could not set file permissions %1!</source>
+        <source>Cannot set file permissions %1!</source>
         <translation>Konnte Dateirechte auf Datei %1 nicht setzen!</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not move file %1 to %2. Error: %3</source>
+        <source>Cannot move file %1 to %2. Error: %3</source>
         <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
     </message>
     <message>
@@ -1144,19 +1144,19 @@
         <translation>Installer muss eine offline Version sein: %1.</translation>
     </message>
     <message>
-        <source>Could not open file: %1</source>
+        <source>Cannot open file: %1</source>
         <translation>Konnte Datei %1 nicht öffnen.</translation>
     </message>
     <message>
-        <source>Could not read: %1. Error: %2</source>
+        <source>Cannot read: %1. Error: %2</source>
         <translation>Konnte Datei %1 nicht lesen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not open file: %1. Error: %2</source>
+        <source>Cannot open file: %1. Error: %2</source>
         <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create target dir: %1.</source>
+        <source>Cannot create target dir: %1.</source>
         <translation>Konnte Zielordner %1. nicht anlegen.</translation>
     </message>
     <message>
@@ -1168,7 +1168,7 @@
         <translation>Entferne Datei %0</translation>
     </message>
     <message>
-        <source>Could not remove %0.</source>
+        <source>Cannot remove %0.</source>
         <translation>Konnte Datei %0. nicht löschen.</translation>
     </message>
     <message>
@@ -1191,7 +1191,7 @@
         <translation> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2.</source>
+        <source>Cannot create folder %1: %2.</source>
         <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1199,7 +1199,7 @@
         <translation>Konnte Datei %1 nicht überschreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create link %1: %2</source>
+        <source>Cannot create link %1: %2</source>
         <translation>Konnte Verweis %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -1222,15 +1222,15 @@
         <translation>Prüfsumme ungültig beim Herunterladen. Dies ist ein kurzzeitiger Fehler, bitte erneut versuchen.</translation>
     </message>
     <message>
-        <source>Could not verify Hash</source>
+        <source>Cannot verify Hash</source>
         <translation>Prüfsumme konnte nicht geprüft werden.</translation>
     </message>
     <message>
-        <source>Could not download archive: %1 : %2</source>
+        <source>Cannot download archive: %1 : %2</source>
         <translation>Konnte Archiv %1 nicht herunterladen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not fetch archives: %1
+        <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation>Konnte Archiv nicht laden. Fehler: %1
 Fehler beim Laden von %2</translation>
@@ -1244,7 +1244,7 @@ Fehler beim Laden von %2</translation>
         <translation>Schema &quot;%1&quot; nicht unterstützt in &quot;%2&quot;.</translation>
     </message>
     <message>
-        <source>Could not find component for: %1.</source>
+        <source>Cannot find component for: %1.</source>
         <translation>Konnte keine Komponente für Datei %1 finden.</translation>
     </message>
 </context>
@@ -1292,7 +1292,7 @@ Fehler beim Laden von %2</translation>
         <translation>Zieldatei &apos;%1&apos; existiert bereits aber ist keine Datei.</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehler: %2.</translation>
     </message>
@@ -1308,11 +1308,11 @@ Fehler beim Laden von %2</translation>
         <translation>mindestens 1</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
+        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
         <translation>Ausführung fehlgeschlagen: Konnte %1 nicht detached starten.</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
+        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
         <translation>Ausführung fehlgeschlagen: Konnte &apos;%1&apos; nicht starten. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1349,7 +1349,7 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Could not open %1 for reading: %2.</source>
+        <source>Cannot open %1 for reading: %2.</source>
         <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1368,7 +1368,7 @@ Fehler beim Laden von %2</translation>
         <translation>Unpassende Anzahl Argumente: Genau eins wird verlangt</translation>
     </message>
     <message>
-        <source>Could not get package manager core.</source>
+        <source>Cannot get package manager core.</source>
         <translation>Konnte PackageManagerCore nicht erhalten.</translation>
     </message>
     <message>
@@ -1496,7 +1496,7 @@ Fehler beim Laden von %2</translation>
         <translation>Ungültiges Argument: Quellordner darf nicht leer sein.</translation>
     </message>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1508,7 +1508,7 @@ Fehler beim Laden von %2</translation>
         <translation>Konnte Datei nicht nach %1 kopieren. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not create folder at %1: %2</source>
+        <source>Cannot create folder at %1: %2</source>
         <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -1687,7 +1687,7 @@ Fehler beim Laden von %2</translation>
         <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
     </message>
     <message>
-        <source>Could not open %1 for reading. Error: %2</source>
+        <source>Cannot open %1 for reading. Error: %2</source>
         <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -1775,7 +1775,7 @@ Lade Pakete herunter...</translation>
         <translation>Formatfehler</translation>
     </message>
     <message>
-        <source>Could not write installer configuration to %1: %2</source>
+        <source>Cannot write installer configuration to %1: %2</source>
         <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -1859,19 +1859,19 @@ Aktualisierung abgebrochen!</translation>
         <translation>Verwaltungswerkzeug ist kein Bundle</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool data to %1: %2</source>
+        <source>Cannot write maintenance tool data to %1: %2</source>
         <translation>Konnte Daten des Verwaltungswerkzeugs nicht nach %1 schreiben. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not remove data file &apos;%1&apos;: %2</source>
+        <source>Cannot remove data file &apos;%1&apos;: %2</source>
         <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool to %1: %2</source>
+        <source>Cannot write maintenance tool to %1: %2</source>
         <translation>Konnte Verwaltungswerkzeug nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool binary data to %1: %2</source>
+        <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>Konnte Binäre Datei des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
@@ -1921,7 +1921,7 @@ Installiere Komponente %1</translation>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <source>Could not retrieve remote tree: %1.</source>
+        <source>Cannot retrieve remote tree: %1.</source>
         <translation>Kann entfernten Baum nicht empfangen: %1</translation>
     </message>
     <message>
@@ -1929,15 +1929,15 @@ Installiere Komponente %1</translation>
         <translation>Fehler beim Lesen der Pakete von %1</translation>
     </message>
     <message>
-        <source>Could not retrieve meta information: %1</source>
+        <source>Cannot retrieve meta information: %1</source>
         <translation>Konnte die Metainformationen nicht empfangen: %1</translation>
     </message>
     <message>
-        <source>Could not add temporary update source information.</source>
+        <source>Cannot add temporary update source information.</source>
         <translation>Konnte Informationen zu temporären Aktualisierungsquellen nicht hinzufügen.</translation>
     </message>
     <message>
-        <source>Could not find any update source information.</source>
+        <source>Cannot find any update source information.</source>
         <translation>Konnte keine Informationen zu Aktualisierungsquellen finden.</translation>
     </message>
     <message>
@@ -2152,14 +2152,14 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
@@ -2185,7 +2185,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::Resource</name>
     <message>
-        <source>Could not open Resource &apos;%1&apos; read-only.</source>
+        <source>Cannot open Resource &apos;%1&apos; read-only.</source>
         <translation>Konnte Ressourcendatei &apos;%1&apos; nicht zum Nur-Lesen öffnen.</translation>
     </message>
     <message>
@@ -2207,7 +2207,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Could not open the requested script file at %1: %2.</source>
+        <source>Cannot open the requested script file at %1: %2.</source>
         <translation>Konnte angeforderte Skriptdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
     </message>
     <message>
@@ -2404,7 +2404,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Erhielt Timeout beim Testen von: &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>Could not parse Updates.xml! Error: %1.</source>
+        <source>Cannot parse Updates.xml! Error: %1.</source>
         <translation>Ungültiges Format der Updates.xml. Fehlermeldung: %1.</translation>
     </message>
     <message>
@@ -2434,11 +2434,11 @@ Möchten Sie trotzdem fortsetzen?</translation>
 <context>
     <name>RemoteClient</name>
     <message>
-        <source>Could not get authorization.</source>
+        <source>Cannot get authorization.</source>
         <translation>Konnte Autorisierung nicht erhalten.</translation>
     </message>
     <message>
-        <source>Could not get authorization that is needed for continuing the installation.
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
@@ -2453,14 +2453,14 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
 <context>
     <name>ResourceCollectionManager</name>
     <message>
-        <source>Could not open resource %1: %2</source>
+        <source>Cannot open resource %1: %2</source>
         <translation>Konnte Ressource %1 nicht öffnen: %2</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <source>Could not open settings file %1 for reading: %2</source>
+        <source>Cannot open settings file %1 for reading: %2</source>
         <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
     </message>
 </context>
@@ -2590,7 +2590,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
         <translation>Registrierungspfad %1 ist nicht beschreibbar</translation>
     </message>
     <message>
-        <source>Could not write to registry path %1</source>
+        <source>Cannot write to registry path %1</source>
         <translation>Konnte nicht in Registrierungspfad %1 schreiben</translation>
     </message>
     <message>

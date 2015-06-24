@@ -122,7 +122,7 @@ void CreateDesktopEntryOperation::backup()
     }
 
     if (!file.copy(value(QLatin1String("backupOfExistingDesktopEntry")).toString()))
-        setErrorString(tr("Could not backup file %1: %2").arg(filename, file.errorString()));
+        setErrorString(tr("Cannot backup file \"%1\": %2").arg(QDir::toNativeSeparators(filename), file.errorString()));
 }
 
 bool CreateDesktopEntryOperation::performOperation()
@@ -136,13 +136,13 @@ bool CreateDesktopEntryOperation::performOperation()
     QFile file(filename);
     if (file.exists() && !file.remove()) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to overwrite %1").arg(filename));
+        setErrorString(tr("Failed to overwrite file \"%1\".").arg(QDir::toNativeSeparators(filename)));
         return false;
     }
 
     if(!file.open(QIODevice::WriteOnly)) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not write Desktop Entry at %1").arg(filename));
+        setErrorString(tr("Cannot write desktop entry to \"%1\".").arg(QDir::toNativeSeparators(filename)));
         return false;
     }
 
@@ -168,7 +168,7 @@ bool CreateDesktopEntryOperation::undoOperation()
     // first remove the link
     QFile file(filename);
     if (file.exists() && !file.remove()) {
-        qWarning() << "Could not delete file" << filename << file.errorString();
+        qWarning() << "Cannot delete file" << filename << ":" << file.errorString();
         return true;
     }
 
@@ -178,13 +178,13 @@ bool CreateDesktopEntryOperation::undoOperation()
     QFile backupFile(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
     if (!backupFile.exists()) {
         // do not treat this as a real error: The backup file might have been just nuked by the user.
-        qWarning() << "Could not restore original desktop entry at" << filename
+        qWarning() << "Cannot restore original desktop entry at" << filename
                    << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
         return true;
     }
 
     if (!backupFile.rename(filename))
-        qWarning() << "Could not restore the file" << filename << ":" << backupFile.errorString();
+        qWarning() << "Cannot restore the file" << filename << ":" << backupFile.errorString();
 
     return true;
 }

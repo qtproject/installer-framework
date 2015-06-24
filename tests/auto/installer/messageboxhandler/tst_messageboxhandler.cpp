@@ -94,7 +94,7 @@ private slots:
                     wantedButton = button;
             }
 
-            QVERIFY2(wantedButton != QMessageBox::NoButton, "Could not find a wantedButton.");
+            QVERIFY2(wantedButton != QMessageBox::NoButton, "Cannot find a wantedButton.");
             QCOMPARE(static_cast<QMessageBox::StandardButton>(returnButton), wantedButton);
         } while (standardButtons < m_maxStandardButtons);
     }

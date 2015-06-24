@@ -372,7 +372,7 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
-        throw Error(tr("Could not open the requested script file at %1: %2.")
+        throw Error(tr("Cannot open script file at %1: %2")
             .arg(fileName, file.errorString()));
     }
 
@@ -390,9 +390,10 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
     QJSValue scriptContext = evaluate(scriptContent, fileName);
     scriptContext.setProperty(QLatin1String("Uuid"), QUuid::createUuid().toString());
     if (scriptContext.isError()) {
-        throw Error(tr("Exception while loading the component script '%1'. (%2)").arg(
-            QFileInfo(file).absoluteFilePath(), scriptContext.toString().isEmpty() ?
-            QString::fromLatin1("Unknown error.") : scriptContext.toString()));
+        throw Error(tr("Exception while loading the component script \"%1\": %2").arg(
+                        QDir::toNativeSeparators(QFileInfo(file).absoluteFilePath()),
+                        scriptContext.toString().isEmpty() ?
+                            tr("Unknown error.") : scriptContext.toString()));
     }
     return scriptContext;
 }

@@ -258,7 +258,7 @@ void LocalPackageHub::refresh()
     // Open Packages.xml
     if (!file.open(QFile::ReadOnly)) {
         d->error = CouldNotReadPackageFileError;
-        d->errorMessage = tr("Could not open %1.").arg(d->fileName);
+        d->errorMessage = tr("Cannot open %1.").arg(d->fileName);
         return;
     }
 

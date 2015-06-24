@@ -565,8 +565,8 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
     while (it.hasNext()) {
         QFile file(it.next());
         if (!file.open(QIODevice::ReadOnly)) {
-            throw Error(tr("Could not open the requested UI file '%1'. Error: %2").arg(it.fileName(),
-                file.errorString()));
+            throw Error(tr("Cannot open the requested UI file \"%1\": %2").arg(
+                            it.fileName(), file.errorString()));
         }
 
         static QUiLoader loader;
@@ -574,8 +574,8 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         loader.setLanguageChangeEnabled(true);
         QWidget *const widget = loader.load(&file, 0);
         if (!widget) {
-            throw Error(tr("Could not load the requested UI file '%1'. Error: %2").arg(it.fileName(),
-                loader.errorString()));
+            throw Error(tr("Cannot load the requested UI file \"%1\": %2").arg(
+                            it.fileName(), loader.errorString()));
         }
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
@@ -609,8 +609,8 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
                 << ". Using untranslated fallback.";
             file.setFileName(directory + fileName);
             if (!file.open(QIODevice::ReadOnly)) {
-                throw Error(tr("Could not open the requested license file '%1'. Error: %2").arg(fileName,
-                    file.errorString()));
+                throw Error(tr("Cannot open the requested license file \"%1\": %2").arg(
+                                fileName, file.errorString()));
             }
         }
         QTextStream stream(&file);
@@ -974,7 +974,7 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     if (operation == 0) {
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-            QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist")
+            QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist.")
                 .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore);
         if (button == QMessageBox::Abort)
             d->m_operationsCreatedSuccessfully = false;

@@ -222,7 +222,7 @@ void DownloadArchivesJob::registerFile()
             QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel);
 
         if (res == QMessageBox::Cancel) {
-            finishWithError(tr("Could not verify Hash"));
+            finishWithError(tr("Cannot verify Hash"));
             return;
         }
     } else {
@@ -252,7 +252,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
 
     const QMessageBox::StandardButton b =
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-        QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Could not download archive: %1 : %2")
+        QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Cannot download archive %1: %2")
         .arg(m_archivesToDownload.first().second, error), QMessageBox::Retry | QMessageBox::Cancel);
 
     if (b == QMessageBox::Retry)
@@ -264,7 +264,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
 void DownloadArchivesJob::finishWithError(const QString &error)
 {
     const FileDownloader *const dl = qobject_cast<const FileDownloader*> (sender());
-    const QString msg = tr("Could not fetch archives: %1\nError while loading %2");
+    const QString msg = tr("Cannot fetch archives: %1\nError while loading %2");
     if (dl != 0)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, dl->url().toString()));
     else
@@ -303,14 +303,13 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
                     + component->name() + QLatin1Char('/') + fi.fileName() + suffix);
             }
 
-            emit outputTextChanged(tr("Downloading archive '%1' for component: %2")
+            emit outputTextChanged(tr("Downloading archive \"%1\" for component %2.")
                 .arg(fi.fileName() + suffix, component->displayName()));
         } else {
-            emit outputTextChanged(tr("Scheme not supported: %1 (%2)").arg(scheme, url.toString()));
+            emit outputTextChanged(tr("Scheme %1 not supported (URL: %2).").arg(scheme, url.toString()));
         }
     } else {
-        emit outputTextChanged(tr("Could not find component for: %1.").arg(QFileInfo(fi.path())
-            .fileName()));
+        emit outputTextChanged(tr("Cannot find component for %1.").arg(QFileInfo(fi.path()).fileName()));
     }
     return downloader;
 }

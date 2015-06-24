@@ -180,7 +180,7 @@ void UpdateFinder::Private::computeUpdates()
     // First do some quick sanity checks on the packages info
     std::shared_ptr<LocalPackageHub> packages = m_localPackageHub.lock();
     if (!packages) {
-        q->reportError(tr("Could not access the package information of this application."));
+        q->reportError(tr("Cannot access the package information of this application."));
         return;
     }
 
@@ -294,7 +294,7 @@ bool UpdateFinder::Private::downloadUpdateXMLFiles()
         const Data data = m_updatesInfoList.value(updatesInfo);
         if (data.downloader) {
             if (!data.downloader->isDownloaded()) {
-                q->reportError(tr("Could not download package source %1 from ('%2')").arg(data
+                q->reportError(tr("Cannot download package source %1 from \"%2\".").arg(data
                     .downloader->url().fileName(), data.info.url.toString()));
             } else {
                 updatesInfo->setFileName(data.downloader->downloadedFileName());

@@ -119,7 +119,7 @@ BinaryLayout BinaryContent::binaryLayout(QFile *file, quint64 magicCookie)
     const qint64 posOfMetaDataCount = layout.endOfBinaryContent - (4 * sizeof(qint64));
     if (!file->seek(posOfMetaDataCount)) {
         throw QInstaller::Error(QCoreApplication::translate("BinaryLayout",
-            "Could not seek to %1 to read the embedded meta data count.").arg(posOfMetaDataCount));
+            "Cannot seek to %1 to read the embedded meta data count.").arg(posOfMetaDataCount));
     }
 
     // read the meta resources count
@@ -130,7 +130,7 @@ BinaryLayout BinaryContent::binaryLayout(QFile *file, quint64 magicCookie)
         + (8 * sizeof(qint64))); // meta count, offset/length collection index, marker, cookie...
     if (!file->seek(posOfResourceCollectionsSegment)) {
         throw Error(QCoreApplication::translate("BinaryLayout",
-            "Could not seek to %1 to read the resource collection segment.")
+            "Cannot seek to %1 to read the resource collection segment.")
             .arg(posOfResourceCollectionsSegment));
     }
 
@@ -205,7 +205,7 @@ void BinaryContent::readBinaryContent(QFile *file, QList<OperationBlob> *operati
         const qint64 posOfOperationsBlock = layout.operationsSegment.start();
         if (!file->seek(posOfOperationsBlock)) {
             throw Error(QCoreApplication::translate("BinaryContent",
-                "Could not seek to %1 to read the operation data.").arg(posOfOperationsBlock));
+                "Cannot seek to %1 to read the operation data.").arg(posOfOperationsBlock));
         }
         // read the operations count
         qint64 operationsCount = QInstaller::retrieveInt64(file);
@@ -222,7 +222,7 @@ void BinaryContent::readBinaryContent(QFile *file, QList<OperationBlob> *operati
     if (manager) {    // read the collection index and data
         const qint64 posOfResourceCollectionBlock = layout.resourceCollectionsSegment.start();
         if (!file->seek(posOfResourceCollectionBlock)) {
-            throw Error(QCoreApplication::translate("BinaryContent", "Could not seek to %1 to "
+            throw Error(QCoreApplication::translate("BinaryContent", "Cannot seek to %1 to "
                 "read the resource collection block.").arg(posOfResourceCollectionBlock));
         }
         manager->read(file, layout.endOfExectuable);
@@ -261,7 +261,7 @@ void BinaryContent::writeBinaryContent(QFile *out, const QList<OperationBlob> &o
         const bool isOpen = resource->isOpen();
         if ((!isOpen) && (!resource->open())) {
             throw Error(QCoreApplication::translate("BinaryContent",
-                "Could not open meta resource. Error: %1").arg(resource->errorString()));
+                "Cannot open meta resource %1.").arg(resource->errorString()));
         }
 
         resource->seek(0);

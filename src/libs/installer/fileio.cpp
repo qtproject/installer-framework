@@ -39,6 +39,7 @@
 
 #include <QCoreApplication>
 #include <QByteArray>
+#include <QDir>
 #include <QFileDevice>
 #include <QString>
 
@@ -108,7 +109,8 @@ void QInstaller::openForRead(QFileDevice *dev)
     Q_ASSERT(dev);
     if (!dev->open(QIODevice::ReadOnly)) {
         throw Error(QCoreApplication::translate("QInstaller",
-            "Cannot open file %1 for reading: %2").arg(dev->fileName(), dev->errorString()));
+            "Cannot open file \"%1\" for reading: %2").arg(
+                        QDir::toNativeSeparators(dev->fileName()), dev->errorString()));
     }
 }
 
@@ -117,7 +119,8 @@ void QInstaller::openForWrite(QFileDevice *dev)
     Q_ASSERT(dev);
     if (!dev->open(QIODevice::WriteOnly)) {
         throw Error(QCoreApplication::translate("QInstaller",
-            "Cannot open file %1 for writing: %2").arg(dev->fileName(), dev->errorString()));
+            "Cannot open file \"%1\" for writing: %2").arg(
+                        QDir::toNativeSeparators(dev->fileName()), dev->errorString()));
     }
 }
 
@@ -126,7 +129,8 @@ void QInstaller::openForAppend(QFileDevice *dev)
     Q_ASSERT(dev);
     if (!dev->open(QIODevice::WriteOnly | QIODevice::Append)) {
         throw Error(QCoreApplication::translate("QInstaller",
-            "Cannot open file %1 for writing: %2").arg(dev->fileName(), dev->errorString()));
+            "Cannot open file \"%1\" for writing: %2").arg(
+                        QDir::toNativeSeparators(dev->fileName()), dev->errorString()));
     }
 }
 
@@ -160,7 +164,7 @@ qint64 QInstaller::blockingCopy(QFileDevice *in, QFileDevice *out, qint64 size)
             size -= actual;
             actual = qMin(blockSize, size);
         } catch (const Error &error) {
-            throw Error(QCoreApplication::translate("QInstaller", "Copy failed. Error: %1")
+            throw Error(QCoreApplication::translate("QInstaller", "Copy failed: %1")
                 .arg(error.message()));
         }
     }

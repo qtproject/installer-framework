@@ -657,7 +657,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
         throw Error(archivesJob.errorString());
 
     if (d->statusCanceledOrFailed())
-        throw Error(tr("Installation canceled by user"));
+        throw Error(tr("Installation canceled by user."));
 
     ProgressCoordinator::instance()->emitDownloadStatus(tr("All downloads finished."));
 
@@ -749,7 +749,7 @@ void PackageManagerCore::rollBackInstallation()
         } catch (const Error &e) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("ElevationError"), tr("Authentication Error"), tr("Some components "
-                "could not be removed completely because admin rights could not be acquired: %1.")
+                "could not be removed completely because administrative rights could not be acquired: %1.")
                 .arg(e.message()));
         } catch (...) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("unknown"),
@@ -966,7 +966,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     d->setStatus(Running);
 
     if (!isPackageManager()) {
-        d->setStatus(Failure, tr("Application not running in Package Manager mode!"));
+        d->setStatus(Failure, tr("Application not running in Package Manager mode."));
         return false;
     }
 
@@ -988,7 +988,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         component->loadDataFromPackage(installedPackages.value(key));
         const QString &name = component->name();
         if (components.contains(name)) {
-            qCritical("Could not register component! Component with identifier %s already registered.",
+            qCritical("Cannot register component! Component with identifier %s already registered.",
                 qPrintable(name));
             continue;
         }
@@ -1074,7 +1074,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     d->setStatus(Running);
 
     if (isUninstaller()) {
-        d->setStatus(Failure, tr("Application running in Uninstaller mode!"));
+        d->setStatus(Failure, tr("Application running in Uninstaller mode."));
         return false;
     }
 
@@ -2330,7 +2330,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         // check if we already added the component to the available components list
         const QString name = data.package->data(scName).toString();
         if (data.components->contains(name)) {
-            qCritical("Could not register component! Component with identifier %s already registered.",
+            qCritical("Cannot register component! Component with identifier %s already registered.",
                 qPrintable(name));
             return false;
         }

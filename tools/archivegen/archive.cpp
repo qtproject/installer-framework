@@ -39,6 +39,7 @@
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
+#include <QDir>
 
 #include <iostream>
 
@@ -82,19 +83,19 @@ private:
 
     HRESULT OpenResult(const wchar_t *file, HRESULT result, const wchar_t*) {
         if (result != S_OK) {
-            printBlock(QCoreApplication::translate("archivegen", "Cannot update file: '%1'. "
-                "Unsuporrted archive.").arg(QString::fromWCharArray(file)), Q_NULLPTR);
+            printBlock(QCoreApplication::translate("archivegen", "Cannot update file \"%1\". "
+                "Unsupported archive.").arg(QDir::toNativeSeparators(QString::fromWCharArray(file))), Q_NULLPTR);
         }
         return result;
     }
 
     HRESULT OpenFileError(const wchar_t *file, DWORD) {
-        printBlock(QCoreApplication::translate("archivegen", "Cannot open file: "), file);
+        printBlock(QCoreApplication::translate("archivegen", "Cannot open file "), file);
         return S_FALSE;
     }
 
     HRESULT CanNotFindError(const wchar_t *file, DWORD) {
-        printBlock(QCoreApplication::translate("archivegen", "Cannot find file: "), file);
+        printBlock(QCoreApplication::translate("archivegen", "Cannot find file "), file);
         return S_FALSE;
     }
 
@@ -185,7 +186,7 @@ int main(int argc, char *argv[])
         const int value = parser.value(compression).toInt(&ok);
         if (!ok || (std::find(std::begin(values), std::end(values), value) == std::end(values))) {
             throw QInstaller::Error(QCoreApplication::translate("archivegen",
-                "Unknown compression level '%1'. See 'archivgen --help'.").arg(value));
+                "Unknown compression level \"%1\". See 'archivgen --help'.").arg(value));
         }
 
         Lib7z::initSevenZ();

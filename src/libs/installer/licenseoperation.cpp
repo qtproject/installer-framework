@@ -76,11 +76,10 @@ bool LicenseOperation::performOperation()
     setArguments(QStringList(targetDir));
 
     for (QVariantMap::const_iterator it = licenses.constBegin(); it != licenses.constEnd(); ++it) {
-        QFile file(targetDir + QDir::separator() + it.key());
+        QFile file(targetDir + QLatin1Char('/') + it.key());
         if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
             setError(UserDefinedError);
-            setErrorString(tr("Can not write license file: %1.").arg(targetDir + QDir::separator()
-                + it.key()));
+            setErrorString(tr("Can not write license file \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
             return false;
         }
 

@@ -118,7 +118,7 @@ bool InstallIconsOperation::performOperation()
 
     if (source.isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(tr("Invalid Argument: source folder must not be empty."));
+        setErrorString(tr("Invalid Argument: source directory must not be empty."));
         return false;
     }
 
@@ -167,7 +167,8 @@ bool InstallIconsOperation::performOperation()
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
-                    setErrorString(tr("Could not backup file %1: %2").arg(target, bf.errorString()));
+                    setErrorString(tr("Cannot backup file \"%1\": %2").arg(
+                                       QDir::toNativeSeparators(target), bf.errorString()));
                     undoOperation();
                     return false;
                 }
@@ -180,7 +181,8 @@ bool InstallIconsOperation::performOperation()
                 QString errStr;
                 if (!deleteFileNowOrLater(target, &errStr)) {
                     setError(UserDefinedError);
-                    setErrorString(tr("Failed to overwrite %1: %2").arg(target, errStr));
+                    setErrorString(tr("Failed to overwrite \"%1\": %2").arg(
+                                       QDir::toNativeSeparators(target), errStr));
                     undoOperation();
                     return false;
                 }
@@ -191,7 +193,8 @@ bool InstallIconsOperation::performOperation()
             QFile cf(source);
             if (!cf.copy(target)) {
                 setError(UserDefinedError);
-                setErrorString(tr("Failed to copy file %1: %2").arg(target, cf.errorString()));
+                setErrorString(tr("Failed to copy file \"%1\": %2").arg(
+                                   QDir::toNativeSeparators(target), cf.errorString()));
                 undoOperation();
                 return false;
             }
@@ -201,7 +204,8 @@ bool InstallIconsOperation::performOperation()
             setValue(QLatin1String("files"), files);
         } else if (fi.isDir() && !QDir(target).exists()) {
             if (!QDir().mkpath(target)) {
-                setErrorString(tr("Could not create folder at %1: %2").arg(target, qt_error_string()));
+                setErrorString(tr("Cannot create directory \"%1\": %2").arg(
+                                   QDir::toNativeSeparators(target), qt_error_string()));
                 undoOperation();
                 return false;
             }
@@ -233,7 +237,7 @@ bool InstallIconsOperation::undoOperation()
 
         QFile installedTarget(target);
         if (installedTarget.exists() && !(installedTarget.copy(source) && installedTarget.remove())) {
-            warningMessages << QString::fromLatin1("Could not move file from '%1' to '%2', error: %3)").arg(
+            warningMessages << QString::fromLatin1("Cannot move file from \"%1\" to \"%2\": %3)").arg(
                 target, source, installedTarget.errorString());
         }
     }
@@ -249,13 +253,13 @@ bool InstallIconsOperation::undoOperation()
             deleteFileNowOrLater(target);
         // then copy the backup onto the target
         if (!QFile::copy(backup, target)) {
-            warningMessages << QString::fromLatin1("Could not restore the backup '%1' to '%2'").arg(
+            warningMessages << QString::fromLatin1("Cannot restore the backup \"%1\" to \"%2\".").arg(
                 backup, target);
         }
 
         // finally remove the backp
         if (!deleteFileNowOrLater(backup))
-            warningMessages << QString::fromLatin1("Could not remove the backup '%1'").arg(backup);
+            warningMessages << QString::fromLatin1("Cannot remove the backup \"%1\".").arg(backup);
 
     }
 
@@ -265,11 +269,11 @@ bool InstallIconsOperation::undoOperation()
         const QDir dir(*it);
         removeSystemGeneratedFiles(dir.absolutePath());
         if (dir.exists() && !QDir::root().rmdir(dir.path()))
-            warningMessages << QString::fromLatin1("Could not remove directory '%1'").arg(dir.path());
+            warningMessages << QString::fromLatin1("Cannot remove directory \"%1\".").arg(dir.path());
     }
 
     if (!warningMessages.isEmpty()) {
-        qWarning() << QString::fromLatin1("Undo of operation '%1' with arguments '%2' had some problems.").arg(
+        qWarning() << QString::fromLatin1("Undo of operation %1 with arguments \"%2\" had some problems.").arg(
             name(), arguments().join(QLatin1String(", ")));
         foreach (const QString &message, warningMessages) {
             qWarning() << message;

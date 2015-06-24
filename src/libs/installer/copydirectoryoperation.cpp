@@ -78,18 +78,21 @@ bool CopyDirectoryOperation::performOperation()
         } else {
             setError(InvalidArguments);
             setErrorString(tr("Invalid argument in %1: Third argument needs to be forceOverwrite, "
-                              "if specified").arg(name()));
+                              "if specified.").arg(name()));
             return false;
         }
     }
 
     const QFileInfo sourceInfo(sourcePath);
     const QFileInfo targetInfo(targetPath);
-    if (!sourceInfo.exists() || !sourceInfo.isDir() || !targetInfo.exists() || !targetInfo.isDir()) {
-        setError(InvalidArguments);
-        setErrorString(tr("Invalid arguments in %1: Directories are invalid: %2 %3").arg(name())
-            .arg(sourcePath).arg(targetPath));
-        return false;
+
+    foreach (const QFileInfo &dir, QList<QFileInfo>() << sourceInfo << targetInfo) {
+        if (!dir.exists() || !dir.isDir()) {
+            setError(InvalidArguments);
+            setErrorString(tr("Invalid argument in %1: Directory \"%2\" is invalid.").arg(name())
+                           .arg(QDir::toNativeSeparators(sourcePath)));
+            return false;
+        }
     }
 
     const QDir sourceDir = sourceInfo.absoluteDir();
@@ -120,22 +123,24 @@ bool CopyDirectoryOperation::performOperation()
         } else if (itemInfo.isDir()) {
             if (!targetDir.mkpath(targetDir.absoluteFilePath(relativePath))) {
                 setError(InvalidArguments);
-                setErrorString(tr("Could not create %1").arg(targetDir.absoluteFilePath(relativePath)));
+                setErrorString(tr("Cannot create directory \"%1\".").arg(
+                                   QDir::toNativeSeparators(targetDir.absoluteFilePath(relativePath))));
                 return false;
             }
         } else {
             const QString absolutePath = targetDir.absoluteFilePath(relativePath);
             if (overwrite && QFile::exists(absolutePath) && !deleteFileNowOrLater(absolutePath)) {
                 setError(UserDefinedError);
-                setErrorString(tr("Failed to overwrite %1").arg(absolutePath));
+                setErrorString(tr("Failed to overwrite \"%1\".").arg(QDir::toNativeSeparators(absolutePath)));
                 return false;
             }
             QFile file(sourceDir.absoluteFilePath(itemName));
             if (!file.copy(absolutePath)) {
                 setError(UserDefinedError);
-                setErrorString(tr("Could not copy %1 to %2, error was: %3").arg(sourceDir.absoluteFilePath(itemName),
-                               targetDir.absoluteFilePath(relativePath),
-                               file.errorString()));
+                setErrorString(tr("Cannot copy file \"%1\" to \"%2\": %3").arg(
+                                   QDir::toNativeSeparators(sourceDir.absoluteFilePath(itemName)),
+                                   QDir::toNativeSeparators(targetDir.absoluteFilePath(relativePath)),
+                                   file.errorString()));
                 return false;
             }
             autoPush.m_files.prepend(targetDir.absoluteFilePath(relativePath));
@@ -154,7 +159,7 @@ bool CopyDirectoryOperation::undoOperation()
     foreach (const QString &file, files) {
         if (!QFile::remove(file)) {
             setError(InvalidArguments);
-            setErrorString(tr("Could not remove %1").arg(file));
+            setErrorString(tr("Cannot remove file \"%1\".").arg(QDir::toNativeSeparators(file)));
             return false;
         }
         dir.rmpath(QFileInfo(file).absolutePath());

@@ -4,7 +4,7 @@
 <context>
     <name>Component</name>
     <message>
-        <source>Could not open archive %1: %2</source>
+        <source>Cannot open archive %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -84,7 +84,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not backup existing file %1: %2</source>
+        <source>Cannot backup existing file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -103,7 +103,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file %1 for writing: %2</source>
+        <source>Cannot open file %1 for writing: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -111,18 +111,18 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1.</source>
+        <source>Cannot restore backup file for %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1: %2</source>
+        <source>Cannot restore backup file for %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -130,19 +130,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not delete file %1: %2</source>
+        <source>Cannot delete file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not restore backup file into %1: %2</source>
+        <source>Cannot restore backup file into %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -239,7 +239,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot download %1: Could not create %2: %3</source>
+        <source>Cannot download %1: Cannot create %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -273,7 +273,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder %1: Unknown error.</source>
+        <source>Cannot create folder %1: Unknown error.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -284,7 +284,7 @@
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -292,11 +292,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -323,7 +323,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open %1.</source>
+        <source>Cannot open %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -346,11 +346,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file %1 for reading: %2</source>
+        <source>Cannot open file %1 for reading: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file %1 for writing: %2</source>
+        <source>Cannot open file %1 for writing: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -369,7 +369,7 @@
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Could not read resource file &quot;%1&quot;. Reason:</source>
+        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -380,11 +380,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove folder %1: The folder does not exist.</source>
+        <source>Cannot remove folder %1: The folder does not exist.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -426,11 +426,11 @@
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
-        <source>Could not access the package information of this application.</source>
+        <source>Cannot access the package information of this application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not access the update sources information of this application.</source>
+        <source>Cannot access the update sources information of this application.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -442,7 +442,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not download updates from %1 (&apos;%2&apos;)</source>
+        <source>Cannot download updates from %1 (&apos;%2&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -465,7 +465,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -477,14 +477,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not save changes to &quot;%1&quot;: %2</source>
+        <source>Cannot save changes to &quot;%1&quot;: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdatesInfoData</name>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -523,14 +523,14 @@
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
-        <source>Could not list archive: QIODevice not set or already destroyed.</source>
+        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
-        <source>Could not list archive: QIODevice already destroyed.</source>
+        <source>Cannot list archive: QIODevice already destroyed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -560,15 +560,15 @@
 <context>
     <name>QInstaller::Component</name>
     <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
+        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -576,7 +576,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -732,7 +732,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create %0</source>
+        <source>Cannot create %0</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -740,11 +740,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not copy %0 to %1, error was: %3</source>
+        <source>Cannot copy %0 to %1, error was: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove %0</source>
+        <source>Cannot remove %0</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -763,7 +763,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write Desktop Entry at %1</source>
+        <source>Cannot write Desktop Entry at %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -781,11 +781,11 @@
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Could not set file permissions %1!</source>
+        <source>Cannot set file permissions %1!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not move file %1 to %2. Error: %3</source>
+        <source>Cannot move file %1 to %2. Error: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -801,19 +801,19 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file: %1</source>
+        <source>Cannot open file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not read: %1. Error: %2</source>
+        <source>Cannot read: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file: %1. Error: %2</source>
+        <source>Cannot open file: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create target dir: %1.</source>
+        <source>Cannot create target dir: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -825,7 +825,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove %0.</source>
+        <source>Cannot remove %0.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -848,11 +848,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2.</source>
+        <source>Cannot create folder %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create link %1: %2</source>
+        <source>Cannot create link %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -875,15 +875,15 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not verify Hash</source>
+        <source>Cannot verify Hash</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not download archive: %1 : %2</source>
+        <source>Cannot download archive: %1 : %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not fetch archives: %1
+        <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -900,7 +900,7 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not find component for: %1.</source>
+        <source>Cannot find component for: %1.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -915,11 +915,11 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
+        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
+        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -956,7 +956,7 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Could not open %1 for reading: %2.</source>
+        <source>Cannot open %1 for reading: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1014,15 +1014,15 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not move Updates.xml to target location. Error: %1</source>
+        <source>Cannot move Updates.xml to target location. Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open Updates.xml for reading. Error: %1</source>
+        <source>Cannot open Updates.xml for reading. Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
+        <source>Cannot fetch a valid version of Updates.xml from repository: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1042,7 +1042,7 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not fetch Updates.xml from repository: %1. Error: %2</source>
+        <source>Cannot fetch Updates.xml from repository: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1050,7 +1050,7 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open meta info archive: %1. Error: %2</source>
+        <source>Cannot open meta info archive: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1062,7 +1062,7 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not download meta information for component: %1. Error: %2</source>
+        <source>Cannot download meta information for component: %1. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1077,7 +1077,7 @@ Error while loading %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open %1 for reading. Error: %2</source>
+        <source>Cannot open %1 for reading. Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1311,7 +1311,7 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write installer configuration to %1: %2</source>
+        <source>Cannot write installer configuration to %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1337,11 +1337,11 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write uninstaller data to %1: %2</source>
+        <source>Cannot write uninstaller data to %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write uninstaller to %1: %2</source>
+        <source>Cannot write uninstaller to %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1349,7 +1349,7 @@ Downloading packages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write uninstaller binary data to %1: %2</source>
+        <source>Cannot write uninstaller binary data to %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1446,7 +1446,7 @@ Installing component %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve remote tree: %1.</source>
+        <source>Cannot retrieve remote tree: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1454,15 +1454,15 @@ Installing component %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve meta information: %1</source>
+        <source>Cannot retrieve meta information: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not add temporary update source information.</source>
+        <source>Cannot add temporary update source information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not find any update source information.</source>
+        <source>Cannot find any update source information.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1579,7 +1579,7 @@ Please copy the installer to a local drive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
+        <source>Cannot find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1808,7 +1808,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Could not open the requested script file at %1: %2.</source>
+        <source>Cannot open the requested script file at %1: %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1816,7 +1816,7 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not load the component script inside a script context: &apos;%1&apos;</source>
+        <source>Cannot load the component script inside a script context: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2044,15 +2044,15 @@ needs to be less than 255 characters.</source>
 <context>
     <name>QInstallerCreator::Archive</name>
     <message>
-        <source>Could not create %1: %2</source>
+        <source>Cannot create %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open archive file %1 for reading.</source>
+        <source>Cannot open archive file %1 for reading.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create archive from %1: Not a file.</source>
+        <source>Cannot create archive from %1: Not a file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2067,7 +2067,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to %1 in file %2: %3</source>
+        <source>Cannot seek to %1 in file %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2083,35 +2083,35 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to in-binary resource. (offset: %1, length: %2)</source>
+        <source>Cannot seek to in-binary resource. (offset: %1, length: %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not register in-binary resource.</source>
+        <source>Cannot register in-binary resource.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open binary %1: %2</source>
+        <source>Cannot open binary %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to binary layout section.</source>
+        <source>Cannot seek to binary layout section.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to metadata index.</source>
+        <source>Cannot seek to metadata index.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to operation list.</source>
+        <source>Cannot seek to operation list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to component index information.</source>
+        <source>Cannot seek to component index information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not seek to component index.</source>
+        <source>Cannot seek to component index.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2131,55 +2131,55 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder %1</source>
+        <source>Cannot create folder %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not copy file from %1 to %2: %3</source>
+        <source>Cannot copy file from %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not move file from %1 to %2: %3</source>
+        <source>Cannot move file from %1 to %2: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2</source>
+        <source>Cannot create folder %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open temporary file: %1</source>
+        <source>Cannot open temporary file: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open temporary file for template %1: %2</source>
+        <source>Cannot open temporary file for template %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create temporary folder for template %1: %2</source>
+        <source>Cannot create temporary folder for template %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create lock file %1: %2</source>
+        <source>Cannot create lock file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write PID to lock file %1: %2</source>
+        <source>Cannot write PID to lock file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not lock lock file %1: %2</source>
+        <source>Cannot lock lock file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not unlock lock file %1: %2</source>
+        <source>Cannot unlock lock file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2187,15 +2187,15 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder: %1</source>
+        <source>Cannot create folder: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create temporary file</source>
+        <source>Cannot create temporary file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve property %1 for item %2</source>
+        <source>Cannot retrieve property %1 for item %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2203,11 +2203,11 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not convert file time to local time</source>
+        <source>Cannot convert file time to local time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not convert local file time to system time</source>
+        <source>Cannot convert local file time to system time</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2215,15 +2215,15 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open archive</source>
+        <source>Cannot open archive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2231,11 +2231,11 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve number of items in archive</source>
+        <source>Cannot retrieve number of items in archive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2247,23 +2247,23 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove already existing symlink. %1</source>
+        <source>Cannot remove already existing symlink. %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not open file: %1 (%2)</source>
+        <source>Cannot open file: %1 (%2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create symlink at %1. %2</source>
+        <source>Cannot create symlink at %1. %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2279,7 +2279,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create archive %1. %2</source>
+        <source>Cannot create archive %1. %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2295,7 +2295,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create output file for writing: %1</source>
+        <source>Cannot create output file for writing: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2311,15 +2311,15 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not backup file %1</source>
+        <source>Cannot backup file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not delete file %1</source>
+        <source>Cannot delete file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not restore backup file into %1</source>
+        <source>Cannot restore backup file into %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2331,7 +2331,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not write to registry path %1</source>
+        <source>Cannot write to registry path %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2339,7 +2339,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2347,7 +2347,7 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create folder at %1: %2</source>
+        <source>Cannot create folder at %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2379,11 +2379,11 @@ needs to be less than 255 characters.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not create link from %1 to %2.</source>
+        <source>Cannot create link from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove link from %1 to %2.</source>
+        <source>Cannot remove link from %1 to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2418,7 +2418,7 @@ as root and then clicking ok.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not get package manager core.</source>
+        <source>Cannot get package manager core.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2433,7 +2433,7 @@ as root and then clicking ok.</source>
 <context>
     <name>Settings</name>
     <message>
-        <source>Could not open settings file %1 for reading: %2</source>
+        <source>Cannot open settings file %1 for reading: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2638,7 +2638,7 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not parse Updates.xml! Error: %1.</source>
+        <source>Cannot parse Updates.xml! Error: %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

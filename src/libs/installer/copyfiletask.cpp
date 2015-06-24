@@ -34,6 +34,7 @@
 #include "copyfiletask.h"
 #include "observer.h"
 
+#include <QDir>
 #include <QFileInfo>
 #include <QTemporaryFile>
 
@@ -69,8 +70,8 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
 
     QFile source(item.source());
     if (!source.open(QIODevice::ReadOnly)) {
-        fi.reportException(TaskException(tr("Could not open source '%1' for read. Error: %2.")
-            .arg(source.fileName(), source.errorString())));
+        fi.reportException(TaskException(tr("Cannot open file \"%1\" for reading: %2")
+            .arg(QDir::toNativeSeparators(source.fileName()), source.errorString())));
         fi.reportFinished(); return;    // error
     }
     observer.setBytesToTransfer(source.size());
@@ -85,8 +86,8 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         file.reset(new QFile(target));
     }
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        fi.reportException(TaskException(tr("Could not open target '%1' for write. Error: %2.")
-            .arg(file->fileName(), file->errorString())));
+        fi.reportException(TaskException(tr("Cannot open file \"%1\" for writing: %2")
+            .arg(QDir::toNativeSeparators(file->fileName()), file->errorString())));
         fi.reportFinished(); return;    // error
     }
 
@@ -102,8 +103,8 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         while (written < read) {
             const qint64 toWrite = file->write(buffer.constData() + written, read - written);
             if (toWrite < 0) {
-                fi.reportException(TaskException(tr("Writing to target '%1' failed. Error: %2.")
-                    .arg(file->fileName(), file->errorString())));
+                fi.reportException(TaskException(tr("Writing to file \"%1\" failed: %2")
+                    .arg(QDir::toNativeSeparators(file->fileName()), file->errorString())));
             }
             written += toWrite;
         }

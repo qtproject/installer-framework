@@ -55,7 +55,7 @@ bool GlobalSettingsOperation::performOperation()
 
     if (!settings->isWritable()) {
         setError(UserDefinedError);
-        setErrorString(tr("Settings are not writable"));
+        setErrorString(tr("Settings are not writable."));
         return false;
     }
 
@@ -65,7 +65,7 @@ bool GlobalSettingsOperation::performOperation()
 
     if (settings->status() != QSettingsWrapper::NoError) {
         setError(UserDefinedError);
-        setErrorString(tr("Failed to write settings"));
+        setErrorString(tr("Failed to write settings."));
         return false;
     }
 

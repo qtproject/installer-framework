@@ -34,6 +34,7 @@
 
 #include "simplemovefileoperation.h"
 
+#include <QDir>
 #include <QtCore/QFileInfo>
 
 namespace QInstaller {
@@ -58,8 +59,8 @@ bool SimpleMoveFileOperation::performOperation()
 
     if (source.isEmpty() || target.isEmpty()) {
         setError(UserDefinedError);
-        setErrorString(tr("None of the arguments can be empty: source '%1', target '%2'.")
-            .arg(source, target));
+        setErrorString(tr("None of the arguments can be empty: source \"%1\", target \"%2\".")
+            .arg(QDir::toNativeSeparators(source), QDir::toNativeSeparators(target)));
         return false;
     }
 
@@ -69,8 +70,8 @@ bool SimpleMoveFileOperation::performOperation()
     if (file.exists()) {
         if (!file.remove()) {
             setError(UserDefinedError);
-            setErrorString(tr("Cannot move source '%1' to target '%2', because target exists and is "
-                "not removable.").arg(source, target));
+            setErrorString(tr("Cannot move file from \"%1\" to \"%2\", because the target path exists and is "
+                "not removable.").arg(QDir::toNativeSeparators(source), QDir::toNativeSeparators(target)));
             return false;
         }
     }
@@ -78,12 +79,14 @@ bool SimpleMoveFileOperation::performOperation()
     file.setFileName(source);
     if (!file.rename(target)) {
         setError(UserDefinedError);
-        setErrorString(tr("Cannot move source '%1' to target '%2': %3").arg(source, target,
-            file.errorString()));
+        setErrorString(tr("Cannot move file \"%1\" to \"%2\": %3").arg(
+                           QDir::toNativeSeparators(source), QDir::toNativeSeparators(target),
+                           file.errorString()));
         return false;
     }
 
-    emit outputTextChanged(tr("Move '%1' to '%2'.").arg(source, target));
+    emit outputTextChanged(tr("Moving file \"%1\" to \"%2\".").arg(QDir::toNativeSeparators(source),
+                                                                   QDir::toNativeSeparators(target)));
     return true;
 }
 
@@ -93,7 +96,8 @@ bool SimpleMoveFileOperation::undoOperation()
     const QString target = arguments().at(1);
 
     QFile(target).rename(source);
-    emit outputTextChanged(tr("Move '%1' to '%2'.").arg(target, source));
+    emit outputTextChanged(tr("Moving file \"%1\" to \"%2\".").arg(QDir::toNativeSeparators(target),
+                                                                   QDir::toNativeSeparators(source)));
 
     return true;
 }

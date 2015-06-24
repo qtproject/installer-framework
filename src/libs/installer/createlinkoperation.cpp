@@ -35,6 +35,7 @@
 
 #include "link.h"
 
+#include <QDir>
 #include <QFileInfo>
 
 using namespace QInstaller;
@@ -60,7 +61,8 @@ bool CreateLinkOperation::performOperation()
 
     if (!link.exists()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not create link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Cannot create link from \"%1\" to \"%2\".").arg(
+                           QDir::toNativeSeparators(linkPath), QDir::toNativeSeparators(targetPath)));
         return false;
     }
 
@@ -80,7 +82,8 @@ bool CreateLinkOperation::undoOperation()
     }
     if (!link.remove()) {
         setError(UserDefinedError);
-        setErrorString(tr("Could not remove link from %1 to %2.").arg(linkPath, targetPath));
+        setErrorString(tr("Cannot remove link from \"%1\" to \"%2\".").arg(
+                           QDir::toNativeSeparators(linkPath), QDir::toNativeSeparators(targetPath)));
         return false;
     }
 

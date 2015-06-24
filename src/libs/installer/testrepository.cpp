@@ -110,7 +110,7 @@ void TestRepository::doCancel()
     if (m_downloader) {
         QString errorString = m_downloader->errorString();
         if (errorString.isEmpty())
-            errorString = tr("Got a timeout while testing: '%1'").arg(m_repository.displayname());
+            errorString = tr("Got a timeout while testing \"%1\".").arg(m_repository.displayname());
         // at the moment the download sends downloadCompleted() if we cancel it, so just
         disconnect(m_downloader, 0, this, 0);
         m_downloader->cancelDownload();
@@ -130,15 +130,15 @@ void TestRepository::downloadCompleted()
             QString errorMsg;
             if (!doc.setContent(&file, &errorMsg)) {
                 error = InvalidUpdatesXml;
-                errorMsg = tr("Could not parse Updates.xml! Error: %1.").arg(errorMsg);
+                errorMsg = tr("Cannot parse Updates.xml: %1").arg(errorMsg);
             } else {
                 error = NoError;
             }
         } else {
-            errorMsg = tr("Updates.xml could not be opened for reading!");
+            errorMsg = tr("Updates.xml could not be opened for reading.");
         }
     } else {
-        errorMsg = tr("Updates.xml could not be found on server!");
+        errorMsg = tr("Updates.xml could not be found on server.");
     }
 
     if (error > NoError)

@@ -297,7 +297,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
-            qDebug() << "Could not create unique temporary directory.";
+            qDebug() << "Cannot create unique temporary directory.";
             return XmlDownloadFailure;
         }
 
@@ -307,20 +307,20 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qDebug() << "Could not rename target to Updates.xml. Error:" << file.errorString();
+            qDebug() << "Cannot rename target to Updates.xml:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Could not open Updates.xml for reading. Error:" << file.errorString();
+            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
             return XmlDownloadFailure;
         }
 
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug() << QString::fromLatin1("Could not fetch a valid version of Updates.xml from "
-                "repository: %1. Error: %2").arg(metadata.repository.displayname(), error);
+            qDebug() << QString::fromLatin1("Cannot fetch a valid version of Updates.xml from "
+                "repository %1: %2").arg(metadata.repository.displayname(), error);
             return XmlDownloadFailure;
         }
         file.close();

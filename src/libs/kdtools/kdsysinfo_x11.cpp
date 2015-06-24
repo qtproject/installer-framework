@@ -76,7 +76,7 @@ QList<VolumeInfo> mountedVolumes()
 
     QFile f(QLatin1String("/etc/mtab"));
     if (!f.open(QIODevice::ReadOnly)) {
-        qCritical("%s: Could not open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()));
+        qCritical("%s: Cannot open %s: %s", Q_FUNC_INFO, qPrintable(f.fileName()), qPrintable(f.errorString()));
         return result; //better error-handling?
     }
 

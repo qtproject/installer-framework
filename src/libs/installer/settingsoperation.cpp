@@ -69,7 +69,7 @@ bool SettingsOperation::checkArguments()
 
     if (!missingArguments.isEmpty()) {
         setError(InvalidArguments);
-        setErrorString(tr("Missing argument(s) '%1' calling '%2' with arguments '%3'.").arg(
+        setErrorString(tr("Missing argument(s) \"%1\" calling %2 with arguments \"%3\".").arg(
             missingArguments.join(QLatin1String("; ")), name(), arguments().join(QLatin1String("; "))));
         return false;
     }
@@ -79,7 +79,7 @@ bool SettingsOperation::checkArguments()
 
     if (!possibleMethodValues.contains(method)) {
         setError(InvalidArguments);
-        setErrorString(tr("Current method argument calling '%1' with arguments '%2' is not "
+        setErrorString(tr("Current method argument calling \"%1\" with arguments \"%2\" is not "
             "supported. Please use set, remove, add_array_value or remove_array_value.").arg(name(),
             arguments().join(QLatin1String("; "))));
         return false;

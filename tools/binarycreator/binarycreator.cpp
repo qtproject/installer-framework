@@ -199,7 +199,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
     QTemporaryFile file(input.outputPath);
     if (!file.open()) {
-        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(input.installerExePath,
+        throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(input.installerExePath,
             input.outputPath, file.errorString()));
     }
 
@@ -209,7 +209,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
     QFile instExe(input.installerExePath);
     if (!instExe.copy(tempFile)) {
-        throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(instExe.fileName(),
+        throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(instExe.fileName(),
             tempFile, instExe.errorString()));
     }
 
@@ -252,7 +252,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     {
         QFile target(targetName);
         if (target.exists() && !target.remove()) {
-            qCritical("Could not remove target %s: %s", qPrintable(target.fileName()),
+            qCritical("Cannot remove target %s: %s", qPrintable(target.fileName()),
                 qPrintable(target.errorString()));
             QFile::remove(tempFile);
             return EXIT_FAILURE;
@@ -265,7 +265,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
 #ifdef Q_OS_OSX
         if (!exe.copy(input.outputPath)) {
-            throw Error(QString::fromLatin1("Could not copy %1 to %2: %3").arg(exe.fileName(),
+            throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(exe.fileName(),
                 input.outputPath, exe.errorString()));
         }
 #else
@@ -297,7 +297,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     }
 
     if (!out.rename(targetName)) {
-        qCritical("Could not write installer to %s: %s", targetName.toUtf8().constData(),
+        qCritical("Cannot write installer to %s: %s", targetName.toUtf8().constData(),
             out.errorString().toUtf8().constData());
         QFile::remove(tempFile);
         return EXIT_FAILURE;
@@ -373,7 +373,7 @@ static QSharedPointer<QInstaller::Resource> createDefaultResourceFile(const QStr
 {
     QTemporaryFile projectFile(directory + QLatin1String("/rccprojectXXXXXX.qrc"));
     if (!projectFile.open())
-        throw Error(QString::fromLatin1("Could not create temporary file for generated rcc project file"));
+        throw Error(QString::fromLatin1("Cannot create temporary file for generated rcc project file"));
     projectFile.close();
 
     const WorkingDirectoryChange wd(directory);
@@ -382,13 +382,13 @@ static QSharedPointer<QInstaller::Resource> createDefaultResourceFile(const QStr
     // 1. create the .qrc file
     if (runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-project") << QLatin1String("-o")
         << projectFileName) != EXIT_SUCCESS) {
-            throw Error(QString::fromLatin1("Could not create rcc project file."));
+            throw Error(QString::fromLatin1("Cannot create rcc project file."));
     }
 
     // 2. create the binary resource file from the .qrc file
     if (runRcc(QStringList() << QLatin1String("rcc") << QLatin1String("-binary") << QLatin1String("-o")
         << binaryName << projectFileName) != EXIT_SUCCESS) {
-            throw Error(QString::fromLatin1("Could not compile rcc project file."));
+            throw Error(QString::fromLatin1("Cannot compile rcc project file."));
     }
 
     return QSharedPointer<QInstaller::Resource>(new QInstaller::Resource(binaryName, binaryName

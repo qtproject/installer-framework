@@ -174,7 +174,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
-        qDebug() << QString::fromLatin1("qpatch: warning: Open the file '%1' stopped: %2").arg(
+        qDebug() << QString::fromLatin1("Cannot open file \"%1\" for patching: %2").arg(
             fileName, file.errorString());
         return false;
     }
@@ -189,7 +189,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     }
 
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
-        qDebug() << QString::fromLatin1("qpatch: error: file '%1' not writable").arg(fileName);
+        qDebug() << QString::fromLatin1("File \"%1\" not writable.").arg(fileName);
         return false;
     }
 
@@ -209,7 +209,7 @@ bool QtPatch::openFileForPatching(QFile *file)
         }
         return file->openMode() == QFile::ReadWrite;
     }
-    qDebug() << QString::fromLatin1("qpatch: error: File '%1 is open, so it cannot be opened again.").arg(
+    qDebug() << QString::fromLatin1("File \"%1\" is open, so it cannot be opened again.").arg(
         file->fileName());
     return false;
 }

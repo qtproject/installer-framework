@@ -132,8 +132,8 @@ public:
                 const QMessageBox::Button res =
                     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                     QLatin1String("AuthorizationError"),
-                    QCoreApplication::translate("RemoteClient", "Could not get authorization."),
-                    QCoreApplication::translate("RemoteClient", "Could not get authorization that "
+                    QCoreApplication::translate("RemoteClient", "Cannot get authorization."),
+                    QCoreApplication::translate("RemoteClient", "Cannot get authorization that "
                         "is needed for continuing the installation.\n Either abort the "
                         "installation or use the fallback solution by running\n\n%1\n\nas root "
                         "and then clicking OK.").arg(fallback),

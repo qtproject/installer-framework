@@ -15,26 +15,26 @@
 <context>
     <name>BinaryContent</name>
     <message>
-        <source>Could not seek to %1 to read the operation data.</source>
+        <source>Cannot seek to %1 to read the operation data.</source>
         <translation>Не удалось перейти в позицию %1 для чтения данных операций.</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection block.</source>
+        <source>Cannot seek to %1 to read the resource collection block.</source>
         <translation>Не удалось перейти в позицию %1 для чтения блока набора ресурсов.</translation>
     </message>
     <message>
-        <source>Could not open meta resource. Error: %1</source>
+        <source>Cannot open meta resource. Error: %1</source>
         <translation>Не удалось открыть метаресурсы. Ошибка: %1</translation>
     </message>
 </context>
 <context>
     <name>BinaryLayout</name>
     <message>
-        <source>Could not seek to %1 to read the embedded meta data count.</source>
+        <source>Cannot seek to %1 to read the embedded meta data count.</source>
         <translation>Не удалось перейти в позицию %1 для чтения счётчика встроенных метаданных.</translation>
     </message>
     <message>
-        <source>Could not seek to %1 to read the resource collection segment.</source>
+        <source>Cannot seek to %1 to read the resource collection segment.</source>
         <translation>Не удалось перейти в позицию %1 для чтения сегмента набора ресурсов.</translation>
     </message>
     <message>
@@ -72,34 +72,34 @@
         <translation>Путь существует, но не является каталогом: %1</translation>
     </message>
     <message>
-        <source>Could not create folder: %1</source>
+        <source>Cannot create folder: %1</source>
         <translation>Не удалось создать каталог: %1</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>Не удалось определить путь файла %1 в архиве</translation>
     </message>
     <message>
-        <source>Could not remove already existing symlink. %1</source>
+        <source>Cannot remove already existing symlink. %1</source>
         <translation>Не удалось удалить существующую символьную ссылку. %1</translation>
     </message>
     <message>
-        <source>Could not open file: %1 (%2)</source>
+        <source>Cannot open file: %1 (%2)</source>
         <translation>Не удалось открыть файл: %1 (%2)</translation>
     </message>
     <message>
-        <source>Could not create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
         <translation>Не удалось создать символьную ссылку «%1», потому что ссылка уже существует.</translation>
     </message>
     <message>
-        <source>Could not read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
         <translation>Не удалось прочитать цель символьной ссылки из файла «%1».</translation>
     </message>
     <message>
-        <source>Could not create symlink at %1. %2</source>
+        <source>Cannot create symlink at %1. %2</source>
         <translation>Не удалось создать символьную ссылку %1. %2</translation>
     </message>
 </context>
@@ -140,19 +140,19 @@
 <context>
     <name>KDLockFile</name>
     <message>
-        <source>Could not create lock file &apos;%1&apos;: %2</source>
+        <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>Не удалось создать файл блокировки «%1»: %2</translation>
     </message>
     <message>
-        <source>Could not write PID to lock file &apos;%1&apos;: %2</source>
+        <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
         <translation>Не удалось записать PID в файл блокировки «%1»: %2</translation>
     </message>
     <message>
-        <source>Could not obtain the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
         <translation>Не удалось заблокировать файл «%1»: %2</translation>
     </message>
     <message>
-        <source>Could not release the lock for file &apos;%1&apos;: %2</source>
+        <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
         <translation>Не удалось разблокировать файл «%1»: %2</translation>
     </message>
 </context>
@@ -171,7 +171,7 @@
         <translation>ровно 2</translation>
     </message>
     <message>
-        <source>Could not open file &apos;%1&apos; for writing: %2</source>
+        <source>Cannot open file &apos;%1&apos; for writing: %2</source>
         <translation>Невозможно открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
@@ -179,18 +179,18 @@
         <translation>Невозможно найти резервную копию %1.</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1.</source>
+        <source>Cannot restore backup file for %1.</source>
         <translation>Невозможно восстановить резервную копию %1.</translation>
     </message>
     <message>
-        <source>Could not restore backup file for %1: %2</source>
+        <source>Cannot restore backup file for %1: %2</source>
         <translation>Невозможно восстановить резервную копию %1: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>Невозможно создать резервную копию файла %1.</translation>
     </message>
     <message>
@@ -198,23 +198,23 @@
         <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
     </message>
     <message>
-        <source>Could not copy a non-existent file: %1</source>
+        <source>Cannot copy a non-existent file: %1</source>
         <translation>Не удалось скопировать отсутствующий файл: %1</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>Невозможно удалить файл %1: %2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>Невозможно скопировать %1 в %2: %3</translation>
     </message>
     <message>
-        <source>Could not delete file %1: %2</source>
+        <source>Cannot delete file %1: %2</source>
         <translation>Невозможно удалить файл %1: %2</translation>
     </message>
     <message>
-        <source>Could not restore backup file into %1: %2</source>
+        <source>Cannot restore backup file into %1: %2</source>
         <translation>Невозможно восстановить файл %1 из резервной копии: %2</translation>
     </message>
 </context>
@@ -307,7 +307,7 @@
         <translation>Невозможно загрузить %1: Сбой записи в файл «%2» - %3</translation>
     </message>
     <message>
-        <source>Cannot download %1: Could not create %2: %3</source>
+        <source>Cannot download %1: Cannot create %2: %3</source>
         <translation>Невозможно загрузить %1: Невозможно создать %2: %3</translation>
     </message>
     <message>
@@ -361,7 +361,7 @@
         <translation>Недопустимое количество параметров: передано %1, требуется 1.</translation>
     </message>
     <message>
-        <source>Could not create folder %1: Unknown error.</source>
+        <source>Cannot create folder %1: Unknown error.</source>
         <translation>Невозможно создать каталог %1: Неизвестная ошибка.</translation>
     </message>
     <message>
@@ -372,7 +372,7 @@
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Could not backup file %1.</source>
+        <source>Cannot backup file %1.</source>
         <translation>Невозможно создать резервную копию файла %1.</translation>
     </message>
     <message>
@@ -380,11 +380,11 @@
         <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
     </message>
     <message>
-        <source>Could not remove destination file %1: %2</source>
+        <source>Cannot remove destination file %1: %2</source>
         <translation>Невозможно удалить файл назначения %1: %2</translation>
     </message>
     <message>
-        <source>Could not copy %1 to %2: %3</source>
+        <source>Cannot copy %1 to %2: %3</source>
         <translation>Невозможно скопировать %1 в %2: %3</translation>
     </message>
     <message>
@@ -411,7 +411,7 @@
         <translation>Файл %1 не существует.</translation>
     </message>
     <message>
-        <source>Could not open %1.</source>
+        <source>Cannot open %1.</source>
         <translation>Невозможно открыть %1.</translation>
     </message>
     <message>
@@ -434,11 +434,11 @@
         <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
     </message>
     <message>
-        <source>Could not open file %1 for reading: %2</source>
+        <source>Cannot open file %1 for reading: %2</source>
         <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
     <message>
-        <source>Could not open file %1 for writing: %2</source>
+        <source>Cannot open file %1 for writing: %2</source>
         <translation>Невозможно открыть файл %1 на запись: %2</translation>
     </message>
     <message>
@@ -457,7 +457,7 @@
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Could not read resource file &quot;%1&quot;. Reason:</source>
+        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
         <translation>Невозможно прочитать файл ресурсов «%1». Причина:</translation>
     </message>
 </context>
@@ -468,11 +468,11 @@
         <translation>Недопустимое количество параметров: передано %1, требуется 1.</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: The folder does not exist.</source>
+        <source>Cannot remove folder %1: The folder does not exist.</source>
         <translation>Невозможно удалить каталог %1: каталог с таким именем не существует.</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>Невозможно удалить каталог %1: %2</translation>
     </message>
     <message>
@@ -514,11 +514,11 @@
 <context>
     <name>KDUpdater::UpdateFinder</name>
     <message>
-        <source>Could not access the package information of this application.</source>
+        <source>Cannot access the package information of this application.</source>
         <translation>Приложение не может получить доступ к информации о пакетах.</translation>
     </message>
     <message>
-        <source>Could not access the update sources information of this application.</source>
+        <source>Cannot access the update sources information of this application.</source>
         <translation>Приложение не может получить доступ к серверам обновлений.</translation>
     </message>
     <message numerus="yes">
@@ -534,7 +534,7 @@
         <translation>Загружается файл Updates.xml с сервера обновлений.</translation>
     </message>
     <message>
-        <source>Could not download update source %1 from (&apos;%2&apos;)</source>
+        <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
         <translation>Не удалось загрузить источник обновлений %1 с («%2»)</translation>
     </message>
     <message>
@@ -557,7 +557,7 @@
         <translation>%1 содержит недопустимые данные: %2</translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>Невозможно прочитать «%1»</translation>
     </message>
     <message>
@@ -569,7 +569,7 @@
         <translation>Непредвиденный корневой элемент %1, требуется «UpdateSources»</translation>
     </message>
     <message>
-        <source>Could not save changes to &quot;%1&quot;: %2</source>
+        <source>Cannot save changes to &quot;%1&quot;: %2</source>
         <translation>Невозможно сохранить изменения в «%1»: %2</translation>
     </message>
 </context>
@@ -580,7 +580,7 @@
         <translation>Файл Updates.xml содержит недопустимые данные: %1</translation>
     </message>
     <message>
-        <source>Could not read &quot;%1&quot;</source>
+        <source>Cannot read &quot;%1&quot;</source>
         <translation>Невозможно прочитать «%1»</translation>
     </message>
     <message>
@@ -615,11 +615,11 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>Could not retrieve number of items in archive</source>
+        <source>Cannot retrieve number of items in archive</source>
         <translation>Не удалось определить количество файлов в архиве</translation>
     </message>
     <message>
-        <source>Could not retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1</source>
         <translation>Не удалось определить путь файла %1 в архиве</translation>
     </message>
     <message>
@@ -639,15 +639,15 @@
         <translation>Ошибка: %1</translation>
     </message>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>Не удалось загрузить кодеки</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>Не удалось определить формат по умолчанию</translation>
     </message>
     <message>
-        <source>Could not create archive %1. %2</source>
+        <source>Cannot create archive %1. %2</source>
         <translation>Не удалось создать архив %1. %2</translation>
     </message>
     <message>
@@ -659,14 +659,14 @@
         <translation>Индекс файла %1 вне лимитов [0, %2]</translation>
     </message>
     <message>
-        <source>Could not create output file for writing: %1</source>
+        <source>Cannot create output file for writing: %1</source>
         <translation>Не удалось создать выходной файл для записи: %1</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
     <message>
-        <source>Could not list archive: QIODevice not set or already destroyed.</source>
+        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
         <translation>Невозможно создать архив: QIODevice не установлен или уже разрушен.</translation>
     </message>
     <message>
@@ -685,7 +685,7 @@
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
-        <source>Could not list archive: QIODevice already destroyed.</source>
+        <source>Cannot list archive: QIODevice already destroyed.</source>
         <translation>Невозможно создать архив: QIODevice уже разрушен.</translation>
     </message>
     <message>
@@ -700,15 +700,15 @@
 <context>
     <name>OpenArchiveInfo</name>
     <message>
-        <source>Could not load codecs</source>
+        <source>Cannot load codecs</source>
         <translation>Не удалось загрузить кодеки</translation>
     </message>
     <message>
-        <source>Could not retrieve default format</source>
+        <source>Cannot retrieve default format</source>
         <translation>Не удалось определить формат по умолчанию</translation>
     </message>
     <message>
-        <source>Could not open archive</source>
+        <source>Cannot open archive</source>
         <translation>Не удалось открыть архив</translation>
     </message>
     <message>
@@ -762,35 +762,35 @@
         <translation>ИБ</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>Не удалось удалить файл %1: %2</translation>
     </message>
     <message>
-        <source>Could not remove folder %1: %2</source>
+        <source>Cannot remove folder %1: %2</source>
         <translation>Не удалось удалить каталог %1: %2</translation>
     </message>
     <message>
-        <source>Could not create folder %1</source>
+        <source>Cannot create folder %1</source>
         <translation>Не удалось создать каталог %1</translation>
     </message>
     <message>
-        <source>Could not copy file from %1 to %2: %3</source>
+        <source>Cannot copy file from %1 to %2: %3</source>
         <translation>Не удалось скопировать файл из %1 в %2: %3</translation>
     </message>
     <message>
-        <source>Could not move file from %1 to %2: %3</source>
+        <source>Cannot move file from %1 to %2: %3</source>
         <translation>Не удалось переместить файл из %1 в %2: %3</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2</source>
+        <source>Cannot create folder %1: %2</source>
         <translation>Не удалось создать каталог %1: %2</translation>
     </message>
     <message>
-        <source>Could not open temporary file: %1</source>
+        <source>Cannot open temporary file: %1</source>
         <translation>Не удалось открыть временный файл %1</translation>
     </message>
     <message>
-        <source>Could not open temporary file for template %1: %2</source>
+        <source>Cannot open temporary file for template %1: %2</source>
         <translation>Не удалось открыть временный файл для шаблона %1: %2</translation>
     </message>
     <message>
@@ -826,11 +826,11 @@
         <translation>Сбой записи с %1 байта: %2</translation>
     </message>
     <message>
-        <source>Could not create temporary file</source>
+        <source>Cannot create temporary file</source>
         <translation>Не удалось создать временный файл</translation>
     </message>
     <message>
-        <source>Could not retrieve property %1 for item %2</source>
+        <source>Cannot retrieve property %1 for item %2</source>
         <translation>Не удалось определить свойство %1 для элемента %2</translation>
     </message>
     <message>
@@ -838,11 +838,11 @@
         <translation>Свойство %1 элемента %2 относится не к типу VT_FILETIME, а к %3</translation>
     </message>
     <message>
-        <source>Could not convert file time to local time</source>
+        <source>Cannot convert file time to local time</source>
         <translation>Не удалось преобразовать время файла в локальное время</translation>
     </message>
     <message>
-        <source>Could not convert local file time to system time</source>
+        <source>Cannot convert local file time to system time</source>
         <translation>Не удалось преобразовать время файла в системное время</translation>
     </message>
     <message>
@@ -857,19 +857,19 @@
         <translation>У компонентов не может быть потомков в режиме обновления.</translation>
     </message>
     <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
+        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
         <translation>Невозможно открыть файл перевода «%1».</translation>
     </message>
     <message>
-        <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Невозможно открыть UI файл «%1». Ошибка: %2</translation>
     </message>
     <message>
-        <source>Could not load the requested UI file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>Невозможно загрузить UI файл «%1». Ошибка: %2</translation>
     </message>
     <message>
-        <source>Could not open the requested license file &apos;%1&apos;. Error: %2</source>
+        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
         <translation>Невозможно открыть файл лицензии «%1». Ошибка: %2</translation>
     </message>
     <message>
@@ -1049,7 +1049,7 @@
         <translation>Недопустимые параметры в %0: Недопустимые имена папок: %1 %2</translation>
     </message>
     <message>
-        <source>Could not create %0</source>
+        <source>Cannot create %0</source>
         <translation>Невозможно создать %0</translation>
     </message>
     <message>
@@ -1057,11 +1057,11 @@
         <translation>Не удалось перезаписать %1</translation>
     </message>
     <message>
-        <source>Could not copy %0 to %1, error was: %3</source>
+        <source>Cannot copy %0 to %1, error was: %3</source>
         <translation>Невозможно скопировать %0 в %1. Ошибка: %3</translation>
     </message>
     <message>
-        <source>Could not remove %0</source>
+        <source>Cannot remove %0</source>
         <translation>Невозможно удалить %0</translation>
     </message>
 </context>
@@ -1072,11 +1072,11 @@
         <translation type="unfinished">Неверное число элементов task.</translation>
     </message>
     <message>
-        <source>Could not open source &apos;%1&apos; for read. Error: %2.</source>
+        <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
         <translation>Не удалось открыть источник «%1» для чтения. Ошибка: %2.</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <translation>Не удалось открыть «%1» для записи. Ошибка: %2.</translation>
     </message>
     <message>
@@ -1087,7 +1087,7 @@
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>Не удалось создать резервную копию файла %1: %2</translation>
     </message>
     <message>
@@ -1103,7 +1103,7 @@
         <translation>Не удалось перезаписать %1</translation>
     </message>
     <message>
-        <source>Could not write Desktop Entry at %1</source>
+        <source>Cannot write Desktop Entry at %1</source>
         <translation>Невозможно записать Desktop Entry в %1</translation>
     </message>
 </context>
@@ -1118,26 +1118,26 @@
         <translation>ровно 2</translation>
     </message>
     <message>
-        <source>Could not create link from %1 to %2.</source>
+        <source>Cannot create link from %1 to %2.</source>
         <translation>Не удалось создать ссылку с %1 на %2.</translation>
     </message>
     <message>
-        <source>Could not remove link from %1 to %2.</source>
+        <source>Cannot remove link from %1 to %2.</source>
         <translation>Не удалось создать ссылку с %1 на %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Could not set file permissions %1!</source>
+        <source>Cannot set file permissions %1!</source>
         <translation>Невозможно установить права доступа для файла %1!</translation>
     </message>
     <message>
-        <source>Could not remove file %1: %2</source>
+        <source>Cannot remove file %1: %2</source>
         <translation>Не удалось удалить файл %1: %2</translation>
     </message>
     <message>
-        <source>Could not move file %1 to %2. Error: %3</source>
+        <source>Cannot move file %1 to %2. Error: %3</source>
         <translation>Невозможно переместить файл %1 в %2. Ошибка: %3</translation>
     </message>
     <message>
@@ -1153,19 +1153,19 @@
         <translation>Необходима офлайновая версия программы установки: %1.</translation>
     </message>
     <message>
-        <source>Could not open file: %1</source>
+        <source>Cannot open file: %1</source>
         <translation>Невозможно открыть файл: %1</translation>
     </message>
     <message>
-        <source>Could not read: %1. Error: %2</source>
+        <source>Cannot read: %1. Error: %2</source>
         <translation>Невозможно прочитать: %1. Ошибка: %2</translation>
     </message>
     <message>
-        <source>Could not open file: %1. Error: %2</source>
+        <source>Cannot open file: %1. Error: %2</source>
         <translation>Невозможно открыть файл: %1. Ошибка: %2</translation>
     </message>
     <message>
-        <source>Could not create target dir: %1.</source>
+        <source>Cannot create target dir: %1.</source>
         <translation>Невозможно создать каталог назначения: %1.</translation>
     </message>
     <message>
@@ -1177,7 +1177,7 @@
         <translation>Удаление файла: %0</translation>
     </message>
     <message>
-        <source>Could not remove %0.</source>
+        <source>Cannot remove %0.</source>
         <translation>Невозможно удалить %0.</translation>
     </message>
     <message>
@@ -1200,7 +1200,7 @@
         <translation> (необязательно: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
     </message>
     <message>
-        <source>Could not create folder %1: %2.</source>
+        <source>Cannot create folder %1: %2.</source>
         <translation>Не удалось создать каталог: %1: %2.</translation>
     </message>
     <message>
@@ -1208,7 +1208,7 @@
         <translation>Не удалось перезаписать %1: %2</translation>
     </message>
     <message>
-        <source>Could not create link %1: %2</source>
+        <source>Cannot create link %1: %2</source>
         <translation>Не удалось создать ссылку %1: %2</translation>
     </message>
 </context>
@@ -1231,15 +1231,15 @@
         <translation>Не удалось проверить целостность хеша в процессе загрузки. Пожалуйста, повторите операцию.</translation>
     </message>
     <message>
-        <source>Could not verify Hash</source>
+        <source>Cannot verify Hash</source>
         <translation>Невозможно проверить хеш</translation>
     </message>
     <message>
-        <source>Could not download archive: %1 : %2</source>
+        <source>Cannot download archive: %1 : %2</source>
         <translation>Невозможно загрузить архив: %1: %2</translation>
     </message>
     <message>
-        <source>Could not fetch archives: %1
+        <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation>Невозможно получить архивы :%1
 Ошибка в процессе загрузки %2</translation>
@@ -1253,7 +1253,7 @@ Error while loading %2</source>
         <translation>Схема не поддерживается: %1 (%2)</translation>
     </message>
     <message>
-        <source>Could not find component for: %1.</source>
+        <source>Cannot find component for: %1.</source>
         <translation>Невозможно найти компонент для: %1.</translation>
     </message>
 </context>
@@ -1301,7 +1301,7 @@ Error while loading %2</source>
         <translation>«%1» уже существует, но не является файлом.</translation>
     </message>
     <message>
-        <source>Could not open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>Не удалось открыть «%1» для записи. Ошибка: %2.</translation>
     </message>
@@ -1317,11 +1317,11 @@ Error while loading %2</source>
         <translation>по крайней мере 1</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start detached: &quot;%1&quot;</source>
+        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
         <translation>Не удалось выполнить: невозможно запустить фоновый процесс: «%1»</translation>
     </message>
     <message>
-        <source>Execution failed: Could not start: &quot;%1&quot;(%2)</source>
+        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
         <translation>Не удалось исполнить: невозможно запустить: «%1»(%2)</translation>
     </message>
     <message>
@@ -1358,7 +1358,7 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Could not open %1 for reading: %2.</source>
+        <source>Cannot open %1 for reading: %2.</source>
         <translation>Невозможно открыть файл %1 на чтение: %2.</translation>
     </message>
     <message>
@@ -1377,7 +1377,7 @@ Error while loading %2</source>
         <translation>Количество аргументов не совпадает: требуется 1</translation>
     </message>
     <message>
-        <source>Could not get package manager core.</source>
+        <source>Cannot get package manager core.</source>
         <translation>Невозможно получить ядро менеджера пакетов.</translation>
     </message>
     <message>
@@ -1509,7 +1509,7 @@ Error while loading %2</source>
         <translation>Недопустимый параметр: исходный каталог не может быть пустым.</translation>
     </message>
     <message>
-        <source>Could not backup file %1: %2</source>
+        <source>Cannot backup file %1: %2</source>
         <translation>Не удалось создать резервную копию файла %1: %2</translation>
     </message>
     <message>
@@ -1521,7 +1521,7 @@ Error while loading %2</source>
         <translation>Не удалось скопировать %1: %2</translation>
     </message>
     <message>
-        <source>Could not create folder at %1: %2</source>
+        <source>Cannot create folder at %1: %2</source>
         <translation>Не удалось создать каталог в %1: %2</translation>
     </message>
 </context>
@@ -1698,7 +1698,7 @@ Error while loading %2</source>
         <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
     </message>
     <message>
-        <source>Could not open %1 for reading. Error: %2</source>
+        <source>Cannot open %1 for reading. Error: %2</source>
         <translation>Невозможно открыть файл %1 на чтение: %2</translation>
     </message>
 </context>
@@ -1786,7 +1786,7 @@ Downloading packages...</source>
         <translation>Ошибка форматирования</translation>
     </message>
     <message>
-        <source>Could not write installer configuration to %1: %2</source>
+        <source>Cannot write installer configuration to %1: %2</source>
         <translation>Невозможно записать файл конфигурации программы установки в %1: %2</translation>
     </message>
     <message>
@@ -1870,19 +1870,19 @@ Update aborted!</source>
         <translation>Maintenance Tool не является пакетом</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool data to %1: %2</source>
+        <source>Cannot write maintenance tool data to %1: %2</source>
         <translation>Не удалось записать данные Maintenance Tool в %1: %2</translation>
     </message>
     <message>
-        <source>Could not remove data file &apos;%1&apos;: %2</source>
+        <source>Cannot remove data file &apos;%1&apos;: %2</source>
         <translation>Не удалось удалить файл данных «%1»: %2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool to %1: %2</source>
+        <source>Cannot write maintenance tool to %1: %2</source>
         <translation>Не удалось записать Maintenance Tool в %1: %2</translation>
     </message>
     <message>
-        <source>Could not write maintenance tool binary data to %1: %2</source>
+        <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>Не удалось записать двоичные данные Maintenance Tool в %1: %2</translation>
     </message>
     <message>
@@ -1931,7 +1931,7 @@ Installing component %1</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <source>Could not retrieve remote tree: %1.</source>
+        <source>Cannot retrieve remote tree: %1.</source>
         <translation>Невозможно загрузить удалённую структуру: %1.</translation>
     </message>
     <message>
@@ -1939,15 +1939,15 @@ Installing component %1</source>
         <translation>Не удалось прочитать пакеты из: %1.</translation>
     </message>
     <message>
-        <source>Could not retrieve meta information: %1</source>
+        <source>Cannot retrieve meta information: %1</source>
         <translation>Невозможно загрузить метаданные: %1</translation>
     </message>
     <message>
-        <source>Could not add temporary update source information.</source>
+        <source>Cannot add temporary update source information.</source>
         <translation>Невозможно добавить информацию о временном сервере обновления.</translation>
     </message>
     <message>
-        <source>Could not find any update source information.</source>
+        <source>Cannot find any update source information.</source>
         <translation>Невозможно найти информацию об источниках обновления.</translation>
     </message>
     <message>
@@ -2161,14 +2161,14 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
     </message>
 </context>
@@ -2194,7 +2194,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::Resource</name>
     <message>
-        <source>Could not open Resource &apos;%1&apos; read-only.</source>
+        <source>Cannot open Resource &apos;%1&apos; read-only.</source>
         <translation>Не удалось открыть на чтение ресурс «%1».</translation>
     </message>
     <message>
@@ -2216,7 +2216,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Could not open the requested script file at %1: %2.</source>
+        <source>Cannot open the requested script file at %1: %2.</source>
         <translation>Не удалось открыть файл сценария %1: %2.</translation>
     </message>
     <message>
@@ -2413,7 +2413,7 @@ Do you want to continue?</source>
         <translation>Таймаут во время теста «%1»</translation>
     </message>
     <message>
-        <source>Could not parse Updates.xml! Error: %1.</source>
+        <source>Cannot parse Updates.xml! Error: %1.</source>
         <translation>Невозможно разобрать Updates.xml! Ошибка: %1.</translation>
     </message>
     <message>
@@ -2459,7 +2459,7 @@ Do you want to continue?</source>
         <translation>Первым элементом должен быть «linux», «mac» или «windows». Другие типы в настоящий момент не поддерживаются.</translation>
     </message>
     <message>
-        <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
+        <source>Cannot find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
         <translation>Не удалось найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
     </message>
     <message>
@@ -2503,11 +2503,11 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
 <context>
     <name>RemoteClient</name>
     <message>
-        <source>Could not get authorization.</source>
+        <source>Cannot get authorization.</source>
         <translation>Не удалось авторизоваться.</translation>
     </message>
     <message>
-        <source>Could not get authorization that is needed for continuing the installation.
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
@@ -2522,14 +2522,14 @@ as root and then clicking OK.</source>
 <context>
     <name>ResourceCollectionManager</name>
     <message>
-        <source>Could not open resource %1: %2</source>
+        <source>Cannot open resource %1: %2</source>
         <translation>Не удалось открыть ресурс %1: %2</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <source>Could not open settings file %1 for reading: %2</source>
+        <source>Cannot open settings file %1 for reading: %2</source>
         <translation>Невозможно открыть файл настроек %1 на чтение: %2</translation>
     </message>
 </context>
@@ -2659,7 +2659,7 @@ as root and then clicking OK.</source>
         <translation>Невозможно записать ключ %1 в реестр</translation>
     </message>
     <message>
-        <source>Could not write to registry path %1</source>
+        <source>Cannot write to registry path %1</source>
         <translation>Не удалось записать ключ %1 в реестр</translation>
     </message>
     <message>

@@ -48,14 +48,14 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
     QDir targetDir(QFileInfo(target).absoluteFilePath());
     if (targetDir.exists()) {
         if (!targetDir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries).isEmpty()) {
-            std::cerr << qPrintable(QString::fromLatin1("Target directory '%1' already exists and "
-                "is not empty.").arg(targetDir.path())) << std::endl;
+            std::cerr << qPrintable(QString::fromLatin1("Target directory \"%1\" already exists and "
+                "is not empty.").arg(QDir::toNativeSeparators(targetDir.path()))) << std::endl;
             return EXIT_FAILURE;
         }
     } else {
         if (!QDir().mkpath(targetDir.path())) {
-             std::cerr << qPrintable(QString::fromLatin1("Could not create '%1'.").arg(targetDir
-                 .path())) << std::endl;
+             std::cerr << qPrintable(QString::fromLatin1("Cannot create \"%1\".").arg(
+                                         QDir::toNativeSeparators(targetDir.path()))) << std::endl;
             return EXIT_FAILURE;
         }
     }
@@ -69,8 +69,8 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
     }
 
     if (!targetDir.cd(QLatin1String("metadata"))) {
-        std::cerr << qPrintable(QString::fromLatin1("Could not switch to '%1/metadata'.")
-            .arg(targetDir.path())) << std::endl;
+        std::cerr << qPrintable(QString::fromLatin1("Cannot switch to \"%1/metadata\".")
+            .arg(QDir::toNativeSeparators(targetDir.path()))) << std::endl;
         return EXIT_FAILURE;
     }
 
@@ -82,8 +82,8 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&updatesXml, &error)) {
-            throw QInstaller::Error(QString::fromLatin1("Could not read: '%1'. %2").arg(updatesXml
-                .fileName(), error));
+            throw QInstaller::Error(QString::fromLatin1("Cannot read: \"%1\": %2").arg(
+                                        QDir::toNativeSeparators(updatesXml.fileName()), error));
         }
 
         QHash<QString, QString> versionMap;
@@ -114,7 +114,7 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
                 continue;
 
             if (!targetDir.mkpath(name)) {
-                throw QInstaller::Error(QString::fromLatin1("Could not create target dir: %1.")
+                throw QInstaller::Error(QString::fromLatin1("Cannot create target dir: %1.")
                     .arg(targetDir.filePath(name)));
             }
 

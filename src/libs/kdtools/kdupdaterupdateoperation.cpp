@@ -250,7 +250,7 @@ QString UpdateOperation::argumentKeyValue(const QString &key, const QString &def
     it = std::find_if(++it, tArguments.end(), StartsWith(keySeparater));
     if (it != tArguments.end()) {
         qWarning() << QString::fromLatin1("There are multiple keys in the arguments calling"
-            " '%1'. Only the first found '%2' is used: '%3'").arg(name(), key, arguments().join(
+            " \"%1\". Only the first found \"%2\" is used: \"%3\"").arg(name(), key, arguments().join(
             QLatin1String("; ")));
     }
     return value;
@@ -340,7 +340,8 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
     QFile f(file);
     if (!f.rename(backup)) {
         if (errorString)
-            *errorString = tr("Renaming %1 into %2 failed with %3.").arg(file, backup, f.errorString());
+            *errorString = tr("Renaming file \"%1\" to \"%2\" failed: %3").arg(
+                    QDir::toNativeSeparators(file), QDir::toNativeSeparators(backup), f.errorString());
         return false;
     }
     registerForDelayedDeletion(QStringList(backup));

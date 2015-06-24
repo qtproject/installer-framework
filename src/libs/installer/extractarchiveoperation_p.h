@@ -154,7 +154,7 @@ protected:
         QFile f(filename);
         const bool renamed = f.rename(backup);
         if (f.exists() && !renamed) {
-            qCritical("Could not rename %s to %s: %s", qPrintable(filename), qPrintable(backup),
+            qCritical("Cannot rename %s to %s: %s", qPrintable(filename), qPrintable(backup),
                 qPrintable(f.errorString()));
             return false;
         }
@@ -185,8 +185,7 @@ public:
     {
         QFile archive(archivePath);
         if (!archive.open(QIODevice::ReadOnly)) {
-
-            emit finished(false, tr("Could not open %1 for reading: %2.").arg(archivePath, archive.errorString()));
+            emit finished(false, tr("Cannot open archive \"%1\" for reading: %2").arg(archivePath, archive.errorString()));
             return;
         }
 
@@ -194,9 +193,9 @@ public:
             Lib7z::extractArchive(&archive, targetDir, callback);
             emit finished(true, QString());
         } catch (const Lib7z::SevenZipException& e) {
-            emit finished(false, tr("Error while extracting '%1': %2").arg(archivePath, e.message()));
+            emit finished(false, tr("Error while extracting archive \"%1\": %2").arg(archivePath, e.message()));
         } catch (...) {
-            emit finished(false, tr("Unknown exception caught while extracting %1.").arg(archivePath));
+            emit finished(false, tr("Unknown exception caught while extracting \"%1\".").arg(archivePath));
         }
     }
 

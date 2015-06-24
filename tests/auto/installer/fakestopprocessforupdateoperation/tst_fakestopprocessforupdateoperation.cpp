@@ -37,7 +37,7 @@ private slots:
         QVERIFY(!op.undoOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
-        QCOMPARE(op.errorString(), QString("Could not get package manager core."));
+        QCOMPARE(op.errorString(), QString("Cannot get package manager core."));
     }
 
     void testRunningApplication()

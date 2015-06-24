@@ -222,7 +222,7 @@ struct DirectoryGuard
             return;
         QDir dir(m_path);
         if (!dir.rmdir(m_path))
-            qWarning() << "Could not delete directory " << m_path;
+            qWarning() << "Cannot delete directory " << m_path;
     }
 
     /*!
@@ -239,7 +239,7 @@ struct DirectoryGuard
             return QStringList();
         if (fi.exists() && !fi.isDir()) {
             throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
-                "Path exists but is not a folder: %1").arg(m_path));
+                "Path \"%1\" exists but is not a directory.").arg(QDir::toNativeSeparators(m_path)));
         }
         QStringList created;
 
@@ -255,7 +255,7 @@ struct DirectoryGuard
         m_created = dir.mkpath(m_path);
         if (!m_created) {
             throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
-                "Could not create folder: %1").arg(m_path));
+                "Cannot create directory \"%1\".").arg(QDir::toNativeSeparators(m_path)));
         }
         return created;
     }
@@ -285,7 +285,7 @@ static NCOM::CPropVariant readProperty(IInArchive *archive, int index, int propI
     NCOM::CPropVariant prop;
     if (archive->GetProperty(index, propId, &prop) != S_OK) {
         throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Could not retrieve property %1 for item %2").arg(QString::number(propId),
+            "Cannot retrieve property %1 for item %2.").arg(QString::number(propId),
             QString::number(index)));
     }
     return prop;
@@ -317,13 +317,13 @@ static bool getDateTimeProperty(IInArchive *arc, int index, int id, QDateTime *v
     FILETIME ft;
     if (!FileTimeToLocalFileTime(&ft7z, &ft)) {
         throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Could not convert 7z stored file time to local time."));
+            "Cannot convert file time to local time."));
     }
 
     SYSTEMTIME st;
     if (!BOOLToBool(FileTimeToSystemTime(&ft, &st))) {
         throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Could not convert local file time to system time."));
+            "Cannot convert local file time to system time."));
     }
     *value = QDateTime(QDate(st.wYear, st.wMonth, st.wDay), QTime(st.wHour, st.wMinute,
         st.wSecond));
@@ -489,7 +489,7 @@ QVector<File> listArchive(QFileDevice *archive)
     try {
         CCodecs codecs;
         if (codecs.Load() != S_OK)
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs."));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot load codecs."));
 
         COpenOptions op;
         op.codecs = &codecs;
@@ -509,7 +509,7 @@ QVector<File> listArchive(QFileDevice *archive)
         CArchiveLink archiveLink;
         if (archiveLink.Open2(op, nullptr) != S_OK) {
             throw SevenZipException(QCoreApplication::translate("Lib7z",
-                "Could not open archive '%1'.").arg(archive->fileName()));
+                "Cannot open archive \"%1\".").arg(archive->fileName()));
         }
 
         QVector<File> flat;
@@ -518,14 +518,14 @@ QVector<File> listArchive(QFileDevice *archive)
             UInt32 numItems = 0;
             if (arch->GetNumberOfItems(&numItems) != S_OK) {
                 throw SevenZipException(QCoreApplication::translate("Lib7z",
-                    "Could not retrieve number of items in archive."));
+                    "Cannot retrieve number of items in archive."));
             }
             flat.reserve(flat.size() + numItems);
             for (uint item = 0; item < numItems; ++item) {
                 UString s;
                 if (archiveLink.Arcs[i].GetItemPath(item, s) != S_OK) {
                     throw SevenZipException(QCoreApplication::translate("Lib7z",
-                        "Could not retrieve path of archive item '%1'.").arg(item));
+                        "Cannot retrieve path of archive item \"%1\".").arg(item));
                 }
                 File f;
                 f.archiveIndex.setX(i);
@@ -585,7 +585,7 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
     UString s;
     if (arc->GetItemPath(index, s) != S_OK) {
         setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-            "Could not retrieve path of archive item %1").arg(index));
+            "Cannot retrieve path of archive item %1.").arg(index));
         return E_FAIL;
     }
 
@@ -613,14 +613,15 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
         // do not follow symlinks, so we need to remove an existing one
         if (fi.isSymLink() && (!QFile::remove(fi.absoluteFilePath()))) {
             setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                "Could not remove already existing symlink %1.").arg(fi.absoluteFilePath()));
+                "Cannot remove already existing symlink %1.").arg(fi.absoluteFilePath()));
             return E_FAIL;
         }
 #endif
         std::unique_ptr<QFile> file(new QFile(fi.absoluteFilePath()));
         if (!file->open(QIODevice::WriteOnly)) {
-            setLastError(QCoreApplication::translate("ExtractCallbackImpl", "Could not open "
-                "file '%1': %2").arg(fi.absoluteFilePath(), file->errorString()));
+            setLastError(QCoreApplication::translate("ExtractCallbackImpl",
+                                                     "Cannot open file \"%1\" for writing: %2").arg(
+                             QDir::toNativeSeparators(fi.absoluteFilePath()), file->errorString()));
             return E_FAIL;
         }
         CMyComPtr<ISequentialOutStream> stream =
@@ -645,7 +646,7 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
     UString s;
     if (arc->GetItemPath(currentIndex, s) != S_OK) {
         setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-            "Could not retrieve path of archive item %1.").arg(currentIndex));
+            "Cannot retrieve path of archive item %1.").arg(currentIndex));
         return E_FAIL;
     }
 
@@ -669,14 +670,14 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
         QFileInfo symlinkPlaceHolderFileInfo(absFilePath);
         if (symlinkPlaceHolderFileInfo.isSymLink()) {
             setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                "Could not create symlink at '%1'. Another one is already existing.")
+                "Cannot create symlink at \"%1\". Another one is already existing.")
                 .arg(absFilePath));
             return E_FAIL;
         }
         QFile symlinkPlaceHolderFile(absFilePath);
         if (!symlinkPlaceHolderFile.open(QIODevice::ReadOnly)) {
             setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                "Could not read symlink target from file '%1'.").arg(absFilePath));
+                "Cannot read symlink target from file \"%1\".").arg(absFilePath));
             return E_FAIL;
         }
 
@@ -686,7 +687,7 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
         QFile targetFile(QString::fromLatin1(symlinkTarget));
         if (!targetFile.link(absFilePath)) {
             setLastError(QCoreApplication::translate("ExtractCallbackImpl",
-                "Could not create symlink at %1: %2.").arg(absFilePath,
+                "Cannot create symlink at %1: %2").arg(absFilePath,
                 targetFile.errorString()));
             return E_FAIL;
         }
@@ -838,8 +839,8 @@ static QString createTmp7z()
 {
     QTemporaryFile file;
     if (!file.open()) {
-        throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not create "
-            "temporary file. Error: %1").arg(file.errorString()));
+        throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot create "
+            "temporary file: %1").arg(file.errorString()));
     }
 
     file.write(QByteArray::fromHex("377A.BCAF.271C" // Signature.
@@ -923,7 +924,7 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
 
         CCodecs codecs;
         if (codecs.Load() != S_OK)
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs."));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot load codecs."));
 
         CObjectVector<COpenType> types;
         if (!ParseOpenTypes(codecs, options.ArcType, types))
@@ -936,22 +937,26 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
 
         const QFile tempFile(UString2QString(options.ArchiveName));
         if (res != S_OK || !tempFile.exists()) {
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not create "
-                "archive '%1'. %2").arg(tempFile.fileName(), errorMessageFrom7zResult(res)));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot create "
+                "archive \"%1\": %2").arg(QDir::toNativeSeparators(tempFile.fileName()),
+                                        errorMessageFrom7zResult(res)));
         }
 
         if (mode == QTmpFile::Yes) {
             QFile org(archive);
             if (org.exists() && !org.remove()) {
-                throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not remove "
-                    "old archive '%1'. Error: %2").arg(org.fileName(), org.errorString()));
+                throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot remove "
+                    "old archive \"%1\": %2").arg(QDir::toNativeSeparators(org.fileName()),
+                                                org.errorString()));
             }
 
             QFile arc(UString2QString(options.ArchiveName));
             if(!arc.rename(archive)) {
-                throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not rename "
-                    "temporary archive '%1' to '%2'. Error: %3").arg(arc.fileName(), archive,
-                    arc.errorString()));
+                throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot rename "
+                    "temporary archive \"%1\" to \"%2\": %3").arg(
+                                            QDir::toNativeSeparators(arc.fileName()),
+                                            QDir::toNativeSeparators(archive),
+                                            arc.errorString()));
             }
         }
     } catch (const char *err) {
@@ -992,7 +997,7 @@ void extractArchive(QFileDevice *archive, const QString &directory, ExtractCallb
 
         CCodecs codecs;
         if (codecs.Load() != S_OK)
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs."));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot load codecs."));
 
         COpenOptions op;
         op.codecs = &codecs;
@@ -1012,7 +1017,7 @@ void extractArchive(QFileDevice *archive, const QString &directory, ExtractCallb
         CArchiveLink archiveLink;
         if (archiveLink.Open2(op, nullptr) != S_OK) {
             throw SevenZipException(QCoreApplication::translate("Lib7z",
-                "Could not open archive '%1'.").arg(archive->fileName()));
+                "Cannot open archive \"%1\".").arg(archive->fileName()));
         }
 
         callback->setTarget(directory);
@@ -1049,7 +1054,7 @@ bool isSupportedArchive(QFileDevice *archive)
     try {
         CCodecs codecs;
         if (codecs.Load() != S_OK)
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not load codecs."));
+            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot load codecs."));
 
         COpenOptions op;
         op.codecs = &codecs;

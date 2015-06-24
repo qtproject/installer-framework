@@ -110,7 +110,7 @@ void tst_Settings::loadNotExistingConfig()
     try {
         Settings::fromFileAndPrefix(":/data/inexisting_config.xml", ":/data");
     } catch (const Error &error) {
-        QCOMPARE(error.message(), QLatin1String("Could not open settings file "
+        QCOMPARE(error.message(), QLatin1String("Cannot open settings file "
                                                 ":/data/inexisting_config.xml for reading: "
                                                 "Unknown error"));
         return;

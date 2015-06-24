@@ -61,8 +61,8 @@ struct Command
     const char* argDescription;
 } Commands[] = {
     { "dump", "Dumps the binary content that belongs to an installer or maintenance tool into "
-        "target folder.", 2, "<binary> <targetfolder>", "The <binary> containing the data to "
-        "dump.\nThe <targetfolder> to dump the data in."
+        "target directory.", 2, "<binary> <targetdirecory>", "The <binary> containing the data to "
+        "dump.\nThe <targetdirectory> to dump the data in."
     },
 
     { "update", "Updates existing installer or maintenance tool with a new installer base.", 2,
@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
                     parser.showHelp(EXIT_SUCCESS);
                 }
             }
-            return fail(QString::fromLatin1("'%1' is not a devtool command.").arg(command));
+            return fail(QString::fromLatin1("\"%1\" is not a devtool command.").arg(command));
         }
 
         QString helpText = parser.helpText();
@@ -164,7 +164,7 @@ int main(int argc, char *argv[])
     }
 
     if (!found)
-        return fail(QString::fromLatin1("'%1' is not a devtool command.").arg(command));
+        return fail(QString::fromLatin1("\"%1\" is not a devtool command.").arg(command));
 
     QInstaller::init();
     QInstaller::setVerbose(parser.isSet(verbose));
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
             QInstaller::openForRead(&tmp);
 
             if (!tmp.seek(QInstaller::BinaryContent::findMagicCookie(&tmp, cookie) - sizeof(qint64)))
-                throw QInstaller::Error(QLatin1String("Could not seek to read magic marker."));
+                throw QInstaller::Error(QLatin1String("Cannot seek to read magic marker."));
 
             QInstaller::BinaryLayout layout;
             layout.magicMarker = QInstaller::retrieveInt64(&tmp);
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
 
             const QByteArray ba = resource->readAll();
             if (!QResource::registerResource((const uchar*) ba.data(), QLatin1String(":/metadata")))
-                throw QInstaller::Error(QLatin1String("Could not register in-binary resource."));
+                throw QInstaller::Error(QLatin1String("Cannot register in-binary resource."));
             resourceMappings.append(ba);
             if (!isOpen)
                 resource->close();

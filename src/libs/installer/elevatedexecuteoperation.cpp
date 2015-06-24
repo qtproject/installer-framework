@@ -142,7 +142,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         const bool success = QProcessWrapper::startDetached(args.front(), args.mid(1));
         if (!success) {
             q->setError(UserDefinedError);
-            q->setErrorString(tr("Execution failed: Could not start detached: \"%1\"").arg(callstr));
+            q->setErrorString(tr("Cannot start detached: \"%1\"").arg(callstr));
         }
         return success;
     }
@@ -194,7 +194,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     if (!success) {
         q->setError(UserDefinedError);
         //TODO: pass errorString() through the wrapper */
-        q->setErrorString(tr("Execution failed: Could not start: \"%1\"(%2)").arg(callstr,
+        q->setErrorString(tr("Cannot start: \"%1\": %2").arg(callstr,
             process->errorString()));
         returnValue = false;
     }
@@ -210,7 +210,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
 
     if (process->exitStatus() == QProcessWrapper::CrashExit) {
         q->setError(UserDefinedError);
-        q->setErrorString(tr("Execution failed (Crash): \"%1\"").arg(callstr));
+        q->setErrorString(tr("Program crashed: \"%1\"").arg(callstr));
         returnValue = false;
     }
 

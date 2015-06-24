@@ -39,6 +39,7 @@
 #include <fileutils.h>
 
 #include <QDialog>
+#include <QDir>
 #include <QFile>
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkProxyFactory>
@@ -696,8 +697,8 @@ void KDUpdater::LocalFileDownloader::doDownload()
     d->source = new QFile(localFile, this);
     if (!d->source->open(QFile::ReadOnly)) {
         onError();
-        setDownloadAborted(tr("Cannot open source file '%1' for reading.").arg(QFileInfo(localFile)
-            .fileName()));
+        setDownloadAborted(tr("Cannot open file \"%1\" for reading: %2").arg(QFileInfo(localFile)
+            .fileName(), d->source->errorString()));
         return;
     }
 
@@ -712,8 +713,8 @@ void KDUpdater::LocalFileDownloader::doDownload()
 
     if (!d->destination->isOpen()) {
         onError();
-        setDownloadAborted(tr("Cannot open destination file '%1' for writing.")
-            .arg(QFileInfo(d->destination->fileName()).fileName()));
+        setDownloadAborted(tr("Cannot open file \"%1\" for writing: %2")
+            .arg(QFileInfo(d->destination->fileName()).fileName(), d->destination->errorString()));
         return;
     }
 
@@ -785,8 +786,9 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
                 killTimer(d->timerId);
                 d->timerId = -1;
                 onError();
-                setDownloadAborted(tr("Writing to %1 failed: %2").arg(d->destination->fileName(),
-                    d->destination->errorString()));
+                setDownloadAborted(tr("Writing to file \"%1\" failed: %2").arg(
+                                       QDir::toNativeSeparators(d->destination->fileName()),
+                                       d->destination->errorString()));
                 return;
             }
             toWrite -= numWritten;
@@ -975,7 +977,7 @@ void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
             onError();
             killTimer(d->timerId);
             emit downloadProgress(1);
-            setDownloadAborted(tr("Could not read resource file \"%1\". Reason:").arg(downloadedFileName(),
+            setDownloadAborted(tr("Cannot read resource file \"%1\": %2").arg(downloadedFileName(),
                 d->destFile.errorString()));
             return;
         }
@@ -1163,7 +1165,7 @@ void KDUpdater::HttpDownloader::httpReadyRead()
                 const QString error = d->destination->errorString();
                 const QString fileName = d->destination->fileName();
                 d->shutDown();
-                setDownloadAborted(tr("Cannot download %1: Writing to file '%2' failed: %3")
+                setDownloadAborted(tr("Cannot download %1. Writing to file \"%2\" failed: %3")
                     .arg(url().toString(), fileName, error));
                 return;
             }
@@ -1313,7 +1315,7 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
         const QString error = d->destination->errorString();
         const QString fileName = d->destination->fileName();
         d->shutDown();
-        setDownloadAborted(tr("Cannot download %1: Could not create %2: %3").arg(
+        setDownloadAborted(tr("Cannot download %1. Cannot create file \"%2\": %3").arg(
             url.toString(), fileName, error));
     }
 }

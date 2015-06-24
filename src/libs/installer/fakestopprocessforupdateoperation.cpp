@@ -62,7 +62,7 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
 
     PackageManagerCore *const core = value(QLatin1String("installer")).value<PackageManagerCore*>();
     if (!core) {
-        setError(KDUpdater::UpdateOperation::UserDefinedError, tr("Could not get package manager "
+        setError(KDUpdater::UpdateOperation::UserDefinedError, tr("Cannot get package manager "
             "core."));
         return false;
     }

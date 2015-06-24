@@ -80,7 +80,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
     oldValue->clear();
     SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
     if (!registry.isWritable()) {
-        *errorString = UpdateOperation::tr("Registry path %1 is not writable").arg(regPath);
+        *errorString = UpdateOperation::tr("Registry path %1 is not writable.").arg(regPath);
         return UpdateOperation::UserDefinedError;
     }
 
@@ -92,7 +92,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
     registry.sync();
 
     if (registry.status() != QSettingsWrapper::NoError) {
-        *errorString = UpdateOperation::tr("Could not write to registry path %1").arg(regPath);
+        *errorString = UpdateOperation::tr("Cannot write to registry path %1.").arg(regPath);
         return UpdateOperation::UserDefinedError;
     }
 

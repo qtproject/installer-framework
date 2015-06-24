@@ -753,7 +753,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     if (cfg.status() != QSettingsWrapper::NoError) {
         const QString reason = cfg.status() == QSettingsWrapper::AccessError ? tr("Access error")
             : tr("Format error");
-        throw Error(tr("Could not write installer configuration to %1: %2").arg(iniPath, reason));
+        throw Error(tr("Cannot write installer configuration to %1: %2").arg(iniPath, reason));
     }
 
     QFile file(targetDir() + QLatin1Char('/') + QLatin1String("network.xml"));
@@ -1009,13 +1009,13 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         {
             QFile dummy(resourcePath.filePath(QLatin1String("installer.dat")));
             if (dummy.exists() && !dummy.remove()) {
-                throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+                throw Error(tr("Cannot remove data file \"%1\": %2").arg(dummy.fileName(),
                     dummy.errorString()));
             }
         }
 
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
-            throw Error(tr("Could not write maintenance tool data to %1: %2").arg(out.fileName(),
+            throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(out.fileName(),
                 out.errorString()));
         }
         dataOut.setAutoRemove(false);
@@ -1034,13 +1034,13 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     {
         QFile dummy(maintenanceToolRenamedName);
         if (dummy.exists() && !dummy.remove()) {
-            throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+            throw Error(tr("Cannot remove data file \"%1\": %2").arg(dummy.fileName(),
                 dummy.errorString()));
         }
     }
 
     if (!out.copy(maintenanceToolRenamedName)) {
-        throw Error(tr("Could not write maintenance tool to %1: %2").arg(maintenanceToolRenamedName,
+        throw Error(tr("Cannot write maintenance tool to \"%1\": %2").arg(maintenanceToolRenamedName,
             out.errorString()));
     }
 
@@ -1072,8 +1072,8 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
             file.remove();  // clear all possible leftovers
             m_core->setValue(QString::fromLatin1("DefaultResourceReplacement"), QString());
         } else {
-            qWarning() << QString::fromLatin1("Could not replace default resource with '%1'.")
-                .arg(newDefaultResource);
+            qWarning() << QString::fromLatin1("Cannot replace default resource with \"%1\".")
+                .arg(QDir::toNativeSeparators(newDefaultResource));
         }
     }
 
@@ -1261,17 +1261,17 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
-                qDebug() << QString::fromLatin1("Could not remove installer base binary '%1' after updating "
+                qDebug() << QString::fromLatin1("Cannot remove installer base binary \"%1\" after updating "
                     "the maintenance tool: %2").arg(installerBaseBinary, replacementBinary.errorString());
             } else {
-                qDebug() << QString::fromLatin1("Removed installer base binary '%1' after updating the "
+                qDebug() << QString::fromLatin1("Removed installer base binary \"%1\" after updating the "
                     "maintenance tool.").arg(installerBaseBinary);
             }
             m_installerBaseBinaryUnreplaced.clear();
         } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
             qWarning() << QString::fromLatin1("The current maintenance tool could not be "
-                "updated. '%1' does not exist. Please fix the 'setInstallerBaseBinary(<temp_installer_base_"
-                "binary_path>)' call in your script.").arg(installerBaseBinary);
+                "updated. \"%1\" does not exist. Please fix the \"setInstallerBaseBinary(<temp_installer_base_"
+                "binary_path>)\" call in your script.").arg(installerBaseBinary);
         }
 
         QFile input;
@@ -1281,7 +1281,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         try {
             if (isInstaller()) {
                 if (QFile::exists(dataFile)) {
-                    qWarning() << QString::fromLatin1("Found binary data file '%1' but "
+                    qWarning() << QString::fromLatin1("Found binary data file \"%1\" but "
                         "deliberately not used. Running as installer requires to read the "
                         "resources from the application binary.").arg(dataFile);
                 }
@@ -1332,12 +1332,12 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 
             QFile dummy(dataFile + QLatin1String(".new"));
             if (dummy.exists() && !dummy.remove()) {
-                throw Error(tr("Could not remove data file '%1': %2").arg(dummy.fileName(),
+                throw Error(tr("Cannot remove data file \"%1\": %2").arg(dummy.fileName(),
                     dummy.errorString()));
             }
 
             if (!file.rename(dataFile + QLatin1String(".new"))) {
-                throw Error(tr("Could not write maintenance tool binary data to %1: %2")
+                throw Error(tr("Cannot write maintenance tool binary data to %1: %2")
                     .arg(file.fileName(), file.errorString()));
             }
             file.setAutoRemove(false);
@@ -1864,7 +1864,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool ignoreError = false;
         bool ok = performOperationThreaded(operation);
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
-            qDebug() << QString::fromLatin1("Operation '%1' with arguments: '%2' failed: %3")
+            qDebug() << QString::fromLatin1("Operation \"%1\" with arguments \"%2\" failed: %3")
                 .arg(operation->name(), operation->arguments().join(QLatin1String("; ")),
                 operation->errorString());
             const QMessageBox::StandardButton button =
@@ -2111,7 +2111,7 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {
-        setStatus(PackageManagerCore::Failure, tr("Could not retrieve remote tree: %1.")
+        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve remote tree %1.")
             .arg(m_updateFinder->errorString()));
         return PackagesList();
     }
@@ -2144,7 +2144,7 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
     }
 
     if (m_localPackageHub->error() != LocalPackageHub::NoError) {
-        setStatus(PackageManagerCore::Failure, tr("Failure to read packages from: %1.")
+        setStatus(PackageManagerCore::Failure, tr("Failure to read packages from %1.")
             .arg(componentsXmlPath()));
     }
 
@@ -2170,7 +2170,7 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         m_metadataJob.start();
         m_metadataJob.waitForFinished();
     } catch (Error &error) {
-        setStatus(PackageManagerCore::Failure, tr("Could not retrieve meta information: %1")
+        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve meta information: %1")
             .arg(error.message()));
         return m_repoFetched;
     }
@@ -2221,7 +2221,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
                 QInstaller::openForRead(&updatesFile);
             } catch(const Error &e) {
                 qDebug() << "Error opening Updates.xml:" << e.message();
-                setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
+                setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
                 return false;
             }
 
@@ -2232,7 +2232,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!doc.setContent(&updatesFile, &error, &line, &column)) {
                 qDebug() << QString::fromLatin1("Parse error in file %4: %1 at line %2 col %3").arg(error,
                     QString::number(line), QString::number(column), updatesFile.fileName());
-                setStatus(PackageManagerCore::Failure, tr("Could not add temporary update source information."));
+                setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
                 return false;
             }
 
@@ -2245,7 +2245,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     }
 
     if (m_packageSources.count() == 0) {
-        setStatus(PackageManagerCore::Failure, tr("Could not find any update source information."));
+        setStatus(PackageManagerCore::Failure, tr("Cannot find any update source information."));
         return false;
     }
 
@@ -2310,7 +2310,7 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
 
     const QStringList resolvedComponents = componentGraph.sort();
     if (componentGraph.hasCycle()) {
-        throw Error(tr("Dependency cycle between components detected: '%1' and '%2'.")
+        throw Error(tr("Dependency cycle between components \"%1\" and \"%2\" detected.")
             .arg(componentGraph.cycle().first, componentGraph.cycle().second));
     }
     foreach (const QString &componentName, resolvedComponents)
@@ -2335,7 +2335,7 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
     foreach (const QString &i, filesForDelayedDeletion) {
         QFile file(i);   //TODO: this should happen asnyc and report errors, I guess
         if (file.exists() && !file.remove()) {
-            qWarning("Could not delete file %s: %s", qPrintable(i),
+            qWarning("Cannot delete file %s: %s", qPrintable(i),
                 qPrintable(file.errorString()));
             m_filesForDelayedDeletion << i; // try again next time
         }

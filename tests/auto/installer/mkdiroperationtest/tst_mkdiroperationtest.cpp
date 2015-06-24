@@ -123,7 +123,7 @@ private slots:
         file.close();
         QVERIFY2(!op.undoOperation(), op.errorString().toLatin1());
         QVERIFY2(file.exists(), filepath.toLatin1());
-        QVERIFY2(QDir(filepath).remove(filepath), "Could not remove file");
+        QVERIFY2(QDir(filepath).remove(filepath), "Cannot remove file");
         QVERIFY2(!file.exists(), filepath.toLatin1());
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
         QVERIFY2(!QDir(path).exists(), path.toLatin1());
