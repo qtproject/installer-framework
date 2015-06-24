@@ -79,6 +79,9 @@ HINSTANCE g_hInstance = 0;
 # define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
 # define FILE_ATTRIBUTE_UNIX_EXTENSION   0x8000   /* trick for Unix */
 #else
+extern "C" int global_use_utf16_conversion;
+
+#include <myWindows/config.h>
 #include <sys/stat.h>
 #endif
 
@@ -142,6 +145,18 @@ void initSevenZ()
         NArchive::NSplit::registerArcSplit();
         NArchive::NLzma::NLzmaAr::registerArcLzma();
         NArchive::NLzma::NLzma86Ar::registerArcLzma86();
+
+#ifndef Q_OS_WIN
+# ifdef ENV_HAVE_LOCALE
+        const QByteArray locale = qgetenv("LC_ALL").toUpper();
+        if (!locale.isEmpty() && (locale != "C") && (locale != "POSIX"))
+            global_use_utf16_conversion = 1;
+# elif defined(LOCALE_IS_UTF8)
+        global_use_utf16_conversion = 1;
+# else
+        global_use_utf16_conversion = 0;
+# endif
+#endif
     });
 }
 
