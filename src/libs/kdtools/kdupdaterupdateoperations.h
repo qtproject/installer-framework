@@ -49,7 +49,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    CopyOperation *clone() const;
 
     QDomDocument toXml() const;
 private:
@@ -67,7 +66,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    MoveOperation *clone() const;
 };
 
 class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
@@ -80,7 +78,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    DeleteOperation *clone() const;
 
     QDomDocument toXml() const;
 };
@@ -94,7 +91,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    MkdirOperation *clone() const;
 };
 
 class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
@@ -106,7 +102,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    RmdirOperation *clone() const;
 };
 
 class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
@@ -118,7 +113,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    AppendFileOperation *clone() const;
 };
 
 class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
@@ -130,7 +124,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    PrependFileOperation *clone() const;
 };
 
 } // namespace KDUpdater

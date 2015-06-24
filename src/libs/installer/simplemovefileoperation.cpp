@@ -107,9 +107,4 @@ bool SimpleMoveFileOperation::testOperation()
     return true;
 }
 
-Operation *SimpleMoveFileOperation::clone() const
-{
-    return new SimpleMoveFileOperation();
-}
-
 }   // namespace QInstaller

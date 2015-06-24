@@ -91,8 +91,3 @@ bool FakeStopProcessForUpdateOperation::testOperation()
 {
     return true;
 }
-
-Operation *FakeStopProcessForUpdateOperation::clone() const
-{
-    return new FakeStopProcessForUpdateOperation();
-}

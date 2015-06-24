@@ -128,11 +128,6 @@ bool ExtractArchiveOperation::testOperation()
     return true;
 }
 
-Operation *ExtractArchiveOperation::clone() const
-{
-    return new ExtractArchiveOperation();
-}
-
 /*!
     This slot is direct connected to the caller so please don't call it from another thread in the same time.
 */

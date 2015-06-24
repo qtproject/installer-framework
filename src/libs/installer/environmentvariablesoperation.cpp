@@ -209,8 +209,3 @@ bool EnvironmentVariableOperation::testOperation()
 {
     return true;
 }
-
-Operation *EnvironmentVariableOperation::clone() const
-{
-    return new EnvironmentVariableOperation();
-}

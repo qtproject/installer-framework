@@ -218,8 +218,3 @@ bool RegisterFileTypeOperation::testOperation()
 {
     return true;
 }
-
-Operation *RegisterFileTypeOperation::clone() const
-{
-    return new RegisterFileTypeOperation();
-}

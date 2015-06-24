@@ -174,8 +174,3 @@ bool CopyDirectoryOperation::testOperation()
 {
     return true;
 }
-
-Operation *CopyDirectoryOperation::clone() const
-{
-    return new CopyDirectoryOperation();
-}

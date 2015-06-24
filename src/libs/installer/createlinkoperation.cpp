@@ -94,8 +94,3 @@ bool CreateLinkOperation::testOperation()
 {
     return true;
 }
-
-Operation *CreateLinkOperation::clone() const
-{
-    return new CreateLinkOperation();
-}

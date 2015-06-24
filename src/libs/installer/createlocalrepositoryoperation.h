@@ -53,7 +53,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 signals:
     void progressChanged(double progress);

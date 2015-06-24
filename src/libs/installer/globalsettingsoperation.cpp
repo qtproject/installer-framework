@@ -98,11 +98,6 @@ bool GlobalSettingsOperation::testOperation()
     return true;
 }
 
-Operation *GlobalSettingsOperation::clone() const
-{
-    return new GlobalSettingsOperation();
-}
-
 QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
     if (!checkArgumentCount(3, 5))

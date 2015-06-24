@@ -62,9 +62,3 @@ bool MinimumProgressOperation::testOperation()
 {
     return true;
 }
-
-Operation *MinimumProgressOperation::clone() const
-{
-    return new MinimumProgressOperation();
-}
-

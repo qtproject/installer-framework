@@ -48,7 +48,7 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
+
 private:
     void ensureOptionalArgumentsRead();
 

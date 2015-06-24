@@ -235,11 +235,6 @@ bool CopyOperation::testOperation()
     return true;
 }
 
-CopyOperation *CopyOperation::clone() const
-{
-    return new CopyOperation();
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::MoveOperation
@@ -342,11 +337,6 @@ bool MoveOperation::testOperation()
     return true;
 }
 
-MoveOperation *MoveOperation::clone() const
-{
-    return new MoveOperation;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::DeleteOperation
@@ -400,11 +390,6 @@ bool DeleteOperation::testOperation()
 {
     // TODO
     return true;
-}
-
-DeleteOperation *DeleteOperation::clone() const
-{
-    return new DeleteOperation;
 }
 
 /*!
@@ -516,10 +501,6 @@ bool KDUpdater::MkdirOperation::testOperation()
     return true;
 }
 
-MkdirOperation *MkdirOperation::clone() const
-{
-    return new MkdirOperation;
-}
 
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::RmdirOperation
@@ -581,11 +562,6 @@ bool RmdirOperation::testOperation()
 {
     // TODO
     return true;
-}
-
-RmdirOperation *RmdirOperation::clone() const
-{
-    return new RmdirOperation;
 }
 
 
@@ -694,11 +670,6 @@ bool AppendFileOperation::testOperation()
     return true;
 }
 
-AppendFileOperation *AppendFileOperation::clone() const
-{
-    return new AppendFileOperation;
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::PrependFileOperation
@@ -805,9 +776,4 @@ bool PrependFileOperation::testOperation()
 {
     // TODO
     return true;
-}
-
-PrependFileOperation *PrependFileOperation::clone() const
-{
-    return new PrependFileOperation;
 }

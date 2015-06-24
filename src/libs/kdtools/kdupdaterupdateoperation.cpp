@@ -388,12 +388,6 @@ bool UpdateOperation::deleteFileNowOrLater(const QString &file, QString *errorSt
 */
 
 /*!
-    \fn virtual bool KDUpdater::UpdateOperation::clone() const = 0;
-
-    Subclasses must implement this function to clone the current operation.
-*/
-
-/*!
     Saves operation arguments and values as an XML document and returns the
     document. You can override this method to store your
     own extra-data. Extra-data can be any data that you need to store to perform or undo the

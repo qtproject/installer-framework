@@ -201,9 +201,3 @@ bool SettingsOperation::testOperation()
 {
     return true;
 }
-
-Operation *SettingsOperation::clone() const
-{
-    return new SettingsOperation();
-}
-

@@ -113,8 +113,3 @@ bool LicenseOperation::testOperation()
 {
     return true;
 }
-
-Operation *LicenseOperation::clone() const
-{
-    return new LicenseOperation();
-}

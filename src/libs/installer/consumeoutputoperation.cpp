@@ -143,9 +143,3 @@ bool ConsumeOutputOperation::testOperation()
 {
     return true;
 }
-
-Operation *ConsumeOutputOperation::clone() const
-{
-    return new ConsumeOutputOperation();
-}
-

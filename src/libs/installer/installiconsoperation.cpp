@@ -287,8 +287,3 @@ bool InstallIconsOperation::testOperation()
 {
     return true;
 }
-
-Operation *InstallIconsOperation::clone() const
-{
-    return new InstallIconsOperation();
-}

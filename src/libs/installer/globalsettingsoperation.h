@@ -49,7 +49,6 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
-    Operation *clone() const;
 
 private:
     QSettingsWrapper *setup(QString *key, QString *value, const QStringList &args);

@@ -105,8 +105,3 @@ bool LineReplaceOperation::testOperation()
 {
     return true;
 }
-
-Operation *LineReplaceOperation::clone() const
-{
-    return new LineReplaceOperation();
-}

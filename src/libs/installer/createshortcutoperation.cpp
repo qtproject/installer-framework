@@ -293,8 +293,3 @@ bool CreateShortcutOperation::testOperation()
 {
     return true;
 }
-
-Operation *CreateShortcutOperation::clone() const
-{
-    return new CreateShortcutOperation();
-}

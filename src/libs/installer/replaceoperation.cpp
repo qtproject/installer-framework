@@ -99,8 +99,3 @@ bool ReplaceOperation::testOperation()
 {
     return true;
 }
-
-Operation *ReplaceOperation::clone() const
-{
-    return new ReplaceOperation();
-}

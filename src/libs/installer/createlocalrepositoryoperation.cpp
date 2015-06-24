@@ -377,11 +377,6 @@ bool CreateLocalRepositoryOperation::testOperation()
     return true;
 }
 
-Operation *CreateLocalRepositoryOperation::clone() const
-{
-    return new CreateLocalRepositoryOperation();
-}
-
 void CreateLocalRepositoryOperation::emitFullProgress()
 {
     emit progressChanged(1.0);

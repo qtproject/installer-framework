@@ -193,8 +193,3 @@ bool CreateDesktopEntryOperation::testOperation()
 {
     return true;
 }
-
-Operation *CreateDesktopEntryOperation::clone() const
-{
-    return new CreateDesktopEntryOperation();
-}

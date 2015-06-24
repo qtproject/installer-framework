@@ -287,11 +287,6 @@ bool ElevatedExecuteOperation::testOperation()
     return true;
 }
 
-Operation *ElevatedExecuteOperation::clone() const
-{
-    return new ElevatedExecuteOperation;
-}
-
 void ElevatedExecuteOperation::backup()
 {
 }

@@ -85,7 +85,6 @@ public:
     virtual bool performOperation() = 0;
     virtual bool undoOperation() = 0;
     virtual bool testOperation() = 0;
-    virtual UpdateOperation *clone() const = 0;
 
     virtual QDomDocument toXml() const;
     virtual bool fromXml(const QString &xml);

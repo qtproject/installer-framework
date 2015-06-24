@@ -51,7 +51,6 @@ public:
     virtual bool performOperation();
     virtual bool undoOperation();
     virtual bool testOperation();
-    virtual Operation *clone() const;
 
 Q_SIGNALS:
     void cancelProcess();
