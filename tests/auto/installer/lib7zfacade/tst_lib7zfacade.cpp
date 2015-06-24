@@ -100,7 +100,7 @@ private slots:
             QVERIFY(file.open(QIODevice::ReadOnly));
             QVector<Lib7z::File> files = Lib7z::listArchive(&file);
         } catch (const Lib7z::SevenZipException& e) {
-            QCOMPARE(e.message(), QString("Cannot open archive ':///data/invalid.7z'."));
+            QCOMPARE(e.message(), QString("Cannot open archive \":///data/invalid.7z\"."));
         } catch (...) {
             QFAIL("Unexpected error during list archive.");
         }

@@ -65,7 +65,7 @@ private slots:
 
     void testDefaultAction()
     {
-        const char ignoreMessage[] = "\"created critical message box TestError: 'A test error', "
+        const char ignoreMessage[] = "\"Created critical message box TestError: \"A test error\", "
             "This is a test error message.\" ";
         srand(time(0)); /* initialize random seed: */
 

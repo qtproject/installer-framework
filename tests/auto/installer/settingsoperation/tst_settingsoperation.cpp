@@ -75,8 +75,8 @@ private slots:
 
         QCOMPARE(UpdateOperation::Error(noArgumentsOperation.error()),
             UpdateOperation::InvalidArguments);
-        QString compareString("Missing argument(s) 'path; method; key; value' calling 'Settings' "
-            "with arguments ''.");
+        QString compareString("Missing argument(s) \"path; method; key; value\" calling Settings "
+            "with arguments \"\".");
         QCOMPARE(noArgumentsOperation.errorString(), compareString);
 
         // same for undo
@@ -93,8 +93,8 @@ private slots:
 
         QCOMPARE(UpdateOperation::Error(wrongMethodArgumentOperation.error()),
             UpdateOperation::InvalidArguments);
-        compareString = "Current method argument calling 'Settings' with arguments 'path=first; "
-            "method=second; key=third; value=fourth' is not supported. Please use set, remove, "
+        compareString = "Current method argument calling \"Settings\" with arguments \"path=first; "
+            "method=second; key=third; value=fourth\" is not supported. Please use set, remove, "
             "add_array_value or remove_array_value.";
         QCOMPARE(wrongMethodArgumentOperation.errorString(), compareString);
 

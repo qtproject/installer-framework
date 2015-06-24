@@ -136,7 +136,7 @@ void tst_Settings::loadUnknownElementConfigInStrictParseMode()
         Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :/data/unknown_element_config.xml, line 5, "
-                                                "column 13: Unexpected element 'unknown'."));
+                                                "column 13: Unexpected element \"unknown\"."));
         return;
     }
     QFAIL("No exception thrown");
@@ -145,7 +145,7 @@ void tst_Settings::loadUnknownElementConfigInStrictParseMode()
 void tst_Settings::loadUnknownElementConfigInRelaxedParseMode()
 {
     QTest::ignoreMessage(QtWarningMsg, "\"Ignoring following settings reader error in "
-        ":/data/unknown_element_config.xml, line 5, column 13: Unexpected element 'unknown'.\" ");
+        ":/data/unknown_element_config.xml, line 5, column 13: Unexpected element \"unknown\".\" ");
     try {
         Settings settings = Settings::fromFileAndPrefix(":/data/unknown_element_config.xml", ":/data",
             Settings::RelaxedParseMode);
@@ -173,7 +173,7 @@ void tst_Settings::loadUnexpectedAttributeConfig()
         Settings::fromFileAndPrefix(":///data/unexpectedattribute_config.xml", ":///data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedattribute_config.xml,"
-           " line 6, column 27: Unexpected attribute for element 'Argument'."));
+           " line 6, column 27: Unexpected attribute for element \"Argument\"."));
         return;
     }
     QFAIL("No exception thrown");
@@ -187,7 +187,7 @@ void tst_Settings::loadUnexpectedTagConfig()
         Settings::fromFileAndPrefix(":///data/unexpectedtag_config.xml", ":///data");
     } catch (const Error &error) {
         QCOMPARE(error.message(), QLatin1String("Error in :///data/unexpectedtag_config.xml,"
-           " line 6, column 12: Unexpected element 'Foo'."));
+           " line 6, column 12: Unexpected element \"Foo\"."));
         return;
     }
     QFAIL("No exception thrown");
