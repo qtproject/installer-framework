@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_INFO_DATA_H
-#define KD_UPDATER_UPDATE_INFO_DATA_H
+#ifndef UPDATESINFODATA_P_H
+#define UPDATESINFODATA_P_H
 
 #include <QCoreApplication>
 #include <QSharedData>
@@ -70,4 +70,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_UPDATE_INFO_DATA_H
+#endif // UPDATESINFODATA_P_H

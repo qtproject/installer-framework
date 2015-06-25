@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDTOOLS_KDJOB_H
-#define KDTOOLS_KDJOB_H
+#ifndef JOB_H
+#define JOB_H
 
 #include "kdtoolsglobal.h"
 
@@ -118,4 +118,4 @@ private:
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(KDJob::Capabilities)
 
-#endif // KDTOOLS_KDJOB_H
+#endif // JOB_H

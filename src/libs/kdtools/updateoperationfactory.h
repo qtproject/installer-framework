@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_OPERATION_FACTORY_H
-#define KD_UPDATER_UPDATE_OPERATION_FACTORY_H
+#ifndef UPDATEOPERATIONFACTORY_H
+#define UPDATEOPERATIONFACTORY_H
 
 #include "genericfactory.h"
 
@@ -67,4 +67,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_UPDATE_OPERATION_FACTORY_H
+#endif // UPDATEOPERATIONFACTORY_H

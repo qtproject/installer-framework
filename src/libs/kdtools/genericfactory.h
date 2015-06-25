@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDTOOLS__KDGENERICFACTORY_H
-#define KDTOOLS__KDGENERICFACTORY_H
+#ifndef GENERICFACTORY_H
+#define GENERICFACTORY_H
 
 #include "kdtoolsglobal.h"
 
@@ -88,4 +88,4 @@ private:
     QHash<IDENTIFIER, FactoryFunction> m_hash;
 };
 
-#endif
+#endif // GENERICFACTORY_H

@@ -33,8 +33,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDLOCKFILE_P_H
-#define KDLOCKFILE_P_H
+#ifndef LOCKFILE_P_H
+#define LOCKFILE_P_H
 
 #include "lockfile.h"
 
@@ -68,4 +68,4 @@ private:
     bool locked;
 };
 
-#endif // KDLOCKFILE_P_H
+#endif // LOCKFILE_P_H

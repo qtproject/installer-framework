@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_FILE_DOWNLOADER_H
-#define KD_UPDATER_FILE_DOWNLOADER_H
+#ifndef FILEDOWNLOADER_H
+#define FILEDOWNLOADER_H
 
 #include "kdtoolsglobal.h"
 
@@ -144,4 +144,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_FILE_DOWNLOADER_H
+#endif // FILEDOWNLOADER_H

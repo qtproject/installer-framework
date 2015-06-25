@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDTOOLS_KDSELFRESTARTER_H
-#define KDTOOLS_KDSELFRESTARTER_H
+#ifndef SELFRESTARTER_H
+#define SELFRESTARTER_H
 
 #include "kdtoolsglobal.h"
 
@@ -52,4 +52,4 @@ private:
     Private *d;
 };
 
-#endif // KDTOOLS_KDSELFRESTARTER_H
+#endif // SELFRESTARTER_H

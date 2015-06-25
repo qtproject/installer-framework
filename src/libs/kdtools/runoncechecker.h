@@ -33,8 +33,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDTOOLS_RUNONCECHECKER_H
-#define KDTOOLS_RUNONCECHECKER_H
+#ifndef RUNONCECHECKER_H
+#define RUNONCECHECKER_H
 
 #include "lockfile.h"
 
@@ -60,4 +60,4 @@ private:
     KDLockFile m_lockfile;
 };
 
-#endif // KDTOOLS_RUNONCECHECKER_H
+#endif // RUNONCECHECKER_H

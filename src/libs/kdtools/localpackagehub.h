@@ -33,8 +33,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_PACKAGES_INFO_H
-#define KD_UPDATER_PACKAGES_INFO_H
+#ifndef LOCALPACKAGEHUB_H
+#define LOCALPACKAGEHUB_H
 
 #include "updater.h"
 
@@ -121,4 +121,4 @@ private:
 
 } // KDUpdater
 
-#endif // KD_UPDATER_PACKAGES_INFO_H
+#endif // LOCALPACKAGEHUB_H

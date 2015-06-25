@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_FILE_DOWNLOADER_P_H
-#define KD_UPDATER_FILE_DOWNLOADER_P_H
+#ifndef FILEDOWNLOADER_P_H
+#define FILEDOWNLOADER_P_H
 
 #include "filedownloader.h"
 
@@ -147,4 +147,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_FILE_DOWNLOADER_P_H
+#endif // FILEDOWNLOADER_P_H

@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_FILE_DOWNLOADER_FACTORY_H
-#define KD_UPDATER_FILE_DOWNLOADER_FACTORY_H
+#ifndef FILEDOWNLOADERFACTORY_H
+#define FILEDOWNLOADERFACTORY_H
 
 #include "genericfactory.h"
 #include "updater.h"
@@ -104,4 +104,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_FILE_DOWNLOADER_FACTORY_H
+#endif // FILEDOWNLOADERFACTORY_H

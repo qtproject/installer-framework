@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_INFO_H
-#define KD_UPDATER_UPDATE_INFO_H
+#ifndef UPDATESINFO_P_H
+#define UPDATESINFO_P_H
 
 #include "updater.h"
 #include "updatesinfodata_p.h"
@@ -88,4 +88,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_UPDATE_INFO_H
+#endif // UPDATESINFO_P_H

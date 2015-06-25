@@ -33,8 +33,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_FINDER_H
-#define KD_UPDATER_UPDATE_FINDER_H
+#ifndef UPDATEFINDER_H
+#define UPDATEFINDER_H
 
 #include "task.h"
 #include "packagesource.h"
@@ -73,4 +73,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_UPDATE_FINDER_H
+#endif // UPDATEFINDER_H

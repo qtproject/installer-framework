@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_TASK_H
-#define KD_UPDATER_TASK_H
+#ifndef TASK_H
+#define TASK_H
 
 #include "updater.h"
 
@@ -117,4 +117,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_TASK_H
+#endif // TASK_H

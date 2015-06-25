@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_UPDATE_OPERATION_H
-#define KD_UPDATER_UPDATE_OPERATION_H
+#ifndef UPDATEOPERATION_H
+#define UPDATEOPERATION_H
 
 #include "updater.h"
 
@@ -110,4 +110,4 @@ private:
 
 } // namespace KDUpdater
 
-#endif // KD_UPDATER_UPDATE_OPERATION_H
+#endif // UPDATEOPERATION_H

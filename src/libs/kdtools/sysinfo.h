@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDSYSINFO_H
-#define KDSYSINFO_H
+#ifndef SYSINFO_H
+#define SYSINFO_H
 
 #include "kdtoolsglobal.h"
 
@@ -94,4 +94,4 @@ QT_END_NAMESPACE
 QDebug operator<<(QDebug dbg, KDUpdater::VolumeInfo volume);
 QDebug operator<<(QDebug dbg, KDUpdater::ProcessInfo process);
 
-#endif // KDSYSINFO_H
+#endif // SYSINFO_H

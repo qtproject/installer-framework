@@ -32,8 +32,8 @@
 **
 ****************************************************************************/
 
-#ifndef KD_UPDATER_H
-#define KD_UPDATER_H
+#ifndef UPDATER_H
+#define UPDATER_H
 
 #include "kdtoolsglobal.h"
 
@@ -51,4 +51,4 @@ namespace KDUpdater
     KDTOOLS_EXPORT int compareVersion(const QString &v1, const QString &v2);
 }
 
-#endif
+#endif // UPDATER_H

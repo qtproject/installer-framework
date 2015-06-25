@@ -33,8 +33,8 @@
 **
 ****************************************************************************/
 
-#ifndef KDLOCKFILE_H
-#define KDLOCKFILE_H
+#ifndef LOCKFILE_H
+#define LOCKFILE_H
 
 #include "kdtoolsglobal.h"
 
@@ -56,4 +56,4 @@ private:
     Private *d;
 };
 
-#endif // KDLOCKFILE_H
+#endif // LOCKFILE_H
