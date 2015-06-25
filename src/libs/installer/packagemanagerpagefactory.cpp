@@ -42,9 +42,4 @@ PackageManagerPageFactory &PackageManagerPageFactory::instance()
     return factory;
 }
 
-PackageManagerPage *PackageManagerPageFactory::create(int id, PackageManagerCore *core) const
-{
-    return KDGenericFactory<PackageManagerPage, int, PackageManagerCore*>::createWithArg(id, core);
-}
-
 }

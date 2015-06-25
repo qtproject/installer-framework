@@ -39,73 +39,48 @@
 
 #include <QtCore/QHash>
 
-template <typename T_Product, typename T_Identifier = QString, typename T_Argument = QString>
+template <typename T_Product, typename T_Identifier = QString, typename... T_Argument>
 class KDGenericFactory
 {
 public:
     virtual ~KDGenericFactory() {}
 
-    typedef T_Product *(*FactoryFunction)();
-    typedef T_Product *(*FactoryFunctionWithArg)(const T_Argument &arg);
+    typedef T_Product *(*FactoryFunction)(T_Argument...);
 
     template <typename T>
-    void registerProduct(const T_Identifier &name)
+    void registerProduct(const T_Identifier &id)
     {
-#ifdef Q_CC_MSVC
-        FactoryFunction function = &KDGenericFactory::create<T>;
-#else // compile fix for old gcc
-        FactoryFunction function = &create<T>;
-#endif
-        map.insert(name, function);
+        m_hash.insert(id, &KDGenericFactory::create<T>);
     }
 
-    bool containsProduct(const T_Identifier &name) const
+    bool containsProduct(const T_Identifier &id) const
     {
-        return map.contains(name) | map2.contains(name);
+        return m_hash.contains(id);
     }
 
-    T_Product *create(const T_Identifier &name) const
+    T_Product *create(const T_Identifier &id, T_Argument... args) const
     {
-        const typename QHash<T_Identifier, FactoryFunction>::const_iterator it = map.find(name);
-        if (it == map.end())
+        const auto it = m_hash.constFind(id);
+        if (it == m_hash.constEnd())
             return 0;
-        return (*it)();
+        return (*it)(args...);
     }
 
-    template <typename T>
-    void registerProductWithArg(const T_Identifier &name)
-    {
-#ifdef Q_CC_MSVC
-        FactoryFunctionWithArg function = &KDGenericFactory::create<T>;
-#else // compile fix for old gcc
-        FactoryFunctionWithArg function = &create<T>;
-#endif
-        map2.insert(name, function);
-    }
-
-    T_Product *createWithArg(const T_Identifier &name, const T_Argument &arg) const
-    {
-        const typename QHash<T_Identifier, FactoryFunctionWithArg>::const_iterator it = map2.find(name);
-        if (it == map2.end())
-            return 0;
-        return (*it)(arg);
-    }
+protected:
+    KDGenericFactory() = default;
 
 private:
     template <typename T>
-    static T_Product *create()
+    static T_Product *create(T_Argument... args)
     {
-        return new T;
+        return new T(args...);
     }
 
-    template <typename T>
-    static T_Product *create(const T_Argument &arg)
-    {
-        return new T(arg);
-    }
+    KDGenericFactory(const KDGenericFactory &) = delete;
+    KDGenericFactory &operator=(const KDGenericFactory &) = delete;
 
-    QHash<T_Identifier, FactoryFunction> map;
-    QHash<T_Identifier, FactoryFunctionWithArg> map2;
+private:
+    QHash<T_Identifier, FactoryFunction> m_hash;
 };
 
 #endif

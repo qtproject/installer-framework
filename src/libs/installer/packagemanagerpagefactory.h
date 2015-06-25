@@ -35,16 +35,16 @@
 #ifndef PACKAGEMANAGERPAGEFACTORY_H
 #define PACKAGEMANAGERPAGEFACTORY_H
 
-#include <kdgenericfactory.h>
-#include <packagemanagergui.h>
+#include "kdgenericfactory.h"
+#include "qinstallerglobal.h"
 
 namespace QInstaller {
 
 class PackageManagerCore;
 class PackageManagerPage;
 
-class INSTALLER_EXPORT PackageManagerPageFactory : public KDGenericFactory<PackageManagerPage,
-    int, QInstaller::PackageManagerCore*>
+class INSTALLER_EXPORT PackageManagerPageFactory : public KDGenericFactory<PackageManagerPage, int,
+                                                                           PackageManagerCore*>
 {
     Q_DISABLE_COPY(PackageManagerPageFactory)
 
@@ -52,12 +52,11 @@ public:
     static PackageManagerPageFactory &instance();
     template<typename T> void registerPackageManagerPage(int id)
     {
-        registerProductWithArg<T>(id);
+        registerProduct<T>(id);
     }
-    PackageManagerPage *create(int id, QInstaller::PackageManagerCore *core) const;
 
 private:
-    PackageManagerPageFactory() {}
+    PackageManagerPageFactory() = default;
 };
 
 } // namespace QInstaller
