@@ -33,26 +33,29 @@
 **************************************************************************/
 #include "testrepository.h"
 
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include "packagemanagercore.h"
+#include "packagemanagerproxyfactory.h"
+#include "proxycredentialsdialog.h"
+#include "serverauthenticationdialog.h"
 
-#include <QtCore/QFile>
+#include <QFile>
 
-using namespace QInstaller;
+namespace QInstaller {
 
-TestRepository::TestRepository(QObject *parent)
+TestRepository::TestRepository(PackageManagerCore *parent)
     : KDJob(parent)
-    , m_downloader(0)
+    , m_core(parent)
 {
-    setTimeout(10000);
     setAutoDelete(false);
     setCapabilities(Cancelable);
+
+    connect(&m_timer, &QTimer::timeout, this, &TestRepository::onTimeout);
+    connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &TestRepository::downloadCompleted);
 }
 
 TestRepository::~TestRepository()
 {
-    if (m_downloader)
-        m_downloader->deleteLater();
+    reset();
 }
 
 Repository TestRepository::repository() const
@@ -62,101 +65,125 @@ Repository TestRepository::repository() const
 
 void TestRepository::setRepository(const Repository &repository)
 {
-    cancel();
-
-    setError(NoError);
-    setErrorString(QString());
+    reset();
     m_repository = repository;
 }
 
 void TestRepository::doStart()
 {
-    if (m_downloader)
-        m_downloader->deleteLater();
+    reset();
+    if (!m_core) {
+        emitFinishedWithError(KDJob::Canceled, tr("Missing package manager core engine."));
+        return; // We can't do anything here without core, so avoid tons of !m_core checks.
+    }
 
     const QUrl url = m_repository.url();
     if (url.isEmpty()) {
-        emitFinishedWithError(InvalidUrl, tr("Empty repository URL."));
-        return;
-    }
-
-    m_downloader = KDUpdater::FileDownloaderFactory::instance().create(url.scheme(), this);
-    if (!m_downloader) {
-        emitFinishedWithError(InvalidUrl, tr("URL scheme not supported: %1 (%2).")
-            .arg(url.scheme(), url.toString()));
+        emitFinishedWithError(QInstaller::InvalidUrl, tr("Empty repository URL."));
         return;
     }
 
     QAuthenticator auth;
     auth.setUser(m_repository.username());
     auth.setPassword(m_repository.password());
-    m_downloader->setAuthenticator(auth);
 
-    connect(m_downloader, &KDUpdater::FileDownloader::downloadCompleted,
-            this, &TestRepository::downloadCompleted);
-    connect(m_downloader, &KDUpdater::FileDownloader::downloadAborted,
-            this, &TestRepository::downloadAborted, Qt::QueuedConnection);
-    connect(m_downloader, &KDUpdater::FileDownloader::authenticatorChanged,
-            this, &TestRepository::onAuthenticatorChanged);
+    FileTaskItem item(m_repository.url().toString() + QLatin1String("/Updates.xml?") +
+        QString::number(qrand() * qrand()));
+    item.insert(TaskRole::Authenticator, QVariant::fromValue(auth));
 
-    m_downloader->setAutoRemoveDownloadedFile(true);
-    m_downloader->setUrl(QUrl(url.toString() + QString::fromLatin1("/Updates.xml")));
-
-    m_downloader->download();
+    m_timer.start(10000);
+    DownloadFileTask *const xmlTask = new DownloadFileTask(item);
+    if (m_core)
+        xmlTask->setProxyFactory(m_core->proxyFactory());
+    m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
 }
 
 void TestRepository::doCancel()
 {
-    if (m_downloader) {
-        QString errorString = m_downloader->errorString();
-        if (errorString.isEmpty())
-            errorString = tr("Got a timeout while testing \"%1\".").arg(m_repository.displayname());
-        // at the moment the download sends downloadCompleted() if we cancel it, so just
-        disconnect(m_downloader, 0, this, 0);
-        m_downloader->cancelDownload();
-        emitFinishedWithError(KDJob::Canceled, errorString);
-    }
+    reset();
+    emitFinishedWithError(KDJob::Canceled, tr("Download canceled."));
+}
+
+void TestRepository::onTimeout()
+{
+    reset();
+    emitFinishedWithError(KDJob::Canceled, tr("Timeout while testing repository \"%1\".")
+        .arg(m_repository.displayname()));
 }
 
 void TestRepository::downloadCompleted()
 {
-    QString errorMsg;
-    int error = DownloadError;
+    if (error() != KDJob::NoError)
+        return;
 
-    if (m_downloader->isDownloaded()) {
-        QFile file(m_downloader->downloadedFileName());
-        if (file.exists() && file.open(QIODevice::ReadOnly)) {
+    try {
+        m_xmlTask.waitForFinished();
+
+        m_timer.stop();
+        QFile file(m_xmlTask.future().results().value(0).target());
+        if (file.open(QIODevice::ReadOnly)) {
             QDomDocument doc;
             QString errorMsg;
             if (!doc.setContent(&file, &errorMsg)) {
-                error = InvalidUpdatesXml;
-                errorMsg = tr("Cannot parse Updates.xml: %1").arg(errorMsg);
+                emitFinishedWithError(QInstaller::InvalidUpdatesXml,
+                    tr("Cannot parse Updates.xml: %1").arg(errorMsg));
             } else {
-                error = NoError;
+                emitFinishedWithError(KDJob::NoError, QString(/*Success*/)); // OPK
             }
         } else {
-            errorMsg = tr("Updates.xml could not be opened for reading.");
+            emitFinishedWithError(QInstaller::DownloadError,
+                tr("Cannot open Updates.xml for reading: %1").arg(file.errorString()));
         }
-    } else {
-        errorMsg = tr("Updates.xml could not be found on server.");
+    } catch (const AuthenticationRequiredException &e) {
+        m_timer.stop();
+        if (e.type() == AuthenticationRequiredException::Type::Server) {
+            ServerAuthenticationDialog dlg(e.message(), e.taskItem());
+            if (dlg.exec() == QDialog::Accepted) {
+                m_repository.setUsername(dlg.user());
+                m_repository.setPassword(dlg.password());
+            }
+            QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+            return;
+        } else if (e.type() == AuthenticationRequiredException::Type::Proxy) {
+            const QNetworkProxy proxy = e.proxy();
+            ProxyCredentialsDialog proxyCredentials(proxy);
+            if (proxyCredentials.exec() == QDialog::Accepted) {
+                PackageManagerProxyFactory *factory = m_core->proxyFactory();
+                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+                    proxyCredentials.password());
+                m_core->setProxyFactory(factory);
+            }
+            QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+            return;
+        } else {
+            emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));
+        }
+    } catch (const TaskException &e) {
+        m_timer.stop();
+        emitFinishedWithError(QInstaller::DownloadError, e.message());
+    } catch (const QUnhandledException &e) {
+        m_timer.stop();
+        emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
+    } catch (...) {
+        m_timer.stop();
+        emitFinishedWithError(QInstaller::DownloadError,
+            tr("Unknown error while testing repository \"%1\".").arg(m_repository.displayname()));
     }
-
-    if (error > NoError)
-        emitFinishedWithError(error, errorMsg);
-    else
-        emitFinished();
-
-    m_downloader->deleteLater();
-    m_downloader = 0;
 }
 
-void TestRepository::downloadAborted(const QString &reason)
+
+// -- private
+
+void TestRepository::reset()
 {
-    emitFinishedWithError(DownloadError, reason);
+    m_timer.stop();
+    setError(NoError);
+    setErrorString(QString());
+
+    try {
+        if (m_xmlTask.isRunning())
+            m_xmlTask.cancel();
+    } catch (...) {}
 }
 
-void TestRepository::onAuthenticatorChanged(const QAuthenticator &authenticator)
-{
-    m_repository.setUsername(authenticator.user());
-    m_repository.setPassword(authenticator.password());
-}
+} // namespace QInstaller

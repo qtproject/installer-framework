@@ -37,6 +37,7 @@
 
 #include <packagemanagercore.h>
 #include <productkeycheck.h>
+#include <testrepository.h>
 
 #include <QtCore/QFile>
 
@@ -330,16 +331,17 @@ void SettingsDialog::testRepository()
         m_ui->tabWidget->setEnabled(false);
         m_ui->buttonBox->setEnabled(false);
 
-        m_testRepository.setRepository(current->repository());
-        m_testRepository.start();
-        m_testRepository.waitForFinished();
-        current->setRepository(m_testRepository.repository());
+        TestRepository testJob(m_core);
+        testJob.setRepository(current->repository());
+        testJob.start();
+        testJob.waitForFinished();
+        current->setRepository(testJob.repository());
 
-        if (m_testRepository.error() > KDJob::NoError) {
+        if (testJob.error() > KDJob::NoError) {
             QMessageBox msgBox(this);
             msgBox.setIcon(QMessageBox::Question);
             msgBox.setWindowModality(Qt::WindowModal);
-            msgBox.setDetailedText(m_testRepository.errorString());
+            msgBox.setDetailedText(testJob.errorString());
             msgBox.setText(tr("There was an error testing this repository."));
             msgBox.setInformativeText(tr("Do you want to disable the tested repository?"));
 

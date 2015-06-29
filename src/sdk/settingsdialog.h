@@ -36,7 +36,6 @@
 
 #include <repository.h>
 #include <settings.h>
-#include <testrepository.h>
 
 #include <QDialog>
 #include <QStyledItemDelegate>
@@ -135,7 +134,6 @@ private:
     QInstaller::PackageManagerCore *m_core;
 
     bool m_showPasswords;
-    QInstaller::TestRepository m_testRepository;
     QList<QTreeWidgetItem*> m_rootItems;
 };
 
