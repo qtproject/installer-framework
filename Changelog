@@ -1,6 +1,8 @@
 2.0.2
 - Fix .dat file that gets deleted after multiple component changes on Windows.
 - Fix maintenance tool upgrade on OS X.
+- Unify selection of language for translations. (QTIFW-390)
+- Fix return value of component.installAction() when updating. (QTIFW-727)
 - Documentation updates.
 
 2.0.1
