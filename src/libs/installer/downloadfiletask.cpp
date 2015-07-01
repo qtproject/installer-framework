@@ -43,7 +43,6 @@
 #include <QNetworkProxyFactory>
 #include <QSslError>
 #include <QTemporaryFile>
-#include <QTimer>
 
 namespace QInstaller {
 
@@ -56,6 +55,7 @@ AuthenticationRequiredException::AuthenticationRequiredException(Type type, cons
 Downloader::Downloader()
     : m_finished(0)
 {
+    connect(&m_timer, &QTimer::timeout, this, &Downloader::onTimeout);
     connect(&m_nam, &QNetworkAccessManager::finished, this, &Downloader::onFinished);
 }
 
@@ -88,6 +88,8 @@ void Downloader::download(QFutureInterface<FileTaskResult> &fi, const QList<File
 
 void Downloader::doDownload()
 {
+    m_timer.start(1000); // Use a timer to check for canceled downloads.
+
     foreach (const FileTaskItem &item, m_items) {
         if (!startDownload(item))
             break;
@@ -320,6 +322,28 @@ void Downloader::onProxyAuthenticationRequired(const QNetworkProxy &proxy, QAuth
         "Proxy requires authentication."));
     e.setProxy(proxy);
     m_futureInterface->reportException(e);
+}
+
+
+/*!
+    \internal
+
+    Canceling from the outside will not get noticed if we are waiting on a connection that
+    does not create any events. QNam will drop after 45 seconds, though the user might have
+    canceled the download before. In that case we block until the QNam timeout is reached,
+    worst case resulting in deadlock while the application is shutting down at the same time.
+*/
+void Downloader::onTimeout()
+{
+    if (testCanceled()) {
+        // Inject exception, we can't use QFuturInterface::reportException() as the exception
+        // store is "frozen" once cancel was called. On the other hand, client code could use
+        // QFutureWatcherBase::isCanceled() or QFuture::isCanceled() to check for canceled futures.
+        m_futureInterface->exceptionStore()
+            .setException(TaskException(tr("Network transfers canceled.")));
+        m_futureInterface->reportFinished();
+        emit finished();
+    }
 }
 
 
