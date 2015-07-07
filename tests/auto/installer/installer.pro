@@ -17,4 +17,5 @@ SUBDIRS += \
     packagemanagercore \
     settingsoperation \
     task \
-    clientserver
+    clientserver \
+    factory

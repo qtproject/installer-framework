@@ -35,45 +35,83 @@
 #include "kdgenericfactory.h"
 
 /*!
-   \inmodule kdupdater
-   \class KDGenericFactory
-   \brief The KDGenericFactory class implements a template-based generic factory.
+    \inmodule kdupdater
+    \class KDGenericFactory
+    \brief The KDGenericFactory class implements a template-based generic factory.
 
-   KDGenericFactory is an implementation of the factory pattern. It can be used to produce
-   instances of different classes having a common superclass \c T_Product. The user of the
-   factory registers those producible classes in the factory by using an identifier
-   \c T_Identifier. That identifier can then be used to produce as many instances of the
-   registered product as the user wants.
+    KDGenericFactory is an implementation of the factory pattern. It can be used to produce
+    instances of different classes having a common superclass \c BASE. The user of the factory
+    registers those producible classes in the factory by using the identifier \c IDENTIFIER. That
+    identifier can then be used to produce as many instances of the registered product as the
+    user wants.
+
+    One factory instance is able to produce instances of different types of DERIVED classes only
+    when the constructor of DERIVED or the registered generator function have a common signature
+    for all DERIVED classes. This signature is described by the declaration order of ARGUMENTS. It
+    is referred to as SIGNATURE in the following paragraphs.
+
+    If a class derived from BASE does not contain a SIGNATURE matching the registered one for the
+    constructor or the generator function, it is not possible to create instances of it using one
+    instance of KDGenericFactory subclass. In that case, more than one KDGenericFactory subclass
+    and instance are needed.
+
+    It is possible to register a subclass of BASE inside an instance of KDGenericFactory subclass
+    using the registerProduct() function. At least one of the following conditions needs to be met:
+
+    \list
+        \li A global or static function with SIGNATURE exists.
+        \li The DERIVED class has a constructor with SIGNATURE.
+        \li The DERIVED class has a static function with SIGNATURE.
+    \endlist
+
+    To get a new instance of DERIVED, one needs to call the create() function. The value of
+    IDENTIFIER determines the product's subclass registered in the factory, while the values
+    of SIGNATURE are the actual arguments passed to the class constructor or the registered
+    generator function.
 */
 
 /*!
-   \fn KDGenericFactory::~KDGenericFactory()
+    \fn KDGenericFactory::KDGenericFactory()
 
-   Destroys the generic factory.
+    Creates the generic factory.
+*/
+
+/*!
+    \fn KDGenericFactory::~KDGenericFactory()
+
+    Destroys the generic factory.
 */
 
 /*!
     \typedef KDGenericFactory::FactoryFunction
 
-    This typedef defines a factory function producing an object of type T_Product.
+    This typedef defines a factory function producing an object of type BASE.
 */
 
 /*!
-   \fn KDGenericFactory::registerProduct(const T_Identifier &id)
+    \fn void KDGenericFactory::registerProduct(const IDENTIFIER &id)
 
-   Registers a product of the type T, identified by \a id in the factory. Any type with the same id
-   gets unregistered.
+    Registers a type DERIVED, identified by \a id in the factory. Any type with the same id gets
+    unregistered.
 */
 
 /*!
-    \fn bool KDGenericFactory::containsProduct(const T_Identifier &id) const
+    \overload
+    \fn void KDGenericFactory::registerProduct(const IDENTIFIER &id, FactoryFunction func)
 
-    Returns \c true if the factory contains a product with the \a id; otherwise returns false.
+    Registers a function \a func that can create the type DERIVED, identified by \a id in the
+    factory. Any type with the same id gets unregistered.
 */
 
 /*!
-   \fn KDGenericFactory::create(const T_Identifier &id) const
+    \fn bool KDGenericFactory::containsProduct(const IDENTIFIER &id) const
 
-   Creates and returns a product of the type T identified by \a id. Ownership of the product is
-   transferred to the caller.
+    Returns \c true if the factory contains a type with the \a id; otherwise returns false.
+*/
+
+/*!
+    \fn BASE *KDGenericFactory::create(const IDENTIFIER &id, ARGUMENTS... args) const
+
+    Creates and returns the type identified by \a id, but automatically upcasted to BASE. Ownership
+    of the type is transferred to the caller.
 */

@@ -39,48 +39,53 @@
 
 #include <QtCore/QHash>
 
-template <typename T_Product, typename T_Identifier = QString, typename... T_Argument>
+template <typename BASE, typename IDENTIFIER = QString, typename... ARGUMENTS>
 class KDGenericFactory
 {
 public:
     virtual ~KDGenericFactory() {}
 
-    typedef T_Product *(*FactoryFunction)(T_Argument...);
+    typedef BASE *(*FactoryFunction)(ARGUMENTS...);
 
-    template <typename T>
-    void registerProduct(const T_Identifier &id)
+    template <typename DERIVED>
+    void registerProduct(const IDENTIFIER &id)
     {
-        m_hash.insert(id, &KDGenericFactory::create<T>);
+        m_hash.insert(id, &KDGenericFactory::create<DERIVED>);
     }
 
-    bool containsProduct(const T_Identifier &id) const
+    void registerProduct(const IDENTIFIER &id, FactoryFunction func)
+    {
+        m_hash.insert(id, func);
+    }
+
+    bool containsProduct(const IDENTIFIER &id) const
     {
         return m_hash.contains(id);
     }
 
-    T_Product *create(const T_Identifier &id, T_Argument... args) const
+    BASE *create(const IDENTIFIER &id, ARGUMENTS... args) const
     {
         const auto it = m_hash.constFind(id);
         if (it == m_hash.constEnd())
             return 0;
-        return (*it)(args...);
+        return (*it)(std::forward<ARGUMENTS>(args)...);
     }
 
 protected:
     KDGenericFactory() = default;
 
 private:
-    template <typename T>
-    static T_Product *create(T_Argument... args)
+    template <typename DERIVED>
+    static BASE *create(ARGUMENTS... args)
     {
-        return new T(args...);
+        return new DERIVED(std::forward<ARGUMENTS>(args)...);
     }
 
     KDGenericFactory(const KDGenericFactory &) = delete;
     KDGenericFactory &operator=(const KDGenericFactory &) = delete;
 
 private:
-    QHash<T_Identifier, FactoryFunction> m_hash;
+    QHash<IDENTIFIER, FactoryFunction> m_hash;
 };
 
 #endif
