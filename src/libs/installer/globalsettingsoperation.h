@@ -43,7 +43,7 @@ class QSettingsWrapper;
 class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
 public:
-    GlobalSettingsOperation();
+    explicit GlobalSettingsOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

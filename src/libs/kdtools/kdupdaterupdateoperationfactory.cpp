@@ -35,10 +35,8 @@
 #include "kdupdaterupdateoperationfactory.h"
 
 #include "kdupdaterupdateoperations.h"
-#include "packagemanagercore.h"
 
 using namespace KDUpdater;
-using namespace QInstaller;
 
 /*!
     \inmodule kdupdater
@@ -64,10 +62,13 @@ using namespace QInstaller;
 */
 
 /*!
+    \obsolete
     \fn void KDUpdater::UpdateOperationFactory::registerUpdateOperation(const QString &name)
 
     Registers a new update operation with the factory based on \a name. When create() is called
     with that \a name, the update operation is constructed using its default constructor.
+
+    Deprecated. Use registerProduct() instead.
 */
 
 /*!
@@ -92,12 +93,4 @@ UpdateOperationFactory::UpdateOperationFactory()
     registerUpdateOperation<RmdirOperation>(QLatin1String("Rmdir"));
     registerUpdateOperation<AppendFileOperation>(QLatin1String("AppendFile"));
     registerUpdateOperation<PrependFileOperation>(QLatin1String("PrependFile"));
-}
-
-UpdateOperation *UpdateOperationFactory::create(const QString &name, PackageManagerCore *core) const
-{
-    UpdateOperation *operation = KDGenericFactory<UpdateOperation>::create(name);
-    if (operation)
-        operation->setPackageManager(core);
-    return operation;
 }

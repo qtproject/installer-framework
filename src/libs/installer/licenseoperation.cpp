@@ -43,7 +43,8 @@
 
 using namespace QInstaller;
 
-LicenseOperation::LicenseOperation()
+LicenseOperation::LicenseOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("License"));
 }

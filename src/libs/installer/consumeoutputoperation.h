@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT ConsumeOutputOperation : public Operation
 {
 public:
-    ConsumeOutputOperation();
+    explicit ConsumeOutputOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

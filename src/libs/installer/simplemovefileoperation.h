@@ -46,7 +46,7 @@ class INSTALLER_EXPORT SimpleMoveFileOperation : public QObject, public Operatio
     Q_OBJECT
 
 public:
-    SimpleMoveFileOperation();
+    explicit SimpleMoveFileOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

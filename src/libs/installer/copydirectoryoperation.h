@@ -46,7 +46,7 @@ class INSTALLER_EXPORT CopyDirectoryOperation : public QObject, public Operation
     Q_OBJECT
 
 public:
-    CopyDirectoryOperation();
+    explicit CopyDirectoryOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

@@ -52,7 +52,8 @@ public:
 };
 
 
-CopyDirectoryOperation::CopyDirectoryOperation()
+CopyDirectoryOperation::CopyDirectoryOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("CopyDirectory"));
 }

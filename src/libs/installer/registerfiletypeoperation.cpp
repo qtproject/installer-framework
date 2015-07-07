@@ -80,7 +80,8 @@ static QVariantHash readHive(QSettingsWrapper *const settings, const QString &hi
 
 // -- RegisterFileTypeOperation
 
-RegisterFileTypeOperation::RegisterFileTypeOperation()
+RegisterFileTypeOperation::RegisterFileTypeOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("RegisterFileType"));
 }

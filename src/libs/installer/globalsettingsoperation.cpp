@@ -37,7 +37,8 @@
 
 using namespace QInstaller;
 
-GlobalSettingsOperation::GlobalSettingsOperation()
+GlobalSettingsOperation::GlobalSettingsOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("GlobalConfig"));
 }

@@ -140,7 +140,8 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
 
 // -- CreateLocalRepositoryOperation
 
-CreateLocalRepositoryOperation::CreateLocalRepositoryOperation()
+CreateLocalRepositoryOperation::CreateLocalRepositoryOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("CreateLocalRepository"));
 }
@@ -189,7 +190,7 @@ bool CreateLocalRepositoryOperation::performOperation()
         setValue(QLatin1String("createddir"), mkDirOp.value(QLatin1String("createddir")));
 
         // copy the whole meta data into local repository
-        CopyDirectoryOperation copyDirOp;
+        CopyDirectoryOperation copyDirOp(core);
         copyDirOp.setArguments(QStringList() << QLatin1String(":/metadata/") << repoPath);
         connect(&copyDirOp, &CopyDirectoryOperation::outputTextChanged,
                 this, &CreateLocalRepositoryOperation::outputTextChanged);

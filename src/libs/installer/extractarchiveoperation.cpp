@@ -42,7 +42,8 @@
 using namespace QInstaller;
 
 
-ExtractArchiveOperation::ExtractArchiveOperation()
+ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Extract"));
 }

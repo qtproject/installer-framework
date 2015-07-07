@@ -39,7 +39,8 @@
 
 namespace QInstaller {
 
-SimpleMoveFileOperation::SimpleMoveFileOperation()
+SimpleMoveFileOperation::SimpleMoveFileOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("SimpleMoveFile"));
 }

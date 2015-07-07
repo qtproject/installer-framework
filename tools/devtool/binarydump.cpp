@@ -60,7 +60,7 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
         }
     }
 
-    QInstaller::CopyDirectoryOperation copyMetadata;
+    QInstaller::CopyDirectoryOperation copyMetadata(0);
     copyMetadata.setArguments(QStringList() << QLatin1String(":/")
         << (targetDir.path() + QLatin1Char('/'))); // Add "/" at the end to make operation work.
     if (!copyMetadata.performOperation()) {

@@ -40,7 +40,8 @@
 
 using namespace QInstaller;
 
-CreateLinkOperation::CreateLinkOperation()
+CreateLinkOperation::CreateLinkOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("CreateLink"));
 }

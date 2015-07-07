@@ -99,7 +99,8 @@ static QString backupFileName(const QString &templateName)
 // KDUpdater::CopyOperation
 ////////////////////////////////////////////////////////////////////////////
 
-CopyOperation::CopyOperation()
+CopyOperation::CopyOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Copy"));
 }
@@ -240,7 +241,8 @@ bool CopyOperation::testOperation()
 // KDUpdater::MoveOperation
 ////////////////////////////////////////////////////////////////////////////
 
-MoveOperation::MoveOperation()
+MoveOperation::MoveOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Move"));
 }
@@ -342,7 +344,8 @@ bool MoveOperation::testOperation()
 // KDUpdater::DeleteOperation
 ////////////////////////////////////////////////////////////////////////////
 
-DeleteOperation::DeleteOperation()
+DeleteOperation::DeleteOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Delete"));
 }
@@ -414,7 +417,8 @@ QDomDocument DeleteOperation::toXml() const
 // KDUpdater::MkdirOperation
 ////////////////////////////////////////////////////////////////////////////
 
-MkdirOperation::MkdirOperation()
+MkdirOperation::MkdirOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Mkdir"));
 }
@@ -506,7 +510,8 @@ bool KDUpdater::MkdirOperation::testOperation()
 // KDUpdater::RmdirOperation
 ////////////////////////////////////////////////////////////////////////////
 
-RmdirOperation::RmdirOperation()
+RmdirOperation::RmdirOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Rmdir"));
     setValue(QLatin1String("removed"), false);
@@ -569,7 +574,8 @@ bool RmdirOperation::testOperation()
 // KDUpdater::AppendFileOperation
 ////////////////////////////////////////////////////////////////////////////
 
-AppendFileOperation::AppendFileOperation()
+AppendFileOperation::AppendFileOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("AppendFile"));
 }
@@ -675,7 +681,8 @@ bool AppendFileOperation::testOperation()
 // KDUpdater::PrependFileOperation
 ////////////////////////////////////////////////////////////////////////////
 
-PrependFileOperation::PrependFileOperation()
+PrependFileOperation::PrependFileOperation(QInstaller::PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("PrependFile"));
 }

@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT CreateLinkOperation : public Operation
 {
 public:
-    CreateLinkOperation();
+    explicit CreateLinkOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

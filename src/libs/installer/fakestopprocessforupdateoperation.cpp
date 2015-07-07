@@ -40,7 +40,8 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation()
+FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("FakeStopProcessForUpdate"));
 }

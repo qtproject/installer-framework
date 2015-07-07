@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT SettingsOperation : public Operation
 {
 public:
-    SettingsOperation();
+    explicit SettingsOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

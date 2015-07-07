@@ -97,7 +97,8 @@ QString CreateDesktopEntryOperation::absoluteFileName()
     return QDir(directory).absoluteFilePath(filename);
 }
 
-CreateDesktopEntryOperation::CreateDesktopEntryOperation()
+CreateDesktopEntryOperation::CreateDesktopEntryOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("CreateDesktopEntry"));
 }

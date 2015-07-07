@@ -39,7 +39,8 @@
 
 using namespace QInstaller;
 
-SelfRestartOperation::SelfRestartOperation()
+SelfRestartOperation::SelfRestartOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("SelfRestart"));
 }

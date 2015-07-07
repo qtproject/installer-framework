@@ -42,7 +42,7 @@ namespace KDUpdater {
 class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
 {
 public:
-    CopyOperation();
+    explicit CopyOperation(QInstaller::PackageManagerCore *core = 0);
     ~CopyOperation();
 
     void backup();
@@ -59,7 +59,7 @@ private:
 class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
 {
 public:
-    MoveOperation();
+    explicit MoveOperation(QInstaller::PackageManagerCore *core = 0);
     ~MoveOperation();
 
     void backup();
@@ -71,7 +71,7 @@ public:
 class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
 {
 public:
-    DeleteOperation();
+    explicit DeleteOperation(QInstaller::PackageManagerCore *core = 0);
     ~DeleteOperation();
 
     void backup();
@@ -85,7 +85,7 @@ public:
 class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
 {
 public:
-    MkdirOperation();
+    explicit MkdirOperation(QInstaller::PackageManagerCore *core = 0);
 
     void backup();
     bool performOperation();
@@ -96,7 +96,7 @@ public:
 class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
 {
 public:
-    RmdirOperation();
+    RmdirOperation(QInstaller::PackageManagerCore *core = 0);
 
     void backup();
     bool performOperation();
@@ -107,7 +107,7 @@ public:
 class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
 {
 public:
-    AppendFileOperation();
+    explicit AppendFileOperation(QInstaller::PackageManagerCore *core = 0);
 
     void backup();
     bool performOperation();
@@ -118,7 +118,7 @@ public:
 class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
 {
 public:
-    PrependFileOperation();
+    explicit PrependFileOperation(QInstaller::PackageManagerCore *core = 0);
 
     void backup();
     bool performOperation();

@@ -46,7 +46,7 @@ class MinimumProgressOperation : public QObject, public Operation
     Q_OBJECT
 
 public:
-    MinimumProgressOperation();
+    explicit MinimumProgressOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

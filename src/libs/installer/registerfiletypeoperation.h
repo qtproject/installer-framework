@@ -44,7 +44,7 @@ class INSTALLER_EXPORT RegisterFileTypeOperation : public QObject, public Operat
     Q_OBJECT
 
 public:
-    RegisterFileTypeOperation();
+    explicit RegisterFileTypeOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

@@ -43,7 +43,8 @@
 
 using namespace QInstaller;
 
-ConsumeOutputOperation::ConsumeOutputOperation()
+ConsumeOutputOperation::ConsumeOutputOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("ConsumeOutput"));
 }

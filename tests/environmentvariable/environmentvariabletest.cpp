@@ -55,7 +55,7 @@ void EnvironmentVariableTest::testPersistentNonSystem()
 #endif
     QString key = QLatin1String("IFW_TestKey");
     QString value = QLatin1String("IFW_TestValue");
-    QInstaller::EnvironmentVariableOperation op;
+    QInstaller::EnvironmentVariableOperation op(0);
     op.setArguments( QStringList() << key
                     << value
                     << QLatin1String("true")
@@ -83,7 +83,7 @@ void EnvironmentVariableTest::testNonPersistentNonSystem()
 #endif
     QString key = QLatin1String("IFW_TestKey");
     QString value = QLatin1String("IFW_TestValue");
-    QInstaller::EnvironmentVariableOperation op;
+    QInstaller::EnvironmentVariableOperation op(0);
     op.setArguments( QStringList() << key
                     << value
                     << QLatin1String("false")

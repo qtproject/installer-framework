@@ -41,7 +41,8 @@
 
 using namespace QInstaller;
 
-SettingsOperation::SettingsOperation()
+SettingsOperation::SettingsOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("Settings"));
 }

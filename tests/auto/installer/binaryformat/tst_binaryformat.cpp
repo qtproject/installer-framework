@@ -57,7 +57,9 @@ struct Layout : public QInstaller::BinaryLayout
 class TestOperation : public KDUpdater::UpdateOperation
 {
 public:
-    TestOperation(const QString &name) { setName(name); }
+    TestOperation(const QString &name)
+        : KDUpdater::UpdateOperation(0)
+    { setName(name); }
 
     virtual void backup() {}
     virtual bool performOperation() { return true; }

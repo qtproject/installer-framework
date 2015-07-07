@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT SelfRestartOperation : public Operation
 {
 public:
-    SelfRestartOperation();
+    explicit SelfRestartOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

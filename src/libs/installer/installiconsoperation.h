@@ -45,7 +45,7 @@ class INSTALLER_EXPORT InstallIconsOperation : public QObject, public Operation
 {
     Q_OBJECT
 public:
-    InstallIconsOperation();
+    explicit InstallIconsOperation(PackageManagerCore *core);
     ~InstallIconsOperation();
 
     void backup();

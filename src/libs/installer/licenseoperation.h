@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT LicenseOperation : public Operation
 {
 public:
-    LicenseOperation();
+    explicit LicenseOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

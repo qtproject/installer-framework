@@ -158,8 +158,9 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
 
 // -- CreateShortcutOperation
 
-CreateShortcutOperation::CreateShortcutOperation()
-    : m_optionalArgumentsRead(false)
+CreateShortcutOperation::CreateShortcutOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
+    , m_optionalArgumentsRead(false)
 {
     setName(QLatin1String("CreateShortcut"));
 }

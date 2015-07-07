@@ -43,7 +43,7 @@
 #include <QtXml/QDomDocument>
 
 namespace QInstaller {
-    class PackageManagerCore;
+class PackageManagerCore;
 }
 
 namespace KDUpdater {
@@ -59,7 +59,7 @@ public:
         UserDefinedError = 128
     };
 
-    UpdateOperation();
+    explicit UpdateOperation(QInstaller::PackageManagerCore *core);
     virtual ~UpdateOperation();
 
     QString name() const;
@@ -79,7 +79,6 @@ public:
     QStringList filesForDelayedDeletion() const;
 
     QInstaller::PackageManagerCore *packageManager() const;
-    void setPackageManager(QInstaller::PackageManagerCore *core);
 
     virtual void backup() = 0;
     virtual bool performOperation() = 0;
@@ -106,6 +105,7 @@ private:
     int m_error;
     QVariantMap m_values;
     QStringList m_delayedDeletionFiles;
+    QInstaller::PackageManagerCore *m_core;
 };
 
 } // namespace KDUpdater

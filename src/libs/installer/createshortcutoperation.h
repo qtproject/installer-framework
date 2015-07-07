@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT CreateShortcutOperation : public Operation
 {
 public:
-    CreateShortcutOperation();
+    explicit CreateShortcutOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

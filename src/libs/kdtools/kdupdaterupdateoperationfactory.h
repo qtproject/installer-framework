@@ -47,7 +47,8 @@ namespace KDUpdater {
 
 class UpdateOperation;
 
-class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory<UpdateOperation>
+class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory<UpdateOperation, QString,
+                                                                   QInstaller::PackageManagerCore*>
 {
     Q_DISABLE_COPY(UpdateOperationFactory)
 
@@ -59,9 +60,8 @@ public:
     {
         registerProduct<T>(name);
     }
-    UpdateOperation *create(const QString &name, QInstaller::PackageManagerCore *core) const;
 
-protected:
+private:
     UpdateOperationFactory();
 };
 

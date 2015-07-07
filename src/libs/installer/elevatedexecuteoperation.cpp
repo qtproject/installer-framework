@@ -64,8 +64,9 @@ public:
     bool showStandardError;
 };
 
-ElevatedExecuteOperation::ElevatedExecuteOperation()
-    : d(new Private(this))
+ElevatedExecuteOperation::ElevatedExecuteOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
+    , d(new Private(this))
 {
     // this operation has to "overwrite" the Execute operation from KDUpdater
     setName(QLatin1String("Execute"));

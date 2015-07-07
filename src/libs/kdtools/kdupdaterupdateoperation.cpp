@@ -89,9 +89,13 @@ static QString backupFileName(const QString &templateName)
 /*!
     \internal
 */
-UpdateOperation::UpdateOperation()
+UpdateOperation::UpdateOperation(QInstaller::PackageManagerCore *core)
     : m_error(0)
-{}
+    , m_core(core)
+{
+    // Store the value for compatibility reasons.
+    m_values[QLatin1String("installer")] = QVariant::fromValue(core);
+}
 
 /*!
     \internal
@@ -312,14 +316,12 @@ QStringList UpdateOperation::filesForDelayedDeletion() const
     return m_delayedDeletionFiles;
 }
 
+/*!
+    Returns the package manager core this operation belongs to.
+*/
 QInstaller::PackageManagerCore *UpdateOperation::packageManager() const
 {
-    return value(QLatin1String("installer")).value<QInstaller::PackageManagerCore*>();
-}
-
-void UpdateOperation::setPackageManager(QInstaller::PackageManagerCore *core)
-{
-    setValue(QLatin1String("installer"), QVariant::fromValue(core));
+    return m_core;
 }
 
 /*!

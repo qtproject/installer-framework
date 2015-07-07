@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT CreateDesktopEntryOperation : public Operation
 {
 public:
-    CreateDesktopEntryOperation();
+    explicit CreateDesktopEntryOperation(PackageManagerCore *core);
     ~CreateDesktopEntryOperation();
 
     void backup();

@@ -243,7 +243,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
             qWarning() << "Failed to load XML for operation" << operation.name;
             continue;
         }
-        op->setPackageManager(core);
         m_performedOperationsOld.append(op.take());
     }
 

@@ -40,7 +40,8 @@
 
 using namespace QInstaller;
 
-LineReplaceOperation::LineReplaceOperation()
+LineReplaceOperation::LineReplaceOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("LineReplace"));
 }

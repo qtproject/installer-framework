@@ -92,7 +92,8 @@ QString InstallIconsOperation::targetDirectory()
     return directory;
 }
 
-InstallIconsOperation::InstallIconsOperation()
+InstallIconsOperation::InstallIconsOperation(PackageManagerCore *core)
+    : UpdateOperation(core)
 {
     setName(QLatin1String("InstallIcons"));
 }

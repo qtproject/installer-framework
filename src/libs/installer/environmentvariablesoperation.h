@@ -42,7 +42,7 @@ namespace QInstaller {
 class INSTALLER_EXPORT EnvironmentVariableOperation : public Operation
 {
 public:
-    EnvironmentVariableOperation();
+    explicit EnvironmentVariableOperation(PackageManagerCore *core);
 
     void backup();
     bool performOperation();

@@ -68,7 +68,7 @@ private slots:
 
     void testMissingArguments()
     {
-        ConsumeOutputOperation operation;
+        ConsumeOutputOperation operation(0);
 
         QVERIFY(operation.testOperation());
         QVERIFY(!operation.performOperation());
@@ -89,8 +89,7 @@ private slots:
     {
         QString testOutput = getOutputFrom(QUOTE(QMAKE_BINARY), QStringList("-query"));
 
-        ConsumeOutputOperation operation;
-        operation.setValue(QLatin1String("installer"), QVariant::fromValue(&m_core));
+        ConsumeOutputOperation operation(&m_core);
 
         operation.setArguments(QStringList() << "testConsumeOutputKey" << QUOTE(QMAKE_BINARY) << "-query");
         QVERIFY2(operation.performOperation(), qPrintable(operation.errorString()));
