@@ -2610,9 +2610,9 @@ void ReadyForInstallationPage::entering()
 
     // at the moment there is no better way to check this
     if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
-        qDebug() << QString::fromLatin1("Cannot determine available space on device. Volume "
-            "descriptor: %1, Mount path: %2. Continue silently.").arg(targetVolume
-            .volumeDescriptor(), targetVolume.mountPath());
+        qDebug().nospace() << "Cannot determine available space on device. "
+                              "Volume descriptor: " << targetVolume.volumeDescriptor()
+                           << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
         return;     // TODO: Shouldn't this also disable the "Next" button?
     }
 

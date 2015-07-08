@@ -186,7 +186,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
                             QDir::toNativeSeparators(f.fileName()), f.errorString());
                 if (!ignoreErrors)
                     throw Error(errorMessage);
-                qWarning() << errorMessage;
+                qWarning().noquote() << errorMessage;
             }
         }
     }
@@ -228,7 +228,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
                                                           errnoToQString(errno));
             if (!ignoreErrors)
                 throw Error(errorMessage);
-            qWarning() << errorMessage;
+            qWarning().noquote() << errorMessage;
         }
     }
 }
@@ -493,14 +493,13 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
 {
     QFile iconFile(icon);
     if (!iconFile.open(QIODevice::ReadOnly)) {
-        qWarning() << QString::fromLatin1("Cannot use \"%1\" as application icon: %2")
-            .arg(icon, iconFile.errorString());
+        qWarning() << "Cannot use" << icon << "as an application icon:" << iconFile.errorString();
         return;
     }
 
     if (QImageReader::imageFormat(icon) != "ico") {
-        qWarning() << QString::fromLatin1("Cannot use \"%1\" as application icon, unsupported format %2.")
-            .arg(icon, QLatin1String(QImageReader::imageFormat(icon)));
+        qWarning() << "Cannot use" << icon << "as an application icon, unsupported format"
+                   << QImageReader::imageFormat(icon).constData();
         return;
     }
 

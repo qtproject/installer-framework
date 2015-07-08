@@ -1701,7 +1701,7 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
         processPath =  QDir::cleanPath(processPath.replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         if (processPath == normalizedPath) {
-            qDebug() << QString::fromLatin1("try to kill process: %1(%2)").arg(process.name).arg(process.id);
+            qDebug().nospace() << "try to kill process " << process.name << " (" << process.id << ")";
 
             //to keep the ui responsible use QtConcurrent::run
             QFutureWatcher<bool> futureWatcher;
@@ -1715,7 +1715,7 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
             if (!future.isFinished())
                 loop.exec();
 
-            qDebug() << QString::fromLatin1("\"%1\" killed!").arg(process.name);
+            qDebug() << process.name << "killed!";
             return future.result();
         }
     }

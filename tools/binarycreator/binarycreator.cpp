@@ -280,8 +280,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
             qDebug() << "Creating resource archive for" << info.name;
             foreach (const QString &file, info.copiedFiles) {
                 const QSharedPointer<Resource> resource(new Resource(file));
-                qDebug() << QString::fromLatin1("Appending %1 (%2)").arg(file,
-                    humanReadableSize(resource->size()));
+                qDebug().nospace() << "Appending " << file << " (" << humanReadableSize(resource->size()) << ")";
                 collection.appendResource(resource);
             }
             input.manager.insertCollection(collection);
@@ -493,7 +492,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
 
         const QString tagName = domElement.tagName();
         const QString elementText = domElement.text();
-        qDebug() << QString::fromLatin1("Read dom element: <%1>%2</%1>.").arg(tagName, elementText);
+        qDebug().noquote() << QString::fromLatin1("Read dom element: <%1>%2</%1>.").arg(tagName, elementText);
 
         QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.|:")),
             QLatin1String("_"));

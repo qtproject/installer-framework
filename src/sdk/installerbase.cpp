@@ -123,7 +123,7 @@ int InstallerBase::run()
 
     qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-    qDebug() << "Arguments: " << arguments().join(QLatin1String(", ")).toUtf8().constData();
+    qDebug().noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -309,6 +309,6 @@ QStringList InstallerBase::repositories(const QString &list) const
 {
     const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
     foreach (const QString &item, items)
-        qDebug() << "Adding custom repository:" << item.toUtf8().constData();
+        qDebug().noquote() << "Adding custom repository:" << item;
     return items;
 }

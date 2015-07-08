@@ -98,9 +98,9 @@ public:
     {
         if (!m_operation)
             return;
-        qDebug() << QString::fromLatin1("%1 %2 operation: %3").arg(state, m_operation->value(
+        qDebug().noquote() << QString::fromLatin1("%1 %2 operation: %3").arg(state, m_operation->value(
             QLatin1String("component")).toString(), m_operation->name());
-        qDebug() << QString::fromLatin1("\t- arguments: %1").arg(m_operation->arguments()
+        qDebug().noquote() << QString::fromLatin1("\t- arguments: %1").arg(m_operation->arguments()
             .join(QLatin1String(", ")));
     }
     ~OperationTracer() {
@@ -235,13 +235,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
             .create(operation.name, core));
         if (op.isNull()) {
-            qWarning() << QString::fromLatin1("Failed to load unknown operation %1")
-                .arg(operation.name);
+            qWarning() << "Failed to load unknown operation" << operation.name;
             continue;
         }
 
         if (!op->fromXml(operation.xml)) {
-            qWarning() << "Failed to load XML for operation:" << operation.name;
+            qWarning() << "Failed to load XML for operation" << operation.name;
             continue;
         }
         op->setPackageManager(core);
@@ -1072,8 +1071,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
             file.remove();  // clear all possible leftovers
             m_core->setValue(QString::fromLatin1("DefaultResourceReplacement"), QString());
         } else {
-            qWarning() << QString::fromLatin1("Cannot replace default resource with \"%1\".")
-                .arg(QDir::toNativeSeparators(newDefaultResource));
+            qWarning() << "Cannot replace default resource with" << QDir::toNativeSeparators(newDefaultResource);
         }
     }
 
@@ -1261,17 +1259,17 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
-                qDebug() << QString::fromLatin1("Cannot remove installer base binary \"%1\" after updating "
-                    "the maintenance tool: %2").arg(installerBaseBinary, replacementBinary.errorString());
+                qDebug() << "Cannot remove installer base binary" << installerBaseBinary
+                         << "after updating the maintenance tool:" << replacementBinary.errorString();
             } else {
-                qDebug() << QString::fromLatin1("Removed installer base binary \"%1\" after updating the "
-                    "maintenance tool.").arg(installerBaseBinary);
+                qDebug() << "Removed installer base binary" << installerBaseBinary
+                         << "after updating the maintenance tool.";
             }
             m_installerBaseBinaryUnreplaced.clear();
         } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
-            qWarning() << QString::fromLatin1("The current maintenance tool could not be "
-                "updated. \"%1\" does not exist. Please fix the \"setInstallerBaseBinary(<temp_installer_base_"
-                "binary_path>)\" call in your script.").arg(installerBaseBinary);
+            qWarning() << "The current maintenance tool could not be updated." << installerBaseBinary
+                       << "does not exist. Please fix the \"setInstallerBaseBinary(<temp_installer_base_"
+                          "binary_path>)\" call in your script.";
         }
 
         QFile input;
@@ -1281,9 +1279,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         try {
             if (isInstaller()) {
                 if (QFile::exists(dataFile)) {
-                    qWarning() << QString::fromLatin1("Found binary data file \"%1\" but "
+                    qWarning() << "Found binary data file" << dataFile << "but "
                         "deliberately not used. Running as installer requires to read the "
-                        "resources from the application binary.").arg(dataFile);
+                        "resources from the application binary.";
                 }
                 throw Error();
             }
@@ -2230,8 +2228,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             QString error;
             QDomDocument doc;
             if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-                qDebug() << QString::fromLatin1("Parse error in file %4: %1 at line %2 col %3").arg(error,
-                    QString::number(line), QString::number(column), updatesFile.fileName());
+                qDebug().nospace() << "Parse error in file" << updatesFile.fileName()
+                                   << ": " << error << " at line " << line << " col " << column;
                 setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
                 return false;
             }

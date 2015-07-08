@@ -122,7 +122,7 @@ void MetadataJob::xmlTaskFinished()
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
             ProxyCredentialsDialog proxyCredentials(proxy);
-            qDebug() << e.message();
+            qDebug().noquote() << e.message();
 
             if (proxyCredentials.exec() == QDialog::Accepted) {
                 qDebug() << "Retrying with new credentials ...";
@@ -137,7 +137,7 @@ void MetadataJob::xmlTaskFinished()
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qDebug() << e.message();
+            qDebug().noquote() << e.message();
             ServerAuthenticationDialog dlg(e.message(), e.taskItem());
             if (dlg.exec() == QDialog::Accepted) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
@@ -319,8 +319,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug() << QString::fromLatin1("Cannot fetch a valid version of Updates.xml from "
-                "repository %1: %2").arg(metadata.repository.displayname(), error);
+            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+                               << metadata.repository.displayname() << ": " << error;
             return XmlDownloadFailure;
         }
         file.close();
@@ -405,12 +405,12 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
                         // store the new repository and the one old it replaces
                         repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                        qDebug() << "Replace repository:" << oldRepository.displayname() << "with:"
+                        qDebug() << "Replace repository" << oldRepository.displayname() << "with"
                             << newRepository.displayname();
                     }
                 } else {
                     qDebug() << "Invalid additional repositories action set in Updates.xml fetched "
-                        "from:" << metadata.repository.displayname() << "Line:" << el.lineNumber();
+                        "from" << metadata.repository.displayname() << "line:" << el.lineNumber();
                 }
             }
         }

@@ -55,7 +55,7 @@ public:
     ConsoleProxy() {}
 
 public slots :
-        void log(const QString &log) { qDebug() << log; }
+        void log(const QString &log) { qDebug().noquote() << log; }
 };
 
 class InstallerProxy : public QObject

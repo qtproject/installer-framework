@@ -278,7 +278,7 @@ void Downloader::onSslErrors(const QList<QSslError> &sslErrors)
     Q_UNUSED(sslErrors);
 #else
     foreach (const QSslError &error, sslErrors)
-        qDebug() << QString::fromLatin1("SSL error: %1").arg(error.errorString());
+        qDebug() << "SSL error:" << error.errorString();
 #endif
 }
 

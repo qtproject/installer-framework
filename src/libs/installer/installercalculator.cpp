@@ -121,7 +121,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
             const QString errorMessage = recursionError(component);
-            qWarning() << errorMessage;
+            qWarning().noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
                 qPrintable(errorMessage));
@@ -173,7 +173,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
             const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
                 "Cannot find missing dependency \"%1\" for \"%2\".").arg(dependencyComponentName,
                 component->name());
-            qWarning() << errorMessage;
+            qWarning().noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             return false;
         }
@@ -182,7 +182,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
             && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
                 if (m_visitedComponents.value(component).contains(dependencyComponent)) {
                     const QString errorMessage = recursionError(component);
-                    qWarning() << errorMessage;
+                    qWarning().noquote() << errorMessage;
                     m_componentsToInstallError = errorMessage;
                     Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
                         Q_FUNC_INFO, qPrintable(errorMessage));

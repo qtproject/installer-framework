@@ -251,7 +251,7 @@ private slots:
         QCOMPARE(context.isError(), false);
 
         // ignore Output from script
-        setExpectedScriptOutput("\"function receive()\"");
+        setExpectedScriptOutput("function receive()");
 
         QTest::ignoreMessage(QtWarningMsg, ":10: ReferenceError: foo is not defined");
         emiter.produceSignal();
@@ -262,7 +262,7 @@ private slots:
 
     void testScriptPrint()
     {
-        setExpectedScriptOutput("\"test\"");
+        setExpectedScriptOutput("test");
         const QJSValue value = m_scriptEngine->evaluate("print(\"test\");");
         if (value.isError()) {
             QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
@@ -272,7 +272,7 @@ private slots:
 
     void testExistingInstallerObject()
     {
-        setExpectedScriptOutput("\"object\"");
+        setExpectedScriptOutput("object");
         const QJSValue value = m_scriptEngine->evaluate("print(typeof installer)");
         if (value.isError()) {
             QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
@@ -286,7 +286,7 @@ private slots:
             "\n"
             "print(component.name);").arg(m_component->name());
 
-        setExpectedScriptOutput("\"component.test.name\"");
+        setExpectedScriptOutput("component.test.name");
         const QJSValue value = m_scriptEngine->evaluate(script);
         if (value.isError()) {
             QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
@@ -310,7 +310,7 @@ private slots:
                                                  "\n"
                                                  "print(components[0].name);");
 
-      setExpectedScriptOutput("\"component.test.name\"");
+      setExpectedScriptOutput("component.test.name");
       const QJSValue value = m_scriptEngine->evaluate(script);
       if (value.isError()) {
         QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
@@ -322,28 +322,28 @@ private slots:
     {
        try {
             // ignore retranslateUi which is called by loadComponentScript
-            setExpectedScriptOutput("\"Component constructor - OK\"");
-            setExpectedScriptOutput("\"retranslateUi - OK\"");
+            setExpectedScriptOutput("Component constructor - OK");
+            setExpectedScriptOutput("retranslateUi - OK");
             m_component->loadComponentScript(":///data/component1.qs");
 
-            setExpectedScriptOutput("\"retranslateUi - OK\"");
+            setExpectedScriptOutput("retranslateUi - OK");
             m_component->languageChanged();
 
-            setExpectedScriptOutput("\"createOperationsForPath - OK\"");
+            setExpectedScriptOutput("createOperationsForPath - OK");
             m_component->createOperationsForPath(":///data/");
 
-            setExpectedScriptOutput("\"createOperationsForArchive - OK\"");
+            setExpectedScriptOutput("createOperationsForArchive - OK");
             // ignore createOperationsForPath which is called by createOperationsForArchive
-            setExpectedScriptOutput("\"createOperationsForPath - OK\"");
+            setExpectedScriptOutput("createOperationsForPath - OK");
             m_component->createOperationsForArchive("test.7z");
 
-            setExpectedScriptOutput("\"beginInstallation - OK\"");
+            setExpectedScriptOutput("beginInstallation - OK");
             m_component->beginInstallation();
 
-            setExpectedScriptOutput("\"createOperations - OK\"");
+            setExpectedScriptOutput("createOperations - OK");
             m_component->createOperations();
 
-            setExpectedScriptOutput("\"isDefault - OK\"");
+            setExpectedScriptOutput("isDefault - OK");
             bool returnIsDefault = m_component->isDefault();
             QCOMPARE(returnIsDefault, false);
 
@@ -362,7 +362,7 @@ private slots:
 
         try {
             // ignore Output from script
-            setExpectedScriptOutput("\"script function: Component\"");
+            setExpectedScriptOutput("script function: Component");
             testComponent->loadComponentScript(":///data/component2.qs");
         } catch (const Error &error) {
             const QString debugMessage(
@@ -375,7 +375,7 @@ private slots:
     void loadComponentUserInterfaces()
     {
        try {
-            setExpectedScriptOutput("\"checked: false\"");
+            setExpectedScriptOutput("checked: false");
             m_component->loadUserInterfaces(QDir(":///data"), QStringList() << QLatin1String("form.ui"));
             m_component->loadComponentScript(":///data/userinterface.qs");
         } catch (const Error &error) {
@@ -397,7 +397,7 @@ private slots:
             QTest::ignoreMessage(QtWarningMsg, "Button with type:  \"unknown button\" not found! ");
             testGui.callProtectedDelayedExecuteControlScript(PackageManagerCore::ComponentSelection);
 
-            setExpectedScriptOutput("\"FinishedPageCallback - OK\"");
+            setExpectedScriptOutput("FinishedPageCallback - OK");
             testGui.callProtectedDelayedExecuteControlScript(PackageManagerCore::InstallationFinished);
         } catch (const Error &error) {
             QFAIL(qPrintable(error.message()));

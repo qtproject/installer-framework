@@ -226,7 +226,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         QByteArray standardErrorOutput = process->readAllStandardError();
         // in error case it would be useful to see something in verbose output
         if (!standardErrorOutput.isEmpty())
-            qWarning() << standardErrorOutput;
+            qWarning().noquote() << standardErrorOutput;
 
         returnValue = false;
     }

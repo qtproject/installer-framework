@@ -55,7 +55,7 @@ KDRunOnceChecker::KDRunOnceChecker(const QString &filename)
 KDRunOnceChecker::~KDRunOnceChecker()
 {
     if (!m_lockfile.unlock())
-        qWarning() << m_lockfile.errorString().toUtf8().constData();
+        qWarning().noquote() << m_lockfile.errorString();
 }
 
 class ProcessnameEquals
@@ -103,7 +103,7 @@ bool KDRunOnceChecker::isRunning(KDRunOnceChecker::ConditionFlags flags)
     if (flags.testFlag(ConditionFlag::Lockfile)) {
         const bool locked = m_lockfile.lock();
         if (!locked)
-            qWarning() << m_lockfile.errorString().toUtf8().constData();
+            qWarning().noquote() << m_lockfile.errorString();
         return !locked;
     }
     return false;

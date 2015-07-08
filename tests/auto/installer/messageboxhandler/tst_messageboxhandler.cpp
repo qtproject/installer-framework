@@ -65,8 +65,8 @@ private slots:
 
     void testDefaultAction()
     {
-        const char ignoreMessage[] = "\"Created critical message box TestError: \"A test error\", "
-            "This is a test error message.\" ";
+        const char ignoreMessage[] = "Created critical message box \"TestError\": \"A test error\", "
+            "\"This is a test error message.\"";
         srand(time(0)); /* initialize random seed: */
 
         int standardButtons = QMessageBox::NoButton;

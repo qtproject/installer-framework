@@ -248,9 +248,9 @@ QString UpdateOperation::argumentKeyValue(const QString &key, const QString &def
 
     it = std::find_if(++it, tArguments.end(), StartsWith(keySeparater));
     if (it != tArguments.end()) {
-        qWarning() << QString::fromLatin1("There are multiple keys in the arguments calling"
-            " \"%1\". Only the first found \"%2\" is used: \"%3\"").arg(name(), key, arguments().join(
-            QLatin1String("; ")));
+        qWarning().nospace() << "There are multiple keys in the arguments calling " << name() << ". "
+                             << "Only the first found " << key << " is used: "
+                             << arguments().join(QLatin1String("; "));
     }
     return value;
 }

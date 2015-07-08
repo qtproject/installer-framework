@@ -112,14 +112,14 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     shellExecuteInfo.lpParameters = (wchar_t *)args.utf16();
     shellExecuteInfo.fMask = SEE_MASK_NOASYNC;
 
-    qDebug() << QString::fromLatin1("Starting elevated process \"%1\" with arguments \"%2\".").arg(file, args);
+    qDebug() << "Starting elevated process" << file << "with arguments" << args;
 
     if (ShellExecuteExW(&shellExecuteInfo)) {
         qDebug() << "Finished starting elevated process.";
         return true;
     } else {
-        qWarning() << QString::fromLatin1("Error while starting elevated process %1: %2").arg(
-                          program, QInstaller::windowsErrorString(GetLastError()));
+        qWarning() << "Error while starting elevated process" << program
+                   << ":" << QInstaller::windowsErrorString(GetLastError());
     }
     return false;
 }

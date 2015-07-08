@@ -273,10 +273,10 @@ bool InstallIconsOperation::undoOperation()
     }
 
     if (!warningMessages.isEmpty()) {
-        qWarning() << QString::fromLatin1("Undo of operation %1 with arguments \"%2\" had some problems.").arg(
-            name(), arguments().join(QLatin1String(", ")));
+        qWarning() << "Undo of operation" << name() << "with arguments"
+                   << arguments().join(QLatin1String(", ")) << "had some problems.";
         foreach (const QString &message, warningMessages) {
-            qWarning() << message;
+            qWarning().noquote() << message;
         }
     }
 

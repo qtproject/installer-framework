@@ -127,8 +127,7 @@ bool ConsumeOutputOperation::performOperation()
 
     }
     if (executableOutput.isEmpty()) {
-        qWarning() << QString::fromLatin1("Cannot get any query output from executable \"%1\".").arg(
-            executable.absoluteFilePath());
+        qWarning() << "Cannot get any query output from executable" << executable.absoluteFilePath();
     }
     core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
     return true;

@@ -77,7 +77,7 @@ QString QInstallerTools::makePathAbsolute(const QString &path)
 
 void QInstallerTools::copyWithException(const QString &source, const QString &target, const QString &kind)
 {
-    qDebug() << QString::fromLatin1("Copying associated %1 file \"%2\".").arg(kind, source);
+    qDebug() << "Copying associated" << kind << "file" << source;
 
     const QFileInfo targetFileInfo(target);
     if (!targetFileInfo.dir().exists())
@@ -163,8 +163,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             throw QInstaller::Error(QString::fromLatin1("Cannot create directory \"%1\".").arg(info.name));
 
         const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(info.directory);
-        qDebug() << QString::fromLatin1("Copy meta data for package \"%1\" using \"%2\".").arg(info.name,
-            packageXmlPath);
+        qDebug() << "Copy meta data for package" << info.name << "using" << packageXmlPath;
 
         QFile file(packageXmlPath);
         QInstaller::openForRead(&file);
@@ -222,8 +221,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         }
 
         if (!foundDisplayName) {
-            qWarning() << QString::fromLatin1("No DisplayName tag found at \"%1\", using component Name instead."
-                ).arg(info.name);
+            qWarning() << "No DisplayName tag found at" << info.name << ", using component Name instead.";
             QDomElement displayNameElement = doc.createElement(QLatin1String("DisplayName"));
             update.appendChild(displayNameElement).appendChild(doc.createTextNode(info.name));
         }
@@ -236,7 +234,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         const QDir dataDir = QString::fromLatin1("%1/%2/data").arg(metaDataDir, info.name);
         const QFileInfoList entries = dataDir.exists() ? dataDir.entryInfoList(filters | QDir::Dirs)
             : QDir(QString::fromLatin1("%1/%2").arg(metaDataDir, info.name)).entryInfoList(filters);
-        qDebug() << QString::fromLatin1("calculate size of directory: %1").arg(dataDir.absolutePath());
+        qDebug() << "calculate size of directory" << dataDir.absolutePath();
         foreach (const QFileInfo &fi, entries) {
             try {
                 if (fi.isDir()) {
@@ -264,7 +262,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     compressedComponentSize += size;
                 }
             } catch (const QInstaller::Error &error) {
-                qDebug() << error.message();
+                qDebug().noquote() << error.message();
             } catch(...) {
                 // ignore, that's just about the sizes - and size doesn't matter, you know?
             }
@@ -397,7 +395,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
                 continue;
             packagesToFilter->removeAll(it->fileName());
         }
-        qDebug() << QString::fromLatin1("Found subdirectory \"%1\".").arg(it->fileName());
+        qDebug() << "Found subdirectory" << it->fileName();
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
             if (ignoreInvalidPackages)
@@ -434,9 +432,9 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         const QDomElement packageElement = doc.firstChildElement(QLatin1String("Package"));
         const QString name = packageElement.firstChildElement(QLatin1String("Name")).text();
         if (!name.isEmpty() && name != it->fileName()) {
-            qWarning() << QString::fromLatin1("The <Name> tag in the file \"%1\" is ignored - the installer uses the "
-                "path element right before the 'meta' (\"%2\").").arg(fileInfo.absoluteFilePath(),
-                                                                    it->fileName());
+            qWarning().nospace() << "The <Name> tag in the file " << fileInfo.absoluteFilePath()
+                       << " is ignored - the installer uses the path element right before the 'meta'"
+                       << " (" << it->fileName() << ")";
         }
 
         QString releaseDate = packageElement.firstChildElement(QLatin1String("ReleaseDate")).text();
@@ -468,7 +466,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         info.directory = it->filePath();
         dict.push_back(info);
 
-        qDebug() << QString::fromLatin1("- it provides the package %1 - %2").arg(info.name, info.version);
+        qDebug() << "- it provides the package" << info.name << " - " << info.version;
     }
 
     if (!packagesToFilter->isEmpty() && packagesToFilter->at(0) != QString::fromLatin1(
@@ -578,8 +576,7 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                     if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
                         QFile tmp(absoluteEntryFilePath);
                         QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
-                        qDebug() << QString::fromLatin1("Copying archive from \"%1\" to \"%2\".").arg(tmp.fileName(),
-                            target);
+                        qDebug() << "Copying archive from" << tmp.fileName() << "to" << target;
                         if (!tmp.copy(target)) {
                             throw QInstaller::Error(QString::fromLatin1("Cannot copy file \"%1\" to \"%2\": %3")
                                 .arg(QDir::toNativeSeparators(tmp.fileName()), QDir::toNativeSeparators(target), tmp.errorString()));

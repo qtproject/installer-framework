@@ -183,14 +183,14 @@ bool SettingsOperation::undoOperation()
     if (cleanUp) {
         QFile settingsFile(path);
         if (!settingsFile.remove())
-            qWarning() << settingsFile.errorString();
+            qWarning().noquote() << settingsFile.errorString();
         if (!value(QLatin1String("createddir")).toString().isEmpty()) {
             KDUpdater::MkdirOperation mkDirOperation;
             mkDirOperation.setArguments(QStringList() << QFileInfo(path).absolutePath());
             mkDirOperation.setValue(QLatin1String("createddir"), value(QLatin1String("createddir")));
 
             if (!mkDirOperation.undoOperation()) {
-                qWarning() << mkDirOperation.errorString();
+                qWarning().noquote() << mkDirOperation.errorString();
             }
         }
     }

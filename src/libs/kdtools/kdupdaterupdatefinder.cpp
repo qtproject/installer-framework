@@ -421,23 +421,23 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if (match > 0) {
             // new package has higher version, use
-            qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Version: %2, Source: %3' "
-                "found a package with higher version 'Name: %4, Version: %5, Source: %6'")
-                .arg(name, existingPackage->data(QLatin1String("Version")).toString(),
-                    QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName(),
-                    name, newPackage.value(QLatin1String("Version")).toString(),
-                    QFileInfo(source.url.toLocalFile()).fileName());
+            qDebug().nospace() << "Remove Package 'Name: " << name << ", Version: "
+                               << existingPackage->data(QLatin1String("Version")).toString()
+                               << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
+                               << "' found a package with higher version 'Name: "
+                               << name << ", Version: " << newPackage.value(QLatin1String("Version")).toString()
+                               << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
             return Resolution::RemoveExisting;
         }
 
         if ((match == 0) && (source.priority > existingPackage->packageSource().priority)) {
             // new package version equals but priority is higher, use
-            qDebug() << QString::fromLatin1("Remove Package 'Name: %1, Priority: %2, Source: %3' "
-                "found a package with higher priority 'Name: %4, Priority: %5, Source: %6'")
-                .arg(name, QString::number(existingPackage->packageSource().priority),
-                    QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName(),
-                    name, QString::number(source.priority),
-                    QFileInfo(source.url.toLocalFile()).fileName());
+            qDebug().nospace() << "Remove Package 'Name: " << name << ", Priority: "
+                               << existingPackage->packageSource().priority
+                               << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
+                               << "' found a package with higher priority 'Name: "
+                               << name << ", Priority: " << source.priority
+                               << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
             return Resolution::RemoveExisting;
         }
         return Resolution::KeepExisting; // otherwise keep existing
