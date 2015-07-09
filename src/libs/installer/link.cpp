@@ -178,7 +178,7 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     if (!::DeviceIoControl(dirHandle.handle(), FSCTL_SET_REPARSE_POINT, reparseStructData,
         reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, 0, 0,
         &bytesReturned, 0)) {
-            qWarning() << "Cannot set the reparse point for" << linkPath "to" << targetPath
+            qWarning() << "Cannot set the reparse point for" << linkPath << "to" << targetPath
                        << ":" << QInstaller::windowsErrorString(GetLastError());
     }
     return Link(linkPath);
