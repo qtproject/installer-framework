@@ -46,9 +46,10 @@ public:
     explicit PackageManagerCoreData(const QHash<QString, QString> &variables);
 
     void clear();
+    void setDynamicPredefinedVariables();
 
     Settings &settings() const;
-    QList<QString> keys() const;
+    QStringList keys() const;
 
     bool contains(const QString &key) const;
     bool setValue(const QString &key, const QString &normalizedValue);

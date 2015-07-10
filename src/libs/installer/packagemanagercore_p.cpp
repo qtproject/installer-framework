@@ -554,6 +554,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 #endif
     }
     processFilesForDelayedDeletion();
+    m_data.setDynamicPredefinedVariables();
 
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
@@ -733,15 +734,20 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     // write current state (variables) to the maintenance tool ini file
     const QString iniPath = targetDir() + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile();
 
-    QVariantHash variables;
+    QVariantHash variables; // Do not change to QVariantMap! Breaks existing .ini files,
+    // cause the variant types do not match while restoring the variables from the file.
     QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
     foreach (const QString &key, m_data.keys()) {
-        if (key != scRunProgramDescription && key != scRunProgram && key != scRunProgramArguments)
-            variables.insert(key, m_data.value(key));
+        if (key == scRunProgramDescription || key == scRunProgram || key == scRunProgramArguments)
+            continue;
+        QVariant value = m_data.value(key);
+        if (value.canConvert(QVariant::String))
+            value = replacePath(value.toString(), targetDir(), QLatin1String(scRelocatable));
+        variables.insert(key, value);
     }
     cfg.setValue(QLatin1String("Variables"), variables);
 
-    QVariantList repos;
+    QVariantList repos; // Do not change either!
     foreach (const Repository &repo, m_data.settings().defaultRepositories())
         repos.append(QVariant().fromValue(repo));
     cfg.setValue(QLatin1String("DefaultRepositories"), repos);
@@ -796,12 +802,15 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
 {
     QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile(),
         QSettingsWrapper::IniFormat);
-    const QVariantHash vars = cfg.value(QLatin1String("Variables")).toHash();
-    for (QHash<QString, QVariant>::ConstIterator it = vars.constBegin(); it != vars.constEnd(); ++it)
-        m_data.setValue(it.key(), it.value().toString());
-
+    const QVariantHash v = cfg.value(QLatin1String("Variables")).toHash(); // Do not change to
+    // QVariantMap! Breaks reading from existing .ini files, cause the variant types do not match.
+    for (QVariantHash::const_iterator it = v.constBegin(); it != v.constEnd(); ++it) {
+        m_data.setValue(it.key(), replacePath(it.value().toString(), QLatin1String(scRelocatable),
+            targetDir));
+    }
     QSet<Repository> repos;
-    const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories")).toList();
+    const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories"))
+        .toList(); // Do not change either!
     foreach (const QVariant &variant, variants)
         repos.insert(variant.value<Repository>());
     if (!repos.isEmpty())

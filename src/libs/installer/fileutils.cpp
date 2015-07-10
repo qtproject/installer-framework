@@ -585,3 +585,19 @@ bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 #endif
     return false;
 }
+
+/*!
+    Replaces the path \a before with the path \a after at the beginning of \a path and returns
+    the replaced path. If \a before cannot be found in \a path, the original value is returned.
+*/
+QString QInstaller::replacePath(const QString &path, const QString &before, const QString &after)
+{
+    if (path.isEmpty() || before.isEmpty())
+        return path;
+
+    QString pathToPatch = QDir::cleanPath(path);
+    const QString pathToReplace = QDir::cleanPath(before);
+    if (pathToPatch.startsWith(pathToReplace))
+        return QDir::cleanPath(after) + pathToPatch.mid(pathToReplace.size());
+    return path;
+}

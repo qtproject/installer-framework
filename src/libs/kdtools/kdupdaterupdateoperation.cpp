@@ -34,6 +34,8 @@
 
 #include "kdupdaterupdateoperation.h"
 
+#include "constants.h"
+#include "fileutils.h"
 #include "packagemanagercore.h"
 
 #include <QDataStream>
@@ -401,10 +403,13 @@ QDomDocument UpdateOperation::toXml() const
     QDomDocument doc;
     QDomElement root = doc.createElement(QLatin1String("operation"));
     doc.appendChild(root);
+
     QDomElement args = doc.createElement(QLatin1String("arguments"));
+    const QString target = m_core ? m_core->value(QInstaller::scTargetDir) : QString();
     Q_FOREACH (const QString &s, arguments()) {
         QDomElement arg = doc.createElement(QLatin1String("argument"));
-        arg.appendChild(doc.createTextNode(s));
+        arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+            QLatin1String(QInstaller::scRelocatable))));
         args.appendChild(arg);
     }
     root.appendChild(args);
@@ -413,22 +418,31 @@ QDomDocument UpdateOperation::toXml() const
 
     // append all values set with setValue
     QDomElement values = doc.createElement(QLatin1String("values"));
-    for (QVariantMap::const_iterator it = m_values.begin(); it != m_values.end(); ++it) {
+    for (QVariantMap::const_iterator it = m_values.constBegin(); it != m_values.constEnd(); ++it) {
         // the installer can't be put into XML, ignore
         if (it.key() == QLatin1String("installer"))
             continue;
 
         QDomElement value = doc.createElement(QLatin1String("value"));
-        const QVariant& variant = it.value();
+        QVariant variant = it.value();
         value.setAttribute(QLatin1String("name"), it.key());
-        value.setAttribute(QLatin1String("type"), QLatin1String( QVariant::typeToName( variant.type())));
+        value.setAttribute(QLatin1String("type"), QLatin1String(variant.typeName()));
 
         if (variant.type() != QVariant::List && variant.type() != QVariant::StringList
             && variant.canConvert(QVariant::String)) {
-            // it can convert to string? great!
-            value.appendChild( doc.createTextNode(variant.toString()));
+                // it can convert to string? great!
+                value.appendChild(doc.createTextNode(QInstaller::replacePath(variant.toString(),
+                    target, QLatin1String(QInstaller::scRelocatable))));
         } else {
             // no? then we have to go the hard way...
+            if (variant.type() == QVariant::StringList) {
+                QStringList list = variant.toStringList();
+                for (int i = 0; i < list.count(); ++i) {
+                    list[i] = QInstaller::replacePath(list.at(i), target,
+                        QLatin1String(QInstaller::scRelocatable));
+                }
+                variant = QVariant::fromValue(list);
+            }
             QByteArray data;
             QDataStream stream(&data, QIODevice::WriteOnly);
             stream << variant;
@@ -446,14 +460,19 @@ QDomDocument UpdateOperation::toXml() const
 */
 bool UpdateOperation::fromXml(const QDomDocument &doc)
 {
+    QString target = QCoreApplication::applicationDirPath();
+    QInstaller::isInBundle(target, &target); // Does not change target on non OSX platforms.
+
     QStringList args;
     const QDomElement root = doc.documentElement();
     const QDomElement argsElem = root.firstChildElement(QLatin1String("arguments"));
     Q_ASSERT(! argsElem.isNull());
     for (QDomNode n = argsElem.firstChild(); ! n.isNull(); n = n.nextSibling()) {
         const QDomElement e = n.toElement();
-        if (!e.isNull() && e.tagName() == QLatin1String("argument"))
-            args << e.text();
+        if (!e.isNull() && e.tagName() == QLatin1String("argument")) {
+            args << QInstaller::replacePath(e.text(), QLatin1String(QInstaller::scRelocatable),
+                target);
+        }
     }
     setArguments(args);
 
@@ -473,6 +492,14 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
         if (t == QVariant::List || t == QVariant::StringList || !var.convert(t)) {
             QDataStream stream(QByteArray::fromBase64( value.toLatin1()));
             stream >> var;
+            if (t == QVariant::StringList) {
+                QStringList list = var.toStringList();
+                for (int i = 0; i < list.count(); ++i) {
+                    list[i] = QInstaller::replacePath(list.at(i),
+                        QLatin1String(QInstaller::scRelocatable), target);
+                }
+                var = QVariant::fromValue(list);
+            }
         }
 
         m_values[name] = var;
