@@ -337,20 +337,30 @@ void SettingsDialog::testRepository()
         testJob.waitForFinished();
         current->setRepository(testJob.repository());
 
-        if (testJob.error() > KDJob::NoError) {
-            QMessageBox msgBox(this);
-            msgBox.setIcon(QMessageBox::Question);
-            msgBox.setWindowModality(Qt::WindowModal);
-            msgBox.setDetailedText(testJob.errorString());
-            msgBox.setText(tr("There was an error testing this repository."));
-            msgBox.setInformativeText(tr("Do you want to disable the tested repository?"));
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Question);
+        msgBox.setWindowModality(Qt::WindowModal);
+        msgBox.setDetailedText(testJob.errorString());
 
-            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-            msgBox.setDefaultButton(QMessageBox::Yes);
+        const bool isError = (testJob.error() > KDJob::NoError);
+        const bool isEnabled = current->data(1, Qt::CheckStateRole).toBool();
 
-            if (msgBox.exec() == QMessageBox::Yes)
-                current->setData(1, Qt::CheckStateRole, Qt::Unchecked);
+        msgBox.setText(isError
+            ? tr("An error occurred while testing this repository.")
+            : tr("The repository was tested successfully."));
+
+        const bool showQuestion = (isError == isEnabled);
+        msgBox.setStandardButtons(showQuestion ? QMessageBox::Yes | QMessageBox::No
+            : QMessageBox::Close);
+        msgBox.setDefaultButton(showQuestion ? QMessageBox::Yes : QMessageBox::Close);
+        if (showQuestion) {
+            msgBox.setInformativeText(isEnabled
+                ? tr("Do you want to disable the repository?")
+                : tr("Do you want to enable the repository?")
+            );
         }
+        if (msgBox.exec() == QMessageBox::Yes)
+            current->setData(1, Qt::CheckStateRole, (!isEnabled) ? Qt::Checked : Qt::Unchecked);
 
         m_ui->tabWidget->setEnabled(true);
         m_ui->buttonBox->setEnabled(true);
