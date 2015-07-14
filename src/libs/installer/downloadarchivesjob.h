@@ -35,7 +35,7 @@
 #ifndef DOWNLOADARCHIVESJOB_H
 #define DOWNLOADARCHIVESJOB_H
 
-#include <kdjob.h>
+#include "job.h"
 
 #include <QtCore/QPair>
 

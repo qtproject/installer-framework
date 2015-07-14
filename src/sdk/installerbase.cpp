@@ -42,7 +42,7 @@
 #include <copydirectoryoperation.h>
 #include <errors.h>
 #include <init.h>
-#include <kdupdaterupdateoperations.h>
+#include <updateoperations.h>
 #include <messageboxhandler.h>
 #include <packagemanagercore.h>
 #include <packagemanagerproxyfactory.h>
@@ -53,8 +53,8 @@
 #include <utils.h>
 #include <globals.h>
 
-#include <kdrunoncechecker.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include <runoncechecker.h>
+#include <filedownloaderfactory.h>
 
 #include <QDirIterator>
 #include <QTemporaryFile>

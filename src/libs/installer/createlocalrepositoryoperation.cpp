@@ -45,7 +45,7 @@
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
 
-#include "kdupdaterupdateoperations.h"
+#include "updateoperations.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>

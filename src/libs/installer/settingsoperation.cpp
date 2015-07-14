@@ -33,7 +33,7 @@
 **************************************************************************/
 #include "settingsoperation.h"
 #include "packagemanagercore.h"
-#include "kdupdaterupdateoperations.h"
+#include "updateoperations.h"
 #include "qsettingswrapper.h"
 
 #include <QDir>

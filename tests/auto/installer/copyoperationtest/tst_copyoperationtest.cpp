@@ -33,7 +33,7 @@
 **************************************************************************/
 
 #include <init.h>
-#include <kdupdaterupdateoperations.h>
+#include <updateoperations.h>
 #include <utils.h>
 
 #include <QDir>

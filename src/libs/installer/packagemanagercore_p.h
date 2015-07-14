@@ -42,8 +42,8 @@
 #include "packagesource.h"
 #include "qinstallerglobal.h"
 
-#include "kdsysinfo.h"
-#include "kdupdaterupdatefinder.h"
+#include "sysinfo.h"
+#include "updatefinder.h"
 
 #include <QObject>
 

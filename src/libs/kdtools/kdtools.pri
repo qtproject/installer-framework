@@ -5,49 +5,54 @@ DEFINES += BUILD_SHARED_KDTOOLS
 FORMS += $$PWD/authenticationdialog.ui
 
 HEADERS += $$PWD/kdtoolsglobal.h \
-    $$PWD/kdjob.h \
-    $$PWD/kdgenericfactory.h \
-    $$PWD/kdselfrestarter.h \
-    $$PWD/kdrunoncechecker.h \
-    $$PWD/kdlockfile.h \
-    $$PWD/kdsysinfo.h
+    $$PWD/job.h \
+    $$PWD/genericfactory.h \
+    $$PWD/selfrestarter.h \
+    $$PWD/runoncechecker.h \
+    $$PWD/lockfile.h \
+    $$PWD/sysinfo.h
 
-SOURCES += $$PWD/kdjob.cpp \
-    $$PWD/kdselfrestarter.cpp \
-    $$PWD/kdrunoncechecker.cpp \
-    $$PWD/kdlockfile.cpp \
-    $$PWD/kdsysinfo.cpp
+SOURCES += $$PWD/job.cpp \
+    $$PWD/selfrestarter.cpp \
+    $$PWD/runoncechecker.cpp \
+    $$PWD/lockfile.cpp \
+    $$PWD/sysinfo.cpp
 
 
-HEADERS += $$PWD/kdupdater.h \
-    $$PWD/kdupdaterfiledownloader.h \
-    $$PWD/kdupdaterfiledownloader_p.h \
-    $$PWD/kdupdaterfiledownloaderfactory.h \
+HEADERS += $$PWD/updater.h \
+    $$PWD/filedownloader.h \
+    $$PWD/filedownloader_p.h \
+    $$PWD/filedownloaderfactory.h \
     $$PWD/localpackagehub.h \
-    $$PWD/kdupdaterupdate.h \
-    $$PWD/kdupdaterupdateoperation.h \
-    $$PWD/kdupdaterupdateoperationfactory.h \
-    $$PWD/kdupdaterupdateoperations.h \
-    $$PWD/kdupdatertask.h \
-    $$PWD/kdupdaterupdatefinder.h \
-    $$PWD/kdupdaterupdatesinfo_p.h \
+    $$PWD/update.h \
+    $$PWD/updateoperation.h \
+    $$PWD/updateoperationfactory.h \
+    $$PWD/updateoperations.h \
+    $$PWD/task.h \
+    $$PWD/updatefinder.h \
+    $$PWD/updatesinfo_p.h \
     $$PWD/environment.h \
-    $$PWD/kdupdaterupdatesinfodata_p.h
+    $$PWD/updatesinfodata_p.h
 
-SOURCES += $$PWD/kdupdaterfiledownloader.cpp \
-    $$PWD/kdupdaterfiledownloaderfactory.cpp \
+SOURCES += $$PWD/filedownloader.cpp \
+    $$PWD/filedownloaderfactory.cpp \
     $$PWD/localpackagehub.cpp \
-    $$PWD/kdupdaterupdate.cpp \
-    $$PWD/kdupdaterupdateoperation.cpp \
-    $$PWD/kdupdaterupdateoperationfactory.cpp \
-    $$PWD/kdupdaterupdateoperations.cpp \
-    $$PWD/kdupdatertask.cpp \
-    $$PWD/kdupdaterupdatefinder.cpp \
-    $$PWD/kdupdaterupdatesinfo.cpp \
+    $$PWD/update.cpp \
+    $$PWD/updateoperation.cpp \
+    $$PWD/updateoperationfactory.cpp \
+    $$PWD/updateoperations.cpp \
+    $$PWD/task.cpp \
+    $$PWD/updatefinder.cpp \
+    $$PWD/updatesinfo.cpp \
     $$PWD/environment.cpp
 
-unix:SOURCES += $$PWD/kdlockfile_unix.cpp
-win32:SOURCES += $$PWD/kdlockfile_win.cpp
-win32:SOURCES += $$PWD/kdsysinfo_win.cpp
-macx:SOURCES += $$PWD/kdsysinfo_mac.cpp
-unix:!macx:SOURCES += $$PWD/kdsysinfo_x11.cpp
+win32 {
+    SOURCES += $$PWD/lockfile_win.cpp \
+        $$PWD/kdsysinfo_win.cpp
+}
+
+unix {
+    SOURCES += $$PWD/lockfile_unix.cpp
+    osx: SOURCES += $$PWD/sysinfo_mac.cpp
+    else: SOURCES += $$PWD/sysinfo_x11.cpp
+}

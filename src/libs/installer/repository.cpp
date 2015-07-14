@@ -33,7 +33,7 @@
 **************************************************************************/
 
 #include "repository.h"
-#include "kdupdaterfiledownloaderfactory.h"
+#include "filedownloaderfactory.h"
 
 #include <QDataStream>
 #include <QFileInfo>

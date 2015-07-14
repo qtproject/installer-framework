@@ -35,7 +35,7 @@
 #ifndef PACKAGEMANAGERPAGEFACTORY_H
 #define PACKAGEMANAGERPAGEFACTORY_H
 
-#include "kdgenericfactory.h"
+#include "genericfactory.h"
 #include "qinstallerglobal.h"
 
 namespace QInstaller {

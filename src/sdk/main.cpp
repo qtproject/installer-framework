@@ -40,7 +40,7 @@
 #include "updatechecker.h"
 
 #include <errors.h>
-#include <kdselfrestarter.h>
+#include <selfrestarter.h>
 #include <remoteserver.h>
 #include <utils.h>
 

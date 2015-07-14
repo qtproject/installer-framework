@@ -32,8 +32,8 @@
 **
 **************************************************************************/
 
-#include <kdupdaterfiledownloader.h>
-#include <kdupdaterfiledownloaderfactory.h>
+#include <filedownloader.h>
+#include <filedownloaderfactory.h>
 
 #include <fileutils.h>
 

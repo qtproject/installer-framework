@@ -37,7 +37,7 @@
 
 #include "downloadfiletask.h"
 #include "fileutils.h"
-#include "kdjob.h"
+#include "job.h"
 #include "repository.h"
 
 #include <QFutureWatcher>

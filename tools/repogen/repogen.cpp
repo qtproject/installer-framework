@@ -36,7 +36,7 @@
 #include <errors.h>
 #include <fileutils.h>
 #include <init.h>
-#include <kdupdater.h>
+#include <updater.h>
 #include <settings.h>
 #include <utils.h>
 #include <lib7z_facade.h>

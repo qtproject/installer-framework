@@ -35,7 +35,7 @@
 #include "operationrunner.h"
 
 #include <errors.h>
-#include <kdupdaterupdateoperationfactory.h>
+#include <updateoperationfactory.h>
 #include <packagemanagercore.h>
 
 #include <QMetaObject>

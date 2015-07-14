@@ -46,7 +46,7 @@
 #include "scriptengine.h"
 #include "productkeycheck.h"
 
-#include "kdsysinfo.h"
+#include "sysinfo.h"
 
 #include <QApplication>
 

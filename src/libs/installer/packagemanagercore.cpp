@@ -65,8 +65,8 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 
-#include "kdsysinfo.h"
-#include "kdupdaterupdateoperationfactory.h"
+#include "sysinfo.h"
+#include "updateoperationfactory.h"
 
 #ifdef Q_OS_WIN
 #   include "qt_windows.h"

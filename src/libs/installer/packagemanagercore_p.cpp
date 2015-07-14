@@ -55,9 +55,9 @@
 #include "componentchecker.h"
 #include "globals.h"
 
-#include "kdselfrestarter.h"
-#include "kdupdaterfiledownloaderfactory.h"
-#include "kdupdaterupdateoperationfactory.h"
+#include "selfrestarter.h"
+#include "filedownloaderfactory.h"
+#include "updateoperationfactory.h"
 
 #include <productkeycheck.h>
 

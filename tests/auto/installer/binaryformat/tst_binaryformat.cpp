@@ -36,7 +36,7 @@
 #include <binaryformat.h>
 #include <errors.h>
 #include <fileio.h>
-#include <kdupdaterupdateoperation.h>
+#include <updateoperation.h>
 
 #include <QTest>
 #include <QTemporaryFile>

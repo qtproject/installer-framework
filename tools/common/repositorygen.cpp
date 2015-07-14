@@ -45,7 +45,7 @@
 #include <utils.h>
 #include <scriptengine.h>
 
-#include <kdupdater.h>
+#include <updater.h>
 
 #include <QtCore/QDirIterator>
 

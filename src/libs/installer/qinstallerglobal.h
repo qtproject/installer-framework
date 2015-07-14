@@ -37,8 +37,8 @@
 
 #include <installer_global.h>
 
-#include <kdupdaterupdate.h>
-#include <kdupdaterupdateoperation.h>
+#include "update.h"
+#include "updateoperation.h"
 #include "localpackagehub.h"
 
 namespace QInstaller {

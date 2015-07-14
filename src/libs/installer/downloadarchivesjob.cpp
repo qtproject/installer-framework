@@ -39,8 +39,8 @@
 #include "packagemanagercore.h"
 #include "utils.h"
 
-#include "kdupdaterfiledownloader.h"
-#include "kdupdaterfiledownloaderfactory.h"
+#include "filedownloader.h"
+#include "filedownloaderfactory.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>

@@ -43,7 +43,7 @@
 #include "remoteclient.h"
 #include "settings.h"
 
-#include <kdupdaterupdateoperationfactory.h>
+#include "updateoperationfactory.h"
 
 #include <productkeycheck.h>
 

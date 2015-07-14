@@ -32,7 +32,7 @@
 **
 ****************************************************************************/
 
-#include "kdsysinfo.h"
+#include "sysinfo.h"
 
 #include <QLibrary>
 #include <QStringList>

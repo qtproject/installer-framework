@@ -35,7 +35,7 @@
 #define TESTREPOSITORY_H
 
 #include "downloadfiletask.h"
-#include "kdjob.h"
+#include "job.h"
 #include "repository.h"
 
 #include <QFutureWatcher>
@@ -44,7 +44,6 @@
 namespace QInstaller {
 
 class PackageManagerCore;
-class Repository;
 
 class INSTALLER_EXPORT TestRepository : public KDJob
 {

@@ -38,7 +38,7 @@
 #include <component.h>
 #include <errors.h>
 #include <init.h>
-#include <kdrunoncechecker.h>
+#include <runoncechecker.h>
 #include <packagemanagercore.h>
 #include <productkeycheck.h>
 

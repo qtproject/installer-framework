@@ -57,8 +57,8 @@
 #include "lib7z_facade.h"
 #include "utils.h"
 
-#include "kdupdaterupdateoperationfactory.h"
-#include "kdupdaterfiledownloaderfactory.h"
+#include "updateoperationfactory.h"
+#include "filedownloaderfactory.h"
 
 #include <QtPlugin>
 #include <QElapsedTimer>

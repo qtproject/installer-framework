@@ -36,7 +36,7 @@
 #ifndef KD_UPDATER_PACKAGES_INFO_H
 #define KD_UPDATER_PACKAGES_INFO_H
 
-#include "kdupdater.h"
+#include "updater.h"
 
 #include <QCoreApplication>
 #include <QDate>
