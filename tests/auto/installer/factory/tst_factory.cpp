@@ -32,7 +32,7 @@
 **
 **************************************************************************/
 
-#include <kdgenericfactory.h>
+#include <genericfactory.h>
 
 #include <QDebug>
 #include <QTest>
