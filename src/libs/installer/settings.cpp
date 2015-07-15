@@ -258,7 +258,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories << scTranslations << QLatin1String(scControlScript)
+                << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
                 << scCreateLocalRepository << scInstallActionColumnVisible;
 
     Settings s;

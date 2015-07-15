@@ -165,7 +165,7 @@ void DownloadArchivesJob::fetchNextArchive()
     if (m_downloader != 0)
         m_downloader->deleteLater();
 
-    m_downloader = setupDownloader(QString(), m_core->value(QLatin1String("UrlQueryString")));
+    m_downloader = setupDownloader(QString(), m_core->value(scUrlQueryString));
     if (!m_downloader) {
         m_archivesToDownload.removeFirst();
         QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);

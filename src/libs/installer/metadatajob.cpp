@@ -88,8 +88,8 @@ void MetadataJob::doStart()
                 authenticator.setPassword(repo.password());
 
                 QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
-                if (!m_core->value(QLatin1String("UrlQueryString")).isEmpty())
-                    url += m_core->value(QLatin1String("UrlQueryString")) + QLatin1Char('&');
+                if (!m_core->value(scUrlQueryString).isEmpty())
+                    url += m_core->value(scUrlQueryString) + QLatin1Char('&');
 
                 // also append a random string to avoid proxy caches
                 FileTaskItem item(url.append(QString::number(qrand() * qrand())));
