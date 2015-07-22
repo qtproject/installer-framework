@@ -75,7 +75,19 @@ QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQ
                 proxyUrl.userName(), proxyUrl.password());
         }
 #endif
-        return QNetworkProxyFactory::systemProxyForQuery(query);
+        QList<QNetworkProxy> systemProxies = systemProxyForQuery(query);
+
+        auto proxyIter = systemProxies.begin();
+        for (; proxyIter != systemProxies.end(); ++proxyIter) {
+            QNetworkProxy &proxy = *proxyIter;
+            auto p = std::find_if(m_proxyCredentials.constBegin(), m_proxyCredentials.constEnd(),
+                                  FindProxyCredential(proxy.hostName(), proxy.port()));
+            if (p != m_proxyCredentials.constEnd()) {
+                proxy.setUser(p->user);
+                proxy.setPassword(p->password);
+            }
+        }
+        return systemProxies;
     }
 
     if ((settings.proxyType() == Settings::NoProxy))
