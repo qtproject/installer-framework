@@ -119,6 +119,30 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
 #endif
     m_variables.insert(QLatin1String("ApplicationsDir"), dir);
 
+    QString dirX86 = dir;
+    QString dirX64 = dir;
+#ifdef Q_OS_WIN
+    QSettingsWrapper current(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion")
+                          , QSettingsWrapper::NativeFormat);
+    BOOL onWow64Or64bit = TRUE;
+#ifndef Q_OS_WIN64
+    IsWow64Process(GetCurrentProcess(), &onWow64Or64bit);
+#endif
+    QString programfilesX86;
+    QString programfilesX64;
+    if (onWow64Or64bit == TRUE) {
+        programfilesX86 = current.value(QLatin1String("ProgramFilesDir (x86)"), QString()).toString();
+        programfilesX64 = current.value(QLatin1String("ProgramW6432Dir"), QString()).toString();
+    } else {
+        programfilesX86 = current.value(QLatin1String("ProgramFilesDir"), QString()).toString();
+        programfilesX64 = programfilesX86;
+    }
+    dirX86 = replaceWindowsEnvironmentVariables(programfilesX86);
+    dirX64 = replaceWindowsEnvironmentVariables(programfilesX64);
+#endif
+    m_variables.insert(QLatin1String("ApplicationsDirX86"), dirX86);
+    m_variables.insert(QLatin1String("ApplicationsDirX64"), dirX64);
+
 #ifdef Q_OS_WIN
     QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
         "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);

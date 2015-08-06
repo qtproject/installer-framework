@@ -266,6 +266,27 @@
 
                 For example, \c {C:\Program Files} on Windows,
                 \c {/opt} on Linux and \c {/Applications} on OS X.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
+        \row
+            \li ApplicationsDirX86
+            \li Applications Directory for 32 bit programs. This is useful on Windows,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {C:\Program Files (x86)} on Windows.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
+        \row
+            \li ApplicationsDirX64
+            \li Applications Directory for 64 bit programs. This is useful on Windows,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {C:\Program Files} on Windows.
+
+                See also the table that lists examples of \l {Applications-directory-on-Windows}
+                {applications directories on Windows}.
         \row
             \li InstallerDirPath
             \li The directory that contains the installer application executable.
@@ -297,4 +318,47 @@
         component.addOperation("CreateShortcut", "@TargetDir@/MyApp.exe", "@StartMenuDir@/MyApp.lnk");
     }
     \endcode
+
+
+    \target Applications-directory-on-Windows
+    For example, applications directory on Windows:
+    \table
+        \header
+            \li OS (Windows)
+            \li Qt Installer Framework
+            \li Variable
+            \li Example Path
+        \row
+            \li {1, 3} 32bit
+            \li {1, 3} 32bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+        \row
+            \li {1, 6} 64bit
+            \li {1, 3} 32bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+        \row
+            \li {1, 3} 64bit
+            \li ApplicationsDir
+            \li \c {C:\Program Files}
+        \row
+            \li ApplicationsDirX86
+            \li \c {C:\Program Files (x86)}
+        \row
+            \li ApplicationsDirX64
+            \li \c {C:\Program Files}
+    \endtable
 */
