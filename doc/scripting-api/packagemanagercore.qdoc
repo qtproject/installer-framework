@@ -35,9 +35,11 @@
 /*!
     \qmlmethod array installer::components()
 
-    Returns an array of all available components.
+    Returns an array of all components currently available.
+    If the repository metadata have not been fetched yet,
+    the array will be empty.
 
-    \sa component
+    \sa component, installer::finishAllComponentsReset(), installer::finishUpdaterComponentsReset()
 */
 
 /*!
