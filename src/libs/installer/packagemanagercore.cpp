@@ -524,7 +524,7 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 
     QSet<Component *> componentsToUninstall = d->uninstallerCalculator()->componentsToUninstall();
 
-    foreach (Component *component, components(ComponentType::Root | ComponentType::Descendants))
+    foreach (Component *component, components(ComponentType::All))
         component->setInstallAction(component->isInstalled()
                            ? ComponentModelHelper::KeepInstalled
                            : ComponentModelHelper::KeepUninstalled);
