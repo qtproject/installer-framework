@@ -135,8 +135,8 @@ public:
                     QCoreApplication::translate("RemoteClient", "Cannot get authorization."),
                     QCoreApplication::translate("RemoteClient", "Cannot get authorization that "
                         "is needed for continuing the installation.\n Either abort the "
-                        "installation or use the fallback solution by running\n\n%1\n\nas root "
-                        "and then clicking OK.").arg(fallback),
+                        "installation or use the fallback solution by running\n\n%1\n\nas a user "
+                        "with the appropriate rights and then clicking OK.").arg(fallback),
                     QMessageBox::Abort | QMessageBox::Ok, QMessageBox::Ok);
 
                 if (res == QMessageBox::Ok)
