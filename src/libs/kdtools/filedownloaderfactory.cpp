@@ -156,7 +156,7 @@ bool FileDownloaderFactory::isSupportedScheme(const QString &scheme)
 FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *parent) const
 {
     FileDownloader *downloader =
-        KDGenericFactory<FileDownloader, QString, QObject*>::create(scheme, parent);
+        GenericFactory<FileDownloader, QString, QObject*>::create(scheme, parent);
     if (downloader != 0) {
         downloader->setFollowRedirects(d->m_followRedirects);
         downloader->setIgnoreSslErrors(d->m_ignoreSslErrors);

@@ -131,14 +131,14 @@
     </message>
 </context>
 <context>
-    <name>KDJob</name>
+    <name>Job</name>
     <message>
         <source>Canceled</source>
         <translation>Abgebrochen</translation>
     </message>
 </context>
 <context>
-    <name>KDLockFile</name>
+    <name>LockFile</name>
     <message>
         <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>Konnte keine Sperrdatei %1 anlegen. Fehlermeldung: %2</translation>

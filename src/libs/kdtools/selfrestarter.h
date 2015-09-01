@@ -37,17 +37,17 @@
 
 #include "kdtoolsglobal.h"
 
-class KDTOOLS_EXPORT KDSelfRestarter
+class KDTOOLS_EXPORT SelfRestarter
 {
 public:
-    KDSelfRestarter(int argc, char *argv[]);
-    ~KDSelfRestarter();
+    SelfRestarter(int argc, char *argv[]);
+    ~SelfRestarter();
 
     static bool restartOnQuit();
     static void setRestartOnQuit(bool restart);
 
 private:
-    Q_DISABLE_COPY(KDSelfRestarter)
+    Q_DISABLE_COPY(SelfRestarter)
     class Private;
     Private *d;
 };

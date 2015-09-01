@@ -25,7 +25,7 @@
     </message>
 </context>
 <context>
-    <name>KDJob</name>
+    <name>Job</name>
     <message>
         <source>Canceled</source>
         <translation>キャンセルしました</translation>
@@ -2626,7 +2626,7 @@ as root and then clicking OK.</source>
     </message>
 </context>
 <context>
-    <name>KDLockFile</name>
+    <name>LockFile</name>
     <message>
         <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>ロックファイル &apos;%1&apos; を作成できませんでした: %2</translation>

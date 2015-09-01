@@ -201,7 +201,7 @@ int main(int argc, char *argv[])
         if (QInstaller::isVerbose())
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
 
-        const KDSelfRestarter restarter(argc, argv);
+        const SelfRestarter restarter(argc, argv);
         return InstallerBase(argc, argv).run();
 
     } catch (const QInstaller::Error &e) {

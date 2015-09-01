@@ -36,27 +36,31 @@
 #include "lockfile.h"
 #include "lockfile_p.h"
 
-KDLockFile::KDLockFile(const QString &name)
+namespace KDUpdater {
+
+LockFile::LockFile(const QString &name)
     : d(new Private(name))
 {
 }
 
-KDLockFile::~KDLockFile()
+LockFile::~LockFile()
 {
     delete d;
 }
 
-bool KDLockFile::lock()
+bool LockFile::lock()
 {
     return d->lock();
 }
 
-QString KDLockFile::errorString() const
+QString LockFile::errorString() const
 {
     return d->errorString;
 }
 
-bool KDLockFile::unlock()
+bool LockFile::unlock()
 {
     return d->unlock();
 }
+
+} // namespace KDUpdater

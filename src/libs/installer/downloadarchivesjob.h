@@ -52,7 +52,7 @@ namespace QInstaller {
 class MessageBoxHandler;
 class PackageManagerCore;
 
-class DownloadArchivesJob : public KDJob
+class DownloadArchivesJob : public Job
 {
     Q_OBJECT
 

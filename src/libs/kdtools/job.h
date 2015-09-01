@@ -39,7 +39,7 @@
 
 #include <QtCore/QObject>
 
-class KDTOOLS_EXPORT KDJob : public QObject
+class KDTOOLS_EXPORT Job : public QObject
 {
     Q_OBJECT
     class Private;
@@ -48,8 +48,8 @@ class KDTOOLS_EXPORT KDJob : public QObject
     Q_PROPERTY(bool autoDelete READ autoDelete WRITE setAutoDelete)
 
 public:
-    explicit KDJob(QObject *parent = 0);
-    ~KDJob();
+    explicit Job(QObject *parent = 0);
+    ~Job();
 
     enum Error {
         NoError = 0,
@@ -87,11 +87,11 @@ public Q_SLOTS:
     void cancel();
 
 Q_SIGNALS:
-    void started(KDJob *job);
-    void finished(KDJob *job);
+    void started(Job *job);
+    void finished(Job *job);
 
-    void infoMessage(KDJob *job, const QString &message);
-    void progress(KDJob *job, quint64 processed, quint64 total);
+    void infoMessage(Job *job, const QString &message);
+    void progress(Job *job, quint64 processed, quint64 total);
 
 protected:
     virtual void doStart() = 0;
@@ -116,6 +116,6 @@ private:
     Q_PRIVATE_SLOT(d, void delayedStart())
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(KDJob::Capabilities)
+Q_DECLARE_OPERATORS_FOR_FLAGS(Job::Capabilities)
 
 #endif // JOB_H

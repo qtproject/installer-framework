@@ -47,10 +47,10 @@
 
 /*!
     \inmodule kdupdater
-    \class KDGenericFactory
-    \brief The KDGenericFactory class implements a template-based generic factory.
+    \class GenericFactory
+    \brief The GenericFactory class implements a template-based generic factory.
 
-    KDGenericFactory is an implementation of the factory pattern. It can be used to produce
+    GenericFactory is an implementation of the factory pattern. It can be used to produce
     instances of different classes having a common superclass \c BASE. The user of the factory
     registers those producible classes in the factory by using the identifier \c IDENTIFIER. That
     identifier can then be used to produce as many instances of the registered product as the
@@ -63,10 +63,10 @@
 
     If a class derived from BASE does not contain a SIGNATURE matching the registered one for the
     constructor or the generator function, it is not possible to create instances of it using one
-    instance of KDGenericFactory subclass. In that case, more than one KDGenericFactory subclass
+    instance of GenericFactory subclass. In that case, more than one GenericFactory subclass
     and instance are needed.
 
-    It is possible to register a subclass of BASE inside an instance of KDGenericFactory subclass
+    It is possible to register a subclass of BASE inside an instance of GenericFactory subclass
     using the registerProduct() function. At least one of the following conditions needs to be met:
 
     \list
@@ -82,25 +82,25 @@
 */
 
 /*!
-    \fn KDGenericFactory::KDGenericFactory()
+    \fn GenericFactory::GenericFactory()
 
     Creates the generic factory.
 */
 
 /*!
-    \fn KDGenericFactory::~KDGenericFactory()
+    \fn GenericFactory::~GenericFactory()
 
     Destroys the generic factory.
 */
 
 /*!
-    \typedef KDGenericFactory::FactoryFunction
+    \typedef GenericFactory::FactoryFunction
 
     This typedef defines a factory function producing an object of type BASE.
 */
 
 /*!
-    \fn void KDGenericFactory::registerProduct(const IDENTIFIER &id)
+    \fn void GenericFactory::registerProduct(const IDENTIFIER &id)
 
     Registers a type DERIVED, identified by \a id in the factory. Any type with the same id gets
     unregistered.
@@ -108,20 +108,20 @@
 
 /*!
     \overload
-    \fn void KDGenericFactory::registerProduct(const IDENTIFIER &id, FactoryFunction func)
+    \fn void GenericFactory::registerProduct(const IDENTIFIER &id, FactoryFunction func)
 
     Registers a function \a func that can create the type DERIVED, identified by \a id in the
     factory. Any type with the same id gets unregistered.
 */
 
 /*!
-    \fn bool KDGenericFactory::containsProduct(const IDENTIFIER &id) const
+    \fn bool GenericFactory::containsProduct(const IDENTIFIER &id) const
 
     Returns \c true if the factory contains a type with the \a id; otherwise returns false.
 */
 
 /*!
-    \fn BASE *KDGenericFactory::create(const IDENTIFIER &id, ARGUMENTS... args) const
+    \fn BASE *GenericFactory::create(const IDENTIFIER &id, ARGUMENTS... args) const
 
     Creates and returns the type identified by \a id, but automatically upcasted to BASE. Ownership
     of the type is transferred to the caller.

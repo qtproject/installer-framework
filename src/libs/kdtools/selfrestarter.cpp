@@ -38,7 +38,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QProcess>
 
-class KDSelfRestarter::Private
+class SelfRestarter::Private
 {
 public:
     Private(int argc, char *argv[])
@@ -67,33 +67,33 @@ public:
     QStringList args;
     bool restartOnQuit;
     QString workingPath;
-    static KDSelfRestarter *instance;
+    static SelfRestarter *instance;
 };
 
-KDSelfRestarter *KDSelfRestarter::Private::instance = 0;
+SelfRestarter *SelfRestarter::Private::instance = 0;
 
-KDSelfRestarter::KDSelfRestarter(int argc, char *argv[])
+SelfRestarter::SelfRestarter(int argc, char *argv[])
     : d(new Private(argc, argv))
 {
-    Q_ASSERT_X(!Private::instance, Q_FUNC_INFO, "Cannot create more than one KDSelfRestarter instance");
+    Q_ASSERT_X(!Private::instance, Q_FUNC_INFO, "Cannot create more than one SelfRestarter instance");
     Private::instance = this;
 }
 
-KDSelfRestarter::~KDSelfRestarter()
+SelfRestarter::~SelfRestarter()
 {
-    Q_ASSERT_X(Private::instance == this, Q_FUNC_INFO, "Cannot create more than one KDSelfRestarter instance");
+    Q_ASSERT_X(Private::instance == this, Q_FUNC_INFO, "Cannot create more than one SelfRestarter instance");
     delete d;
     Private::instance = 0;
 }
 
-void KDSelfRestarter::setRestartOnQuit(bool restart)
+void SelfRestarter::setRestartOnQuit(bool restart)
 {
-    Q_ASSERT_X(Private::instance, Q_FUNC_INFO, "KDSelfRestarter instance must be created in main()");
+    Q_ASSERT_X(Private::instance, Q_FUNC_INFO, "SelfRestarter instance must be created in main()");
     if (Private::instance)
         Private::instance->d->restartOnQuit = restart;
 }
 
-bool KDSelfRestarter::restartOnQuit()
+bool SelfRestarter::restartOnQuit()
 {
     return Private::instance ? Private::instance->d->restartOnQuit : false;
 }

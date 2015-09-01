@@ -61,7 +61,7 @@ private:
     int m_amount;
 };
 
-class EggStore : public KDGenericFactory<Food, QString, int>
+class EggStore : public GenericFactory<Food, QString, int>
 {
 public:
     static EggStore &instance() {
@@ -120,7 +120,7 @@ private:
     QDate m_expireDate;
 };
 
-class FoodStore : public KDGenericFactory<Food, QString, int, QDate>
+class FoodStore : public GenericFactory<Food, QString, int, QDate>
 {
 public:
     static FoodStore &instance() {
@@ -148,7 +148,7 @@ private slots:
         private:
             QDate m_expireDate;
         };
-        class EggStore : public KDGenericFactory<Food, QString, int>
+        class EggStore : public GenericFactory<Food, QString, int>
         {
         public:
             static EggStore &instance() {

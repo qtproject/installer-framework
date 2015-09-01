@@ -47,7 +47,7 @@ SelfRestartOperation::SelfRestartOperation(PackageManagerCore *core)
 
 void SelfRestartOperation::backup()
 {
-    setValue(QLatin1String("PreviousSelfRestart"), KDSelfRestarter::restartOnQuit());
+    setValue(QLatin1String("PreviousSelfRestart"), SelfRestarter::restartOnQuit());
 }
 
 bool SelfRestartOperation::performOperation()
@@ -70,13 +70,13 @@ bool SelfRestartOperation::performOperation()
         setErrorString(tr("Self Restart: Invalid arguments"));
         return false;
     }
-    KDSelfRestarter::setRestartOnQuit(true);
-    return KDSelfRestarter::restartOnQuit();
+    SelfRestarter::setRestartOnQuit(true);
+    return SelfRestarter::restartOnQuit();
 }
 
 bool SelfRestartOperation::undoOperation()
 {
-    KDSelfRestarter::setRestartOnQuit(value(QLatin1String("PreviousSelfRestart")).toBool());
+    SelfRestarter::setRestartOnQuit(value(QLatin1String("PreviousSelfRestart")).toBool());
     return true;
 }
 

@@ -43,7 +43,7 @@
 namespace QInstaller {
 
 TestRepository::TestRepository(PackageManagerCore *parent)
-    : KDJob(parent)
+    : Job(parent)
     , m_core(parent)
 {
     setAutoDelete(false);
@@ -73,7 +73,7 @@ void TestRepository::doStart()
 {
     reset();
     if (!m_core) {
-        emitFinishedWithError(KDJob::Canceled, tr("Missing package manager core engine."));
+        emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
     }
 
@@ -101,19 +101,19 @@ void TestRepository::doStart()
 void TestRepository::doCancel()
 {
     reset();
-    emitFinishedWithError(KDJob::Canceled, tr("Download canceled."));
+    emitFinishedWithError(Job::Canceled, tr("Download canceled."));
 }
 
 void TestRepository::onTimeout()
 {
     reset();
-    emitFinishedWithError(KDJob::Canceled, tr("Timeout while testing repository \"%1\".")
+    emitFinishedWithError(Job::Canceled, tr("Timeout while testing repository \"%1\".")
         .arg(m_repository.displayname()));
 }
 
 void TestRepository::downloadCompleted()
 {
-    if (error() != KDJob::NoError)
+    if (error() != Job::NoError)
         return;
 
     try {
@@ -128,7 +128,7 @@ void TestRepository::downloadCompleted()
                 emitFinishedWithError(QInstaller::InvalidUpdatesXml,
                     tr("Cannot parse Updates.xml: %1").arg(errorMsg));
             } else {
-                emitFinishedWithError(KDJob::NoError, QString(/*Success*/)); // OPK
+                emitFinishedWithError(Job::NoError, QString(/*Success*/)); // OPK
             }
         } else {
             emitFinishedWithError(QInstaller::DownloadError,

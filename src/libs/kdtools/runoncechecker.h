@@ -40,9 +40,9 @@
 
 #include <QString>
 
-class KDTOOLS_EXPORT KDRunOnceChecker
+class KDTOOLS_EXPORT RunOnceChecker
 {
-    Q_DISABLE_COPY(KDRunOnceChecker)
+    Q_DISABLE_COPY(RunOnceChecker)
 
 public:
     enum struct ConditionFlag {
@@ -51,13 +51,13 @@ public:
     };
     Q_DECLARE_FLAGS(ConditionFlags, ConditionFlag)
 
-    explicit KDRunOnceChecker(const QString &filename = QString());
-    ~KDRunOnceChecker();
+    explicit RunOnceChecker(const QString &filename = QString());
+    ~RunOnceChecker();
 
-    bool isRunning(KDRunOnceChecker::ConditionFlags flags);
+    bool isRunning(RunOnceChecker::ConditionFlags flags);
 
 private:
-    KDLockFile m_lockfile;
+    KDUpdater::LockFile m_lockfile;
 };
 
 #endif // RUNONCECHECKER_H

@@ -45,7 +45,7 @@ namespace QInstaller {
 
 class PackageManagerCore;
 
-class INSTALLER_EXPORT TestRepository : public KDJob
+class INSTALLER_EXPORT TestRepository : public Job
 {
     Q_OBJECT
     Q_DISABLE_COPY(TestRepository)

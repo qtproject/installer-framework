@@ -47,7 +47,7 @@ namespace KDUpdater {
 
 class UpdateOperation;
 
-class KDTOOLS_EXPORT UpdateOperationFactory : public KDGenericFactory<UpdateOperation, QString,
+class KDTOOLS_EXPORT UpdateOperationFactory : public GenericFactory<UpdateOperation, QString,
                                                                    QInstaller::PackageManagerCore*>
 {
     Q_DISABLE_COPY(UpdateOperationFactory)

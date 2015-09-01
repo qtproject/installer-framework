@@ -58,7 +58,7 @@ public:
     virtual FileDownloaderProxyFactory *clone() const = 0;
 };
 
-class KDTOOLS_EXPORT FileDownloaderFactory : public KDGenericFactory<FileDownloader, QString,
+class KDTOOLS_EXPORT FileDownloaderFactory : public GenericFactory<FileDownloader, QString,
                                                                      QObject*>
 {
     Q_DISABLE_COPY(FileDownloaderFactory)

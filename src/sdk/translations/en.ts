@@ -67,7 +67,7 @@
     </message>
 </context>
 <context>
-    <name>KDJob</name>
+    <name>Job</name>
     <message>
         <source>Canceled</source>
         <translation type="unfinished"></translation>

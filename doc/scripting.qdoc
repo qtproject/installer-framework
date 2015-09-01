@@ -138,7 +138,7 @@
     methods that you must implement:
 
   \code
-  #include <KDUpdater/UpdateOperation>
+  #include <UpdateOperation>
 
   class CustomOperation : public KDUpdater::UpdateOperation
   {
@@ -205,7 +205,7 @@
 
     Finally, you need to register your custom operation class, as follows:
   \code
-  #include <KDupdater/UpdateOperationFactory>
+  #include <UpdateOperationFactory>
 
   KDUpdater::UpdateOperationFactory::instance().registerUpdateOperation< CustomOperation >( "CustomOperation" );
   \endcode

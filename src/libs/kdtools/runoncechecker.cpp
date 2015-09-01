@@ -47,12 +47,12 @@
 
 using namespace KDUpdater;
 
-KDRunOnceChecker::KDRunOnceChecker(const QString &filename)
+RunOnceChecker::RunOnceChecker(const QString &filename)
     : m_lockfile(filename)
 {
 }
 
-KDRunOnceChecker::~KDRunOnceChecker()
+RunOnceChecker::~RunOnceChecker()
 {
     if (!m_lockfile.unlock())
         qWarning().noquote() << m_lockfile.errorString();
@@ -91,7 +91,7 @@ private:
     QString m_name;
 };
 
-bool KDRunOnceChecker::isRunning(KDRunOnceChecker::ConditionFlags flags)
+bool RunOnceChecker::isRunning(RunOnceChecker::ConditionFlags flags)
 {
     if (flags.testFlag(ConditionFlag::ProcessList)) {
         const QList<ProcessInfo> allProcesses = runningProcesses();

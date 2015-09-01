@@ -177,7 +177,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #else
         QFile::remove(newName);
         QFile::rename(oldName, newName);
-        KDSelfRestarter::setRestartOnQuit(restart);
+        SelfRestarter::setRestartOnQuit(restart);
 #endif
 }
 
@@ -582,8 +582,8 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
     m_metadataJob.setPackageManagerCore(m_core);
-    connect(&m_metadataJob, &KDJob::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
-    connect(&m_metadataJob, &KDJob::progress, this, &PackageManagerCorePrivate::infoProgress);
+    connect(&m_metadataJob, &Job::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
+    connect(&m_metadataJob, &Job::progress, this, &PackageManagerCorePrivate::infoProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
@@ -2181,7 +2181,7 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
         return m_repoFetched;
     }
 
-    if (m_metadataJob.error() != KDJob::NoError) {
+    if (m_metadataJob.error() != Job::NoError) {
         switch (m_metadataJob.error()) {
             case QInstaller::UserIgnoreError:
                 break;  // we can simply ignore this error, the user knows about it

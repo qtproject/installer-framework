@@ -34,28 +34,28 @@
 
 #include "job.h"
 
-#include <QtCore/QDebug>
-#include <QtCore/QEventLoop>
-#include <QtCore/QTimer>
+#include <QDebug>
+#include <QEventLoop>
+#include <QTimer>
 
 
-// -- KDJob::Private
+// -- Job::Private
 
-class KDJob::Private
+class Job::Private
 {
-    KDJob *const q;
+    Job *const q;
 
 public:
-    explicit Private(KDJob *qq)
+    explicit Private(Job *qq)
         : q(qq)
-        , error(KDJob::NoError)
-        , caps(KDJob::NoCapabilities)
+        , error(Job::NoError)
+        , caps(Job::NoCapabilities)
         , autoDelete(true)
         , totalAmount(100)
         , processedAmount(0)
         , m_timeout(-1)
     {
-        connect(&m_timer, &QTimer::timeout, q, &KDJob::cancel);
+        connect(&m_timer, &QTimer::timeout, q, &Job::cancel);
     }
 
     ~Private()
@@ -84,7 +84,7 @@ public:
 
     int error;
     QString errorString;
-    KDJob::Capabilities caps;
+    Job::Capabilities caps;
     bool autoDelete;
     quint64 totalAmount;
     quint64 processedAmount;
@@ -93,93 +93,93 @@ public:
 };
 
 
-// -- KDJob
+// -- Job
 
-KDJob::KDJob(QObject *parent)
+Job::Job(QObject *parent)
     : QObject(parent),
       d(new Private(this))
 {
-    connect(this, &KDJob::finished, this, &KDJob::onFinished);
+    connect(this, &Job::finished, this, &Job::onFinished);
 }
 
-KDJob::~KDJob()
+Job::~Job()
 {
     delete d;
 }
 
-bool KDJob::autoDelete() const
+bool Job::autoDelete() const
 {
     return d->autoDelete;
 }
 
-void KDJob::setAutoDelete(bool autoDelete)
+void Job::setAutoDelete(bool autoDelete)
 {
     d->autoDelete = autoDelete;
 }
 
-int KDJob::error() const
+int Job::error() const
 {
     return d->error;
 }
 
-QString KDJob::errorString() const
+QString Job::errorString() const
 {
     return d->errorString;
 }
 
-void KDJob::emitFinished()
+void Job::emitFinished()
 {
     emit finished(this);
 }
 
-void KDJob::emitFinishedWithError(int error, const QString &errorString)
+void Job::emitFinishedWithError(int error, const QString &errorString)
 {
     d->error = error;
     d->errorString = errorString;
     emitFinished();
 }
 
-void KDJob::setError(int error)
+void Job::setError(int error)
 {
     d->error = error;
 }
 
-void KDJob::setErrorString(const QString &errorString)
+void Job::setErrorString(const QString &errorString)
 {
     d->errorString = errorString;
 }
 
-void KDJob::waitForStarted()
+void Job::waitForStarted()
 {
-    d->waitForSignal(SIGNAL(started(KDJob*)));
+    d->waitForSignal(SIGNAL(started(Job*)));
 }
 
-void KDJob::waitForFinished()
+void Job::waitForFinished()
 {
-    d->waitForSignal(SIGNAL(finished(KDJob*)));
+    d->waitForSignal(SIGNAL(finished(Job*)));
 }
 
-KDJob::Capabilities KDJob::capabilities() const
+Job::Capabilities Job::capabilities() const
 {
     return d->caps;
 }
 
-bool KDJob::hasCapability(Capability c) const
+bool Job::hasCapability(Capability c) const
 {
     return d->caps.testFlag(c);
 }
 
-void KDJob::setCapabilities(Capabilities c)
+void Job::setCapabilities(Capabilities c)
 {
     d->caps = c;
 }
 
-void KDJob::start()
+void Job::start()
 {
     QMetaObject::invokeMethod(this, "delayedStart", Qt::QueuedConnection);
 }
 
-void KDJob::cancel()
+void Job::cancel()
 {
     if (d->caps & Cancelable) {
         doCancel();
@@ -193,17 +193,17 @@ void KDJob::cancel()
     }
 }
 
-quint64 KDJob::totalAmount() const
+quint64 Job::totalAmount() const
 {
     return d->totalAmount;
 }
 
-quint64 KDJob::processedAmount() const
+quint64 Job::processedAmount() const
 {
     return d->processedAmount;
 }
 
-void KDJob::setTotalAmount(quint64 amount)
+void Job::setTotalAmount(quint64 amount)
 {
     if (d->totalAmount == amount)
         return;
@@ -215,22 +215,22 @@ void KDJob::setTotalAmount(quint64 amount)
     Returns the timeout in milliseconds before the job's cancel slot gets triggered. A return value
     of -1 means there is currently no timeout used for the job.
 */
-int KDJob::timeout() const
+int Job::timeout() const
 {
     return d->m_timeout;
 }
 
 /*!
     Sets the timeout in \a milliseconds before the job's cancel slot gets triggered. \note Only jobs
-    that have the \c KDJob::Cancelable capability can be canceled by a timeout. A value of -1 will
+    that have the \c Job::Cancelable capability can be canceled by a timeout. A value of -1 will
     stop the timeout mechanism.
 */
-void KDJob::setTimeout(int milliseconds)
+void Job::setTimeout(int milliseconds)
 {
     d->m_timeout = milliseconds;
 }
 
-void KDJob::setProcessedAmount(quint64 amount)
+void Job::setProcessedAmount(quint64 amount)
 {
     if (d->processedAmount == amount)
         return;
@@ -238,7 +238,7 @@ void KDJob::setProcessedAmount(quint64 amount)
     emit progress(this, d->processedAmount, d->totalAmount);
 }
 
-void KDJob::onFinished()
+void Job::onFinished()
 {
     d->m_timer.stop();
     if (d->autoDelete)

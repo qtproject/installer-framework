@@ -342,7 +342,7 @@ void SettingsDialog::testRepository()
         msgBox.setWindowModality(Qt::WindowModal);
         msgBox.setDetailedText(testJob.errorString());
 
-        const bool isError = (testJob.error() > KDJob::NoError);
+        const bool isError = (testJob.error() > Job::NoError);
         const bool isEnabled = current->data(1, Qt::CheckStateRole).toBool();
 
         msgBox.setText(isError

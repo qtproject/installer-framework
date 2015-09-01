@@ -53,7 +53,7 @@ using namespace KDUpdater;
     Creates a new DownloadArchivesJob with \a parent.
 */
 DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
-    : KDJob(core)
+    : Job(core)
     , m_core(core)
     , m_downloader(0)
     , m_archivesDownloaded(0)
@@ -242,7 +242,7 @@ void DownloadArchivesJob::registerFile()
 
 void DownloadArchivesJob::downloadCanceled()
 {
-    emitFinishedWithError(KDJob::Canceled, m_downloader->errorString());
+    emitFinishedWithError(Job::Canceled, m_downloader->errorString());
 }
 
 void DownloadArchivesJob::downloadFailed(const QString &error)

@@ -44,7 +44,9 @@
 # include <qt_windows.h>
 #endif
 
-class KDLockFile::Private
+namespace KDUpdater {
+
+class LockFile::Private
 {
 public:
     explicit Private(const QString& name)
@@ -67,5 +69,7 @@ private:
 #endif
     bool locked;
 };
+
+} // namespace KDUpdater
 
 #endif // LOCKFILE_P_H

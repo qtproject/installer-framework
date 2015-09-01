@@ -40,17 +40,17 @@
 #include <QtCore/QHash>
 
 template <typename BASE, typename IDENTIFIER = QString, typename... ARGUMENTS>
-class KDGenericFactory
+class GenericFactory
 {
 public:
-    virtual ~KDGenericFactory() {}
+    virtual ~GenericFactory() {}
 
     typedef BASE *(*FactoryFunction)(ARGUMENTS...);
 
     template <typename DERIVED>
     void registerProduct(const IDENTIFIER &id)
     {
-        m_hash.insert(id, &KDGenericFactory::create<DERIVED>);
+        m_hash.insert(id, &GenericFactory::create<DERIVED>);
     }
 
     void registerProduct(const IDENTIFIER &id, FactoryFunction func)
@@ -72,7 +72,7 @@ public:
     }
 
 protected:
-    KDGenericFactory() = default;
+    GenericFactory() = default;
 
 private:
     template <typename DERIVED>
@@ -81,8 +81,8 @@ private:
         return new DERIVED(std::forward<ARGUMENTS>(args)...);
     }
 
-    KDGenericFactory(const KDGenericFactory &) = delete;
-    KDGenericFactory &operator=(const KDGenericFactory &) = delete;
+    GenericFactory(const GenericFactory &) = delete;
+    GenericFactory &operator=(const GenericFactory &) = delete;
 
 private:
     QHash<IDENTIFIER, FactoryFunction> m_hash;

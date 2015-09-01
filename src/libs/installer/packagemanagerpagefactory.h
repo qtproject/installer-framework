@@ -43,7 +43,7 @@ namespace QInstaller {
 class PackageManagerCore;
 class PackageManagerPage;
 
-class INSTALLER_EXPORT PackageManagerPageFactory : public KDGenericFactory<PackageManagerPage, int,
+class INSTALLER_EXPORT PackageManagerPageFactory : public GenericFactory<PackageManagerPage, int,
                                                                            PackageManagerCore*>
 {
     Q_DISABLE_COPY(PackageManagerPageFactory)

@@ -52,7 +52,7 @@ struct Metadata
     Repository repository;
 };
 
-class INSTALLER_EXPORT MetadataJob : public KDJob
+class INSTALLER_EXPORT MetadataJob : public Job
 {
     Q_OBJECT
     Q_DISABLE_COPY(MetadataJob)

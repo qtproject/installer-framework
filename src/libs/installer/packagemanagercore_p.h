@@ -47,7 +47,7 @@
 
 #include <QObject>
 
-class KDJob;
+class Job;
 
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileDevice)
@@ -206,10 +206,10 @@ public:
     bool m_dependsOnLocalInstallerBinary;
 
 private slots:
-    void infoMessage(KDJob *, const QString &message) {
+    void infoMessage(Job *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);
     }
-    void infoProgress(KDJob *, quint64 progress, quint64) {
+    void infoProgress(Job *, quint64 progress, quint64) {
         emit m_core->metaJobProgress(progress);
     }
 

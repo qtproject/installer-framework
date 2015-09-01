@@ -46,7 +46,7 @@
 namespace QInstaller {
 
 MetadataJob::MetadataJob(QObject *parent)
-    : KDJob(parent)
+    : Job(parent)
     , m_core(0)
 {
     setCapabilities(Cancelable);
@@ -72,7 +72,7 @@ void MetadataJob::doStart()
 {
     reset();
     if (!m_core) {
-        emitFinishedWithError(KDJob::Canceled, tr("Missing package manager core engine."));
+        emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
     }
 
@@ -109,7 +109,7 @@ void MetadataJob::doStart()
 void MetadataJob::doCancel()
 {
     reset();
-    emitFinishedWithError(KDJob::Canceled, tr("Meta data download canceled."));
+    emitFinishedWithError(Job::Canceled, tr("Meta data download canceled."));
 }
 
 void MetadataJob::xmlTaskFinished()
@@ -179,7 +179,7 @@ void MetadataJob::xmlTaskFinished()
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during download."));
     }
 
-    if (error() != KDJob::NoError)
+    if (error() != Job::NoError)
         return;
 
     if (status == XmlDownloadSuccess) {
@@ -212,7 +212,7 @@ void MetadataJob::unzipTaskFinished()
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
 
-    if (error() != KDJob::NoError)
+    if (error() != Job::NoError)
         return;
 
     delete m_unzipTasks.value(watcher);
@@ -270,7 +270,7 @@ void MetadataJob::reset()
     m_packages.clear();
     m_metadata.clear();
 
-    setError(KDJob::NoError);
+    setError(Job::NoError);
     setErrorString(QString());
     setCapabilities(Cancelable);
 
@@ -291,7 +291,7 @@ void MetadataJob::reset()
 MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &results)
 {
     foreach (const FileTaskResult &result, results) {
-        if (error() != KDJob::NoError)
+        if (error() != Job::NoError)
             return XmlDownloadFailure;
 
         Metadata metadata;

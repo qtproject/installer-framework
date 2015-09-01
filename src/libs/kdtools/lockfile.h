@@ -38,13 +38,15 @@
 
 #include "kdtoolsglobal.h"
 
-class KDTOOLS_EXPORT KDLockFile
+namespace KDUpdater {
+
+class KDTOOLS_EXPORT LockFile
 {
-    Q_DISABLE_COPY(KDLockFile)
+    Q_DISABLE_COPY(LockFile)
 
 public:
-    explicit KDLockFile(const QString &name);
-    ~KDLockFile();
+    explicit LockFile(const QString &name);
+    ~LockFile();
 
     QString errorString() const;
 
@@ -55,5 +57,7 @@ private:
     class Private;
     Private *d;
 };
+
+} // namespace KDUpdater
 
 #endif // LOCKFILE_H

@@ -639,7 +639,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     DownloadArchivesJob archivesJob(this);
     archivesJob.setAutoDelete(false);
     archivesJob.setArchivesToDownload(archivesToDownload);
-    connect(this, &PackageManagerCore::installationInterrupted, &archivesJob, &KDJob::cancel);
+    connect(this, &PackageManagerCore::installationInterrupted, &archivesJob, &Job::cancel);
     connect(&archivesJob, &DownloadArchivesJob::outputTextChanged,
             ProgressCoordinator::instance(), &ProgressCoordinator::emitLabelAndDetailTextChanged);
     connect(&archivesJob, &DownloadArchivesJob::downloadStatusChanged,
@@ -651,9 +651,9 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     archivesJob.start();
     archivesJob.waitForFinished();
 
-    if (archivesJob.error() == KDJob::Canceled)
+    if (archivesJob.error() == Job::Canceled)
         interrupt();
-    else if (archivesJob.error() != KDJob::NoError)
+    else if (archivesJob.error() != Job::NoError)
         throw Error(archivesJob.errorString());
 
     if (d->statusCanceledOrFailed())

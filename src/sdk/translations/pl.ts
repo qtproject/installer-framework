@@ -131,14 +131,14 @@
     </message>
 </context>
 <context>
-    <name>KDJob</name>
+    <name>Job</name>
     <message>
         <source>Canceled</source>
         <translation>Anulowano</translation>
     </message>
 </context>
 <context>
-    <name>KDLockFile</name>
+    <name>LockFile</name>
     <message>
         <source>Cannot create lock file &apos;%1&apos;: %2</source>
         <translation>Nie można zablokować pliku &quot;%1&quot;: %2</translation>
