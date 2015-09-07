@@ -36,7 +36,7 @@
 
 #include <QDialog>
 
-class QNetworkProxy;
+QT_FORWARD_DECLARE_CLASS(QNetworkProxy)
 
 namespace QInstaller {
 

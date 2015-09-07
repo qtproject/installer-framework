@@ -12,6 +12,7 @@
 
 using namespace QInstaller;
 
+QT_BEGIN_NAMESPACE
 namespace QTest {
     template<>
     char *toString(const QMessageBox::StandardButton &button)
@@ -20,6 +21,7 @@ namespace QTest {
         return qstrdup(buttonAsString.toLatin1().data());
     }
 }
+QT_END_NAMESPACE
 
 class tst_MessageBoxHandler : public QObject
 {
