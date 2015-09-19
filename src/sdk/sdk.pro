@@ -22,8 +22,8 @@ CONFIG(static, static|shared) {
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    QT_LANGUAGES = qtbase_de qt_fr qtbase_ja qt_pl qtbase_ru qt_zh_CN qtbase_it
-    IB_LANGUAGES = de en fr ja pl ru zh_cn it
+    QT_LANGUAGES = qtbase_de qtbase_es qt_fr qtbase_it qtbase_ja qt_pl qtbase_ru qt_zh_CN
+    IB_LANGUAGES = de en es fr it ja pl ru zh_cn
     defineReplace(prependAll) {
         for(a,$$1):result += $$2$${a}$$3
         return($$result)

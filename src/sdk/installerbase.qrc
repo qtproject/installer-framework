@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>translations/de.qm</file>
         <file>translations/en.qm</file>
+        <file>translations/es.qm</file>
         <file>translations/fr.qm</file>
         <file>translations/it.qm</file>
         <file>translations/ja.qm</file>
@@ -15,5 +16,6 @@
         <file alias="translations/qt_ru.qm">translations/qtbase_ru.qm</file>
         <file>translations/qt_zh_CN.qm</file>
         <file alias="translations/qt_it.qm">translations/qtbase_it.qm</file>
+        <file alias="translations/qt_es.qm">translations/qtbase_es.qm</file>
     </qresource>
 </RCC>
