@@ -217,6 +217,9 @@
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
+            \li StyleSheet
+            \li Set the stylesheet file.
+        \row
             \li WizardDefaultWidth
             \li Sets the default width of the wizard in pixels. Setting a banner image will
                 override this.

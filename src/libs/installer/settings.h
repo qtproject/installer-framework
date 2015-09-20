@@ -89,6 +89,7 @@ public:
     QString installerWindowIcon() const;
     QString systemIconSuffix() const;
     QString wizardStyle() const;
+    QString styleSheet() const;
     QString titleColor() const;
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;

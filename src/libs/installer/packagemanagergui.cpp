@@ -318,6 +318,19 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     if (!m_core->settings().wizardStyle().isEmpty())
         setWizardStyle(getStyle(m_core->settings().wizardStyle()));
 
+    // set custom stylesheet
+    const QString styleSheetFile = m_core->settings().styleSheet();
+    if (!styleSheetFile.isEmpty()
+            && QFileInfo::exists(styleSheetFile)) {
+        QFile sheet(styleSheetFile);
+        if (sheet.open(QIODevice::ReadOnly))
+            setStyleSheet(QString::fromLatin1(sheet.readAll()));
+        else
+            qWarning() << "The specified style sheet file can not be opened.";
+    } else {
+        qWarning() << "A style sheet file is specified, but it does not exist.";
+    }
+
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
 

@@ -12,4 +12,5 @@ SUBDIRS += \
   quitinstaller \
   registerfileextension \
   startmenu \
-  systeminfo
+  systeminfo \
+  stylesheet

@@ -255,7 +255,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scTitleColor
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << QLatin1String(scControlScript)
@@ -380,6 +380,11 @@ QString Settings::background() const
 QString Settings::wizardStyle() const
 {
     return d->m_data.value(scWizardStyle).toString();
+}
+
+QString Settings::styleSheet() const
+{
+    return d->absolutePathFromKey(scStyleSheet);
 }
 
 QString Settings::titleColor() const
