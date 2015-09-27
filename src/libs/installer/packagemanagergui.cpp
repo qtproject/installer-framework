@@ -111,7 +111,6 @@ public:
         setLayout(new QVBoxLayout);
         layout()->addWidget(widget);
         layout()->setContentsMargins(0, 0, 0, 0);
-        layout()->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
         addPageAndProperties(packageManagerCore()->controlScriptEngine());
         addPageAndProperties(packageManagerCore()->componentScriptEngine());
