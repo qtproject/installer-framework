@@ -334,6 +334,17 @@
 */
 
 /*!
+    \qmlmethod boolean installer::readFile(string filePath, string codecName)
+
+    Returns the contents of the file \a filePath using the encoding specified
+    by \a codecName. The file is read in the text mode, that is, end-of-line
+    terminators are translated to the local encoding.
+
+    \note If the file does not exist or an error occurs while reading the file, an
+     empty string is returned.
+*/
+
+/*!
     \qmlmethod boolean installer::fileExists(string filePath)
 
     Returns \c true if the \a filePath exists; otherwise returns \c false.

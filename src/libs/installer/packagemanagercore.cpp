@@ -61,6 +61,8 @@
 #include <QtCore/QMutex>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
+#include <QtCore/QTextCodec>
+#include <QtCore/QTextStream>
 
 #include <QDesktopServices>
 #include <QFileDialog>
@@ -783,6 +785,32 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) con
 bool PackageManagerCore::fileExists(const QString &filePath) const
 {
     return QFileInfo(filePath).exists();
+}
+
+/*!
+    Returns the contents of the file \a filePath using the encoding specified
+    by \a codecName. The file is read in the text mode, that is, end-of-line
+    terminators are translated to the local encoding.
+
+    \note If the file does not exist or an error occurs while reading the file, an
+     empty string is returned.
+
+    \sa {installer::readFile}{installer.readFile}
+
+ */
+QString PackageManagerCore::readFile(const QString &filePath, const QString &codecName) const
+{
+    QFile f(filePath);
+    if (!f.open(QIODevice::ReadOnly | QIODevice::Text))
+        return QString();
+
+    QTextCodec *codec = QTextCodec::codecForName(qPrintable(codecName));
+    if (!codec)
+        return QString();
+
+    QTextStream stream(&f);
+    stream.setCodec(codec);
+    return stream.readAll();
 }
 
 // -- QInstaller

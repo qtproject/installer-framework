@@ -190,6 +190,7 @@ public:
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
+    Q_INVOKABLE QString readFile(const QString &filePath, const QString &codecName) const;
 
 public:
     ScriptEngine *componentScriptEngine() const;
