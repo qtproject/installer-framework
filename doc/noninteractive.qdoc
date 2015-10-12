@@ -335,7 +335,7 @@
 
     \section2 Start Menu Directory Page
 
-    Implement the \c Controller.prototype.StartMenuDirectoryPage() function to interact with
+    Implement the \c Controller.prototype.StartMenuDirectoryPageCallback() function to interact with
     widgets on the ready for installation page.
 
     Wizard buttons:

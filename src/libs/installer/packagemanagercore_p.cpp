@@ -1605,9 +1605,8 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         //to have some progress for the cleanup/write component.xml step
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
-        const QString packagesXml = componentsXmlPath();
         // check if we need admin rights and ask before the action happens
-        if (!QFileInfo(installerBinaryPath()).isWritable() || !QFileInfo(packagesXml).isWritable())
+        if (!QTemporaryFile(targetDir() + QStringLiteral("/XXXXXX")).open())
             adminRightsGained = m_core->gainAdminRights();
 
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();

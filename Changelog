@@ -3,8 +3,10 @@
 2.0.2
 - Fix .dat file that gets deleted after multiple component changes on Windows.
 - Fix maintenance tool upgrade on OS X.
+- Fix handling of system proxy with credentials. (QTBUG-46547)
 - Unify selection of language for translations. (QTIFW-390)
 - Fix return value of component.installAction() when updating. (QTIFW-727)
+- Fix errors when updating an installation requiring elevation on Windows. (QTIFW-746)
 - Documentation updates.
 
 2.0.1
