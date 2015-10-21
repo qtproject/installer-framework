@@ -47,6 +47,7 @@ using namespace QInstaller;
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 #include <shlobj.h>
+#include <Intshcut.h>
 
 #ifndef PIDLIST_ABSOLUTE
 typedef ITEMIDLIST *PIDLIST_ABSOLUTE;
@@ -102,36 +103,57 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     const QString &iconId = QString())
 {
 #ifdef Q_OS_WIN
-    bool success = QFile::link(fileName, linkName);
-
-    if (!success)
-        return success;
-
-    if (workingDir.isEmpty())
-        workingDir = QFileInfo(fileName).absolutePath();
-    workingDir = QDir::toNativeSeparators(workingDir);
-
     // CoInitialize cleanup object
     DeCoInitializer _;
 
-    IShellLink *psl = NULL;
-    if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&psl)))
-        return success;
+    IUnknown *iunkn = NULL;
 
-    // TODO: implement this server side, since there's not Qt equivalent to set working dir and arguments
-    psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
-    psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
-    if (!arguments.isNull())
-        psl->SetArguments((wchar_t*)arguments.utf16());
-    if (!iconPath.isNull())
-        psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
+    if (fileName.toLower().startsWith(QLatin1String("http:"))
+        || fileName.toLower().startsWith(QLatin1String("ftp:"))) {
+        IUniformResourceLocator *iurl = NULL;
+        if (FAILED(CoCreateInstance(CLSID_InternetShortcut, NULL, CLSCTX_INPROC_SERVER,
+                                    IID_IUniformResourceLocator, (LPVOID*)&iurl))) {
+            return false;
+        }
+
+        if (FAILED(iurl->SetURL((wchar_t *)fileName.utf16(), IURL_SETURL_FL_GUESS_PROTOCOL))) {
+            iurl->Release();
+            return false;
+        }
+        iunkn = iurl;
+    } else {
+        bool success = QFile::link(fileName, linkName);
+
+        if (!success) {
+            return success;
+        }
+
+        if (workingDir.isEmpty())
+            workingDir = QFileInfo(fileName).absolutePath();
+        workingDir = QDir::toNativeSeparators(workingDir);
+
+        IShellLink *psl = NULL;
+        if (FAILED(CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER,
+                                    IID_IShellLink, (LPVOID*)&psl))) {
+            return success;
+        }
+
+        // TODO: implement this server side, since there's not Qt equivalent to set working dir and arguments
+        psl->SetPath((wchar_t *)QDir::toNativeSeparators(fileName).utf16());
+        psl->SetWorkingDirectory((wchar_t *)workingDir.utf16());
+        if (!arguments.isNull())
+            psl->SetArguments((wchar_t*)arguments.utf16());
+        if (!iconPath.isNull())
+            psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
+        iunkn = psl;
+    }
 
     IPersistFile *ppf = NULL;
-    if (SUCCEEDED(psl->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
+    if (SUCCEEDED(iunkn->QueryInterface(IID_IPersistFile, (void **)&ppf))) {
         ppf->Save((wchar_t*)QDir::toNativeSeparators(linkName).utf16(), true);
         ppf->Release();
     }
-    psl->Release();
+    iunkn->Release();
 
     PIDLIST_ABSOLUTE pidl;  // Force start menu cache update
     if (SUCCEEDED(SHGetFolderLocation(0, CSIDL_STARTMENU, 0, 0, &pidl))) {
@@ -143,7 +165,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
         CoTaskMemFree(pidl);
     }
 
-    return success;
+    return true;
 #else
     Q_UNUSED(arguments)
     Q_UNUSED(workingDir)
