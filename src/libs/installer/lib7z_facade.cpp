@@ -968,9 +968,15 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
 
         const QFile tempFile(UString2QString(options.ArchiveName));
         if (res != S_OK || !tempFile.exists()) {
-            throw SevenZipException(QCoreApplication::translate("Lib7z", "Cannot create "
-                "archive \"%1\": %2").arg(QDir::toNativeSeparators(tempFile.fileName()),
-                                        errorMessageFrom7zResult(res)));
+            QString errorMsg;
+            if (res == S_OK) {
+                errorMsg = QCoreApplication::translate("Lib7z", "Cannot create archive \"%1\"")
+                    .arg(QDir::toNativeSeparators(tempFile.fileName()));
+            } else {
+                errorMsg = QCoreApplication::translate("Lib7z", "Cannot create archive \"%1\": %2")
+                    .arg(QDir::toNativeSeparators(tempFile.fileName()), errorMessageFrom7zResult(res));
+            }
+            throw SevenZipException(errorMsg);
         }
 
         if (mode == QTmpFile::Yes) {
