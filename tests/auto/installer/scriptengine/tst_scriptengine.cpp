@@ -366,8 +366,8 @@ private slots:
             testComponent->loadComponentScript(":///data/component2.qs");
         } catch (const Error &error) {
             const QString debugMessage(
-                "create Error-Exception: \"Exception while loading the component script \""
-                ":///data/component2.qs\": ReferenceError: broken is not defined\"");
+                QString("create Error-Exception: \"Exception while loading the component script \"%1\": "
+                "ReferenceError: broken is not defined\"").arg(QDir::toNativeSeparators(":///data/component2.qs")));
             QVERIFY2(debugMessage.contains(error.message()), "(ReferenceError: broken is not defined)");
         }
     }
