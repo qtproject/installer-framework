@@ -37,6 +37,7 @@
 #include <scriptengine.h>
 #include <packagemanagerpagefactory.h>
 #include <productkeycheck.h>
+#include <settings.h>
 
 using namespace QInstaller;
 
@@ -90,9 +91,15 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
     connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
             this, &MaintenanceGui::updateRestartPage);
 
-    setPage(PackageManagerCore::Introduction, intro);
-    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
-    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+    if (!core->isOfflineOnly() || validRepositoriesAvailable()) {
+        setPage(PackageManagerCore::Introduction, intro);
+        setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
+        setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+    } else {
+        core->setUninstaller();
+        core->setCompleteUninstallation(true);
+    }
+
     setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
@@ -115,4 +122,14 @@ void MaintenanceGui::updateRestartPage()
 {
     wizardPageVisibilityChangeRequested((packageManagerCore()->isUninstaller() ? false : true),
         PackageManagerCore::InstallationFinished + 1);
+}
+
+bool MaintenanceGui::validRepositoriesAvailable() const
+{
+    foreach (const Repository &repo, packageManagerCore()->settings().repositories()) {
+        if (repo.isEnabled() && repo.isValid()) {
+            return true;
+        }
+    }
+    return false;
 }
