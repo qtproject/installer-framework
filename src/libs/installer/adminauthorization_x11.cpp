@@ -132,7 +132,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
     if (pipe(pipedData) != 0)
         return false;
 
-    int flags = ::fcntl(pipedData[0], F_GETFD);
+    int flags = ::fcntl(pipedData[0], F_GETFL);
     if (flags != -1)
         ::fcntl(pipedData[0], F_SETFL, flags | O_NONBLOCK);
 
