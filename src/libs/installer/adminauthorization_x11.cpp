@@ -175,7 +175,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             errBytes = ::read(pipedData[0], errBuf, 1023);
             if (errBytes > 0)
             {
-                errData.append(buf, errBytes);
+                errData.append(errBuf, errBytes);
                 errBytes=0;
             }
             if (bytes > 0) {
