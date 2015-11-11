@@ -153,7 +153,6 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
 
         QRegExp re(QLatin1String("[Pp]assword.*:"));
         QByteArray errData;
-        flags = ::fcntl(masterFD, F_GETFD);
         int bytes = 0;
         int errBytes = 0;
         char buf[1024];
