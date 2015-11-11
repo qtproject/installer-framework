@@ -10,11 +10,6 @@ You can now run the installer in German.
 
 Linux:
 
-LANG=de ./installer
+LANGUAGE=de ./installer
 
-Windows:
-
-set LANG=de
-installer.exe
-
-On OS X you need to adapt the system settings to set German as preferred language, and then start the installer.
+On OS X and Windows you need to adapt the system settings to set German as preferred language, and then start the installer.
