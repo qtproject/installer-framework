@@ -56,6 +56,7 @@
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <errno.h>
 
 #include <iostream>
 
@@ -135,6 +136,10 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
     if (flags != -1)
         ::fcntl(pipedData[0], F_SETFL, flags | O_NONBLOCK);
 
+    flags = ::fcntl(masterFD, F_GETFL);
+    if (flags != -1)
+        ::fcntl(masterFD, F_SETFL, flags | O_NONBLOCK);
+
     pid_t child = fork();
 
     if (child < -1) {
@@ -152,6 +157,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::close(pipedData[1]);
 
         QRegExp re(QLatin1String("[Pp]assword.*:"));
+        QByteArray data;
         QByteArray errData;
         int bytes = 0;
         int errBytes = 0;
@@ -162,6 +168,10 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             if (::waitpid(child, &state, WNOHANG) == -1)
                 break;
             bytes = ::read(masterFD, buf, 1023);
+            if (bytes == -1 && errno == EAGAIN)
+                bytes = 0;
+            else if (bytes > 0)
+                data.append(buf, bytes);
             errBytes = ::read(pipedData[0], errBuf, 1023);
             if (errBytes > 0)
             {
@@ -169,7 +179,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
                 errBytes=0;
             }
             if (bytes > 0) {
-                const QString line = QString::fromLatin1(buf, bytes);
+                const QString line = QString::fromLatin1(data);
                 if (re.indexIn(line) != -1) {
                     const QString password = getPassword(parent);
                     if (password.isEmpty()) {
