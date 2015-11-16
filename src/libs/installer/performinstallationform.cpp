@@ -183,7 +183,7 @@ void PerformInstallationForm::updateProgress()
     m_progressBar->setValue(progressPercentage);
 #ifdef Q_OS_WIN
     if (m_taskButton) {
-        if (!m_taskButton->window())
+        if (!m_taskButton->window() && QApplication::activeWindow())
             m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
         m_taskButton->progress()->setValue(progressPercentage);
     }
