@@ -121,6 +121,27 @@ private slots:
         } catch (...) {
             QFAIL("Unexpected error during create archive.");
         }
+
+        try {
+            const QString path1 = tempSourceFile(
+                "Source File 1.",
+                QDir::tempPath() + "/temp file with spaces.XXXXXX"
+            );
+            const QString path2 = tempSourceFile(
+                "Source File 2.",
+                QDir::tempPath() + "/temp file with spaces.XXXXXX"
+            );
+
+            QTemporaryFile target(QDir::tempPath() + "/target file with spaces.XXXXXX");
+            QVERIFY(target.open());
+            Lib7z::createArchive(&target, QStringList() << path1 << path2);
+            QCOMPARE(Lib7z::listArchive(&target).count(), 2);
+        } catch (const Lib7z::SevenZipException& e) {
+            QFAIL(e.message().toUtf8());
+        } catch (...) {
+            QFAIL("Unexpected error during create archive.");
+        }
+
     }
 
     void testExtractArchive()
@@ -139,9 +160,12 @@ private slots:
     }
 
 private:
-    QString tempSourceFile(const QByteArray &data)
+    QString tempSourceFile(const QByteArray &data, const QString &templateName = QString())
     {
         QTemporaryFile source;
+        if (!templateName.isEmpty()) {
+            source.setFileTemplate(templateName);
+        }
         source.open();
         source.write(data);
         source.setAutoRemove(false);

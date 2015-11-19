@@ -46,8 +46,6 @@
 #   include "StdAfx.h"
 #endif
 
-#include <Common/CommandLineParser.h>
-
 #include <7zCrc.h>
 
 #include <7zip/Archive/IArchive.h>
@@ -930,21 +928,22 @@ void createArchive(const QString &archive, const QStringList &sources, QTmpFile 
         if (mode == QTmpFile::Yes)
             target = createTmp7z();
 
-        const UString command = QString2UString(
-            // (mode: add) (type: 7z) (time: modified|creation|access) (threads: multi-threaded)
-            QLatin1String("a -t7z -mtm=on -mtc=on -mta=on -mmt=on ")
-#ifdef Q_OS_WIN
-            + QLatin1String("-sccUTF-8 ") // (files: case-sensitive|UTF8)
-#endif
-            + QString::fromLatin1("-mx=%1 ").arg(int(level)) // (compression: level)
-            + QDir::toNativeSeparators(target) + QLatin1Char(' ')
-            + QDir::toNativeSeparators(sources.join(QLatin1Char(' ')))
-        );
-
         CArcCmdLineOptions options;
         try {
             UStringVector commandStrings;
-            NCommandLineParser::SplitCommandLine(command, commandStrings);
+            commandStrings.Add(L"a"); // mode: add
+            commandStrings.Add(L"-t7z"); // type: 7z
+            commandStrings.Add(L"-mtm=on"); // time: modeifier|creation|access
+            commandStrings.Add(L"-mtc=on");
+            commandStrings.Add(L"-mta=on");
+            commandStrings.Add(L"-mmt=on"); // threads: multi-threaded
+#ifdef Q_OS_WIN
+            commandStrings.Add(L"-sccUTF-8"); // files: case-sensitive|UTF8
+#endif
+            commandStrings.Add(QString2UString(QString::fromLatin1("-mx=%1").arg(int(level)))); // compression: level
+            commandStrings.Add(QString2UString(QDir::toNativeSeparators(target)));
+            foreach (const QString &source, sources)
+                commandStrings.Add(QString2UString(source));
 
             CArcCmdLineParser parser;
             parser.Parse1(commandStrings, options);
