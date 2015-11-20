@@ -233,7 +233,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     }
 
     Q_ASSERT(process);
-    process->deleteLater();
+    Q_ASSERT(process->state() == QProcessWrapper::NotRunning);
+    delete process;
     process = 0;
 
     return returnValue;
