@@ -323,6 +323,19 @@ static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, 
     return !IsFileTimeZero(ft);
 }
 
+static bool IsDST(const QDateTime &datetime = QDateTime())
+{
+    const time_t seconds = static_cast<time_t>(datetime.isValid() ? datetime.toTime_t()
+        : QDateTime::currentDateTime().toTime_t());
+#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
+    struct tm t;
+    localtime_s(&t, &seconds);
+#else
+    const struct tm &t = *localtime(&seconds);
+#endif
+    return t.tm_isdst;
+}
+
 static bool getDateTimeProperty(IInArchive *arc, int index, int id, QDateTime *value)
 {
     FILETIME ft7z;
@@ -342,6 +355,9 @@ static bool getDateTimeProperty(IInArchive *arc, int index, int id, QDateTime *v
     }
     *value = QDateTime(QDate(st.wYear, st.wMonth, st.wDay), QTime(st.wHour, st.wMinute,
         st.wSecond));
+    const bool dst = IsDST();
+    if (dst != IsDST(*value))
+        *value = value->addSecs(dst ? -3600 : 3600);
     return value->isValid();
 }
 
