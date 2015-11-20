@@ -39,6 +39,7 @@
 
 #include <QtCore/QEvent>
 #include <QtCore/QMetaType>
+#include <QtCore/QTimer>
 
 #include <QWizard>
 #include <QWizardPage>
@@ -356,6 +357,7 @@ private:
 private:
     QLineEdit *m_lineEdit;
     QLabel *m_warningLabel;
+    QTimer m_textChangeTimer;
 };
 
 

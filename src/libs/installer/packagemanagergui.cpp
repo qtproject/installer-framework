@@ -2195,9 +2195,14 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
 
     QHBoxLayout *hlayout = new QHBoxLayout;
 
+    m_textChangeTimer.setSingleShot(true);
+    m_textChangeTimer.setInterval(200);
+    connect(&m_textChangeTimer, &QTimer::timeout, this, &QWizardPage::completeChanged);
+
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
-    connect(m_lineEdit, &QLineEdit::textChanged, this, &QWizardPage::completeChanged);
+    connect(m_lineEdit, &QLineEdit::textChanged,
+            &m_textChangeTimer, static_cast<void (QTimer::*)()>(&QTimer::start));
     hlayout->addWidget(m_lineEdit);
 
     QPushButton *browseButton = new QPushButton(this);
@@ -2273,6 +2278,11 @@ void TargetDirectoryPage::initializePage()
 */
 bool TargetDirectoryPage::validatePage()
 {
+    m_textChangeTimer.stop();
+
+    if (!isComplete())
+        return false;
+
     if (!isVisible())
         return true;
 
