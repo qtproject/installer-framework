@@ -867,7 +867,7 @@ PackageManagerCore::~PackageManagerCore()
     delete d;
 
     RemoteClient::instance().setActive(false);
-    RemoteClient::instance().shutdown();
+    RemoteClient::instance().destroy();
 
     QMutexLocker _(globalVirtualComponentsFontMutex());
     delete sVirtualComponentsFont;

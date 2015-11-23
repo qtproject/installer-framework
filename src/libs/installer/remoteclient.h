@@ -55,6 +55,7 @@ public:
               Protocol::StartAs startAs);
 
     void shutdown();
+    void destroy();
 
     QString socketName() const;
     QString authorizationKey() const;
@@ -67,6 +68,7 @@ private:
     ~RemoteClient();
 
 private:
+    static RemoteClient *s_instance;
     QScopedPointer<RemoteClientPrivate> d_ptr;
 };
 
