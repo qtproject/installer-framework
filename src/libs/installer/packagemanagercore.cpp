@@ -46,6 +46,7 @@
 #include "qprocesswrapper.h"
 #include "qsettingswrapper.h"
 #include "remoteclient.h"
+#include "remotefileengine.h"
 #include "settings.h"
 #include "utils.h"
 #include "installercalculator.h"
@@ -880,6 +881,40 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     }
 }
 
+class VerboseWriterAdminOutput : public VerboseWriterOutput
+{
+public:
+    VerboseWriterAdminOutput(PackageManagerCore *core) : m_core(core) {}
+
+    virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data)
+    {
+        bool gainedAdminRights = false;
+
+        if (!RemoteClient::instance().isActive()) {
+            m_core->gainAdminRights();
+            gainedAdminRights = true;
+        }
+
+        RemoteFileEngine file;
+        file.setFileName(fileName);
+        if (file.open(openMode)) {
+            file.write(data.constData(), data.size());
+            file.close();
+            if (gainedAdminRights)
+                m_core->dropAdminRights();
+            return true;
+        }
+
+        if (gainedAdminRights)
+            m_core->dropAdminRights();
+
+        return false;
+    }
+
+private:
+    PackageManagerCore *m_core;
+};
+
 /*!
     Destroys the instance.
 */
@@ -892,6 +927,17 @@ PackageManagerCore::~PackageManagerCore()
         QInstaller::VerboseWriter::instance()->setFileName(logFileName);
     }
     delete d;
+
+    try {
+        PlainVerboseWriterOutput plainOutput;
+        if (!VerboseWriter::instance()->flush(&plainOutput)) {
+            VerboseWriterAdminOutput adminOutput(this);
+            VerboseWriter::instance()->flush(&adminOutput);
+        }
+    } catch (...) {
+        // Intentionally left blank; don't permit exceptions from VerboseWriter
+        // to escape destructor.
+    }
 
     RemoteClient::instance().setActive(false);
     RemoteClient::instance().destroy();
