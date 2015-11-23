@@ -219,12 +219,20 @@ QInstaller::VerboseWriter::VerboseWriter()
 
 QInstaller::VerboseWriter::~VerboseWriter()
 {
+    if (preFileBuffer.isOpen())
+        (void)flush();
+}
+
+bool QInstaller::VerboseWriter::flush()
+{
     stream.flush();
     if (logFileName.isEmpty()) // binarycreator
-        return;
+        return true;
+    if (!preFileBuffer.isOpen())
+        return true;
     //if the installer installed nothing - there is no target directory - where the logfile can be saved
     if (!QFileInfo(logFileName).absoluteDir().exists())
-        return;
+        return true;
 
     QFile output(logFileName);
     if (output.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text)) {
@@ -235,8 +243,11 @@ QInstaller::VerboseWriter::~VerboseWriter()
         output.write(logInfo.toLocal8Bit());
         output.write(preFileBuffer.data());
         output.close();
+        preFileBuffer.close();
+        stream.setDevice(0);
+        return true;
     }
-    stream.setDevice(0);
+    return false;
 }
 
 void QInstaller::VerboseWriter::setFileName(const QString &fileName)

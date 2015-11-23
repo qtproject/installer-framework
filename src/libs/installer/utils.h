@@ -81,6 +81,8 @@ namespace QInstaller {
 
         static VerboseWriter *instance();
 
+        bool flush();
+
         void appendLine(const QString &msg);
         void setFileName(const QString &fileName);
 
