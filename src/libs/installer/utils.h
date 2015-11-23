@@ -72,6 +72,20 @@ namespace QInstaller {
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
+    class INSTALLER_EXPORT VerboseWriterOutput
+    {
+    public:
+        virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data) = 0;
+
+    protected:
+        ~VerboseWriterOutput();
+    };
+
+    class INSTALLER_EXPORT PlainVerboseWriterOutput : public VerboseWriterOutput
+    {
+    public:
+        virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data);
+    };
 
     class INSTALLER_EXPORT VerboseWriter
     {
@@ -81,7 +95,7 @@ namespace QInstaller {
 
         static VerboseWriter *instance();
 
-        bool flush();
+        bool flush(VerboseWriterOutput *output);
 
         void appendLine(const QString &msg);
         void setFileName(const QString &fileName);
