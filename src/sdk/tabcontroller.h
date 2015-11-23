@@ -62,6 +62,7 @@ public:
 
 public Q_SLOTS:
     int init();
+    void updateManagerParams(const QString &key, const QString &value);
 
 private Q_SLOTS:
     void restartWizard();

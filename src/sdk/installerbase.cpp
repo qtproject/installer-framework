@@ -267,11 +267,15 @@ int InstallerBase::run()
     controller.setManagerParams(params);
     controller.setControlScript(controlScript);
 
-    if (m_core->isInstaller())
+    if (m_core->isInstaller()) {
         controller.setGui(new InstallerGui(m_core));
-    else
+    }
+    else {
         controller.setGui(new MaintenanceGui(m_core));
-
+        //Start listening to setValue changes that newly installed components might have
+        connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
+            &TabController::updateManagerParams);
+    }
     QInstaller::PackageManagerCore::Status status =
         QInstaller::PackageManagerCore::Status(controller.init());
     if (status != QInstaller::PackageManagerCore::Success)

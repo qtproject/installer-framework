@@ -204,3 +204,8 @@ void TabController::onNetworkSettingsChanged(const QInstaller::Settings &setting
     d->m_settings = settings;
     d->m_networkSettingsChanged = true;
 }
+
+void TabController::updateManagerParams(const QString &key, const QString &value)
+{
+    d->m_params.insert(key, value);
+}
