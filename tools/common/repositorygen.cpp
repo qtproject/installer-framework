@@ -190,6 +190,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         bool foundVirtual = false;
         bool foundDisplayName = false;
         bool foundDownloadableArchives = false;
+        bool foundCheckable = false;
         const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
         const QDomNodeList childNodes = package.childNodes();
         for (int i = 0; i < childNodes.count(); ++i) {
@@ -204,6 +205,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 foundDisplayName = true;
             if (key == QLatin1String("DownloadableArchives"))
                 foundDownloadableArchives = true;
+            if (key == QLatin1String("Checkable"))
+                foundCheckable = true;
             if (node.isComment() || blackList.contains(key))
                 continue;   // just skip comments and some tags...
 
@@ -218,6 +221,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         if (foundDefault && foundVirtual) {
             throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
                 "mutually exclusive in file \"%1\".").arg(QDir::toNativeSeparators(packageXmlPath)));
+        }
+
+        if (foundDefault && foundCheckable) {
+            throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Checkable>"
+                "elements are mutually exclusive in file \"%1\".")
+                .arg(QDir::toNativeSeparators(packageXmlPath)));
         }
 
         if (!foundDisplayName) {

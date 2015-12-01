@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Subcomponent 1</DisplayName>
+    <Description>This component contains sub component.</Description>
+    <Version>1.0.2</Version>
+    <ReleaseDate>2015-12-01</ReleaseDate>
+    <SortingPriority>100</SortingPriority>
+    <Checkable>true</Checkable>
+</Package>

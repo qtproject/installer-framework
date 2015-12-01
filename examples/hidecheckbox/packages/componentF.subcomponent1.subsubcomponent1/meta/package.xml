@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Subsubcomponent 1</DisplayName>
+    <Description>This component does not depend on any other component.</Description>
+    <Version>1.0.2</Version>
+    <ReleaseDate>2015-12-01</ReleaseDate>
+</Package>

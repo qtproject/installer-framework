@@ -1,0 +1,60 @@
+/****************************************************************************
+**
+** Copyright (C) 2015 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file.  Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example hidecheckbox
+    \ingroup qtifwexamples
+    \title Hide Checkbox Example
+
+    \brief Using components' package.xml files to hide checkboxes for items.
+
+    \image qtifw-examples-hidecheckbox.png
+
+    \e{Hide Checkbox} illustrates how to hide the checkbox for an item.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \quotefile hidecheckbox/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Checkable> element specifies whether a checkbox is displayed next to an item.
+        Set to \c false to hide the checkbox for the item.
+    \endlist
+
+    This example attempts to install three components, so we create a package.xml file in each
+    component directory: componentF, componentF.subcomponent1, and
+    componentF.subcomponent1.subcomponent1. We also specify the component name and description
+    in each of them. The top level item, componentF, has \c <Checkable> set to \c false,
+    so it cannot be selected. It also does not install the package, for that
+    you will need to set \c <ForceInstallation> to \c true.
+
+    \quotefile hidecheckbox/packages/componentF/meta/package.xml
+
+    \include installerfw-examples-generating.qdocinc
+*/

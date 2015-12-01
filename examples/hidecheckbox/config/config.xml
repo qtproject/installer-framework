@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Hide item checkbox</Name>
+    <Version>1.0.0</Version>
+    <Title>Hide checkbox</Title>
+    <Publisher>The Qt Company</Publisher>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/disabletoplevel</TargetDir>
+</Installer>

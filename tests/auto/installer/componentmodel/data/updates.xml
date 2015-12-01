@@ -131,4 +131,50 @@
                      file="license.txt"/>
         </Licenses>
     </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.fourth.product.checkable</Name>
+        <DisplayName>A checkable root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Checkable>true</Checkable>
+        <Default>false</Default>
+        <Script>installscript.qs</Script>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.fifth.product.noncheckable</Name>
+        <DisplayName>A non-checkable root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <Checkable>false</Checkable>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.fifth.product.noncheckable.sub</Name>
+        <DisplayName>A sub component for non-checkable root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <SortingPriority>0</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
 </Updates>

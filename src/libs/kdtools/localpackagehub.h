@@ -58,6 +58,7 @@ struct KDTOOLS_EXPORT LocalPackage
     bool forcedInstallation;
     bool virtualComp;
     quint64 uncompressedSize;
+    bool checkable;
 };
 
 class KDTOOLS_EXPORT LocalPackageHub
@@ -108,7 +109,8 @@ public:
                     bool forcedInstallation,
                     bool virtualComp,
                     quint64 uncompressedSize,
-                    const QString &inheritVersionFrom);
+                    const QString &inheritVersionFrom,
+                    bool checkable);
     bool removePackage(const QString &pkgName);
 
     void refresh();
