@@ -2385,7 +2385,7 @@ QString TargetDirectoryPage::targetDirWarning() const
         return tr("The installation path must not end with '.', please specify a valid folder.");
 
     QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
-        "|(\\\\CON)|(\\\\PRN)|(\\\\AUX)|(\\\\NUL)|(\\\\COM\\d)|(\\\\LPT\\d)");
+        "|(\\\\CON)(\\\\|$)|(\\\\PRN)(\\\\|$)|(\\\\AUX)(\\\\|$)|(\\\\NUL)(\\\\|$)|(\\\\COM\\d)(\\\\|$)|(\\\\LPT\\d)(\\\\|$)");
 #else // Q_OS_WIN
     QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
 #endif // Q_OS_WIN
