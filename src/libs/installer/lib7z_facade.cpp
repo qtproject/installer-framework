@@ -76,6 +76,9 @@ HINSTANCE g_hInstance = 0;
 # define S_IFLNK 0120000
 # define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
 # define FILE_ATTRIBUTE_UNIX_EXTENSION   0x8000   /* trick for Unix */
+# if !defined(Q_CC_MINGW)
+#  include <time.h> // for localtime_s
+# endif
 #else
 extern "C" int global_use_utf16_conversion;
 
