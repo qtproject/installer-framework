@@ -234,7 +234,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         chmod755(copyscript);
         QProcess p;
         p.start(copyscript, QStringList() << bundle);
-        p.waitForFinished();
+        p.waitForFinished(-1);
         QFile::rename(input.outputPath, tempFile);
         QFile::remove(copyscript);
     }
@@ -320,7 +320,7 @@ static int assemble(Input input, const QInstaller::Settings &settings)
 
         QProcess p;
         p.start(mkdmgscript, QStringList() << QFileInfo(input.outputPath).fileName() << bundle);
-        p.waitForFinished();
+        p.waitForFinished(-1);
         QFile::remove(mkdmgscript);
         qDebug() <<  "done." << mkdmgscript;
     }
