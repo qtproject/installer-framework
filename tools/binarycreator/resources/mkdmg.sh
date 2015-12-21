@@ -52,14 +52,15 @@ VOL="$1"
 FILES="$2"
 PATHNAME=`dirname $FILES`
 
-DMG=`mktemp "/tmp/$VOL.XXXXXX.dmg"`
+# keep '.XXXXXX' at the end to satisfy 'mktemp' as shipped on OS X
+DMG=`mktemp "/tmp/$VOL.XXXXXX"`
 
 # create temporary disk image and format, ejecting when done
 SIZE=`du -sk ${FILES} | sed -n 's,^\([0-9]*\).*,\1,p'`
 SIZE=$((${SIZE}/1000+1))
-hdiutil create "$DMG" -megabytes ${SIZE} -ov -volname "$VOL" -type UDIF -fs HFS+ >/dev/null
-DISK=`hdid "$DMG" | sed -ne 's,^\(.*\) *Apple_H.*,\1,p'`
-MOUNT=`hdid "$DMG" | sed -ne 's,^.*Apple_HFS[^/]*\(/.*\)$,\1,p'`
+hdiutil create "${DMG}.dmg" -megabytes ${SIZE} -ov -volname "$VOL" -type UDIF -fs HFS+ >/dev/null
+DISK=`hdid "${DMG}.dmg" | sed -ne 's,^\(.*\) *Apple_H.*,\1,p'`
+MOUNT=`hdid "${DMG}.dmg" | sed -ne 's,^.*Apple_HFS[^/]*\(/.*\)$,\1,p'`
 
 # mount and copy files onto volume
 cp -R "$PATHNAME/`basename $FILES`" "$MOUNT"
@@ -67,5 +68,5 @@ hdiutil eject $DISK >/dev/null
 
 # convert to compressed image, delete temp image
 rm -f "$PATHNAME/${VOL}.dmg"
-hdiutil convert "$DMG" -format UDZO -o "$PATHNAME/${VOL}.dmg" >/dev/null
-rm -f "$DMG"
+hdiutil convert "${DMG}.dmg" -format UDZO -o "$PATHNAME/${VOL}.dmg" >/dev/null
+rm -f "${DMG}.dmg"
