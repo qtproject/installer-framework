@@ -57,7 +57,7 @@ private slots:
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;
         m_file.archiveIndex = QPoint(0, 0);
-        m_file.mtime = QDateTime(QDate::fromJulianDay(2456413), QTime(12, 50, 42));
+        m_file.utcTime = QDateTime(QDate::fromJulianDay(2456413), QTime(10, 50, 42), Qt::UTC);
     }
 
     void testIsSupportedArchive()

@@ -46,7 +46,7 @@ namespace Lib7z
     {
     public:
         QString path;
-        QDateTime mtime;
+        QDateTime utcTime;
         QPoint archiveIndex;
         bool isDirectory = false;
         quint64 compressedSize = 0;

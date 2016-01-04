@@ -324,41 +324,19 @@ static bool getFileTimeFromProperty(IInArchive* archive, int index, int propId, 
     return !IsFileTimeZero(ft);
 }
 
-static bool IsDST(const QDateTime &datetime = QDateTime())
-{
-    const time_t seconds = static_cast<time_t>(datetime.isValid() ? datetime.toTime_t()
-        : QDateTime::currentDateTime().toTime_t());
-#if defined(Q_OS_WIN) && !defined(Q_CC_MINGW)
-    struct tm t;
-    localtime_s(&t, &seconds);
-#else
-    const struct tm &t = *localtime(&seconds);
-#endif
-    return t.tm_isdst;
-}
-
 static bool getDateTimeProperty(IInArchive *arc, int index, int id, QDateTime *value)
 {
     FILETIME ft7z;
     if (!getFileTimeFromProperty(arc, index, id, &ft7z))
         return false;
 
-    FILETIME ft;
-    if (!FileTimeToLocalFileTime(&ft7z, &ft)) {
-        throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Cannot convert file time to local time."));
-    }
-
     SYSTEMTIME st;
-    if (!BOOLToBool(FileTimeToSystemTime(&ft, &st))) {
+    if (!BOOLToBool(FileTimeToSystemTime(&ft7z, &st))) {
         throw SevenZipException(QCoreApplication::translate("Lib7z",
-            "Cannot convert local file time to system time."));
+            "Cannot convert UTC file time to system time."));
     }
     *value = QDateTime(QDate(st.wYear, st.wMonth, st.wDay), QTime(st.wHour, st.wMinute,
-        st.wSecond));
-    const bool dst = IsDST();
-    if (dst != IsDST(*value))
-        *value = value->addSecs(dst ? -3600 : 3600);
+        st.wSecond), Qt::UTC);
     return value->isValid();
 }
 
@@ -504,7 +482,7 @@ private:
 bool operator==(const File &lhs, const File &rhs)
 {
     return lhs.path == rhs.path
-        && lhs.mtime == rhs.mtime
+        && lhs.utcTime == rhs.utcTime
         && lhs.isDirectory == rhs.isDirectory
         && lhs.compressedSize == rhs.compressedSize
         && lhs.uncompressedSize == rhs.uncompressedSize
@@ -565,7 +543,7 @@ QVector<File> listArchive(QFileDevice *archive)
                 f.path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 Archive_IsItem_Folder(arch, item, f.isDirectory);
                 f.permissions = getPermissions(arch, item, 0);
-                getDateTimeProperty(arch, item, kpidMTime, &(f.mtime));
+                getDateTimeProperty(arch, item, kpidMTime, &(f.utcTime));
                 f.uncompressedSize = getUInt64Property(arch, item, kpidSize, 0);
                 f.compressedSize = getUInt64Property(arch, item, kpidPackSize, 0);
                 flat.append(f);
