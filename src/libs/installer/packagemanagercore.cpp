@@ -1515,8 +1515,8 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 }
 
 /*!
-    Calculates a list of components to uninstall based on the current run mode. Auto installed
-    dependencies are not yet resolved. The aboutCalculateComponentsToUninstall() signal is emitted
+    Calculates a list of components to uninstall based on the current run mode.
+    The aboutCalculateComponentsToUninstall() signal is emitted
     before the calculation starts, the finishedCalculateComponentsToUninstall() signal once all
     calculations are done. Always returns \c true.
 
