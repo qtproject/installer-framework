@@ -56,6 +56,7 @@ private:
     QString m_iconId;
     QString m_iconPath;
     QString m_workingDir;
+    QString m_description;
 };
 
 }

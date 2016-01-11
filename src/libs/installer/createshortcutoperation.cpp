@@ -100,7 +100,7 @@ static QString takeArgument(const QString argument, QStringList *arguments)
 
 static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
     const QString &arguments = QString(), const QString &iconPath = QString(),
-    const QString &iconId = QString())
+    const QString &iconId = QString(), const QString &description = QString())
 {
 #ifdef Q_OS_WIN
     // CoInitialize cleanup object
@@ -145,6 +145,8 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
             psl->SetArguments((wchar_t*)arguments.utf16());
         if (!iconPath.isNull())
             psl->SetIconLocation((wchar_t*)(iconPath.utf16()), iconId.toInt());
+        if (!description.isNull())
+            psl->SetDescription((wchar_t*)(description.utf16()));
         iunkn = psl;
     }
 
@@ -215,6 +217,7 @@ void CreateShortcutOperation::ensureOptionalArgumentsRead()
     m_iconId = takeArgument(QString::fromLatin1("iconId="), &args);
     m_iconPath = takeArgument(QString::fromLatin1("iconPath="), &args);
     m_workingDir = takeArgument(QString::fromLatin1("workingDirectory="), &args);
+    m_description = takeArgument(QString::fromLatin1("description="), &args);
 
     setArguments(args);
 }
@@ -224,7 +227,8 @@ bool CreateShortcutOperation::performOperation()
     ensureOptionalArgumentsRead();
 
     if (!checkArgumentCount(2, 3, tr("<target> <link location> [target arguments] "
-                                     "[\"workingDirectory=...\"] [\"iconPath=...\"] [\"iconId=...\"]"))) {
+                                     "[\"workingDirectory=...\"] [\"iconPath=...\"] [\"iconId=...\"] "
+                                     "[\"description=...\"]"))) {
         return false;
     }
 
@@ -261,7 +265,8 @@ bool CreateShortcutOperation::performOperation()
         return false;
     }
 
-    const bool linked = createLink(linkTarget, linkLocation, m_workingDir, targetArguments, m_iconPath, m_iconId);
+    const bool linked = createLink(linkTarget, linkLocation, m_workingDir, targetArguments, m_iconPath, m_iconId,
+                                   m_description);
     if (!linked) {
         setError(UserDefinedError);
         setErrorString(tr("Cannot create link \"%1\": %2").arg(QDir::toNativeSeparators(linkLocation),
