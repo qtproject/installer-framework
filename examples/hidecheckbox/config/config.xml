@@ -5,5 +5,5 @@
     <Title>Hide checkbox</Title>
     <Publisher>The Qt Company</Publisher>
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
-    <TargetDir>@HomeDir@/IfwExamples/disabletoplevel</TargetDir>
+    <TargetDir>@HomeDir@/IfwExamples/hidecheckbox</TargetDir>
 </Installer>
