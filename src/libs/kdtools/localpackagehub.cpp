@@ -512,10 +512,6 @@ void LocalPackageHub::clearPackageInfos()
 */
 
 /*!
-    \variable LocalPackage::pixmap
-*/
-
-/*!
     \variable LocalPackage::title
 */
 
