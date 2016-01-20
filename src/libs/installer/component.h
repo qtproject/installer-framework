@@ -1,17 +1,17 @@
 /**************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
+** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:LGPL21$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://qt.io/terms-conditions. For further
+** and conditions see http://www.qt.io/terms-conditions. For further
 ** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
@@ -26,7 +26,6 @@
 ** As a special exception, The Qt Company gives you certain additional
 ** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
 **
 ** $QT_END_LICENSE$
 **
@@ -45,6 +44,7 @@
 #include <QtCore/QUrl>
 
 QT_FORWARD_DECLARE_CLASS(QDebug)
+QT_FORWARD_DECLARE_CLASS(QQmlV4Function)
 
 namespace QInstaller {
 
@@ -126,22 +126,12 @@ public:
     OperationList operations() const;
 
     void addOperation(Operation *operation);
-    Q_INVOKABLE bool addOperation(const QString &operation, const QString &parameter1 = QString(),
-        const QString &parameter2 = QString(), const QString &parameter3 = QString(),
-        const QString &parameter4 = QString(), const QString &parameter5 = QString(),
-        const QString &parameter6 = QString(), const QString &parameter7 = QString(),
-        const QString &parameter8 = QString(), const QString &parameter9 = QString(),
-        const QString &parameter10 = QString());
-    Q_INVOKABLE bool addOperation(const QString &operation, const QStringList &parameters);
+    Q_INVOKABLE bool addOperation(QQmlV4Function *args);
+    bool addOperation(const QString &operation, const QStringList &parameters);
 
     void addElevatedOperation(Operation *operation);
-    Q_INVOKABLE bool addElevatedOperation(const QString &operation,
-        const QString &parameter1 = QString(), const QString &parameter2 = QString(),
-        const QString &parameter3 = QString(), const QString &parameter4 = QString(),
-        const QString &parameter5 = QString(), const QString &parameter6 = QString(),
-        const QString &parameter7 = QString(), const QString &parameter8 = QString(),
-        const QString &parameter9 = QString(), const QString &parameter10 = QString());
-    Q_INVOKABLE bool addElevatedOperation(const QString &operation, const QStringList &parameters);
+    Q_INVOKABLE bool addElevatedOperation(QQmlV4Function *args);
+    bool addElevatedOperation(const QString &operation, const QStringList &parameters);
 
     QStringList downloadableArchives() const;
     Q_INVOKABLE void addDownloadableArchive(const QString &path);

@@ -111,7 +111,15 @@ CONFIG(static, static|shared) {
 }
 CONFIG += depend_includepath no_private_qt_headers_warning c++11
 
-GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
+exists(".git") {
+    GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
+}
+
+isEmpty(GIT_SHA1) {
+    # Attempt to read the sha1 from alternative location
+    GIT_SHA1=\"$$cat(.tag)\"
+}
+
 DEFINES += QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUILDER "_GIT_SHA1_=$$GIT_SHA1" \
             IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION

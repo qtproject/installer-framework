@@ -1,17 +1,17 @@
 /**************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
+** Copyright (C) 2016 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
-** $QT_BEGIN_LICENSE:LGPL$
+** $QT_BEGIN_LICENSE:LGPL21$
 ** Commercial License Usage
 ** Licensees holding valid commercial Qt licenses may use this file in
 ** accordance with the commercial license agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://qt.io/terms-conditions. For further
+** and conditions see http://www.qt.io/terms-conditions. For further
 ** information use the contact form at http://www.qt.io/contact-us.
 **
 ** GNU Lesser General Public License Usage
@@ -26,7 +26,6 @@
 ** As a special exception, The Qt Company gives you certain additional
 ** rights. These rights are described in The Qt Company LGPL Exception
 ** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
 **
 ** $QT_END_LICENSE$
 **
@@ -54,6 +53,10 @@
 #include <QApplication>
 
 #include <QtUiTools/QUiLoader>
+
+#include <private/qv8engine_p.h>
+#include <private/qv4scopedvalue_p.h>
+#include <private/qv4global_p.h>
 
 #include <algorithm>
 
@@ -699,11 +702,11 @@ void Component::createOperationsForPath(const QString &path)
 
     if (fi.isFile()) {
         static const QString copy = QString::fromLatin1("Copy");
-        addOperation(copy, fi.filePath(), target);
+        addOperation(copy, QStringList() << fi.filePath() << target);
     } else if (fi.isDir()) {
         qApp->processEvents();
         static const QString mkdir = QString::fromLatin1("Mkdir");
-        addOperation(mkdir, target);
+        addOperation(mkdir, QStringList(target));
 
         QDirIterator it(fi.filePath());
         while (it.hasNext())
@@ -743,7 +746,7 @@ void Component::createOperationsForArchive(const QString &archive)
 
     if (isZip) {
         // archives get completely extracted per default (if the script isn't doing other stuff)
-        addOperation(QLatin1String("Extract"), archive, QLatin1String("@TargetDir@"));
+        addOperation(QLatin1String("Extract"), QStringList() << archive << QLatin1String("@TargetDir@"));
     } else {
         createOperationsForPath(archive);
     }
@@ -1004,23 +1007,44 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     return operation;
 }
 
-/*!
-    Convenience method for calling the operation \a operation with up to ten parameters:
-    \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
-    \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
+namespace {
 
-    \sa {component::addOperation}{component.addOperation}
-*/
-bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
-    const QString &parameter3, const QString &parameter4, const QString &parameter5, const QString &parameter6,
-    const QString &parameter7, const QString &parameter8, const QString &parameter9, const QString &parameter10)
+inline bool convert(QQmlV4Function *func, QStringList *toArgs)
 {
-    if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
-        parameter6, parameter7, parameter8, parameter9, parameter10)) {
-            addOperation(op);
-            return true;
-    }
+    if (func->length() < 2)
+        return false;
 
+    QV4::Scope scope(func->v4engine());
+    QV4::ScopedValue val(scope);
+    val = (*func)[0];
+
+    *toArgs << val->toQString();
+    for (int i = 1; i < func->length(); i++) {
+        val = (*func)[i];
+        if (val->isObject() && val->asObject()->isArrayObject()) {
+            QV4::ScopedValue valtmp(scope);
+            QV4::Object *array = val->asObject();
+            uint length = array->getLength();
+            for (uint ii = 0; ii < length; ++ii) {
+                valtmp = array->getIndexed(ii);
+                *toArgs << valtmp->toQStringNoThrow();
+            }
+        } else {
+            *toArgs << val->toQString();
+        }
+    }
+    return true;
+}
+
+}
+/*!
+    \internal
+*/
+bool Component::addOperation(QQmlV4Function *func)
+{
+    QStringList args;
+    if (convert(func, &args))
+        return addOperation(args[0], args.mid(1));
     return false;
 }
 
@@ -1028,6 +1052,8 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
     Creates and adds an installation operation for \a operation. Add any number of \a parameters.
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values.
+
+    \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
 {
@@ -1040,23 +1066,13 @@ bool Component::addOperation(const QString &operation, const QStringList &parame
 }
 
 /*!
-    Convenience method for calling the elevated operation \a operation with up to ten parameters:
-    \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
-    \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
-
-    \sa {component::addElevatedOperation}{component.addElevatedOperation}
+    \internal
 */
-bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
-    const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
-    const QString &parameter6, const QString &parameter7, const QString &parameter8, const QString &parameter9,
-    const QString &parameter10)
+bool Component::addElevatedOperation(QQmlV4Function *func)
 {
-    if (Operation *op = createOperation(operation, parameter1, parameter2, parameter3, parameter4, parameter5,
-        parameter6, parameter7, parameter8, parameter9, parameter10)) {
-            addElevatedOperation(op);
-            return true;
-    }
-
+    QStringList args;
+    if (convert(func, &args))
+        return addElevatedOperation(args[0], args.mid(1));
     return false;
 }
 
@@ -1065,6 +1081,7 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values. The operation is executed with elevated rights.
 
+    \sa {component::addElevatedOperation}{component.addElevatedOperation}
 */
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
 {
