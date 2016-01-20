@@ -737,7 +737,13 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
 }
 
 /*!
-    \fn bool ExtractCallback::prepareForFile(const QString &filename)
+    \namespace Lib7z
+    \inmodule QtInstallerFramework
+    \brief  The Lib7z namespace contains miscellaneous identifiers used throughout the Lib7z library.
+*/
+
+/*!
+    \fn virtual bool Lib7z::ExtractCallback::prepareForFile(const QString &filename)
 
     Implement to prepare for file \a filename to be extracted, e.g. by renaming existing files.
     Return \c true if the preparation was successful and extraction can be continued. If \c false
