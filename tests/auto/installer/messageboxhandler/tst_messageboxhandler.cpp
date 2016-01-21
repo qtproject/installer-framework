@@ -12,15 +12,6 @@
 
 using namespace QInstaller;
 
-namespace QTest {
-    template<>
-    char *toString(const QMessageBox::StandardButton &button)
-    {
-        QString buttonAsString(QString::number(button));
-        return qstrdup(buttonAsString.toLatin1().data());
-    }
-}
-
 class tst_MessageBoxHandler : public QObject
 {
     Q_OBJECT
