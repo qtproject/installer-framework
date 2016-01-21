@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Your application</Name>
+    <Version>1.2.3</Version>
+    <WizardDefaultWidth>800px</WizardDefaultWidth>
+    <WizardDefaultHeight>600px</WizardDefaultHeight>
+</Installer>

@@ -9,5 +9,9 @@
         <file>data/minimal_config_tag_defaults.xml</file>
         <file>data/unexpectedtag_config.xml</file>
         <file>data/unexpectedattribute_config.xml</file>
+        <file>data/length_units_valid_px.xml</file>
+        <file>data/length_units_valid_em.xml</file>
+        <file>data/length_units_valid_ex.xml</file>
+        <file>data/length_units_invalid.xml</file>
     </qresource>
 </RCC>

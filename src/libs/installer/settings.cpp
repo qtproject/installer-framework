@@ -38,6 +38,8 @@
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
+#include <QtGui/QFontMetrics>
+#include <QtWidgets/QApplication>
 
 #include <QRegularExpression>
 #include <QXmlStreamReader>
@@ -391,14 +393,31 @@ QString Settings::titleColor() const
     return d->m_data.value(scTitleColor).toString();
 }
 
+static int lengthToInt(const QVariant &variant)
+{
+    QString length = variant.toString().trimmed();
+    if (length.endsWith(QLatin1String("em"), Qt::CaseInsensitive)) {
+        length.chop(2);
+        return qRound(length.toDouble() * QApplication::fontMetrics().height());
+    }
+    if (length.endsWith(QLatin1String("ex"), Qt::CaseInsensitive)) {
+        length.chop(2);
+        return qRound(length.toDouble() * QApplication::fontMetrics().xHeight());
+    }
+    if (length.endsWith(QLatin1String("px"), Qt::CaseInsensitive)) {
+        length.chop(2);
+    }
+    return length.toInt();
+}
+
 int Settings::wizardDefaultWidth() const
 {
-    return d->m_data.value(scWizardDefaultWidth).toInt();
+    return lengthToInt(d->m_data.value(scWizardDefaultWidth));
 }
 
 int Settings::wizardDefaultHeight() const
 {
-    return d->m_data.value(scWizardDefaultHeight).toInt();
+    return lengthToInt(d->m_data.value(scWizardDefaultHeight));
 }
 
 QString Settings::installerApplicationIcon() const

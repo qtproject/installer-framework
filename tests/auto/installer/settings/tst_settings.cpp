@@ -23,6 +23,8 @@ private slots:
     void loadMinimalConfigTagDefaults();
     void loadUnexpectedAttributeConfig();
     void loadUnexpectedTagConfig();
+    void loadConfigWithValidLengthUnits();
+    void loadConfigWithInvalidLengthUnits();
 };
 
 void tst_Settings::loadTutorialConfig()
@@ -195,6 +197,33 @@ void tst_Settings::loadUnexpectedTagConfig()
     return;
 }
 
+void tst_Settings::loadConfigWithValidLengthUnits()
+{
+    try {
+        Settings settings = Settings::fromFileAndPrefix(":///data/length_units_valid_px.xml", ":///data");
+        QCOMPARE(settings.wizardDefaultWidth(), 800);
+        QCOMPARE(settings.wizardDefaultHeight(), 600);
+
+        // Cannot test the parsed values for these units portably since the
+        // pixel value depends on the font metrics. Let's just check for parse
+        // errors.
+        (void)Settings::fromFileAndPrefix(":///data/length_units_valid_em.xml", ":///data");
+        (void)Settings::fromFileAndPrefix(":///data/length_units_valid_ex.xml", ":///data");
+    } catch (const Error &error) {
+        QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
+    }
+}
+
+void tst_Settings::loadConfigWithInvalidLengthUnits()
+{
+    try {
+        Settings settings = Settings::fromFileAndPrefix(":///data/length_units_invalid.xml", ":///data");
+        QCOMPARE(settings.wizardDefaultWidth(), 0);
+        QCOMPARE(settings.wizardDefaultHeight(), 0);
+    } catch (const Error &error) {
+        QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
+    }
+}
 
 QTEST_MAIN(tst_Settings)
 

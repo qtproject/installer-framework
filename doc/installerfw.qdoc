@@ -222,11 +222,13 @@
         \row
             \li WizardDefaultWidth
             \li Sets the default width of the wizard in pixels. Setting a banner image will
-                override this.
+                override this. You can add the \c em or \c ex suffix to the specified value to
+                use the \e em or \e ex unit, as in a CSS file.
         \row
             \li WizardDefaultHeight
             \li Sets the default height of the wizard in pixels. Setting a watermark image will
-                override this.
+                override this. You can add the \c em or \c ex suffix to the specified value to
+                use the \e em or \e ex unit, as in a CSS file.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
