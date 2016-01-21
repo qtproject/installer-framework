@@ -33,7 +33,8 @@
 
 #include <component.h>
 #include <errors.h>
-#include <kdupdaterupdateoperationfactory.h>
+#include <updateoperation.h>
+#include <updateoperationfactory.h>
 #include <packagemanagercore.h>
 #include <packagemanagergui.h>
 #include <scriptengine.h>
@@ -160,7 +161,9 @@ signals:
 class EmptyArgOperation : public KDUpdater::UpdateOperation
 {
 public:
-    EmptyArgOperation() {
+    explicit EmptyArgOperation(QInstaller::PackageManagerCore *core)
+        : KDUpdater::UpdateOperation(core)
+    {
         setName("EmptyArg");
     }
 
@@ -173,9 +176,6 @@ public:
     }
     bool testOperation() {
         return true;
-    }
-    UpdateOperation *clone() const {
-        return 0;
     }
 };
 
@@ -281,7 +281,7 @@ private slots:
         // ignore Output from script
         setExpectedScriptOutput("function receive()");
 
-        QTest::ignoreMessage(QtWarningMsg, ":10: ReferenceError: foo is not defined");
+        QTest::ignoreMessage(QtWarningMsg, ":43: ReferenceError: foo is not defined");
         emiter.produceSignal();
 
         const QJSValue value = m_scriptEngine->evaluate("");
