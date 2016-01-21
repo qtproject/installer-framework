@@ -1063,7 +1063,10 @@ QPixmap PackageManagerPage::watermarkPixmap() const
 */
 QPixmap PackageManagerPage::bannerPixmap() const
 {
-    return QPixmap(m_core->value(QLatin1String("BannerPixmap")));
+    QPixmap banner(m_core->value(QLatin1String("BannerPixmap")));
+
+    return banner.scaledToWidth(m_core->settings().wizardDefaultWidth(),
+                                Qt::SmoothTransformation);
 }
 
 /*!
