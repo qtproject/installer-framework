@@ -1,4 +1,18 @@
 2.0.2
+- Doc: Remove dubious sentence from installer.calculateComponentsToUninstall().
+- Update documentation for --runoperation.
+- Update the git-archive export options.
+- Add alternative option where to read the installer-framework sha1.
+- Add sync.profile.
+- Add .qt-license-check.exclude and .qt-license-check.optional rules.
+- Update license headers.
+- Fix target directory check for reserved words on Windows.
+- Use QQmlV4Function to correctly get empty parameters from script. (QTIFW-724)
+- Fix errors when running updates in a directory requiring elevation. (QTIFW-746)
+- Doc: Fix the function name in Controller Scripting page.
+- Fix usage of system proxy with credentials. (QTBUG-46547)
+- Unify handling of translations. QTIFW-390
+- Init all components with proper install action. (QTIFW-727)
 - Fix .dat file that gets deleted after multiple component changes on Windows.
 - Fix maintenance tool upgrade on OS X.
 - Fix handling of system proxy with credentials. (QTBUG-46547)
