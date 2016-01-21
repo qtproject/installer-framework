@@ -1026,9 +1026,9 @@ inline bool convert(QQmlV4Function *func, QStringList *toArgs)
     *toArgs << val->toQString();
     for (int i = 1; i < func->length(); i++) {
         val = (*func)[i];
-        if (val->isObject() && val->asObject()->isArrayObject()) {
+        if (val->isObject() && val->as<QV4::Object>()->isArrayObject()) {
             QV4::ScopedValue valtmp(scope);
-            QV4::Object *array = val->asObject();
+            QV4::Object *array = val->as<QV4::Object>();
             uint length = array->getLength();
             for (uint ii = 0; ii < length; ++ii) {
                 valtmp = array->getIndexed(ii);
