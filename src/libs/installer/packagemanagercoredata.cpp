@@ -160,7 +160,7 @@ bool PackageManagerCoreData::contains(const QString &key) const
 
 bool PackageManagerCoreData::setValue(const QString &key, const QString &normalizedValue)
 {
-    if (m_variables.value(key) == normalizedValue)
+    if (m_variables.contains(key) && m_variables.value(key) == normalizedValue)
         return false;
     m_variables.insert(key, normalizedValue);
     return true;
