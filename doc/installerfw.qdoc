@@ -847,6 +847,11 @@
         \row
             \li -v or --verbose
             \li Display debug output.
+
+        \row
+            \li -s or --sign identity
+            \li Only available on OS X. Allows specifying a code signing identity to be
+                used for signing the generated app bundle.
     \endtable
 
     These parameters are followed by the name of the target binary and a list

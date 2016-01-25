@@ -103,7 +103,7 @@ static void chmod755(const QString &absolutFilePath)
 }
 #endif
 
-static int assemble(Input input, const QInstaller::Settings &settings)
+static int assemble(Input input, const QInstaller::Settings &settings, const QString &signingIdentity)
 {
 #ifdef Q_OS_OSX
     if (QInstaller::isInBundle(input.installerExePath)) {
@@ -308,6 +308,36 @@ static int assemble(Input input, const QInstaller::Settings &settings)
     QFile::remove(tempFile);
 
 #ifdef Q_OS_OSX
+    if (isBundle && !signingIdentity.isEmpty()) {
+        qDebug() << "Signing .app bundle...";
+
+        QProcess p;
+        p.start(QLatin1String("codesign"),
+                QStringList() << QLatin1String("--force")
+                              << QLatin1String("--deep")
+                              << QLatin1String("--sign") << signingIdentity
+                              << bundle);
+
+        if (!p.waitForFinished(-1)) {
+            qCritical("Failed to sign app bundle: error while running '%s %s': %s",
+                      p.program().toUtf8().constData(),
+                      p.arguments().join(QLatin1Char(' ')).toUtf8().constData(),
+                      p.errorString().toUtf8().constData());
+            return EXIT_FAILURE;
+        }
+
+        if (p.exitStatus() == QProcess::NormalExit) {
+            if (p.exitCode() != 0) {
+                qCritical("Failed to sign app bundle: running codesign failed "
+                          "with exit code %d: %s", p.exitCode(),
+                          p.readAllStandardError().constData());
+                return EXIT_FAILURE;
+            }
+        }
+
+        qDebug() << "done.";
+    }
+
     bundleBackup.release();
 
     if (createDMG) {
@@ -323,6 +353,8 @@ static int assemble(Input input, const QInstaller::Settings &settings)
         QFile::remove(mkdmgscript);
         qDebug() <<  "done." << mkdmgscript;
     }
+#else
+    Q_UNUSED(signingIdentity)
 #endif
     return EXIT_SUCCESS;
 }
@@ -445,6 +477,10 @@ static void printUsage()
     std::cout << "  -rcc|--compile-resource   Compiles the default resource and outputs the result into"
         << std::endl;
     std::cout << "                            'update.rcc' in the current path." << std::endl;
+#ifdef Q_OS_OSX
+    std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
+    std::cout << "                            signing identity" << std::endl;
+#endif
     std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
@@ -560,6 +596,7 @@ int main(int argc, char **argv)
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
     bool compileResource = false;
+    QString signingIdentity;
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -647,6 +684,13 @@ int main(int argc, char **argv)
                 continue;
         } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
             compileResource = true;
+#ifdef Q_OS_OSX
+        } else if (*it == QLatin1String("-s") || *it == QLatin1String("--sign")) {
+            ++it;
+            if (it == args.end() || it->startsWith(QLatin1String("-")))
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: No code signing identity specified."));
+            signingIdentity = *it;
+#endif
         } else {
             if (it->startsWith(QLatin1String("-"))) {
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: Unknown option \"%1\" used. Maybe you "
@@ -741,7 +785,7 @@ int main(int argc, char **argv)
             input.installerExePath = templateBinary;
 
             qDebug() << "Creating the binary";
-            exitCode = assemble(input, settings);
+            exitCode = assemble(input, settings, signingIdentity);
         } else {
             createDefaultResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
             exitCode = EXIT_SUCCESS;
