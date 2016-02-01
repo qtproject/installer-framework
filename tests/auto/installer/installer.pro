@@ -19,3 +19,7 @@ SUBDIRS += \
     task \
     clientserver \
     factory
+
+win32 {
+    SUBDIRS += registerfiletypeoperation
+}

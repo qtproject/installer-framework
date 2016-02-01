@@ -49,6 +49,12 @@ public:
     bool performOperation();
     bool undoOperation();
     bool testOperation();
+
+private:
+    void ensureOptionalArgumentsRead();
+
+    bool m_optionalArgumentsRead;
+    QString m_progId;
 };
 
 }
