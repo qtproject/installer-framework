@@ -2988,12 +2988,6 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
 
-#ifdef Q_OS_OSX
-    m_msgLabel->setText(tr("Click Done to exit the %1 Wizard.").arg(productName()));
-#else
-    m_msgLabel->setText(tr("Click Finish to exit the %1 Wizard.").arg(productName()));
-#endif
-
     m_runItCheckBox = new QCheckBox(this);
     m_runItCheckBox->setObjectName(QLatin1String("RunItCheckBox"));
     m_runItCheckBox->setChecked(true);
@@ -3012,6 +3006,10 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 */
 void FinishedPage::entering()
 {
+    m_msgLabel->setText(tr("Click %1 to exit the %2 Wizard.")
+                        .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')))
+                        .arg(productName()));
+
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
         m_commitButton = 0;
