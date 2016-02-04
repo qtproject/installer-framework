@@ -53,7 +53,10 @@ UpdateChecker::UpdateChecker(int &argc, char *argv[])
 
 int UpdateChecker::check()
 {
-    RunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp15021976.lock"));
+    RunOnceChecker runCheck(qApp->applicationDirPath()
+                            + QLatin1Char('/')
+                            + qApp->applicationName()
+                            + QLatin1String("15021976.lock"));
     if (runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
         // It is possible to install an application and thus the maintenance tool into a
         // directory that requires elevated permission to create a lock file. Since this

@@ -75,7 +75,10 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::run()
 {
-    RunOnceChecker runCheck(qApp->applicationDirPath() + QLatin1String("/lockmyApp1234865.lock"));
+    RunOnceChecker runCheck(qApp->applicationDirPath()
+                            + QLatin1Char('/')
+                            + qApp->applicationName()
+                            + QLatin1String("1234865.lock"));
     if (runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
         // It is possible to install an application and thus the maintenance tool into a
         // directory that requires elevated permission to create a lock file. Since this
