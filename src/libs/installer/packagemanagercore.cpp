@@ -1025,8 +1025,17 @@ void PackageManagerCore::networkSettingsChanged()
     d->m_repoFetched = false;
     d->m_updateSourcesAdded = false;
 
-    if (d->isUpdater() || d->isPackageManager())
+    if (d->isUpdater() || d->isPackageManager()) {
+        bool gainedAdminRights = false;
+        QTemporaryFile tempAdminFile(d->targetDir() + QStringLiteral("/XXXXXX"));
+        if (!tempAdminFile.open() || !tempAdminFile.isWritable()) {
+            gainAdminRights();
+            gainedAdminRights = true;
+        }
         d->writeMaintenanceConfigFiles();
+        if (gainedAdminRights)
+            dropAdminRights();
+    }
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(proxyFactory());
 
     emit coreNetworkSettingsChanged();
