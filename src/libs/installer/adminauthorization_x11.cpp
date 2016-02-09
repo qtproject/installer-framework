@@ -162,10 +162,17 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         int errBytes = 0;
         char buf[1024];
         char errBuf[1024];
+        int status;
+        bool statusValid = false;
         while (bytes >= 0) {
-            int state;
-            if (::waitpid(child, &state, WNOHANG) == -1)
+            const pid_t waitResult = ::waitpid(child, &status, WNOHANG);
+            if (waitResult == -1) {
                 break;
+            }
+            if (waitResult == child) {
+                statusValid = true;
+                break;
+            }
             bytes = ::read(masterFD, buf, 1023);
             if (bytes == -1 && errno == EAGAIN)
                 bytes = 0;
@@ -203,15 +210,8 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             return false;
         }
 
-        int status;
-        child = ::wait(&status);
-        const int exited = WIFEXITED(status);
-        const int exitStatus = WEXITSTATUS(status);
         ::close(pipedData[1]);
-        if (exited)
-            return exitStatus == 0;
-
-        return false;
+        return statusValid && WIFEXITED(status) && WEXITSTATUS(status) == 0;
     }
 
     // child process
