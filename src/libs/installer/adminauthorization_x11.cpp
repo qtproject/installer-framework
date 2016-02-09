@@ -238,7 +238,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         for (int i = 3; i < static_cast<int>(rlp.rlim_cur); ++i)
             ::close(i);
 
-        char **argp = (char **) ::malloc(arguments.count() + 4 * sizeof(char *));
+        char **argp = (char **) ::malloc((arguments.count() + 4) * sizeof(char *));
         QList<QByteArray> args;
         args.push_back(SU_COMMAND);
         args.push_back("-b");
