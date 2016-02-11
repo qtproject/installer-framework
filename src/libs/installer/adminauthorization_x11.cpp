@@ -205,13 +205,15 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             if (bytes == 0)
                 ::usleep(100000);
         }
-        if (!errData.isEmpty()) {
+
+        const bool success = statusValid && WIFEXITED(status) && WEXITSTATUS(status) == 0;
+
+        if (!success && !errData.isEmpty()) {
             printError(parent, QString::fromLocal8Bit(errData.constData()));
-            return false;
         }
 
         ::close(pipedData[1]);
-        return statusValid && WIFEXITED(status) && WEXITSTATUS(status) == 0;
+        return success;
     }
 
     // child process
