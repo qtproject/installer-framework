@@ -206,6 +206,19 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
                 ::usleep(100000);
         }
 
+        while (true) {
+            errBytes = ::read(pipedData[0], errBuf, 1023);
+            if (errBytes == -1 && errno == EAGAIN) {
+                ::usleep(100000);
+                continue;
+            }
+
+            if (errBytes <= 0)
+                break;
+
+            errData.append(errBuf, errBytes);
+        }
+
         const bool success = statusValid && WIFEXITED(status) && WEXITSTATUS(status) == 0;
 
         if (!success && !errData.isEmpty()) {
