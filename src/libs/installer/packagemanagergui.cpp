@@ -1065,8 +1065,15 @@ QPixmap PackageManagerPage::bannerPixmap() const
 {
     QPixmap banner(m_core->value(QLatin1String("BannerPixmap")));
 
-    return banner.scaledToWidth(m_core->settings().wizardDefaultWidth(),
-                                Qt::SmoothTransformation);
+    if (!banner.isNull()) {
+        int width;
+        if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
+            width = m_core->settings().wizardDefaultWidth();
+        else
+            width = size().width();
+        banner = banner.scaledToWidth(width, Qt::SmoothTransformation);
+    }
+    return banner;
 }
 
 /*!
