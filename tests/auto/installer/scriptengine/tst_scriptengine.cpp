@@ -33,7 +33,6 @@
 
 #include <component.h>
 #include <errors.h>
-#include <kdupdaterupdateoperationfactory.h>
 #include <packagemanagercore.h>
 #include <packagemanagergui.h>
 #include <scriptengine.h>
@@ -157,30 +156,6 @@ signals:
     void emitted();
 };
 
-class EmptyArgOperation : public KDUpdater::UpdateOperation
-{
-public:
-    EmptyArgOperation() {
-        setName("EmptyArg");
-    }
-
-    void backup() {}
-    bool performOperation() {
-        return true;
-    }
-    bool undoOperation() {
-        return true;
-    }
-    bool testOperation() {
-        return true;
-    }
-    UpdateOperation *clone() const {
-        return 0;
-    }
-};
-
-
-// -- tst_ScriptEngine
 
 class tst_ScriptEngine : public QObject
 {
@@ -196,10 +171,6 @@ private slots:
 
         m_component->setValue("Default", "Script");
         m_component->setValue(scName, "component.test.name");
-
-        Component *component = new Component(&m_core);
-        component->setValue(scName, "component.test.addOperation");
-        m_core.appendRootComponent(component);
 
         m_scriptEngine = m_core.componentScriptEngine();
     }
@@ -486,44 +457,6 @@ private slots:
         QStringList expectedOrder;
         expectedOrder << QLatin1String("Entering") << QLatin1String("Callback");
         QCOMPARE(enteringPage->invocationOrder(), expectedOrder);
-    }
-
-    void testAddOperation_AddElevatedOperation()
-    {
-        using namespace KDUpdater;
-        UpdateOperationFactory &factory = UpdateOperationFactory::instance();
-        factory.registerUpdateOperation<EmptyArgOperation>(QLatin1String("EmptyArg"));
-
-        try {
-            m_core.setPackageManager();
-            Component *component = m_core.componentByName("component.test.addOperation");
-            component->loadComponentScript(":///data/addOperation.qs");
-
-            setExpectedScriptOutput("\"Component::createOperations()\"");
-            component->createOperations();
-
-            const OperationList operations = component->operations();
-            QCOMPARE(operations.count(), 8);
-
-            struct {
-                const char* args[3];
-                const char* operator[](int i) const {
-                    return args[i];
-                }
-            } expectedArgs[] = {
-                { "Arg", "Arg2", "" }, { "Arg", "", "Arg3" }, { "", "Arg2", "Arg3" }, { "Arg", "Arg2", "" },
-                { "eArg", "eArg2", "" }, { "eArg", "", "eArg3" }, { "", "eArg2", "eArg3" }, { "eArg", "eArg2", "" }
-            };
-
-            for (int i = 0; i < operations.count(); ++i) {
-                const QStringList arguments = operations[i]->arguments();
-                QCOMPARE(arguments.count(), 3);
-                for (int j = 0; j < 3; ++j)
-                    QCOMPARE(arguments[j], QString(expectedArgs[i][j]));
-            }
-        } catch (const QInstaller::Error &error) {
-            QFAIL(qPrintable(error.message()));
-        }
     }
 
 private:

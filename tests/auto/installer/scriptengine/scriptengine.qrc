@@ -8,6 +8,5 @@
         <file>data/enteringpage.qs</file>
         <file>data/form.ui</file>
         <file>data/userinterface.qs</file>
-        <file>data/addOperation.qs</file>
     </qresource>
 </RCC>
