@@ -140,8 +140,10 @@ void TestRepository::downloadCompleted()
             if (dlg.exec() == QDialog::Accepted) {
                 m_repository.setUsername(dlg.user());
                 m_repository.setPassword(dlg.password());
+                QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+            } else {
+                QMetaObject::invokeMethod(this, "doCancel", Qt::QueuedConnection);
             }
-            QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
             return;
         } else if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
