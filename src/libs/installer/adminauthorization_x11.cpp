@@ -269,8 +269,10 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
         ::unsetenv("LANG");
         ::unsetenv("LC_ALL");
 
-        ::execv(SU_COMMAND, argp);
-        _exit(0);
+        int exitStatus = 0;
+        if (::execv(SU_COMMAND, argp) == -1)
+            exitStatus = -errno;
+        _exit(exitStatus);
         return false;
     }
 }
