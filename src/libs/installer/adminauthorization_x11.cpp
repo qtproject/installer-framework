@@ -225,7 +225,7 @@ bool AdminAuthorization::execute(QWidget *parent, const QString &program, const 
             printError(parent, QString::fromLocal8Bit(errData.constData()));
         }
 
-        ::close(pipedData[1]);
+        ::close(pipedData[0]);
         return success;
     }
 
