@@ -1,3 +1,9 @@
+2.0.3
+- Revert "Use QQmlV4Function to correctly get empty parameters from script."
+- Fix crash when updating admin installation with user/temp repository (QTIFW-740)
+- Compile with Qt 5.5, 5.6. Minimum version is now 5.5.
+- Fix compile with namespace'ed Qt.
+
 2.0.2
 - Doc: Remove dubious sentence from installer.calculateComponentsToUninstall().
 - Update documentation for --runoperation.

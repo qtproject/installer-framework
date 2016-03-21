@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
     <Installer>
     <Name>Qt Installer Framework</Name>
-    <Title>Qt Installer Framework 2.0.2</Title>
+    <Title>Qt Installer Framework 2.0.3</Title>
     <Version>1.0.0</Version>
     <Publisher>Qt Project</Publisher>
     <ProductUrl>http://qt-project.org</ProductUrl>
@@ -9,5 +9,5 @@
     <MaintenanceToolName>Uninstaller</MaintenanceToolName>
 
     <!-- Tweaked for windows in installscript.qs -->
-    <TargetDir>@HomeDir@/Qt/QtIFW2.0.2</TargetDir>
+    <TargetDir>@HomeDir@/Qt/QtIFW2.0.3</TargetDir>
 </Installer>
