@@ -7,8 +7,6 @@ include(../../installerfw.pri)
 QT -= gui
 QT += qml xml
 
-!minQtVersion(5,4,0): QTPLUGIN += qtaccessiblewidgets
-
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 SOURCES = binarycreator.cpp \

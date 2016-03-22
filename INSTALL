@@ -15,7 +15,7 @@ http://code.qt.io/cgit/installer-framework/installer-framework.git/
 Build a static Qt
 ---------------------
 
-Building the Qt Installer Framework from sources requires Qt (version 5.4.0
+Building the Qt Installer Framework from sources requires Qt (version 5.5
 or newer). Supported compilers are MSVC 2013 or newer, GCC 4.7 or newer,
 and Clang 3.1 or newer.
 
@@ -26,44 +26,21 @@ See the Qt documentation for the prerequisites and steps to build Qt from source
 
 ### Windows
 
-For Qt 5.4, you need to adjust the respective qmake.conf to have a real stand alone
-working installer. Replace -MD, -MDd with -MT, -MTD in the CFLAGS lines.
-
-'git diff' should show you something like:
-
---- a/mkspecs/win32-msvc2013/qmake.conf
-+++ b/mkspecs/win32-msvc2013/qmake.conf
- QMAKE_CFLAGS            = -nologo -Zm200 -Zc:wchar_t -FS
- QMAKE_CFLAGS_WARN_ON    = -W3
- QMAKE_CFLAGS_WARN_OFF   = -W0
--QMAKE_CFLAGS_RELEASE    = -O2 -MD -Zc:strictStrings
--QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MD -Zi -Zc:strictStrings
--QMAKE_CFLAGS_DEBUG      = -Zi -MDd
-+QMAKE_CFLAGS_RELEASE    = -O2 -MT -Zc:strictStrings
-+QMAKE_CFLAGS_RELEASE_WITH_DEBUGINFO += -O2 -MT -Zi -Zc:strictStrings
-+QMAKE_CFLAGS_DEBUG      = -Zi -MTd
- QMAKE_CFLAGS_YACC       =
- QMAKE_CFLAGS_LTCG       = -GL
- QMAKE_CFLAGS_MP         = -MP
-
-From Qt 5.5 onwards, you can achieve the same by passing -static-runtime to
-configure.
-
 Recommended configuration options for Microsoft Windows:
 
-configure -prefix %CD%\qtbase -release -static -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
+configure -prefix %CD%\qtbase -release -static -static-runtime -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
 
 ### Linux
 
 Recommended configuration options for Linux:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
 
 ### OS X
 
 Recommended configuration options for OS X:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
 
 
 Build the Framework
