@@ -489,6 +489,9 @@ private slots:
 
     void testAddOperation_AddElevatedOperation()
     {
+#if QT_VERSION < 0x50600
+        QSKIP("Behavior changed from 5.6.0 onwards.");
+#endif
         using namespace KDUpdater;
         UpdateOperationFactory &factory = UpdateOperationFactory::instance();
         factory.registerUpdateOperation<EmptyArgOperation>(QLatin1String("EmptyArg"));
@@ -498,7 +501,7 @@ private slots:
             Component *component = m_core.componentByName("component.test.addOperation");
             component->loadComponentScript(":///data/addOperation.qs");
 
-            setExpectedScriptOutput("\"Component::createOperations()\"");
+            setExpectedScriptOutput("Component::createOperations()");
             component->createOperations();
 
             const OperationList operations = component->operations();
