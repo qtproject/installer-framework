@@ -8,6 +8,7 @@ SUBDIRS += \
     messageboxhandler \
     extractarchiveoperationtest \
     lib7zfacade \
+    unicodeexecutable \
     scriptengine \
     consumeoutputoperationtest \
     mkdiroperationtest \
@@ -23,3 +24,4 @@ SUBDIRS += \
 win32 {
     SUBDIRS += registerfiletypeoperation
 }
+scriptengine.depends += unicodeexecutable

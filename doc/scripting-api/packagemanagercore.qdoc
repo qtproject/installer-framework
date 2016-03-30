@@ -505,12 +505,19 @@
 
 /*!
     \qmlmethod array installer::execute(string program, stringlist arguments = undefined,
-                                        string stdin = "")
+                                        string stdin = "", string stdinCodec = "latin1",
+                                        string stdoutCodec = "latin1")
 
     Starts the program \a program with the arguments \a arguments in a
     new process and waits for it to finish.
 
     \a stdin is sent as standard input to the application.
+
+    \a stdInCodec is the name of the codec to use for converting the input string
+    into bytes to write to the standard input of the application.
+
+    \a stdOutCodec is the name of the codec to use for converting data written by the
+    application to standard output into a string.
 
     Returns an empty array if the program could not be executed, otherwise
     the output of command as the first item, and the return code as the second.

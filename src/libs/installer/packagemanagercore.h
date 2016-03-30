@@ -138,7 +138,9 @@ public:
     Q_INVOKABLE bool localInstallerBinaryUsed();
 
     Q_INVOKABLE QList<QVariant> execute(const QString &program,
-        const QStringList &arguments = QStringList(), const QString &stdIn = QString()) const;
+        const QStringList &arguments = QStringList(), const QString &stdIn = QString(),
+        const QString &stdInCodec = QLatin1String("latin1"),
+        const QString &stdOutCodec = QLatin1String("latin1")) const;
     Q_INVOKABLE bool executeDetached(const QString &program,
         const QStringList &arguments = QStringList(),
         const QString &workingDirectory = QString()) const;

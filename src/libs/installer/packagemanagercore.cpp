@@ -62,6 +62,8 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTextCodec>
+#include <QtCore/QTextDecoder>
+#include <QtCore/QTextEncoder>
 #include <QtCore/QTextStream>
 
 #include <QDesktopServices>
@@ -1842,6 +1844,12 @@ bool PackageManagerCore::localInstallerBinaryUsed()
 
     \a stdIn is sent as standard input to the application.
 
+    \a stdInCodec is the name of the codec to use for converting the input string
+    into bytes to write to the standard input of the application.
+
+    \a stdOutCodec is the name of the codec to use for converting data written by the
+    application to standard output into a string.
+
     Returns an empty array if the program could not be executed, otherwise
     the output of command as the first item, and the return code as the second.
 
@@ -1851,7 +1859,7 @@ bool PackageManagerCore::localInstallerBinaryUsed()
     \sa executeDetached()
 */
 QList<QVariant> PackageManagerCore::execute(const QString &program, const QStringList &arguments,
-    const QString &stdIn) const
+    const QString &stdIn, const QString &stdInCodec, const QString &stdOutCodec) const
 {
     QProcessWrapper process;
 
@@ -1868,13 +1876,23 @@ QList<QVariant> PackageManagerCore::execute(const QString &program, const QStrin
         return QList< QVariant >();
 
     if (!adjustedStdIn.isNull()) {
-        process.write(adjustedStdIn.toLatin1());
+        QTextCodec *codec = QTextCodec::codecForName(qPrintable(stdInCodec));
+        if (!codec)
+            return QList<QVariant>();
+
+        QTextEncoder encoder(codec);
+        process.write(encoder.fromUnicode(adjustedStdIn));
         process.closeWriteChannel();
     }
 
     process.waitForFinished(-1);
 
-    return QList<QVariant>() << QString::fromLatin1(process.readAllStandardOutput()) << process.exitCode();
+    QTextCodec *codec = QTextCodec::codecForName(qPrintable(stdOutCodec));
+    if (!codec)
+        return QList<QVariant>();
+    return QList<QVariant>()
+            << QTextDecoder(codec).toUnicode(process.readAllStandardOutput())
+            << process.exitCode();
 }
 
 /*!

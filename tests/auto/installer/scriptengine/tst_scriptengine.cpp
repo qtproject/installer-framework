@@ -39,6 +39,8 @@
 #include <packagemanagergui.h>
 #include <scriptengine.h>
 
+#include <../unicodeexecutable/stringdata.h>
+
 #include <QTest>
 #include <QSet>
 #include <QFile>
@@ -470,6 +472,56 @@ private slots:
         QCOMPARE(gui.widget()->property("commit").toString(), QString("false"));
         QCOMPARE(m_core.value("DynamicWidget.complete"), QString("true"));
         QCOMPARE(gui.widget()->property("complete").toString(), QString("true"));
+    }
+
+    void testInstallerExecuteEncodings_data()
+    {
+        QTest::addColumn<QString>("argumentsToInstallerExecute");
+        QTest::addColumn<QString>("expectedOutput");
+        QTest::addColumn<int>("expectedExitCode");
+
+        QTest::newRow("default_encoding_ascii_output_exit_code_0")
+            << QString::fromLatin1("['ascii', '0']") << QString::fromLatin1(asciiText) << 0;
+        QTest::newRow("default_encoding_ascii_output_exit_code_52")
+            << QString::fromLatin1("['ascii', '52']") << QString::fromLatin1(asciiText) << 52;
+
+        QTest::newRow("latin1_encoding_ascii_output")
+            << QString::fromLatin1("['ascii', '0'], '', 'latin1', 'latin1'") << QString::fromLatin1(asciiText) << 0;
+        QTest::newRow("latin1_encoding_utf8_output")
+            << QString::fromLatin1("['utf8', '0'], '', 'latin1', 'latin1'") << QString::fromLatin1(utf8Text) << 0;
+
+        QTest::newRow("utf8_encoding_ascii_output")
+            << QString::fromLatin1("['ascii', '0'], '', 'utf8', 'utf8'") << QString::fromUtf8(asciiText) << 0;
+        QTest::newRow("utf8_encoding_utf8_output")
+            << QString::fromLatin1("['utf8', '0'], '', 'utf8', 'utf8'") << QString::fromUtf8(utf8Text) << 0;
+    }
+
+    void testInstallerExecuteEncodings()
+    {
+        QString unicodeExecutableName = QLatin1String("../unicodeexecutable/unicodeexecutable");
+#if defined(Q_OS_WIN)
+        unicodeExecutableName += QLatin1String(".exe");
+#endif
+
+        QFileInfo unicodeExecutable(unicodeExecutableName);
+        if (!unicodeExecutable.isExecutable()) {
+            QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error: test program %1 is not executable")
+                                .arg(unicodeExecutable.absoluteFilePath())));
+            return;
+        }
+
+        const QString testProgramPath = unicodeExecutable.absoluteFilePath();
+
+        QFETCH(QString, argumentsToInstallerExecute);
+        QFETCH(QString, expectedOutput);
+        QFETCH(int, expectedExitCode);
+
+        QJSValue result = m_scriptEngine->evaluate(QString::fromLatin1("installer.execute('%1', %2);")
+                                                   .arg(testProgramPath)
+                                                   .arg(argumentsToInstallerExecute));
+        QCOMPARE(result.isArray(), true);
+        QCOMPARE(result.property(0).toString(), expectedOutput);
+        QCOMPARE(result.property(1).toString(), QString::number(expectedExitCode));
     }
 
     void checkEnteringCalledBeforePageCallback()
