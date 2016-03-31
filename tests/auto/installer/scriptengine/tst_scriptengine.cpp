@@ -498,7 +498,7 @@ private slots:
 
     void testInstallerExecuteEncodings()
     {
-        QString unicodeExecutableName = QLatin1String("../unicodeexecutable/unicodeexecutable");
+        QString unicodeExecutableName = QLatin1String(BUILDDIR "/../unicodeexecutable/unicodeexecutable");
 #if defined(Q_OS_WIN)
         unicodeExecutableName += QLatin1String(".exe");
 #endif

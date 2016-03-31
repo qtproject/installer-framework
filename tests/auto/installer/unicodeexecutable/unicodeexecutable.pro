@@ -3,6 +3,6 @@ SOURCES = main.c
 CONFIG -= qt app_bundle
 CONFIG += console
 
-DESTDIR = ./
+win32: DESTDIR = $$OUT_PWD
 
 QT =
