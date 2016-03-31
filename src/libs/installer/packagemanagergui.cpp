@@ -1689,7 +1689,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
-    m_licenseListWidget->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
+    m_licenseListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     connect(m_licenseListWidget, &QListWidget::currentItemChanged,
         this, &LicenseAgreementPage::currentItemChanged);
 
@@ -1698,10 +1698,10 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
-    m_textBrowser->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+    m_textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(m_textBrowser, &QTextBrowser::anchorClicked, this, &LicenseAgreementPage::openLicenseUrl);
 
-    QHBoxLayout *licenseBoxLayout = new QHBoxLayout();
+    QVBoxLayout *licenseBoxLayout = new QVBoxLayout();
     licenseBoxLayout->addWidget(m_licenseListWidget);
     licenseBoxLayout->addWidget(m_textBrowser);
 
@@ -1812,7 +1812,7 @@ void LicenseAgreementPage::updateUi()
         acceptButtonText = tr("I accept the licenses.");
         rejectButtonText = tr("I do not accept the licenses.");
     }
-
+    m_licenseListWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     setColoredSubTitle(subTitleText);
 
     m_acceptLabel->setText(acceptButtonText);
