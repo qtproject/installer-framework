@@ -35,6 +35,7 @@
 const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
 const char IFW_RESOURCES[] = "ifw.resources";
 const char IFW_TRANSLATIONS[] = "ifw.translations";
+const char IFW_NETWORK[] = "ifw.network";
 
 namespace QInstaller
 {
@@ -42,13 +43,15 @@ namespace QInstaller
 Q_LOGGING_CATEGORY(lcComponentChecker, IFW_COMPONENT_CHECKER)
 Q_LOGGING_CATEGORY(lcResources, IFW_RESOURCES)
 Q_LOGGING_CATEGORY(lcTranslations, IFW_TRANSLATIONS)
+Q_LOGGING_CATEGORY(lcNetwork, IFW_NETWORK)
 
 QStringList loggingCategories()
 {
     static QStringList categories = QStringList()
             << QLatin1String(IFW_COMPONENT_CHECKER)
             << QLatin1String(IFW_RESOURCES)
-            << QLatin1String(IFW_TRANSLATIONS);
+            << QLatin1String(IFW_TRANSLATIONS)
+            << QLatin1String(IFW_NETWORK);
     return categories;
 }
 

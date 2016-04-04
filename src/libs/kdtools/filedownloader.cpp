@@ -51,6 +51,9 @@
 #include <QSslError>
 #include <QBasicTimer>
 #include <QTimerEvent>
+#include <QLoggingCategory>
+#include <globals.h>
+#include <QHostInfo>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -1254,7 +1257,19 @@ void KDUpdater::HttpDownloader::httpReqFinished()
     } else {
         if (d->http == 0)
             return;
-
+        const QUrl url = d->http->url();
+        if (url.isValid() && QInstaller::lcNetwork().isDebugEnabled()){
+            const QFileInfo fi(d->http->url().toString());
+            if (fi.suffix() != QLatin1String("sha1")){
+                const QString hostName = url.host();
+                QHostInfo info = QHostInfo::fromName(hostName);
+                QStringList hostAddresses;
+                foreach (const QHostAddress &address, info.addresses())
+                    hostAddresses << address.toString();
+                qCDebug(QInstaller::lcNetwork) << "Using host:" << hostName
+                        << "for" << url.fileName() << "\nIP:" << hostAddresses;
+            }
+        }
         httpReadyRead();
         d->destination->flush();
         setDownloadCompleted();
