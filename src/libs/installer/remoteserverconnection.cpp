@@ -149,11 +149,11 @@ void RemoteServerConnection::run()
                 stream >> type;
                 if (type == QLatin1String(Protocol::QSettings)) {
                     settings.reset();
-                } else if (command == QLatin1String(Protocol::QProcess)) {
+                } else if (type == QLatin1String(Protocol::QProcess)) {
                     m_signalReceiver->m_receivedSignals.clear();
                     m_process->deleteLater();
                     m_process = 0;
-                } else if (command == QLatin1String(Protocol::QAbstractFileEngine)) {
+                } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
                     delete m_engine;
                     m_engine = 0;
                 }
