@@ -342,16 +342,29 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
 
     if (createDMG) {
         qDebug() << "creating a DMG disk image...";
-        // no error handling as this is not fatal
-        const QString mkdmgscript = QDir::temp().absoluteFilePath(QLatin1String("mkdmg.sh"));
-        QFile::copy(QLatin1String(":/resources/mkdmg.sh"), mkdmgscript);
-        chmod755(mkdmgscript);
 
+        const QString volumeName = QFileInfo(input.outputPath).fileName();
+        const QString imagePath = QString::fromLatin1("%1/%2.dmg")
+                                    .arg(QFileInfo(bundle).path())
+                                    .arg(volumeName);
+
+        // no error handling as this is not fatal
         QProcess p;
-        p.start(mkdmgscript, QStringList() << QFileInfo(input.outputPath).fileName() << bundle);
+        p.start(QLatin1String("/usr/bin/hdiutil"),
+                QStringList() << QLatin1String("create")
+                              << imagePath
+                              << QLatin1String("-srcfolder")
+                              << bundle
+                              << QLatin1String("-ov")
+                              << QLatin1String("-volname")
+                              << volumeName
+                              << QLatin1String("-fs")
+                              << QLatin1String("HFS+"));
+        qDebug() << "running " << p.program() << p.arguments();
         p.waitForFinished(-1);
-        QFile::remove(mkdmgscript);
-        qDebug() <<  "done." << mkdmgscript;
+        qDebug() << "removing" << bundle;
+        QDir(bundle).removeRecursively();
+        qDebug() <<  "done.";
     }
 #else
     Q_UNUSED(signingIdentity)
