@@ -222,7 +222,7 @@ void TabController::onCurrentIdChanged(int newId)
 {
     if (d->m_gui) {
         if (PackageManagerPage *page = qobject_cast<PackageManagerPage *>(d->m_gui->page(newId)))
-            d->m_gui->showSettingsButton(page->settingsButtonRequested());
+            d->m_gui->requestSettingsButtonByInstaller(page->settingsButtonRequested());
     }
 }
 

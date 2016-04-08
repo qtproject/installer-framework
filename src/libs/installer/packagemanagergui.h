@@ -84,6 +84,7 @@ public:
     bool isButtonEnabled(int wizardButton);
 
     void showSettingsButton(bool show);
+    void requestSettingsButtonByInstaller(bool request);
     void setSettingsButtonEnabled(bool enable);
 
     void updateButtonLayout();
