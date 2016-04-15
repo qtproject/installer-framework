@@ -902,7 +902,7 @@ HRESULT UpdateArchive(
       AString path = GetAnsiString(arcPath);
       AString name = GetAnsiString(fileName);
       // Warning!!! MAPISendDocuments function changes Current directory
-      fnSend(0, ";", (LPSTR)(LPCSTR)path, (LPSTR)(LPCSTR)name, 0);
+      fnSend(0, const_cast<LPSTR>(";"), (LPSTR)(LPCSTR)path, (LPSTR)(LPCSTR)name, 0);
     }
   }
   #endif

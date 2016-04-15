@@ -322,7 +322,7 @@ struct CSolidGroup
   CRecordVector<UInt32> Indices;
 };
 
-static wchar_t *g_ExeExts[] =
+static const wchar_t *g_ExeExts[] =
 {
   L"dll",
   L"exe",
