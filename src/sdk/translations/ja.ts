@@ -641,10 +641,6 @@
 <context>
     <name>QInstaller::Component</name>
     <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>要求された翻訳ファイル &apos;%1&apos; を開けませんでした。</translation>
-    </message>
-    <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
         <translation>要求された UI ファイル &apos;%1&apos; を開けませんでした。エラー: %2</translation>
     </message>
@@ -2541,66 +2537,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>QtPatchOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
-    </message>
-    <message>
-        <source>3 or 4</source>
-        <translation>3あるいは4個</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
-    </message>
-    <message>
-        <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
-        <translation>最初の引数は &apos;linux&apos;, &apos;mac&apos;, &apos;windows&apos; のいずれかを指定してください。それ以外はサポートしていません。</translation>
-    </message>
-    <message>
-        <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation>インストーラに必要な QmakeOutputInstallerKey(%1) の値を見つけることができませんでした。適切な qmake で ConsumeOutput 操作を最初に実行する必要があります。</translation>
-    </message>
-    <message>
-        <source>QMake from the current Qt version 
-(%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
-        <translation>現在の Qt のバージョン(%1)の QMake が見つかりません。このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。</translation>
-    </message>
-    <message>
-        <source>The output of 
-%1 -query
-is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: &quot;%2&quot;</source>
-        <translation>以下の出力がパースできません。
-%1 -query
-このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。
-出力: &quot;%2&quot;</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt dir(%1)
-needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt のパス(%1)
-は255文字以下である必要があります。</translation>
-    </message>
-    <message>
-        <source>Qt patch error: Can not open %1.(%2)</source>
-        <translation>Qt パッチエラー: %1 を開けません。(%2)</translation>
-    </message>
-    <message>
-        <source>The installer was not able to get the unpatched path from 
-%1.(maybe it is broken or removed)
-It tried to patch the Qt binaries, but all other files in Qt are unpatched.
-This could result in a broken Qt version.
-Sometimes it helps to restart the installer with a switched off antivirus software.</source>
-        <translation>インストーラはパッチ未適用時のパスを %1 から取得できませんでした。
-(おそらくファイルが壊れているか削除されています)
-Qt のバイナリにパッチを適用しようとしましたが、Qt の他のすべてのファイルに対してパッチは適用されていません。
-このため、この Qt は正常な状態に無い可能性があります。
-アンチウィルスソフトウェアをオフにしてインストーラを再起動することによって改善されるかもしれません。</translation>
-    </message>
-</context>
-<context>
     <name>RemoteClient</name>
     <message>
         <source>Could not get authorization.</source>
@@ -2621,13 +2557,6 @@ as root and then clicking OK.</source>
 </context>
 <context>
     <name>QInstaller::RemoteObject</name>
-    <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
