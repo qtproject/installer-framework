@@ -2099,6 +2099,10 @@ Do you want to continue?</source>
         <source>Password</source>
         <translation>パスワード</translation>
     </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation>プロキシ認証</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ServerAuthenticationDialog</name>
@@ -2401,6 +2405,10 @@ Do you want to continue?</source>
     <message>
         <source>Could not create output file for writing: %1</source>
         <translation>書き込み用に出力ファイルを作成できませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Could not convert path: %1.</source>
+        <translation>パスを変換できませんでした: %1</translation>
     </message>
 </context>
 <context>
