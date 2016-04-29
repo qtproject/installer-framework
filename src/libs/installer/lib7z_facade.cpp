@@ -1351,7 +1351,7 @@ void Lib7z::createArchive(QFileDevice* archive, const QStringList &sourcePaths, 
             const UString nativePath = QString2UString(cleanPath);
             if (UString2QString(nativePath) != cleanPath) {
                 throw SevenZipException(QCoreApplication::translate("Lib7z", "Could not convert"
-                    "path: %1.").arg(path));
+                    " path: %1.").arg(path));
             }
             censor.AddItem(true /* always include item */, nativePath, false /* never recurse*/);
         }
