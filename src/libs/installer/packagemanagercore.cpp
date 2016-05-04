@@ -854,6 +854,8 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
 
     d->initialize(QHash<QString, QString>());
 
+    RemoteClient::instance().setAuthorizationFallbackDisabled(settings().disableAuthorizationFallback());
+
     //
     // Sanity check to detect a broken installations with missing operations.
     // Every installed package should have at least one MinimalProgress operation.

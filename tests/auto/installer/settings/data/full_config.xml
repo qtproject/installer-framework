@@ -37,6 +37,7 @@ File should contain all elements we allow in a config.xml
     <DependsOnLocalInstallerBinary>true</DependsOnLocalInstallerBinary>
     <AllowSpaceInPath>true</AllowSpaceInPath>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
+    <DisableAuthorizationFallback>true</DisableAuthorizationFallback>
     <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
     <CreateLocalRepository>false</CreateLocalRepository>
     <TargetConfigurationFile>components.xml</TargetConfigurationFile>

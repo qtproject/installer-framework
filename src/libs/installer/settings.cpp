@@ -256,7 +256,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scWizardStyle << scStyleSheet << scTitleColor
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
+                << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
@@ -518,6 +519,11 @@ bool Settings::allowSpaceInPath() const
 bool Settings::allowNonAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters, false).toBool();
+}
+
+bool Settings::disableAuthorizationFallback() const
+{
+    return d->m_data.value(scDisableAuthorizationFallback, false).toBool();
 }
 
 bool Settings::dependsOnLocalInstallerBinary() const

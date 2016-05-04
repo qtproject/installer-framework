@@ -77,6 +77,12 @@ void RemoteClient::init(const QString &socketName, const QString &key, Protocol:
     d->init(socketName, key, mode, startAs);
 }
 
+void RemoteClient::setAuthorizationFallbackDisabled(bool disabled)
+{
+    Q_D(RemoteClient);
+    d->setAuthorizationFallbackDisabled(disabled);
+}
+
 void RemoteClient::shutdown()
 {
     Q_D(RemoteClient);

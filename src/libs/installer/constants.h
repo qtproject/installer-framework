@@ -81,6 +81,7 @@ static const QLatin1String scRemoveTargetDir("RemoveTargetDir");
 static const QLatin1String scRunProgramDescription("RunProgramDescription");
 static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");
+static const QLatin1String scDisableAuthorizationFallback("DisableAuthorizationFallback");
 static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPageVisible");
 static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
 static const QLatin1String scWizardStyle("WizardStyle");
