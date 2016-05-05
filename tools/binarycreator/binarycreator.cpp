@@ -241,10 +241,12 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
 
     QTemporaryFile out;
     QString targetName = input.outputPath;
-#ifdef Q_OS_OSX
+#if defined Q_OS_OSX || defined Q_OS_WIN
     QDir resourcePath(QFileInfo(input.outputPath).dir());
+#ifdef Q_OS_OSX
     resourcePath.cdUp();
     resourcePath.cd(QLatin1String("Resources"));
+#endif
     targetName = resourcePath.filePath(QLatin1String("installer.dat"));
 #endif
 
@@ -262,7 +264,10 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         QInstaller::openForWrite(&out);
         QFile exe(input.installerExePath);
 
-#ifdef Q_OS_OSX
+#if defined Q_OS_OSX || defined Q_OS_WIN
+        // remove the target
+        if (QFile::exists(input.outputPath))
+            QFile::remove(input.outputPath);
         if (!exe.copy(input.outputPath)) {
             throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(exe.fileName(),
                 input.outputPath, exe.errorString()));

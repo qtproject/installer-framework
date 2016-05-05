@@ -173,6 +173,11 @@ int main(int argc, char *argv[])
     if (QInstaller::isInBundle(path, &bundlePath))
         path = QDir(bundlePath).filePath(QLatin1String("Contents/Resources/installer.dat"));
 
+#ifdef Q_OS_WIN
+    QDir resourcePath(path);
+    resourcePath.cdUp();
+    path = resourcePath.filePath(QLatin1String("installer.dat"));
+#endif
     int result = EXIT_FAILURE;
     QVector<QByteArray> resourceMappings;
     quint64 cookie = QInstaller::BinaryContent::MagicCookie;
@@ -191,8 +196,12 @@ int main(int argc, char *argv[])
                 QFileInfo fi(path);
                 if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
                     fi.setFile(bundlePath);
+#ifdef Q_OS_WIN
+                QFileInfo appName = arguments.first();
+                path = fi.absoluteDir().filePath(appName.baseName() + QLatin1String(".dat"));
+#else
                 path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
-
+#endif
                 tmp.close();
                 tmp.setFileName(path);
                 QInstaller::openForRead(&tmp);

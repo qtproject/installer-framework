@@ -995,12 +995,14 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
 
     QInstaller::appendData(&out, input, size);
     if (writeBinaryLayout) {
-#ifdef Q_OS_OSX
+#if defined Q_OS_OSX || defined Q_OS_WIN
         QDir resourcePath(QFileInfo(maintenanceToolRenamedName).dir());
+#ifdef Q_OS_OSX
         if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
             throw Error(tr("Maintenance tool is not a bundle"));
         resourcePath.cdUp();
         resourcePath.cd(QLatin1String("Resources"));
+#endif
         // It's a bit odd to have only the magic in the data file, but this simplifies
         // other code a lot (since installers don't have any appended data either)
         QTemporaryFile dataOut;
@@ -1027,7 +1029,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         dataOut.setAutoRemove(false);
         dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
             | QFile::ReadOther);
-#else
+#elif defined(Q_OS_LINUX)
         QInstaller::appendInt64(&out, 0);   // operations start
         QInstaller::appendInt64(&out, 0);   // operations end
         QInstaller::appendInt64(&out, 0);   // resource count
@@ -1296,12 +1298,15 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             QInstaller::openForRead(&input);
             layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookieDat);
         } catch (const Error &/*error*/) {
-#ifdef Q_OS_OSX
-            // On Mac, data is always in a separate file so that the binary can be signed
+#if defined Q_OS_OSX || defined Q_OS_WIN
+            // On Mac and Windows data is always in a separate file
+            // so that the binary can be signed
             QString binaryName = isInstaller() ? installerBinaryPath() : maintenanceToolName();
             QDir dataPath(QFileInfo(binaryName).dir());
+#ifdef Q_OS_OSX
             dataPath.cdUp();
             dataPath.cd(QLatin1String("Resources"));
+#endif
             input.setFileName(dataPath.filePath(QLatin1String("installer.dat")));
 
             QInstaller::openForRead(&input);
