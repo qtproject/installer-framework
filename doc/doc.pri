@@ -34,12 +34,6 @@ qch_docs.commands = $$HELPGENERATOR -o $$QCH_FILE $$QHP_FILE
 qch_docs.depends += html_docs
 qch_docs.files = $$QCH_FILE
 
-unix:!macx {
-    qch_docs.path = $$PREFIX/doc
-    qch_docs.CONFIG += no_check_exist
-    INSTALLS += qch_docs
-}
-
 docs_online.depends = html_docs_online
 QMAKE_EXTRA_TARGETS += html_docs_online docs_online
 
