@@ -1013,6 +1013,8 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     \a parameter1, \a parameter2, \a parameter3, \a parameter4, \a parameter5, \a parameter6,
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
 
+    Returns \c true if the operation succeeds, otherwise returns \c false.
+
     \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QString &parameter1, const QString &parameter2,
@@ -1033,6 +1035,8 @@ bool Component::addOperation(const QString &operation, const QString &parameter1
     Creates and adds an installation operation for \a operation. Add any number of \a parameters.
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values.
+
+    Returns \c true if the operation succeeds, otherwise returns \c false.
 */
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
 {
@@ -1050,6 +1054,8 @@ bool Component::addOperation(const QString &operation, const QStringList &parame
     \a parameter7, \a parameter8, \a parameter9, and \a parameter10.
 
     \sa {component::addElevatedOperation}{component.addElevatedOperation}
+
+    Returns \c true if the operation succeeds, otherwise returns \c false.
 */
 bool Component::addElevatedOperation(const QString &operation, const QString &parameter1,
     const QString &parameter2, const QString &parameter3, const QString &parameter4, const QString &parameter5,
@@ -1070,6 +1076,8 @@ bool Component::addElevatedOperation(const QString &operation, const QString &pa
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values. The operation is executed with elevated rights.
 
+    Returns \c true if the operation succeeds, otherwise returns \c false.
+
 */
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
 {
@@ -1082,8 +1090,9 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
 }
 
 /*!
-    Specifies whether operations should be automatically created when the installation starts. This
-    would be done by calling createOperations(). If you set this to \c false, it is completely up
+    Returns whether operations should be automatically created when the
+    installation starts and createOperations() is called. If you set this to
+    \c false, it is completely up
     to the component's script to create all operations.
 
     \sa {component::autoCreateOperations}{component.autoCreateOperations}
