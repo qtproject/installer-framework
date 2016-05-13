@@ -1349,7 +1349,7 @@ void PackageManagerCore::appendRootComponent(Component *component)
 
 /*!
     \enum PackageManagerCore::ComponentType
-    \brief describes the type of the component list to be returned
+    \brief This enum holds the type of the component list to be returned:
 
     \value  Root
             Returns a list of root components.
