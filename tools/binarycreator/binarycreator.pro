@@ -17,3 +17,6 @@ HEADERS = rcc/rcc.h
 RESOURCES += binarycreator.qrc
 
 macx:include(../../no_app_bundle.pri)
+
+target.path = $$[QT_INSTALL_BINS]
+INSTALLS += target

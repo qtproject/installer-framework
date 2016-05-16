@@ -19,3 +19,6 @@ unix {
     QMAKE_CXXFLAGS += -fvisibility=hidden -w
     include($$7ZIP_BASE/unix.pri)   #this is p7zip
 }
+
+target.path = $$[QT_INSTALL_LIBS]
+INSTALLS += target
