@@ -83,8 +83,8 @@ int InstallerBase::run()
         // the fact that we could not create the lock file and check the running processes.
         if (runCheck.isRunning(KDRunOnceChecker::ConditionFlag::ProcessList)) {
             QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
-                QString::fromLatin1("Waiting for %1").arg(qAppName()),
-                QString::fromLatin1("Another %1 instance is already running. Wait "
+                tr("Waiting for %1").arg(qAppName()),
+                tr("Another %1 instance is already running. Wait "
                 "until it finishes, close it, or restart your system.").arg(qAppName()));
             return EXIT_FAILURE;
         }
