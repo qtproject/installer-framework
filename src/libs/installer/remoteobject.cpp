@@ -35,7 +35,6 @@
 
 #include "protocol.h"
 #include "remoteclient.h"
-#include "localsocket.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
@@ -73,7 +72,7 @@ bool RemoteObject::authorize()
     if (m_socket)
         delete m_socket;
 
-    m_socket = new LocalSocket;
+    m_socket = new QLocalSocket;
     m_socket->connectToServer(RemoteClient::instance().socketName());
 
     if (m_socket->waitForConnected()) {

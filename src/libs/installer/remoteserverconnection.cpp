@@ -38,7 +38,6 @@
 #include "remoteserverconnection_p.h"
 #include "utils.h"
 #include "permissionsettings.h"
-#include "localsocket.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -71,7 +70,7 @@ private:
 
 void RemoteServerConnection::run()
 {
-    LocalSocket socket;
+    QLocalSocket socket;
     socket.setSocketDescriptor(m_socketDescriptor);
     QScopedPointer<PermissionSettings> settings;
 

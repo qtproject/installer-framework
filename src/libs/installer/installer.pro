@@ -125,7 +125,6 @@ HEADERS += packagemanagercore.h \
     serverauthenticationdialog.h \
     keepaliveobject.h \
     systeminfo.h \
-    localsocket.h \
     packagesource.h \
     lib7z_guid.h \
     lib7z_create.h \
