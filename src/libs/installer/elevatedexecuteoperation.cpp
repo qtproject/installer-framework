@@ -172,16 +172,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     }
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
-#ifdef Q_OS_WIN
-    if (args.count() == 1) {
-        process->setNativeArguments(args.front());
-        qDebug() << "ElevatedExecuteOperation setNativeArguments to start:" << args.front();
-        process->start(QString(), QStringList());
-    } else
-#endif
-    {
-        process->start(args.front(), args.mid(1));
-    }
+    process->start(args.front(), args.mid(1));
     qDebug() << args.front() << "started, arguments:" << QStringList(args.mid(1)).join(QLatin1String(" "));
 
     bool success = false;
