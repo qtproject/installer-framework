@@ -56,7 +56,7 @@
 
 #include <private/qv8engine_p.h>
 #include <private/qv4scopedvalue_p.h>
-#include <private/qv4global_p.h>
+#include <private/qv4object_p.h>
 
 #include <algorithm>
 
