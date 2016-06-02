@@ -120,6 +120,8 @@ CommandLineParser::CommandLineParser()
         QLatin1String("URI,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SilentUpdate),
         QLatin1String("Updates all packages silently.")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Platform),
+        QLatin1String("Use the specified platform plugin."), QLatin1String("plugin")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
 }
