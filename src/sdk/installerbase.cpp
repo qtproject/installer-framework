@@ -55,6 +55,7 @@
 #include <runoncechecker.h>
 #include <filedownloaderfactory.h>
 
+#include <QDir>
 #include <QDirIterator>
 #include <QTemporaryFile>
 #include <QTranslator>
@@ -75,15 +76,16 @@ InstallerBase::~InstallerBase()
 
 int InstallerBase::run()
 {
-    RunOnceChecker runCheck(qApp->applicationDirPath()
+    RunOnceChecker runCheck(QDir::tempPath()
                             + QLatin1Char('/')
                             + qApp->applicationName()
                             + QLatin1String("1234865.lock"));
     if (runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
-        // It is possible to install an application and thus the maintenance tool into a
-        // directory that requires elevated permission to create a lock file. Since this
-        // cannot be done without requesting credentials from the user, we silently ignore
-        // the fact that we could not create the lock file and check the running processes.
+        // It is possible that two installers with the same name get executed
+        // concurrently and thus try to access the same lock file. This causes
+        // a warning to be shown (when verbose output is enabled) but let's
+        // just silently ignore the fact that we could not create the lock file
+        // and check the running processes.
         if (runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
             QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
                 QString::fromLatin1("Waiting for %1").arg(qAppName()),

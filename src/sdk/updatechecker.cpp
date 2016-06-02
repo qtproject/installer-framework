@@ -41,6 +41,7 @@
 #include <packagemanagercore.h>
 #include <productkeycheck.h>
 
+#include <QDir>
 #include <QDomDocument>
 
 #include <iostream>
@@ -53,7 +54,7 @@ UpdateChecker::UpdateChecker(int &argc, char *argv[])
 
 int UpdateChecker::check()
 {
-    RunOnceChecker runCheck(qApp->applicationDirPath()
+    RunOnceChecker runCheck(QDir::tempPath()
                             + QLatin1Char('/')
                             + qApp->applicationName()
                             + QLatin1String("15021976.lock"));
