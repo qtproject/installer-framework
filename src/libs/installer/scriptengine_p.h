@@ -160,6 +160,8 @@ public:
 
     Q_INVOKABLE void setSilent(bool silent);
 
+    Q_INVOKABLE void setTextItems(QObject *object, const QStringList &items);
+
 signals:
     void interrupted();
     void languageChanged();

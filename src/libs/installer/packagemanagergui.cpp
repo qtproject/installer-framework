@@ -54,7 +54,9 @@
 #include <QtCore/QProcess>
 #include <QtCore/QTimer>
 
+#include <QAbstractItemView>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QGridLayout>
@@ -68,6 +70,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QStringListModel>
 #include <QTextBrowser>
 #include <QTreeView>
 #include <QVBoxLayout>
@@ -433,6 +436,26 @@ void PackageManagerGui::setSilent(bool silent)
 bool PackageManagerGui::isSilent() const
 {
   return d->m_silent;
+}
+
+/*!
+    Updates the model of \a object (which must be a QComboBox or
+    QAbstractItemView) such that it contains the given \a items.
+*/
+void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
+{
+    if (QComboBox *comboBox = qobject_cast<QComboBox*>(object)) {
+        comboBox->setModel(new QStringListModel(items));
+        return;
+    }
+
+    if (QAbstractItemView *view = qobject_cast<QAbstractItemView*>(object)) {
+        view->setModel(new QStringListModel(items));
+        return;
+    }
+
+    qDebug() << "Cannot set text items on object of type"
+             << object->metaObject()->className() << ".";
 }
 
 /*!

@@ -212,6 +212,12 @@ void GuiProxy::setSilent(bool silent)
       m_gui->setSilent(silent);
 }
 
+void GuiProxy::setTextItems(QObject *object, const QStringList &items)
+{
+    if (m_gui)
+        m_gui->setTextItems(object, items);
+}
+
 void GuiProxy::cancelButtonClicked()
 {
     if (m_gui)

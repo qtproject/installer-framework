@@ -96,6 +96,8 @@ public:
     void setSilent(bool silent);
     bool isSilent() const;
 
+    void setTextItems(QObject *object, const QStringList &items);
+
 Q_SIGNALS:
     void interrupted();
     void languageChanged();
