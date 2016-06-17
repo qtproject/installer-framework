@@ -57,6 +57,7 @@
 
 #include <QDir>
 #include <QDirIterator>
+#include <QFontDatabase>
 #include <QTemporaryFile>
 #include <QTranslator>
 #include <QUuid>
@@ -260,6 +261,16 @@ int InstallerBase::run()
             QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
             if (translator->load(translation, QLatin1String(":/translations")))
                 QCoreApplication::instance()->installTranslator(translator.take());
+        }
+    }
+
+    {
+        QDirIterator fontIt(QStringLiteral(":/fonts"));
+        while (fontIt.hasNext()) {
+            const QString path = fontIt.next();
+            qCDebug(QInstaller::lcResources) << "Registering custom font" << path;
+            if (QFontDatabase::addApplicationFont(path) == -1)
+                qWarning() << "Failed to register font!";
         }
     }
 

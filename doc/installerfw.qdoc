@@ -870,6 +870,11 @@
     their dependencies and all packages that share the same prefix, unless you
     specify the \c --nodeps parameter.
 
+    In the optional resource files specified via the \c --resources parameter, a
+    special \c fonts/ path can be used to ship custom fonts. These fonts will
+    be loaded automatically and thus become available in a stylesheet which can
+    be specified via the \c StyleSheet variable.
+
     On Windows, the name of the target binary is automatically extended with
     .exe, if you do not specify the extension. On Mac, the target is
     created as an application bundle with the extension .app, which is automatically
