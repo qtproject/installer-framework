@@ -44,6 +44,14 @@
 
 namespace QInstaller {
 
+static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
+{
+    QUrl u(url);
+    if (u.isRelative())
+        return QUrl(result.taskItem().source()).resolved(u);
+    return u;
+}
+
 MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
     , m_core(0)
@@ -379,7 +387,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 const QString action = el.attribute(QLatin1String("action"));
                 if (action == QLatin1String("add")) {
                     // add a new repository to the defaults list
-                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
                     repository.setUsername(el.attribute(QLatin1String("username")));
                     repository.setPassword(el.attribute(QLatin1String("password")));
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
@@ -389,14 +397,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
-                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
                     qDebug() << "Repository to remove:" << repository.displayname();
                 } else if (action == QLatin1String("replace")) {
                     // replace possible default repositories using the given server url
-                    Repository oldRepository(el.attribute(QLatin1String("oldUrl")), true);
-                    Repository newRepository(el.attribute(QLatin1String("newUrl")), true);
+                    Repository oldRepository(resolveUrl(result, el.attribute(QLatin1String("oldUrl"))), true);
+                    Repository newRepository(resolveUrl(result, el.attribute(QLatin1String("newUrl"))), true);
                     newRepository.setUsername(el.attribute(QLatin1String("username")));
                     newRepository.setPassword(el.attribute(QLatin1String("password")));
                     newRepository.setDisplayName(el.attribute(QLatin1String("displayname")));
