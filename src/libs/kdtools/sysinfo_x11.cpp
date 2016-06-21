@@ -36,6 +36,11 @@
 #include <sys/utsname.h>
 #include <sys/statvfs.h>
 
+#ifdef Q_OS_FREEBSD
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QDir>
@@ -62,7 +67,11 @@ quint64 installedMemory()
 #else
     quint64 physmem;
     size_t len = sizeof physmem;
+#ifdef Q_OS_FREEBSD
+    static int mib[2] = { CTL_HW, HW_PHYSMEM };
+#else
     static int mib[2] = { CTL_HW, HW_MEMSIZE };
+#endif
     sysctl(mib, 2, &physmem, &len, 0, 0);
     return quint64(physmem);
 #endif

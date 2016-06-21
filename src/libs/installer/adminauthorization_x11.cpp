@@ -49,9 +49,13 @@
 #include <linux/limits.h>
 #include <pty.h>
 #else
+#ifdef Q_OS_FREEBSD
+#include <libutil.h>
+#include <signal.h>
+#else
 #include <util.h>
 #endif
-
+#endif
 #include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>

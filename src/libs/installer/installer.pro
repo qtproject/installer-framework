@@ -227,3 +227,6 @@ win32 {
     win32-g++*:LIBS += -lmpr -luuid
     win32-g++*:QMAKE_CXXFLAGS += -Wno-missing-field-initializers
 }
+
+target.path = $$[QT_INSTALL_LIBS]
+INSTALLS += target

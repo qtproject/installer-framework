@@ -19,3 +19,6 @@ SOURCES += main.cpp \
     binarydump.cpp
 
 osx:include(../../no_app_bundle.pri)
+
+target.path = $$[QT_INSTALL_BINS]
+INSTALLS += target

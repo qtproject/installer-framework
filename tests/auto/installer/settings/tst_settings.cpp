@@ -110,12 +110,21 @@ void tst_Settings::loadEmptyConfig()
 
 void tst_Settings::loadNotExistingConfig()
 {
+    QString configFile = QLatin1String(":/data/inexisting_config.xml");
+    QFile file(configFile);
+    QString errorString;
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        errorString = file.errorString();
+    }
+    QTest::ignoreMessage(QtDebugMsg, QString::fromLatin1("create Error-Exception: \"Could not open"
+                         " settings file %1 for reading: %2\"")
+                         .arg(configFile).arg(errorString).toLatin1());
     try {
-        Settings::fromFileAndPrefix(":/data/inexisting_config.xml", ":/data");
+        Settings::fromFileAndPrefix(configFile, ":/data");
     } catch (const Error &error) {
-        QCOMPARE(error.message(), QLatin1String("Cannot open settings file "
-                                                ":/data/inexisting_config.xml for reading: "
-                                                "Unknown error"));
+        QCOMPARE(error.message(), QString::fromLatin1("Could not open settings file "
+                        "%1 for reading: %2").arg(configFile).arg(errorString));
         return;
     }
     QFAIL("No exception thrown");

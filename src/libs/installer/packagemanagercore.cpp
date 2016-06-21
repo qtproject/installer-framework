@@ -1426,34 +1426,28 @@ void PackageManagerCore::appendRootComponent(Component *component)
 }
 
 /*!
-    \class PackageManagerCore::ComponentType
-    \inmodule QtInstallerFramework
-    \brief The ComponentType class describes a component list.
+    \enum PackageManagerCore::ComponentType
+    \brief This enum holds the type of the component list to be returned:
 
-    This class is used with the components() function to describe what type of \c Component
-    list it should return.
-
-    \list
-        \li \c Root returns a list of root components.
-
-        \li \c Descendants returns a list of all descendant components.
-
-            \note In updater mode the list is empty, because component updates cannot have children.
-
-        \li \c Dependencies returns a list of all available dependencies when run as updater.
-
-            \note When running as installer, package manager, or uninstaller, this will always
-            result in an empty list.
-
-        \li \c Replacements returns a list of all available replacement components relevant to the
-            run mode.
-
-        \li \c AllNoReplacements returns a list of available components, including root, descendant,
+    \value  Root
+            Returns a list of root components.
+    \value  Descendants
+            Returns a list of all descendant components. In updater mode the
+            list is empty, because component updates cannot have children.
+    \value  Dependencies
+            Returns a list of all available dependencies when run as updater.
+            When running as installer, package manager, or uninstaller, this
+            will always result in an empty list.
+    \value  Replacements
+            Returns a list of all available replacement components relevant to
+            the run mode.
+    \value  AllNoReplacements
+            Returns a list of available components, including root, descendant,
             and dependency components relevant to the run mode.
-
-        \li \c All returns a list of all available components, including root, descendant,
-            dependency, and replacement components relevant to the run mode.
-    \endlist
+    \value  All
+            Returns a list of all available components, including root,
+            descendant, dependency, and replacement components relevant to the
+            run mode.
 */
 
 /*!

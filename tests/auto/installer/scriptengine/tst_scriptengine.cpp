@@ -198,7 +198,6 @@ private slots:
 
         m_component->setValue("Default", "Script");
         m_component->setValue(scName, "component.test.name");
-
         Component *component = new Component(&m_core);
         component->setValue(scName, "component.test.addOperation");
         m_core.appendRootComponent(component);
