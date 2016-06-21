@@ -92,6 +92,7 @@ static const QLatin1String scWizardDefaultHeight("WizardDefaultHeight");
 static const QLatin1String scUrlQueryString("UrlQueryString");
 static const QLatin1String scProductUUID("ProductUUID");
 static const QLatin1String scAllUsers("AllUsers");
+static const QLatin1String scSupportsModify("SupportsModify");
 
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 

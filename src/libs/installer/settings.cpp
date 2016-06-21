@@ -261,7 +261,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
-                << scCreateLocalRepository << scInstallActionColumnVisible;
+                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -742,4 +742,9 @@ void Settings::setTranslations(const QStringList &translations)
 QString Settings::controlScript() const
 {
     return d->m_data.value(QLatin1String(scControlScript)).toString();
+}
+
+bool Settings::supportsModify() const
+{
+    return d->m_data.value(scSupportsModify, true).toBool();
 }

@@ -157,6 +157,8 @@ public:
 
     QString controlScript() const;
 
+    bool supportsModify() const;
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

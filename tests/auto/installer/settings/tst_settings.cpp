@@ -90,6 +90,8 @@ void tst_Settings::loadTutorialConfig()
 
     QCOMPARE(settings.translations(), QStringList());
     QCOMPARE(settings.controlScript(), QString());
+
+    QCOMPARE(settings.supportsModify(), true);
 }
 
 void tst_Settings::loadFullConfig()

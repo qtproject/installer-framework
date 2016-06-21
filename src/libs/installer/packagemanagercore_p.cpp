@@ -2035,7 +2035,13 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     const quint64 limit = std::numeric_limits<quint32>::max(); // maximum 32 bit value
     if (estimatedSizeKB <= limit)
         settings.setValue(QLatin1String("EstimatedSize"), static_cast<quint32>(estimatedSizeKB));
-    settings.setValue(QLatin1String("NoModify"), 0);
+
+    const bool supportsModify = m_core->value(scSupportsModify, scTrue) == scTrue;
+    if (supportsModify)
+        settings.setValue(QLatin1String("NoModify"), 0);
+    else
+        settings.setValue(QLatin1String("NoModify"), 1);
+
     settings.setValue(QLatin1String("NoRepair"), 1);
 #endif
 }

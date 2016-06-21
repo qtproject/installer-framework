@@ -321,6 +321,9 @@
             \li Set to \c true if you want to add an extra column into component tree showing install actions.
                 This extra column indicates whether a component is going to be installed or uninstalled,
                 or just stay installed or uninstalled.
+        \row
+            \li SupportsModify
+            \li Set to \c false if the product does not support modifying an existing installation.
 
     \endtable
 
