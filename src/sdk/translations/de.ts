@@ -2099,15 +2099,15 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
-        <translation>Nicht genügend Plattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Nicht genügend Festplattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
-        <translation>Nicht genügend Plattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Nicht genügend Festplattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
-        <translation>Nicht genügend Plattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
+        <translation>Nicht genügend Festplattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
@@ -2119,7 +2119,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Installation will use %1 of disk space.</source>
-        <translation>Installation wird %1 Plattenplatz verwenden.</translation>
+        <translation>Die Installation wird %1 Festplattenplatz verwenden.</translation>
     </message>
     <message>
         <source>Cannot resolve all dependencies.</source>
