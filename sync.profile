@@ -1,6 +1,6 @@
 %dependencies = (
-        "qtbase" => "dev",
-        "qtdeclarative" => "dev",
-        "qttools" => "dev",
-        "qtwinextras" => "dev",
+        "qtbase" => "",
+        "qtdeclarative" => "",
+        "qttools" => "",
+        "qtwinextras" => "",
 );
