@@ -69,6 +69,7 @@ public:
     QList<Metadata> metadata() const { return m_metadata.values(); }
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
+    void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
 
 private slots:
     void doStart();
@@ -78,8 +79,11 @@ private slots:
     void unzipTaskFinished();
     void metadataTaskFinished();
     void progressChanged(int progress);
+    void unzipRepositoryTaskFinished();
+    void startXMLTask(const QList<FileTaskItem> items);
 
 private:
+    void startUnzipRepositoryTask(const Repository &repo);
     void reset();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
 
@@ -92,6 +96,9 @@ private:
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
+    QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
+    bool m_addCompressedPackages;
+    QList<FileTaskItem> m_unzipRepositoryitems;
 };
 
 }   // namespace QInstaller

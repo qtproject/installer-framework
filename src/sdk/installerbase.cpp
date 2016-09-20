@@ -217,6 +217,14 @@ int InstallerBase::run()
         m_core->setTemporaryRepositories(repoList, true);
     }
 
+    if (parser.isSet(QLatin1String(CommandLineOptions::InstallCompressedRepository))) {
+        const QStringList repoList = repositories(parser
+            .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
+        if (repoList.isEmpty())
+            throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
+        m_core->setTemporaryRepositories(repoList, false, true);
+    }
+
     QInstaller::PackageManagerCore::setNoForceInstallation(parser
         .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));
     QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(parser

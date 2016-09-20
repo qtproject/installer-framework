@@ -69,7 +69,7 @@ public:
     UnzipArchiveTask(const QString &arcive, const QString &target)
         : m_archive(arcive), m_targetDir(target)
     {}
-
+    QString target() { return m_targetDir; }
     void doTask(QFutureInterface<void> &fi)
     {
         fi.reportStarted();

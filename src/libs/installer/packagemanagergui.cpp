@@ -75,6 +75,7 @@
 #include <QTreeView>
 #include <QVBoxLayout>
 #include <QShowEvent>
+#include <QFileDialog>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -1858,6 +1859,7 @@ public:
         , m_allModel(m_core->defaultComponentModel())
         , m_updaterModel(m_core->updaterComponentModel())
         , m_currentModel(m_allModel)
+        , m_compressedButtonVisible(false)
     {
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
@@ -1873,17 +1875,21 @@ public:
         m_descriptionLabel->setWordWrap(true);
         m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
 
-        QVBoxLayout *vlayout = new QVBoxLayout;
-        vlayout->addWidget(m_descriptionLabel);
+        m_vlayout = new QVBoxLayout;
+        m_vlayout->setObjectName(QLatin1String("VerticalLayout"));
+        m_vlayout->addWidget(m_descriptionLabel);
 
         m_sizeLabel = new QLabel(q);
         m_sizeLabel->setWordWrap(true);
-        vlayout->addWidget(m_sizeLabel);
+        m_vlayout->addWidget(m_sizeLabel);
         m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
 
-        vlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
+#ifdef INSTALLCOMPRESSED
+        allowCompressedRepositoryInstall();
+#endif
+        m_vlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
-        hlayout->addLayout(vlayout, 2);
+        hlayout->addLayout(m_vlayout, 2);
 
         QVBoxLayout *layout = new QVBoxLayout(q);
         layout->addLayout(hlayout, 1);
@@ -1927,6 +1933,40 @@ public:
         hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
         layout->addLayout(hlayout);
+    }
+
+    void allowCompressedRepositoryInstall()
+    {
+        if (m_compressedButtonVisible) {
+            return;
+        }
+
+        connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
+        connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
+
+        m_bspLabel = new QLabel(ComponentSelectionPage::tr("To install new "\
+                "compressed repository, browse the repositories from your computer"),q);
+        m_bspLabel->setWordWrap(true);
+        m_bspLabel->setObjectName(QLatin1String("CompressedButtonLabel"));
+
+        m_vlayout->addSpacing(50);
+        m_vlayout->addWidget(m_bspLabel);
+
+
+        m_progressBar = new QProgressBar();
+        m_progressBar->setRange(0, 0);
+        m_progressBar->hide();
+        m_vlayout->addWidget(m_progressBar);
+        m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
+
+
+        m_installCompressButton = new QPushButton;
+        connect(m_installCompressButton, &QAbstractButton::clicked,
+                this, &ComponentSelectionPage::Private::selectCompressedPackage);
+        m_installCompressButton->setObjectName(QLatin1String("InstallCompressedPackageButton"));
+        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse BSP or 7z files..."));
+        m_vlayout->addWidget(m_installCompressButton);
+        m_compressedButtonVisible = true;
     }
 
     void updateTreeView()
@@ -2012,6 +2052,58 @@ public slots:
         m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
     }
 
+    void selectCompressedPackage()
+    {
+        QString defaultDownloadDirectory =
+            QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+        QStringList fileNames = QFileDialog::getOpenFileNames(NULL,
+            ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
+            QLatin1String("QtBSP or 7z Files (*.qtbsp *.7z)"));
+
+        QSet<Repository> set;
+        foreach (QString fileName, fileNames) {
+            Repository repository = Repository::fromUserInput(fileName, true);
+            set.insert(repository);
+        }
+        if (set.count() > 0) {
+            m_progressBar->show();
+            m_installCompressButton->setEnabled(false);
+            QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
+            b->setEnabled(false);
+            m_core->settings().addTemporaryRepositories(set, false);
+            m_core->fetchCompressedPackagesTree();
+            updateTreeView();
+
+            m_progressBar->hide();
+            m_bspLabel->setText(ComponentSelectionPage::tr("To install new "\
+                "compressed repository, browse the repositories from your computer"));
+            m_installCompressButton->setEnabled(true);
+            b->setEnabled(true);
+        }
+    }
+
+    /*!
+        Updates the value of \a progress on the progress bar.
+    */
+    void onProgressChanged(int progress)
+    {
+        m_progressBar->setValue(progress);
+    }
+
+    /*!
+        Displays the message \a msg on the page.
+    */
+    void setMessage(const QString &msg)
+    {
+        if (m_progressBar->isVisible()) {
+            m_bspLabel->setText(msg);
+        }
+        else {
+            m_bspLabel->setText(ComponentSelectionPage::tr("To install new "\
+                "compressed repository, browse the repositories from your computer"));
+        }
+    }
+
     void selectDefault()
     {
         m_currentModel->setCheckedState(ComponentModel::DefaultChecked);
@@ -2049,6 +2141,11 @@ public:
     QPushButton *m_checkAll;
     QPushButton *m_uncheckAll;
     QPushButton *m_checkDefault;
+    QPushButton *m_installCompressButton;
+    QLabel *m_bspLabel;
+    QProgressBar *m_progressBar;
+    QVBoxLayout *m_vlayout;
+    bool m_compressedButtonVisible;
 };
 
 
@@ -2165,6 +2262,11 @@ void ComponentSelectionPage::deselectComponent(const QString &id)
     const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
     if (idx.isValid())
         d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+}
+
+void ComponentSelectionPage::allowCompressedRepositoryInstall()
+{
+    d->allowCompressedRepositoryInstall();
 }
 
 void ComponentSelectionPage::setModified(bool modified)

@@ -185,6 +185,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(0)
+    , m_compressedFinder(0)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_core(core)
     , m_updates(false)
@@ -206,6 +207,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations)
     : m_updateFinder(0)
+    , m_compressedFinder(0)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -2131,6 +2133,29 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     return m_updateFinder->updates();
 }
 
+PackagesList PackageManagerCorePrivate::compressedPackages()
+{
+    if (m_compressedUpdates && m_compressedFinder)
+        return m_compressedFinder->updates();
+    m_compressedUpdates = false;
+    delete m_compressedFinder;
+
+    m_compressedFinder = new KDUpdater::UpdateFinder;
+    m_compressedFinder->setAutoDelete(false);
+    m_compressedFinder->addCompressedPackage(true);
+    m_compressedFinder->setPackageSources(m_compressedPackageSources);
+
+    m_compressedFinder->setLocalPackageHub(m_localPackageHub);
+    m_compressedFinder->run();
+    if (m_compressedFinder->updates().isEmpty()) {
+        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve remote tree %1.")
+            .arg(m_compressedFinder->errorString()));
+        return PackagesList();
+    }
+    m_compressedUpdates = true;
+    return m_compressedFinder->updates();
+}
+
 /*!
     Returns a hash containing the installed package name and it's associated package information. If
     the application is running in installer mode or the local components file could not be parsed, the
@@ -2200,9 +2225,44 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
     return m_repoFetched;
 }
 
-bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChecksum)
+bool PackageManagerCorePrivate::fetchMetaInformationFromCompressedRepositories()
 {
-    if (m_updateSourcesAdded)
+    bool compressedRepoFetched = false;
+
+    m_compressedUpdates = false;
+    m_updateSourcesAdded = false;
+
+    try {
+        //Tell MetadataJob that only compressed packages needed to be fetched and not all.
+        //We cannot do this in general fetch meta method as the compressed packages might be
+        //installed after components tree is generated
+        m_metadataJob.addCompressedPackages(true);
+        m_metadataJob.start();
+        m_metadataJob.waitForFinished();
+        m_metadataJob.addCompressedPackages(false);
+    } catch (Error &error) {
+        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve meta information: %1")
+            .arg(error.message()));
+        return compressedRepoFetched;
+    }
+
+    if (m_metadataJob.error() != Job::NoError) {
+        switch (m_metadataJob.error()) {
+            case QInstaller::UserIgnoreError:
+                break;  // we can simply ignore this error, the user knows about it
+            default:
+                setStatus(PackageManagerCore::Failure, m_metadataJob.errorString());
+                return compressedRepoFetched;
+        }
+    }
+
+    compressedRepoFetched = true;
+    return compressedRepoFetched;
+}
+
+bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository)
+{
+    if (!compressedRepository && m_updateSourcesAdded)
         return m_updateSourcesAdded;
 
     const QList<Metadata> metadata = m_metadataJob.metadata();
@@ -2210,15 +2270,21 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         m_updateSourcesAdded = true;
         return m_updateSourcesAdded;
     }
-
-    m_packageSources.clear();
-    if (isInstaller())
-        m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
-
-    m_updates = false;
-    m_updateSourcesAdded = false;
+    if (compressedRepository) {
+        m_compressedPackageSources.clear();
+    }
+    else {
+        m_packageSources.clear();
+        m_updates = false;
+        m_updateSourcesAdded = false;
+        if (isInstaller())
+            m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
+    }
 
     foreach (const Metadata &data, metadata) {
+        if (compressedRepository && !data.repository.isCompressed()) {
+            continue;
+        }
         if (statusCanceledOrFailed())
             return false;
 
@@ -2251,11 +2317,15 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!checksum.isNull())
                 m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
+        if (compressedRepository)
+            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
+        else
+            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
+
         ProductKeyCheck::instance()->addPackagesFromXml(data.directory + QLatin1String("/Updates.xml"));
     }
-
-    if (m_packageSources.count() == 0) {
+    if ((compressedRepository && m_compressedPackageSources.count() == 0 ) ||
+         (!compressedRepository && m_packageSources.count() == 0)) {
         setStatus(PackageManagerCore::Failure, tr("Cannot find any update source information."));
         return false;
     }

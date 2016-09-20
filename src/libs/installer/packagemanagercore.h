@@ -127,6 +127,7 @@ public:
 
     PackagesList remotePackages();
     bool fetchRemotePackagesTree();
+    bool fetchCompressedPackagesTree();
 
     bool run();
     void reset(const QHash<QString, QString> &params);
@@ -181,8 +182,8 @@ public:
     void setTestChecksum(bool test);
 
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
-    Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories, bool replace = false);
-
+    Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,
+                                              bool replace = false, bool compressed = false);
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
@@ -339,6 +340,8 @@ private:
                                const QString& versionKey, QHash<QString, bool> &visited);
     ComponentModel *componentModel(PackageManagerCore *core, const QString &objectName) const;
     QList<Component *> componentsMarkedForInstallation() const;
+
+    bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
 
 private:
     PackageManagerCorePrivate *const d;

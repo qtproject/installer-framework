@@ -46,10 +46,10 @@ class INSTALLER_EXPORT Repository
 public:
     explicit Repository();
     Repository(const Repository &other);
-    explicit Repository(const QUrl &url, bool isDefault);
+    explicit Repository(const QUrl &url, bool isDefault, bool compressed = false);
 
     static void registerMetaType();
-    static Repository fromUserInput(const QString &repositoryUrl);
+    static Repository fromUserInput(const QString &repositoryUrl, bool compressed = false);
 
     bool isValid() const;
     bool isDefault() const;
@@ -69,6 +69,8 @@ public:
     QString displayname() const;
     void setDisplayName(const QString &displayname);
 
+    bool isCompressed() const;
+    void setCompressed(bool compressed);
     bool operator==(const Repository &other) const;
     bool operator!=(const Repository &other) const;
 
@@ -85,6 +87,7 @@ private:
     QString m_username;
     QString m_password;
     QString m_displayname;
+    bool m_compressed;
 };
 
 inline uint qHash(const Repository &repository)

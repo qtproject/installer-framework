@@ -114,7 +114,10 @@ CommandLineParser::CommandLineParser()
         "a value is omitted, the client will use a default instead. Note: The server process is "
         "not started by the client application in that case, you need to start it on your own."),
         QLatin1String("socketname,key")));
-
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::InstallCompressedRepository),
+        QLatin1String("Installs QtBSP or 7z file. The QtBSP (Board Support Package) file must be a .7z "
+        "file which contains a valid repository."),
+        QLatin1String("URI,...")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
 }

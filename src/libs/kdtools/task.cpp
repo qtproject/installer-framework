@@ -183,7 +183,7 @@ void Task::run()
         return;
     }
 
-    if (m_finished || m_stopped) {
+    if (m_stopped) {
         qDebug("Trying to start a finished or canceled task");
         return;
     }

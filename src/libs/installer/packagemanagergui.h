@@ -314,6 +314,7 @@ public:
     Q_INVOKABLE void selectDefault();
     Q_INVOKABLE void selectComponent(const QString &id);
     Q_INVOKABLE void deselectComponent(const QString &id);
+    Q_INVOKABLE void allowCompressedRepositoryInstall();
 
 protected:
     void entering();

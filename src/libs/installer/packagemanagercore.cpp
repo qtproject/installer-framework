@@ -1153,8 +1153,37 @@ PackagesList PackageManagerCore::remotePackages()
 }
 
 /*!
+    Checks for compressed packages to install. Returns \c true if newer versions exist
+    and they can be installed.
+*/
+bool PackageManagerCore::fetchCompressedPackagesTree()
+{
+    const LocalPackagesHash installedPackages = d->localInstalledPackages();
+    if (!isInstaller() && status() == Failure)
+        return false;
+
+    if (!d->fetchMetaInformationFromCompressedRepositories())
+        return false;
+
+    if (!d->addUpdateResourcesFromRepositories(true, true)) {
+        return false;
+    }
+
+    PackagesList packages;
+    const PackagesList &compPackages = d->compressedPackages();
+    if (compPackages.isEmpty())
+        return false;
+    packages.append(compPackages);
+    const PackagesList &rPackages = d->remotePackages();
+    packages.append(rPackages);
+
+    return fetchPackagesTree(packages, installedPackages);
+}
+
+
+/*!
     Checks for packages to install. Returns \c true if newer versions exist
-    and they can be installed and sets the status of the update to \c Success.
+    and they can be installed.
 */
 bool PackageManagerCore::fetchRemotePackagesTree()
 {
@@ -1177,12 +1206,20 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     if (!d->fetchMetaInformationFromRepositories())
         return false;
 
+    if (!d->fetchMetaInformationFromCompressedRepositories())
+        return false;
+
     if (!d->addUpdateResourcesFromRepositories(true))
         return false;
 
     const PackagesList &packages = d->remotePackages();
     if (packages.isEmpty())
         return false;
+
+    return fetchPackagesTree(packages, installedPackages);
+}
+
+bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages) {
 
     bool success = false;
     if (!isUpdater()) {
@@ -1366,12 +1403,12 @@ void PackageManagerCore::addUserRepositories(const QStringList &repositories)
     \sa {installer::setTemporaryRepositories}{installer.setTemporaryRepositories}
     \sa addUserRepositories()
 */
-void PackageManagerCore::setTemporaryRepositories(const QStringList &repositories, bool replace)
+void PackageManagerCore::setTemporaryRepositories(const QStringList &repositories, bool replace,
+                                                  bool compressed)
 {
     QSet<Repository> repositorySet;
     foreach (const QString &repository, repositories)
-        repositorySet.insert(Repository::fromUserInput(repository));
-
+        repositorySet.insert(Repository::fromUserInput(repository, compressed));
     settings().setTemporaryRepositories(repositorySet, replace);
 }
 
