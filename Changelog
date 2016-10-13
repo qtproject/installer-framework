@@ -1,3 +1,12 @@
+2.0.4
+- Set also display name for Repository action "remove"
+- Adjusted wrong repogen parameter name
+- Fix settings test
+- Make Execute operation work without arguments in Windows
+- Add make install functionality with INSTALL_ROOT
+- Do not force doc build on Linux when calling "make install"
+- Documentation updates
+
 2.0.3
 - Update Japanese translation.
 - Make IFW compile with FreeBSD. (QTIFW-841)
