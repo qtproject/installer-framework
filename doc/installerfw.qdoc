@@ -930,8 +930,8 @@
             \li Update all packages in the packages directory. The list can be further
                 filtered with the \c {-i}, \c {-e} parameters.
         \row
-            \li --update-new-packages
-            \li Update only packages that are new or have a newer version. The
+            \li --update-new-components
+            \li Update only components that are new or have a newer version. The
                 list can be further filtered with the \c {-i}, \c{-e}
                 parameters.
         \row

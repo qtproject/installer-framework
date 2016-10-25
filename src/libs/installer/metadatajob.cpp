@@ -397,7 +397,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
-                    Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
+                    Repository repository(el.attribute(QLatin1String("url")), true);
+                    repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
                     qDebug() << "Repository to remove:" << repository.displayname();
