@@ -1228,8 +1228,8 @@
                  displayname="Example Repository" />
     \endcode
 
-    \c{url} will be used as a base url to resolve an \c{Updates.xml} file against.
-    If \c{url} is itself relative, it will be resolved against the base url of the current document.
+    \c{url} will be used as a base URL to resolve an \c{Updates.xml} file against.
+    If \c{url} is itself relative, it will be resolved against the base URL of the current document.
 
     \c{displayname} specifies how the repository should be named in the \gui Settings page
     of the Maintenance Tool.
@@ -1244,7 +1244,7 @@
     <Repository action="remove" url="http://www.example.com/repository" />
     \endcode
 
-    \c{url} must match exactly the url that is to be removed.
+    \c{url} must match exactly the URL that is to be removed.
 
     \section2 Replacing Repositories
     To replace one repository with another, add a \c <Repository> child element to the
@@ -1256,32 +1256,34 @@
                 displayname="New Example Repository" />
     \endcode
 
-    \c{oldUrl} must match exactly the url that is to be replaced.
+    \c{oldUrl} must match exactly the URL that is to be replaced.
 
-    \c{newUrl} must match exactly the url that is replace to.
+    \c{newUrl} must match exactly the URL that it is replaced with.
 
     \section1 Relocatable Repositories
 
-    Some projects contain multiple repositories. To create relocatable set
+    Some projects contain multiple repositories. To create a relocatable set
     of repositories you should use relative paths.
 
-    So if generic repository available at address \c{http://www.example.com/repositories/generic}
-    and \c{Updates.xml} contains \c <Repository> element with the following options:
+    So if the generic repository available at the address
+    \c{http://www.example.com/repositories/generic} and \c{Updates.xml}
+    contains \c <Repository> element with the following options:
 
     \code
     <Repository action="add" url="../module" name="user" password="password"
                  displayname="Module Repository" />
     \endcode
 
-    Resolved address of added repository will be \c{http://www.example.com/repositories/module}.
-    So that the repository does not contain information about their absolute location.
+    Then the resolved address of the added repository will be
+    \c{http://www.example.com/repositories/module}, so that the repository does
+    not contain information about their absolute location.
 
     If you want to change the address, you can simply copy a set of repositories as is.
-    It recommended for some time to maintain the old generic repository and replace addresses
+    It is recommended to maintain the old generic repository for some time and replace the addresses
     as described above. You can also provide the updated installer with the new generic address.
 
-    You can use relative path for arguments \c url, \c oldUrl and \c newUrl at
-    \c <Repository> element.
+    You can use relative paths for the arguments \c url, \c oldUrl, and \c newUrl in
+    the \c <Repository> element.
 */
 
 /*!
