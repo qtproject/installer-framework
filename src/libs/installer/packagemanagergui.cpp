@@ -849,7 +849,6 @@ void PackageManagerGui::setModified(bool value)
 */
 void PackageManagerGui::showFinishedPage()
 {
-    qDebug() << "SHOW FINISHED PAGE";
     if (d->m_autoSwitchPage)
         next();
     else
