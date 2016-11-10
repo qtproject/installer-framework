@@ -2773,7 +2773,7 @@ void ReadyForInstallationPage::entering()
     }
 
     QString htmlOutput;
-    bool componentsOk = calculateComponents(&htmlOutput);
+    bool componentsOk = packageManagerCore()->calculateComponents(&htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
     m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
     setComplete(componentsOk);
@@ -2870,51 +2870,7 @@ void ReadyForInstallationPage::entering()
             .arg(humanReadableSize(packageManagerCore()->requiredDiskSpace()))));
 }
 
-bool ReadyForInstallationPage::calculateComponents(QString *displayString)
-{
-    QString htmlOutput;
-    QString lastInstallReason;
-    if (!packageManagerCore()->calculateComponentsToUninstall() ||
-            !packageManagerCore()->calculateComponentsToInstall()) {
-        htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
-                          .arg(tr("Cannot resolve all dependencies.")));
-        //if we have a missing dependency or a recursion we can display it
-        if (!packageManagerCore()->componentsToInstallError().isEmpty()) {
-            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(
-                                  packageManagerCore()->componentsToInstallError()));
-        }
-        htmlOutput.append(QLatin1String("</ul>"));
-        if (displayString)
-            *displayString = htmlOutput;
-        return false;
-    }
 
-    // In case of updater mode we don't uninstall components.
-    if (!packageManagerCore()->isUpdater()) {
-        QList<Component*> componentsToRemove = packageManagerCore()->componentsToUninstall();
-        if (!componentsToRemove.isEmpty()) {
-            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
-                "be removed.")));
-            foreach (Component *component, componentsToRemove)
-                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
-            htmlOutput.append(QLatin1String("</ul>"));
-        }
-    }
-
-    foreach (Component *component, packageManagerCore()->orderedComponentsToInstall()) {
-        const QString installReason = packageManagerCore()->installReason(component);
-        if (lastInstallReason != installReason) {
-            if (!lastInstallReason.isEmpty()) // means we had to close the previous list
-                htmlOutput.append(QLatin1String("</ul>"));
-            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(installReason));
-            lastInstallReason = installReason;
-        }
-        htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
-    }
-    if (displayString)
-        *displayString = htmlOutput;
-    return true;
-}
 
 /*!
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()

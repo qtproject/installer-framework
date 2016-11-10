@@ -208,6 +208,7 @@ public:
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
+    bool calculateComponents(QString *displayString);
 
     Q_INVOKABLE bool calculateComponentsToUninstall() const;
     QList<Component*> componentsToUninstall() const;
@@ -219,6 +220,7 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
+    void updateComponentsSilently();
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;

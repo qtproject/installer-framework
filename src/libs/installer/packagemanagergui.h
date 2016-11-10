@@ -402,9 +402,6 @@ protected:
     void leaving();
 
 private:
-    bool calculateComponents(QString *displayString);
-
-private:
     QLabel *m_msgLabel;
     QTextBrowser* m_taskDetailsBrowser;
 };

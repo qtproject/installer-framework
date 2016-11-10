@@ -57,6 +57,7 @@ const char SetTmpRepository[] = "setTempRepository";
 const char StartServer[] = "startserver";
 const char StartClient[] = "startclient";
 const char InstallCompressedRepository[] = "installCompressedRepository";
+const char SilentUpdate[] = "silentUpdate";
 
 } // namespace CommandLineOptions
 

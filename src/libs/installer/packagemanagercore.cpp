@@ -1632,6 +1632,52 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
     return d->installerCalculator()->orderedComponentsToInstall();
 }
 
+bool PackageManagerCore::calculateComponents(QString *displayString)
+{
+    QString htmlOutput;
+    QString lastInstallReason;
+    if (!calculateComponentsToUninstall() ||
+            !calculateComponentsToInstall()) {
+        htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
+                          .arg(tr("Cannot resolve all dependencies.")));
+        //if we have a missing dependency or a recursion we can display it
+        if (!componentsToInstallError().isEmpty()) {
+            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(
+                                  componentsToInstallError()));
+        }
+        htmlOutput.append(QLatin1String("</ul>"));
+        if (displayString)
+            *displayString = htmlOutput;
+        return false;
+    }
+
+    // In case of updater mode we don't uninstall components.
+    if (!isUpdater()) {
+        QList<Component*> componentsToRemove = componentsToUninstall();
+        if (!componentsToRemove.isEmpty()) {
+            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
+                "be removed.")));
+            foreach (Component *component, componentsToRemove)
+                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+            htmlOutput.append(QLatin1String("</ul>"));
+        }
+    }
+
+    foreach (Component *component, orderedComponentsToInstall()) {
+        const QString reason = installReason(component);
+        if (lastInstallReason != reason) {
+            if (!lastInstallReason.isEmpty()) // means we had to close the previous list
+                htmlOutput.append(QLatin1String("</ul>"));
+            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(reason));
+            lastInstallReason = reason;
+        }
+        htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+    }
+    if (displayString)
+        *displayString = htmlOutput;
+    return true;
+}
+
 /*!
     Calculates a list of components to uninstall based on the current run mode.
     The aboutCalculateComponentsToUninstall() signal is emitted
@@ -1753,6 +1799,28 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     connect(this, &PackageManagerCore::finishUpdaterComponentsReset, d->m_updaterModel,
         &ComponentModel::setRootComponents);
     return d->m_updaterModel;
+}
+
+void PackageManagerCore::updateComponentsSilently()
+{
+    autoAcceptMessageBoxes();
+    fetchRemotePackagesTree();
+    //Mark all components to be installed
+    const QList<QInstaller::Component*> componentList = components(
+        ComponentType::Root | ComponentType::Descendants);
+
+    foreach (Component *comp, componentList) {
+        comp->setCheckState(Qt::Checked);
+    }
+    QString htmlOutput;
+    bool componentsOk = calculateComponents(&htmlOutput);
+    if (componentsOk) {
+        if (runPackageUpdater())
+            qDebug() << "Components updated successfully.";
+    }
+    else {
+        qDebug() << htmlOutput;
+    }
 }
 
 /*!

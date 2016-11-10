@@ -118,6 +118,8 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Installs QtBSP or 7z file. The QtBSP (Board Support Package) file must be a .7z "
         "file which contains a valid repository."),
         QLatin1String("URI,...")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SilentUpdate),
+        QLatin1String("Updates all packages silently.")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
 }

@@ -282,45 +282,55 @@ int InstallerBase::run()
         }
     }
 
-    //create the wizard GUI
-    TabController controller(0);
-    controller.setManager(m_core);
-    controller.setManagerParams(params);
-    controller.setControlScript(controlScript);
-
-    if (m_core->isInstaller()) {
-        controller.setGui(new InstallerGui(m_core));
+    //Do not show gui with --silentUpdate, instead update components silently
+    if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
+        m_core->setUpdater();
+        m_core->updateComponentsSilently();
     }
     else {
-        controller.setGui(new MaintenanceGui(m_core));
-        //Start listening to setValue changes that newly installed components might have
-        connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
-            &TabController::updateManagerParams);
-    }
-    QInstaller::PackageManagerCore::Status status =
-        QInstaller::PackageManagerCore::Status(controller.init());
-    if (status != QInstaller::PackageManagerCore::Success)
-        return status;
+        //create the wizard GUI
+        TabController controller(0);
+        controller.setManager(m_core);
+        controller.setManagerParams(params);
+        controller.setControlScript(controlScript);
+        if (m_core->isInstaller()) {
+            controller.setGui(new InstallerGui(m_core));
+        }
+        else {
+            controller.setGui(new MaintenanceGui(m_core));
+            //Start listening to setValue changes that newly installed components might have
+            connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
+                &TabController::updateManagerParams);
+        }
 
-    const int result = QCoreApplication::instance()->exec();
-    if (result != 0)
-        return result;
-
-    if (m_core->finishedWithSuccess())
-        return QInstaller::PackageManagerCore::Success;
-
-    status = m_core->status();
-    switch (status) {
-        case QInstaller::PackageManagerCore::Success:
+        QInstaller::PackageManagerCore::Status status =
+            QInstaller::PackageManagerCore::Status(controller.init());
+        if (status != QInstaller::PackageManagerCore::Success)
             return status;
 
-        case QInstaller::PackageManagerCore::Canceled:
-            return status;
+        const int result = QCoreApplication::instance()->exec();
+        if (result != 0)
+            return result;
 
-        default:
-            break;
+        if (m_core->finishedWithSuccess())
+            return QInstaller::PackageManagerCore::Success;
+
+        status = m_core->status();
+        switch (status) {
+            case QInstaller::PackageManagerCore::Success:
+                return status;
+
+            case QInstaller::PackageManagerCore::Canceled:
+                return status;
+
+            default:
+                break;
+        }
+        return QInstaller::PackageManagerCore::Failure;
     }
-    return QInstaller::PackageManagerCore::Failure;
+    return QInstaller::PackageManagerCore::Success;
 }
 
 
