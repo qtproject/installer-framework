@@ -80,7 +80,11 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs) const
         {
-            return lhs->value(scSortingPriority).toInt() < rhs->value(scSortingPriority).toInt();
+            const int lhsPriority = lhs->value(scSortingPriority).toInt();
+            const int rhsPriority = rhs->value(scSortingPriority).toInt();
+            if (lhsPriority == rhsPriority)
+                return lhs->displayName() > rhs->displayName();
+            return lhsPriority < rhsPriority;
         }
     };
 
@@ -88,7 +92,11 @@ public:
     {
         bool operator() (const Component *lhs, const Component *rhs) const
         {
-            return lhs->value(scSortingPriority).toInt() > rhs->value(scSortingPriority).toInt();
+            const int lhsPriority = lhs->value(scSortingPriority).toInt();
+            const int rhsPriority = rhs->value(scSortingPriority).toInt();
+            if (lhsPriority == rhsPriority)
+                return lhs->displayName() < rhs->displayName();
+            return lhsPriority > rhsPriority;
         }
     };
 
