@@ -32,6 +32,7 @@
 #include <QEventLoop>
 #include <QTimer>
 
+#include "globals.h"
 
 // -- Job::Private
 
@@ -183,7 +184,8 @@ void Job::cancel()
         }
         emitFinished();
     } else {
-        qDebug() << "The current job cannot be canceled, missing \"Cancelable\" capability.";
+        qCDebug(QInstaller::lcGeneral) << "The current job cannot be canceled, "
+            "missing \"Cancelable\" capability.";
     }
 }
 

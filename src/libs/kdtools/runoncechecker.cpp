@@ -30,6 +30,7 @@
 #include "runoncechecker.h"
 #include "lockfile.h"
 #include "sysinfo.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -49,7 +50,7 @@ RunOnceChecker::RunOnceChecker(const QString &filename)
 RunOnceChecker::~RunOnceChecker()
 {
     if (!m_lockfile.unlock())
-        qWarning().noquote() << m_lockfile.errorString();
+        qCWarning(QInstaller::lcGeneral).noquote() << m_lockfile.errorString();
 }
 
 class ProcessnameEquals
@@ -97,7 +98,7 @@ bool RunOnceChecker::isRunning(RunOnceChecker::ConditionFlags flags)
     if (flags.testFlag(ConditionFlag::Lockfile)) {
         const bool locked = m_lockfile.lock();
         if (!locked)
-            qWarning().noquote() << m_lockfile.errorString();
+            qCWarning(QInstaller::lcGeneral).noquote() << m_lockfile.errorString();
         return !locked;
     }
     return false;

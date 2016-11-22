@@ -29,6 +29,7 @@
 #include "packagemanagercore.h"
 #include "updateoperations.h"
 #include "qsettingswrapper.h"
+#include "globals.h"
 
 #include <QDir>
 #include <QDebug>
@@ -178,14 +179,14 @@ bool SettingsOperation::undoOperation()
     if (cleanUp) {
         QFile settingsFile(path);
         if (!settingsFile.remove())
-            qWarning().noquote() << settingsFile.errorString();
+            qCWarning(QInstaller::lcGeneral).noquote() << settingsFile.errorString();
         if (!value(QLatin1String("createddir")).toString().isEmpty()) {
             KDUpdater::MkdirOperation mkDirOperation(packageManager());
             mkDirOperation.setArguments(QStringList() << QFileInfo(path).absolutePath());
             mkDirOperation.setValue(QLatin1String("createddir"), value(QLatin1String("createddir")));
 
             if (!mkDirOperation.undoOperation()) {
-                qWarning().noquote() << mkDirOperation.errorString();
+                qCWarning(QInstaller::lcGeneral).noquote() << mkDirOperation.errorString();
             }
         }
     }

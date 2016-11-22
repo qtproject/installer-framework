@@ -35,6 +35,7 @@
 #include "lib7z_extract.h"
 #include "lib7z_list.h"
 #include "lib7z_guid.h"
+#include "globals.h"
 
 #ifndef Q_OS_WIN
 #   include "StdAfx.h"
@@ -273,7 +274,7 @@ struct DirectoryGuard
             return;
         QDir dir(m_path);
         if (!dir.rmdir(m_path))
-            qWarning() << "Cannot delete directory " << m_path;
+            qCWarning(QInstaller::lcGeneral) << "Cannot delete directory " << m_path;
     }
 
     /*!

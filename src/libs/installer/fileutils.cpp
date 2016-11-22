@@ -27,6 +27,7 @@
 **************************************************************************/
 #include "fileutils.h"
 
+#include "globals.h"
 #include <errors.h>
 
 #include <QtCore/QDateTime>
@@ -188,7 +189,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
                                 QDir::toNativeSeparators(f.fileName()), f.errorString());
                     if (!ignoreErrors)
                         throw Error(errorMessage);
-                    qWarning().noquote() << errorMessage;
+                    qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
                 }
             }
         }
@@ -231,7 +232,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
                                                           errnoToQString(errno));
             if (!ignoreErrors)
                 throw Error(errorMessage);
-            qWarning().noquote() << errorMessage;
+            qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
         }
     }
 }
@@ -312,14 +313,14 @@ bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFileP
 bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
 {
     if (!file->exists()) {
-        qWarning() << "Target" << file->fileName() << "does not exists.";
+        qCWarning(QInstaller::lcGeneral) << "Target" << file->fileName() << "does not exists.";
         return false;
     }
     if (file->permissions() == static_cast<QFileDevice::Permission>(permissions))
         return true;
 
     if (!file->setPermissions(static_cast<QFileDevice::Permission>(permissions))) {
-        qWarning() << "Cannot set default permissions for target"
+        qCWarning(QInstaller::lcGeneral) << "Cannot set default permissions for target"
                    << file->fileName() << ":" << file->errorString();
         return false;
     }
@@ -529,13 +530,14 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
 {
     QFile iconFile(icon);
     if (!iconFile.open(QIODevice::ReadOnly)) {
-        qWarning() << "Cannot use" << icon << "as an application icon:" << iconFile.errorString();
+        qCWarning(QInstaller::lcGeneral) << "Cannot use" << icon << "as an application icon:"
+            << iconFile.errorString();
         return;
     }
 
     if (QImageReader::imageFormat(icon) != "ico") {
-        qWarning() << "Cannot use" << icon << "as an application icon, unsupported format"
-                   << QImageReader::imageFormat(icon).constData();
+        qCWarning(QInstaller::lcGeneral) << "Cannot use" << icon << "as an application icon, "
+            "unsupported format" << QImageReader::imageFormat(icon).constData();
         return;
     }
 

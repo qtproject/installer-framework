@@ -31,6 +31,7 @@
 #include "constants.h"
 #include "fileutils.h"
 #include "packagemanagercore.h"
+#include "globals.h"
 
 #include <QDataStream>
 #include <QDebug>
@@ -248,9 +249,9 @@ QString UpdateOperation::argumentKeyValue(const QString &key, const QString &def
 
     it = std::find_if(++it, tArguments.end(), StartsWith(keySeparater));
     if (it != tArguments.end()) {
-        qWarning().nospace() << "There are multiple keys in the arguments calling " << name() << ". "
-                             << "Only the first found " << key << " is used: "
-                             << arguments().join(QLatin1String("; "));
+        qCWarning(QInstaller::lcGeneral).nospace() << "There are multiple keys in the arguments calling "
+            << name() << ". " << "Only the first found " << key << " is used: "
+            << arguments().join(QLatin1String("; "));
     }
     return value;
 }
@@ -517,7 +518,8 @@ bool UpdateOperation::fromXml(const QString &xml)
     int errorLine;
     int errorColumn;
     if (!doc.setContent( xml, &errorMsg, &errorLine, &errorColumn)) {
-        qWarning() << "Error parsing xml error=" << errorMsg << "line=" << errorLine << "column=" << errorColumn;
+        qCWarning(QInstaller::lcGeneral) << "Error parsing xml error=" << errorMsg
+            << "line=" << errorLine << "column=" << errorColumn;
         return false;
     }
     return fromXml(doc);

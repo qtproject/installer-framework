@@ -32,6 +32,7 @@
 #include "component.h"
 #include "packagemanagercore.h"
 #include "packagemanagergui.h"
+#include "globals.h"
 
 #include <QDebug>
 #include <QDesktopServices>
@@ -49,7 +50,7 @@ public:
     ConsoleProxy() {}
 
 public slots :
-        void log(const QString &log) { qDebug().noquote() << log; }
+        void log(const QString &log) { qCDebug(QInstaller::lcGeneral).noquote() << log; }
 };
 
 class InstallerProxy : public QObject

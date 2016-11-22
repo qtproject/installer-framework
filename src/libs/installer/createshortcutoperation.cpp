@@ -29,6 +29,7 @@
 
 #include "fileutils.h"
 #include "utils.h"
+#include "globals.h"
 
 #include <QDebug>
 #include <QDir>
@@ -276,7 +277,7 @@ bool CreateShortcutOperation::undoOperation()
 
     const QString &linkLocation = arguments().at(1);
     if (!deleteFileNowOrLater(linkLocation) )
-        qDebug() << "Cannot delete:" << linkLocation;
+        qCWarning(QInstaller::lcGeneral) << "Cannot delete:" << linkLocation;
 
     QDir dir;   // remove all directories we created
     const QStringList directoriesToDelete = value(QLatin1String("createddirs")).toStringList();

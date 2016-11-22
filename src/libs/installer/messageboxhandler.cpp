@@ -28,6 +28,8 @@
 
 #include "messageboxhandler.h"
 
+#include "globals.h"
+
 #include <QtCore/QDebug>
 
 #include <QApplication>
@@ -401,7 +403,7 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         messageTypeHash.insert(warningType, QLatin1String("warning"));
     };
 
-    qDebug().nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
+    qCDebug(QInstaller::lcGeneral).nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
                        << " message box " << identifier << ": " << title << ", " << text;
 
     if (qobject_cast<QApplication*> (qApp) == nullptr)

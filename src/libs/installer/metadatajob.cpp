@@ -35,6 +35,7 @@
 #include "serverauthenticationdialog.h"
 #include "settings.h"
 #include "testrepository.h"
+#include "globals.h"
 
 #include <QTemporaryDir>
 #include <QtMath>
@@ -134,8 +135,8 @@ void MetadataJob::doStart()
                         items.append(item);
                     }
                     else {
-                        qDebug() << "Trying to parse compressed repo as normal repository."\
-                                  "Check repository syntax.";
+                        qCWarning(QInstaller::lcGeneral) << "Trying to parse compressed repo as "
+                            "normal repository. Check repository syntax.";
                     }
                 }
             }
@@ -196,7 +197,7 @@ void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
 {
     QTemporaryDir tempRepoDir(QDir::tempPath() + QLatin1String("/compressedRepo-XXXXXX"));
     if (!tempRepoDir.isValid()) {
-        qDebug() << "Cannot create unique temporary directory.";
+        qCWarning(QInstaller::lcGeneral) << "Cannot create unique temporary directory.";
         return;
     }
     tempRepoDir.setAutoRemove(false);
@@ -292,10 +293,10 @@ void MetadataJob::xmlTaskFinished()
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
             ProxyCredentialsDialog proxyCredentials(proxy);
-            qDebug().noquote() << e.message();
+            qCWarning(QInstaller::lcGeneral) << e.message();
 
             if (proxyCredentials.exec() == QDialog::Accepted) {
-                qDebug() << "Retrying with new credentials ...";
+                qCDebug(QInstaller::lcGeneral) << "Retrying with new credentials ...";
                 PackageManagerProxyFactory *factory = m_core->proxyFactory();
 
                 factory->setProxyCredentials(proxy, proxyCredentials.userName(),
@@ -307,7 +308,7 @@ void MetadataJob::xmlTaskFinished()
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qDebug().noquote() << e.message();
+            qCWarning(QInstaller::lcGeneral) << e.message();
             ServerAuthenticationDialog dlg(e.message(), e.taskItem());
             if (dlg.exec() == QDialog::Accepted) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
@@ -327,7 +328,7 @@ void MetadataJob::xmlTaskFinished()
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
                     if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
-                        qDebug() << "Repository categories updated.";
+                        qCDebug(QInstaller::lcGeneral()) << "Repository categories updated.";
 
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
@@ -429,7 +430,7 @@ void MetadataJob::metadataTaskFinished()
                                 .arg(item.value(TaskRole::SourceFile).toString());
                         if (m_core->settings().allowUnstableComponents()) {
                             m_shaMissmatchPackages.append(item.value(TaskRole::Name).toString());
-                            qWarning() << mismatchMessage;
+                            qCWarning(QInstaller::lcGeneral) << mismatchMessage;
                         } else {
                             throw QInstaller::TaskException(mismatchMessage);
                         }
@@ -544,7 +545,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
-            qDebug() << "Cannot create unique temporary directory.";
+            qCWarning(QInstaller::lcGeneral) << "Cannot create unique temporary directory.";
             return XmlDownloadFailure;
         }
 
@@ -554,19 +555,21 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qDebug() << "Cannot rename target to Updates.xml:" << file.errorString();
+            qCWarning(QInstaller::lcGeneral) << "Cannot rename target to Updates.xml:"
+                << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
+            qCWarning(QInstaller::lcGeneral) << "Cannot open Updates.xml for reading:"
+                << file.errorString();
             return XmlDownloadFailure;
         }
 
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+            qCWarning(QInstaller::lcGeneral).nospace() << "Cannot fetch a valid version of Updates.xml from repository "
                                << metadata.repository.displayname() << ": " << error;
             //If there are other repositories, try to use those
             continue;
@@ -676,7 +679,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     if (ProductKeyCheck::instance()->isValidRepository(repository)) {
                         repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
-                        qDebug() << "Repository to add:" << repository.displayname();
+                        qCDebug(QInstaller::lcGeneral) << "Repository to add:"
+                            << repository.displayname();
                     }
                 } else if (action == QLatin1String("remove")) {
                     // remove possible default repositories using the given server url
@@ -684,7 +688,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                     repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
 
-                    qDebug() << "Repository to remove:" << repository.displayname();
+                    qCDebug(QInstaller::lcGeneral) << "Repository to remove:"
+                        << repository.displayname();
                 } else if (action == QLatin1String("replace")) {
                     // replace possible default repositories using the given server url
                     Repository oldRepository(resolveUrl(result, el.attribute(QLatin1String("oldUrl"))), true);
@@ -696,12 +701,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
                         // store the new repository and the one old it replaces
                         repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
-                        qDebug() << "Replace repository" << oldRepository.displayname() << "with"
-                            << newRepository.displayname();
+                        qCDebug(QInstaller::lcGeneral) << "Replace repository"
+                            << oldRepository.displayname() << "with" << newRepository.displayname();
                     }
                 } else {
-                    qDebug() << "Invalid additional repositories action set in Updates.xml fetched "
-                        "from" << metadata.repository.displayname() << "line:" << el.lineNumber();
+                    qCWarning(QInstaller::lcGeneral) << "Invalid additional repositories action set "
+                        "in Updates.xml fetched from" << metadata.repository.displayname()
+                        << "line:" << el.lineNumber();
                 }
             }
         }

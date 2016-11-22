@@ -33,6 +33,8 @@ const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
 const char IFW_RESOURCES[] = "ifw.resources";
 const char IFW_TRANSLATIONS[] = "ifw.translations";
 const char IFW_NETWORK[] = "ifw.network";
+const char IFW_SERVER[] = "ifw.server";
+const char IFW_GENERAL[] = "ifw.general";
 
 const char IFW_PACKAGE_DISPLAYNAME[] = "ifw.package.displayname";
 const char IFW_PACKAGE_DESCRIPTION[] = "ifw.package.description";
@@ -64,6 +66,8 @@ Q_LOGGING_CATEGORY(lcComponentChecker, IFW_COMPONENT_CHECKER)
 Q_LOGGING_CATEGORY(lcResources, IFW_RESOURCES)
 Q_LOGGING_CATEGORY(lcTranslations, IFW_TRANSLATIONS)
 Q_LOGGING_CATEGORY(lcNetwork, IFW_NETWORK)
+Q_LOGGING_CATEGORY(lcServer, IFW_SERVER)
+Q_LOGGING_CATEGORY(lcGeneral, IFW_GENERAL)
 
 Q_LOGGING_CATEGORY(lcPackageDisplayname, IFW_PACKAGE_DISPLAYNAME);
 Q_LOGGING_CATEGORY(lcPackageDescription, IFW_PACKAGE_DESCRIPTION)
@@ -117,7 +121,9 @@ QStringList loggingCategories()
             << QLatin1String(IFW_PACKAGE_LICENSES)
             << QLatin1String(IFW_PACKAGE_UNCOMPRESSEDSIZE)
             << QLatin1String(IFW_PACKAGE_COMPRESSEDSIZE)
-            << QLatin1String(IFW_INSTALLER_INSTALLLOG);
+            << QLatin1String(IFW_INSTALLER_INSTALLLOG)
+            << QLatin1String(IFW_SERVER)
+            << QLatin1String(IFW_GENERAL);
     return categories;
 
 }

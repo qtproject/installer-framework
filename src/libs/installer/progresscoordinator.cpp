@@ -31,6 +31,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 
+#include "globals.h"
+
 using namespace QInstaller;
 
 QT_BEGIN_NAMESPACE
@@ -101,7 +103,8 @@ void ProgressCoordinator::registerPartProgress(QObject *sender, const char *sign
 void ProgressCoordinator::partProgressChanged(double fraction)
 {
     if (fraction < 0 || fraction > 1) {
-        qWarning() << "The fraction is outside from possible value:" << fraction;
+        qCWarning(QInstaller::lcGeneral) << "The fraction is outside from possible value:"
+            << fraction;
         return;
     }
 
@@ -117,12 +120,12 @@ void ProgressCoordinator::partProgressChanged(double fraction)
 
     double partProgressSize = m_senderPartProgressSizeHash.value(sender(), 0);
     if (partProgressSize == 0) {
-        qWarning() << "It seems that this sender was not registered in the right way:" << sender();
+        qCWarning(QInstaller::lcGeneral) << "It seems that this sender was not registered "
+            "in the right way:" << sender();
         return;
     }
 
     if (m_undoMode) {
-        //qDebug() << "fraction:" << fraction;
         double maxSize = m_reachedPercentageBeforeUndo * partProgressSize;
         double pendingCalculatedPartPercentage = maxSize * fraction;
 
@@ -134,17 +137,21 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
         //Q_ASSERT(newCurrentCompletePercentage <= 100);
         if (newCurrentCompletePercentage < 0) {
-            qDebug() << newCurrentCompletePercentage << "is smaller than 0 - this should not happen more than once";
+            qCDebug(QInstaller::lcGeneral) << newCurrentCompletePercentage << "is smaller than 0 "
+                "- this should not happen more than once";
             newCurrentCompletePercentage = 0;
         }
         if (newCurrentCompletePercentage > 100) {
-            qDebug() << newCurrentCompletePercentage << "is bigger than 100 - this should not happen more than once";
+            qCDebug(QInstaller::lcGeneral) << newCurrentCompletePercentage << "is bigger than 100 "
+                "- this should not happen more than once";
             newCurrentCompletePercentage = 100;
         }
 
         // In undo mode, the progress has to go backward, new has to be smaller than current
-        if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage))
-            qDebug("Something is wrong with the calculation of the progress.");
+        if (qRound(m_currentCompletePercentage) < qRound(newCurrentCompletePercentage)) {
+            qCWarning(QInstaller::lcGeneral) << "Something is wrong with the calculation "
+                "of the progress.";
+        }
 
         m_currentCompletePercentage = newCurrentCompletePercentage;
         if (fraction == 1) {
@@ -166,18 +173,20 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
         //Q_ASSERT(newCurrentCompletePercentage <= 100);
         if (newCurrentCompletePercentage < 0) {
-            qDebug() << newCurrentCompletePercentage << "is smaller than 0 - this should not happen more than once";
+            qCDebug(QInstaller::lcGeneral) << newCurrentCompletePercentage << "is smaller than 0 "
+                "- this should not happen more than once";
             newCurrentCompletePercentage = 0;
         }
 
         if (newCurrentCompletePercentage > 100) {
-            qDebug() << newCurrentCompletePercentage << "is bigger than 100 - this should not happen more than once";
+            qCDebug(QInstaller::lcGeneral) << newCurrentCompletePercentage << "is bigger than 100 "
+                "- this should not happen more than once";
             newCurrentCompletePercentage = 100;
         }
 
         // In normal mode, the progress has to go forward, new has to be larger than current
         if (qRound(m_currentCompletePercentage) > qRound(newCurrentCompletePercentage))
-            qDebug("Something is wrong with the calculation of the progress.");
+            qCWarning(QInstaller::lcGeneral) << "Something is wrong with the calculation of the progress.";
 
         m_currentCompletePercentage = newCurrentCompletePercentage;
 

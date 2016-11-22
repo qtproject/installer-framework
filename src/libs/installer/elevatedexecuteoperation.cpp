@@ -30,6 +30,7 @@
 
 #include "environment.h"
 #include "qprocesswrapper.h"
+#include "globals.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QProcessEnvironment>
@@ -146,7 +147,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
         process->setWorkingDirectory(workingDirectory);
-        qDebug() << "ElevatedExecuteOperation setWorkingDirectory:" << workingDirectory;
+        qCDebug(QInstaller::lcGeneral) << "ElevatedExecuteOperation setWorkingDirectory:"
+            << workingDirectory;
     }
 
     QProcessEnvironment penv;
@@ -167,7 +169,8 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
     process->start(args.front(), args.mid(1));
-    qDebug() << args.front() << "started, arguments:" << QStringList(args.mid(1)).join(QLatin1String(" "));
+    qCDebug(QInstaller::lcGeneral) << args.front() << "started, arguments:"
+        << QStringList(args.mid(1)).join(QLatin1String(" "));
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads
@@ -213,7 +216,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         QByteArray standardErrorOutput = process->readAllStandardError();
         // in error case it would be useful to see something in verbose output
         if (!standardErrorOutput.isEmpty())
-            qWarning().noquote() << standardErrorOutput;
+            qCWarning(QInstaller::lcGeneral).noquote() << standardErrorOutput;
 
         returnValue = false;
     }
@@ -240,14 +243,15 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     Q_ASSERT(process);
     Q_ASSERT(QThread::currentThread() == process->thread());
     if (QThread::currentThread() != process->thread()) {
-        qDebug() << Q_FUNC_INFO << "can only be called from the same thread as the process is.";
+        qCDebug(QInstaller::lcGeneral) << Q_FUNC_INFO << "can only be called from the "
+            "same thread as the process is.";
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
         if (q->error() == UserDefinedError)
-            qWarning() << output;
+            qCWarning(QInstaller::lcGeneral)<< output;
         else
-            qDebug() << output;
+            qCDebug(QInstaller::lcGeneral) << output;
         emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }

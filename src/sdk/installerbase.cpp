@@ -155,7 +155,7 @@ int InstallerBase::run()
 
     qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-    qDebug().noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
+    qCDebug(QInstaller::lcGeneral).noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -252,7 +252,7 @@ int InstallerBase::run()
             throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
         foreach (QString repository, repoList) {
             if (!QFileInfo::exists(repository)) {
-                qDebug() << "The file " << repository << "does not exist.";
+                qCWarning(QInstaller::lcGeneral) << "The file " << repository << "does not exist.";
                 return EXIT_FAILURE;
             }
         }
@@ -310,7 +310,7 @@ int InstallerBase::run()
             const QString path = fontIt.next();
             qCDebug(QInstaller::lcResources) << "Registering custom font" << path;
             if (QFontDatabase::addApplicationFont(path) == -1)
-                qWarning() << "Failed to register font!";
+                qCWarning(QInstaller::lcGeneral) << "Failed to register font!";
         }
     }
 
@@ -346,8 +346,22 @@ int InstallerBase::run()
         checkLicense();
         m_core->autoRejectMessageBoxes();
         if (m_core->isInstaller()) {
-            if (!setTargetDirFromCommandLine(parser))
+            if (!setTargetDirFromCommandLine(parser)) {
+                const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
+                if (m_core->checkTargetDir(value)) {
+                    QString targetDirWarning = m_core->targetDirWarning(value);
+                    if (!targetDirWarning.isEmpty()) {
+                        qCWarning(QInstaller::lcGeneral)  << m_core->targetDirWarning(value);
+                        return EXIT_FAILURE;
+                    }
+                    m_core->setValue(QLatin1String("TargetDir"), value);
+                } else {
+                    return EXIT_FAILURE;
+                }
+            } else {
+                qCWarning(QInstaller::lcGeneral) << "Please specify target directory.";
                 return EXIT_FAILURE;
+            }
         }
 
         QStringList packages;
@@ -386,11 +400,11 @@ int InstallerBase::run()
         }
         if (squishPort != 0) {
             if (Squish::allowAttaching(squishPort))
-                qDebug() << "Attaching to squish port " << squishPort << " succeeded";
+                qCDebug(QInstaller::lcGeneral)  << "Attaching to squish port " << squishPort << " succeeded";
             else
-                qDebug() << "Attaching to squish failed.";
+                qCDebug(QInstaller::lcGeneral)  << "Attaching to squish failed.";
         } else {
-            qWarning() << "Invalid squish port number: " << squishPort;
+            qCWarning(QInstaller::lcGeneral)  << "Invalid squish port number: " << squishPort;
         }
 #endif
         const int result = QCoreApplication::instance()->exec();
@@ -435,7 +449,7 @@ QStringList InstallerBase::repositories(const QString &list) const
 {
     const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
     foreach (const QString &item, items)
-        qDebug().noquote() << "Adding custom repository:" << item;
+        qCDebug(QInstaller::lcGeneral).noquote() << "Adding custom repository:" << item;
     return items;
 }
 
@@ -443,7 +457,7 @@ void InstallerBase::checkLicense()
 {
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
     if (!productKeyCheck->hasValidLicense()) {
-        qDebug() << "No valid license found.";
+        qCWarning(QInstaller::lcPackageLicenses) << "No valid license found.";
         throw QInstaller::Error(QLatin1String("No valid license found."));
     }
 }

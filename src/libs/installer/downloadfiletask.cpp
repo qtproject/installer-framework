@@ -29,6 +29,7 @@
 #include "downloadfiletask.h"
 
 #include "downloadfiletask_p.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -259,7 +260,7 @@ void Downloader::onError(QNetworkReply::NetworkError error)
         //with RepositoryUpdate in Updates.xml later.
         //: %2 is a sentence describing the error
         if (data.taskItem.source().contains(QLatin1String("Updates.xml"), Qt::CaseInsensitive)) {
-            qDebug() << QString::fromLatin1("Network error while downloading '%1': %2.").arg(
+            qCWarning(QInstaller::lcServer) << QString::fromLatin1("Network error while downloading '%1': %2.").arg(
                    data.taskItem.source(), reply->errorString());
         } else {
             m_futureInterface->reportException(
@@ -279,7 +280,7 @@ void Downloader::onSslErrors(const QList<QSslError> &sslErrors)
     Q_UNUSED(sslErrors);
 #else
     foreach (const QSslError &error, sslErrors)
-        qDebug() << "SSL error:" << error.errorString();
+        qCWarning(QInstaller::lcServer) << "SSL error:" << error.errorString();
 #endif
 }
 

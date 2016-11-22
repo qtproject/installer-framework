@@ -1053,7 +1053,7 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
                        "remove the packages from components.xml which operations are missing, "
                        "or reinstall the packages.";
     } else {
-        qDebug() << "Operations sanity check succeeded.";
+        qCDebug(QInstaller::lcGeneral) << "Operations sanity check succeeded.";
     }
 }
 
@@ -2039,7 +2039,7 @@ void PackageManagerCore::listInstalledPackages()
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
         KDUpdater::LocalPackage package = installedPackages.value(key);
-        qDebug() << package.name;
+        qCDebug(QInstaller::lcPackageName) << package.name;
     }
 }
 
@@ -2055,7 +2055,7 @@ void PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
     const QList<QInstaller::Component*> componentList = componentsMarkedForInstallation();
 
     if (componentList.count() ==  0) {
-        qDebug() << "No updates available.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No updates available.";
     } else {
         // Check if essential components are available (essential components are disabled).
         // If essential components are found, update first essential updates,
@@ -2084,9 +2084,9 @@ void PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
 
         if (d->calculateComponentsAndRun()) {
             if (essentialUpdatesFound)
-                qDebug() << "Essential components updated successfully.";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully.";
             else
-                qDebug() << "Components updated successfully.";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
         }
     }
 }
@@ -2226,7 +2226,8 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
         processPath =  QDir::cleanPath(processPath.replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         if (processPath == normalizedPath) {
-            qDebug().nospace() << "try to kill process " << process.name << " (" << process.id << ")";
+            qCDebug(QInstaller::lcGeneral).nospace() << "try to kill process " << process.name
+                << " (" << process.id << ")";
 
             //to keep the ui responsible use QtConcurrent::run
             QFutureWatcher<bool> futureWatcher;
@@ -2240,7 +2241,7 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
             if (!future.isFinished())
                 loop.exec();
 
-            qDebug() << process.name << "killed!";
+            qCDebug(QInstaller::lcGeneral) << process.name << "killed!";
             return future.result();
         }
     }
@@ -2363,7 +2364,8 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
     QString adjustedWorkingDir = replaceVariables(workingDirectory);
     foreach (const QString &argument, arguments)
         adjustedArguments.append(replaceVariables(argument));
-    qDebug() << "run application as detached process:" << adjustedProgram << adjustedArguments << adjustedWorkingDir;
+    qCDebug(QInstaller::lcGeneral) << "run application as detached process:" << adjustedProgram
+        << adjustedArguments << adjustedWorkingDir;
     if (workingDirectory.isEmpty())
         return QProcess::startDetached(adjustedProgram, adjustedArguments);
     else
@@ -2881,7 +2883,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         if (isVerbose()) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
-                qDebug() << "Url is:" << localPath;
+                qCDebug(QInstaller::lcGeneral) << "Url is:" << localPath;
             lastLocalPath = localPath;
         }
 
@@ -2957,7 +2959,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                 // installer binary or the installed component list, just ignore it. This
                 // can happen when in installer mode and probably package manager mode too.
                 if (isUpdater())
-                    qDebug() << componentName << "- Does not exist in the repositories anymore.";
+                    qCWarning(QInstaller::lcGeneral) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
             if (!componentToReplace && !d->componentsToReplace().contains(componentName)) {

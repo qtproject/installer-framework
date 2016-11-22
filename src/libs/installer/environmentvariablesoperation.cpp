@@ -32,6 +32,7 @@
 #include <stdlib.h>
 
 #include "environment.h"
+#include "globals.h"
 
 #ifdef Q_OS_WIN
 # include <windows.h>
@@ -59,7 +60,7 @@ static void broadcastEnvironmentChange()
     LRESULT sendresult = SendMessageTimeoutW(HWND_BROADCAST, WM_SETTINGCHANGE,
         0, (LPARAM) L"Environment", SMTO_BLOCK | SMTO_ABORTIFHUNG, 5000, &aResult);
     if (sendresult == 0 || aResult != 0)
-        qWarning("Failed to broadcast the WM_SETTINGCHANGE message.");
+        qCWarning(QInstaller::lcGeneral) << "Failed to broadcast the WM_SETTINGCHANGE message.";
 }
 #endif
 

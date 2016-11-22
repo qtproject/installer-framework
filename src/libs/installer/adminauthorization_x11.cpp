@@ -59,6 +59,8 @@
 
 #include <iostream>
 
+#include "globals.h"
+
 #define SU_COMMAND "/usr/bin/sudo"
 //#define SU_COMMAND "/bin/echo"
 
@@ -95,7 +97,7 @@ static void printError(QWidget *parent, const QString &value)
 bool AdminAuthorization::execute(QWidget *parent, const QString &program, const QStringList &arguments)
 {
     const QString fallback = program + QLatin1String(" ") + arguments.join(QLatin1String(" "));
-    qDebug() << "Fallback:" << fallback;
+    qCDebug(QInstaller::lcServer) << "Fallback:" << fallback;
 
     // as we cannot pipe the password to su in QProcess, we need to setup a pseudo-terminal for it
     int masterFD = -1;

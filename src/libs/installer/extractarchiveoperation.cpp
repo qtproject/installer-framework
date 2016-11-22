@@ -29,6 +29,7 @@
 #include "extractarchiveoperation_p.h"
 
 #include "constants.h"
+#include "globals.h"
 
 #include <QEventLoop>
 #include <QThreadPool>
@@ -120,7 +121,7 @@ bool ExtractArchiveOperation::performOperation()
         setValue(QLatin1String("files"), file.fileName());
         file.close();
     } else {
-        qWarning() << "Cannot open file for writing " << file.fileName() << ":" << file.errorString();
+        qCWarning(QInstaller::lcGeneral) << "Cannot open file for writing " << file.fileName() << ":" << file.errorString();
     }
 
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
@@ -177,7 +178,7 @@ void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
 void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
 {
     if (fileName.isEmpty()) {
-        qWarning() << Q_FUNC_INFO << "data file name cannot be empty.";
+        qCWarning(QInstaller::lcGeneral) << Q_FUNC_INFO << "data file name cannot be empty.";
         return;
     }
     QFile file(fileName);
@@ -187,7 +188,7 @@ void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
         if (directory.exists() && directory.isEmpty())
             directory.rmdir(directory.path());
     } else {
-        qWarning() << "Cannot remove data file" << file.fileName();
+        qCWarning(QInstaller::lcGeneral) << "Cannot remove data file" << file.fileName();
     }
 }
 
@@ -214,7 +215,7 @@ bool ExtractArchiveOperation::readDataFileContents(QString &targetDir, QStringLi
     } else {
         // We should not be here. Either user has manually deleted the installer related
         // files or same component is installed several times.
-        qWarning() << "Cannot open file " << file.fileName() << " for reading:"
+        qCWarning(QInstaller::lcGeneral) << "Cannot open file " << file.fileName() << " for reading:"
                 << file.errorString() << ". Component is already uninstalled "
                 << "or file is manually deleted.";
     }

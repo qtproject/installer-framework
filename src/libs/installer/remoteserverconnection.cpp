@@ -33,6 +33,7 @@
 #include "remoteserverconnection_p.h"
 #include "utils.h"
 #include "permissionsettings.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -171,13 +172,13 @@ void RemoteServerConnection::run()
             } else if (command.startsWith(QLatin1String(Protocol::QAbstractFileEngine))) {
                 handleQFSFileEngine(&socket, command, stream);
             } else {
-                qDebug() << "Unknown command:" << command;
+                qCDebug(QInstaller::lcServer) << "Unknown command:" << command;
             }
             socket.flush();
         } else {
             // authorization failed, connection not wanted
             socket.close();
-            qDebug() << "Unknown command:" << command;
+            qCDebug(QInstaller::lcServer) << "Unknown command:" << command;
             return;
         }
     }
@@ -285,7 +286,7 @@ void RemoteServerConnection::handleQProcess(QIODevice *socket, const QString &co
     }
 #endif
     else if (!command.isEmpty()) {
-        qDebug() << "Unknown QProcess command:" << command;
+        qCDebug(QInstaller::lcServer) << "Unknown QProcess command:" << command;
     }
 }
 
@@ -366,7 +367,7 @@ void RemoteServerConnection::handleQSettings(QIODevice *socket, const QString &c
     } else if (command == QLatin1String(Protocol::QSettingsApplicationName)) {
         sendData(socket, settings->applicationName());
     } else if (!command.isEmpty()) {
-        qDebug() << "Unknown QSettings command:" << command;
+        qCDebug(QInstaller::lcServer) << "Unknown QSettings command:" << command;
     }
 }
 
@@ -502,7 +503,7 @@ void RemoteServerConnection::handleQFSFileEngine(QIODevice *socket, const QStrin
         data >> filetime;
         sendData(socket, m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
     } else if (!command.isEmpty()) {
-        qDebug() << "Unknown QAbstractFileEngine command:" << command;
+        qCDebug(QInstaller::lcServer) << "Unknown QAbstractFileEngine command:" << command;
     }
 }
 

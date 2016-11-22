@@ -29,6 +29,7 @@
 
 #include "installerbasecommons.h"
 #include "settingsdialog.h"
+#include "globals.h"
 
 #include <packagemanagercore.h>
 
@@ -111,7 +112,7 @@ int TabController::init()
         // this should called as early as possible, to handle error message boxes for example
         if (!d->m_controlScript.isEmpty()) {
             d->m_gui->loadControlScript(d->m_controlScript);
-            qDebug() << "Using control script:" << d->m_controlScript;
+            qCDebug(QInstaller::lcGeneral) << "Using control script:" << d->m_controlScript;
         }
 
         connect(d->m_gui, &QWizard::currentIdChanged, this, &TabController::onCurrentIdChanged);

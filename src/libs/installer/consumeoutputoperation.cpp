@@ -29,6 +29,7 @@
 #include "consumeoutputoperation.h"
 #include "packagemanagercore.h"
 #include "utils.h"
+#include "globals.h"
 
 #include <QFile>
 #include <QDir>
@@ -99,10 +100,11 @@ bool ConsumeOutputOperation::performOperation()
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                qWarning() << executable.absoluteFilePath() << processArguments
-                           << "crashed with exit code" << process.exitCode()
-                           << "standard output: " << process.readAllStandardOutput()
-                           << "error output: " << process.readAllStandardError();
+                qCWarning(QInstaller::lcGeneral) << executable.absoluteFilePath()
+                    << processArguments << "crashed with exit code"
+                    << process.exitCode() << "standard output: "
+                    << process.readAllStandardOutput() << "error output: "
+                    << process.readAllStandardError();
                 setError(UserDefinedError);
                 setErrorString(tr("Running \"%1\" resulted in a crash.").arg(
                     QDir::toNativeSeparators(executable.absoluteFilePath())));
@@ -116,13 +118,15 @@ bool ConsumeOutputOperation::performOperation()
             uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
-            qWarning() << executable.absoluteFilePath() << "process is still running, need to kill it.";
+            qCWarning(QInstaller::lcGeneral) << executable.absoluteFilePath()
+                << "process is still running, need to kill it.";
             process.kill();
         }
 
     }
     if (executableOutput.isEmpty()) {
-        qWarning() << "Cannot get any query output from executable" << executable.absoluteFilePath();
+        qCWarning(QInstaller::lcGeneral) << "Cannot get any query output from executable"
+            << executable.absoluteFilePath();
     }
     core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
     return true;

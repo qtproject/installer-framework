@@ -29,6 +29,7 @@
 
 #include "fileutils.h"
 #include "packagemanagercore.h"
+#include "globals.h"
 
 #include <QDebug>
 #include <QDir>
@@ -265,10 +266,10 @@ bool InstallIconsOperation::undoOperation()
     }
 
     if (!warningMessages.isEmpty()) {
-        qWarning() << "Undo of operation" << name() << "with arguments"
+        qCWarning(QInstaller::lcGeneral) << "Undo of operation" << name() << "with arguments"
                    << arguments().join(QLatin1String(", ")) << "had some problems.";
         foreach (const QString &message, warningMessages) {
-            qWarning().noquote() << message;
+            qCWarning(QInstaller::lcGeneral).noquote() << message;
         }
     }
 

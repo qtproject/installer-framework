@@ -35,6 +35,8 @@
 
 #include <qt_windows.h>
 
+#include "globals.h"
+
 #ifdef Q_CC_MINGW
 # ifndef SEE_MASK_NOASYNC
 #  define SEE_MASK_NOASYNC 0x00000100
@@ -106,14 +108,15 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
     shellExecuteInfo.lpParameters = (wchar_t *)args.utf16();
     shellExecuteInfo.fMask = SEE_MASK_NOASYNC;
 
-    qDebug() << "Starting elevated process" << file << "with arguments" << args;
+    qCDebug(QInstaller::lcServer) << "Starting elevated process" << file
+                                  << "with arguments" << args;
 
     if (ShellExecuteExW(&shellExecuteInfo)) {
-        qDebug() << "Finished starting elevated process.";
+        qCDebug(QInstaller::lcServer) << "Finished starting elevated process.";
         return true;
     } else {
-        qWarning() << "Error while starting elevated process" << program
-                   << ":" << QInstaller::windowsErrorString(GetLastError());
+        qCWarning(QInstaller::lcServer) << "Error while starting elevated process" << program
+            << ":" << QInstaller::windowsErrorString(GetLastError());
     }
     return false;
 }

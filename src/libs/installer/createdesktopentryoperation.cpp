@@ -29,6 +29,7 @@
 
 #include "errors.h"
 #include "fileutils.h"
+#include "globals.h"
 
 #include <QDir>
 #include <QFile>
@@ -158,7 +159,8 @@ bool CreateDesktopEntryOperation::undoOperation()
     // first remove the link
     QFile file(filename);
     if (file.exists() && !file.remove()) {
-        qWarning() << "Cannot delete file" << filename << ":" << file.errorString();
+        qCWarning(QInstaller::lcGeneral) << "Cannot delete file" << filename
+            << ":" << file.errorString();
         return true;
     }
 
@@ -168,13 +170,15 @@ bool CreateDesktopEntryOperation::undoOperation()
     QFile backupFile(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
     if (!backupFile.exists()) {
         // do not treat this as a real error: The backup file might have been just nuked by the user.
-        qWarning() << "Cannot restore original desktop entry at" << filename
-                   << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
+        qCWarning(QInstaller::lcGeneral) << "Cannot restore original desktop entry at" << filename
+            << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
         return true;
     }
 
-    if (!backupFile.rename(filename))
-        qWarning() << "Cannot restore the file" << filename << ":" << backupFile.errorString();
+    if (!backupFile.rename(filename)) {
+        qCWarning(QInstaller::lcGeneral) << "Cannot restore the file" << filename
+            << ":" << backupFile.errorString();
+    }
 
     return true;
 }

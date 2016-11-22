@@ -43,6 +43,7 @@
 #include "componentselectionpage_p.h"
 
 #include "sysinfo.h"
+#include "globals.h"
 
 #include <QApplication>
 
@@ -323,12 +324,15 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     if (!styleSheetFile.isEmpty()) {
         QFile sheet(styleSheetFile);
         if (sheet.exists()) {
-            if (sheet.open(QIODevice::ReadOnly))
+            if (sheet.open(QIODevice::ReadOnly)) {
                 setStyleSheet(QString::fromLatin1(sheet.readAll()));
-            else
-                qWarning() << "The specified style sheet file can not be opened.";
+            } else {
+                qCWarning(QInstaller::lcGeneral) << "The specified style sheet file "
+                    "can not be opened.";
+            }
         } else {
-            qWarning() << "A style sheet file is specified, but it does not exist.";
+            qCWarning(QInstaller::lcGeneral) << "A style sheet file is specified, "
+                "but it does not exist.";
         }
     }
 
@@ -465,7 +469,7 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
         return;
     }
 
-    qDebug() << "Cannot set text items on object of type"
+    qCWarning(QInstaller::lcGeneral) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
 }
 
@@ -522,7 +526,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
-        qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+        qCWarning(QInstaller::lcGeneral) << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
 /*!
@@ -541,7 +545,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         return b->isEnabled();
 
-    qWarning() << "Button with type: " << d->buttonType(wb) << "not found!";
+    qCWarning(QInstaller::lcGeneral) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -574,7 +578,7 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
     d->m_controlScriptContext = m_core->controlScriptEngine()->loadInContext(
         QLatin1String("Controller"), scriptPath);
-    qDebug() << "Loaded control script" << scriptPath;
+    qCDebug(QInstaller::lcGeneral) << "Loaded control script" << scriptPath;
 }
 
 /*!
@@ -588,7 +592,8 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
         const QJSValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
         if (returnValue.isUndefined()) {
-            qDebug() << "Control script callback" << methodName << "does not exist.";
+            qCDebug(QInstaller::lcGeneral) << "Control script callback" << methodName
+                << "does not exist.";
             return;
         }
     } catch (const QInstaller::Error &e) {
@@ -756,7 +761,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
         if (p && p->objectName() == name)
             return p;
     }
-    qWarning() << "No page found for object name" << name;
+    qCWarning(QInstaller::lcGeneral) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -784,7 +789,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return dp->widget();
         return p;
     }
-    qWarning() << "No page found for object name" << name;
+    qCWarning(QInstaller::lcGeneral) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -2023,7 +2028,7 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
     if (component && component->isInstalled() && component->isVirtual()) {
         component->setCheckState(Qt::Unchecked);
         core->componentsToInstallNeedsRecalculation();
-        qDebug() << "Virtual component " << name << " was selected for uninstall by script.";
+        qCDebug(QInstaller::lcGeneral) << "Virtual component " << name << " was selected for uninstall by script.";
         return true;
     }
     return false;
@@ -2396,7 +2401,7 @@ void ReadyForInstallationPage::entering()
 
     // at the moment there is no better way to check this
     if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
-        qDebug().nospace() << "Cannot determine available space on device. "
+        qCWarning(QInstaller::lcGeneral).nospace() << "Cannot determine available space on device. "
                               "Volume descriptor: " << targetVolume.volumeDescriptor()
                            << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
         return;     // TODO: Shouldn't this also disable the "Next" button?
@@ -2404,11 +2409,12 @@ void ReadyForInstallationPage::entering()
 
     const bool tempOnSameVolume = (targetVolume == tempVolume);
     if (tempOnSameVolume) {
-        qDebug() << "Tmp and install directories are on the same volume. Volume mount point:"
-            << targetVolume.mountPath() << "Free space available:"
+        qCDebug(QInstaller::lcGeneral) << "Tmp and install directories are on the same volume. "
+            "Volume mount point:" << targetVolume.mountPath() << "Free space available:"
             << humanReadableSize(installVolumeAvailableSize);
     } else {
-        qDebug() << "Tmp is on a different volume than the installation directory. Tmp volume mount point:"
+        qCDebug(QInstaller::lcGeneral) << "Tmp is on a different volume than the installation "
+            "directory. Tmp volume mount point:"
             << tempVolume.mountPath() << "Free space available:"
             << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
             << targetVolume.mountPath() << "Free space available:"
@@ -2434,7 +2440,8 @@ void ReadyForInstallationPage::entering()
         required += repositorySize;
     }
 
-    qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space "
+    qCDebug(QInstaller::lcGeneral) << "Installation space required:"
+        << humanReadableSize(required) << "Temporary space "
         "required:" << humanReadableSize(tempRequired) << "Local repository size:"
         << humanReadableSize(repositorySize);
 
@@ -2805,7 +2812,7 @@ void FinishedPage::handleFinishClicked()
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
-    qDebug() << "starting" << program << args;
+    qCDebug(QInstaller::lcGeneral) << "starting" << program << args;
     QProcess::startDetached(program, args);
 }
 
