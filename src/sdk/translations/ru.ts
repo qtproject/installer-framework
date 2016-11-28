@@ -104,6 +104,17 @@
     </message>
 </context>
 <context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation>Ожидание %1</translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>Другой экземпляр %1 уже работает. Дождитесь его завершения, закройте его или перезагрузите систему. </translation>
+    </message>
+</context>
+<context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
@@ -662,6 +673,10 @@
         <source>Could not create output file for writing: %1</source>
         <translation>Не удалось создать выходной файл для записи: %1</translation>
     </message>
+    <message>
+        <source>Could not convert path: %1.</source>
+        <translation>Не удалось преобразовать путь: %1.</translation>
+    </message>
 </context>
 <context>
     <name>Lib7z::ExtractItemJob</name>
@@ -855,10 +870,6 @@
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>У компонентов не может быть потомков в режиме обновления.</translation>
-    </message>
-    <message>
-        <source>Could not open the requested translation file &apos;%1&apos;.</source>
-        <translation>Невозможно открыть файл перевода «%1».</translation>
     </message>
     <message>
         <source>Could not open the requested UI file &apos;%1&apos;. Error: %2</source>
@@ -1069,7 +1080,7 @@
     <name>QInstaller::CopyFileTask</name>
     <message>
         <source>Invalid task item count.</source>
-        <translation type="unfinished">Неверное число элементов task.</translation>
+        <translation>Неверное число элементов task.</translation>
     </message>
     <message>
         <source>Could not open source &apos;%1&apos; for read. Error: %2.</source>
@@ -2067,6 +2078,10 @@ Please copy the installer to a local drive</source>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation>Авторизация на прокси-сервере</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -2160,13 +2175,6 @@ Please copy the installer to a local drive</source>
 </context>
 <context>
     <name>QInstaller::RemoteObject</name>
-    <message>
-        <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Could not read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
@@ -2438,66 +2446,6 @@ Do you want to continue?</source>
     <message>
         <source>Error acquiring admin rights</source>
         <translation>Ошибка при попытке получения прав администратора</translation>
-    </message>
-</context>
-<context>
-    <name>QtPatchOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>3 or 4</source>
-        <translation>3 или 4</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>В операции «%1» необходимый объект установщика пуст.</translation>
-    </message>
-    <message>
-        <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
-        <translation>Первым элементом должен быть «linux», «mac» или «windows». Другие типы в настоящий момент не поддерживаются.</translation>
-    </message>
-    <message>
-        <source>Could not find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation>Не удалось найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
-    </message>
-    <message>
-        <source>QMake from the current Qt version 
-(%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
-        <translation>Отсутствует QMake в текущем профиле Qt 
-(%1). Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.</translation>
-    </message>
-    <message>
-        <source>The output of 
-%1 -query
-is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: &quot;%2&quot;</source>
-        <translation>Невозможно разобрать вывод запроса %1.
-Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
-вывод: «%2»</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt dir(%1)
-needs to be less than 255 characters.</source>
-        <translation>Ошибка патча Qt. Новый каталог Qt (%1)
-должен содержать менее 255 символов в имени.</translation>
-    </message>
-    <message>
-        <source>Qt patch error: Can not open %1.(%2)</source>
-        <translation>Ошибка внесения изменений в Qt. Невозможно открыть %1.(%2)</translation>
-    </message>
-    <message>
-        <source>The installer was not able to get the unpatched path from 
-%1.(maybe it is broken or removed)
-It tried to patch the Qt binaries, but all other files in Qt are unpatched.
-This could result in a broken Qt version.
-Sometimes it helps to restart the installer with a switched off antivirus software.</source>
-        <translation>Программе установки не удалось получить исходный путь
-из %1.(возможная причина: файл повреждён или удалён)
-Система предприняла попытку исправить бинарные файлы Qt; при этом все прочие файлы остались в исходном виде.
-Эта ситуация может привести к повреждению Qt.
-Попробуйте отключить антивирусную программу и снова запустить программу-установщик.</translation>
     </message>
 </context>
 <context>
