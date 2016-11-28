@@ -35,6 +35,7 @@ namespace KDUpdater {
 
 class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::CopyOperation)
 public:
     CopyOperation();
     ~CopyOperation();
@@ -53,6 +54,7 @@ private:
 
 class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::MoveOperation)
 public:
     MoveOperation();
     ~MoveOperation();
@@ -66,6 +68,7 @@ public:
 
 class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::DeleteOperation)
 public:
     DeleteOperation();
     ~DeleteOperation();
@@ -81,6 +84,7 @@ public:
 
 class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::MkdirOperation)
 public:
     MkdirOperation();
 
@@ -93,6 +97,7 @@ public:
 
 class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::RmdirOperation)
 public:
     RmdirOperation();
 
@@ -105,6 +110,7 @@ public:
 
 class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::AppendFileOperation)
 public:
     AppendFileOperation();
 
@@ -117,6 +123,7 @@ public:
 
 class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::PrependFileOperation)
 public:
     PrependFileOperation();
 

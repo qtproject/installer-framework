@@ -36,6 +36,7 @@ namespace QInstaller {
 class QSettingsWrapper;
 class INSTALLER_EXPORT GlobalSettingsOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::GlobalSettingsOperation)
 public:
     GlobalSettingsOperation();
 

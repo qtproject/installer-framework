@@ -35,6 +35,7 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT CreateDesktopEntryOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::CreateDesktopEntryOperation)
 public:
     CreateDesktopEntryOperation();
     ~CreateDesktopEntryOperation();

@@ -35,6 +35,7 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT CreateShortcutOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::CreateShortcutOperation)
 public:
     CreateShortcutOperation();
 
