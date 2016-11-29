@@ -91,6 +91,8 @@ public:
     T callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
     {
         writeData(name, arg, arg2, arg3);
+        while (m_socket->bytesToWrite())
+            m_socket->waitForBytesWritten();
 
         QByteArray command;
         QByteArray data;
