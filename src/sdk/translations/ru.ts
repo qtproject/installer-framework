@@ -23,8 +23,8 @@
         <translation>Не удалось перейти в позицию %1 для чтения блока набора ресурсов.</translation>
     </message>
     <message>
-        <source>Cannot open meta resource. Error: %1</source>
-        <translation>Не удалось открыть метаресурсы. Ошибка: %1</translation>
+        <source>Cannot open meta resource %1.</source>
+        <translation>Не удалось открыть метаресурсы %1.</translation>
     </message>
 </context>
 <context>
@@ -68,39 +68,50 @@
 <context>
     <name>DirectoryGuard</name>
     <message>
-        <source>Path exists but is not a folder: %1</source>
-        <translation>Путь существует, но не является каталогом: %1</translation>
+        <source>Path &quot;%1&quot; exists but is not a directory.</source>
+        <translation>Путь «%1» существует, но не является каталогом.</translation>
     </message>
     <message>
-        <source>Cannot create folder: %1</source>
-        <translation>Не удалось создать каталог: %1</translation>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Невозможно создать каталог «%1».</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
-        <source>Cannot retrieve path of archive item %1</source>
-        <translation>Не удалось определить путь файла %1 в архиве</translation>
+        <source>Cannot retrieve path of archive item %1.</source>
+        <translation>Не удалось определить путь элемента архива %1.</translation>
     </message>
     <message>
-        <source>Cannot remove already existing symlink. %1</source>
-        <translation>Не удалось удалить существующую символьную ссылку. %1</translation>
+        <source>Cannot remove already existing symlink %1.</source>
+        <translation>Не удалось удалить существующую символьную ссылку %1.</translation>
     </message>
     <message>
-        <source>Cannot open file: %1 (%2)</source>
-        <translation>Не удалось открыть файл: %1 (%2)</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Невозможно открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
-        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &quot;%1&quot;. Another one is already existing.</source>
         <translation>Не удалось создать символьную ссылку «%1», потому что ссылка уже существует.</translation>
     </message>
     <message>
-        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &quot;%1&quot;.</source>
         <translation>Не удалось прочитать цель символьной ссылки из файла «%1».</translation>
     </message>
     <message>
-        <source>Cannot create symlink at %1. %2</source>
-        <translation>Не удалось создать символьную ссылку %1. %2</translation>
+        <source>Cannot create symlink at %1: %2</source>
+        <translation>Не удалось создать символьную ссылку %1: %2</translation>
+    </message>
+</context>
+<context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation>Ожидание %1</translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>Другой экземпляр %1 уже работает. Дождитесь его завершения, закройте его или перезагрузите систему.</translation>
     </message>
 </context>
 <context>
@@ -108,10 +119,6 @@
     <message>
         <source>Components added as automatic dependencies:</source>
         <translation>Компоненты, добавленные как автоматические зависимости:</translation>
-    </message>
-    <message>
-        <source>Components added as dependency for &apos;%1&apos;:</source>
-        <translation>Компоненты, добавленные как зависимость для %1:</translation>
     </message>
     <message>
         <source>Components that have resolved dependencies:</source>
@@ -122,11 +129,15 @@
         <translation>Выбранные компоненты без зависимостей:</translation>
     </message>
     <message>
-        <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
+        <source>Components added as dependency for &quot;%1&quot;:</source>
+        <translation>Компоненты, добавленные как зависимости для «%1»:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component &quot;%1&quot; already added with reason: &quot;%2&quot;</source>
         <translation>Обнаружена рекурсия: компонент «%1» уже добавлен по причине: «%2»</translation>
     </message>
     <message>
-        <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
+        <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Не удалось найти компонент «%1», необходимый для «%2».</translation>
     </message>
 </context>
@@ -138,99 +149,64 @@
     </message>
 </context>
 <context>
-    <name>LockFile</name>
-    <message>
-        <source>Cannot create lock file &apos;%1&apos;: %2</source>
-        <translation>Не удалось создать файл блокировки «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
-        <translation>Не удалось записать PID в файл блокировки «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
-        <translation>Не удалось заблокировать файл «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
-        <translation>Не удалось разблокировать файл «%1»: %2</translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::AppendFileOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Невозможно создать резервную копию файла %1: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать резервную копию файла «%1»: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>Не удалось найти резервную копию «%1».</translation>
     </message>
     <message>
-        <source>Cannot open file &apos;%1&apos; for writing: %2</source>
-        <translation>Невозможно открыть файл «%1» на запись: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>Не удалось восстановить резервную копию «%1».</translation>
     </message>
     <message>
-        <source>Cannot find backup file for %1.</source>
-        <translation>Невозможно найти резервную копию %1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1.</source>
-        <translation>Невозможно восстановить резервную копию %1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Невозможно восстановить резервную копию %1: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Не удалось восстановить резервную копию «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Cannot backup file %1.</source>
-        <translation>Невозможно создать резервную копию файла %1.</translation>
-    </message>
-    <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
-    </message>
-    <message>
         <source>Cannot copy a non-existent file: %1</source>
         <translation>Не удалось скопировать отсутствующий файл: %1</translation>
     </message>
     <message>
-        <source>Cannot remove destination file %1: %2</source>
-        <translation>Невозможно удалить файл %1: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>Не удалось создать резервную копию файла «%1».</translation>
     </message>
     <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Невозможно скопировать %1 в %2: %3</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot delete file %1: %2</source>
-        <translation>Невозможно удалить файл %1: %2</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось скопировать файл из «%1» в «%2»: %3</translation>
     </message>
     <message>
-        <source>Cannot restore backup file into %1: %2</source>
-        <translation>Невозможно восстановить файл %1 из резервной копии: %2</translation>
+        <source>Cannot delete file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file into &quot;%1&quot;: %2</source>
+        <translation>Не удалось восстановить резервную копию в «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::DeleteOperation</name>
     <message>
-        <source>Cannot create backup of %1: %2</source>
-        <translation>Невозможно создать резервную копию %1: %2</translation>
+        <source>Cannot create backup of file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать резервную копию файла «%1»: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Невозможно восстановить резервную копию %1: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Не удалось восстановить резервную копию «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -303,14 +279,6 @@
 <context>
     <name>KDUpdater::HttpDownloader</name>
     <message>
-        <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
-        <translation>Невозможно загрузить %1: Сбой записи в файл «%2» - %3</translation>
-    </message>
-    <message>
-        <source>Cannot download %1: Cannot create %2: %3</source>
-        <translation>Невозможно загрузить %1: Невозможно создать %2: %3</translation>
-    </message>
-    <message>
         <source>%1 at %2</source>
         <translation>%1 в %2</translation>
     </message>
@@ -338,146 +306,115 @@
         <source>Try again</source>
         <translation>Повторить</translation>
     </message>
+    <message>
+        <source>Cannot download %1. Writing to file &quot;%2&quot; failed: %3</source>
+        <translation>Невозможно загрузить «%1»: Не удалось записать в файл «%2»: %3</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create file &quot;%2&quot;: %3</source>
+        <translation>Невозможно загрузить «%1». Не удалось создать «%2»: %3</translation>
+    </message>
 </context>
 <context>
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
-        <source>Cannot open source file &apos;%1&apos; for reading.</source>
-        <translation>Невозможно прочитать исходный файл «%1».</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
     <message>
-        <source>Cannot open destination file &apos;%1&apos; for writing.</source>
-        <translation>Невозможно записать в файл назначения «%1».</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
-        <source>Writing to %1 failed: %2</source>
-        <translation>Не удалось записать в %1: %2</translation>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>Не удалось записать в «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MkdirOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 1.</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать каталог «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot create folder %1: Unknown error.</source>
-        <translation>Невозможно создать каталог %1: Неизвестная ошибка.</translation>
+        <source>Unknown error.</source>
+        <translation>Неизвестная ошибка.</translation>
     </message>
     <message>
-        <source>Cannot remove directory %1: %2</source>
-        <translation>Невозможно удалить каталог: %1: %2</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить каталог «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Cannot backup file %1.</source>
-        <translation>Невозможно создать резервную копию файла %1.</translation>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>Не удалось создать резервную копию файла «%1».</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot remove destination file %1: %2</source>
-        <translation>Невозможно удалить файл назначения %1: %2</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось скопировать файл «%1» в «%2»: %3</translation>
     </message>
     <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Невозможно скопировать %1 в %2: %3</translation>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>Не удалось удалить файл «%1».</translation>
     </message>
     <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Невозможно скопировать %1 в %2: %3</translation>
-    </message>
-    <message>
-        <source>Cannot remove file %1.</source>
-        <translation>Невозможно удалить файл %1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Невозможно восстановить резервную копию %1: %2</translation>
-    </message>
-</context>
-<context>
-    <name>KDUpdater::PackagesInfo</name>
-    <message>
-        <source>%1 contains invalid content: %2</source>
-        <translation>%1 содержит недопустимые данные: %2</translation>
-    </message>
-    <message>
-        <source>The file %1 does not exist.</source>
-        <translation>Файл %1 не существует.</translation>
-    </message>
-    <message>
-        <source>Cannot open %1.</source>
-        <translation>Невозможно открыть %1.</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ошибка разбора в %1 в %2, %3: %4</translation>
-    </message>
-    <message>
-        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
-        <translation>Непредвиденный корневой элемент %1 - требуется «Packages».</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Не удалось восстановить резервную копию «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PrependFileOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Невозможно создать резервную копию файла %1: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать резервную копию файла «%1»: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 2.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
     <message>
-        <source>Cannot open file %1 for reading: %2</source>
-        <translation>Невозможно открыть файл %1 на чтение: %2</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
-        <source>Cannot open file %1 for writing: %2</source>
-        <translation>Невозможно открыть файл %1 на запись: %2</translation>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>Не удалось найти резервную копию «%1».</translation>
     </message>
     <message>
-        <source>Cannot find backup file for %1.</source>
-        <translation>Невозможно найти резервную копию для %1.</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>Не удалось восстановить резервную копию «%1».</translation>
     </message>
     <message>
-        <source>Cannot restore backup file for %1.</source>
-        <translation>Невозможно найти резервную копию для %1.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Невозможно восстановить резервную копию %1: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Не удалось восстановить резервную копию «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
-        <translation>Невозможно прочитать файл ресурсов «%1». Причина:</translation>
+        <source>Cannot read resource file &quot;%1&quot;: %2</source>
+        <translation>Невозможно прочитать файл ресурсов «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::RmdirOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Недопустимое количество параметров: передано %1, требуется 1.</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить каталог «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot remove folder %1: The folder does not exist.</source>
-        <translation>Невозможно удалить каталог %1: каталог с таким именем не существует.</translation>
+        <source>The directory does not exist.</source>
+        <translation>Каталог не существует.</translation>
     </message>
     <message>
-        <source>Cannot remove folder %1: %2</source>
-        <translation>Невозможно удалить каталог %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot recreate directory %1: %2</source>
-        <translation>Невозможно восстановить каталог %1: %2</translation>
+        <source>Cannot recreate directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось пересоздать каталог «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -517,10 +454,6 @@
         <source>Cannot access the package information of this application.</source>
         <translation>Приложение не может получить доступ к информации о пакетах.</translation>
     </message>
-    <message>
-        <source>Cannot access the update sources information of this application.</source>
-        <translation>Приложение не может получить доступ к серверам обновлений.</translation>
-    </message>
     <message numerus="yes">
         <source>%n update(s) found.</source>
         <translation>
@@ -534,10 +467,6 @@
         <translation>Загружается файл Updates.xml с сервера обновлений.</translation>
     </message>
     <message>
-        <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
-        <translation>Не удалось загрузить источник обновлений %1 с («%2»)</translation>
-    </message>
-    <message>
         <source>Updates.xml file(s) downloaded from update sources.</source>
         <translation>Загрузка файла Updates.xml завершена.</translation>
     </message>
@@ -549,28 +478,13 @@
         <source>Application updates computed.</source>
         <translation>Обновления подготовлены.</translation>
     </message>
-</context>
-<context>
-    <name>KDUpdater::UpdateSourcesInfo</name>
     <message>
-        <source>%1 contains invalid content: %2</source>
-        <translation>%1 содержит недопустимые данные: %2</translation>
+        <source>No package sources set for this application.</source>
+        <translation>Исходники пакета не заданы для этого приложения.</translation>
     </message>
     <message>
-        <source>Cannot read &quot;%1&quot;</source>
-        <translation>Невозможно прочитать «%1»</translation>
-    </message>
-    <message>
-        <source>XML Parse error in %1 at %2, %3: %4</source>
-        <translation>Ошибка разбора XML в %1 в %2, %3: %4</translation>
-    </message>
-    <message>
-        <source>Root element %1 unexpected, should be &quot;UpdateSources&quot;</source>
-        <translation>Непредвиденный корневой элемент %1, требуется «UpdateSources»</translation>
-    </message>
-    <message>
-        <source>Cannot save changes to &quot;%1&quot;: %2</source>
-        <translation>Невозможно сохранить изменения в «%1»: %2</translation>
+        <source>Cannot download package source %1 from &quot;%2&quot;.</source>
+        <translation>Не удалось загрузить исходник пакета «%1» из «%2».</translation>
     </message>
 </context>
 <context>
@@ -615,14 +529,6 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>Cannot retrieve number of items in archive</source>
-        <translation>Не удалось определить количество файлов в архиве</translation>
-    </message>
-    <message>
-        <source>Cannot retrieve path of archive item %1</source>
-        <translation>Не удалось определить путь файла %1 в архиве</translation>
-    </message>
-    <message>
         <source>Unknown exception caught (%1)</source>
         <translation>Возникло неизвестное исключение (%1)</translation>
     </message>
@@ -639,88 +545,102 @@
         <translation>Ошибка: %1</translation>
     </message>
     <message>
-        <source>Cannot load codecs</source>
-        <translation>Не удалось загрузить кодеки</translation>
+        <source>Cannot retrieve property %1 for item %2.</source>
+        <translation>Не удалось получить свойство %1 для элемента %2.</translation>
     </message>
     <message>
-        <source>Cannot retrieve default format</source>
-        <translation>Не удалось определить формат по умолчанию</translation>
+        <source>Property %1 for item %2 not of type VT_FILETIME but %3.</source>
+        <translation>Свойство %1 элемента %2 относится не к типу VT_FILETIME, а к %3.</translation>
     </message>
     <message>
-        <source>Cannot create archive %1. %2</source>
-        <translation>Не удалось создать архив %1. %2</translation>
+        <source>Cannot convert UTC file time to system time.</source>
+        <translation>Не удалось преобразовать UTC время файла в системное время.</translation>
     </message>
     <message>
-        <source>CArc index %1 out of bounds [0, %2]</source>
-        <translation>Индекс CArc %1 вне лимитов [0, %2]</translation>
+        <source>Cannot load codecs.</source>
+        <translation>Не удалось загрузить кодеки.</translation>
     </message>
     <message>
-        <source>Item index %1 out of bounds [0, %2]</source>
-        <translation>Индекс файла %1 вне лимитов [0, %2]</translation>
+        <source>Cannot open archive &quot;%1&quot;.</source>
+        <translation>Не удалось открыть архив «%1».</translation>
     </message>
     <message>
-        <source>Cannot create output file for writing: %1</source>
-        <translation>Не удалось создать выходной файл для записи: %1</translation>
-    </message>
-</context>
-<context>
-    <name>Lib7z::ExtractItemJob</name>
-    <message>
-        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
-        <translation>Невозможно создать архив: QIODevice не установлен или уже разрушен.</translation>
+        <source>Cannot retrieve number of items in archive.</source>
+        <translation>Не удалось определить количество элементов архива.</translation>
     </message>
     <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Ошибка извлечения «%1»: %2</translation>
+        <source>Cannot retrieve path of archive item &quot;%1&quot;.</source>
+        <translation>Не удалось определить путь элемента архива «%1».</translation>
     </message>
     <message>
-        <source>Unknown exception caught (%1)</source>
-        <translation>Возникло неизвестное исключение (%1)</translation>
+        <source>Unknown exception caught (%1).</source>
+        <translation>Возникло неизвестное исключение (%1).</translation>
     </message>
     <message>
-        <source>Failed</source>
-        <translation>Не удалось</translation>
-    </message>
-</context>
-<context>
-    <name>Lib7z::ListArchiveJob</name>
-    <message>
-        <source>Cannot list archive: QIODevice already destroyed.</source>
-        <translation>Невозможно создать архив: QIODevice уже разрушен.</translation>
+        <source>Cannot create temporary file: %1</source>
+        <translation>Не удалось создать временный файл: %1</translation>
     </message>
     <message>
-        <source>Unknown exception caught (%1)</source>
-        <translation>Возникло неизвестное исключение (%1)</translation>
+        <source>Unsupported archive type.</source>
+        <translation>Неподдерживаемый тип архива.</translation>
     </message>
     <message>
-        <source>Failed</source>
-        <translation>Не удалось</translation>
+        <source>Cannot create archive &quot;%1&quot;</source>
+        <translation>Не удалось создать архив «%1»</translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать архив «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove old archive &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить старый архив «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot rename temporary archive &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось переименовать старый архив «%1» в «%2»: %3</translation>
     </message>
 </context>
 <context>
-    <name>OpenArchiveInfo</name>
+    <name>LocalPackageHub</name>
     <message>
-        <source>Cannot load codecs</source>
-        <translation>Не удалось загрузить кодеки</translation>
+        <source>%1 contains invalid content: %2</source>
+        <translation>%1 содержит недопустимые данные: %2</translation>
     </message>
     <message>
-        <source>Cannot retrieve default format</source>
-        <translation>Не удалось определить формат по умолчанию</translation>
+        <source>The file %1 does not exist.</source>
+        <translation>Файл %1 не существует.</translation>
     </message>
     <message>
-        <source>Cannot open archive</source>
-        <translation>Не удалось открыть архив</translation>
+        <source>Cannot open %1.</source>
+        <translation>Не удалось открыть %1.</translation>
     </message>
     <message>
-        <source>No CArc found</source>
-        <translation>CArc не найден</translation>
+        <source>Parse error in %1 at %2, %3: %4</source>
+        <translation>Ошибка разбора в %1 в %2, %3: %4</translation>
+    </message>
+    <message>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>Непредвиденный корневой элемент %1, должен быть «Packages».</translation>
     </message>
 </context>
 <context>
-    <name>QIODeviceSequentialOutStream</name>
+    <name>LockFile</name>
     <message>
-        <source>No device set for output stream</source>
-        <translation>Устройство для выходного потока не задано</translation>
+        <source>Cannot create lock file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать файл блокировки «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write PID to lock file &quot;%1&quot;: %2</source>
+        <translation>Не удалось записать PID в файл блокировки «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot obtain the lock for file &quot;%1&quot;: %2</source>
+        <translation>Не удалось заблокировать файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot release the lock for file &quot;%1&quot;: %2</source>
+        <translation>Не удалось разблокировать файл «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -762,30 +682,6 @@
         <translation>ИБ</translation>
     </message>
     <message>
-        <source>Cannot remove file %1: %2</source>
-        <translation>Не удалось удалить файл %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot remove folder %1: %2</source>
-        <translation>Не удалось удалить каталог %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot create folder %1</source>
-        <translation>Не удалось создать каталог %1</translation>
-    </message>
-    <message>
-        <source>Cannot copy file from %1 to %2: %3</source>
-        <translation>Не удалось скопировать файл из %1 в %2: %3</translation>
-    </message>
-    <message>
-        <source>Cannot move file from %1 to %2: %3</source>
-        <translation>Не удалось переместить файл из %1 в %2: %3</translation>
-    </message>
-    <message>
-        <source>Cannot create folder %1: %2</source>
-        <translation>Не удалось создать каталог %1: %2</translation>
-    </message>
-    <message>
         <source>Cannot open temporary file: %1</source>
         <translation>Не удалось открыть временный файл %1</translation>
     </message>
@@ -806,48 +702,52 @@
         <translation>Маркер не найден, остановлено после %1.</translation>
     </message>
     <message>
-        <source>Cannot open file %1 for reading: %2</source>
-        <translation>Невозможно открыть файл %1 на чтение: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open file %1 for writing: %2</source>
-        <translation>Невозможно открыть файл %1 на запись: %2</translation>
-    </message>
-    <message>
         <source>Read failed after %1 bytes: %2</source>
         <translation>Не удалось прочитать после %1 байт: %2</translation>
-    </message>
-    <message>
-        <source>Copy failed. Error: %1</source>
-        <translation>Сбой копирования. Ошибка: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
         <translation>Сбой записи с %1 байта: %2</translation>
     </message>
     <message>
-        <source>Cannot create temporary file</source>
-        <translation>Не удалось создать временный файл</translation>
-    </message>
-    <message>
-        <source>Cannot retrieve property %1 for item %2</source>
-        <translation>Не удалось определить свойство %1 для элемента %2</translation>
-    </message>
-    <message>
-        <source>Property %1 for item %2 not of type VT_FILETIME but %3</source>
-        <translation>Свойство %1 элемента %2 относится не к типу VT_FILETIME, а к %3</translation>
-    </message>
-    <message>
-        <source>Cannot convert file time to local time</source>
-        <translation>Не удалось преобразовать время файла в локальное время</translation>
-    </message>
-    <message>
-        <source>Cannot convert local file time to system time</source>
-        <translation>Не удалось преобразовать время файла в системное время</translation>
-    </message>
-    <message>
         <source>The specified module could not be found.</source>
         <translation>Не удалось найти указанный модуль.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
+    </message>
+    <message>
+        <source>Copy failed: %1</source>
+        <translation>Не удалось скопировать: %1</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить каталог «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Не удалось создать каталог «%1».</translation>
+    </message>
+    <message>
+        <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось скопировать файл «%1» в «%2»: %3</translation>
+    </message>
+    <message>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось переместить файл «%1» в «%2»: %3</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать каталог «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -857,28 +757,8 @@
         <translation>У компонентов не может быть потомков в режиме обновления.</translation>
     </message>
     <message>
-        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
-        <translation>Невозможно открыть файл перевода «%1».</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Невозможно открыть UI файл «%1». Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Невозможно загрузить UI файл «%1». Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
-        <translation>Невозможно открыть файл лицензии «%1». Ошибка: %2</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Ошибка</translation>
-    </message>
-    <message>
-        <source>Error: Operation %1 does not exist</source>
-        <translation>Ошибка: операция %1 не существует</translation>
     </message>
     <message>
         <source>Cannot resolve isDefault in %1</source>
@@ -887,6 +767,22 @@
     <message>
         <source>Update Info: </source>
         <translation>Информация об обновлении:</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
+        <translation>Не удалось открыть запрошенный UI файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
+        <translation>Не удалось загрузить запрошенный UI файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
+        <translation>Не удалось открыть запрошенный файл лицензии «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Error: Operation %1 does not exist.</source>
+        <translation>Ошибка: операция %1 не существует.</translation>
     </message>
 </context>
 <context>
@@ -998,218 +894,186 @@
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
         <translation>Выберите компоненты для установки.Для удаления уже установленных компонентов снимите отметки выбора.</translation>
     </message>
+    <message>
+        <source>To install new compressed repository, browse the repositories from your computer</source>
+        <translation type="unfinished">Для установки нового хранилища укажите путь к нему на вашем компьютере</translation>
+    </message>
+    <message>
+        <source>&amp;Browse BSP or 7z files...</source>
+        <translation>&amp;Обзор BSP или 7z файлов...</translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation>Открытие файла</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>at least 2</source>
-        <translation>по крайней мерe 2</translation>
-    </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation>В операции «%1» необходимый объект установщика пуст.</translation>
     </message>
     <message>
-        <source>Can not save the output of %1 to an empty installer key value.</source>
-        <translation>Невозможно сохранить вывод операции %1 по пустому ключу.</translation>
+        <source>&lt;to be saved installer key name&gt; &lt;executable&gt; [argument1] [argument2] [...]</source>
+        <translation>&lt;сохраняемое имя ключа установщика&gt; &lt;программа&gt; [параметр1] [параметр2] [...]</translation>
     </message>
     <message>
-        <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
+        <source>Cannot save the output of &quot;%1&quot; to an empty installer key value.</source>
+        <translation>Невозможно сохранить вывод «%1» в пустое значение ключа установщика.</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
         <translation>Файл «%1» не существует или не является исполняемым.</translation>
     </message>
     <message>
-        <source>Running &apos;%1&apos; resulted in a crash.</source>
+        <source>Running &quot;%1&quot; resulted in a crash.</source>
         <translation>Запуск «%1» завершился крахом.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
-        <source>2 or 3</source>
-        <translation>2 или 3</translation>
+        <source>&lt;source&gt; &lt;target&gt; [&quot;forceOverwrite&quot;]</source>
+        <translation>&lt;источник&gt; &lt;назначение&gt; [&quot;forceOverwrite&quot;]</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Invalid argument in %1: Third argument needs to be forceOverwrite, if specified.</source>
+        <translation>Недопустимый параметр в %1: третьим параметром должен быть &quot;forceOverwrite&quot;, если он задан.</translation>
     </message>
     <message>
-        <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
-        <translation> (&lt;источник&gt; &lt;назначение&gt; [forceOverwrite])</translation>
+        <source>Invalid argument in %1: Directory &quot;%2&quot; is invalid.</source>
+        <translation>Недопустимые параметры в %1: Каталог «%2» неверен.</translation>
     </message>
     <message>
-        <source>Invalid argument in %0: Third argument needs to be forceOverwrite, if specified</source>
-        <translation>Недопустимый параметр в %0: третьим параметром должен быть &quot;forceOverwrite&quot;, если он задан</translation>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Не удалось создать каталог «%1».</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
-        <translation>Недопустимые параметры в %0: Недопустимые имена папок: %1 %2</translation>
+        <source>Failed to overwrite &quot;%1&quot;.</source>
+        <translation>Не удалось перезаписать «%1».</translation>
     </message>
     <message>
-        <source>Cannot create %0</source>
-        <translation>Невозможно создать %0</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось скопировать файл «%1» в «%2»: %3</translation>
     </message>
     <message>
-        <source>Failed to overwrite %1</source>
-        <translation>Не удалось перезаписать %1</translation>
-    </message>
-    <message>
-        <source>Cannot copy %0 to %1, error was: %3</source>
-        <translation>Невозможно скопировать %0 в %1. Ошибка: %3</translation>
-    </message>
-    <message>
-        <source>Cannot remove %0</source>
-        <translation>Невозможно удалить %0</translation>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>Не удалось удалить файл «%1».</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyFileTask</name>
     <message>
         <source>Invalid task item count.</source>
-        <translation type="unfinished">Неверное число элементов task.</translation>
+        <translation>Неверное число элементов task.</translation>
     </message>
     <message>
-        <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
-        <translation>Не удалось открыть источник «%1» для чтения. Ошибка: %2.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
     <message>
-        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
-        <translation>Не удалось открыть «%1» для записи. Ошибка: %2.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
     <message>
-        <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <translation>Сбой записи в «%1». Ошибка %2.</translation>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>Не удалось записать в «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Не удалось создать резервную копию файла %1: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать резервную копию файла «%1»: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Failed to overwrite file &quot;%1&quot;.</source>
+        <translation>Не удалось перезаписать файл «%1».</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
-    </message>
-    <message>
-        <source>Failed to overwrite %1</source>
-        <translation>Не удалось перезаписать %1</translation>
-    </message>
-    <message>
-        <source>Cannot write Desktop Entry at %1</source>
-        <translation>Невозможно записать Desktop Entry в %1</translation>
+        <source>Cannot write desktop entry to &quot;%1&quot;.</source>
+        <translation>Невозможно записать Desktop Entry в «%1».</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLinkOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Cannot create link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Не удалось создать ссылку с «%1» на «%2».</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
-    </message>
-    <message>
-        <source>Cannot create link from %1 to %2.</source>
-        <translation>Не удалось создать ссылку с %1 на %2.</translation>
-    </message>
-    <message>
-        <source>Cannot remove link from %1 to %2.</source>
-        <translation>Не удалось создать ссылку с %1 на %2.</translation>
+        <source>Cannot remove link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Не удалось удалить ссылку с «%1» на «%2».</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Cannot set file permissions %1!</source>
-        <translation>Невозможно установить права доступа для файла %1!</translation>
-    </message>
-    <message>
-        <source>Cannot remove file %1: %2</source>
-        <translation>Не удалось удалить файл %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot move file %1 to %2. Error: %3</source>
-        <translation>Невозможно переместить файл %1 в %2. Ошибка: %3</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1,%3 требуется %2.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
-    </message>
-    <message>
-        <source>Installer needs to be an offline version: %1.</source>
-        <translation>Необходима офлайновая версия программы установки: %1.</translation>
-    </message>
-    <message>
-        <source>Cannot open file: %1</source>
-        <translation>Невозможно открыть файл: %1</translation>
-    </message>
-    <message>
-        <source>Cannot read: %1. Error: %2</source>
-        <translation>Невозможно прочитать: %1. Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open file: %1. Error: %2</source>
-        <translation>Невозможно открыть файл: %1. Ошибка: %2</translation>
-    </message>
-    <message>
-        <source>Cannot create target dir: %1.</source>
-        <translation>Невозможно создать каталог назначения: %1.</translation>
-    </message>
-    <message>
         <source>Unknown exception caught: %1.</source>
         <translation>Возникло неизвестное исключение: %1.</translation>
     </message>
     <message>
-        <source>Removing file: %0</source>
-        <translation>Удаление файла: %0</translation>
+        <source>Cannot set permissions for file &quot;%1&quot;.</source>
+        <translation>Не удалось установить права доступа к файлу «%1».</translation>
     </message>
     <message>
-        <source>Cannot remove %0.</source>
-        <translation>Невозможно удалить %0.</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot remove directory %1: %2</source>
-        <translation>Невозможно удалить каталог %1: %2</translation>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось переместить файл «%1» в «%2»: %3</translation>
+    </message>
+    <message>
+        <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
+        <translation>Установщик в «%1» должен быть оффлайновым.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading.</source>
+        <translation>Не удалось открыть файл «%1» на чтение.</translation>
+    </message>
+    <message>
+        <source>Cannot read file &quot;%1&quot;: %2</source>
+        <translation>Не удалось прочитать файл «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create target directory: &quot;%1&quot;.</source>
+        <translation>Не удалось создать целевой каталог «%1».</translation>
+    </message>
+    <message>
+        <source>Removing file &quot;%1&quot;.</source>
+        <translation>Удаление файла «%1».</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>Не удалось удалить файл «%1».</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить каталог «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>&lt;target&gt; &lt;link location&gt; [target arguments] [&quot;workingDirectory=...&quot;] [&quot;iconPath=...&quot;] [&quot;iconId=...&quot;] [&quot;description=...&quot;]</source>
+        <translation>&lt;цель&gt; &lt;размещение ссылки&gt; [параметры цели] [&quot;workingDirectory=...&quot;] [&quot;iconPath=...&quot;] [&quot;iconId=...&quot;] [&quot;description=...&quot;]</translation>
     </message>
     <message>
-        <source>2 or 3</source>
-        <translation>2 или 3</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать каталог «%1»: %2</translation>
     </message>
     <message>
-        <source> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</source>
-        <translation> (необязательно: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>Не удалось перезаписать «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot create folder %1: %2.</source>
-        <translation>Не удалось создать каталог: %1: %2.</translation>
-    </message>
-    <message>
-        <source>Failed to overwrite %1: %2</source>
-        <translation>Не удалось перезаписать %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot create link %1: %2</source>
-        <translation>Не удалось создать ссылку %1: %2</translation>
+        <source>Cannot create link &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать ссылку «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -1235,147 +1099,117 @@
         <translation>Невозможно проверить хеш</translation>
     </message>
     <message>
-        <source>Cannot download archive: %1 : %2</source>
-        <translation>Невозможно загрузить архив: %1: %2</translation>
-    </message>
-    <message>
         <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation>Невозможно получить архивы :%1
 Ошибка в процессе загрузки %2</translation>
     </message>
     <message>
-        <source>Downloading archive &apos;%1&apos; for component: %2</source>
-        <translation>Загрузка архива «%1» для компонента: %2</translation>
+        <source>Cannot download archive %1: %2</source>
+        <translation>Не удалось загрузить архив «%1»: %2</translation>
     </message>
     <message>
-        <source>Scheme not supported: %1 (%2)</source>
-        <translation>Схема не поддерживается: %1 (%2)</translation>
+        <source>Downloading archive &quot;%1&quot; for component %2.</source>
+        <translation>Загрузка архива «%1» для компонента «%2».</translation>
     </message>
     <message>
-        <source>Cannot find component for: %1.</source>
-        <translation>Невозможно найти компонент для: %1.</translation>
+        <source>Scheme %1 not supported (URL: %2).</source>
+        <translation>Схема %1 не поддерживается (URL: %2).</translation>
+    </message>
+    <message>
+        <source>Cannot find component for %1.</source>
+        <translation>Не удалось найти компонент для %1.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
     <message>
-        <source>Target &apos;%1&apos; not open for write. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>«%1» не открыт для записи. Ошибка: %2.</translation>
-    </message>
-    <message>
-        <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Сбой записи в «%1». Ошибка %2.</translation>
-    </message>
-    <message>
-        <source>Redirect loop detected &apos;%1&apos;.</source>
-        <translation>Обнаружено кольцо перенаправлений «%1».</translation>
-    </message>
-    <message>
-        <source>Checksum mismatch detected &apos;%1&apos;.</source>
-        <translation>Обнаружено несовпадение контрольной суммы «%1».</translation>
-    </message>
-    <message>
-        <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Сетевая ошибка при загрузке «%1»: %2.</translation>
-    </message>
-    <message>
-        <source>Unknown network error while downloading: %1.</source>
-        <extracomment>%1 is a sentence describing the error</extracomment>
-        <translation>Неизвестная сетевая ошибка во время загрузки: %1.</translation>
-    </message>
-    <message>
         <source>Pause and resume not supported by network transfers.</source>
         <translation>Приостановка и продолжение не поддерживаются сетевыми протоколами.</translation>
     </message>
     <message>
-        <source>Invalid source &apos;%1&apos;. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Неверный источник «%1». Ошибка: %2.</translation>
-    </message>
-    <message>
-        <source>Target file &apos;%1&apos; already exists but is not a file.</source>
+        <source>Target file &quot;%1&quot; already exists but is not a file.</source>
         <translation>«%1» уже существует, но не является файлом.</translation>
     </message>
     <message>
-        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Не удалось открыть «%1» для записи. Ошибка: %2.</translation>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; not open for writing: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
+    </message>
+    <message>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>Не удалось записать в «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected for &quot;%1&quot;.</source>
+        <translation>Обнаружено кольцо перенаправлений «%1».</translation>
+    </message>
+    <message>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>Обнаружено несовпадение контрольной суммы «%1».</translation>
+    </message>
+    <message>
+        <source>Network error while downloading &quot;%1&quot;: %2</source>
+        <extracomment>%2 is a sentence describing the error</extracomment>
+        <translation>Возникла ошибка сети при загрузке «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Unknown network error while downloading &quot;%1&quot;.</source>
+        <extracomment>%1 is a sentence describing the error</extracomment>
+        <translation>Возникла неизвестная ошибка сети во время загрузки «%1».</translation>
+    </message>
+    <message>
+        <source>Network transfers canceled.</source>
+        <translation>Сетевые передачи отменены.</translation>
+    </message>
+    <message>
+        <source>Invalid source URL &quot;%1&quot;: %2</source>
+        <extracomment>%2 is a sentence describing the error</extracomment>
+        <translation>Неверный URL источника «%1»: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ElevatedExecuteOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Cannot start detached: &quot;%1&quot;</source>
+        <translation>Не удалось запустить отцеплённым: «%1»</translation>
     </message>
     <message>
-        <source>at least 1</source>
-        <translation>по крайней мере 1</translation>
+        <source>Cannot start: &quot;%1&quot;: %2</source>
+        <translation>Не удалось запустить «%1»: %2</translation>
     </message>
     <message>
-        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
-        <translation>Не удалось выполнить: невозможно запустить фоновый процесс: «%1»</translation>
+        <source>Program crashed: &quot;%1&quot;</source>
+        <translation>Программа завершилась крахом: «%1»</translation>
     </message>
     <message>
-        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
-        <translation>Не удалось исполнить: невозможно запустить: «%1»(%2)</translation>
-    </message>
-    <message>
-        <source>Execution failed(Crash): &quot;%1&quot;</source>
-        <translation>Не удалось исполнить(Сбой): «%1»</translation>
-    </message>
-    <message>
-        <source>Execution failed(Unexpected exit code: %1): &quot;%2&quot;</source>
-        <translation>Не удалось исполнить(Непредвиденный код выхода: %1): «%2»</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::EnvironmentVariableOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>2 to 4</source>
-        <translation>от 2 до 4</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
+        <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
+        <translation>Не удалось исполнить (неожиданный код завершения: %1): «%2»</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Cannot open %1 for reading: %2.</source>
-        <translation>Невозможно открыть файл %1 на чтение: %2.</translation>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть архив «%1» для чтения: %2</translation>
     </message>
     <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Ошибка извлечения «%1»: %2</translation>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Ошибка извлечения из архива «%1»: %2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting %1.</source>
-        <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
+        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
+        <translation>В процессе извлечения «%1» возникло неизвестное исключение.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FakeStopProcessForUpdateOperation</name>
-    <message>
-        <source>Number of arguments does not match: one is required</source>
-        <translation>Количество аргументов не совпадает: требуется 1</translation>
-    </message>
     <message>
         <source>Cannot get package manager core.</source>
         <translation>Невозможно получить ядро менеджера пакетов.</translation>
@@ -1451,14 +1285,6 @@ Error while loading %2</source>
         <translation>Завершение установки %1</translation>
     </message>
     <message>
-        <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Нажмите &quot;Готово&quot; для выхода из мастера установки %1.</translation>
-    </message>
-    <message>
-        <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Нажмите &quot;Завершить&quot; для выхода из мастера установки %1.</translation>
-    </message>
-    <message>
         <source>Restart</source>
         <translation>Перезапустить</translation>
     </message>
@@ -1470,59 +1296,47 @@ Error while loading %2</source>
         <source>The %1 Wizard failed.</source>
         <translation>Установка %1 не удалась.</translation>
     </message>
+    <message>
+        <source>Click %1 to exit the %2 Wizard.</source>
+        <translation>Нажмите «%1» для выхода из мастера %2.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::GlobalSettingsOperation</name>
     <message>
-        <source>Settings are not writable</source>
-        <translation>Невозможно записать настройки</translation>
+        <source>Settings are not writable.</source>
+        <translation>Настройки только для чтения.</translation>
     </message>
     <message>
-        <source>Failed to write settings</source>
-        <translation>Не удалось сохранить настройки</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>3, 4 or 5</source>
-        <translation>3, 4 или 5</translation>
+        <source>Failed to write settings.</source>
+        <translation>Не удалось записать настройки.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>&lt;source path&gt; [vendor prefix]</source>
+        <translation>&lt;путь к исходникам&gt; [префикс вендора]</translation>
     </message>
     <message>
-        <source>1 or 2</source>
-        <translation>1 или 2</translation>
+        <source>Invalid Argument: source directory must not be empty.</source>
+        <translation>Неверный параметр: исходный каталог не может быть пустым.</translation>
     </message>
     <message>
-        <source> (Sourcepath, [Vendorprefix])</source>
-        <translation> (источник, [префикс поставщика])</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать резервную копию файла «%1»: %2</translation>
     </message>
     <message>
-        <source>Invalid Argument: source folder must not be empty.</source>
-        <translation>Недопустимый параметр: исходный каталог не может быть пустым.</translation>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>Не удалось перезаписать «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Не удалось создать резервную копию файла %1: %2</translation>
+        <source>Failed to copy file &quot;%1&quot;: %2</source>
+        <translation>Не удалось скопировать файл «%1»: %2</translation>
     </message>
     <message>
-        <source>Failed to overwrite %1: %2</source>
-        <translation>Не удалось перезаписать %1: %2</translation>
-    </message>
-    <message>
-        <source>Failed to copy file %1: %2</source>
-        <translation>Не удалось скопировать %1: %2</translation>
-    </message>
-    <message>
-        <source>Cannot create folder at %1: %2</source>
-        <translation>Не удалось создать каталог в %1: %2</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Не удалось создать каталог «%1»: %2</translation>
     </message>
 </context>
 <context>
@@ -1620,31 +1434,23 @@ Error while loading %2</source>
         <translation>В операции «%1» необходимый объект установщика пуст.</translation>
     </message>
     <message>
-        <source>Can not write license file: %1.</source>
-        <translation>Невозможно сохранить файл лицензии: %1.</translation>
-    </message>
-    <message>
         <source>No license files found to delete.</source>
         <translation>Невозможно удалить файл лицензии: файл не найден.</translation>
+    </message>
+    <message>
+        <source>Can not write license file &quot;%1&quot;.</source>
+        <translation>Не удалось записать файл лицензии «%1».</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
     <message>
-        <source>exactly 3</source>
-        <translation>ровно 3</translation>
-    </message>
-    <message>
-        <source>Failed to open &apos;%1&apos; for reading.</source>
-        <translation>Сбой открытия «%1» на чтение.</translation>
-    </message>
-    <message>
-        <source>Failed to open &apos;%1&apos; for writing.</source>
-        <translation>Сбой открытия «%1» на запись.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
 </context>
 <context>
@@ -1690,16 +1496,20 @@ Error while loading %2</source>
         <translation>Извлечение метаданных...</translation>
     </message>
     <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Ошибка извлечения «%1»: %2</translation>
+        <source>Unpacking compressed repositories...</source>
+        <translation>Распаковка сжатых хранилищ...</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting %1.</source>
-        <translation>В процессе извлечения %1 возникло неизвестное исключение.</translation>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Ошибка извлечения из архива «%1»: %2</translation>
     </message>
     <message>
-        <source>Cannot open %1 for reading. Error: %2</source>
-        <translation>Невозможно открыть файл %1 на чтение: %2</translation>
+        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
+        <translation>В процессе извлечения из архива «%1» возникло неизвестное исключение.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
 </context>
 <context>
@@ -1715,10 +1525,6 @@ Downloading packages...</source>
 Загрузка пакетов...</translation>
     </message>
     <message>
-        <source>Installation canceled by user</source>
-        <translation>Установка отменена пользователем</translation>
-    </message>
-    <message>
         <source>All downloads finished.</source>
         <translation>Все загрузки завершены.</translation>
     </message>
@@ -1731,10 +1537,6 @@ Downloading packages...</source>
         <translation>Ошибка аутентификации</translation>
     </message>
     <message>
-        <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>Некоторые компоненты не были удалены полностью. Для их полного удаления необходимы права Администратора: %1.</translation>
-    </message>
-    <message>
         <source>Unknown error.</source>
         <translation>Неизвестная ошибка.</translation>
     </message>
@@ -1743,16 +1545,8 @@ Downloading packages...</source>
         <translation>Некоторые компоненты не были удалены полностью: возникла неизвестная ошибка.</translation>
     </message>
     <message>
-        <source>Application not running in Package Manager mode!</source>
-        <translation>Приложение не запущено в режиме менеджера пакетов!</translation>
-    </message>
-    <message>
         <source>No installed packages found.</source>
         <translation>Установленные пакеты не найдены.</translation>
-    </message>
-    <message>
-        <source>Application running in Uninstaller mode!</source>
-        <translation>Приложение запущено в режиме удаления!</translation>
     </message>
     <message>
         <source>There is an important update available, please run the updater first.</source>
@@ -1769,6 +1563,30 @@ Downloading packages...</source>
     <message>
         <source>invalid</source>
         <translation>недопустимая версия</translation>
+    </message>
+    <message>
+        <source>Installation canceled by user.</source>
+        <translation>Установка отменена пользователем.</translation>
+    </message>
+    <message>
+        <source>Some components could not be removed completely because administrative rights could not be acquired: %1.</source>
+        <translation>Некоторые компоненты не были удалены полностью. Для их полного удаления необходимы права Администратора: %1.</translation>
+    </message>
+    <message>
+        <source>Application not running in Package Manager mode.</source>
+        <translation>Приложение не запущено в режиме менеджера пакетов.</translation>
+    </message>
+    <message>
+        <source>Application running in Uninstaller mode.</source>
+        <translation>Приложение запущено в режиме удаления.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve all dependencies.</source>
+        <translation>Не удалось разрешить все зависимости.</translation>
+    </message>
+    <message>
+        <source>Components about to be removed.</source>
+        <translation>Удаляемые компоненты.</translation>
     </message>
 </context>
 <context>
@@ -1874,14 +1692,6 @@ Update aborted!</source>
         <translation>Не удалось записать данные Maintenance Tool в %1: %2</translation>
     </message>
     <message>
-        <source>Cannot remove data file &apos;%1&apos;: %2</source>
-        <translation>Не удалось удалить файл данных «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot write maintenance tool to %1: %2</source>
-        <translation>Не удалось записать Maintenance Tool в %1: %2</translation>
-    </message>
-    <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>Не удалось записать двоичные данные Maintenance Tool в %1: %2</translation>
     </message>
@@ -1931,14 +1741,6 @@ Installing component %1</source>
         <translation>Неизвестная ошибка</translation>
     </message>
     <message>
-        <source>Cannot retrieve remote tree: %1.</source>
-        <translation>Невозможно загрузить удалённую структуру: %1.</translation>
-    </message>
-    <message>
-        <source>Failure to read packages from: %1.</source>
-        <translation>Не удалось прочитать пакеты из: %1.</translation>
-    </message>
-    <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>Невозможно загрузить метаданные: %1</translation>
     </message>
@@ -1951,7 +1753,23 @@ Installing component %1</source>
         <translation>Невозможно найти информацию об источниках обновления.</translation>
     </message>
     <message>
-        <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
+        <source>Cannot remove data file &quot;%1&quot;: %2</source>
+        <translation>Не удалось удалить файл данных «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write maintenance tool to &quot;%1&quot;: %2</source>
+        <translation>Не удалось записать программу обслуживания в «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve remote tree %1.</source>
+        <translation>Не удалось загрузить удалённое дерево: %1.</translation>
+    </message>
+    <message>
+        <source>Failure to read packages from %1.</source>
+        <translation>Не удалось прочитать пакеты из %1.</translation>
+    </message>
+    <message>
+        <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Обнаружена циклическая зависимость компонентов «%1» и «%2».</translation>
     </message>
 </context>
@@ -1986,10 +1804,6 @@ Installing component %1</source>
         <translation>Выйти из приложения обслуживания?</translation>
     </message>
     <message>
-        <source>Question</source>
-        <translation>Вопрос</translation>
-    </message>
-    <message>
         <source>Settings</source>
         <translation>Настройки</translation>
     </message>
@@ -2001,6 +1815,11 @@ Installing component %1</source>
         <source>It is not possible to install from network location.
 Please copy the installer to a local drive</source>
         <translation>невозможно произвести установку из сетевого источника. Пожалуйста, сохраните программу установки на жёсктй диск Вашего компьютера</translation>
+    </message>
+    <message>
+        <source>%1 Question</source>
+        <translatorcomment>Вот это непонятная хрень.</translatorcomment>
+        <translation>Вопрос по %1</translation>
     </message>
 </context>
 <context>
@@ -2067,6 +1886,10 @@ Please copy the installer to a local drive</source>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
+    <message>
+        <source>Proxy Credentials</source>
+        <translation>Аутентификация на прокси-сервере</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ReadyForInstallationPage</name>
@@ -2107,18 +1930,6 @@ Please copy the installer to a local drive</source>
         <translation>Программа установки готова начать установку %1 на ваш компьютер.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
-        <translation>Недостаточно места на диске для сохранения временных файлов и файлов установки! Доступно: %1, требуется как минимум %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
-        <translation>Недостаточно места на диске для сохранения всех выбранных компонентов! Доступно: %1, требуется как минимум: %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
-        <translation>Недостаточно места на диске для сохранения временных файлов! Доступно: %1, требуется как минимум %2.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
         <translation>На выбранном Вами диске достаточно места для установки. Тем не менее, после завершения установки на диске останется меньше 1% свободного места. %1</translation>
     </message>
@@ -2131,24 +1942,20 @@ Please copy the installer to a local drive</source>
         <translation>Для установки потребуется %1 дискового пространства.</translation>
     </message>
     <message>
-        <source>Cannot resolve all dependencies.</source>
-        <translation>Невозможно разрешить все зависимости.</translation>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для временных файлов и файлов установки. Доступно %1, а требуется минимум %2.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Компоненты готовы к удалению.</translation>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для сохранения всех выбранных компонентов. Доступно %1, а требуется минимум: %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для временных файлов. Доступно %1, а требуется минимум %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>2 to 5</source>
-        <translation>от 2 до 5</translation>
-    </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
         <translation>Регистрация типов файлов возможна только в Windows.</translation>
@@ -2156,6 +1963,10 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Register File Type: Invalid arguments</source>
         <translation>Регистрация типов файлов: недопустимые параметры</translation>
+    </message>
+    <message>
+        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
+        <translation>&lt;расширение&gt; &lt;команда&gt; [описание [типСодержимого [значок]]]</translation>
     </message>
 </context>
 <context>
@@ -2166,37 +1977,18 @@ Please copy the installer to a local drive</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::RemoteServerConnection</name>
-    <message>
-        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Не удалось прочитать все данные после отправки команды: %1. Ожидалось байт: %2; получено байт: %3. Ошибка: %4</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ReplaceOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» на чтение: %2</translation>
     </message>
     <message>
-        <source>exactly 3</source>
-        <translation>ровно 3</translation>
-    </message>
-    <message>
-        <source>Failed to open %1 for reading</source>
-        <translation>Сбой открытия файла %1 на чтение</translation>
-    </message>
-    <message>
-        <source>Failed to open %1 for writing</source>
-        <translation>Сбой открытия файла %1 на запись</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл «%1» на запись: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Resource</name>
-    <message>
-        <source>Cannot open Resource &apos;%1&apos; read-only.</source>
-        <translation>Не удалось открыть на чтение ресурс «%1».</translation>
-    </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
         <translation>Сбой чтения с %1 байта: %2</translation>
@@ -2204,6 +1996,10 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Write failed after %1 bytes: %2</source>
         <translation>Сбой записи с %1 байта: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open resource %1 for reading.</source>
+        <translation>Не удалось открыть ресурс %1 для чтения.</translation>
     </message>
 </context>
 <context>
@@ -2216,20 +2012,20 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Cannot open the requested script file at %1: %2.</source>
-        <translation>Не удалось открыть файл сценария %1: %2.</translation>
+        <source>Cannot open script file at %1: %2</source>
+        <translation>Не удалось открыть файл сценария «%1»: %2</translation>
     </message>
     <message>
-        <source>Exception while loading the component script &apos;%1&apos;. (%2)</source>
-        <translation>Возникло исключение при загрузке сценария компонента «%1». (%2)</translation>
+        <source>Exception while loading the component script &quot;%1&quot;: %2</source>
+        <translation>Возникло исключение при загрузке сценария компонента «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>Неизвестная ошибка.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SelfRestartOperation</name>
-    <message>
-        <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
-        <translation>В операции «%1» необходимый объект установщика пуст.</translation>
-    </message>
     <message>
         <source>Self Restart: Only valid within updater or packagemanager mode.</source>
         <translation>Автоматическая перезагрузка: подходит только для программы обновления или для режима менеджера пакетов.</translation>
@@ -2237,6 +2033,10 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Self Restart: Invalid arguments</source>
         <translation>Автоматическая перезагрузка: недопустимый параметр</translation>
+    </message>
+    <message>
+        <source>Installer object needed in operation %1 is empty.</source>
+        <translation>Объект установщика, необходимый в операции «%1», пуст.</translation>
     </message>
 </context>
 <context>
@@ -2265,39 +2065,31 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::SettingsOperation</name>
     <message>
-        <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
-        <translation>Отсутствуют аргументы «%1» при вызове «%2» с аргументами «%3».</translation>
+        <source>Missing argument(s) &quot;%1&quot; calling %2 with arguments &quot;%3&quot;.</source>
+        <translation>Отсутствуют параметр(ы) «%1» при вызове «%2» с параметрами «%3».</translation>
     </message>
     <message>
-        <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
         <translation>Текущий способ вызова «%1» с аргументами «%2» не поддерживается. Используйте set, remove, add_array_value или remove_array_value.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>ровно 2</translation>
-    </message>
-    <message>
-        <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
+        <source>None of the arguments can be empty: source &quot;%1&quot;, target &quot;%2&quot;.</source>
         <translation>Все аргументы должны быть непустыми: источник «%1», назначение «%2».</translation>
     </message>
     <message>
-        <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
-        <translation>Невозможно переместить «%1» в «%2»: файл назначения существует и не может быть удалён.</translation>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;, because the target path exists and is not removable.</source>
+        <translation>Не удалось переместить «%1» в «%2», так как файл назначения существует и не удаляем.</translation>
     </message>
     <message>
-        <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
-        <translation>Невозможно переместить «%1» в «%2»: «%3»</translation>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Не удалось переместить файл «%1» в «%2»: %3</translation>
     </message>
     <message>
-        <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>Перемещение «%1» в «%2».</translation>
+        <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Перемещение файла «%1» в «%2».</translation>
     </message>
 </context>
 <context>
@@ -2307,8 +2099,8 @@ Please copy the installer to a local drive</source>
         <translation>Ярлыки меню &quot;Пуск&quot;</translation>
     </message>
     <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
-        <translation>Выберите папку в меню «Пуск» для создания ярлыков программы. Чтобы создать новую папку, введите её имя.</translation>
+        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
+        <translation>Выберите папку в меню «Пуск» для размещения ярлыков программы. Чтобы создать новую папку, введите её имя.</translation>
     </message>
 </context>
 <context>
@@ -2316,10 +2108,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Installation Folder</source>
         <translation>Каталог установки</translation>
-    </message>
-    <message>
-        <source>Please specify the folder where %1 will be installed.</source>
-        <translation>Укажите каталог для установки %1.</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2332,26 +2120,8 @@ Please copy the installer to a local drive</source>
         <translation>О&amp;бзор...</translation>
     </message>
     <message>
-        <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Выбранный каталог существует и содержит установленное приложение. Выберите другой каталог.</translation>
-    </message>
-    <message>
-        <source>You have selected an existing, non-empty folder for installation.
-Note that it will be completely wiped on uninstallation of this application.
-It is not advisable to install into this folder as installation might fail.
-Do you want to continue?</source>
-        <translation>Каталог, выбранный для установки приложения, уже содержит файлы.
-Он будет стёрт вместе со всем содержимым при удалении приложения.
-Производить установку в этот каталог не рекомендуется, так как не исключён сбой.
-Продолжить?</translation>
-    </message>
-    <message>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
         <translation>Выбранный файл или символьная ссылка уже существует. Выберите другой каталог установки.</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be empty, please specify a valid folder.</source>
-        <translation>Необходимо задать путь к каталогу установки. Выберите подходящий каталог.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
@@ -2378,14 +2148,6 @@ Do you want to continue?</source>
         <translation>Указан неверный путь, проверьте имя диска.</translation>
     </message>
     <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
-        <translation>Путь к каталогу установки не может оканчиваться точкой. Выберите другой каталог.</translation>
-    </message>
-    <message>
-        <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
-        <translation>Путь к каталогу установки не может содержать «%1». Выберите другой каталог.</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
@@ -2397,6 +2159,36 @@ Do you want to continue?</source>
         <source>Select Installation Folder</source>
         <translation>Выберите каталог для установки</translation>
     </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Укажите каталог для установки %1.</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Выбранный каталог существует и содержит установленное приложение. Выберите другой каталог.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Каталог, выбранный для установки приложения, уже содержит файлы.
+Он будет стёрт вместе со всем содержимым при удалении приложения.
+Производить установку в этот каталог не рекомендуется, так как не исключён сбой.
+Продолжить?</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Необходимо задать путь к каталогу установки. Выберите подходящий каталог.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Путь к каталогу установки не может оканчиваться точкой. Выберите другой каталог.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Путь к каталогу установки не может содержать «%1». Выберите другой каталог.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::TestRepository</name>
@@ -2405,24 +2197,32 @@ Do you want to continue?</source>
         <translation>Пустой URL хранилища.</translation>
     </message>
     <message>
-        <source>URL scheme not supported: %1 (%2).</source>
-        <translation>Эта схема URL не поддерживается: %1 (%2).</translation>
+        <source>Missing package manager core engine.</source>
+        <translation>Отсутствует менеджер пакетов.</translation>
     </message>
     <message>
-        <source>Got a timeout while testing: &apos;%1&apos;</source>
-        <translation>Таймаут во время теста «%1»</translation>
+        <source>Download canceled.</source>
+        <translation>Загрузка отменена.</translation>
     </message>
     <message>
-        <source>Cannot parse Updates.xml! Error: %1.</source>
-        <translation>Невозможно разобрать Updates.xml! Ошибка: %1.</translation>
+        <source>Timeout while testing repository &quot;%1&quot;.</source>
+        <translation>Истекло время время тестировании хранилища «%1».</translation>
     </message>
     <message>
-        <source>Updates.xml could not be opened for reading!</source>
-        <translation>Невозможно открыть Updates.xml на чтение!</translation>
+        <source>Cannot parse Updates.xml: %1</source>
+        <translation>Не удалось разобрать Updates.xml: %1</translation>
     </message>
     <message>
-        <source>Updates.xml could not be found on server!</source>
-        <translation>Невозможно найти Updates.xml на сервере!</translation>
+        <source>Cannot open Updates.xml for reading: %1</source>
+        <translation>Не удалось открыть файл Updates.xml для чтения: %1</translation>
+    </message>
+    <message>
+        <source>Authentication failed.</source>
+        <translation>Ошибка аутентификации.</translation>
+    </message>
+    <message>
+        <source>Unknown error while testing repository &quot;%1&quot;.</source>
+        <translation>Возникла неизвестная ошибка при тестировании хранилища «%1».</translation>
     </message>
 </context>
 <context>
@@ -2441,66 +2241,6 @@ Do you want to continue?</source>
     </message>
 </context>
 <context>
-    <name>QtPatchOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Недопустимое количество параметров в %0: передано %1, требуется %2%3.</translation>
-    </message>
-    <message>
-        <source>3 or 4</source>
-        <translation>3 или 4</translation>
-    </message>
-    <message>
-        <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>В операции «%1» необходимый объект установщика пуст.</translation>
-    </message>
-    <message>
-        <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
-        <translation>Первым элементом должен быть «linux», «mac» или «windows». Другие типы в настоящий момент не поддерживаются.</translation>
-    </message>
-    <message>
-        <source>Cannot find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation>Не удалось найти значение QmakeOutputInstallerKey(%1) в объекте установщика. Сначала должна быть выполнена операция ConsumeOutput для рабочего qmake&apos;а.</translation>
-    </message>
-    <message>
-        <source>QMake from the current Qt version 
-(%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
-        <translation>Отсутствует QMake в текущем профиле Qt 
-(%1). Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.</translation>
-    </message>
-    <message>
-        <source>The output of 
-%1 -query
-is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
-output: &quot;%2&quot;</source>
-        <translation>Невозможно разобрать вывод запроса %1.
-Пожалуйста, отправьте сообщение об ошибке, используя форму на вебсайте https://bugreports.qt-project.org.
-вывод: «%2»</translation>
-    </message>
-    <message>
-        <source>Qt patch error: new Qt dir(%1)
-needs to be less than 255 characters.</source>
-        <translation>Ошибка патча Qt. Новый каталог Qt (%1)
-должен содержать менее 255 символов в имени.</translation>
-    </message>
-    <message>
-        <source>Qt patch error: Can not open %1.(%2)</source>
-        <translation>Ошибка внесения изменений в Qt. Невозможно открыть %1.(%2)</translation>
-    </message>
-    <message>
-        <source>The installer was not able to get the unpatched path from 
-%1.(maybe it is broken or removed)
-It tried to patch the Qt binaries, but all other files in Qt are unpatched.
-This could result in a broken Qt version.
-Sometimes it helps to restart the installer with a switched off antivirus software.</source>
-        <translation>Программе установки не удалось получить исходный путь
-из %1.(возможная причина: файл повреждён или удалён)
-Система предприняла попытку исправить бинарные файлы Qt; при этом все прочие файлы остались в исходном виде.
-Эта ситуация может привести к повреждению Qt.
-Попробуйте отключить антивирусную программу и снова запустить программу-установщик.</translation>
-    </message>
-</context>
-<context>
     <name>RemoteClient</name>
     <message>
         <source>Cannot get authorization.</source>
@@ -2508,15 +2248,27 @@ Sometimes it helps to restart the installer with a switched off antivirus softwa
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights.
+Or accept the elevation of access rights if being asked.</source>
+        <translation>Не удалось пройти авторизацию, которая необходима для продолжения установки.
+
+Запустите программу от пользователя с подходящими правами.
+Или разрешите повышение прав, когда об этом будет попрошено.</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
 
-as root and then clicking OK.</source>
+as a user with the appropriate rights and then clicking OK.</source>
         <translation>Не удалось пройти авторизацию, которая необходима для продолжения установки.
 Можно прервать установку или попытаться устранить проблему запустив
+
 %1
-от имени root&apos;а и нажав ОК.</translation>
+
+от пользователя с подходящими правами и нажав ОК.</translation>
     </message>
 </context>
 <context>
@@ -2612,14 +2364,6 @@ as root and then clicking OK.</source>
         <translation>Адреса серверов, которые содержат рабочие репозиторий.</translation>
     </message>
     <message>
-        <source>There was an error testing this repository.</source>
-        <translation>Ошибка в процессе тестирования репозитория.</translation>
-    </message>
-    <message>
-        <source>Do you want to disable the tested repository?</source>
-        <translation>Вы хотите отключить проверенный репозиторий?</translation>
-    </message>
-    <message>
         <source>Hide Passwords</source>
         <translation>Скрыть пароли</translation>
     </message>
@@ -2651,20 +2395,72 @@ as root and then clicking OK.</source>
         <source>User defined repositories</source>
         <translation>Использовать назначенные репозитории</translation>
     </message>
+    <message>
+        <source>An error occurred while testing this repository.</source>
+        <translation>Возникла ошибка при тестировании хранилища.</translation>
+    </message>
+    <message>
+        <source>The repository was tested successfully.</source>
+        <translation>Хранилище протестировано успешно.</translation>
+    </message>
+    <message>
+        <source>Do you want to disable the repository?</source>
+        <translation>Желаете отключить хранилище?</translation>
+    </message>
+    <message>
+        <source>Do you want to enable the repository?</source>
+        <translation>Желаете включить хранилище?</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
     <message>
-        <source>Registry path %1 is not writable</source>
-        <translation>Невозможно записать ключ %1 в реестр</translation>
+        <source>Registry path %1 is not writable.</source>
+        <translation>Путь реестра %1 недоступен для записи.</translation>
     </message>
     <message>
-        <source>Cannot write to registry path %1</source>
-        <translation>Не удалось записать ключ %1 в реестр</translation>
+        <source>Cannot write to registry path %1.</source>
+        <translation>Не удалось записать ключ %1 в реестр.</translation>
     </message>
     <message>
-        <source>Renaming %1 into %2 failed with %3.</source>
-        <translation>Сбой переименования %1 в %2: %3.</translation>
+        <source>exactly %1</source>
+        <translation>точно %1</translation>
+    </message>
+    <message>
+        <source>at least %1</source>
+        <translation>минимум %1</translation>
+    </message>
+    <message>
+        <source>not more than %1</source>
+        <translation>не более %1</translation>
+    </message>
+    <message>
+        <source>%1 or %2</source>
+        <translation>%1 или %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation>от %1 до %2</translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected.</source>
+        <translation>
+            <numerusform>Неверные параметры в %1: %n параметр передан, но %2 требуется.</numerusform>
+            <numerusform>Неверные параметры в %1: %n параметра передано, но %2 требуется.</numerusform>
+            <numerusform>Неверные параметры в %1: %n параметров передано, но %2 требуется.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected in the form: %3.</source>
+        <translation>
+            <numerusform>Неверные параметры в %1: %n параметр передан, но %2 требуется в форме: %3.</numerusform>
+            <numerusform>Неверные параметры в %1: %n параметра передано, но %2 требуется в форме: %3.</numerusform>
+            <numerusform>Неверные параметры в %1: %n параметров передано, но %2 требуется в форме: %3.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
+        <translation>Не удалось переименовать «%1» в «%2»: %3</translation>
     </message>
 </context>
 </TS>
