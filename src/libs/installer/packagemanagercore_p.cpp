@@ -156,6 +156,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
             .fileName()));
 
         QTextStream batch(&f);
+        batch.setCodec("UTF-16");
         batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
         batch << "Set tmp = WScript.CreateObject(\"WScript.Shell\")\n";
         batch << QString::fromLatin1("file = \"%1\"\n").arg(arguments[2]);
