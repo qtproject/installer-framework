@@ -1,3 +1,8 @@
+2.0.5
+- Fix hang in Windows when admin rights needed. (QTIFW-902)
+- Use deterministic sorting order for components. (QTIFW-833)
+- Resolve relative URLs from Updates.xml.
+
 2.0.4
 - Set also display name for Repository action "remove"
 - Adjusted wrong repogen parameter name
