@@ -2618,7 +2618,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
             if (!component) {
                 // This case can happen when in installer mode, but should not occur when updating
                 if (isUpdater())
-                    qWarning() << componentName << "- Does not exist in the repositories anymore.";
+                    qDebug() << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
             if (!component && !d->componentsToReplace().contains(componentName)) {
