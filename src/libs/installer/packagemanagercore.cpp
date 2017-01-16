@@ -2407,23 +2407,24 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
     // remember all components that got a replacement, required for uninstall
     for (; it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
-            Component *component = components.take(componentName);
-            // if one component has a replaces which is not existing in the current component list anymore
-            // just ignore it
-            if (!component) {
-                // This case can happen when in installer mode, but should not occur when updating
+            Component *componentToReplace = components.take(componentName);
+            if (!componentToReplace) {
+                // If a component replaces another component which is not existing in the
+                // installer binary or the installed component list, just ignore it. This
+                // can happen when in installer mode and probably package manager mode too.
                 if (isUpdater())
                     qWarning() << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            if (!component && !d->componentsToReplace().contains(componentName)) {
-                component = new Component(this);
-                component->setValue(scName, componentName);
+            if (!componentToReplace && !d->componentsToReplace().contains(componentName)) {
+                componentToReplace = new Component(this);
+                componentToReplace->setValue(scName, componentName);
             } else {
-                component->loadComponentScript();
-                d->replacementDependencyComponents().append(component);
+                // This case can happen when in installer mode as well, a component
+                // is in the installer binary and its replacement component as well.
+                d->replacementDependencyComponents().append(componentToReplace);
             }
-            d->componentsToReplace().insert(componentName, qMakePair(it.key(), component));
+            d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
         }
     }
 }
