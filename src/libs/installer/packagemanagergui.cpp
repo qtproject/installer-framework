@@ -1963,7 +1963,7 @@ public:
         connect(m_installCompressButton, &QAbstractButton::clicked,
                 this, &ComponentSelectionPage::Private::selectCompressedPackage);
         m_installCompressButton->setObjectName(QLatin1String("InstallCompressedPackageButton"));
-        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse BSP or 7z files..."));
+        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse QBSP or 7z files..."));
         m_vlayout->addWidget(m_installCompressButton);
         m_compressedButtonVisible = true;
     }
@@ -2057,7 +2057,7 @@ public slots:
             QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
         QStringList fileNames = QFileDialog::getOpenFileNames(NULL,
             ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
-            QLatin1String("QtBSP or 7z Files (*.qtbsp *.7z)"));
+            QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
 
         QSet<Repository> set;
         foreach (QString fileName, fileNames) {

@@ -115,7 +115,7 @@ CommandLineParser::CommandLineParser()
         "not started by the client application in that case, you need to start it on your own."),
         QLatin1String("socketname,key")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::InstallCompressedRepository),
-        QLatin1String("Installs QtBSP or 7z file. The QtBSP (Board Support Package) file must be a .7z "
+        QLatin1String("Installs QBSP or 7z file. The QBSP (Board Support Package) file must be a .7z "
         "file which contains a valid repository."),
         QLatin1String("URI,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SilentUpdate),
