@@ -19,8 +19,7 @@ KD Tools
 
 Sources for the KD Tools library are under src/libs/kdtools.
 
-The library is released under the same license as the rest
-of the installer framework (LGPL 3.0/LGPL 2.1 with The Qt Company
-exception/The Qt Company Commercial License).
+The library is released under the same licenses as the rest
+of the installer framework.
 
 The copyright is owned by Klaralvdalens Datakonsult AB.

@@ -5,9 +5,7 @@
     <Version>2.0.81</Version>
     <ReleaseDate>2013-12-12</ReleaseDate>
     <Licenses>
-        <License name="LGPL 2.1" file="LICENSE.LGPLv21" />
-        <License name="LGPL 3" file="LICENSE.LGPLv3" />
-        <License name="The Qt Company LGPL Exception 1.1" file="LGPL_EXCEPTION.txt" />
+        <License name="The Qt Company GPL Exception 1.0" file="LICENSE.GPL3-EXCEPT" />
         <License name="Third Party Code Licenses" file="3RDPARTY" />
     </Licenses>
     <Script>installscript.qs</Script>
