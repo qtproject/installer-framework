@@ -1275,19 +1275,19 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
 
-    m_packageManager = new QRadioButton(tr("Add or remove components"), this);
+    m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
     m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
-    m_updateComponents = new QRadioButton(tr("Update components"), this);
+    m_updateComponents = new QRadioButton(tr("&Update components"), this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     boxLayout->addWidget(m_updateComponents);
     m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
-    m_removeAllComponents = new QRadioButton(tr("Remove all components"), this);
+    m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     boxLayout->addWidget(m_removeAllComponents);
     m_removeAllComponents->setChecked(core->isUninstaller());
@@ -1612,7 +1612,7 @@ void IntroductionPage::entering()
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("Quit"));
+    setButtonText(QWizard::CancelButton, tr("&Quit"));
 
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
