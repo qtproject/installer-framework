@@ -95,6 +95,7 @@ int main(int argc, char** argv)
         QStringList filteredPackages;
         bool updateExistingRepository = false;
         QStringList packagesDirectories;
+        QStringList repositoryDirectories;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
         bool updateExistingRepositoryWithNewComponents = false;
@@ -156,6 +157,19 @@ int main(int argc, char** argv)
 
                 packagesDirectories.append(args.first());
                 args.removeFirst();
+            } else if (args.first() == QLatin1String("--repository")) {
+                args.removeFirst();
+                if (args.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Repository parameter missing argument"));
+                }
+
+                if (!QFileInfo(args.first()).exists()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Only local filesystem repositories now supported"));
+                }
+                repositoryDirectories.append(args.first());
+                args.removeFirst();
             } else if (args.first() == QLatin1String("--ignore-translations")
                 || args.first() == QLatin1String("--ignore-invalid-packages")) {
                     args.removeFirst();
@@ -168,7 +182,7 @@ int main(int argc, char** argv)
             }
         }
 
-        if (packagesDirectories.isEmpty() || (args.count() != 1)) {
+        if ((packagesDirectories.isEmpty() && repositoryDirectories.isEmpty()) || (args.count() != 1)) {
                 printUsage();
                 return 1;
         }
@@ -190,8 +204,15 @@ int main(int argc, char** argv)
                 "Repository target directory \"%1\" already exists.").arg(QDir::toNativeSeparators(repositoryDir)));
         }
 
-        QInstallerTools::PackageInfoVector packages = QInstallerTools::createListOfPackages(packagesDirectories,
+        QInstallerTools::PackageInfoVector packages;
+
+        QInstallerTools::PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages(repositoryDirectories,
             &filteredPackages, filterType);
+        packages.append(precompressedPackages);
+
+        QInstallerTools::PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(packagesDirectories,
+            &filteredPackages, filterType);
+        packages.append(preparedPackages);
 
         if (updateExistingRepositoryWithNewComponents) {
             QDomDocument doc;
@@ -251,7 +272,10 @@ int main(int argc, char** argv)
         QTemporaryDir tmp;
         tmp.setAutoRemove(false);
         tmpMetaDir = tmp.path();
-        QInstallerTools::copyComponentData(packagesDirectories, repositoryDir, &packages);
+        QStringList directories;
+        directories.append(packagesDirectories);
+        directories.append(repositoryDirectories);
+        QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
         QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping);

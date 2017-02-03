@@ -823,6 +823,11 @@
                 {package directory}.
                 Defaults to the current working directory.
         \row
+            \li --repository directory
+            \li Use \c directory as the repository directory
+                with packages to repack.
+                This entry can be given multiple times.
+        \row
             \li -n or --online-only
             \li Compile without any component in the installer binary.
         \row
@@ -853,6 +858,10 @@
             \li --ignore-invalid-packages
             \li Ignore component or package directories that do not have valid
                 metadata information (package.xml) to make testing faster.
+        \row
+            \li --ignore-invalid-repositories
+            \li Ignore repository directories that do not have valid
+                metadata information (Updates.xml) instead of aborting.
         \row
             \li -v or --verbose
             \li Display debug output.
@@ -907,6 +916,9 @@
     specify the location in the installer configuration file when creating an
     installer for it.
 
+    You can use an existing repository to repack packages to another
+    repository or offline installer.
+
     \section2 Summary of repogen Parameters
 
     \table
@@ -917,6 +929,12 @@
             \li -p or --packages directory
             \li Use \c directory as the \l{Package Directory Structure}
                 {package directory}. This is mandatory.
+        \row
+            \li --repository directory
+            \li Use \c directory as the repository directory
+                with packages to repack (not to confuse with the mandatory target
+                repository directory).
+                This entry can be given multiple times.
         \row
             \li repository directory
             \li Target directory for the repository. During an initial installation, the directory

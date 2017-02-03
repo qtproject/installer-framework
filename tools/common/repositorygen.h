@@ -44,6 +44,8 @@ struct PackageInfo
     QString directory;
     QStringList dependencies;
     QStringList copiedFiles;
+    QString metaFile;
+    QString metaNode;
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 
@@ -58,6 +60,10 @@ void copyWithException(const QString &source, const QString &target, const QStri
 
 PackageInfoVector createListOfPackages(const QStringList &packagesDirectories, QStringList *packagesToFilter,
     FilterType ftype);
+
+PackageInfoVector createListOfRepositoryPackages(const QStringList &repositoryDirectories, QStringList *packagesToFilter,
+    FilterType filterType);
+
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,

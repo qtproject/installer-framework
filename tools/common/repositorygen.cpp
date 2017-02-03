@@ -27,11 +27,13 @@
 **************************************************************************/
 #include "repositorygen.h"
 
+#include <constants.h>
 #include <fileio.h>
 #include <fileutils.h>
 #include <errors.h>
 #include <globals.h>
 #include <lib7z_create.h>
+#include <lib7z_extract.h>
 #include <lib7z_facade.h>
 #include <lib7z_list.h>
 #include <settings.h>
@@ -53,6 +55,8 @@ void QInstallerTools::printRepositoryGenOptions()
 {
     std::cout << "  -p|--packages dir         The directory containing the available packages." << std::endl;
     std::cout << "                            This entry can be given multiple times." << std::endl;
+    std::cout << "  --repository dir          The directory containing the available repository." << std::endl;
+    std::cout << "                            This entry can be given multiple times." << std::endl;
 
     std::cout << "  -e|--exclude p1,...,pn    Exclude the given packages." << std::endl;
     std::cout << "  -i|--include p1,...,pn    Include the given packages and their dependencies" << std::endl;
@@ -60,6 +64,7 @@ void QInstallerTools::printRepositoryGenOptions()
 
     std::cout << "  --ignore-translations     Do not use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
+    std::cout << "  --ignore-invalid-repositories Ignore all invalid repositories instead of aborting." << std::endl;
 }
 
 QString QInstallerTools::makePathAbsolute(const QString &path)
@@ -153,220 +158,236 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
     }
 
     foreach (const PackageInfo &info, packages) {
-        if (!QDir(targetDir).mkpath(info.name))
-            throw QInstaller::Error(QString::fromLatin1("Cannot create directory \"%1\".").arg(info.name));
+        if (info.metaFile.isEmpty() && info.metaNode.isEmpty()) {
+            if (!QDir(targetDir).mkpath(info.name))
+                throw QInstaller::Error(QString::fromLatin1("Cannot create directory \"%1\".").arg(info.name));
 
-        const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(info.directory);
-        qDebug() << "Copy meta data for package" << info.name << "using" << packageXmlPath;
+            const QString packageXmlPath = QString::fromLatin1("%1/meta/package.xml").arg(info.directory);
+            qDebug() << "Copy meta data for package" << info.name << "using" << packageXmlPath;
 
-        QFile file(packageXmlPath);
-        QInstaller::openForRead(&file);
+            QFile file(packageXmlPath);
+            QInstaller::openForRead(&file);
 
-        QString errMsg;
-        int line = 0;
-        int column = 0;
-        QDomDocument packageXml;
-        if (!packageXml.setContent(&file, &errMsg, &line, &column)) {
-            throw QInstaller::Error(QString::fromLatin1("Cannot parse \"%1\": line: %2, column: %3: %4 (%5)")
-                .arg(QDir::toNativeSeparators(packageXmlPath)).arg(line).arg(column).arg(errMsg, info.name));
-        }
-
-        QDomElement update = doc.createElement(QLatin1String("PackageUpdate"));
-        QDomNode nameElement = update.appendChild(doc.createElement(QLatin1String("Name")));
-        nameElement.appendChild(doc.createTextNode(info.name));
-
-        // list of current unused or later transformed tags
-        QStringList blackList;
-        blackList << QLatin1String("UserInterfaces") << QLatin1String("Translations") <<
-            QLatin1String("Licenses") << QLatin1String("Name");
-
-        bool foundDefault = false;
-        bool foundVirtual = false;
-        bool foundDisplayName = false;
-        bool foundDownloadableArchives = false;
-        bool foundCheckable = false;
-        const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
-        const QDomNodeList childNodes = package.childNodes();
-        for (int i = 0; i < childNodes.count(); ++i) {
-            const QDomNode node = childNodes.at(i);
-            const QString key = node.nodeName();
-
-            if (key == QLatin1String("Default"))
-                foundDefault = true;
-            if (key == QLatin1String("Virtual"))
-                foundVirtual = true;
-            if (key == QLatin1String("DisplayName"))
-                foundDisplayName = true;
-            if (key == QLatin1String("DownloadableArchives"))
-                foundDownloadableArchives = true;
-            if (key == QLatin1String("Checkable"))
-                foundCheckable = true;
-            if (node.isComment() || blackList.contains(key))
-                continue;   // just skip comments and some tags...
-
-            QDomElement element = doc.createElement(key);
-            for (int j = 0; j < node.attributes().size(); ++j) {
-                element.setAttribute(node.attributes().item(j).toAttr().name(),
-                    node.attributes().item(j).toAttr().value());
+            QString errMsg;
+            int line = 0;
+            int column = 0;
+            QDomDocument packageXml;
+            if (!packageXml.setContent(&file, &errMsg, &line, &column)) {
+                throw QInstaller::Error(QString::fromLatin1("Cannot parse \"%1\": line: %2, column: %3: %4 (%5)")
+                                        .arg(QDir::toNativeSeparators(packageXmlPath)).arg(line).arg(column).arg(errMsg, info.name));
             }
-            update.appendChild(element).appendChild(doc.createTextNode(node.toElement().text()));
-        }
 
-        if (foundDefault && foundVirtual) {
-            throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
-                "mutually exclusive in file \"%1\".").arg(QDir::toNativeSeparators(packageXmlPath)));
-        }
+            QDomElement update = doc.createElement(QLatin1String("PackageUpdate"));
+            QDomNode nameElement = update.appendChild(doc.createElement(QLatin1String("Name")));
+            nameElement.appendChild(doc.createTextNode(info.name));
 
-        if (foundDefault && foundCheckable) {
-            throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Checkable>"
-                "elements are mutually exclusive in file \"%1\".")
-                .arg(QDir::toNativeSeparators(packageXmlPath)));
-        }
+            // list of current unused or later transformed tags
+            QStringList blackList;
+            blackList << QLatin1String("UserInterfaces") << QLatin1String("Translations") <<
+                         QLatin1String("Licenses") << QLatin1String("Name");
 
-        if (!foundDisplayName) {
-            qWarning() << "No DisplayName tag found at" << info.name << ", using component Name instead.";
-            QDomElement displayNameElement = doc.createElement(QLatin1String("DisplayName"));
-            update.appendChild(displayNameElement).appendChild(doc.createTextNode(info.name));
-        }
+            bool foundDefault = false;
+            bool foundVirtual = false;
+            bool foundDisplayName = false;
+            bool foundDownloadableArchives = false;
+            bool foundCheckable = false;
+            const QDomNode package = packageXml.firstChildElement(QLatin1String("Package"));
+            const QDomNodeList childNodes = package.childNodes();
+            for (int i = 0; i < childNodes.count(); ++i) {
+                const QDomNode node = childNodes.at(i);
+                const QString key = node.nodeName();
 
-        // get the size of the data
-        quint64 componentSize = 0;
-        quint64 compressedComponentSize = 0;
+                if (key == QLatin1String("Default"))
+                    foundDefault = true;
+                if (key == QLatin1String("Virtual"))
+                    foundVirtual = true;
+                if (key == QLatin1String("DisplayName"))
+                    foundDisplayName = true;
+                if (key == QLatin1String("DownloadableArchives"))
+                    foundDownloadableArchives = true;
+                if (key == QLatin1String("Checkable"))
+                    foundCheckable = true;
+                if (node.isComment() || blackList.contains(key))
+                    continue;   // just skip comments and some tags...
 
-        const QDir::Filters filters = QDir::Files | QDir::NoDotAndDotDot;
-        const QDir dataDir = QString::fromLatin1("%1/%2/data").arg(metaDataDir, info.name);
-        const QFileInfoList entries = dataDir.exists() ? dataDir.entryInfoList(filters | QDir::Dirs)
-            : QDir(QString::fromLatin1("%1/%2").arg(metaDataDir, info.name)).entryInfoList(filters);
-        qDebug() << "calculate size of directory" << dataDir.absolutePath();
-        foreach (const QFileInfo &fi, entries) {
-            try {
-                if (fi.isDir()) {
-                    QDirIterator recursDirIt(fi.filePath(), QDirIterator::Subdirectories);
-                    while (recursDirIt.hasNext()) {
-                        recursDirIt.next();
-                        const quint64 size = QInstaller::fileSize(recursDirIt.fileInfo());
+                QDomElement element = doc.createElement(key);
+                for (int j = 0; j < node.attributes().size(); ++j) {
+                    element.setAttribute(node.attributes().item(j).toAttr().name(),
+                                         node.attributes().item(j).toAttr().value());
+                }
+                update.appendChild(element).appendChild(doc.createTextNode(node.toElement().text()));
+            }
+
+            if (foundDefault && foundVirtual) {
+                throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Virtual> elements are "
+                                                            "mutually exclusive in file \"%1\".").arg(QDir::toNativeSeparators(packageXmlPath)));
+            }
+
+            if (foundDefault && foundCheckable) {
+                throw QInstaller::Error(QString::fromLatin1("Error: <Default> and <Checkable>"
+                                                            "elements are mutually exclusive in file \"%1\".")
+                                        .arg(QDir::toNativeSeparators(packageXmlPath)));
+            }
+
+            if (!foundDisplayName) {
+                qWarning() << "No DisplayName tag found at" << info.name << ", using component Name instead.";
+                QDomElement displayNameElement = doc.createElement(QLatin1String("DisplayName"));
+                update.appendChild(displayNameElement).appendChild(doc.createTextNode(info.name));
+            }
+
+            // get the size of the data
+            quint64 componentSize = 0;
+            quint64 compressedComponentSize = 0;
+
+            const QDir::Filters filters = QDir::Files | QDir::NoDotAndDotDot;
+            const QDir dataDir = QString::fromLatin1("%1/%2/data").arg(metaDataDir, info.name);
+            const QFileInfoList entries = dataDir.exists() ? dataDir.entryInfoList(filters | QDir::Dirs)
+                                                           : QDir(QString::fromLatin1("%1/%2").arg(metaDataDir, info.name)).entryInfoList(filters);
+            qDebug() << "calculate size of directory" << dataDir.absolutePath();
+            foreach (const QFileInfo &fi, entries) {
+                try {
+                    if (fi.isDir()) {
+                        QDirIterator recursDirIt(fi.filePath(), QDirIterator::Subdirectories);
+                        while (recursDirIt.hasNext()) {
+                            recursDirIt.next();
+                            const quint64 size = QInstaller::fileSize(recursDirIt.fileInfo());
+                            componentSize += size;
+                            compressedComponentSize += size;
+                        }
+                    } else if (Lib7z::isSupportedArchive(fi.filePath())) {
+                        // if it's an archive already, list its files and sum the uncompressed sizes
+                        QFile archive(fi.filePath());
+                        compressedComponentSize += archive.size();
+                        QInstaller::openForRead(&archive);
+
+                        QVector<Lib7z::File>::const_iterator fileIt;
+                        const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
+                        for (fileIt = files.begin(); fileIt != files.end(); ++fileIt)
+                            componentSize += fileIt->uncompressedSize;
+                    } else {
+                        // otherwise just add its size
+                        const quint64 size = QInstaller::fileSize(fi);
                         componentSize += size;
                         compressedComponentSize += size;
                     }
-                } else if (Lib7z::isSupportedArchive(fi.filePath())) {
-                    // if it's an archive already, list its files and sum the uncompressed sizes
-                    QFile archive(fi.filePath());
-                    compressedComponentSize += archive.size();
-                    QInstaller::openForRead(&archive);
-
-                    QVector<Lib7z::File>::const_iterator fileIt;
-                    const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
-                    for (fileIt = files.begin(); fileIt != files.end(); ++fileIt)
-                        componentSize += fileIt->uncompressedSize;
-                } else {
-                    // otherwise just add its size
-                    const quint64 size = QInstaller::fileSize(fi);
-                    componentSize += size;
-                    compressedComponentSize += size;
-                }
-            } catch (const QInstaller::Error &error) {
-                qDebug().noquote() << error.message();
-            } catch(...) {
-                // ignore, that's just about the sizes - and size doesn't matter, you know?
-            }
-        }
-
-        QDomElement fileElement = doc.createElement(QLatin1String("UpdateFile"));
-        fileElement.setAttribute(QLatin1String("UncompressedSize"), componentSize);
-        fileElement.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
-        // adding the OS attribute to be compatible with old sdks
-        fileElement.setAttribute(QLatin1String("OS"), QLatin1String("Any"));
-        update.appendChild(fileElement);
-
-        root.appendChild(update);
-
-        // copy script file
-        const QString script = package.firstChildElement(QLatin1String("Script")).text();
-        if (!script.isEmpty()) {
-            QFile scriptFile(QString::fromLatin1("%1/meta/%2").arg(info.directory, script));
-            if (!scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                throw QInstaller::Error(QString::fromLatin1("Cannot open component script at \"%1\".")
-                    .arg(QDir::toNativeSeparators(scriptFile.fileName())));
-            }
-
-            const QString scriptContent = QLatin1String("(function() {")
-                + QString::fromUtf8(scriptFile.readAll())
-                + QLatin1String(";"
-                "    if (typeof Component == \"undefined\")"
-                "        throw \"Missing Component constructor. Please check your script.\";"
-                "})();");
-
-            // if the user isn't aware of the downloadable archives value we will add it automatically later
-            foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
-                || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
-
-            static QInstaller::ScriptEngine testScriptEngine;
-            const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
-            if (value.isError()) {
-                throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
-                    "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
-                            value.toString().isEmpty() ?
-                                QString::fromLatin1("Unknown error.") : value.toString()));
-            }
-
-            const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
-            copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
-        }
-
-        // write DownloadableArchives tag if that is missed by the user
-        if (!foundDownloadableArchives && !info.copiedFiles.isEmpty()) {
-            QStringList realContentFiles;
-            foreach (const QString &filePath, info.copiedFiles) {
-                if (!filePath.endsWith(QLatin1String(".sha1"), Qt::CaseInsensitive)) {
-                    const QString fileName = QFileInfo(filePath).fileName();
-                    // remove unnecessary version string from filename and add it to the list
-                    realContentFiles.append(fileName.mid(info.version.count()));
+                } catch (const QInstaller::Error &error) {
+                    qDebug().noquote() << error.message();
+                } catch(...) {
+                    // ignore, that's just about the sizes - and size doesn't matter, you know?
                 }
             }
 
-            update.appendChild(doc.createElement(QLatin1String("DownloadableArchives"))).appendChild(doc
-                .createTextNode(realContentFiles.join(QChar::fromLatin1(','))));
-        }
+            QDomElement fileElement = doc.createElement(QLatin1String("UpdateFile"));
+            fileElement.setAttribute(QLatin1String("UncompressedSize"), componentSize);
+            fileElement.setAttribute(QLatin1String("CompressedSize"), compressedComponentSize);
+            // adding the OS attribute to be compatible with old sdks
+            fileElement.setAttribute(QLatin1String("OS"), QLatin1String("Any"));
+            update.appendChild(fileElement);
 
-        // copy user interfaces
-        const QStringList uiFiles = copyFilesFromNode(QLatin1String("UserInterfaces"),
-            QLatin1String("UserInterface"), QString(), QLatin1String("user interface"), package, info,
-            targetDir);
-        if (!uiFiles.isEmpty()) {
-            update.appendChild(doc.createElement(QLatin1String("UserInterfaces"))).appendChild(doc
-                .createTextNode(uiFiles.join(QChar::fromLatin1(','))));
-        }
+            root.appendChild(update);
 
-        // copy translations
-        QStringList trFiles;
-        if (!qApp->arguments().contains(QString::fromLatin1("--ignore-translations"))) {
-            trFiles = copyFilesFromNode(QLatin1String("Translations"), QLatin1String("Translation"),
-                QString(), QLatin1String("translation"), package, info, targetDir);
-            if (!trFiles.isEmpty()) {
-                update.appendChild(doc.createElement(QLatin1String("Translations"))).appendChild(doc
-                    .createTextNode(trFiles.join(QChar::fromLatin1(','))));
+            // copy script file
+            const QString script = package.firstChildElement(QLatin1String("Script")).text();
+            if (!script.isEmpty()) {
+                QFile scriptFile(QString::fromLatin1("%1/meta/%2").arg(info.directory, script));
+                if (!scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+                    throw QInstaller::Error(QString::fromLatin1("Cannot open component script at \"%1\".")
+                                            .arg(QDir::toNativeSeparators(scriptFile.fileName())));
+                }
+
+                const QString scriptContent = QLatin1String("(function() {")
+                        + QString::fromUtf8(scriptFile.readAll())
+                        + QLatin1String(";"
+                                        "    if (typeof Component == \"undefined\")"
+                                        "        throw \"Missing Component constructor. Please check your script.\";"
+                                        "})();");
+
+                // if the user isn't aware of the downloadable archives value we will add it automatically later
+                foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
+                        || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
+
+                static QInstaller::ScriptEngine testScriptEngine;
+                const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
+                if (value.isError()) {
+                    throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
+                                                                "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
+                                                                                            value.toString().isEmpty() ?
+                                                                                                QString::fromLatin1("Unknown error.") : value.toString()));
+                }
+
+                const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
+                copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
             }
-        }
 
-        // copy license files
-        const QStringList licenses = copyFilesFromNode(QLatin1String("Licenses"), QLatin1String("License"),
-            QLatin1String("file"), QLatin1String("license"), package, info, targetDir);
-        if (!licenses.isEmpty()) {
-            foreach (const QString &trFile, trFiles) {
-                // Copy translated license file based on the assumption that it will have the same base name
-                // as the original license plus the file name of an existing translation file without suffix.
-                foreach (const QString &license, licenses) {
-                    const QFileInfo untranslated(license);
-                    const QString translatedLicense = QString::fromLatin1("%2_%3.%4").arg(untranslated
-                        .baseName(), QFileInfo(trFile).baseName(), untranslated.completeSuffix());
-                    // ignore copy failure, that's just about the translations
-                    QFile::copy(QString::fromLatin1("%1/meta/%2").arg(info.directory).arg(translatedLicense),
-                        QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, translatedLicense));
+            // write DownloadableArchives tag if that is missed by the user
+            if (!foundDownloadableArchives && !info.copiedFiles.isEmpty()) {
+                QStringList realContentFiles;
+                foreach (const QString &filePath, info.copiedFiles) {
+                    if (!filePath.endsWith(QLatin1String(".sha1"), Qt::CaseInsensitive)) {
+                        const QString fileName = QFileInfo(filePath).fileName();
+                        // remove unnecessary version string from filename and add it to the list
+                        realContentFiles.append(fileName.mid(info.version.count()));
+                    }
+                }
+
+                update.appendChild(doc.createElement(QLatin1String("DownloadableArchives"))).appendChild(doc
+                                                                                                         .createTextNode(realContentFiles.join(QChar::fromLatin1(','))));
+            }
+
+            // copy user interfaces
+            const QStringList uiFiles = copyFilesFromNode(QLatin1String("UserInterfaces"),
+                                                          QLatin1String("UserInterface"), QString(), QLatin1String("user interface"), package, info,
+                                                          targetDir);
+            if (!uiFiles.isEmpty()) {
+                update.appendChild(doc.createElement(QLatin1String("UserInterfaces"))).appendChild(doc
+                                                                                                   .createTextNode(uiFiles.join(QChar::fromLatin1(','))));
+            }
+
+            // copy translations
+            QStringList trFiles;
+            if (!qApp->arguments().contains(QString::fromLatin1("--ignore-translations"))) {
+                trFiles = copyFilesFromNode(QLatin1String("Translations"), QLatin1String("Translation"),
+                                            QString(), QLatin1String("translation"), package, info, targetDir);
+                if (!trFiles.isEmpty()) {
+                    update.appendChild(doc.createElement(QLatin1String("Translations"))).appendChild(doc
+                                                                                                     .createTextNode(trFiles.join(QChar::fromLatin1(','))));
                 }
             }
-            update.appendChild(package.firstChildElement(QLatin1String("Licenses")).cloneNode());
+
+            // copy license files
+            const QStringList licenses = copyFilesFromNode(QLatin1String("Licenses"), QLatin1String("License"),
+                                                           QLatin1String("file"), QLatin1String("license"), package, info, targetDir);
+            if (!licenses.isEmpty()) {
+                foreach (const QString &trFile, trFiles) {
+                    // Copy translated license file based on the assumption that it will have the same base name
+                    // as the original license plus the file name of an existing translation file without suffix.
+                    foreach (const QString &license, licenses) {
+                        const QFileInfo untranslated(license);
+                        const QString translatedLicense = QString::fromLatin1("%2_%3.%4").arg(untranslated
+                                                                                              .baseName(), QFileInfo(trFile).baseName(), untranslated.completeSuffix());
+                        // ignore copy failure, that's just about the translations
+                        QFile::copy(QString::fromLatin1("%1/meta/%2").arg(info.directory).arg(translatedLicense),
+                                    QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, translatedLicense));
+                    }
+                }
+                update.appendChild(package.firstChildElement(QLatin1String("Licenses")).cloneNode());
+            }
+        } else {
+            // Extract metadata from archive
+            QFile metaFile(info.metaFile);
+            QInstaller::openForRead(&metaFile);
+            Lib7z::extractArchive(&metaFile, targetDir);
+
+            // Restore "PackageUpdate" node;
+            QDomDocument update;
+            if (!update.setContent(info.metaNode)) {
+                throw QInstaller::Error(QString::fromLatin1("Cannot restore \"PackageUpdate\" description for node %1").arg(info.name));
+            }
+
+            root.appendChild(update.documentElement());
         }
     }
+
     doc.appendChild(root);
 
     QFile targetUpdatesXml(targetDir + QLatin1String("/Updates.xml"));
@@ -483,6 +504,114 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
     return dict;
 }
 
+PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringList &repositoryDirectories,
+    QStringList *packagesToFilter, FilterType filterType)
+{
+    qDebug() << "Collecting information about available repository packages...";
+
+    bool ignoreInvalidRepositories = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-repositories"));
+
+    PackageInfoVector dict;
+    QFileInfoList entries;
+    foreach (const QString &repositoryDirectory, repositoryDirectories)
+        entries.append(QFileInfo(repositoryDirectory));
+    for (QFileInfoList::const_iterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
+
+        qDebug() << "Process repository" << it->fileName();
+
+        QFile file(QString::fromLatin1("%1/Updates.xml").arg(it->filePath()));
+
+        QFileInfo fileInfo(file);
+        if (!fileInfo.exists()) {
+            if (ignoreInvalidRepositories) {
+                qDebug() << "- skip invalid repository";
+                continue;
+            }
+            throw QInstaller::Error(QString::fromLatin1("Repository \"%1\" does not contain a update "
+                "description (Updates.xml is missing).").arg(QDir::toNativeSeparators(it->fileName())));
+        }
+        if (!file.open(QIODevice::ReadOnly)) {
+            qDebug() << "Cannot open Updates.xml for reading:" << file.errorString();
+            continue;
+        }
+
+        QString error;
+        QDomDocument doc;
+        if (!doc.setContent(&file, &error)) {
+            qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+                               << it->fileName() << ": " << error;
+            continue;
+        }
+        file.close();
+
+        const QDomElement root = doc.documentElement();
+        if (root.tagName() != QLatin1String("Updates")) {
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
+        }
+
+        const QDomNodeList children = root.childNodes();
+        for (int i = 0; i < children.count(); ++i) {
+            const QDomElement el = children.at(i).toElement();
+            if ((!el.isNull()) && (el.tagName() == QLatin1String("PackageUpdate"))) {
+                QInstallerTools::PackageInfo info;
+
+                QDomElement c1 = el.firstChildElement(QInstaller::scName);
+                if (!c1.isNull())
+                    info.name = c1.text();
+                else
+                    continue;
+                if (filterType == Exclude) {
+                    // Check for current package in exclude list, if found, skip it
+                    if (packagesToFilter->contains(info.name)) {
+                        continue;
+                    }
+                } else {
+                    // Check for current package in include list, if not found, skip it
+                    if (!packagesToFilter->contains(info.name))
+                        continue;
+                }
+                c1 = el.firstChildElement(QInstaller::scVersion);
+                if (!c1.isNull())
+                    info.version = c1.text();
+                else
+                    continue;
+
+                info.directory = QString::fromLatin1("%1/%2").arg(it->filePath(), info.name);
+                info.metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
+                    QString::fromLatin1("meta.7z"), info.version);
+
+                const QDomNodeList c2 = el.childNodes();
+                for (int j = 0; j < c2.count(); ++j) {
+                    if (c2.at(j).toElement().tagName() == QInstaller::scDependencies)
+                        info.dependencies = c2.at(j).toElement().text()
+                            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+                    else if (c2.at(j).toElement().tagName() == QInstaller::scDownloadableArchives) {
+                        QStringList names = c2.at(j).toElement().text()
+                            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+                        foreach (const QString &name, names) {
+                            info.copiedFiles.append(QString::fromLatin1("%1/%3%2").arg(info.directory,
+                                name, info.version));
+                            info.copiedFiles.append(QString::fromLatin1("%1/%3%2.sha1").arg(info.directory,
+                                name, info.version));
+                        }
+                    }
+                }
+                QString metaString;
+                {
+                    QTextStream metaStream(&metaString);
+                    el.save(metaStream, 0);
+                }
+                info.metaNode = metaString;
+                dict.push_back(info);
+                qDebug() << "- it provides the package" << info.name << " - " << info.version;
+            }
+        }
+    }
+
+    return dict;
+}
+
 QHash<QString, QString> QInstallerTools::buildPathToVersionMapping(const PackageInfoVector &info)
 {
     QHash<QString, QString> map;
@@ -568,70 +697,83 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                 .arg(name));
         }
 
-        QStringList compressedFiles;
-        QStringList filesToCompress;
-        foreach (const QString &packageDir, packageDirs) {
-            const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
-            foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
-                QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
-                if (fileInfo.isFile() && !fileInfo.isSymLink()) {
-                    const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
-                    if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
-                        QFile tmp(absoluteEntryFilePath);
-                        QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
-                        qDebug() << "Copying archive from" << tmp.fileName() << "to" << target;
-                        if (!tmp.copy(target)) {
-                            throw QInstaller::Error(QString::fromLatin1("Cannot copy file \"%1\" to \"%2\": %3")
-                                .arg(QDir::toNativeSeparators(tmp.fileName()), QDir::toNativeSeparators(target), tmp.errorString()));
+        if (info.copiedFiles.isEmpty()) {
+            QStringList compressedFiles;
+            QStringList filesToCompress;
+            foreach (const QString &packageDir, packageDirs) {
+                const QDir dataDir(QString::fromLatin1("%1/%2/data").arg(packageDir, name));
+                foreach (const QString &entry, dataDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files)) {
+                    QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
+                    if (fileInfo.isFile() && !fileInfo.isSymLink()) {
+                        const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
+                        if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
+                            QFile tmp(absoluteEntryFilePath);
+                            QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
+                            qDebug() << "Copying archive from" << tmp.fileName() << "to" << target;
+                            if (!tmp.copy(target)) {
+                                throw QInstaller::Error(QString::fromLatin1("Cannot copy file \"%1\" to \"%2\": %3")
+                                    .arg(QDir::toNativeSeparators(tmp.fileName()), QDir::toNativeSeparators(target), tmp.errorString()));
+                            }
+                            compressedFiles.append(target);
+                        } else {
+                            filesToCompress.append(absoluteEntryFilePath);
                         }
+                    } else if (fileInfo.isDir()) {
+                        qDebug() << "Compressing data directory" << entry;
+                        QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
+                        Lib7z::createArchive(target, QStringList() << dataDir.absoluteFilePath(entry),
+                            Lib7z::QTmpFile::No);
                         compressedFiles.append(target);
-                    } else {
-                        filesToCompress.append(absoluteEntryFilePath);
+                    } else if (fileInfo.isSymLink()) {
+                        filesToCompress.append(dataDir.absoluteFilePath(entry));
                     }
-                } else if (fileInfo.isDir()) {
-                    qDebug() << "Compressing data directory" << entry;
-                    QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
-                    Lib7z::createArchive(target, QStringList() << dataDir.absoluteFilePath(entry),
-                        Lib7z::QTmpFile::No);
-                    compressedFiles.append(target);
-                } else if (fileInfo.isSymLink()) {
-                    filesToCompress.append(dataDir.absoluteFilePath(entry));
                 }
             }
-        }
 
-        if (!filesToCompress.isEmpty()) {
-            qDebug() << "Compressing files found in data directory:" << filesToCompress;
-            QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, QLatin1String("content.7z"),
-                info.version);
-            Lib7z::createArchive(target, filesToCompress, Lib7z::QTmpFile::No);
-            compressedFiles.append(target);
-        }
+            if (!filesToCompress.isEmpty()) {
+                qDebug() << "Compressing files found in data directory:" << filesToCompress;
+                QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, QLatin1String("content.7z"),
+                    info.version);
+                Lib7z::createArchive(target, filesToCompress, Lib7z::QTmpFile::No);
+                compressedFiles.append(target);
+            }
 
-        foreach (const QString &target, compressedFiles) {
-            (*infos)[i].copiedFiles.append(target);
+            foreach (const QString &target, compressedFiles) {
+                (*infos)[i].copiedFiles.append(target);
 
-            QFile archiveFile(target);
-            QFile archiveHashFile(archiveFile.fileName() + QLatin1String(".sha1"));
+                QFile archiveFile(target);
+                QFile archiveHashFile(archiveFile.fileName() + QLatin1String(".sha1"));
 
-            qDebug() << "Hash is stored in" << archiveHashFile.fileName();
-            qDebug() << "Creating hash of archive" << archiveFile.fileName();
+                qDebug() << "Hash is stored in" << archiveHashFile.fileName();
+                qDebug() << "Creating hash of archive" << archiveFile.fileName();
 
-            try {
-                QInstaller::openForRead(&archiveFile);
-                const QByteArray hashOfArchiveData = QInstaller::calculateHash(&archiveFile,
-                    QCryptographicHash::Sha1).toHex();
-                archiveFile.close();
+                try {
+                    QInstaller::openForRead(&archiveFile);
+                    const QByteArray hashOfArchiveData = QInstaller::calculateHash(&archiveFile,
+                        QCryptographicHash::Sha1).toHex();
+                    archiveFile.close();
 
-                QInstaller::openForWrite(&archiveHashFile);
-                archiveHashFile.write(hashOfArchiveData);
-                qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
-                (*infos)[i].copiedFiles.append(archiveHashFile.fileName());
-                archiveHashFile.close();
-            } catch (const QInstaller::Error &/*e*/) {
-                archiveFile.close();
-                archiveHashFile.close();
-                throw;
+                    QInstaller::openForWrite(&archiveHashFile);
+                    archiveHashFile.write(hashOfArchiveData);
+                    qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
+                    (*infos)[i].copiedFiles.append(archiveHashFile.fileName());
+                    archiveHashFile.close();
+                } catch (const QInstaller::Error &/*e*/) {
+                    archiveFile.close();
+                    archiveHashFile.close();
+                    throw;
+                }
+            }
+        } else {
+            foreach (const QString &file, (*infos)[i].copiedFiles) {
+                QFileInfo fromInfo(file);
+                QFile from(file);
+                QString target = QString::fromLatin1("%1/%2").arg(namedRepoDir, fromInfo.fileName());
+                qDebug() << "Copying file from" << from.fileName() << "to" << target;
+                if (!from.copy(target)) {
+                    throw QInstaller::Error(QString::fromLatin1("Cannot copy file \"%1\" to \"%2\": %3")
+                        .arg(QDir::toNativeSeparators(from.fileName()), QDir::toNativeSeparators(target), from.errorString()));
+                }
             }
         }
     }
