@@ -40,6 +40,7 @@
 #include <kdupdater.h>
 
 #include <QtCore/QDirIterator>
+#include <QtCore/QRegExp>
 
 #include <QtXml/QDomDocument>
 

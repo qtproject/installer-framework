@@ -40,6 +40,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
+#include <QtCore/QRegExp>
 
 namespace KDUpdater {
 

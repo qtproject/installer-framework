@@ -28,6 +28,8 @@
 
 #include "binaryformatengine.h"
 
+#include <QRegExp>
+
 namespace {
 
 class StringListIterator : public QAbstractFileEngineIterator

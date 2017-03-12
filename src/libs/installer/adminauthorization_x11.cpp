@@ -29,6 +29,7 @@
 #include "adminauthorization.h"
 
 #include <QtCore/QFile>
+#include <QtCore/QRegExp>
 #include <QDebug>
 
 #include <QApplication>

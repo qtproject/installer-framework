@@ -36,6 +36,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
 #include <QtCore/QLocale>
+#include <QtCore/QRegExp>
 #include <QtCore/QStack>
 
 #include <QXmlStreamReader>

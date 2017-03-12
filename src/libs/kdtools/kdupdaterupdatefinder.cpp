@@ -40,6 +40,7 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
+#include <QRegExp>
 
 using namespace KDUpdater;
 
