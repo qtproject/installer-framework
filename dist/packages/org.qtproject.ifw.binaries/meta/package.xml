@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Qt Installer Framework Binaries</DisplayName>
     <Description>Installs the binaries, examples and help files.</Description>
-    <Version>2.0.81</Version>
-    <ReleaseDate>2013-12-12</ReleaseDate>
+    <Version>3.0.81</Version>
+    <ReleaseDate>2017-03-29</ReleaseDate>
     <Default>True</Default>
 </Package>
