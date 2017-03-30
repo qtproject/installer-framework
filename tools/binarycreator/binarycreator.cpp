@@ -43,6 +43,7 @@
 #include <QDirIterator>
 #include <QDomDocument>
 #include <QProcess>
+#include <QRegExp>
 #include <QSettings>
 #include <QTemporaryFile>
 #include <QTemporaryDir>

@@ -31,9 +31,10 @@
 #include "environment.h"
 #include "qprocesswrapper.h"
 
-#include <QtCore/QThread>
-#include <QtCore/QProcessEnvironment>
 #include <QtCore/QDebug>
+#include <QtCore/QProcessEnvironment>
+#include <QtCore/QRegExp>
+#include <QtCore/QThread>
 
 using namespace QInstaller;
 

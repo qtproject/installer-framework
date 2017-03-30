@@ -64,8 +64,8 @@ private:
     void insertInstallReason(Component *component,
                              InstallReasonType installReasonType,
                              const QString &referencedComponentName = QString());
-    void realAppendToInstallComponents(Component *component);
-    bool appendComponentToInstall(Component *components);
+    void realAppendToInstallComponents(Component *component, const QString &version = QString());
+    bool appendComponentToInstall(Component *components, const QString &version = QString());
     QString recursionError(Component *component);
 
     QList<Component*> m_allComponents;

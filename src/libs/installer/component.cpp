@@ -43,6 +43,7 @@
 #include <productkeycheck.h>
 
 #include <QtCore/QDirIterator>
+#include <QtCore/QRegExp>
 #include <QtCore/QTranslator>
 
 #include <QApplication>
@@ -1241,9 +1242,13 @@ bool Component::isDefault() const
     return d->m_vars.value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
 }
 
-bool Component::isInstalled() const
+bool Component::isInstalled(const QString version) const
 {
-    return scInstalled == d->m_vars.value(scCurrentState);
+    if (version.isEmpty()) {
+        return scInstalled == d->m_vars.value(scCurrentState);
+    } else {
+        return d->m_vars.value(scInstalledVersion) == version;
+    }
 }
 
 /*!

@@ -51,7 +51,8 @@ RemoteObject::~RemoteObject()
 {
     if (m_socket) {
         if (QThread::currentThread() == m_socket->thread()) {
-            writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
+            if (m_type != QLatin1String("RemoteClientPrivate"))
+                writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
         }

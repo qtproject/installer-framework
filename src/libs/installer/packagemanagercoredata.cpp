@@ -34,6 +34,7 @@
 
 #include <QDesktopServices>
 #include <QDir>
+#include <QRegExp>
 
 #ifdef Q_OS_WIN
 # include <windows.h>

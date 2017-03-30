@@ -92,9 +92,9 @@ QString InstallerCalculator::componentsToInstallError() const
     return m_componentsToInstallError;
 }
 
-void InstallerCalculator::realAppendToInstallComponents(Component *component)
+void InstallerCalculator::realAppendToInstallComponents(Component *component, const QString &version)
 {
-    if (!component->isInstalled() || component->updateRequested()) {
+    if (!component->isInstalled(version) || component->updateRequested()) {
         m_orderedComponentsToInstall.append(component);
         m_toInstallComponentIds.insert(component->name());
     }
@@ -154,10 +154,10 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
     return true;
 }
 
-bool InstallerCalculator::appendComponentToInstall(Component *component)
+bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version)
 {
     QSet<QString> allDependencies = component->dependencies().toSet();
-
+    QString requiredDependencyVersion = version;
     foreach (const QString &dependencyComponentName, allDependencies) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a
         // version which is not available
@@ -171,30 +171,50 @@ bool InstallerCalculator::appendComponentToInstall(Component *component)
             m_componentsToInstallError.append(errorMessage);
             return false;
         }
+        //Check if component requires higher version than what might be already installed
+        bool isUpdateRequired = false;
+        if (dependencyComponentName.contains(QChar::fromLatin1('-')) &&
+                !dependencyComponent->value(scInstalledVersion).isEmpty()) {
+            QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
+            const QString installedVersion = compEx.exactMatch(dependencyComponent->value(scInstalledVersion)) ?
+                compEx.cap(2) : dependencyComponent->value(scInstalledVersion);
 
-        if ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
-            && !m_toInstallComponentIds.contains(dependencyComponent->name())) {
-                if (m_visitedComponents.value(component).contains(dependencyComponent)) {
-                    const QString errorMessage = recursionError(component);
-                    qWarning().noquote() << errorMessage;
-                    m_componentsToInstallError = errorMessage;
-                    Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
-                        Q_FUNC_INFO, qPrintable(errorMessage));
-                    return false;
-                }
-                m_visitedComponents[component].insert(dependencyComponent);
+            QString requiredVersion = dependencyComponentName.section(QLatin1Char('-'), 1);
+            requiredVersion = compEx.exactMatch(requiredVersion) ? compEx.cap(2) : requiredVersion;
 
-                // add needed dependency components to the next run
-                insertInstallReason(dependencyComponent, InstallerCalculator::Dependent,
-                    component->name());
+            if (KDUpdater::compareVersion(requiredVersion, installedVersion) >= 1 ) {
+                isUpdateRequired = true;
+                requiredDependencyVersion = requiredVersion;
+            }
+        }
+        //Check dependencies only if
+        //- Dependency is not installed or update requested, nor newer version of dependency component required
+        //- And dependency component is not already added for install
+        //- And component is not already added for install, then dependencies are already resolved
+        if (((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
+                || isUpdateRequired) && (!m_toInstallComponentIds.contains(dependencyComponent->name())
+                && !m_toInstallComponentIds.contains(component->name()))) {
+            if (m_visitedComponents.value(component).contains(dependencyComponent)) {
+                const QString errorMessage = recursionError(component);
+                qWarning().noquote() << errorMessage;
+                m_componentsToInstallError = errorMessage;
+                Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
+                    Q_FUNC_INFO, qPrintable(errorMessage));
+                return false;
+            }
+            m_visitedComponents[component].insert(dependencyComponent);
 
-                if (!appendComponentToInstall(dependencyComponent))
-                    return false;
+            // add needed dependency components to the next run
+            insertInstallReason(dependencyComponent, InstallerCalculator::Dependent,
+                component->name());
+
+            if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion))
+                return false;
         }
     }
 
     if (!m_toInstallComponentIds.contains(component->name())) {
-        realAppendToInstallComponents(component);
+        realAppendToInstallComponents(component, requiredDependencyVersion);
         insertInstallReason(component, InstallerCalculator::Resolved);
     }
     return true;
