@@ -250,6 +250,7 @@ void Downloader::onError(QNetworkReply::NetworkError error)
         const Data &data = *m_downloads[reply];
         //Do not throw error if Updates.xml not found. The repository might be removed
         //with RepositoryUpdate in Updates.xml later.
+        //: %2 is a sentence describing the error
         if (data.taskItem.source().contains(QLatin1String("Updates.xml"), Qt::CaseInsensitive)) {
             qDebug() << QString::fromLatin1("Network error while downloading '%1': %2.").arg(
                    data.taskItem.source(), reply->errorString());
@@ -258,8 +259,6 @@ void Downloader::onError(QNetworkReply::NetworkError error)
                 TaskException(tr("Network error while downloading '%1': %2.").arg(
                                       data.taskItem.source(), reply->errorString())));
         }
-        //: %2 is a sentence describing the error
-
     } else {
         //: %1 is a sentence describing the error
         m_futureInterface->reportException(
