@@ -43,6 +43,7 @@
 #include <productkeycheck.h>
 
 #include <QtCore/QDirIterator>
+#include <QtCore/QRegExp>
 #include <QtCore/QTranslator>
 
 #include <QApplication>

@@ -54,6 +54,7 @@
 #include <QtConcurrentRun>
 
 #include <QtCore/QMutex>
+#include <QtCore/QRegExp>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTextCodec>

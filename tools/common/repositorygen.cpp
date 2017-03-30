@@ -42,6 +42,7 @@
 #include <updater.h>
 
 #include <QtCore/QDirIterator>
+#include <QtCore/QRegExp>
 
 #include <QtXml/QDomDocument>
 
