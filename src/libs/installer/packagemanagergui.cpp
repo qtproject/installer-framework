@@ -1958,7 +1958,7 @@ public:
         connect(m_installCompressButton, &QAbstractButton::clicked,
                 this, &ComponentSelectionPage::Private::selectCompressedPackage);
         m_installCompressButton->setObjectName(QLatin1String("InstallCompressedPackageButton"));
-        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse QBSP or 7z files..."));
+        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse QBSP files"));
         m_vlayout->addWidget(m_installCompressButton);
         m_compressedButtonVisible = true;
     }
