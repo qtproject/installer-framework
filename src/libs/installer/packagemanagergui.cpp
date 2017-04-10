@@ -1946,13 +1946,11 @@ public:
         m_vlayout->addSpacing(50);
         m_vlayout->addWidget(m_bspLabel);
 
-
         m_progressBar = new QProgressBar();
         m_progressBar->setRange(0, 0);
         m_progressBar->hide();
         m_vlayout->addWidget(m_progressBar);
         m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
-
 
         m_installCompressButton = new QPushButton;
         connect(m_installCompressButton, &QAbstractButton::clicked,
@@ -2057,21 +2055,26 @@ public slots:
         QSet<Repository> set;
         foreach (QString fileName, fileNames) {
             Repository repository = Repository::fromUserInput(fileName, true);
+            repository.setEnabled(true);
             set.insert(repository);
         }
         if (set.count() > 0) {
             m_progressBar->show();
-            m_installCompressButton->setEnabled(false);
+            m_installCompressButton->hide();
             QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
             b->setEnabled(false);
             m_core->settings().addTemporaryRepositories(set, false);
-            m_core->fetchCompressedPackagesTree();
-            updateTreeView();
+            if (!m_core->fetchCompressedPackagesTree()) {
+                setMessage(m_core->error());
+            }
+            else {
+                updateTreeView();
+                setMessage(ComponentSelectionPage::tr("To install new "\
+                    "compressed repository, browse the repositories from your computer"));
+            }
 
             m_progressBar->hide();
-            m_bspLabel->setText(ComponentSelectionPage::tr("To install new "\
-                "compressed repository, browse the repositories from your computer"));
-            m_installCompressButton->setEnabled(true);
+            m_installCompressButton->show();
             b->setEnabled(true);
         }
     }
@@ -2089,13 +2092,9 @@ public slots:
     */
     void setMessage(const QString &msg)
     {
-        if (m_progressBar->isVisible()) {
+        QWizardPage *page = q->gui()->currentPage();
+        if (m_bspLabel && page && page->objectName() == QLatin1String("ComponentSelectionPage"))
             m_bspLabel->setText(msg);
-        }
-        else {
-            m_bspLabel->setText(ComponentSelectionPage::tr("To install new "\
-                "compressed repository, browse the repositories from your computer"));
-        }
     }
 
     void selectDefault()

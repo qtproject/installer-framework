@@ -34,6 +34,7 @@
 #include "proxycredentialsdialog.h"
 #include "serverauthenticationdialog.h"
 #include "settings.h"
+#include "testrepository.h"
 
 #include <QTemporaryDir>
 
@@ -60,6 +61,7 @@ MetadataJob::MetadataJob(QObject *parent)
 
 MetadataJob::~MetadataJob()
 {
+    resetCompressedFetch();
     reset();
 }
 
@@ -118,13 +120,25 @@ void MetadataJob::doStart()
             emitFinished();
         }
     } else {
-        m_packages.clear();
+        resetCompressedFetch();
+
         bool repositoriesFound = false;
-        foreach (const Repository &repo, m_core->settings().repositories()) {
+        foreach (const Repository &repo, m_core->settings().temporaryRepositories()) {
             if (repo.isCompressed() && repo.isEnabled() &&
                     productKeyCheck->isValidRepository(repo)) {
                 repositoriesFound = true;
                 startUnzipRepositoryTask(repo);
+
+                //Set the repository disabled so we don't handle it many times
+                Repository replacement = repo;
+                replacement.setEnabled(false);
+                Settings &s = m_core->settings();
+                QSet<Repository> temporaries = s.temporaryRepositories();
+                if (temporaries.contains(repo)) {
+                    temporaries.remove(repo);
+                    temporaries.insert(replacement);
+                    s.setTemporaryRepositories(temporaries, true);
+                }
             }
         }
         if (!repositoriesFound)
@@ -170,8 +184,61 @@ void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
 void MetadataJob::unzipRepositoryTaskFinished()
 {
     QFutureWatcher<void> *watcher = static_cast<QFutureWatcher<void> *>(sender());
+    int error = Job::NoError;
+    QString errorString;
     try {
         watcher->waitForFinished();    // trigger possible exceptions
+
+        QHashIterator<QFutureWatcher<void> *, QObject*> i(m_unzipRepositoryTasks);
+        while (i.hasNext()) {
+
+            i.next();
+            if (i.key() == watcher) {
+                UnzipArchiveTask *task = qobject_cast<UnzipArchiveTask*> (i.value());
+                QString url = task->target();
+
+                QUrl targetUrl = targetUrl.fromLocalFile(url);
+                Repository repo(targetUrl, false, true);
+                url = repo.url().toString() + QLatin1String("/Updates.xml");
+                TestRepository testJob(m_core);
+                testJob.setRepository(repo);
+                testJob.start();
+                testJob.waitForFinished();
+                error = testJob.error();
+                errorString = testJob.errorString();
+                if (error == Job::NoError) {
+                    FileTaskItem item(url);
+                    item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                    m_unzipRepositoryitems.append(item);
+                } else {
+                    //Repository is not valid, remove it
+                    Repository repository;
+                    repository.setUrl(QUrl(task->archive()));
+                    Settings &s = m_core->settings();
+                    QSet<Repository> temporaries = s.temporaryRepositories();
+                    foreach (Repository repository, temporaries) {
+                        if (repository.url().toLocalFile() == task->archive()) {
+                            temporaries.remove(repository);
+                        }
+                    }
+                    s.setTemporaryRepositories(temporaries, false);
+                }
+            }
+        }
+        delete m_unzipRepositoryTasks.value(watcher);
+        m_unzipRepositoryTasks.remove(watcher);
+        delete watcher;
+
+        //One can specify many zipped repository items at once. As the repositories are
+        //unzipped one by one, we collect here all items before parsing xml files from those.
+        if (m_unzipRepositoryitems.count() > 0 && m_unzipRepositoryTasks.isEmpty()) {
+            startXMLTask(m_unzipRepositoryitems);
+        } else {
+            if (error != Job::NoError) {
+                emitFinishedWithError(QInstaller::DownloadError, errorString);
+            }
+        }
+
     } catch (const UnzipArchiveException &e) {
         reset();
         emitFinishedWithError(QInstaller::ExtractionError, e.message());
@@ -182,31 +249,6 @@ void MetadataJob::unzipRepositoryTaskFinished()
         reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
-
-     QHashIterator<QFutureWatcher<void> *, QObject*> i(m_unzipRepositoryTasks);
-     while (i.hasNext()) {
-         i.next();
-         if (i.key() == watcher) {
-             UnzipArchiveTask *task = qobject_cast<UnzipArchiveTask*> (i.value());
-             QString url = task->target();
-
-             QUrl targetUrl = targetUrl.fromLocalFile(url);
-             Repository repo(targetUrl, false, true);
-             url = repo.url().toString() + QLatin1String("/Updates.xml");
-             FileTaskItem item(url);
-             item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
-             m_unzipRepositoryitems.append(item);
-         }
-     }
-
-    //One can specify many zipped repository items at once. As the repositories are
-     //unzipped one by one, we collect here all items before parsing xml files from those.
-    delete m_unzipRepositoryTasks.value(watcher);
-    m_unzipRepositoryTasks.remove(watcher);
-    delete watcher;
-
-    if (m_unzipRepositoryitems.count() > 0 && m_unzipRepositoryTasks.isEmpty())
-        startXMLTask(m_unzipRepositoryitems);
 }
 
 void MetadataJob::xmlTaskFinished()
@@ -299,13 +341,10 @@ void MetadataJob::unzipTaskFinished()
     try {
         watcher->waitForFinished();    // trigger possible exceptions
     } catch (const UnzipArchiveException &e) {
-        reset();
         emitFinishedWithError(QInstaller::ExtractionError, e.message());
     } catch (const QUnhandledException &e) {
-        reset();
         emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
     } catch (...) {
-        reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during extracting."));
     }
 
@@ -364,7 +403,6 @@ void MetadataJob::metadataTaskFinished()
 
 void MetadataJob::reset()
 {
-    m_packages.clear();
     m_metadata.clear();
 
     setError(Job::NoError);
@@ -374,6 +412,17 @@ void MetadataJob::reset()
     try {
         m_xmlTask.cancel();
         m_metadataTask.cancel();
+    } catch (...) {}
+    m_tempDirDeleter.releaseAndDeleteAll();
+}
+
+void MetadataJob::resetCompressedFetch()
+{
+    setError(Job::NoError);
+    setErrorString(QString());
+    m_unzipRepositoryitems.clear();
+    m_packages.clear();
+    try {
         foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
             watcher->deleteLater();
@@ -390,7 +439,6 @@ void MetadataJob::reset()
             object->deleteLater();
         m_unzipRepositoryTasks.clear();
     } catch (...) {}
-    m_tempDirDeleter.releaseAndDeleteAll();
 }
 
 MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &results)

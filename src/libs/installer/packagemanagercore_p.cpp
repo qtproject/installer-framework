@@ -2247,7 +2247,9 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromCompressedRepositories()
             case QInstaller::UserIgnoreError:
                 break;  // we can simply ignore this error, the user knows about it
             default:
-                setStatus(PackageManagerCore::Failure, m_metadataJob.errorString());
+                //Do not change core status here, we can recover if there is invalid
+                //compressed repository
+                setStatus(m_core->status(), m_metadataJob.errorString());
                 return compressedRepoFetched;
         }
     }

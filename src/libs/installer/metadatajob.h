@@ -80,6 +80,7 @@ private slots:
 private:
     void startUnzipRepositoryTask(const Repository &repo);
     void reset();
+    void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
 
 private:
