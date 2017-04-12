@@ -15,32 +15,38 @@ http://code.qt.io/cgit/installer-framework/installer-framework.git/
 Build a static Qt
 ---------------------
 
-Building the Qt Installer Framework from sources requires Qt (version 5.5
-or newer). Supported compilers are MSVC 2013 or newer, GCC 4.7 or newer,
+Building the Qt Installer Framework from sources requires Qt version 5.9.x.
+Supported compilers are MSVC 2013 or newer, GCC 4.7 or newer,
 and Clang 3.1 or newer.
 
 If you want to ship your installer as a single file you have to build
 Qt and the Qt Installer Framework statically.
 
 See the Qt documentation for the prerequisites and steps to build Qt from sources.
+Please read SSL Import and Export Restrictions from http://doc.qt.io/qt-5/ssl.html if
+you are statically linking against OpenSSL libraries.
 
 ### Windows
 
 Recommended configuration options for Microsoft Windows:
 
-configure -prefix %CD%\qtbase -release -static -static-runtime -target xp -accessibility -no-opengl -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
-
+configure -prefix %CD%\qtbase -release -static -static-runtime -accessibility -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests
+Build Qt:
+nmake (or 'mingw32-make') module-qtbase module-qtdeclarative module-qttools module-qttranslations module-qtwinextras
 ### Linux
 
 Recommended configuration options for Linux:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -qt-freetype -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
-
+configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
+Build Qt:
+make module-qtbase module-qtdeclarative module-qttools module-qttranslations
 ### OS X
 
 Recommended configuration options for OS X:
 
-configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -skip qtactiveqt -skip qtenginio -skip qtlocation -skip qtmultimedia -skip qtserialport -skip qtquick1 -skip qtquickcontrols -skip qtscript -skip qtsensors -skip qtwebkit -skip qtwebsockets -skip qtxmlpatterns -skip qt3d
+configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
+Build Qt:
+make module-qtbase module-qtdeclarative module-qttools module-qttranslations
 
 
 Build the Framework
