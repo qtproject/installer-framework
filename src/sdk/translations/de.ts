@@ -46,11 +46,11 @@
     <name>Dialog</name>
     <message>
         <source>Http authentication required</source>
-        <translation>HTTP Authentifizierung erforderlich</translation>
+        <translation>HTTP-Authentifizierung erforderlich</translation>
     </message>
     <message>
         <source>You need to supply a Username and Password to access this site.</source>
-        <translation>Nutzername und Passwort für die Authentifizierung benötigt.</translation>
+        <translation>Benutzername und Passwort für die Authentifizierung benötigt.</translation>
     </message>
     <message>
         <source>Username:</source>
@@ -100,18 +100,18 @@
     </message>
     <message>
         <source>Cannot create symlink at %1. %2</source>
-        <translation>Konnte keine Dateisystemverknüpfung (Symlink) %1 anlegen. Fehlermeldung: %2</translation>
+        <translation>Konnte Verknüpfung (Symlink) %1 nicht anlegen. Fehlermeldung: %2</translation>
     </message>
 </context>
 <context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
-        <translation>Komponenten, die als automatische Abhängigkeiten zugefügt wurden:</translation>
+        <translation>Komponenten, die als automatische Abhängigkeiten hinzugefügt wurden:</translation>
     </message>
     <message>
         <source>Components added as dependency for &apos;%1&apos;:</source>
-        <translation>Komponenten, die als Abhängigkeiten für &apos;%1&apos; zugefügt wurden:</translation>
+        <translation>Komponenten, die als Abhängigkeiten für &apos;%1&apos; hinzugefügt wurden:</translation>
     </message>
     <message>
         <source>Components that have resolved dependencies:</source>
@@ -123,7 +123,7 @@
     </message>
     <message>
         <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
-        <translation>Rekursion entdeckt, Komponente &apos;%1&apos; wurde bereits zugefügt aufgrund von: &apos;%2&apos;</translation>
+        <translation>Rekursion entdeckt, Komponente &apos;%1&apos; wurde bereits aufgrund von &apos;%2&apos; hinzugefügt</translation>
     </message>
     <message>
         <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
@@ -526,7 +526,7 @@
     </message>
     <message>
         <source>Downloading Updates.xml from update sources.</source>
-        <translation>Lade Updates.xml von der Aktualisierungsquelle herunter.</translation>
+        <translation>Datei Updates.xml wird von der Aktualisierungsquelle heruntergeladen.</translation>
     </message>
     <message>
         <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
@@ -538,11 +538,11 @@
     </message>
     <message>
         <source>Computing applicable updates.</source>
-        <translation>Berechne anwendbare Aktualisierungen.</translation>
+        <translation>Anwendbare Aktualisierungen werden ermittelt.</translation>
     </message>
     <message>
         <source>Application updates computed.</source>
-        <translation>Anwendbare Aktualisierungen berechnet.</translation>
+        <translation>Anwendbare Aktualisierungen ermittelt.</translation>
     </message>
 </context>
 <context>
@@ -806,7 +806,7 @@
     </message>
     <message>
         <source>Copy failed. Error: %1</source>
-        <translation>Kopieren schlug fehl. Fehlermeldung: %1</translation>
+        <translation>Kopieren ist fehlgeschlagen. Fehlermeldung: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
@@ -849,7 +849,7 @@
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
-        <translation>Komponenten können im Updater Modus keine Kinder haben.</translation>
+        <translation>Komponenten können im Updater-Modus keine Kinder haben.</translation>
     </message>
     <message>
         <source>Cannot open the requested translation file &apos;%1&apos;.</source>
@@ -908,7 +908,7 @@
     </message>
     <message>
         <source>Size</source>
-        <translation>Grösse</translation>
+        <translation>Größe</translation>
     </message>
     <message>
         <source>Component is marked for installation.</source>
@@ -1121,7 +1121,7 @@
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
         <source>Cannot set file permissions %1!</source>
-        <translation>Konnte Dateirechte auf Datei %1 nicht setzen!</translation>
+        <translation>Konnte Dateiberechtigungen auf Datei %1 nicht setzen.</translation>
     </message>
     <message>
         <source>Cannot remove file %1: %2</source>
@@ -1141,7 +1141,7 @@
     </message>
     <message>
         <source>Installer needs to be an offline version: %1.</source>
-        <translation>Installer muss eine offline Version sein: %1.</translation>
+        <translation>Installer muss eine Offline-Version sein: %1.</translation>
     </message>
     <message>
         <source>Cannot open file: %1</source>
@@ -1165,11 +1165,11 @@
     </message>
     <message>
         <source>Removing file: %0</source>
-        <translation>Entferne Datei %0</translation>
+        <translation>Datei %0 wird entfernt</translation>
     </message>
     <message>
         <source>Cannot remove %0.</source>
-        <translation>Konnte Datei %0. nicht löschen.</translation>
+        <translation>Konnte Datei %0 nicht löschen.</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
@@ -1266,7 +1266,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Checksum mismatch detected &apos;%1&apos;.</source>
-        <translation>Checksumme stimmt nicht überein &apos;%1&apos;.</translation>
+        <translation>Checksummen stimmen nicht überein &apos;%1&apos;.</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
@@ -1280,7 +1280,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Pause and resume not supported by network transfers.</source>
-        <translation>Pause und Fortsetzen werden bei Netzwerkübertragungen nicht unterstützt.</translation>
+        <translation>Pausieren und Fortsetzen werden bei Netzwerkübertragungen nicht unterstützt.</translation>
     </message>
     <message>
         <source>Invalid source &apos;%1&apos;. Error: %2.</source>
@@ -1309,7 +1309,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
-        <translation>Ausführung fehlgeschlagen: Konnte %1 nicht detached starten.</translation>
+        <translation>Ausführung fehlgeschlagen: Konnte %1 nicht losgelöst starten.</translation>
     </message>
     <message>
         <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
@@ -1358,7 +1358,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Beim Auspacken von %1 ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
 </context>
 <context>
@@ -1435,7 +1435,7 @@ Fehler beim Laden von %2</translation>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Completing the %1 Wizard</source>
-        <translation>Beende den %1 Assistenten.</translation>
+        <translation>Den %1-Assistent abschließen.</translation>
     </message>
     <message>
         <source>Click Done to exit the %1 Wizard.</source>
@@ -1455,7 +1455,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>The %1 Wizard failed.</source>
-        <translation>Der %1 Assistent ist fehlgeschlagen.</translation>
+        <translation>Der %1-Assistent ist fehlgeschlagen.</translation>
     </message>
 </context>
 <context>
@@ -1520,7 +1520,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup Wizard.</source>
-        <translation>Willkommen zum %1 Einrichtungsassistenten.</translation>
+        <translation>Willkommen zum %1-Einrichtungsassistenten.</translation>
     </message>
     <message>
         <source>Add or remove components</source>
@@ -1536,11 +1536,11 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Retrieving information from remote installation sources...</source>
-        <translation>Empfange Daten vom Installationsserver...</translation>
+        <translation>Daten werden vom Installationsserver empfangen ...</translation>
     </message>
     <message>
         <source>At least one valid and enabled repository required for this action to succeed.</source>
-        <translation>Mindestens ein gültiges und aktiviertes Repository wird benötigt, um diese Aktion erfolgreich abzuschliessen.</translation>
+        <translation>Mindestens ein gültiges und aktiviertes Repository wird benötigt, um diese Aktion erfolgreich abzuschließen.</translation>
     </message>
     <message>
         <source>No updates available.</source>
@@ -1606,7 +1606,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
-        <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung %1 benötigte Installer-Objekt ist leer.</translation>
     </message>
     <message>
         <source>Can not write license file: %1.</source>
@@ -1640,11 +1640,11 @@ Fehler beim Laden von %2</translation>
     <name>QInstaller::MetadataJob</name>
     <message>
         <source>Missing package manager core engine.</source>
-        <translation>Fehlende Paketmanager Kernkomponente.</translation>
+        <translation>Fehlende Paketmanager-Kernkomponente.</translation>
     </message>
     <message>
         <source>Preparing meta information download...</source>
-        <translation>Bereite Herunterladen der Metainformationen vor...</translation>
+        <translation>Herunterladen der Metainformationen wird vorbereitet ...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
@@ -1652,7 +1652,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Missing proxy credentials.</source>
-        <translation>Fehlende Proxy Zugangsdaten.</translation>
+        <translation>Fehlende Proxy-Zugangsdaten.</translation>
     </message>
     <message>
         <source>Authentication failed.</source>
@@ -1660,11 +1660,11 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unknown exception during download.</source>
-        <translation>Beim Herunterladen trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Beim Herunterladen ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository...</source>
-        <translation>Empfange Metainformationen vom Installationsserver...</translation>
+        <translation>Metainformationen werden vom Installationsserver empfangen ...</translation>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
@@ -1672,11 +1672,11 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
-        <translation>Beim Auspacken trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Beim Auspacken ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
-        <translation>Packe Metainformationen aus...</translation>
+        <translation>Metainformationen werden ausgepackt ...</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
@@ -1684,7 +1684,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 trat eine unbekannte Ausnahmebedingung auf.</translation>
+        <translation>Beim Auspacken von %1 ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Cannot open %1 for reading. Error: %2</source>
@@ -1697,11 +1697,11 @@ Fehler beim Laden von %2</translation>
         <source>
 Downloading packages...</source>
         <translation>
-Lade Pakete herunter...</translation>
+Pakete werden heruntergeladen ...</translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>Installation durch den Nutzer abgebrochen</translation>
+        <translation>Installation durch den Benutzer abgebrochen</translation>
     </message>
     <message>
         <source>All downloads finished.</source>
@@ -1713,7 +1713,7 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Cancelling the Installer</source>
-        <translation>Breche den Installationsvorgang ab</translation>
+        <translation>Der Installationsvorgang wird abgebrochen</translation>
     </message>
     <message>
         <source>Error writing Maintenance Tool</source>
@@ -1725,7 +1725,7 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Systemverwalterrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
+        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Administratorrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -1733,11 +1733,11 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Some components could not be removed completely because an unknown error happened.</source>
-        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler auftrat.</translation>
+        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler aufgetreten ist.</translation>
     </message>
     <message>
         <source>Application not running in Package Manager mode!</source>
-        <translation>Die Anwendung ist nicht im Paketverwaltermodus!</translation>
+        <translation>Die Anwendung läuft nicht im Paketverwaltungsmodus.</translation>
     </message>
     <message>
         <source>No installed packages found.</source>
@@ -1745,7 +1745,7 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Application running in Uninstaller mode!</source>
-        <translation>Die Anwendung befindet sich im Deinstallierermodus!</translation>
+        <translation>Die Anwendung läuft im Deinstallationsmodus.</translation>
     </message>
     <message>
         <source>There is an important update available, please run the updater first.</source>
@@ -1792,7 +1792,7 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>Installation durch den Nutzer abgebrochen</translation>
+        <translation>Installation durch den Benutzer abgebrochen</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1800,15 +1800,15 @@ Lade Pakete herunter...</translation>
     </message>
     <message>
         <source>Preparing the installation...</source>
-        <translation>Bereite Installation vor...</translation>
+        <translation>Installation wird vorbereitet ...</translation>
     </message>
     <message>
         <source>It is not possible to install from network location</source>
-        <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren</translation>
+        <translation>Es ist nicht möglich, von einem Netzwerk-Speicherort aus zu installieren</translation>
     </message>
     <message>
         <source>Creating local repository</source>
-        <translation>Erstelle lokale Quelle</translation>
+        <translation>Lokale Quelle wird erstellt</translation>
     </message>
     <message>
         <source>
@@ -1824,11 +1824,11 @@ Installation abgebrochen!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
-        <translation>Es ist nicht möglich, diese Oparation von einem Netzwerkort aus zu starten</translation>
+        <translation>Es ist nicht möglich, diese Oparation von einem Netzwerk-Speicherort aus zu starten</translation>
     </message>
     <message>
         <source>Removing deselected components...</source>
-        <translation>Entferne abgewählte Komponenten...</translation>
+        <translation>Abgewählte Komponenten werden entfernt ...</translation>
     </message>
     <message>
         <source>
@@ -1872,11 +1872,11 @@ Aktualisierung abgebrochen!</translation>
     </message>
     <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
-        <translation>Konnte Binäre Datei des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
+        <translation>Konnte Binärdaten des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
         <source>Creating Maintenance Tool</source>
-        <translation>Erstelle Verwaltungswerkzeug</translation>
+        <translation>Verwaltungswerkzeug wird erstellt</translation>
     </message>
     <message>
         <source>Uninstallation completed successfully.</source>
@@ -1890,7 +1890,7 @@ Aktualisierung abgebrochen!</translation>
         <source>
 Installing component %1</source>
         <translation>
-Installiere Komponente %1</translation>
+Komponente %1 wird installiert</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -1934,7 +1934,7 @@ Installiere Komponente %1</translation>
     </message>
     <message>
         <source>Cannot add temporary update source information.</source>
-        <translation>Konnte Informationen zu temporären Aktualisierungsquellen nicht hinzufügen.</translation>
+        <translation>Konnte Informationen nicht zu temporären Aktualisierungsquellen hinzufügen.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -1973,7 +1973,7 @@ Installiere Komponente %1</translation>
     </message>
     <message>
         <source>Do you want to quit the maintenance application?</source>
-        <translation>Möchten Sie die Wartungsanwendung beenden?</translation>
+        <translation>Möchten Sie das Verwaltungswerkzeug beenden?</translation>
     </message>
     <message>
         <source>Question</source>
@@ -1990,7 +1990,7 @@ Installiere Komponente %1</translation>
     <message>
         <source>It is not possible to install from network location.
 Please copy the installer to a local drive</source>
-        <translation>Es ist nicht möglich, von einem Netzwerkort aus zu installieren.
+        <translation>Es ist nicht möglich, von einem Netzwerk-Speicherort aus zu installieren.
 Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
 </context>
@@ -1998,11 +1998,11 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::PerformInstallationForm</name>
     <message>
         <source>&amp;Show Details</source>
-        <translation>&amp;Zeige Details</translation>
+        <translation>Details &amp;anzeigen</translation>
     </message>
     <message>
         <source>&amp;Hide Details</source>
-        <translation>&amp;Verstecke Details</translation>
+        <translation>Details aus&amp;blenden</translation>
     </message>
 </context>
 <context>
@@ -2013,7 +2013,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Uninstalling %1</source>
-        <translation>Deinstalliere %1</translation>
+        <translation>%1 wird deinstalliert</translation>
     </message>
     <message>
         <source>&amp;Update</source>
@@ -2021,7 +2021,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Updating components of %1</source>
-        <translation>Aktualisiere Komponenten des %1</translation>
+        <translation>Komponenten von %1 werden aktualisiert</translation>
     </message>
     <message>
         <source>&amp;Install</source>
@@ -2029,7 +2029,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Installing %1</source>
-        <translation>Installiere %1</translation>
+        <translation>%1 wird installiert</translation>
     </message>
 </context>
 <context>
@@ -2040,15 +2040,15 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>The proxy %1 requires a username and password.</source>
-        <translation>Der Proxy %1 benötigt einen Nutzernamen und Passwort.</translation>
+        <translation>Der Proxy %1 verlangt einen Benutzernamen und Passwort.</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nutzername:</translation>
+        <translation>Benutzername:</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nutzername</translation>
+        <translation>Benutzername</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -2095,7 +2095,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Setup is now ready to begin installing %1 on your computer.</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer einzurichten.</translation>
+        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer zu installieren.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
@@ -2115,7 +2115,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MiB verfügbar sein. %1</translation>
+        <translation>Die für die Installation ausgewählte Partition scheint genügend Platz zu bieten, aber es werden anschließend weniger als 100 MB verfügbar sein. %1</translation>
     </message>
     <message>
         <source>Installation will use %1 of disk space.</source>
@@ -2146,21 +2146,21 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Register File Type: Invalid arguments</source>
-        <translation>Register File Type: Ungültige Argumente</translation>
+        <translation>Dateitypenregistrierung: Ungültige Argumente</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
         <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
+        <translation>Konnte nicht alle Daten nach dem Senden des Befehls &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Kommandos &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
+        <translation>Konnte nicht alle Daten nach dem Senden des Befehls &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
 <context>
@@ -2186,7 +2186,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::Resource</name>
     <message>
         <source>Cannot open Resource &apos;%1&apos; read-only.</source>
-        <translation>Konnte Ressourcendatei &apos;%1&apos; nicht zum Nur-Lesen öffnen.</translation>
+        <translation>Konnte Ressourcendatei &apos;%1&apos; nicht schreibgeschützt öffnen.</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
@@ -2201,7 +2201,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::RestartPage</name>
     <message>
         <source>Completing the %1 Setup Wizard</source>
-        <translation>Vervollständige den %1 Assistenten</translation>
+        <translation>Der %1-Assistent wird abgeschlossen</translation>
     </message>
 </context>
 <context>
@@ -2219,15 +2219,15 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::SelfRestartOperation</name>
     <message>
         <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
-        <translation>Das für die Anweisung &apos;%1&apos; benötigte Installerobjekt ist leer.</translation>
+        <translation>Das für die Anweisung &apos;%1&apos; benötigte Installer-Objekt ist leer.</translation>
     </message>
     <message>
         <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>Self Restart: Nur im updater oder packagemanager Modus erlaubt.</translation>
+        <translation>Automatischer Neustart: Nur im Aktualisierungs- und Pakatverwaltungs-Modus erlaubt.</translation>
     </message>
     <message>
         <source>Self Restart: Invalid arguments</source>
-        <translation>Self Restart: Ungültige Argumente</translation>
+        <translation>Automatischer Neustart: Ungültige Argumente</translation>
     </message>
 </context>
 <context>
@@ -2238,11 +2238,11 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>You need to supply a username and password to access this site.</source>
-        <translation>Nutzername und Passwort für den Zugriff benötigt.</translation>
+        <translation>Benutzername und Passwort für den Zugriff benötigt.</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>Nutzername:</translation>
+        <translation>Benutzername:</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -2288,7 +2288,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>Verschiebe &apos;%1&apos; nach &apos;%2&apos;.</translation>
+        <translation>&apos;%1&apos; nach &apos;%2&apos; verschieben.</translation>
     </message>
 </context>
 <context>
@@ -2306,7 +2306,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <name>QInstaller::TargetDirectoryPage</name>
     <message>
         <source>Installation Folder</source>
-        <translation>Installationsverzeichnis</translation>
+        <translation>Installationsordner</translation>
     </message>
     <message>
         <source>Please specify the folder where %1 will be installed.</source>
@@ -2320,11 +2320,11 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>B&amp;rowse...</source>
-        <translation>&amp;Durchsuchen...</translation>
+        <translation>&amp;Durchsuchen ...</translation>
     </message>
     <message>
         <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation. Bitte ein anderes Zielverzeichnis auswählen.</translation>
+        <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation. Bitte wählen Sie einen anderen Zielordner aus.</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty folder for installation.
@@ -2350,27 +2350,27 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad für das Installationsverzeichnis.</translation>
+        <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII-Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad oder Installationsordner.</translation>
     </message>
     <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>Der von ihnen eingegebene Pfad ist zu lang, bitte geben sie einen gültigen Pfad ein.</translation>
+        <translation>Der von Ihnen eingegebene Pfad ist zu lang, bitte geben Sie einen gültigen Pfad ein.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>Der eingegebene Pfad ist ungültig, bitte ein gültiges Ziel angeben.</translation>
+        <translation>Der von Ihnen eingegebene Pfad ist ungültig, bitte geben Sie ein gültiges Ziel ein.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>Der von ihnen eingegebene Pfad ist ungültig, bitte geben sie ein gültiges Laufwerk an.</translation>
+        <translation>Der von Ihnen eingegebene Pfad ist ungültig, bitte geben Sie ein gültiges Laufwerk an.</translation>
     </message>
     <message>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte einen gültigen Ordner angeben.</translation>
+        <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte geben Sie einen gültigen Ordner ein.</translation>
     </message>
     <message>
         <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht %1 enthalten, bitte einen gültigen Ordner angeben.</translation>
+        <translation>Der Installationspfad darf nicht %1 enthalten, bitte geben Sie einen gültigen Ordner ein.</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2382,11 +2382,11 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Warnung</translation>
+        <translation>Achtung</translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
-        <translation>Installationsverzeichnis auswählen.</translation>
+        <translation>Installationsordner auswählen.</translation>
     </message>
 </context>
 <context>
@@ -2401,7 +2401,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>Got a timeout while testing: &apos;%1&apos;</source>
-        <translation>Erhielt Timeout beim Testen von: &apos;%1&apos;</translation>
+        <translation>Zeitüberschreitung beim Testen von: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Cannot parse Updates.xml! Error: %1.</source>
@@ -2445,7 +2445,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
 
 as root and then clicking OK.</source>
         <translation>Konnte die Autorisierung, die zum Fortsetzen der Installation nötig ist, nicht erhalten.
-Brechen sie entweder die Installation ab, oder verwenden sie die Fallback Lösung, indem sie
+Brechen Sie entweder die Installation ab, oder verwenden Sie die Fallback-Lösung, indem Sie
 %1
 als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
@@ -2488,7 +2488,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>HTTP proxy:</source>
-        <translation>HTTP Proxy:</translation>
+        <translation>HTTP-Proxy:</translation>
     </message>
     <message>
         <source>Port:</source>
@@ -2496,7 +2496,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>FTP proxy:</source>
-        <translation>FTP Proxy:</translation>
+        <translation>FTP-Proxy:</translation>
     </message>
     <message>
         <source>Repositories</source>
@@ -2504,11 +2504,11 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>Add Username and Password for authentication if needed.</source>
-        <translation>Nutzername und Passwort für die Autentifizierung hinzufügen, falls benötigt.</translation>
+        <translation>Benutzername und Passwort für die Autentifizierung hinzufügen, falls benötigt.</translation>
     </message>
     <message>
         <source>Use temporary repositories only</source>
-        <translation>Verwende ausschließlich temporäre Quellen</translation>
+        <translation>Ausschließlich temporäre Quellen verwenden</translation>
     </message>
     <message>
         <source>Add</source>
@@ -2524,7 +2524,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>Show Passwords</source>
-        <translation>Zeige Passwörter</translation>
+        <translation>Passwörter anzeigen</translation>
     </message>
     <message>
         <source>Check this to use repository during fetch.</source>
@@ -2532,7 +2532,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>Add the username to authenticate on the server.</source>
-        <translation>Nutzernamen eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
+        <translation>Benutzernamen eintragen, um sich gegenüber der Quelle zu authentifizieren.</translation>
     </message>
     <message>
         <source>Add the password to authenticate on the server.</source>
@@ -2544,23 +2544,23 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>There was an error testing this repository.</source>
-        <translation>Beim testen des Repositories ist ein Fehler aufgetreten.</translation>
+        <translation>Beim Testen der Quelle ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
         <source>Do you want to disable the tested repository?</source>
-        <translation>Soll das getestete Repository ausgeschaltet werden?</translation>
+        <translation>Soll die getestete Quelle deaktiviert werden?</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
-        <translation>Verstecke Passwörter</translation>
+        <translation>Passwörter ausblenden</translation>
     </message>
     <message>
         <source>Use</source>
-        <translation>Nutze</translation>
+        <translation>Verwende</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>Nutzername</translation>
+        <translation>Benutzername</translation>
     </message>
     <message>
         <source>Password</source>
@@ -2595,7 +2595,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
     <message>
         <source>Renaming %1 into %2 failed with %3.</source>
-        <translation>Umbenennung von %1 nach %2 schlug mit Meldung %3 fehl.</translation>
+        <translation>Umbenennung von %1 nach %2 ist mit Meldung %3 fehlgeschlagen.</translation>
     </message>
 </context>
 </TS>
