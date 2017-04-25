@@ -403,6 +403,7 @@ void MetadataJob::metadataTaskFinished()
 
 void MetadataJob::reset()
 {
+    m_packages.clear();
     m_metadata.clear();
 
     setError(Job::NoError);
@@ -421,7 +422,7 @@ void MetadataJob::resetCompressedFetch()
     setError(Job::NoError);
     setErrorString(QString());
     m_unzipRepositoryitems.clear();
-    m_packages.clear();
+
     try {
         foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
