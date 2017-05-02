@@ -1805,17 +1805,21 @@ void PackageManagerCore::updateComponentsSilently()
     const QList<QInstaller::Component*> componentList = components(
         ComponentType::Root | ComponentType::Descendants);
 
-    foreach (Component *comp, componentList) {
-        comp->setCheckState(Qt::Checked);
-    }
-    QString htmlOutput;
-    bool componentsOk = calculateComponents(&htmlOutput);
-    if (componentsOk) {
-        if (runPackageUpdater())
-            qDebug() << "Components updated successfully.";
-    }
-    else {
-        qDebug() << htmlOutput;
+    if (componentList.count() ==  0) {
+        qDebug() << "No updates available.";
+    } else {
+        foreach (Component *comp, componentList) {
+            comp->setCheckState(Qt::Checked);
+        }
+        QString htmlOutput;
+        bool componentsOk = calculateComponents(&htmlOutput);
+        if (componentsOk) {
+            if (runPackageUpdater())
+                qDebug() << "Components updated successfully.";
+        }
+        else {
+            qDebug() << htmlOutput;
+        }
     }
 }
 
