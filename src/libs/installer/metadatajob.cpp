@@ -141,10 +141,13 @@ void MetadataJob::doStart()
                 }
             }
         }
-        if (!repositoriesFound)
+        if (!repositoriesFound) {
             emitFinished();
-        else
-            emit infoMessage(this, tr("Unpacking compressed repositories..."));
+        }
+        else {
+            setProgressTotalAmount(0);
+            emit infoMessage(this, tr("Unpacking compressed repositories. This may take a while..."));
+        }
     }
 }
 
@@ -326,6 +329,7 @@ void MetadataJob::xmlTaskFinished()
         DownloadFileTask *const metadataTask = new DownloadFileTask(m_packages);
         metadataTask->setProxyFactory(m_core->proxyFactory());
         m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
+        setProgressTotalAmount(100);
         emit infoMessage(this, tr("Retrieving meta information from remote repository..."));
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
@@ -364,6 +368,11 @@ void MetadataJob::unzipTaskFinished()
 void MetadataJob::progressChanged(int progress)
 {
     setProcessedAmount(progress);
+}
+
+void MetadataJob::setProgressTotalAmount(int maximum)
+{
+    setTotalAmount(maximum);
 }
 
 void MetadataJob::metadataTaskFinished()

@@ -1323,6 +1323,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     core->setCompleteUninstallation(core->isUninstaller());
 
     connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
+    connect(core, &PackageManagerCore::metaJobTotalProgress, this, &IntroductionPage::setTotalProgress);
     connect(core, &PackageManagerCore::metaJobInfoMessage, this, &IntroductionPage::setMessage);
     connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
             this, &IntroductionPage::onCoreNetworkSettingsChanged);
@@ -1512,8 +1513,16 @@ void IntroductionPage::setMessage(const QString &msg)
 */
 void IntroductionPage::onProgressChanged(int progress)
 {
-    m_progressBar->setRange(0, 100);
     m_progressBar->setValue(progress);
+}
+
+/*!
+    Sets total \a progress value to progress bar.
+*/
+void IntroductionPage::setTotalProgress(int totalProgress)
+{
+    if (m_progressBar)
+        m_progressBar->setRange(0, totalProgress);
 }
 
 /*!

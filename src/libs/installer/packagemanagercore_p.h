@@ -209,6 +209,10 @@ private slots:
         emit m_core->metaJobProgress(progress);
     }
 
+    void totalProgress(quint64 total) {
+        emit m_core->metaJobTotalProgress(total);
+    }
+
     void handleMethodInvocationRequest(const QString &invokableMethodName);
 
 private:

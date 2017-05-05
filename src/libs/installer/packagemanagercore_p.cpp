@@ -581,6 +581,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_metadataJob.setPackageManagerCore(m_core);
     connect(&m_metadataJob, &Job::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
     connect(&m_metadataJob, &Job::progress, this, &PackageManagerCorePrivate::infoProgress);
+    connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 

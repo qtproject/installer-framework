@@ -199,10 +199,8 @@ quint64 Job::processedAmount() const
 
 void Job::setTotalAmount(quint64 amount)
 {
-    if (d->totalAmount == amount)
-        return;
     d->totalAmount = amount;
-    emit progress(this, d->processedAmount, d->totalAmount);
+    emit totalProgress(d->totalAmount);
 }
 
 /*!

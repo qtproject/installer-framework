@@ -74,6 +74,7 @@ private slots:
     void unzipTaskFinished();
     void metadataTaskFinished();
     void progressChanged(int progress);
+    void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
     void startXMLTask(const QList<FileTaskItem> items);
 

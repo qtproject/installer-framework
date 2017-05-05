@@ -86,6 +86,7 @@ Q_SIGNALS:
 
     void infoMessage(Job *job, const QString &message);
     void progress(Job *job, quint64 processed, quint64 total);
+    void totalProgress(quint64 total);
 
 protected:
     virtual void doStart() = 0;
