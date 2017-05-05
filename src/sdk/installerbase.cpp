@@ -217,6 +217,12 @@ int InstallerBase::run()
             .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
         if (repoList.isEmpty())
             throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
+        foreach (QString repository, repoList) {
+            if (!QFileInfo::exists(repository)) {
+                qDebug() << "The file " << repository << "does not exist.";
+                return EXIT_FAILURE;
+            }
+        }
         m_core->setTemporaryRepositories(repoList, false, true);
     }
 
