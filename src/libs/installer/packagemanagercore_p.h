@@ -230,6 +230,8 @@ private:
     bool fetchMetaInformationFromCompressedRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
     void processFilesForDelayedDeletion();
+    void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
+    QStringList runningInstallerProcesses(const QStringList &exludeFiles);
 
 private:
     PackageManagerCore *m_core;

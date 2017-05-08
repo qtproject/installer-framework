@@ -2421,4 +2421,26 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
     }
 }
 
+void PackageManagerCorePrivate::findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result)
+{
+    QString executable;
+    QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Executable | QDir::Files | QDir::System, QDirIterator::Subdirectories );
+
+    while (it.hasNext()) {
+        executable = it.next();
+        foreach (QString exclude, excludeFiles) {
+            if (executable.compare(exclude, Qt::CaseInsensitive) != 0)
+                result->append(executable);
+        }
+    }
+}
+
+QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringList &excludeFiles)
+{
+    QStringList resultFiles;
+    findExecutablesRecursive(QCoreApplication::applicationDirPath(), excludeFiles, &resultFiles);
+    return checkRunningProcessesFromList(resultFiles);
+}
+
+
 } // namespace QInstaller
