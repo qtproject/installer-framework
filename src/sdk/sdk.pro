@@ -56,18 +56,18 @@ exists($$LRELEASE) {
     isEqual(QMAKE_DIR_SEP, /) {
         commit-ts.commands = \
             cd $$wd; \
-            git add -N src/sdk/translations/*_??.ts && \
-            for f in `git diff-files --name-only src/sdk/translations/*_??.ts`; do \
+            git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
+            for f in `git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`; do \
                 $$LCONVERT -locations none -i \$\$f -o \$\$f; \
             done; \
-            git add src/sdk/translations/*_??.ts && git commit
+            git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
     } else {
         commit-ts.commands = \
             cd $$wd && \
-            git add -N src/sdk/translations/*_??.ts && \
-            for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/*_??.ts`) do \
+            git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
+            for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`) do \
                 $$LCONVERT -locations none -i %%f -o %%f $$escape_expand(\\n\\t) \
-            cd $$wd && git add src/sdk/translations/*_??.ts && git commit
+            cd $$wd && git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
     }
     QMAKE_EXTRA_TARGETS += commit-ts
 
