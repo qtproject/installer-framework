@@ -287,6 +287,9 @@ int InstallerBase::run()
     if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
+        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+        if (!productKeyCheck->hasValidLicense())
+            throw QInstaller::Error(QLatin1String("Silent update not allowed."));
         m_core->setUpdater();
         m_core->updateComponentsSilently();
     }

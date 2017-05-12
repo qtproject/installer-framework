@@ -66,6 +66,7 @@ public:
     bool isValidPackage(const QString &packageName) const;
 
     QList<int> registeredPages() const;
+    bool hasValidLicense() const;
 
 private:
     ProductKeyCheck();
