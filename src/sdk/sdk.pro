@@ -23,6 +23,7 @@ DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
     IB_TRANSLATIONS = $$files($$PWD/translations/??.ts) $$files($$PWD/translations/??_??.ts)
+    IB_TRANSLATIONS -= $$PWD/translations/en.ts
 
     wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
     sources = src
@@ -54,6 +55,11 @@ exists($$LRELEASE) {
             cd $$wd && git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
     }
     QMAKE_EXTRA_TARGETS += commit-ts
+
+    empty_ts = "<TS></TS>"
+    write_file($$OUT_PWD/translations/en.ts, empty_ts)|error("Aborting.")
+    IB_TRANSLATIONS += $$OUT_PWD/translations/en.ts
+    QMAKE_DISTCLEAN += translations/en.ts
 
     qrc_cont = \
         "<RCC>" \
