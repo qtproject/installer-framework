@@ -22,23 +22,7 @@ CONFIG(static, static|shared) {
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    QT_LANGUAGES = qtbase_de qt_es qt_fr qtbase_it qtbase_ja qt_pl qtbase_ru qt_zh_CN
-    IB_LANGUAGES = de en es fr it ja pl ru zh_cn
-    defineReplace(prependAll) {
-        for(a,$$1):result += $$2$${a}$$3
-        return($$result)
-    }
-
-    defineTest(testFiles) {
-        for(file, $$1) {
-            !exists($$file):return(false)
-        }
-        return(true)
-    }
-
-    SUCCESS = false
-    IB_TRANSLATIONS = $$prependAll(IB_LANGUAGES, $$PWD/translations/,.ts)
-    QT_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$[QT_INSTALL_TRANSLATIONS]/,.ts)
+    IB_TRANSLATIONS = $$files($$PWD/translations/??.ts) $$files($$PWD/translations/??_??.ts)
 
     wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
     sources = src
@@ -71,46 +55,53 @@ exists($$LRELEASE) {
     }
     QMAKE_EXTRA_TARGETS += commit-ts
 
-    if (!testFiles(QT_TRANSLATIONS)) {
-        QT_COMPILED_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$[QT_INSTALL_TRANSLATIONS]/,.qm)
-        if (testFiles(QT_COMPILED_TRANSLATIONS)) {
-            SUCCESS = true
-            copyqm.input = QT_COMPILED_TRANSLATIONS
-            copyqm.output = $$PWD/translations/${QMAKE_FILE_BASE}.qm
-            unix:copyqm.commands = $$QMAKE_COPY ${QMAKE_FILE_IN} ${QMAKE_FILE_OUT}
-            win32:copyqm.commands = $$QMAKE_COPY \"${QMAKE_FILE_IN}\" \"${QMAKE_FILE_OUT}\"
-            copyqm.name = COPY ${QMAKE_FILE_IN}
-            copyqm.CONFIG += no_link target_predeps
-            QMAKE_EXTRA_COMPILERS += copyqm
+    qrc_cont = \
+        "<RCC>" \
+        "    <qresource prefix=\"/\">"
+    for (file, IB_TRANSLATIONS) {
+        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
+        qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
+        !exists($$qfile) {
+            qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${lang}.qm
+            !exists($$qfile) {
+                warning("No Qt translation for '$$lang'; skipping.")
+                next()
+            }
         }
-    } else {
-        SUCCESS = true
-        IB_TRANSLATIONS += $$QT_TRANSLATIONS
+        qrc_cont += \
+            "        <file>translations/$${lang}.qm</file>" \
+            "        <file alias=\"translations/qt_$${lang}.qm\">$$qfile</file>"
+        ACTIVE_IB_TRANSLATIONS += $$file
+        RESOURCE_DEPS += $$qfile translations/$${lang}.qm
     }
+    qrc_cont += \
+        "    </qresource>" \
+        "</RCC>"
+    RESOURCE = $$OUT_PWD/installerbase.qrc
+    write_file($$RESOURCE, qrc_cont)|error("Aborting.")
+    QMAKE_DISTCLEAN += $$RESOURCE
 
-    if (contains(SUCCESS, true)) {
-        updateqm.input = IB_TRANSLATIONS
-        updateqm.output = $$PWD/translations/${QMAKE_FILE_BASE}.qm
+    !isEmpty(ACTIVE_IB_TRANSLATIONS) {
+        updateqm.input = ACTIVE_IB_TRANSLATIONS
+        updateqm.output = translations/${QMAKE_FILE_BASE}.qm
         updateqm.commands = $$LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
         updateqm.name = LRELEASE ${QMAKE_FILE_IN}
         updateqm.CONFIG += no_link target_predeps
         QMAKE_EXTRA_COMPILERS += updateqm
 
         exists($$RCC) {
-            RESOURCE_IB_TRANSLATIONS = $$prependAll(IB_LANGUAGES, $$PWD/translations/,.qm)
-            RESOURCE_QT_TRANSLATIONS = $$prependAll(QT_LANGUAGES, $$PWD/translations/,.qm)
-            RESOURCE = $$PWD/installerbase.qrc
             runrcc.input = RESOURCE
-            runrcc.output = $$PWD/qrc_installerbase.cpp
+            runrcc.output = qrc_${QMAKE_FILE_BASE}.cpp
             runrcc.commands = $$RCC -name ${QMAKE_FILE_BASE} ${QMAKE_FILE_IN} -o ${QMAKE_FILE_OUT}
             runrcc.name = RCC ${QMAKE_FILE_IN}
             runrcc.CONFIG += no_link explicit_dependencies
-            runrcc.depends = $$RESOURCE_IB_TRANSLATIONS $$RESOURCE_QT_TRANSLATIONS
+            runrcc.depends = $$RESOURCE_DEPS
             runrcc.variable_out = SOURCES
             QMAKE_EXTRA_COMPILERS += runrcc
         }
     }
 }
+
 FORMS += settingsdialog.ui
 
 HEADERS += \
