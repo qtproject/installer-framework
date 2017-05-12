@@ -2430,8 +2430,10 @@ void PackageManagerCorePrivate::findExecutablesRecursive(const QString &path, co
     while (it.hasNext()) {
         executable = it.next();
         foreach (QString exclude, excludeFiles) {
-            if (executable.compare(exclude, Qt::CaseInsensitive) != 0)
+            if (QDir::toNativeSeparators(executable.toLower())
+                    != QDir::toNativeSeparators(exclude.toLower())) {
                 result->append(executable);
+            }
         }
     }
 }
