@@ -29,13 +29,14 @@ exists($$LRELEASE) {
     sources = src
     lupdate_opts = -locations relative -no-ui-lines -no-sort
 
-    for(file, IB_TRANSLATIONS) {
+    IB_ALL_TRANSLATIONS = $$IB_TRANSLATIONS $$PWD/translations/untranslated.ts
+    for(file, IB_ALL_TRANSLATIONS) {
         lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
         v = ts-$${lang}.commands
         $$v = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$file
         QMAKE_EXTRA_TARGETS += ts-$$lang
     }
-    ts-all.commands = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$IB_TRANSLATIONS
+    ts-all.commands = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$IB_ALL_TRANSLATIONS
     QMAKE_EXTRA_TARGETS += ts-all
 
     isEqual(QMAKE_DIR_SEP, /) {
