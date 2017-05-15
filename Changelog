@@ -1,4 +1,84 @@
-2.1.0
+3.0.0
+- Clarify the add/remove components string to make it clearer
+- Fix crash at the very end of install if admin rights needed in Windows (QTIFW-943)
+- Make installer to check the dependency version (QTIFW-914)
+- Fix uninstallation on Windows when target path contains non-ascii characters
+- Fix installer crash when it contains replaced and replacement component (QTIFW-915)
+- Avoid warning messages when passing '--platform minimal'
+- New --silentUpdate command line option (QTIFW-906)
+- Allow installing compressed packages. (QTIFW-886)
+- Make support for modifying installations configurable. Introduces new setting 'SupportsModify' in the config.xml.
+- Allow the use of relative URLs to update repositories in Updates.xml.
+- Fix cancel button functionality in Settings->Repositories->Test. (QTIFW-832)
+- Introduced gui.setTextItems() method
+- Store lock files in temporary directory
+- Vertical layout for LicenseAgreement page. (QTIFW-815)
+- add NOMINMAX to fix compile with Qt5.7 in Windows (QTIFW-854)
+- Make usage of authorization fallback optional
+- Fix building with ICC on Windows. (QTIFW-851)
+- Add ApplicationsDirX86 and ApplicationsDirX64 predefined Variables.
+- Fixed (and greatly simplified) creating .dmg files
+- Add a logging category and debug print for http download
+- Make communication via installer.execute() Unicode safe - added two new optional arguments to installer.execute() to define the used codec.
+- Allow specifying the installer size in 'em' or 'ex' units
+- Fixed deleting files when uninstalling on OS X
+- Fix arguments in RegisterFileType
+- Add new '--sign' switch to binarycreator for signing OS X app bundles
+- Fix setValue saving in restart. (QTIFW-504)
+- Allow calling installer.setValue() with an empty string as the value.
+- Fixed writing log on Windows if target dir requires admin rights.
+- Fixed final 'Finish' message on OS X.
+- Resize banner image to fit default installer width.
+- Allow defining non-checkable items - introduces new element 'Checkable' for package. (QTIFW-773)
+- Added support for setting descriptions of Windows shortcuts.
+- Let mkdmg.sh script on OS X actually create random temporary file names. (QTIFW-780)
+- Fix timeout errors while building app bundles files on OS X.
+- Fix timezone issue in archive, simply keep the UTC time.
+- Optimized checking validity of target directory value on Windows. (QTIFW-673)
+- Remove implicit expanding vertical spacer from dynamic pages. (QTIFW-779)
+- Fixed compiling lib7z_facade.cpp with Visual Studio 2013.
+- Fixed several sudo problems eg. (QTIFW-771)
+- Fixed running binarycreator if the temporary directory name contains spaces. (QTIFW-787)
+- Fix violated assertion in error handling of binarycreator.
+- Automatically choose to perform uninstall if appropriate.
+- Implemented installer.readFile().
+- Implemented support for creating URL shortcuts on Windows.
+- Fixed occasional crash on Windows when terminating installer.
+- Fix broken daylight saving time check.
+- Fix crash when updating admin installation with user/temp repository. (QTIFW-740)
+- Read UrlQueryString from settings. (QTIFW-744)
+- Allow to use the stylesheet to customize UI.
+- Add Castilian Spanish translation.
+- Add possibility to run silently without a gui. (QTIFW-166)
+- Removed {kd} and {kdupdater} prefix.
+- Make the installation relocatable (with some limitations). (QTIFW-653)
+- Add factory auto test.
+- Fix canceling the download done by an external call.
+- Print Qt version in verbose output.
+- Fix missing filename conversion on UNIX systems. (QTIFW-643)
+- Remove superfluous clone() method from operations.
+- Implement generic factory using c++11 variadic template feature.
+- Follow description on MSDN to implement time utils. (QTIFW-445)
+- Fix compile for gcc 4.7.3.
+- Convert to Qt 5 connect syntax.
+- Remove signal finished() overload.
+- Use qmake .depends instead of CONFIG += ordered.
+- Update archivegen.
+    * Stop on file errors.
+    * Better verbose/ help output.
+    * Add support for compression level.
+    * Do not hide symbols in statically build lib7z to use e.g. CPercentPrinter symbol in dynamic IFW builds.
+- Update source tree with version 9.38.beta of LZMA SDK.
+- Store AutoDependOn inside components.xml.
+- Implemented xml:lang attribute support for DisplayName tag.
+- Added AllUsers constant.
+- Enable feature live preview of dependencies. Introduces new InstallActionColumnVisible property to config.xml.
+- Remove scRemoteVersion, it's the same as scVersion.
+- Introduce a new struct PackageInfo which replaces UpdateSourceInfo.
+- Use positional arguments instead of options in devtool.
+- Add a warning if component with data contains children.
+- Fix reading and checking arguments of CreateShortcutOperation
+- Introduc new isMaintainer() method
 
 2.0.5
 - Fix hang in Windows when admin rights needed. (QTIFW-902)
