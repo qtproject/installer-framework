@@ -691,8 +691,7 @@
             \li Checkable
             \li Set to \c false if you want to hide the checkbox for an item. This is useful
                 when only a few subcomponents should be selected instead of all. Optional.
-                \note The content from the data directory is not installed if \c Checkable
-                is \c false unless \c ForcedInstallation is set to \c true.
+
     \endtable
 
     \section2 Component Dependencies

@@ -199,11 +199,12 @@ private slots:
         model.setRootComponents(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
-        // select all possible components. As one is uncheckable should result in partial check.
+        // select all possible components.
+        // Also uncheckable is checked as that is only 'visually' uncheckedable.
         model.setCheckedState(ComponentModel::AllChecked);
-        QCOMPARE(model.checkedState(), ComponentModel::PartiallyChecked);
-        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked,
-            QStringList(), m_uncheckable);
+        QCOMPARE(model.checkedState(), ComponentModel::AllChecked);
+        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked + m_uncheckable,
+            QStringList(), QStringList());
 
         // deselect all possible components
         // as the first root is a forced install, should result in partially checked state
@@ -234,12 +235,12 @@ private slots:
         model.setRootComponents(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
-        // select all possible components. As one is uncheckable should result to partially check
+        // select all possible components.
         model.setCheckedState(ComponentModel::AllChecked);
-        QCOMPARE(model.checkedState(), ComponentModel::PartiallyChecked);
-        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked
+        QCOMPARE(model.checkedState(), ComponentModel::AllChecked);
+        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked + m_uncheckable
             + QStringList(vendorSecondProductVirtual) << vendorThirdProductVirtual, QStringList(),
-            m_uncheckable);
+            QStringList());
 
         // deselect all possible components
         // as the first root is a forced install, should result in partially checked state
@@ -272,11 +273,11 @@ private slots:
         model.setRootComponents(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
-        // select all possible components. As one is uncheckable should result to partially check
+        // select all possible components.
         model.setCheckedState(ComponentModel::AllChecked);
-        QCOMPARE(model.checkedState(), ComponentModel::PartiallyChecked);
-        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked,
-            QStringList(), m_uncheckable);
+        QCOMPARE(model.checkedState(), ComponentModel::AllChecked);
+        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked+ m_uncheckable,
+            QStringList(), QStringList());
 
         // deselect all possible components
         model.setCheckedState(ComponentModel::AllUnchecked);
@@ -307,12 +308,12 @@ private slots:
         model.setRootComponents(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
-        // select all possible components. As one is uncheckable should result to partially check
+        // select all possible components.
         model.setCheckedState(ComponentModel::AllChecked);
-        QCOMPARE(model.checkedState(), ComponentModel::PartiallyChecked);
-        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked
+        QCOMPARE(model.checkedState(), ComponentModel::AllChecked);
+        testModelState(&model, m_defaultChecked + m_defaultPartially + m_defaultUnchecked +m_uncheckable
             + QStringList(vendorSecondProductVirtual) << vendorThirdProductVirtual, QStringList(),
-            m_uncheckable);
+            QStringList());
 
         // deselect all possible components
         model.setCheckedState(ComponentModel::AllUnchecked);
