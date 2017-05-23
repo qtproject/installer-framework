@@ -19,7 +19,7 @@ isEmpty(BUILD_EXAMPLES):BUILD_EXAMPLES=$${BUILDEXAMPLES}
     examples.depends = src
 }
 
-!minQtVersion(5, 5, 0) {
+!minQtVersion(5, 6, 2) {
     message("Cannot build Qt Installer Framework with Qt version $${QT_VERSION}.")
-    error("Use at least Qt 5.5.0.")
+    error("Use at least Qt 5.6.2.")
 }
