@@ -77,6 +77,7 @@ win32 {
     QMAKE_BINARY = $${QMAKE_BINARY}.exe
 }
 win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
+macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \

@@ -51,8 +51,7 @@
     component directory: componentF, componentF.subcomponent1, and
     componentF.subcomponent1.subcomponent1. We also specify the component name and description
     in each of them. The top level item, componentF, has \c <Checkable> set to \c false,
-    so it cannot be selected. It also does not install the package, for that
-    you will need to set \c <ForceInstallation> to \c true.
+    so it cannot be selected.
 
     \quotefile hidecheckbox/packages/componentF/meta/package.xml
 

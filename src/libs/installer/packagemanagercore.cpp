@@ -1799,23 +1799,42 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 
 void PackageManagerCore::updateComponentsSilently()
 {
+    //Check if there are processes running in the install
+    QStringList excludeFiles;
+    excludeFiles.append(maintenanceToolName());
+
+    QStringList runningProcesses = d->runningInstallerProcesses(excludeFiles);
+    if (!runningProcesses.isEmpty()) {
+        qDebug() << "Unable to update components. Please stop these processes: "
+                 << runningProcesses << " and try again.";
+        return;
+    }
+
     autoAcceptMessageBoxes();
+
+    //Prevent infinite loop if installation for some reason fails.
+    setMessageBoxAutomaticAnswer(QLatin1String("installationErrorWithRetry"), QMessageBox::Cancel);
+
     fetchRemotePackagesTree();
     //Mark all components to be installed
     const QList<QInstaller::Component*> componentList = components(
         ComponentType::Root | ComponentType::Descendants);
 
-    foreach (Component *comp, componentList) {
-        comp->setCheckState(Qt::Checked);
-    }
-    QString htmlOutput;
-    bool componentsOk = calculateComponents(&htmlOutput);
-    if (componentsOk) {
-        if (runPackageUpdater())
-            qDebug() << "Components updated successfully.";
-    }
-    else {
-        qDebug() << htmlOutput;
+    if (componentList.count() ==  0) {
+        qDebug() << "No updates available.";
+    } else {
+        foreach (Component *comp, componentList) {
+            comp->setCheckState(Qt::Checked);
+        }
+        QString htmlOutput;
+        bool componentsOk = calculateComponents(&htmlOutput);
+        if (componentsOk) {
+            if (runPackageUpdater())
+                qDebug() << "Components updated successfully.";
+        }
+        else {
+            qDebug() << htmlOutput;
+        }
     }
 }
 

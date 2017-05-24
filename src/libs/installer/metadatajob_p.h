@@ -65,6 +65,7 @@ public:
         : m_archive(arcive), m_targetDir(target)
     {}
     QString target() { return m_targetDir; }
+    QString archive() { return m_archive; }
     void doTask(QFutureInterface<void> &fi)
     {
         fi.reportStarted();

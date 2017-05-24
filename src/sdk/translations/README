@@ -2,16 +2,17 @@ You need to have a Qt translation for your new language,
 otherwise your language won't be loaded at runtime.
 
 To add a new language:
-1) Inside src/sdk/sdk.pro:
-   add your language into IB_LANGUAGES and QT_LANGUAGES.
-   QT_LANGUAGES contains base name of the Qt translation file.
-2) Add Installer Framework translation filename into:
-   src/src.pro
-3) Add Installer Framework and Qt messages (.qm) filenames into:
-   src/sdk/installerbase.qrc
+1) Run 'cd src/sdk' (change to the parent directory of this file)
+2) Run 'make ts-untranslated'
+3) Rename translations/untranslated.ts to translations/<lang>.ts
+4) Run 'make qmake'
+5) Do your translation. Just run 'make' whenever you want to test it.
+6) Run 'make commit-ts'
+7) Submit the translation for review
 
-In order to provide an update to translations, according to changes done in sources, run:
+To update an existing translation, just run 'make ts-<lang>' instead
+of steps 2) to 4).
 
-lupdate installerfw.pro
-
-in a root directory.
+More information is available at https://wiki.qt.io/Qt_Localization -
+these instructions apply here equally, except for the different
+directory names.

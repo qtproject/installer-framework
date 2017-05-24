@@ -74,12 +74,14 @@ private slots:
     void unzipTaskFinished();
     void metadataTaskFinished();
     void progressChanged(int progress);
+    void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
     void startXMLTask(const QList<FileTaskItem> items);
 
 private:
     void startUnzipRepositoryTask(const Repository &repo);
     void reset();
+    void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
 
 private:

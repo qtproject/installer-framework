@@ -581,6 +581,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_metadataJob.setPackageManagerCore(m_core);
     connect(&m_metadataJob, &Job::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
     connect(&m_metadataJob, &Job::progress, this, &PackageManagerCorePrivate::infoProgress);
+    connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
@@ -2247,7 +2248,9 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromCompressedRepositories()
             case QInstaller::UserIgnoreError:
                 break;  // we can simply ignore this error, the user knows about it
             default:
-                setStatus(PackageManagerCore::Failure, m_metadataJob.errorString());
+                //Do not change core status here, we can recover if there is invalid
+                //compressed repository
+                setStatus(m_core->status(), m_metadataJob.errorString());
                 return compressedRepoFetched;
         }
     }
@@ -2418,5 +2421,29 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
         }
     }
 }
+
+void PackageManagerCorePrivate::findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result)
+{
+    QString executable;
+    QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Executable | QDir::Files | QDir::System, QDirIterator::Subdirectories );
+
+    while (it.hasNext()) {
+        executable = it.next();
+        foreach (QString exclude, excludeFiles) {
+            if (QDir::toNativeSeparators(executable.toLower())
+                    != QDir::toNativeSeparators(exclude.toLower())) {
+                result->append(executable);
+            }
+        }
+    }
+}
+
+QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringList &excludeFiles)
+{
+    QStringList resultFiles;
+    findExecutablesRecursive(QCoreApplication::applicationDirPath(), excludeFiles, &resultFiles);
+    return checkRunningProcessesFromList(resultFiles);
+}
+
 
 } // namespace QInstaller

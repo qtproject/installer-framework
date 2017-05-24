@@ -290,6 +290,7 @@ Q_SIGNALS:
     void finishButtonClicked();
 
     void metaJobProgress(int progress);
+    void metaJobTotalProgress(int progress);
     void metaJobInfoMessage(const QString &message);
 
     void startAllComponentsReset();

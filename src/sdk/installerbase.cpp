@@ -217,6 +217,12 @@ int InstallerBase::run()
             .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
         if (repoList.isEmpty())
             throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
+        foreach (QString repository, repoList) {
+            if (!QFileInfo::exists(repository)) {
+                qDebug() << "The file " << repository << "does not exist.";
+                return EXIT_FAILURE;
+            }
+        }
         m_core->setTemporaryRepositories(repoList, false, true);
     }
 
@@ -281,6 +287,9 @@ int InstallerBase::run()
     if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
+        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+        if (!productKeyCheck->hasValidLicense())
+            throw QInstaller::Error(QLatin1String("Silent update not allowed."));
         m_core->setUpdater();
         m_core->updateComponentsSilently();
     }

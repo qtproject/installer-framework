@@ -101,3 +101,8 @@ QList<int> ProductKeyCheck::registeredPages() const
 {
     return QList<int>();
 }
+
+bool ProductKeyCheck::hasValidLicense() const
+{
+    return true;
+}
