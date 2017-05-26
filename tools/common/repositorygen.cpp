@@ -50,6 +50,7 @@
 
 #include <iostream>
 
+using namespace QInstaller;
 using namespace QInstallerTools;
 
 void QInstallerTools::printRepositoryGenOptions()
@@ -624,13 +625,28 @@ QHash<QString, QString> QInstallerTools::buildPathToVersionMapping(const Package
 static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const QByteArray &sha1sum,
     const QString &nodename)
 {
-    qDebug() << "searching sha1sum node for" << nodename;
+    qDebug() << "Searching sha1sum node for" << nodename;
+    QString sha1Value = QString::fromLatin1(sha1sum.toHex().constData());
     for (int i = 0; i < list.size(); ++i) {
         QDomNode curNode = list.at(i);
-        QDomNode nameTag = curNode.firstChildElement(QLatin1String("Name"));
+        QDomNode nameTag = curNode.firstChildElement(scName);
         if (!nameTag.isNull() && nameTag.toElement().text() == nodename) {
-            QDomNode sha1Node = doc.createElement(QLatin1String("SHA1"));
-            sha1Node.appendChild(doc.createTextNode(QString::fromLatin1(sha1sum.toHex().constData())));
+            QDomNode sha1Node = curNode.firstChildElement(scSHA1);
+            if (!sha1Node.isNull() && sha1Node.hasChildNodes()) {
+                QDomNode sha1NodeChild = sha1Node.firstChild();
+                QString sha1OldValue = sha1NodeChild.nodeValue();
+                if (sha1Value == sha1OldValue) {
+                    qDebug() << "- keeping the existing sha1sum" << sha1OldValue;
+                    continue;
+                } else {
+                    qDebug() << "- clearing the old sha1sum" << sha1OldValue;
+                    sha1Node.removeChild(sha1NodeChild);
+                }
+            } else {
+                sha1Node = doc.createElement(scSHA1);
+            }
+            qDebug() << "- writing the sha1sum" << sha1Value;
+            sha1Node.appendChild(doc.createTextNode(sha1Value));
             curNode.appendChild(sha1Node);
         }
     }

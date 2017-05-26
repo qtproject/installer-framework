@@ -60,6 +60,7 @@ static const QLatin1String scInstalledVersion("InstalledVersion");
 static const QLatin1String scUncompressedSize("UncompressedSize");
 static const QLatin1String scUncompressedSizeSum("UncompressedSizeSum");
 static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
+static const QLatin1String scSHA1("SHA1");
 
 // constants used throughout the components class
 static const QLatin1String scVirtual("Virtual");
