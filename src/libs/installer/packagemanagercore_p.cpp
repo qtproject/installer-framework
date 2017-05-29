@@ -162,8 +162,16 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
         batch << "    WScript.Sleep(1000)\n";
         batch << "wend\n";
         batch << QString::fromLatin1("fso.MoveFile \"%1\", file\n").arg(arguments[1]);
-        if (restart)
-            batch <<  QString::fromLatin1("tmp.exec \"%1 --updater\"\n").arg(arguments[2]);
+        if (restart) {
+            //Restart with same command line arguments as first executable
+            QStringList commandLineArguments = QCoreApplication::arguments();
+            batch <<  QString::fromLatin1("tmp.exec \"%1 --updater").arg(arguments[2]);
+            //Skip the first argument as that is executable itself
+            for (int i = 1; i < commandLineArguments.count(); i++) {
+                batch << QString::fromLatin1(" %1").arg(commandLineArguments.at(i));
+            }
+            batch << QString::fromLatin1("\"\n");
+        }
         batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
     }
 

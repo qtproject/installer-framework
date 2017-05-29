@@ -1816,21 +1816,39 @@ void PackageManagerCore::updateComponentsSilently()
     setMessageBoxAutomaticAnswer(QLatin1String("installationErrorWithRetry"), QMessageBox::Cancel);
 
     fetchRemotePackagesTree();
-    //Mark all components to be installed
+
     const QList<QInstaller::Component*> componentList = components(
         ComponentType::Root | ComponentType::Descendants);
 
     if (componentList.count() ==  0) {
         qDebug() << "No updates available.";
     } else {
-        foreach (Component *comp, componentList) {
-            comp->setCheckState(Qt::Checked);
+        // Check if essential components are available (essential components are disabled).
+        // If essential components are found, update first essential updates,
+        // restart installer and install rest of the updates.
+        bool essentialUpdatesFound = false;
+        foreach (Component *component, componentList) {
+            if (component->value(scEssential, scFalse).toLower() == scTrue)
+                essentialUpdatesFound = true;
+        }
+        if (!essentialUpdatesFound) {
+            //Mark all components to be updated
+            foreach (Component *comp, componentList) {
+                comp->setCheckState(Qt::Checked);
+            }
         }
         QString htmlOutput;
         bool componentsOk = calculateComponents(&htmlOutput);
         if (componentsOk) {
-            if (runPackageUpdater())
-                qDebug() << "Components updated successfully.";
+            if (runPackageUpdater()) {
+                writeMaintenanceTool();
+                if (essentialUpdatesFound) {
+                    qDebug() << "Essential components updated successfully.";
+                }
+                else {
+                    qDebug() << "Components updated successfully.";
+                }
+            }
         }
         else {
             qDebug() << htmlOutput;
