@@ -58,6 +58,7 @@ static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     // increase maximum numbers of file descriptors
 #if defined (Q_OS_OSX)
     QCoreApplication::setSetuidAllowed(true);
