@@ -1986,6 +1986,8 @@ public:
         if (!installActionColumnVisible)
             m_treeView->hideColumn(ComponentModelHelper::ActionColumn);
 
+        m_treeView->header()->setSectionResizeMode(
+                    ComponentModelHelper::NameColumn, QHeaderView::ResizeToContents);
         if (m_core->isInstaller()) {
             m_treeView->setHeaderHidden(true);
             for (int i = ComponentModelHelper::InstalledVersionColumn; i < m_currentModel->columnCount(); ++i)
