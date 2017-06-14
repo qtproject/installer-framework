@@ -457,10 +457,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (error() != Job::NoError)
             return XmlDownloadFailure;
 
-        //If repository is not found, target is empty. Do not continue using the repository
-        //and do not prevent further repositories usage.
-        if (result.target().isEmpty())
+        //If repository is not found, target might be empty. Do not continue parsing the
+        //repository and do not prevent further repositories usage.
+        if (result.target().isEmpty()) {
             continue;
+        }
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
@@ -488,7 +489,8 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (!doc.setContent(&file, &error)) {
             qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
                                << metadata.repository.displayname() << ": " << error;
-            return XmlDownloadFailure;
+            //If there are other repositories, try to use those
+            continue;
         }
         file.close();
 
