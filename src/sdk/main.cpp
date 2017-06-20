@@ -44,7 +44,7 @@
 
 #include <iostream>
 
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_OSX) or defined(Q_OS_UNIX)
 #  include <unistd.h>
 #  include <sys/types.h>
 #endif
@@ -58,6 +58,7 @@ static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     // increase maximum numbers of file descriptors
 #if defined (Q_OS_OSX)
     QCoreApplication::setSetuidAllowed(true);
@@ -132,8 +133,24 @@ int main(int argc, char *argv[])
 
         const bool production = (mode.compare(QLatin1String(QInstaller::Protocol::ModeProduction),
             Qt::CaseInsensitive) == 0);
-        if (production)
+        if (production) {
             argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
+#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+            /* In production mode detach child so that sudo waiting on us will terminate. */
+            pid_t child = fork();
+            if (child <= -1) {
+                std::cerr << "Fatal cannot fork and detach server." << std::endl;
+                return EXIT_FAILURE;
+            }
+
+            if (child != 0) {
+                return EXIT_SUCCESS;
+            }
+
+            ::setsid();
+#endif
+        }
+
 
         SDKApp<QCoreApplication> app(argc, argv);
         if (!argumentsValid) {
