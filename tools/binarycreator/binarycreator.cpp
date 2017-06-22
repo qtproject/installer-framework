@@ -771,8 +771,11 @@ int main(int argc, char **argv)
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
-            // assume offline installer if there are no repositories
-            offlineOnly |= settings.repositories().isEmpty();
+            // assume offline installer if there are no repositories and no
+            //--online-only not set
+            offlineOnly = offlineOnly | settings.repositories().isEmpty();
+            if (onlineOnly)
+                offlineOnly = !onlineOnly;
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
