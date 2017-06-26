@@ -2,8 +2,8 @@
 <Package>
     <DisplayName>Qt Installer Framework</DisplayName>
     <Description>Installs the Qt Installer Framework.</Description>
-    <Version>3.0.0</Version>
-    <ReleaseDate>2017-05-15</ReleaseDate>
+    <Version>3.0.1</Version>
+    <ReleaseDate>2017-06-27</ReleaseDate>
     <Licenses>
         <License name="The Qt Company GPL Exception 1.0" file="LICENSE.GPL3-EXCEPT" />
         <License name="Third Party Code Licenses" file="3RDPARTY" />

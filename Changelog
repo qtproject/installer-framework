@@ -1,3 +1,11 @@
+3.0.1
+- Fix install type if --online-only passed to binarycreator
+- Fix install fail if there are missing repositories
+- Fix Component Name visibility in maintenancetool
+- Adminauthorization freeze fixed under unix (QTIFW-934)
+- Enable high-DPI scaling (QTBUG-61122)
+- Fix maintenance tool update with silentUpdate (QTIFW-976)
+
 3.0.0
 - Change required Qt version, minimum version is now 5.6.2.
 - Clarify the add/remove components string to make it clearer
