@@ -50,6 +50,15 @@
 
 #include <iostream>
 
+#ifdef Q_OS_MACOS
+#include <QtCore/QtEndian>
+#include <QtCore/QFile>
+#include <QtCore/QVersionNumber>
+
+#include <mach-o/fat.h>
+#include <mach-o/loader.h>
+#endif
+
 using namespace QInstaller;
 
 struct Input {
@@ -99,6 +108,159 @@ static void chmod755(const QString &absolutFilePath)
 }
 #endif
 
+#ifdef Q_OS_MACOS
+template <typename T = uint32_t> T readInt(QIODevice *ioDevice, bool *ok,
+                                           bool swap, bool peek = false) {
+    const auto bytes = peek
+            ? ioDevice->peek(sizeof(T))
+            : ioDevice->read(sizeof(T));
+    if (bytes.size() != sizeof(T)) {
+        if (ok)
+            *ok = false;
+        return T();
+    }
+    if (ok)
+        *ok = true;
+    T n = *reinterpret_cast<const T *>(bytes.constData());
+    return swap ? qbswap(n) : n;
+}
+
+static QVersionNumber readMachOMinimumSystemVersion(QIODevice *device)
+{
+    bool ok;
+    std::vector<qint64> machoOffsets;
+
+    qint64 pos = device->pos();
+    uint32_t magic = readInt(device, &ok, false);
+    if (magic == FAT_MAGIC || magic == FAT_CIGAM ||
+        magic == FAT_MAGIC_64 || magic == FAT_CIGAM_64) {
+        bool swap = magic == FAT_CIGAM || magic == FAT_CIGAM_64;
+        uint32_t nfat = readInt(device, &ok, swap);
+        if (!ok)
+            return QVersionNumber();
+
+        for (uint32_t n = 0; n < nfat; ++n) {
+            const bool is64bit = magic == FAT_MAGIC_64 || magic == FAT_CIGAM_64;
+            fat_arch_64 fat_arch;
+            fat_arch.cputype = static_cast<cpu_type_t>(readInt(device, &ok, swap));
+            if (!ok)
+                return QVersionNumber();
+
+            fat_arch.cpusubtype = static_cast<cpu_subtype_t>(readInt(device, &ok, swap));
+            if (!ok)
+                return QVersionNumber();
+
+            fat_arch.offset = is64bit
+                    ? readInt<uint64_t>(device, &ok, swap) : readInt(device, &ok, swap);
+            if (!ok)
+                return QVersionNumber();
+
+            fat_arch.size = is64bit
+                    ? readInt<uint64_t>(device, &ok, swap) : readInt(device, &ok, swap);
+            if (!ok)
+                return QVersionNumber();
+
+            fat_arch.align = readInt(device, &ok, swap);
+            if (!ok)
+                return QVersionNumber();
+
+            fat_arch.reserved = is64bit ? readInt(device, &ok, swap) : 0;
+            if (!ok)
+                return QVersionNumber();
+
+            machoOffsets.push_back(static_cast<qint64>(fat_arch.offset));
+        }
+    } else if (!ok) {
+        return QVersionNumber();
+    }
+
+    // Wasn't a fat file, so we just read a thin Mach-O from the original offset
+    if (machoOffsets.empty())
+        machoOffsets.push_back(pos);
+
+    std::vector<QVersionNumber> versions;
+
+    for (const auto &offset : machoOffsets) {
+        if (!device->seek(offset))
+            return QVersionNumber();
+
+        bool swap = false;
+        mach_header_64 header;
+        header.magic = readInt(device, nullptr, swap);
+        switch (header.magic) {
+        case MH_CIGAM:
+        case MH_CIGAM_64:
+            swap = true;
+            break;
+        case MH_MAGIC:
+        case MH_MAGIC_64:
+            break;
+        default:
+            return QVersionNumber();
+        }
+
+        header.cputype = static_cast<cpu_type_t>(readInt(device, &ok, swap));
+        if (!ok)
+            return QVersionNumber();
+
+        header.cpusubtype = static_cast<cpu_subtype_t>(readInt(device, &ok, swap));
+        if (!ok)
+            return QVersionNumber();
+
+        header.filetype = readInt(device, &ok, swap);
+        if (!ok)
+            return QVersionNumber();
+
+        header.ncmds = readInt(device, &ok, swap);
+        if (!ok)
+            return QVersionNumber();
+
+        header.sizeofcmds = readInt(device, &ok, swap);
+        if (!ok)
+            return QVersionNumber();
+
+        header.flags = readInt(device, &ok, swap);
+        if (!ok)
+            return QVersionNumber();
+
+        header.reserved = header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64
+                ? readInt(device, &ok, swap) : 0;
+        if (!ok)
+            return QVersionNumber();
+
+        for (uint32_t i = 0; i < header.ncmds; ++i) {
+            const uint32_t cmd = readInt(device, nullptr, swap);
+            const uint32_t cmdsize = readInt(device, nullptr, swap);
+            if (cmd == 0 || cmdsize == 0)
+                return QVersionNumber();
+
+            switch (cmd) {
+            case LC_VERSION_MIN_MACOSX:
+            case LC_VERSION_MIN_IPHONEOS:
+            case LC_VERSION_MIN_TVOS:
+            case LC_VERSION_MIN_WATCHOS:
+                const uint32_t version = readInt(device, &ok, swap, true);
+                if (!ok)
+                    return QVersionNumber();
+
+                versions.push_back(QVersionNumber(
+                                       static_cast<int>(version >> 16),
+                                       static_cast<int>((version >> 8) & 0xff),
+                                       static_cast<int>(version & 0xff)));
+                break;
+            }
+
+            const qint64 remaining = static_cast<qint64>(cmdsize - sizeof(cmd) - sizeof(cmdsize));
+            if (device->read(remaining).size() != remaining)
+                return QVersionNumber();
+        }
+    }
+
+    std::sort(versions.begin(), versions.end());
+    return !versions.empty() ? versions.front() : QVersionNumber();
+}
+#endif
+
 static int assemble(Input input, const QInstaller::Settings &settings, const QString &signingIdentity)
 {
 #ifdef Q_OS_OSX
@@ -123,6 +285,11 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
     if (isBundle) {
         // output should be a bundle
         const QFileInfo fi(input.outputPath);
+
+        QString minimumSystemVersion;
+        QFile file(input.installerExePath);
+        if (file.open(QIODevice::ReadOnly))
+            minimumSystemVersion = readMachOMinimumSystemVersion(&file).normalized().toString();
 
         const QString contentsResourcesPath = fi.filePath() + QLatin1String("/Contents/Resources/");
 
@@ -182,6 +349,10 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
             << endl;
         plistStream << QLatin1String("\t<key>NSPrincipalClass</key>") << endl;
         plistStream << QLatin1String("\t<string>NSApplication</string>") << endl;
+        if (!minimumSystemVersion.isEmpty()) {
+            plistStream << QLatin1String("\t<key>LSMinimumSystemVersion</key>") << endl;
+            plistStream << QLatin1String("\t<string>") << minimumSystemVersion << QLatin1String("</string>") << endl;
+        }
         plistStream << QLatin1String("</dict>") << endl;
         plistStream << QLatin1String("</plist>") << endl;
 
