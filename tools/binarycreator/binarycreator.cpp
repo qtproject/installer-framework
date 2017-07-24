@@ -154,8 +154,8 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         infoPList.open(QIODevice::WriteOnly);
         QTextStream plistStream(&infoPList);
         plistStream << QLatin1String("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") << endl;
-        plistStream << QLatin1String("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd
-\">") << endl;
+        plistStream << QLatin1String("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" "
+                                     "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">") << endl;
         plistStream << QLatin1String("<plist version=\"1.0\">") << endl;
         plistStream << QLatin1String("<dict>") << endl;
         plistStream << QLatin1String("\t<key>CFBundleIconFile</key>") << endl;
@@ -171,7 +171,7 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
 #undef QUOTE
 #undef QUOTE_
         plistStream << QLatin1String("\t<key>CFBundleSignature</key>") << endl;
-        plistStream << QLatin1String("\t<string>????</string>") << endl;
+        plistStream << QLatin1String("\t<string>\?\?\?\?</string>") << endl;
         plistStream << QLatin1String("\t<key>CFBundleExecutable</key>") << endl;
         plistStream << QLatin1String("\t<string>") << fi.completeBaseName() << QLatin1String("</string>")
             << endl;
