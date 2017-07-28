@@ -2,6 +2,8 @@ TEMPLATE = lib
 TARGET = installer
 INCLUDEPATH += . ..
 
+CONFIG += staticlib
+
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../../../installerfw.pri)
