@@ -871,6 +871,10 @@
         <translation>&amp;Снять отметки выбора со всех компонентов</translation>
     </message>
     <message>
+        <source>&amp;Browse QBSP files</source>
+        <translation>&amp;Обзор файлов QBSP</translation>
+    </message>
+    <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>Этот компонент займёт приблизительно %1 на жестком диске.</translation>
     </message>
@@ -891,16 +895,12 @@
         <translation>Пожалуйста, выберите компоненты, которые вы хотите удалить.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them.</source>
-        <translation>Выберите компоненты для установки.Для удаления уже установленных компонентов снимите отметки выбора.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <translation>Выберите компоненты для установки. Для удаления уже установленных компонентов снимите отметки выбора. Уже установленные компоненты не будут обновлены.</translation>
     </message>
     <message>
         <source>To install new compressed repository, browse the repositories from your computer</source>
-        <translation type="unfinished">Для установки нового хранилища укажите путь к нему на вашем компьютере</translation>
-    </message>
-    <message>
-        <source>&amp;Browse BSP or 7z files...</source>
-        <translation>&amp;Обзор BSP или 7z файлов...</translation>
+        <translation>Для установки нового хранилища укажите путь к нему на вашем компьютере</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -1155,9 +1155,8 @@ Error while loading %2</source>
         <translation>Обнаружено несовпадение контрольной суммы «%1».</translation>
     </message>
     <message>
-        <source>Network error while downloading &quot;%1&quot;: %2</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Возникла ошибка сети при загрузке «%1»: %2</translation>
+        <source>Network error while downloading &apos;%1&apos;: %2.</source>
+        <translation>Возникла ошибка сети при загрузке «%1»: %2.</translation>
     </message>
     <message>
         <source>Unknown network error while downloading &quot;%1&quot;.</source>
@@ -1464,6 +1463,10 @@ Error while loading %2</source>
         <translation>Подготовка к загрузке метаданных...</translation>
     </message>
     <message>
+        <source>Unpacking compressed repositories. This may take a while...</source>
+        <translation>Распаковка сжатых хранилищ. Это может занять некоторое время...</translation>
+    </message>
+    <message>
         <source>Meta data download canceled.</source>
         <translation>Загрузка метаданных отменена.</translation>
     </message>
@@ -1494,10 +1497,6 @@ Error while loading %2</source>
     <message>
         <source>Extracting meta information...</source>
         <translation>Извлечение метаданных...</translation>
-    </message>
-    <message>
-        <source>Unpacking compressed repositories...</source>
-        <translation>Распаковка сжатых хранилищ...</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
