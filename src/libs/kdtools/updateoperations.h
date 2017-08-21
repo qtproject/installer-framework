@@ -35,6 +35,7 @@ namespace KDUpdater {
 
 class KDTOOLS_EXPORT CopyOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::CopyOperation)
 public:
     explicit CopyOperation(QInstaller::PackageManagerCore *core = 0);
     ~CopyOperation();
@@ -52,6 +53,7 @@ private:
 
 class KDTOOLS_EXPORT MoveOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::MoveOperation)
 public:
     explicit MoveOperation(QInstaller::PackageManagerCore *core = 0);
     ~MoveOperation();
@@ -64,6 +66,7 @@ public:
 
 class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::DeleteOperation)
 public:
     explicit DeleteOperation(QInstaller::PackageManagerCore *core = 0);
     ~DeleteOperation();
@@ -78,6 +81,7 @@ public:
 
 class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::MkdirOperation)
 public:
     explicit MkdirOperation(QInstaller::PackageManagerCore *core = 0);
 
@@ -89,6 +93,7 @@ public:
 
 class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::RmdirOperation)
 public:
     RmdirOperation(QInstaller::PackageManagerCore *core = 0);
 
@@ -100,6 +105,7 @@ public:
 
 class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::AppendFileOperation)
 public:
     explicit AppendFileOperation(QInstaller::PackageManagerCore *core = 0);
 
@@ -111,6 +117,7 @@ public:
 
 class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
 {
+    Q_DECLARE_TR_FUNCTIONS(KDUpdater::PrependFileOperation)
 public:
     explicit PrependFileOperation(QInstaller::PackageManagerCore *core = 0);
 

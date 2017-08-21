@@ -35,6 +35,7 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT CreateLinkOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::CreateLinkOperation)
 public:
     explicit CreateLinkOperation(PackageManagerCore *core);
 

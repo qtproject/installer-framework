@@ -35,6 +35,7 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT SelfRestartOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::SelfRestartOperation)
 public:
     explicit SelfRestartOperation(PackageManagerCore *core);
 

@@ -35,6 +35,7 @@ namespace QInstaller {
 
 class INSTALLER_EXPORT EnvironmentVariableOperation : public Operation
 {
+    Q_DECLARE_TR_FUNCTIONS(QInstaller::EnvironmentVariableOperation)
 public:
     explicit EnvironmentVariableOperation(PackageManagerCore *core);
 
