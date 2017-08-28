@@ -481,7 +481,10 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         PackageInfo info;
         info.name = it->fileName();
         info.version = packageElement.firstChildElement(QLatin1String("Version")).text();
-        if (!QRegExp(QLatin1String("[0-9]+((\\.|-)[0-9]+)*")).exactMatch(info.version)) {
+        // Version cannot start with comparison characters, be an empty string
+        // or have whitespaces at the beginning or at the end
+        if (!QRegExp(QLatin1String("(?![<=>\\s]+)(.+)")).exactMatch(info.version) ||
+                (info.version != info.version.trimmed())) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QString::fromLatin1("Component version for \"%1\" is invalid! <Version>%2</Version>")

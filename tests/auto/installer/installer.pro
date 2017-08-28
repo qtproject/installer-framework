@@ -3,6 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     settings \
     repository \
+    compareversion\
     componentmodel \
     fakestopprocessforupdateoperation \
     messageboxhandler \
