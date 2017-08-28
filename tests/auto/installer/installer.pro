@@ -4,6 +4,7 @@ SUBDIRS += \
     settings \
     repository \
     compareversion\
+    componentidentifier \
     componentmodel \
     fakestopprocessforupdateoperation \
     messageboxhandler \

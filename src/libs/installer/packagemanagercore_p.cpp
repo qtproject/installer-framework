@@ -529,7 +529,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
 
         QList<Component*> installedComponents;
         foreach (const QString &name, pmcp->localInstalledPackages().keys()) {
-            if (Component *component = m_core->componentByName(name)) {
+            if (Component *component = m_core->componentByName(PackageManagerCore::checkableName(name))) {
                 if (!component->uninstallationRequested())
                     installedComponents.append(component);
             }
@@ -1651,7 +1651,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
             const QString &name = operation->value(QLatin1String("component")).toString();
             Component *component = componentsByName.value(name, 0);
             if (!component)
-                component = m_core->componentByName(name);
+                component = m_core->componentByName(PackageManagerCore::checkableName(name));
             if (component)
                 componentsByName.insert(name, component);
 
@@ -2089,7 +2089,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                     else if (button == QMessageBox::Ignore)
                         ignoreError = true;
                 }
-                Component *component = m_core->componentByName(componentName);
+                Component *component = m_core->componentByName(PackageManagerCore::checkableName(componentName));
                 if (!component)
                     component = componentsToReplace().value(componentName).second;
                 if (component) {
@@ -2389,11 +2389,10 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
             componentOperationHash[componentName].append(operation);
     }
 
-    const QRegExp dash(QLatin1String("-.*"));
     Graph<QString> componentGraph;  // create the complete component graph
     foreach (const Component* node, m_core->components(PackageManagerCore::ComponentType::All)) {
         componentGraph.addNode(node->name());
-        componentGraph.addEdges(node->name(), node->dependencies().replaceInStrings(dash, QString()));
+        componentGraph.addEdges(node->name(), m_core->parseNames(node->dependencies()));
     }
 
     const QStringList resolvedComponents = componentGraph.sort();

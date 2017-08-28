@@ -265,6 +265,10 @@ public:
     QStringList filesForDelayedDeletion() const;
     void addFilesForDelayedDeletion(const QStringList &files);
 
+    static QString checkableName(const QString &name);
+    static void parseNameAndVersion(const QString &requirement, QString *name, QString *version);
+    static QStringList parseNames(const QStringList &requirements);
+
 public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();

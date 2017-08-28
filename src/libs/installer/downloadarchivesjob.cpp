@@ -269,7 +269,7 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
 {
     KDUpdater::FileDownloader *downloader = 0;
     const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
-    const Component *const component = m_core->componentByName(QFileInfo(fi.path()).fileName());
+    const Component *const component = m_core->componentByName(PackageManagerCore::checkableName(QFileInfo(fi.path()).fileName()));
     if (component) {
         QString fullQueryString;
         if (!queryString.isEmpty())

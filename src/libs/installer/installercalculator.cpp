@@ -173,13 +173,15 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
         }
         //Check if component requires higher version than what might be already installed
         bool isUpdateRequired = false;
-        if (dependencyComponentName.contains(QChar::fromLatin1('-')) &&
+        QString requiredName;
+        QString requiredVersion;
+        PackageManagerCore::parseNameAndVersion(dependencyComponentName, &requiredName, &requiredVersion);
+        if (!requiredVersion.isEmpty() &&
                 !dependencyComponent->value(scInstalledVersion).isEmpty()) {
             QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
             const QString installedVersion = compEx.exactMatch(dependencyComponent->value(scInstalledVersion)) ?
                 compEx.cap(2) : dependencyComponent->value(scInstalledVersion);
 
-            QString requiredVersion = dependencyComponentName.section(QLatin1Char('-'), 1);
             requiredVersion = compEx.exactMatch(requiredVersion) ? compEx.cap(2) : requiredVersion;
 
             if (KDUpdater::compareVersion(requiredVersion, installedVersion) >= 1 ) {

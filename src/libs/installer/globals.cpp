@@ -50,7 +50,7 @@ QStringList loggingCategories()
     return categories;
 }
 
-Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("\\b(,|, )\\b")));
+Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("(, |,)")));
 QRegExp commaRegExp()
 {
     return *staticCommaRegExp();

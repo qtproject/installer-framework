@@ -727,7 +727,7 @@ void PackageManagerCore::rollBackInstallation()
 
             const QString componentName = operation->value(QLatin1String("component")).toString();
             if (!componentName.isEmpty()) {
-                Component *component = componentByName(componentName);
+                Component *component = componentByName(checkableName(componentName));
                 if (!component)
                     component = d->componentsToReplace().value(componentName).second;
                 if (component) {
@@ -1552,12 +1552,9 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
         return 0;
 
     QString fixedVersion;
-    QString fixedName = name;
-    if (name.contains(QChar::fromLatin1('-'))) {
-        // the last part is considered to be the version, then
-        fixedVersion = name.section(QLatin1Char('-'), 1);
-        fixedName = name.section(QLatin1Char('-'), 0, 0);
-    }
+    QString fixedName;
+
+    parseNameAndVersion(name, &fixedName, &fixedVersion);
 
     foreach (Component *component, components) {
         if (componentMatches(component, fixedName, fixedVersion))
@@ -1752,14 +1749,13 @@ QList<Component*> PackageManagerCore::dependees(const Component *_component) con
     if (availableComponents.isEmpty())
         return QList<Component *>();
 
-    const QLatin1Char dash('-');
     QList<Component *> dependees;
+    QString name;
+    QString version;
     foreach (Component *component, availableComponents) {
         const QStringList &dependencies = component->dependencies();
         foreach (const QString &dependency, dependencies) {
-            // the last part is considered to be the version then
-            const QString name = dependency.contains(dash) ? dependency.section(dash, 0, 0) : dependency;
-            const QString version = dependency.contains(dash) ? dependency.section(dash, 1) : QString();
+            parseNameAndVersion(dependency, &name, &version);
             if (componentMatches(_component, name, version))
                 dependees.append(component);
         }
@@ -2945,4 +2941,53 @@ QStringList PackageManagerCore::filesForDelayedDeletion() const
 void PackageManagerCore::addFilesForDelayedDeletion(const QStringList &files)
 {
     d->m_filesForDelayedDeletion.append(files);
+}
+
+QString PackageManagerCore::checkableName(const QString &name)
+{
+    // to ensure backward compatibility, fix component name with dash (-) symbol
+    if (!name.contains(QLatin1Char(':')))
+        if (name.contains(QLatin1Char('-')))
+            return name + QLatin1Char(':');
+
+    return name;
+}
+
+void PackageManagerCore::parseNameAndVersion(const QString &requirement, QString *name, QString *version)
+{
+    if (requirement.isEmpty()) {
+        if (name)
+            name->clear();
+        if (version)
+            version->clear();
+        return;
+    }
+
+    int pos = requirement.indexOf(QLatin1Char(':'));
+    // to ensure backward compatibility, check dash (-) symbol too
+    if (pos == -1)
+        pos = requirement.indexOf(QLatin1Char('-'));
+    if (pos != -1) {
+        if (name)
+            *name = requirement.left(pos);
+        if (version)
+            *version = requirement.mid(pos + 1);
+    } else {
+        if (name)
+            *name = requirement;
+        if (version)
+            version->clear();
+    }
+}
+
+QStringList PackageManagerCore::parseNames(const QStringList &requirements)
+{
+    QString name;
+    QString version;
+    QStringList names;
+    foreach (const QString &requirement, requirements) {
+        parseNameAndVersion(requirement, &name, &version);
+        names.append(name);
+    }
+    return names;
 }

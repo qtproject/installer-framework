@@ -424,11 +424,10 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         qDebug() << "Found subdirectory" << it->fileName();
         // because the filter is QDir::Dirs - filename means the name of the subdirectory
         if (it->fileName().contains(QLatin1Char('-'))) {
-            if (ignoreInvalidPackages)
-                continue;
-            throw QInstaller::Error(QString::fromLatin1("Component \"%1\" must not contain '-'. This is not "
-                "allowed, because dashes are used as the separator between the component name and the "
-                "version number internally.").arg(QDir::toNativeSeparators(it->fileName())));
+            qDebug("When using the component \"%s\" as a dependency, "
+                "to ensure backward compatibility, you must add a colon symbol at the end, "
+                "even if you do not specify a version.",
+                qUtf8Printable(it->fileName()));
         }
 
         QFile file(QString::fromLatin1("%1/meta/package.xml").arg(it->filePath()));

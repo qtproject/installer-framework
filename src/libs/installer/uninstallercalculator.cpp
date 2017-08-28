@@ -75,7 +75,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
     foreach (Component *component, m_installedComponents) {
         // If a components is installed and not yet scheduled for un-installation, check for auto depend.
         if (component->isInstalled() && !m_componentsToUninstall.contains(component)) {
-            QStringList autoDependencies = component->autoDependencies();
+            QStringList autoDependencies = PackageManagerCore::parseNames(component->autoDependencies());
             if (autoDependencies.isEmpty())
                 continue;
 
