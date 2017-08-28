@@ -1170,6 +1170,22 @@ QStringList Component::dependencies() const
     return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
 }
 
+/*!
+    Adds the component specified by \a newDependOn to the automatic depend-on list.
+
+    \sa {component::addAutoDependOn}{component.addAutoDependOn}
+    \sa dependencies
+*/
+
+void Component::addAutoDependOn(const QString &newDependOn)
+{
+    QString oldDependOn = d->m_vars.value(scAutoDependOn);
+    if (oldDependOn.isEmpty())
+        setValue(scAutoDependOn, newDependOn);
+    else
+        setValue(scAutoDependOn, oldDependOn + QLatin1String(", ") + newDependOn);
+}
+
 QStringList Component::autoDependencies() const
 {
     return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);

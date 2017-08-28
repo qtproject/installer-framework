@@ -154,6 +154,7 @@ public:
 
     Q_INVOKABLE void addDependency(const QString &newDependency);
     QStringList dependencies() const;
+    Q_INVOKABLE void addAutoDependOn(const QString &newDependOn);
     QStringList autoDependencies() const;
 
     void languageChanged();
