@@ -1439,11 +1439,11 @@ Errore durante lo scaricamento %2</translation>
     </message>
     <message>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Clicca Fatto per uscire dalla procedura guidatadi %1.</translation>
+        <translation>Clicca Fatto per uscire dalla procedura guidata di %1.</translation>
     </message>
     <message>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Clicca Finito per uscire dalla procedura guidatadi %1.</translation>
+        <translation>Clicca Finito per uscire dalla procedura guidata di %1.</translation>
     </message>
     <message>
         <source>Restart</source>
