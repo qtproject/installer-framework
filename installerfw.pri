@@ -126,13 +126,11 @@ DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUIL
            IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
-static {
-    LIBS += -l7z
-    win32-g++*: LIBS += -lmpr -luuid
+LIBS += -l7z
+win32-g++*: LIBS += -lmpr -luuid
 
-    equals(TEMPLATE, app) {
-        msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
-        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
-        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
-    }
+equals(TEMPLATE, app) {
+    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
+    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }

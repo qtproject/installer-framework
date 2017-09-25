@@ -1,10 +1,9 @@
 TEMPLATE = app
 TARGET = devtool
 
-include(../../installerfw.pri)
+QT = core network qml xml
 
-QT -= gui
-QT += network xml
+include(../../installerfw.pri)
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
