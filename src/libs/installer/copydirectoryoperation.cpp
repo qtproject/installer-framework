@@ -157,7 +157,7 @@ bool CopyDirectoryOperation::undoOperation()
             setErrorString(tr("Cannot remove file \"%1\".").arg(QDir::toNativeSeparators(file)));
             return false;
         }
-        dir.rmpath(QFileInfo(file).absolutePath());
+        dir.rmdir(QFileInfo(file).absolutePath());
         emit outputTextChanged(file);
     }
 
