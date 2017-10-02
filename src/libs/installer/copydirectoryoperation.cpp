@@ -85,7 +85,7 @@ bool CopyDirectoryOperation::performOperation()
         if (!dir.exists() || !dir.isDir()) {
             setError(InvalidArguments);
             setErrorString(tr("Invalid argument in %1: Directory \"%2\" is invalid.").arg(name())
-                           .arg(QDir::toNativeSeparators(sourcePath)));
+                           .arg(QDir::toNativeSeparators(dir.absolutePath())));
             return false;
         }
     }
