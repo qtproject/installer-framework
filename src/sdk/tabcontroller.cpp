@@ -143,8 +143,8 @@ int TabController::init()
 
 void TabController::restartWizard()
 {
-    d->m_core->reset(d->m_params);
     if (d->m_networkSettingsChanged) {
+        d->m_core->reset(d->m_params);
         d->m_networkSettingsChanged = false;
 
         d->m_core->settings().setFtpProxy(d->m_settings.ftpProxy());
