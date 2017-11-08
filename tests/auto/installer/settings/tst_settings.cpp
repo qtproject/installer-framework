@@ -119,9 +119,6 @@ void tst_Settings::loadNotExistingConfig()
     if (!file.open(QIODevice::ReadOnly)) {
         errorString = file.errorString();
     }
-    QTest::ignoreMessage(QtDebugMsg, QString::fromLatin1("create Error-Exception: \"Cannot open"
-                         " settings file %1 for reading: %2\"")
-                         .arg(configFile).arg(errorString).toLatin1());
     try {
         Settings::fromFileAndPrefix(configFile, ":/data");
     } catch (const Error &error) {
