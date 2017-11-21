@@ -1,3 +1,13 @@
+3.0.2
+- Add possibility to reopen admin query (QTIFW-988)
+- Implement package download resume (QTIFW-5)
+- Use QDir::rmdir and not rmpath as that will remove more than it should
+- Enable HighDPI support only in Windows
+- Do not reset core when pressing 'Restart' (QTIFW-1017)
+- Update italian translation
+- Update russian translation
+- Fixed building with dynamically linked Qt (QTIFW-993)
+
 3.0.1
 - Fix install type if --online-only passed to binarycreator
 - Fix install fail if there are missing repositories
