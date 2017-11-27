@@ -1322,7 +1322,6 @@ void KDUpdater::HttpDownloader::httpDone(bool error)
     if (error) {
         if (isDownloadResumed()) {
             d->shutDown(false);
-            resumeDownload();
             return;
         }
         QString err;
@@ -1338,7 +1337,7 @@ void KDUpdater::HttpDownloader::httpDone(bool error)
             setDownloadCanceled();
         } else {
             d->shutDown(false);
-            resumeDownload();
+            return;
         }
     }
     setDownloadResumed(false);
