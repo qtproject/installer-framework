@@ -1324,6 +1324,12 @@ bool PackageManagerCore::setDefaultPageVisible(int page, bool visible)
     Sets a validator for the custom page specified by \a name and \a callbackName
     for the component \a component.
 
+    When using this, \a name has to match a dynamic page starting with \c Dynamic. For example, if the page
+    is called DynamicReadyToInstallWidget, then \a name should be set to \c ReadyToInstallWidget. The
+    \a callbackName should be set to a function that returns a boolean. When the \c Next button is pressed
+    on the custom page, then it will call the \a callbackName function. If this returns \c true, then it will
+    move to the next page.
+
     \sa {installer::setValidatorForCustomPage}{installer.setValidatorForCustomPage}
     \sa setValidatorForCustomPageRequested()
  */
