@@ -66,6 +66,7 @@ static const QLatin1String scUninstalled("Uninstalled");
 static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 static const QLatin1String scCheckable("Checkable");
+static const QLatin1String scExpandedByDefault("ExpandedByDefault");
 
 /*!
     \inmodule QtInstallerFramework
@@ -262,6 +263,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
     setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
+    setValue(scExpandedByDefault, package.expandedByDefault ? scTrue : scFalse);
 }
 
 /*!
@@ -295,6 +297,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scReplaces, package.data(scReplaces).toString());
     setValue(scReleaseDate, package.data(scReleaseDate).toString());
     setValue(scCheckable, package.data(scCheckable).toString());
+    setValue(scExpandedByDefault, package.data(scExpandedByDefault).toString());
 
     QString forced = package.data(scForcedInstallation, scFalse).toString().toLower();
     if (PackageManagerCore::noForceInstallation())
@@ -388,6 +391,8 @@ void Component::setValue(const QString &key, const QString &value)
         d->m_componentName = normalizedValue;
     if (key == scCheckable)
         this->setCheckable(normalizedValue.toLower() == scTrue);
+    if (key == scExpandedByDefault)
+        this->setExpandedByDefault(normalizedValue.toLower() == scTrue);
 
     d->m_vars[key] = normalizedValue;
     emit valueChanged(key, normalizedValue);

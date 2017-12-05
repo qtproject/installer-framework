@@ -91,7 +91,8 @@ public:
         LocalDisplayVersion,
         RemoteDisplayVersion,
         ReleaseDate,
-        UncompressedSize
+        UncompressedSize,
+        ExpandedByDefault
     };
 
     enum InstallAction {
@@ -128,6 +129,9 @@ public:
 
     bool isSelectable() const;
     void setSelectable(bool selectable);
+
+    bool isExpandedByDefault() const;
+    void setExpandedByDefault(bool expandedByDefault);
 
     InstallAction installAction() const;
     void setInstallAction(InstallAction action);

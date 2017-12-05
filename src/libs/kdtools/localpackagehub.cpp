@@ -322,7 +322,8 @@ void LocalPackageHub::addPackage(const QString &name,
                                  bool virtualComp,
                                  quint64 uncompressedSize,
                                  const QString &inheritVersionFrom,
-                                 bool checkable)
+                                 bool checkable,
+                                 bool expandedByDefault)
 {
     // TODO: This somewhat unexpected, remove?
     if (d->m_packageInfoMap.contains(name)) {
@@ -343,6 +344,7 @@ void LocalPackageHub::addPackage(const QString &name,
         info.virtualComp = virtualComp;
         info.uncompressedSize = uncompressedSize;
         info.checkable = checkable;
+        info.expandedByDefault = expandedByDefault;
         d->m_packageInfoMap.insert(name, info);
     }
     d->modified = true;
@@ -416,6 +418,8 @@ void LocalPackageHub::writeToDisk()
                 addTextChildHelper(&package, QLatin1String("Virtual"), QLatin1String("true"));
             if (info.checkable)
                 addTextChildHelper(&package, QLatin1String("Checkable"), QLatin1String("true"));
+            if (info.expandedByDefault)
+                addTextChildHelper(&package, QLatin1String("ExpandedByDefault"), QLatin1String("true"));
 
             root.appendChild(package);
         }
@@ -444,6 +448,7 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
     info.forcedInstallation = false;
     info.virtualComp = false;
     info.checkable = false;
+    info.expandedByDefault = false;
     for (int i = 0; i < childNodes.count(); i++) {
         QDomNode childNode = childNodes.item(i);
         QDomElement childNodeE = childNode.toElement();
@@ -478,6 +483,8 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.installDate = QDate::fromString(childNodeE.text(), Qt::ISODate);
         else if (childNodeE.tagName() == QLatin1String("Checkable"))
             info.checkable = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
+        else if (childNodeE.tagName() == QLatin1String("ExpandedByDefault"))
+            info.expandedByDefault = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
     }
     m_packageInfoMap.insert(info.name, info);
 }

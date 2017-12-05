@@ -1931,7 +1931,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                                   component->isVirtual(),
                                   component->value(scUncompressedSize).toULongLong(),
                                   component->value(scInheritVersion),
-                                  component->isCheckable());
+                                  component->isCheckable(),
+                                  component->isExpandedByDefault());
     m_localPackageHub->writeToDisk();
 
     component->setInstalled();

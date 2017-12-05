@@ -198,6 +198,22 @@ void ComponentModelHelper::setSelectable(bool selectable)
     changeFlags(selectable, Qt::ItemIsSelectable);
 }
 
+/*!
+    Returns whether the component is expanded by default. The default value is \c false.
+*/
+bool ComponentModelHelper::isExpandedByDefault() const
+{
+    return data(ComponentModelHelper::ExpandedByDefault).value<bool>();
+}
+
+/*!
+    Sets whether the component is expanded by default. The default value is \c false.
+*/
+void ComponentModelHelper::setExpandedByDefault(bool expandedByDefault)
+{
+    setData(QVariant::fromValue<bool>(expandedByDefault), ComponentModelHelper::ExpandedByDefault);
+}
+
 ComponentModelHelper::InstallAction ComponentModelHelper::installAction() const
 {
     return data(ComponentModelHelper::Action).value<ComponentModelHelper::InstallAction>();

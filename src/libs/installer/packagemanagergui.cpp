@@ -1981,6 +1981,12 @@ public:
         m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
         m_treeView->setModel(m_currentModel);
         m_treeView->setExpanded(m_currentModel->index(0, 0), true);
+        foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::All)) {
+            if (component->isExpandedByDefault()) {
+                const QModelIndex index = m_currentModel->indexFromComponentName(component->name());
+                m_treeView->setExpanded(index, true);
+            }
+        }
 
         const bool installActionColumnVisible = m_core->settings().installActionColumnVisible();
         if (!installActionColumnVisible)

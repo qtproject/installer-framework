@@ -691,6 +691,9 @@
             \li Checkable
             \li Set to \c false if you want to hide the checkbox for an item. This is useful
                 when only a few subcomponents should be selected instead of all. Optional.
+        \row
+            \li ExpandedByDefault
+            \li Set to \c true if you want this item to be expanded by default. Optional.
 
     \endtable
 

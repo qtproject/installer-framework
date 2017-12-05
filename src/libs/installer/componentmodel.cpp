@@ -227,6 +227,9 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
             if (!component->autoDependencies().isEmpty())
                 return QVariant();
         }
+        if (role == ComponentModelHelper::ExpandedByDefault) {
+            return component->isExpandedByDefault();
+        }
         return component->data(role);
     }
     return QVariant();
