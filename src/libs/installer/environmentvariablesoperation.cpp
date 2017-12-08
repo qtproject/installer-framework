@@ -65,6 +65,48 @@ static void broadcastEnvironmentChange()
 
 namespace {
 
+bool handleRegExpandSz(const QString &regPath, const QString &name,
+                       const QString &value, QString *errorString,
+                       bool *error)
+{
+    bool setAsExpandSZ = false;
+#ifdef Q_OS_WIN
+    // Account for when it is originally REG_EXPAND_SZ as we don't want
+    // to lose this setting (see Path environment variable)
+    const bool isLocalKey = regPath.startsWith(QStringLiteral("HKEY_LOCAL"));
+    HKEY hkey = isLocalKey ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER;
+    // Drop the HKEY...\\ part
+    const QString keyPath = regPath.mid(isLocalKey ? 19 : 18, -1);
+    HKEY handle;
+    LONG res = RegOpenKeyEx(hkey, reinterpret_cast<const wchar_t *>(keyPath.utf16()), 0,
+                            KEY_READ, &handle);
+    if (res == ERROR_SUCCESS) {
+        DWORD dataType;
+        DWORD dataSize;
+        res = RegQueryValueEx(handle, reinterpret_cast<const wchar_t *>(name.utf16()), 0,
+                              &dataType, 0, &dataSize);
+        setAsExpandSZ = (res == ERROR_SUCCESS) && (dataType == REG_EXPAND_SZ);
+        if (setAsExpandSZ) {
+            RegCloseKey(handle);
+            res = RegOpenKeyEx(hkey, reinterpret_cast<const wchar_t *>(keyPath.utf16()), 0,
+                               KEY_SET_VALUE, &handle);
+            if (res == ERROR_SUCCESS) {
+                const QByteArray data(reinterpret_cast<const char *>(value.utf16()),
+                                      (value.length() + 1) * 2);
+                res = RegSetValueEx(handle, reinterpret_cast<const wchar_t *>(name.utf16()), 0, REG_EXPAND_SZ,
+                                    reinterpret_cast<const unsigned char*>(data.constData()), data.size());
+                RegCloseKey(handle);
+            }
+            if (res != ERROR_SUCCESS) {
+                *errorString = UpdateOperation::tr("Cannot write to registry path %1.").arg(regPath);
+                *error = true;
+            }
+        }
+    }
+#endif
+    return setAsExpandSZ;
+}
+
 template <typename SettingsType>
 UpdateOperation::Error writeSetting(const QString &regPath,
                                     const QString &name,
@@ -81,6 +123,10 @@ UpdateOperation::Error writeSetting(const QString &regPath,
 
     // remember old value for undo
     *oldValue = registry.value(name).toString();
+
+    bool error = false;
+    if (handleRegExpandSz(regPath, name, value, errorString, &error))
+        return error ? UpdateOperation::UserDefinedError : UpdateOperation::NoError;
 
     // set the new value
     registry.setValue(name, value);
@@ -108,6 +154,11 @@ UpdateOperation::Error undoSetting(const QString &regPath,
     }
     if (actual != value) //key changed, don't undo
         return UpdateOperation::UserDefinedError;
+
+    bool error = false;
+    if (handleRegExpandSz(regPath, name, oldValue, errorString, &error))
+        return error ? UpdateOperation::UserDefinedError : UpdateOperation::NoError;
+
     QString dontcare;
     return writeSetting<SettingsType>(regPath, name, oldValue, errorString, &dontcare);
 }
