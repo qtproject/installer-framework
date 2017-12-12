@@ -1275,7 +1275,7 @@ KDUpdater::HttpDownloader *KDUpdater::HttpDownloader::clone(QObject *parent) con
 
 void KDUpdater::HttpDownloader::httpReadyRead()
 {
-    if (d->http == 0)
+    if (d->http == 0 || d->destination == 0)
       return;
     static QByteArray buffer(16384, '\0');
     while (d->http->bytesAvailable()) {
