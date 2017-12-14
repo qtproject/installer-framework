@@ -436,7 +436,7 @@
         installer.addWizardPage(component, "SomePageWidget", QInstaller.TargetDirectory)
     }
 
-    Controller.prototype.DynamicSomePageWidgetCallback()
+    Controller.prototype.DynamicSomePageWidgetCallback = function()
     {
         var page = gui.pageWidgetByObjectName("DynamicSomePageWidget");
         page.myButton.click, //direct child of the UI file's widget
