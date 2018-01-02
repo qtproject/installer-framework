@@ -257,7 +257,7 @@ int InstallerBase::run()
                     QCoreApplication::instance()->installTranslator(qtTranslator.take());
 
                 QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
-                if (ifwTranslator->load(locale, QString(), QString(), directory))
+                if (ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory))
                     QCoreApplication::instance()->installTranslator(ifwTranslator.take());
 
                 // To stop loading other translations it's sufficient that
