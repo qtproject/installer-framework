@@ -58,6 +58,10 @@
 #include <QUuid>
 #include <QLoggingCategory>
 
+#ifdef ENABLE_SQUISH
+#include <qtbuiltinhook.h>
+#endif
+
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
     , m_core(0)
@@ -321,6 +325,20 @@ int InstallerBase::run()
         if (status != QInstaller::PackageManagerCore::Success)
             return status;
 
+#ifdef ENABLE_SQUISH
+        int squishPort = 11233;
+        if (parser.isSet(QLatin1String(CommandLineOptions::SquishPort))) {
+            squishPort = parser.value(QLatin1String(CommandLineOptions::SquishPort)).toInt();
+        }
+        if (squishPort != 0) {
+            if (Squish::allowAttaching(squishPort))
+                qDebug() << "Attaching to squish port " << squishPort << " succeeded";
+            else
+                qDebug() << "Attaching to squish failed.";
+        } else {
+            qWarning() << "Invalid squish port number: " << squishPort;
+        }
+#endif
         const int result = QCoreApplication::instance()->exec();
         if (result != 0)
             return result;
