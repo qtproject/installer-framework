@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -211,6 +211,9 @@ int main(int argc, char *argv[])
             QNetworkProxyFactory::setUseSystemConfiguration(true);
 #endif
         }
+
+        if (parser.isSet(QLatin1String(CommandLineOptions::NoProxy)))
+            QNetworkProxyFactory::setUseSystemConfiguration(false);
 
         if (parser.isSet(QLatin1String(CommandLineOptions::CheckUpdates)))
             return UpdateChecker(argc, argv).check();
