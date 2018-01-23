@@ -401,8 +401,9 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
     if (scriptContext.isError()) {
         throw Error(tr("Exception while loading the component script \"%1\": %2").arg(
                         QDir::toNativeSeparators(QFileInfo(file).absoluteFilePath()),
-                        scriptContext.toString().isEmpty() ?
-                            tr("Unknown error.") : scriptContext.toString()));
+                        scriptContext.toString().isEmpty() ? tr("Unknown error.") : scriptContext.toString() +
+                        QStringLiteral(" ") + tr("on line number: ") +
+                        scriptContext.property(QStringLiteral("lineNumber")).toString()));
     }
     return scriptContext;
 }
