@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -164,7 +164,12 @@ int InstallerBase::run()
             + m_core->settings().controlScript();
     }
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::Proxy))) {
+    // From Qt5.8 onwards a separate command line option --proxy is not needed as system
+    // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
+    // then system proxies are not used by default.
+    if ((parser.isSet(QLatin1String(CommandLineOptions::Proxy)) ||
+            QNetworkProxyFactory::usesSystemConfiguration()) &&
+            !parser.isSet(QLatin1String(CommandLineOptions::NoProxy))){
         m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
         KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
     }
