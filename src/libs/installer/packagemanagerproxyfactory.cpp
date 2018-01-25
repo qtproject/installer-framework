@@ -62,13 +62,6 @@ QList<QNetworkProxy> PackageManagerProxyFactory::queryProxy(const QNetworkProxyQ
     QList<QNetworkProxy> list;
 
     if (settings.proxyType() == Settings::SystemProxy) {
-#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
-        QUrl proxyUrl = QUrl::fromUserInput(QString::fromUtf8(qgetenv("http_proxy")));
-        if (proxyUrl.isValid()) {
-            return list << QNetworkProxy(QNetworkProxy::HttpProxy, proxyUrl.host(), proxyUrl.port(),
-                proxyUrl.userName(), proxyUrl.password());
-        }
-#endif
         QList<QNetworkProxy> systemProxies = systemProxyForQuery(query);
 
         auto proxyIter = systemProxies.begin();
