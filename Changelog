@@ -1,3 +1,11 @@
+3.0.3
+- Set correct proxy type (QTBUG-65143)
+- Add no-proxy option (QTIFW-1085)
+- Fix maintenancetool icon visibility in Mac (QTIFW-1074)
+- Fix EnvironmentVariable operation in Windows (QTIFW-794)
+- Fix crash when downloadable package is missing (QTIFW-1064)
+- Documentation fixes
+
 3.0.2
 - Add possibility to reopen admin query (QTIFW-988)
 - Implement package download resume (QTIFW-5)
