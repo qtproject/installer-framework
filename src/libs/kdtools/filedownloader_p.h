@@ -32,6 +32,7 @@
 #include "filedownloader.h"
 
 #include <QtNetwork/QNetworkReply>
+#include <QNetworkAccessManager>
 
 // these classes are not a part of the public API
 
@@ -128,11 +129,13 @@ private Q_SLOTS:
     void httpDone(bool error);
     void httpReqFinished();
     void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+    void onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
 #ifndef QT_NO_SSL
     void onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors);
 #endif
 private:
     void startDownload(const QUrl &url);
+    void resumeDownload();
 
 private:
     struct Private;

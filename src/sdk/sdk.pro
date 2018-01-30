@@ -22,16 +22,16 @@ CONFIG(static, static|shared) {
 DESTDIR = $$IFW_APP_PATH
 
 exists($$LRELEASE) {
-    IB_TRANSLATIONS = $$files($$PWD/translations/??.ts) $$files($$PWD/translations/??_??.ts)
-    IB_TRANSLATIONS -= $$PWD/translations/en.ts
+    IB_TRANSLATIONS = $$files($$PWD/translations/*_??.ts)
+    IB_TRANSLATIONS -= $$PWD/translations/ifw_en.ts
 
     wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
     sources = src
     lupdate_opts = -locations relative -no-ui-lines -no-sort
 
-    IB_ALL_TRANSLATIONS = $$IB_TRANSLATIONS $$PWD/translations/untranslated.ts
+    IB_ALL_TRANSLATIONS = $$IB_TRANSLATIONS $$PWD/translations/ifw_untranslated.ts
     for(file, IB_ALL_TRANSLATIONS) {
-        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
+        lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
         v = ts-$${lang}.commands
         $$v = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$file
         QMAKE_EXTRA_TARGETS += ts-$$lang
@@ -42,31 +42,31 @@ exists($$LRELEASE) {
     isEqual(QMAKE_DIR_SEP, /) {
         commit-ts.commands = \
             cd $$wd; \
-            git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
-            for f in `git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`; do \
+            git add -N src/sdk/translations/*_??.ts && \
+            for f in `git diff-files --name-only src/sdk/translations/*_??.ts`; do \
                 $$LCONVERT -locations none -i \$\$f -o \$\$f; \
             done; \
-            git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
+            git add src/sdk/translations/*_??.ts && git commit
     } else {
         commit-ts.commands = \
             cd $$wd && \
-            git add -N src/sdk/translations/??.ts src/sdk/translations/??_??.ts && \
-            for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/??.ts src/sdk/translations/??_??.ts`) do \
+            git add -N src/sdk/translations/*_??.ts && \
+            for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/*_??.ts`) do \
                 $$LCONVERT -locations none -i %%f -o %%f $$escape_expand(\\n\\t) \
-            cd $$wd && git add src/sdk/translations/??.ts src/sdk/translations/??_??.ts && git commit
+            cd $$wd && git add src/sdk/translations/*_??.ts && git commit
     }
     QMAKE_EXTRA_TARGETS += commit-ts
 
     empty_ts = "<TS></TS>"
-    write_file($$OUT_PWD/translations/en.ts, empty_ts)|error("Aborting.")
-    IB_TRANSLATIONS += $$OUT_PWD/translations/en.ts
-    QMAKE_DISTCLEAN += translations/en.ts
+    write_file($$OUT_PWD/translations/ifw_en.ts, empty_ts)|error("Aborting.")
+    IB_TRANSLATIONS += $$OUT_PWD/translations/ifw_en.ts
+    QMAKE_DISTCLEAN += translations/ifw_en.ts
 
     qrc_cont = \
         "<RCC>" \
         "    <qresource prefix=\"/\">"
     for (file, IB_TRANSLATIONS) {
-        lang = $$replace(file, .*/([^/]*)\\.ts, \\1)
+        lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
         qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
         !exists($$qfile) {
             qfile = $$[QT_INSTALL_TRANSLATIONS]/qt_$${lang}.qm
@@ -76,10 +76,10 @@ exists($$LRELEASE) {
             }
         }
         qrc_cont += \
-            "        <file>translations/$${lang}.qm</file>" \
+            "        <file>translations/ifw_$${lang}.qm</file>" \
             "        <file alias=\"translations/qt_$${lang}.qm\">$$qfile</file>"
         ACTIVE_IB_TRANSLATIONS += $$file
-        RESOURCE_DEPS += $$qfile translations/$${lang}.qm
+        RESOURCE_DEPS += $$qfile translations/ifw_$${lang}.qm
     }
     qrc_cont += \
         "    </qresource>" \

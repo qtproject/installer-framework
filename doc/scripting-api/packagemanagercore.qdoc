@@ -334,7 +334,7 @@
 */
 
 /*!
-    \qmlmethod boolean installer::readFile(string filePath, string codecName)
+    \qmlmethod string installer::readFile(string filePath, string codecName)
 
     Returns the contents of the file \a filePath using the encoding specified
     by \a codecName. The file is read in the text mode, that is, end-of-line

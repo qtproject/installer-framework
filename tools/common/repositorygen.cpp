@@ -312,9 +312,10 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
                 if (value.isError()) {
                     throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
-                                                                "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
-                                                                                            value.toString().isEmpty() ?
-                                                                                                QString::fromLatin1("Unknown error.") : value.toString()));
+                        "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
+                                value.toString().isEmpty() ? QString::fromLatin1("Unknown error.") :
+                                value.toString() + QStringLiteral(" on line number: ") +
+                                    value.property(QStringLiteral("lineNumber")).toString()));
                 }
 
                 const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));

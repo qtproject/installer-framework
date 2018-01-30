@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -52,6 +52,9 @@ CommandLineParser::CommandLineParser()
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on OS X.")));
+
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoProxy),
+        QLatin1String("Do not use system proxy.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Script),
         QLatin1String("Execute the script given as argument."), QLatin1String("file")));

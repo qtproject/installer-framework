@@ -1197,8 +1197,8 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         performOperationThreaded(op, Backup);
         performOperationThreaded(op);
 
-        // copy application icons if it exists
-        const QString icon = QFileInfo(QCoreApplication::applicationFilePath()).baseName()
+        // copy application icons if it exists.
+        const QString icon = QFileInfo(QCoreApplication::applicationFilePath()).fileName()
             + QLatin1String(".icns");
         op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Resources/") + icon)

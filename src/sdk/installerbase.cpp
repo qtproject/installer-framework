@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -164,7 +164,14 @@ int InstallerBase::run()
             + m_core->settings().controlScript();
     }
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::Proxy))) {
+    // From Qt5.8 onwards a separate command line option --proxy is not needed as system
+    // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
+    // then system proxies are not used by default.
+    if ((parser.isSet(QLatin1String(CommandLineOptions::Proxy))
+#if QT_VERSION > 0x050800
+            || QNetworkProxyFactory::usesSystemConfiguration()
+#endif
+            ) && !parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
         m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
         KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
     }
@@ -257,7 +264,7 @@ int InstallerBase::run()
                     QCoreApplication::instance()->installTranslator(qtTranslator.take());
 
                 QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
-                if (ifwTranslator->load(locale, QString(), QString(), directory))
+                if (ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory))
                     QCoreApplication::instance()->installTranslator(ifwTranslator.take());
 
                 // To stop loading other translations it's sufficient that

@@ -115,8 +115,21 @@ protected:
     void runDownloadSpeedTimer();
     void stopDownloadSpeedTimer();
 
+    void runDownloadDeadlineTimer();
+    void stopDownloadDeadlineTimer();
+    void setDownloadPaused(bool paused);
+    bool isDownloadPaused();
+    void setDownloadResumed(bool resumed);
+    bool isDownloadResumed();
+    qint64 bytesDownloadedBeforeResume();
+    qint64 totalBytesDownloadedBeforeResume();
+    void clearBytesDownloadedBeforeResume();
+    void updateBytesDownloadedBeforeResume(qint64 bytes);
+    void updateTotalBytesDownloadedBeforeResume();
+
     void addSample(qint64 sample);
     int downloadSpeedTimerId() const;
+    int downloadDeadlineTimerId() const;
     void setProgress(qint64 bytesReceived, qint64 bytesToReceive);
 
     void emitDownloadSpeed();

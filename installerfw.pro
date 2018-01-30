@@ -2,6 +2,8 @@ TEMPLATE = subdirs
 SUBDIRS += src tools
 tools.depends = src
 
+requires(!cross_compile)
+
 include (installerfw.pri)
 include (doc/doc.pri)
 

@@ -80,6 +80,11 @@
 
     Uses the URL scheme \c file to open the specified \a url with a suitable
     application.
+
+    \warning A return value of \c true indicates that the installer has successfully
+    requested the operating system to open the URL in an external application. It may
+    still fail to launch or fail to open the requested URL. This result will not be
+    reported back to the installer.
 */
 
 /*!

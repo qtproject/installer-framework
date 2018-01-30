@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,7 @@ const char FrameworkVersion[] = "framework-version";
 const char VerboseShort[] = "v";
 const char VerboseLong[] = "verbose";
 const char Proxy[] = "proxy";
+const char NoProxy[] = "no-proxy";
 const char Script[] = "script";
 const char CheckUpdates[] = "checkupdates";
 const char Updater[] = "updater";
