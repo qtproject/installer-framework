@@ -5,15 +5,15 @@
     <name>Dialog</name>
     <message>
         <source>Http authentication required</source>
-        <translation>HTTP ユーザ認証が必要です</translation>
+        <translation>HTTP ユーザー認証が必要です</translation>
     </message>
     <message>
         <source>You need to supply a Username and Password to access this site.</source>
-        <translation>このサイトにアクセスするにはユーザ名とパスワードが必要です。</translation>
+        <translation>このサイトにアクセスするにはユーザー名とパスワードが必要です。</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>ユーザ名:</translation>
+        <translation>ユーザー名:</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -35,77 +35,125 @@
     <name>KDUpdater::AppendFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>ファイル %1 をバックアップできません: %2</translation>
+        <translation type="vanished">ファイル %1 をバックアップできません: %2</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
     <message>
         <source>Cannot open file &apos;%1&apos; for writing: %2</source>
-        <translation>書き込み用にファイル &apos;%1&apos; を開けませんでした: %2</translation>
+        <translation type="vanished">書き込み用にファイル &apos;%1&apos; を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
-        <translation>%1 用のバックアップファイルが見つかりません。</translation>
+        <translation type="vanished">%1 用のバックアップファイルが見つかりません。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1.</source>
-        <translation>%1 用のバックアップファイルを復元できませんでした。</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できませんでした。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>%1 用のバックアップファイルを復元できませんでした: %2</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
         <source>Cannot backup file %1.</source>
-        <translation>ファイル %1 をバックアップできませんでした。</translation>
+        <translation type="vanished">ファイル %1 をバックアップできませんでした。</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした。</translation>
     </message>
     <message>
         <source>Cannot copy a non-existent file: %1</source>
         <translation>存在しないファイルはコピーできません: %1</translation>
     </message>
     <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; にコピーできませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot delete file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file into &quot;%1&quot;: %2</source>
+        <translation>バックアップファイルを &quot;%1&quot; へ復元できませんでした: %2</translation>
+    </message>
+    <message>
         <source>Cannot remove destination file %1: %2</source>
-        <translation>対象ファイル %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">対象ファイル %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot copy %1 to %2: %3</source>
-        <translation>%1 を %2 にコピーできませんでした: %3</translation>
+        <translation type="vanished">%1 を %2 にコピーできませんでした: %3</translation>
     </message>
     <message>
         <source>Cannot delete file %1: %2</source>
-        <translation>ファイル %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">ファイル %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot restore backup file into %1: %2</source>
-        <translation>バックアップファイルを %1 へ復元できませんでした: %2</translation>
+        <translation type="vanished">バックアップファイルを %1 へ復元できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::DeleteOperation</name>
     <message>
         <source>Cannot create backup of %1: %2</source>
-        <translation>%1 のバックアップを作成できません: %2</translation>
+        <translation type="vanished">%1 のバックアップを作成できません: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>%1 用のバックアップファイルを復元できません: %2</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create backup of file &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -171,10 +219,18 @@
     <name>KDUpdater::HttpDownloader</name>
     <message>
         <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
-        <translation>%1 をダウンロードできません: ファイル &apos;%2&apos; への書き込みに失敗しました: %3</translation>
+        <translation type="vanished">%1 をダウンロードできません: ファイル &apos;%2&apos; への書き込みに失敗しました: %3</translation>
     </message>
     <message>
         <source>Cannot download %1: Cannot create %2: %3</source>
+        <translation type="vanished">%1 をダウンロードできません: %2 を作成できませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Writing to file &quot;%2&quot; failed: %3</source>
+        <translation>%1 をダウンロードできません: ファイル &apos;%2&apos; への書き込みに失敗しました: %3</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create file &quot;%2&quot;: %3</source>
         <translation>%1 をダウンロードできません: %2 を作成できませんでした: %3</translation>
     </message>
     <message>
@@ -210,141 +266,221 @@
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
         <source>Cannot open source file &apos;%1&apos; for reading.</source>
-        <translation>読み込み用にソースファイル &apos;%1&apos; を開けません。</translation>
+        <translation type="vanished">読み込み用にソースファイル &apos;%1&apos; を開けません。</translation>
     </message>
     <message>
         <source>Cannot open destination file &apos;%1&apos; for writing.</source>
-        <translation>書き込み用に対象ファイル &apos;%1&apos; を開けません。</translation>
+        <translation type="vanished">書き込み用に対象ファイル &apos;%1&apos; を開けません。</translation>
     </message>
     <message>
         <source>Writing to %1 failed: %2</source>
-        <translation>%1 への書き込みに失敗しました: %2</translation>
+        <translation type="vanished">%1 への書き込みに失敗しました: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>ファイル &quot;%1&quot; への書き込みに失敗しました: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MkdirOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
     </message>
     <message>
         <source>Cannot create folder %1: Unknown error.</source>
-        <translation>フォルダ %1 を作成できませんでした: 未知のエラーです。</translation>
+        <translation type="vanished">フォルダ %1 を作成できませんでした: 未知のエラーです。</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>ディレクトリ %1 を削除できません: %2</translation>
+        <translation type="vanished">ディレクトリ %1 を削除できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>未知のエラー。</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を削除できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
         <source>Cannot backup file %1.</source>
-        <translation>ファイル %1 をバックアップできませんでした。</translation>
+        <translation type="vanished">ファイル %1 をバックアップできませんでした。</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
     </message>
     <message>
         <source>Cannot remove destination file %1: %2</source>
-        <translation>対象ファイル %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">対象ファイル %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot copy %1 to %2: %3</source>
-        <translation>%1 を %2 にコピーできませんでした: %3</translation>
-    </message>
-    <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>%1 を %2 にコピーできません: %3</translation>
+        <translation type="vanished">%1 を %2 にコピーできませんでした: %3</translation>
     </message>
     <message>
         <source>Cannot remove file %1.</source>
-        <translation>ファイル %1 を削除できません。</translation>
+        <translation type="vanished">ファイル %1 を削除できません。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>%1 用のバックアップファイルを復元できません: %2</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; にコピーできませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PackagesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>%1 に無効なコンテンツが含まれています: %2</translation>
+        <translation type="vanished">%1 に無効なコンテンツが含まれています: %2</translation>
     </message>
     <message>
         <source>The file %1 does not exist.</source>
-        <translation>ファイル %1 が存在しません。</translation>
+        <translation type="vanished">ファイル %1 が存在しません。</translation>
     </message>
     <message>
         <source>Cannot open %1.</source>
-        <translation>%1 を開けませんでした。</translation>
+        <translation type="vanished">%1 を開けませんでした。</translation>
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>パースエラー %1 の%2行%3列: %4</translation>
+        <translation type="vanished">パースエラー %1 の%2行%3列: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
-        <translation>ルートエレメントに %1 は使用できません。&apos;Packages&apos;を使用してください。</translation>
+        <translation type="vanished">ルートエレメントに %1 は使用できません。&apos;Packages&apos;を使用してください。</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PrependFileOperation</name>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>ファイル %1 をバックアップできません: %2</translation>
+        <translation type="vanished">ファイル %1 をバックアップできません: %2</translation>
     </message>
     <message>
         <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは2個です。</translation>
     </message>
     <message>
         <source>Cannot open file %1 for reading: %2</source>
-        <translation>読み込み用にファイル %1 を開けませんでした: %2</translation>
+        <translation type="vanished">読み込み用にファイル %1 を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot open file %1 for writing: %2</source>
-        <translation>書き込み用にファイル %1 を開けませんでした: %2</translation>
+        <translation type="vanished">書き込み用にファイル %1 を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot find backup file for %1.</source>
-        <translation>%1 用のバックアップファイルが見つかりません。</translation>
+        <translation type="vanished">%1 用のバックアップファイルが見つかりません。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1.</source>
-        <translation>%1 用のバックアップファイルを復元できません。</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できません。</translation>
     </message>
     <message>
         <source>Cannot restore backup file for %1: %2</source>
-        <translation>%1 用のバックアップファイルを復元できません: %2</translation>
+        <translation type="vanished">%1 用のバックアップファイルを復元できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルが見つかりませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 用のバックアップファイルを復元できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
         <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
-        <translation>リソースファイル &quot;%1&quot; を読み込みできませんでした。理由:</translation>
+        <translation type="vanished">リソースファイル &quot;%1&quot; を読み込みできませんでした。理由:</translation>
+    </message>
+    <message>
+        <source>Cannot read resource file &quot;%1&quot;: %2</source>
+        <translation>リソースファイル &quot;%1&quot; を読み込みできませんでした:%2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::RmdirOperation</name>
     <message>
         <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
+        <translation type="vanished">無効な引数: %1個の引数が渡されましたが、必要なのは1個です。</translation>
     </message>
     <message>
         <source>Cannot remove folder %1: The folder does not exist.</source>
-        <translation>フォルダ %1 を削除できませんでした: フォルダが存在しません。</translation>
+        <translation type="vanished">フォルダ %1 を削除できませんでした: フォルダが存在しません。</translation>
     </message>
     <message>
         <source>Cannot remove folder %1: %2</source>
-        <translation>フォルダ %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">フォルダ %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot recreate directory %1: %2</source>
-        <translation>ディレクトリ %1 が再作成できません: %2</translation>
+        <translation type="vanished">ディレクトリ %1 が再作成できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>The directory does not exist.</source>
+        <translation>フォルダは存在しません。</translation>
+    </message>
+    <message>
+        <source>Cannot recreate directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -386,11 +522,19 @@
     </message>
     <message>
         <source>Cannot access the update sources information of this application.</source>
-        <translation>このアプリケーションの更新元情報にアクセスできませんでした。</translation>
+        <translation type="vanished">このアプリケーションの更新元情報にアクセスできませんでした。</translation>
+    </message>
+    <message>
+        <source>No package sources set for this application.</source>
+        <translation>このアプリケーション用にパッケージは用意されていません。</translation>
     </message>
     <message>
         <source>Downloading Updates.xml from update sources.</source>
         <translation>更新元から Updates.xml をダウンロードしています。</translation>
+    </message>
+    <message>
+        <source>Cannot download package source %1 from &quot;%2&quot;.</source>
+        <translation>%1 から %2 へパッケージをダウンロードできませんでした。</translation>
     </message>
     <message>
         <source>Updates.xml file(s) downloaded from update sources.</source>
@@ -412,30 +556,30 @@
     </message>
     <message>
         <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
-        <translation>(&apos;%2&apos;) から更新元 %1 をダウンロードできませんでした</translation>
+        <translation type="vanished">(&apos;%2&apos;) から更新元 %1 をダウンロードできませんでした</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::UpdateSourcesInfo</name>
     <message>
         <source>%1 contains invalid content: %2</source>
-        <translation>%1 に無効なコンテンツが含まれています: %2</translation>
+        <translation type="vanished">%1 に無効なコンテンツが含まれています: %2</translation>
     </message>
     <message>
         <source>Cannot read &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; を読み込めませんでした</translation>
+        <translation type="vanished">&quot;%1&quot; を読み込めませんでした</translation>
     </message>
     <message>
         <source>XML Parse error in %1 at %2, %3: %4</source>
-        <translation>XMLパースエラー %1 の%2行%3列: %4</translation>
+        <translation type="vanished">XMLパースエラー %1 の%2行%3列: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;UpdateSources&quot;</source>
-        <translation>ルートエレメントに %1 は使用できません。&quot;UpdateSources&quot;を使用してください</translation>
+        <translation type="vanished">ルートエレメントに %1 は使用できません。&quot;UpdateSources&quot;を使用してください</translation>
     </message>
     <message>
         <source>Cannot save changes to &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; への変更を保存できませんでした: %2</translation>
+        <translation type="vanished">&quot;%1&quot; への変更を保存できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -481,34 +625,34 @@
     <name>Lib7z::ExtractItemJob</name>
     <message>
         <source>Cannot list archive: QIODevice not set or already destroyed.</source>
-        <translation>アーカイブからリストを取得できませんでした: QIODevice が設定されていないか、既に破棄されています。</translation>
+        <translation type="vanished">アーカイブからリストを取得できませんでした: QIODevice が設定されていないか、既に破棄されています。</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
+        <translation type="vanished">&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
-        <translation>未知の例外が発生しました (%1)</translation>
+        <translation type="vanished">未知の例外が発生しました (%1)</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation>失敗</translation>
+        <translation type="vanished">失敗</translation>
     </message>
 </context>
 <context>
     <name>Lib7z::ListArchiveJob</name>
     <message>
         <source>Cannot list archive: QIODevice already destroyed.</source>
-        <translation>アーカイブからリストを取得できませんでした: QIODevice が既に破棄されています。</translation>
+        <translation type="vanished">アーカイブからリストを取得できませんでした: QIODevice が既に破棄されています。</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
-        <translation>未知の例外が発生しました (%1)</translation>
+        <translation type="vanished">未知の例外が発生しました (%1)</translation>
     </message>
     <message>
         <source>Failed</source>
-        <translation>失敗</translation>
+        <translation type="vanished">失敗</translation>
     </message>
 </context>
 <context>
@@ -550,24 +694,60 @@
         <translation>YB</translation>
     </message>
     <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; にコピーできませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; へ移動できませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
+    </message>
+    <message>
         <source>No marker found, stopped after %1.</source>
         <translation>マーカーが見つからなかったため、%1 で停止しました。</translation>
     </message>
     <message>
         <source>Cannot open file %1 for reading: %2</source>
-        <translation>読み込み用にファイル %1 を開けませんでした: %2</translation>
+        <translation type="vanished">読み込み用にファイル %1 を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot open file %1 for writing: %2</source>
-        <translation>書き込み用にファイル %1 を開けませんでした: %2</translation>
+        <translation type="vanished">書き込み用にファイル %1 を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
         <translation>%1 バイトの読み込み後にエラーが発生しました: %2</translation>
     </message>
     <message>
+        <source>Copy failed: %1</source>
+        <translation>コピーに失敗しました: %1</translation>
+    </message>
+    <message>
         <source>Copy failed. Error: %1</source>
-        <translation>コピーに失敗しました。エラー: %1</translation>
+        <translation type="vanished">コピーに失敗しました。エラー: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
@@ -575,27 +755,27 @@
     </message>
     <message>
         <source>Cannot remove file %1: %2</source>
-        <translation>ファイル %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">ファイル %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot remove folder %1: %2</source>
-        <translation>フォルダ %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">フォルダ %1 を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot create folder %1</source>
-        <translation>フォルダ %1 を作成できませんでした</translation>
+        <translation type="vanished">フォルダ %1 を作成できませんでした</translation>
     </message>
     <message>
         <source>Cannot copy file from %1 to %2: %3</source>
-        <translation>ファイル %1 を %2 にコピーできませんでした: %3</translation>
+        <translation type="vanished">ファイル %1 を %2 にコピーできませんでした: %3</translation>
     </message>
     <message>
         <source>Cannot move file from %1 to %2: %3</source>
-        <translation>ファイル %1 を %2 へ移動できませんでした: %3</translation>
+        <translation type="vanished">ファイル %1 を %2 へ移動できませんでした: %3</translation>
     </message>
     <message>
         <source>Cannot create folder %1: %2</source>
-        <translation>フォルダ %1 を作成できませんでした: %2</translation>
+        <translation type="vanished">フォルダ %1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot open temporary file: %1</source>
@@ -607,23 +787,23 @@
     </message>
     <message>
         <source>Cannot create temporary file</source>
-        <translation>一時ファイルを作成できませんでした</translation>
+        <translation type="vanished">一時ファイルを作成できませんでした</translation>
     </message>
     <message>
         <source>Cannot retrieve property %1 for item %2</source>
-        <translation>アイテム %2 からプロパティ %1 を取得できませんでした</translation>
+        <translation type="vanished">アイテム %2 からプロパティ %1 を取得できませんでした</translation>
     </message>
     <message>
         <source>Property %1 for item %2 not of type VT_FILETIME but %3</source>
-        <translation>アイテム %2 のプロパティ %1 の型が VT_FILETIME ではなく %3 になっています</translation>
+        <translation type="vanished">アイテム %2 のプロパティ %1 の型が VT_FILETIME ではなく %3 になっています</translation>
     </message>
     <message>
         <source>Cannot convert file time to local time</source>
-        <translation>ファイルの時刻をローカルタイムに変換できませんでした</translation>
+        <translation type="vanished">ファイルの時刻をローカルタイムに変換できませんでした</translation>
     </message>
     <message>
         <source>Cannot convert local file time to system time</source>
-        <translation>ローカルファイルの時刻をシステムの時刻へ変換できませんでした</translation>
+        <translation type="vanished">ローカルファイルの時刻をシステムの時刻へ変換できませんでした</translation>
     </message>
     <message>
         <source>Corrupt installation</source>
@@ -642,19 +822,19 @@
     <name>QInstaller::Component</name>
     <message>
         <source>Cannot open the requested translation file &apos;%1&apos;.</source>
-        <translation>要求された翻訳ファイル &apos;%1&apos; を開けませんでした。</translation>
+        <translation type="vanished">要求された翻訳ファイル &apos;%1&apos; を開けませんでした。</translation>
     </message>
     <message>
         <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>要求された UI ファイル &apos;%1&apos; を開けませんでした。エラー: %2</translation>
+        <translation type="vanished">要求された UI ファイル &apos;%1&apos; を開けませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>要求された UI ファイル &apos;%1&apos; をロードできませんでした。エラー: %2</translation>
+        <translation type="vanished">要求された UI ファイル &apos;%1&apos; をロードできませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
-        <translation>要求されたライセンスファイル &apos;%1&apos; を開けませんでした。エラー: %2</translation>
+        <translation type="vanished">要求されたライセンスファイル &apos;%1&apos; を開けませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -662,7 +842,7 @@
     </message>
     <message>
         <source>Error: Operation %1 does not exist</source>
-        <translation>エラー: 操作 %1 は存在しません</translation>
+        <translation type="vanished">エラー: 操作 %1 は存在しません</translation>
     </message>
     <message>
         <source>Update Info: </source>
@@ -675,6 +855,22 @@
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>コンポーネントはアップデートモードで子要素を持てません。</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
+        <translation>要求された UI ファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
+        <translation>要求された UI ファイル &quot;%1&quot; をロードできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
+        <translation>要求されたライセンスファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Error: Operation %1 does not exist.</source>
+        <translation>エラー: 操作 %1 は存在しません。</translation>
     </message>
 </context>
 <context>
@@ -759,8 +955,20 @@
         <translation>すべての選択を解除(&amp;D)</translation>
     </message>
     <message>
+        <source>To install new compressed repository, browse the repositories from your computer</source>
+        <translation>新しく圧縮リポジトリとして追加するリポジトリをこのコンピューターから選択してください。</translation>
+    </message>
+    <message>
+        <source>&amp;Browse QBSP files</source>
+        <translation>QBSPファイルを参照する(&amp;B)</translation>
+    </message>
+    <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>このコンポーネントはハードディスク上におよそ %1 必要とします。</translation>
+    </message>
+    <message>
+        <source>Open File</source>
+        <translation>ファイルを開く</translation>
     </message>
     <message>
         <source>Select Components</source>
@@ -779,202 +987,330 @@
         <translation>アンインストールしたいコンポーネントを選択してください。</translation>
     </message>
     <message>
+        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <translation>インストールするコンポーネントを選択してください。インストール済みのコンポーネントをアンインストールする場合は選択を解除してください。インストール済みのコンポーネントは更新されません。</translation>
+    </message>
+    <message>
         <source>Select the components to install. Deselect installed components to uninstall them.</source>
-        <translation>インストールするコンポーネントを選択してください。インストール済みのコンポーネントをアンインストールする場合は選択を解除してください。</translation>
+        <translation type="vanished">インストールするコンポーネントを選択してください。インストール済みのコンポーネントをアンインストールする場合は選択を解除してください。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>at least 2</source>
-        <translation>少なくとも2個</translation>
+        <translation type="vanished">少なくとも2個</translation>
+    </message>
+    <message>
+        <source>&lt;to be saved installer key name&gt; &lt;executable&gt; [argument1] [argument2] [...]</source>
+        <translation>&lt;保存するインストーラのキー名&gt; &lt;実行ファイル&gt; [引数1][引数2][...]</translation>
     </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation>%1 のインストーラ作成に必要な操作が見つかりません。</translation>
     </message>
     <message>
+        <source>Cannot save the output of &quot;%1&quot; to an empty installer key value.</source>
+        <translation>インストーラのキーの値が空のため、&quot;%1&quot; の出力を保存できません。</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
+        <translation>ファイル &quot;%1&quot; が存在しないか、実行可能なバイナリではありません。</translation>
+    </message>
+    <message>
+        <source>Running &quot;%1&quot; resulted in a crash.</source>
+        <translation>&quot;%1&quot; の実行中にクラッシュしました。</translation>
+    </message>
+    <message>
         <source>Can not save the output of %1 to an empty installer key value.</source>
-        <translation>インストーラのキーの値が空のため、%1 の出力を保存できません。</translation>
+        <translation type="vanished">インストーラのキーの値が空のため、%1 の出力を保存できません。</translation>
     </message>
     <message>
         <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
-        <translation>ファイル &apos;%1&apos; が存在しないか、実行可能なバイナリではありません。</translation>
+        <translation type="vanished">ファイル &apos;%1&apos; が存在しないか、実行可能なバイナリではありません。</translation>
     </message>
     <message>
         <source>Running &apos;%1&apos; resulted in a crash.</source>
-        <translation>&apos;%1&apos; の実行中にクラッシュしました。</translation>
+        <translation type="vanished">&apos;%1&apos; の実行中にクラッシュしました。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
         <source>2 or 3</source>
-        <translation>2あるいは3個</translation>
+        <translation type="vanished">2あるいは3個</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
-        <translation> (&lt;ソース&gt; &lt;ターゲット&gt; [forceOverwrite])</translation>
+        <translation type="vanished"> (&lt;ソース&gt; &lt;ターゲット&gt; [forceOverwrite])</translation>
     </message>
     <message>
         <source>Invalid argument in %0: Third argument needs to be forceOverwrite, if specified</source>
-        <translation>%0 に無効な引数: 3番目の引数を指定する場合は &quot;forceOverwrite&quot; である必要があります</translation>
+        <translation type="vanished">%0 に無効な引数: 3番目の引数を指定する場合は &quot;forceOverwrite&quot; である必要があります</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
-        <translation>%0 に無効な引数: ディレクトリが無効です: %1 %2</translation>
+        <translation type="vanished">%0 に無効な引数: ディレクトリが無効です: %1 %2</translation>
     </message>
     <message>
         <source>Cannot create %0</source>
-        <translation>%0 を作成できませんでした</translation>
+        <translation type="vanished">%0 を作成できませんでした</translation>
     </message>
     <message>
         <source>Failed to overwrite %1</source>
-        <translation>%1 を上書きできません</translation>
+        <translation type="vanished">%1 を上書きできません</translation>
     </message>
     <message>
         <source>Cannot copy %0 to %1, error was: %3</source>
-        <translation>%0 を %1 にコピーできませんでした。エラー: %3</translation>
+        <translation type="vanished">%0 を %1 にコピーできませんでした。エラー: %3</translation>
     </message>
     <message>
         <source>Cannot remove %0</source>
-        <translation>%0 を削除できませんでした</translation>
+        <translation type="vanished">%0 を削除できませんでした</translation>
+    </message>
+    <message>
+        <source>&lt;source&gt; &lt;target&gt; [&quot;forceOverwrite&quot;]</source>
+        <translation>&lt;ソース&gt; &lt;ターゲット&gt; [&quot;forceOverwrite&quot;]</translation>
+    </message>
+    <message>
+        <source>Invalid argument in %1: Third argument needs to be forceOverwrite, if specified.</source>
+        <translation>%1 に無効な引数: 3番目の引数を指定する場合は &quot;forceOverwrite&quot; である必要があります。</translation>
+    </message>
+    <message>
+        <source>Invalid argument in %1: Directory &quot;%2&quot; is invalid.</source>
+        <translation>%1 に無効な引数: フォルダ &quot;%2&quot; は無効です。</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした。</translation>
+    </message>
+    <message>
+        <source>Failed to overwrite &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; を上書きできませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; にコピーできませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
     <message>
         <source>Failed to overwrite %1</source>
-        <translation>%1 に上書きできません</translation>
+        <translation type="vanished">%1 に上書きできません</translation>
     </message>
     <message>
         <source>Cannot write Desktop Entry at %1</source>
-        <translation>%1 へデスクトップエントリーを書き込むことができませんでした</translation>
+        <translation type="vanished">%1 へデスクトップエントリーを書き込むことができませんでした</translation>
     </message>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>ファイル %1 をバックアップできませんでした: %2</translation>
+        <translation type="vanished">ファイル %1 をバックアップできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Failed to overwrite file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を上書きできませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot write desktop entry to &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; へデスクトップエントリーを書き込むことができませんでした。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLinkOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
     <message>
         <source>Cannot create link from %1 to %2.</source>
-        <translation>%1 から %2 へのリンクを作成できませんでした。</translation>
+        <translation type="vanished">%1 から %2 へのリンクを作成できませんでした。</translation>
     </message>
     <message>
         <source>Cannot remove link from %1 to %2.</source>
-        <translation>%1 から %2 へのリンクを削除できませんでした。</translation>
+        <translation type="vanished">%1 から %2 へのリンクを削除できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot create link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>&quot;%1&quot; から &quot;%2&quot; へのリンクを作成できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot remove link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>&quot;%1&quot; から &quot;%2&quot; へのリンクを削除できませんでした。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
         <source>Cannot set file permissions %1!</source>
-        <translation>ファイル %1 にアクセス権限を設定できませんでした!</translation>
+        <translation type="vanished">ファイル %1 にアクセス権限を設定できませんでした!</translation>
     </message>
     <message>
         <source>Cannot move file %1 to %2. Error: %3</source>
-        <translation>ファイル %1 を %2 へ移動できませんでした。エラー: %3</translation>
+        <translation type="vanished">ファイル %1 を %2 へ移動できませんでした。エラー: %3</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
     <message>
         <source>Installer needs to be an offline version: %1.</source>
-        <translation>インストーラはオフラインバージョンである必要があります: %1</translation>
+        <translation type="vanished">インストーラはオフラインバージョンである必要があります: %1</translation>
     </message>
     <message>
         <source>Cannot open file: %1</source>
-        <translation>ファイルを開けませんでした: %1</translation>
+        <translation type="vanished">ファイルを開けませんでした: %1</translation>
     </message>
     <message>
         <source>Cannot read: %1. Error: %2</source>
-        <translation>%1 を読み込みできませんでした。エラー: %2</translation>
+        <translation type="vanished">%1 を読み込みできませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Cannot open file: %1. Error: %2</source>
-        <translation>ファイル %1 を開けませんでした。エラー: %2</translation>
+        <translation type="vanished">ファイル %1 を開けませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Cannot create target dir: %1.</source>
-        <translation>ターゲットディレクトリを作成できませんでした: %1</translation>
+        <translation type="vanished">ターゲットディレクトリを作成できませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Cannot set permissions for file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; にアクセス権限を設定できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; へ移動できませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
+        <translation>&quot;%1&quot; のインストーラはオフラインバージョンである必要があります。</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading.</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot read file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を読めませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create target directory: &quot;%1&quot;.</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした。</translation>
     </message>
     <message>
         <source>Unknown exception caught: %1.</source>
         <translation>未知の例外が発生しました: %1</translation>
     </message>
     <message>
+        <source>Removing file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を削除しています。</translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を削除できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
         <source>Removing file: %0</source>
-        <translation>ファイルを削除しています: %0</translation>
+        <translation type="vanished">ファイルを削除しています: %0</translation>
     </message>
     <message>
         <source>Cannot remove %0.</source>
-        <translation>%0 を削除できませんでした。</translation>
+        <translation type="vanished">%0 を削除できませんでした。</translation>
     </message>
     <message>
         <source>Cannot remove directory %1: %2</source>
-        <translation>ディレクトリ %1 を削除できません: %2</translation>
+        <translation type="vanished">ディレクトリ %1 を削除できません: %2</translation>
     </message>
     <message>
         <source>Cannot remove file %1: %2</source>
-        <translation>ファイル %1 を削除できませんでした: %2</translation>
+        <translation type="vanished">ファイル %1 を削除できませんでした: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>2 or 3</source>
-        <translation>2あるいは3個</translation>
+        <translation type="vanished">2あるいは3個</translation>
     </message>
     <message>
         <source> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</source>
-        <translation> (オプション: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;) </translation>
+        <translation type="vanished"> (オプション: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;) </translation>
     </message>
     <message>
         <source>Cannot create folder %1: %2.</source>
-        <translation>フォルダ %1 を作成できませんでした: %2</translation>
+        <translation type="vanished">フォルダ %1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot create link %1: %2</source>
-        <translation>リンク %1 を作成できませんでした: %2</translation>
+        <translation type="vanished">リンク %1 を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Failed to overwrite %1: %2</source>
-        <translation>%1 に上書きできません: %2</translation>
+        <translation type="vanished">%1 に上書きできません: %2</translation>
+    </message>
+    <message>
+        <source>&lt;target&gt; &lt;link location&gt; [target arguments] [&quot;workingDirectory=...&quot;] [&quot;iconPath=...&quot;] [&quot;iconId=...&quot;] [&quot;description=...&quot;]</source>
+        <translation>&lt;ターゲット&gt; &lt;リンク先&gt; [ターゲット引数][&quot;workingDirectory=...&quot;] [&quot;iconPath=...&quot;] [&quot;iconId=...&quot;] [&quot;description=...&quot;]</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; を上書きできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create link &quot;%1&quot;: %2</source>
+        <translation>リンク &quot;%1&quot; を作成できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -1000,8 +1336,24 @@
         <translation>ハッシュ値の照合ができませんでした</translation>
     </message>
     <message>
+        <source>Cannot download archive %1: %2</source>
+        <translation>アーカイブ &quot;%1&quot; をダウンロードできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Downloading archive &quot;%1&quot; for component %2.</source>
+        <translation>コンポーネントのアーカイブ &quot;%1&quot; のダウンロード中: %2</translation>
+    </message>
+    <message>
+        <source>Scheme %1 not supported (URL: %2).</source>
+        <translation>スキーム %1 はサポートしていません（URL: %2）。</translation>
+    </message>
+    <message>
+        <source>Cannot find component for %1.</source>
+        <translation>コンポーネント %1 を見つけることができませんでした。</translation>
+    </message>
+    <message>
         <source>Cannot download archive: %1 : %2</source>
-        <translation>アーカイブ %1 をダウンロードできませんでした: %2</translation>
+        <translation type="vanished">アーカイブ %1 をダウンロードできませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot fetch archives: %1
@@ -1011,41 +1363,57 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Scheme not supported: %1 (%2)</source>
-        <translation>このスキームはサポートしてません: %1 (%2)</translation>
+        <translation type="vanished">このスキームはサポートしてません: %1 (%2)</translation>
     </message>
     <message>
         <source>Cannot find component for: %1.</source>
-        <translation>コンポーネント %1 を見つけることができませんでした。</translation>
+        <translation type="vanished">コンポーネント %1 を見つけることができませんでした。</translation>
     </message>
     <message>
         <source>Downloading archive &apos;%1&apos; for component: %2</source>
-        <translation>コンポーネントのアーカイブ &apos;%1&apos; のダウンロード中: %2</translation>
+        <translation type="vanished">コンポーネントのアーカイブ &apos;%1&apos; のダウンロード中: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ElevatedExecuteOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>at least 1</source>
-        <translation>少なくとも1個</translation>
+        <translation type="vanished">少なくとも1個</translation>
     </message>
     <message>
         <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
-        <translation>実行に失敗しました: &quot;%1&quot; をデタッチして起動できませんでした</translation>
+        <translation type="vanished">実行に失敗しました: &quot;%1&quot; をデタッチして起動できませんでした</translation>
     </message>
     <message>
         <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
-        <translation>実行に失敗しました: &quot;%1&quot; を起動できませんでした (%2)</translation>
+        <translation type="vanished">実行に失敗しました: &quot;%1&quot; を起動できませんでした (%2)</translation>
     </message>
     <message>
         <source>Execution failed(Crash): &quot;%1&quot;</source>
-        <translation>実行に失敗しました(クラッシュ): &quot;%1&quot;</translation>
+        <translation type="vanished">実行に失敗しました(クラッシュ): &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Execution failed(Unexpected exit code: %1): &quot;%2&quot;</source>
+        <translation type="vanished">実行に失敗しました(想定外の終了コード: %1): &quot;%2&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot start detached: &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; をデタッチして起動できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot start: &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; を起動できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Program crashed: &quot;%1&quot;</source>
+        <translation>プログラムはクラッシュしました: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
         <translation>実行に失敗しました(想定外の終了コード: %1): &quot;%2&quot;</translation>
     </message>
 </context>
@@ -1053,37 +1421,49 @@ Error while loading %2</source>
     <name>QInstaller::EnvironmentVariableOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>2 to 4</source>
-        <translation>2から4個</translation>
+        <translation type="vanished">2から4個</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
         <source>Cannot open %1 for reading: %2.</source>
-        <translation>読み込み用に %1 を開けませんでした: %2</translation>
+        <translation type="vanished">読み込み用に %1 を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
+        <translation type="vanished">&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>%1 の展開中に未知の例外が発生しました。</translation>
+        <translation type="vanished">%1 の展開中に未知の例外が発生しました。</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にアーカイブ &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>アーカイブ &quot;%1&quot; の展開中にエラーが発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; の展開中に未知の例外が発生しました。</translation>
     </message>
 </context>
 <context>
@@ -1094,11 +1474,15 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Click Done to exit the %1 Wizard.</source>
-        <translation>%1 のウィザードを終了するには「完了」をクリックしてください。</translation>
+        <translation type="vanished">%1 のウィザードを終了するには「完了」をクリックしてください。</translation>
     </message>
     <message>
         <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>%1 のウィザードを終了するには「完了」をクリックしてください。</translation>
+        <translation type="vanished">%1 のウィザードを終了するには「完了」をクリックしてください。</translation>
+    </message>
+    <message>
+        <source>Click %1 to exit the %2 Wizard.</source>
+        <translation>%2 のウィザードを終了するには &quot;%1&quot; をクリックしてください。</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1117,54 +1501,86 @@ Error while loading %2</source>
     <name>QInstaller::GlobalSettingsOperation</name>
     <message>
         <source>Settings are not writable</source>
-        <translation>設定が書き込み可能ではありません</translation>
+        <translation type="vanished">設定が書き込み可能ではありません</translation>
     </message>
     <message>
         <source>Failed to write settings</source>
-        <translation>設定の書き込みに失敗しました</translation>
+        <translation type="vanished">設定の書き込みに失敗しました</translation>
     </message>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>3, 4 or 5</source>
-        <translation>3、4あるいは5個</translation>
+        <translation type="vanished">3、4あるいは5個</translation>
+    </message>
+    <message>
+        <source>Settings are not writable.</source>
+        <translation>設定が書き込み可能ではありません。</translation>
+    </message>
+    <message>
+        <source>Failed to write settings.</source>
+        <translation>設定の書き込みに失敗しました。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>1 or 2</source>
-        <translation>1あるいは2個</translation>
+        <translation type="vanished">1あるいは2個</translation>
     </message>
     <message>
         <source> (Sourcepath, [Vendorprefix])</source>
-        <translation> (ソースパス, [ベンダープレフィックス])</translation>
+        <translation type="vanished"> (ソースパス, [ベンダープレフィックス])</translation>
     </message>
     <message>
         <source>Invalid Argument: source folder must not be empty.</source>
-        <translation>無効な引数: 空のフォルダをソースに指定できません。</translation>
+        <translation type="vanished">無効な引数: 空のフォルダをソースに指定できません。</translation>
     </message>
     <message>
         <source>Cannot backup file %1: %2</source>
-        <translation>ファイル %1 をバックアップできませんでした: %2</translation>
+        <translation type="vanished">ファイル %1 をバックアップできませんでした: %2</translation>
     </message>
     <message>
         <source>Failed to overwrite %1: %2</source>
-        <translation>%1 に上書きできません: %2</translation>
+        <translation type="vanished">%1 に上書きできません: %2</translation>
     </message>
     <message>
         <source>Failed to copy file %1: %2</source>
-        <translation>ファイル %1 へのコピーに失敗しました: %2</translation>
+        <translation type="vanished">ファイル %1 へのコピーに失敗しました: %2</translation>
     </message>
     <message>
         <source>Cannot create folder at %1: %2</source>
-        <translation>%1 にフォルダを作成できませんでした: %2</translation>
+        <translation type="vanished">%1 にフォルダを作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>&lt;source path&gt; [vendor prefix]</source>
+        <translation>&lt;ソースパス&gt;, [ベンダープレフィックス]</translation>
+    </message>
+    <message>
+        <source>Invalid Argument: source directory must not be empty.</source>
+        <translation>無効な引数: 空のフォルダをソースに指定できません。</translation>
+    </message>
+    <message>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; をバックアップできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; を上書きできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Failed to copy file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; のコピーに失敗しました: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -1262,8 +1678,12 @@ Error while loading %2</source>
         <translation>%1 のインストーラ作成に必要な操作が見つかりません。</translation>
     </message>
     <message>
+        <source>Can not write license file &quot;%1&quot;.</source>
+        <translation>ライセンスファイル &quot;%1&quot; に書き込みできません。</translation>
+    </message>
+    <message>
         <source>Can not write license file: %1.</source>
-        <translation>ライセンスファイルに書き込みできません: %1</translation>
+        <translation type="vanished">ライセンスファイルに書き込みできません: %1</translation>
     </message>
     <message>
         <source>No license files found to delete.</source>
@@ -1274,19 +1694,27 @@ Error while loading %2</source>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>3個</translation>
+        <translation type="vanished">3個</translation>
     </message>
     <message>
         <source>Failed to open &apos;%1&apos; for reading.</source>
-        <translation>読み込み用に &apos;%1&apos; を開くのに失敗しました。</translation>
+        <translation type="vanished">読み込み用に &apos;%1&apos; を開くのに失敗しました。</translation>
     </message>
     <message>
         <source>Failed to open &apos;%1&apos; for writing.</source>
-        <translation>書き込み用に &apos;%1&apos; を開くのに失敗しました。</translation>
+        <translation type="vanished">書き込み用に &apos;%1&apos; を開くのに失敗しました。</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -1299,7 +1727,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>ユーザによってインストールがキャンセルされました</translation>
+        <translation type="vanished">ユーザによってインストールがキャンセルされました</translation>
     </message>
     <message>
         <source>All downloads finished.</source>
@@ -1319,7 +1747,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>管理者権限が取得できなかったため、いくつかのコンポーネントを完全に削除することができませんでした: %1</translation>
+        <translation type="vanished">管理者権限が取得できなかったため、いくつかのコンポーネントを完全に削除することができませんでした: %1</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -1331,7 +1759,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Application not running in Package Manager mode!</source>
-        <translation>アプリケーションがパッケージマネージャモードで動作していません!</translation>
+        <translation type="vanished">アプリケーションがパッケージマネージャモードで動作していません!</translation>
     </message>
     <message>
         <source>No installed packages found.</source>
@@ -1339,7 +1767,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Application running in Uninstaller mode!</source>
-        <translation>アプリケーションはアンインストーラモードで実行中です!</translation>
+        <translation type="vanished">アプリケーションはアンインストーラモードで実行中です!</translation>
     </message>
     <message>
         <source>invalid</source>
@@ -1352,6 +1780,30 @@ Downloading packages...</source>
     <message>
         <source>Error writing Maintenance Tool</source>
         <translation>メンテナンスツール書き込み中のエラー</translation>
+    </message>
+    <message>
+        <source>Installation canceled by user.</source>
+        <translation>ユーザーによってインストールがキャンセルされました。</translation>
+    </message>
+    <message>
+        <source>Some components could not be removed completely because administrative rights could not be acquired: %1.</source>
+        <translation>管理者権限が取得できなかったため、いくつかのコンポーネントを完全に削除することができませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Application not running in Package Manager mode.</source>
+        <translation>アプリケーションがパッケージマネージャモードで動作していません。</translation>
+    </message>
+    <message>
+        <source>Application running in Uninstaller mode.</source>
+        <translation>アプリケーションはアンインストーラモードで実行中です。</translation>
+    </message>
+    <message>
+        <source>Cannot resolve all dependencies.</source>
+        <translation>すべての依存関係を解決できません。</translation>
+    </message>
+    <message>
+        <source>Components about to be removed.</source>
+        <translation>削除されるコンポーネント。</translation>
     </message>
     <message>
         <source>Error while elevating access rights.</source>
@@ -1390,7 +1842,15 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Installation canceled by user</source>
-        <translation>ユーザによってインストールがキャンセルされました</translation>
+        <translation>ユーザーによってインストールがキャンセルされました</translation>
+    </message>
+    <message>
+        <source>Cannot remove data file &quot;%1&quot;: %2</source>
+        <translation>データファイル &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write maintenance tool to &quot;%1&quot;: %2</source>
+        <translation>メンテナンスツールを &quot;%1&quot; に書き込めませんでした: %2</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1473,12 +1933,24 @@ Installing component %1</source>
         <translation>未知のエラー</translation>
     </message>
     <message>
-        <source>Cannot retrieve remote tree: %1.</source>
+        <source>Cannot retrieve remote tree %1.</source>
         <translation>リモートのツリーを取得できませんでした: %1</translation>
     </message>
     <message>
+        <source>Failure to read packages from %1.</source>
+        <translation>&quot;%1&quot; からパッケージの読み込みに失敗しました。</translation>
+    </message>
+    <message>
+        <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>検出されたコンポーネント &quot;%1&quot; と &quot;%2&quot; の間に依存関係の循環があります。</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve remote tree: %1.</source>
+        <translation type="vanished">リモートのツリーを取得できませんでした: %1</translation>
+    </message>
+    <message>
         <source>Failure to read packages from: %1.</source>
-        <translation>右記からのパッケージの読み込みに失敗しました: %1</translation>
+        <translation type="vanished">右記からのパッケージの読み込みに失敗しました: %1</translation>
     </message>
     <message>
         <source>Cannot retrieve meta information: %1</source>
@@ -1514,11 +1986,11 @@ Installing component %1</source>
     </message>
     <message>
         <source>Cannot remove data file &apos;%1&apos;: %2</source>
-        <translation>データファイル &apos;%1&apos; を削除できませんでした: %2</translation>
+        <translation type="vanished">データファイル &apos;%1&apos; を削除できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot write maintenance tool to %1: %2</source>
-        <translation>メンテナンスツールを %1 に書き込めませんでした: %2</translation>
+        <translation type="vanished">メンテナンスツールを %1 に書き込めませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
@@ -1538,7 +2010,7 @@ Installing component %1</source>
     </message>
     <message>
         <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
-        <translation>検出されたコンポーネント: &apos;%1&apos; と &apos;%2&apos; の間に依存関係の循環があります。</translation>
+        <translation type="vanished">検出されたコンポーネント: &apos;%1&apos; と &apos;%2&apos; の間に依存関係の循環があります。</translation>
     </message>
 </context>
 <context>
@@ -1553,7 +2025,7 @@ Installing component %1</source>
     </message>
     <message>
         <source>Question</source>
-        <translation>確認</translation>
+        <translation type="vanished">確認</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -1588,6 +2060,10 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Do you want to quit the maintenance application?</source>
         <translation>メンテナンスツールを終了しますか？</translation>
+    </message>
+    <message>
+        <source>%1 Question</source>
+        <translation>%1 の確認</translation>
     </message>
 </context>
 <context>
@@ -1640,7 +2116,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>このコンピュータから %1 を削除する準備ができました。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;このプログラムがインストールされていたディレクトリ %2 は完全に削除されます&lt;/font&gt;。ディレクトリの内容すべてが削除の対象です!</translation>
+        <translation>このコンピュータから %1 を削除する準備ができました。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;このプログラムがインストールされていたフォルダ %2 は完全に削除されます&lt;/font&gt;。フォルダの内容すべてが削除の対象です!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -1667,16 +2143,28 @@ Please copy the installer to a local drive</source>
         <translation>このコンピュータに %1 をインストールする準備ができました。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
-        <translation>ディスクの空き容量が不足しているため、一時ファイルの作成およびインストールができません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>ディスクの空き容量が不足しているため、一時ファイルの作成およびインストールができません。 必要な容量 %2 に対して、空き容量は %1 です。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
         <translation>ディスクの空き容量が不足しているため、選択されたすべてのコンポーネントをインストールできません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
         <translation>ディスクの空き容量が不足しているため、一時ファイルが作成できません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
+        <translation type="vanished">ディスクの空き容量が不足しているため、一時ファイルの作成およびインストールができません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
+        <translation type="vanished">ディスクの空き容量が不足しているため、選択されたすべてのコンポーネントをインストールできません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
+        <translation type="vanished">ディスクの空き容量が不足しているため、一時ファイルが作成できません! 必要な容量 %2 に対して、空き容量は %1 です。</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
@@ -1688,7 +2176,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Components about to be removed.</source>
-        <translation>削除されるコンポーネント。</translation>
+        <translation type="vanished">削除されるコンポーネント。</translation>
     </message>
     <message>
         <source>Installation will use %1 of disk space.</source>
@@ -1696,18 +2184,22 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Cannot resolve all dependencies.</source>
-        <translation>すべての依存関係を解決できません。</translation>
+        <translation type="vanished">すべての依存関係を解決できません。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>2 to 5</source>
-        <translation>2から5個</translation>
+        <translation type="vanished">2から5個</translation>
+    </message>
+    <message>
+        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
+        <translation>&lt;拡張&gt; &lt;コマンド&gt; [詳細 [コンテンツタイプ [アイコン]]]</translation>
     </message>
     <message>
         <source>Register File Type: Invalid arguments</source>
@@ -1722,19 +2214,27 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::ReplaceOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 3</source>
-        <translation>3個</translation>
+        <translation type="vanished">3個</translation>
     </message>
     <message>
         <source>Failed to open %1 for reading</source>
-        <translation>読み込み用に %1 を開くのに失敗しました</translation>
+        <translation type="vanished">読み込み用に %1 を開くのに失敗しました</translation>
     </message>
     <message>
         <source>Failed to open %1 for writing</source>
-        <translation>書き込み用に %1 を開くのに失敗しました</translation>
+        <translation type="vanished">書き込み用に %1 を開くのに失敗しました</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -1748,18 +2248,38 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open the requested script file at %1: %2.</source>
-        <translation>要求されたスクリプトファイル %1 を開けませんでした: %2</translation>
+        <translation type="vanished">要求されたスクリプトファイル %1 を開けませんでした: %2</translation>
     </message>
     <message>
         <source>Exception while loading the component script &apos;%1&apos;. (%2)</source>
-        <translation>コンポーネントスクリプト &apos;%1&apos; のロード中に例外が発生しました。(%2)</translation>
+        <translation type="vanished">コンポーネントスクリプト &apos;%1&apos; のロード中に例外が発生しました。(%2)</translation>
+    </message>
+    <message>
+        <source>Cannot open script file at %1: %2</source>
+        <translation>%1 のスクリプトファイルを開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Exception while loading the component script &quot;%1&quot;: %2</source>
+        <translation>コンポーネントスクリプト &quot;%1&quot; のロード中に例外が発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>未知のエラー。</translation>
+    </message>
+    <message>
+        <source>on line number: </source>
+        <translation>行番号:</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SelfRestartOperation</name>
     <message>
         <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
-        <translation>&apos;%1&apos; のインストーラ作成に必要な操作が見つかりません。</translation>
+        <translation type="vanished">&apos;%1&apos; のインストーラ作成に必要な操作が見つかりません。</translation>
+    </message>
+    <message>
+        <source>Installer object needed in operation %1 is empty.</source>
+        <translation>%1 のインストーラ作成に必要な操作が見つかりません。</translation>
     </message>
     <message>
         <source>Self Restart: Only valid within updater or packagemanager mode.</source>
@@ -1774,38 +2294,62 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::SettingsOperation</name>
     <message>
         <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
-        <translation>&apos;%2&apos; を引数 &apos;%3&apos; で呼び出しましたが、&apos;%1&apos; の引数が不足しています。</translation>
+        <translation type="vanished">&apos;%2&apos; を引数 &apos;%3&apos; で呼び出しましたが、&apos;%1&apos; の引数が不足しています。</translation>
     </message>
     <message>
         <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>&apos;%1&apos; の呼び出し時に method 引数の値として &apos;%2&apos; はサポートされていません。set, remove, add_array_value, remove_array_value を使用してください。</translation>
+        <translation type="vanished">&apos;%1&apos; の呼び出し時に method 引数の値として &apos;%2&apos; はサポートされていません。set, remove, add_array_value, remove_array_value を使用してください。</translation>
+    </message>
+    <message>
+        <source>Missing argument(s) &quot;%1&quot; calling %2 with arguments &quot;%3&quot;.</source>
+        <translation>%2 を引数 &quot;%3&quot; で呼び出しましたが、&quot;%1&quot; の引数が不足しています。</translation>
+    </message>
+    <message>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
+        <translation>&quot;%1&quot; の呼び出し時に メソッドの引数の値として &quot;%2&quot; はサポートされていません。set, remove, add_array_value, remove_array_value を使用してください。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>exactly 2</source>
-        <translation>2個</translation>
+        <translation type="vanished">2個</translation>
     </message>
     <message>
         <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
-        <translation>どちらの引数も空にはできません: ソース &apos;%1&apos;, ターゲット: &apos;%2&apos;</translation>
+        <translation type="vanished">どちらの引数も空にはできません: ソース &apos;%1&apos;, ターゲット: &apos;%2&apos;</translation>
     </message>
     <message>
         <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
-        <translation>&apos;%1&apos; を &apos;%2&apos; へ移動。</translation>
+        <translation type="vanished">&apos;%1&apos; を &apos;%2&apos; へ移動。</translation>
     </message>
     <message>
         <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
-        <translation>ソース &apos;%1&apos; をターゲット &apos;%2&apos; に移動できません。ターゲットが存在しており、かつ削除できません。</translation>
+        <translation type="vanished">ソース &apos;%1&apos; をターゲット &apos;%2&apos; に移動できません。ターゲットが存在しており、かつ削除できません。</translation>
     </message>
     <message>
         <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
-        <translation>ソース &apos;%1&apos; をターゲット &apos;%2&apos; に移動できません: %3</translation>
+        <translation type="vanished">ソース &apos;%1&apos; をターゲット &apos;%2&apos; に移動できません: %3</translation>
+    </message>
+    <message>
+        <source>None of the arguments can be empty: source &quot;%1&quot;, target &quot;%2&quot;.</source>
+        <translation>どちらの引数も空にはできません: ソース &quot;%1&quot;, ターゲット: &quot;%2&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;, because the target path exists and is not removable.</source>
+        <translation>ファイルを &quot;%1&quot; から &quot;%2&quot; に移動できません。ターゲットが存在しており、かつ削除できません。</translation>
+    </message>
+    <message>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; へ移動できませんでした: %3</translation>
+    </message>
+    <message>
+        <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; へ移動しています。</translation>
     </message>
 </context>
 <context>
@@ -1815,8 +2359,12 @@ Please copy the installer to a local drive</source>
         <translation>スタートメニューのショートカット</translation>
     </message>
     <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
+        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
         <translation>プログラムへのショートカットを作成したいスタートメニューを選択してください。新規作成するフォルダ名を入力することもできます。</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
+        <translation type="vanished">プログラムへのショートカットを作成したいスタートメニューを選択してください。新規作成するフォルダ名を入力することもできます。</translation>
     </message>
 </context>
 <context>
@@ -1827,7 +2375,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Please specify the folder where %1 will be installed.</source>
-        <translation>%1 をインストールするフォルダを指定してください。</translation>
+        <translation type="vanished">%1 をインストールするフォルダを指定してください。</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -1839,6 +2387,32 @@ Please copy the installer to a local drive</source>
         <translation>参照(&amp;B)...</translation>
     </message>
     <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>選択されたフォルダは既に存在し、インストール済みです。他のインストール先を選択してください。</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>既存の空ではないフォルダをインストール先に選択しました。
+このアプリケーションをアンインストールする時にはこのフォルダすべてが消去されることに注意してください。
+このフォルダへのインストールは失敗する可能性もあり推奨されません。
+インストールを継続しますか?</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>インストール先のパスは省略できません。有効なフォルダを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>インストール先のパスの最後に &apos;.&apos; は使用できません。有効なフォルダを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>インストール先のパスに &quot;%1&quot; は使用できません。有効なフォルダを指定してください。</translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
@@ -1847,19 +2421,23 @@ Please copy the installer to a local drive</source>
         <translation>警告</translation>
     </message>
     <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>%1 をインストールするフォルダを指定してください。</translation>
+    </message>
+    <message>
         <source>Select Installation Folder</source>
         <translation>インストール先フォルダの選択</translation>
     </message>
     <message>
         <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>選択されたフォルダは既に存在し、インストール済みです。他のインストール先を選択してください。</translation>
+        <translation type="vanished">選択されたフォルダは既に存在し、インストール済みです。他のインストール先を選択してください。</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty folder for installation.
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this folder as installation might fail.
 Do you want to continue?</source>
-        <translation>既存の空ではないフォルダをインストール先に選択しました。
+        <translation type="vanished">既存の空ではないフォルダをインストール先に選択しました。
 このアプリケーションをアンインストールする時にはこのフォルダすべてが消去されることに注意してください。
 このフォルダへのインストールは失敗する可能性もあり推奨されません。
 インストールを継続しますか?</translation>
@@ -1870,7 +2448,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The installation path cannot be empty, please specify a valid folder.</source>
-        <translation>インストール先のパスは省略できません。有効なフォルダを指定してください。</translation>
+        <translation type="vanished">インストール先のパスは省略できません。有効なフォルダを指定してください。</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
@@ -1882,7 +2460,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>インストールしたディレクトリはアンインストール時に完全に削除されるため、%1 へのインストールは禁止されています。</translation>
+        <translation>インストールしたフォルダはアンインストール時に完全に削除されるため、%1 へのインストールは禁止されています。</translation>
     </message>
     <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
@@ -1898,38 +2476,66 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
-        <translation>インストール先のパスの最後に &apos;.&apos; は使用できません。有効なフォルダを指定してください。</translation>
+        <translation type="vanished">インストール先のパスの最後に &apos;.&apos; は使用できません。有効なフォルダを指定してください。</translation>
     </message>
     <message>
         <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
-        <translation>インストール先のパスに %1 は使用できません。有効なフォルダを指定してください。</translation>
+        <translation type="vanished">インストール先のパスに %1 は使用できません。有効なフォルダを指定してください。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::TestRepository</name>
     <message>
+        <source>Missing package manager core engine.</source>
+        <translation>パッケージマネージャのコアエンジンが見つかりません。</translation>
+    </message>
+    <message>
         <source>Empty repository URL.</source>
         <translation>リポジトリの URL が空です。</translation>
     </message>
     <message>
+        <source>Download canceled.</source>
+        <translation>ダウンロードをキャンセルしました。</translation>
+    </message>
+    <message>
+        <source>Timeout while testing repository &quot;%1&quot;.</source>
+        <translation>リポジトリ &quot;%1&quot; のテスト中にタイムアウトが発生しました。</translation>
+    </message>
+    <message>
+        <source>Cannot parse Updates.xml: %1</source>
+        <translation>Updates.xml を解析できませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open Updates.xml for reading: %1</source>
+        <translation>読み込み用に Updates.xml を開けませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Authentication failed.</source>
+        <translation>認証失敗。</translation>
+    </message>
+    <message>
+        <source>Unknown error while testing repository &quot;%1&quot;.</source>
+        <translation>リポジトリ &quot;%1&quot; をテスト中に未知のエラーが発生しました。</translation>
+    </message>
+    <message>
         <source>URL scheme not supported: %1 (%2).</source>
-        <translation>この URL スキームはサポートしてません: %1 (%2)</translation>
+        <translation type="vanished">この URL スキームはサポートしてません: %1 (%2)</translation>
     </message>
     <message>
         <source>Got a timeout while testing: &apos;%1&apos;</source>
-        <translation>テスト中にタイムアウトが発生しました: &apos;%1&apos;</translation>
+        <translation type="vanished">テスト中にタイムアウトが発生しました: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Cannot parse Updates.xml! Error: %1.</source>
-        <translation>Updates.xml を解析できませんでした! エラー: %1</translation>
+        <translation type="vanished">Updates.xml を解析できませんでした! エラー: %1</translation>
     </message>
     <message>
         <source>Updates.xml could not be opened for reading!</source>
-        <translation>読み込み用に Updates.xml を開けませんでした!</translation>
+        <translation type="vanished">読み込み用に Updates.xml を開けませんでした!</translation>
     </message>
     <message>
         <source>Updates.xml could not be found on server!</source>
-        <translation>サーバ上に Updates.xml が見つかりませんでした!</translation>
+        <translation type="vanished">サーバ上に Updates.xml が見つかりませんでした!</translation>
     </message>
 </context>
 <context>
@@ -1994,7 +2600,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Add Username and Password for authentication if needed.</source>
-        <translation>認証が必要な場合はユーザ名とパスワードを記述してください。</translation>
+        <translation>認証が必要な場合はユーザー名とパスワードを記述してください。</translation>
     </message>
     <message>
         <source>Use temporary repositories only</source>
@@ -2022,7 +2628,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Add the username to authenticate on the server.</source>
-        <translation>サーバでの認証用ユーザ名を追加してください。</translation>
+        <translation>サーバでの認証用ユーザー名を追加してください。</translation>
     </message>
     <message>
         <source>Add the password to authenticate on the server.</source>
@@ -2034,11 +2640,27 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>There was an error testing this repository.</source>
-        <translation>このリポジトリのテスト中にエラーが発生しました。</translation>
+        <translation type="vanished">このリポジトリのテスト中にエラーが発生しました。</translation>
     </message>
     <message>
         <source>Do you want to disable the tested repository?</source>
-        <translation>このテスト済みリポジトリを無効にしますか?</translation>
+        <translation type="vanished">このテスト済みリポジトリを無効にしますか?</translation>
+    </message>
+    <message>
+        <source>An error occurred while testing this repository.</source>
+        <translation>このリポジトリをテスト中にエラーが発生しました。</translation>
+    </message>
+    <message>
+        <source>The repository was tested successfully.</source>
+        <translation>リポジトリのテストが成功しました。</translation>
+    </message>
+    <message>
+        <source>Do you want to disable the repository?</source>
+        <translation>リポジトリを無効にしますか？</translation>
+    </message>
+    <message>
+        <source>Do you want to enable the repository?</source>
+        <translation>リポジトリを有効にしますか？</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
@@ -2050,7 +2672,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Username</source>
-        <translation>ユーザ名</translation>
+        <translation>ユーザー名</translation>
     </message>
     <message>
         <source>Password</source>
@@ -2070,7 +2692,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>User defined repositories</source>
-        <translation>ユーザ定義リポジトリ</translation>
+        <translation>ユーザー定義リポジトリ</translation>
     </message>
 </context>
 <context>
@@ -2085,11 +2707,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Username:</source>
-        <translation>ユーザ名:</translation>
+        <translation>ユーザー名:</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation>ユーザ名</translation>
+        <translation>ユーザー名</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -2112,11 +2734,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>You need to supply a username and password to access this site.</source>
-        <translation>このサイトにアクセスするにはユーザ名とパスワードが必要です。</translation>
+        <translation>このサイトにアクセスするにはユーザー名とパスワードが必要です。</translation>
     </message>
     <message>
         <source>Username:</source>
-        <translation>ユーザ名:</translation>
+        <translation>ユーザー名:</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -2153,15 +2775,23 @@ Do you want to continue?</source>
         <translation>リソースコレクションブロックを読み込むために %1 にシーク出来ませんでした。</translation>
     </message>
     <message>
+        <source>Cannot open meta resource %1.</source>
+        <translation>メタリソース %1 を開けませんでした。</translation>
+    </message>
+    <message>
         <source>Cannot open meta resource. Error: %1</source>
-        <translation>メタリソースを開けませんでした。エラー: %1</translation>
+        <translation type="vanished">メタリソースを開けませんでした。エラー: %1</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Resource</name>
     <message>
         <source>Cannot open Resource &apos;%1&apos; read-only.</source>
-        <translation>読み込み専用でリソース %1 を開けませんでした。</translation>
+        <translation type="vanished">読み込み専用でリソース %1 を開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot open resource %1 for reading.</source>
+        <translation>読み込み用にリソース %1 を開けませんでした。</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
@@ -2186,16 +2816,28 @@ Do you want to continue?</source>
         <translation>タスクアイテム数が無効です。</translation>
     </message>
     <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>ファイル &quot;%1&quot; への書き込みに失敗しました: %2</translation>
+    </message>
+    <message>
         <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
-        <translation>読み込み用にソース &apos;%1&apos; を開けませんでした。エラー: %2。</translation>
+        <translation type="vanished">読み込み用にソース &apos;%1&apos; を開けませんでした。エラー: %2。</translation>
     </message>
     <message>
         <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
-        <translation>書き込み用に対象 &apos;%1&apos; を開けませんでした。エラー: %2</translation>
+        <translation type="vanished">書き込み用に対象 &apos;%1&apos; を開けませんでした。エラー: %2</translation>
     </message>
     <message>
         <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <translation>対象 &apos;%1&apos; への書き込み中に失敗しました。エラー: %2</translation>
+        <translation type="vanished">対象 &apos;%1&apos; への書き込み中に失敗しました。エラー: %2</translation>
     </message>
 </context>
 <context>
@@ -2203,30 +2845,70 @@ Do you want to continue?</source>
     <message>
         <source>Target &apos;%1&apos; not open for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>書き込みのために対象 &apos;%1&apos; を開けませんでした。エラー: %2 。</translation>
+        <translation type="vanished">書き込みのために対象 &apos;%1&apos; を開けませんでした。エラー: %2 。</translation>
     </message>
     <message>
         <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>対象 &apos;%1&apos; への書き込み中に失敗しました。エラー: %2。</translation>
+        <translation type="vanished">対象 &apos;%1&apos; への書き込み中に失敗しました。エラー: %2。</translation>
     </message>
     <message>
         <source>Redirect loop detected &apos;%1&apos;.</source>
-        <translation>&apos;%1&apos; でリダイレクトループを検出しました。</translation>
+        <translation type="vanished">&apos;%1&apos; でリダイレクトループを検出しました。</translation>
     </message>
     <message>
         <source>Checksum mismatch detected &apos;%1&apos;.</source>
-        <translation>&apos;%1&apos; でチェックサムの不一致を検出しました。</translation>
+        <translation type="vanished">&apos;%1&apos; でチェックサムの不一致を検出しました。</translation>
+    </message>
+    <message>
+        <source>Target file &quot;%1&quot; already exists but is not a file.</source>
+        <translation>対象ファイル &quot;%1&quot; は既に存在しますが、ファイルではありません。</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <extracomment>%2 is a sentence describing the error</extracomment>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>File &quot;%1&quot; not open for writing: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>ファイル &quot;%1&quot; への書き込みに失敗しました: %2</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; でリダイレクトループを検出しました。</translation>
+    </message>
+    <message>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; でチェックサムの不一致を検出しました。</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>&apos;%1&apos; をダウンロード中に通信エラーが発生しました: %2 。</translation>
+    </message>
+    <message>
+        <source>Unknown network error while downloading &quot;%1&quot;.</source>
+        <extracomment>%1 is a sentence describing the error</extracomment>
+        <translation>&quot;%1&quot; をダウンロード中に不明な通信エラーが発生しました。</translation>
+    </message>
+    <message>
+        <source>Network transfers canceled.</source>
+        <translation>送信をキャンセルしました。</translation>
+    </message>
+    <message>
+        <source>Invalid source URL &quot;%1&quot;: %2</source>
+        <extracomment>%2 is a sentence describing the error</extracomment>
+        <translation>無効なソースURL &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Unknown network error while downloading: %1.</source>
         <extracomment>%1 is a sentence describing the error</extracomment>
-        <translation>ダウンロード中に不明な通信エラーが発生しました: %1。</translation>
+        <translation type="vanished">ダウンロード中に不明な通信エラーが発生しました: %1。</translation>
     </message>
     <message>
         <source>Pause and resume not supported by network transfers.</source>
@@ -2235,16 +2917,16 @@ Do you want to continue?</source>
     <message>
         <source>Invalid source &apos;%1&apos;. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>無効なソース &apos;%1&apos;。エラー: %2。</translation>
+        <translation type="vanished">無効なソース &apos;%1&apos;。エラー: %2。</translation>
     </message>
     <message>
         <source>Target file &apos;%1&apos; already exists but is not a file.</source>
-        <translation>対象ファイル &apos;%1&apos; は既に存在しますが、ファイルではありません。</translation>
+        <translation type="vanished">対象ファイル &apos;%1&apos; は既に存在しますが、ファイルではありません。</translation>
     </message>
     <message>
         <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>対象 &apos;%1&apos; は書き込み用に開けませんでした。エラー: %2。</translation>
+        <translation type="vanished">対象 &apos;%1&apos; は書き込み用に開けませんでした。エラー: %2。</translation>
     </message>
 </context>
 <context>
@@ -2262,22 +2944,66 @@ Do you want to continue?</source>
     <name>UpdateOperation</name>
     <message>
         <source>Registry path %1 is not writable</source>
-        <translation>レジストリのパス %1 に書き込みできません</translation>
+        <translation type="vanished">レジストリのパス %1 に書き込みできません</translation>
     </message>
     <message>
         <source>Cannot write to registry path %1</source>
-        <translation>レジストリのパス %1 へ書き込めませんでした</translation>
+        <translation type="vanished">レジストリのパス %1 へ書き込めませんでした</translation>
     </message>
     <message>
         <source>Renaming %1 into %2 failed with %3.</source>
-        <translation>%1 から %2 への名前の変更が %3 で失敗しました。</translation>
+        <translation type="vanished">%1 から %2 への名前の変更が %3 で失敗しました。</translation>
+    </message>
+    <message>
+        <source>Cannot write to registry path %1.</source>
+        <translation>レジストリのパス %1. へ書き込めませんでした。</translation>
+    </message>
+    <message>
+        <source>Registry path %1 is not writable.</source>
+        <translation>レジストリのパス %1 に書き込みできません。</translation>
+    </message>
+    <message>
+        <source>exactly %1</source>
+        <translation>%1個</translation>
+    </message>
+    <message>
+        <source>at least %1</source>
+        <translation>少なくとも%1個</translation>
+    </message>
+    <message>
+        <source>not more than %1</source>
+        <translation>%1以下</translation>
+    </message>
+    <message>
+        <source>%1 or %2</source>
+        <translation>%1あるいわ%2個</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation>%1から%2個</translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected.</source>
+        <translation>
+            <numerusform>%1 に無効な引数: %n個の引数が渡されましたが、必要なのは%2です。</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected in the form: %3.</source>
+        <translation>
+            <numerusform>%1 に無効な引数: %n個の引数が渡されましたが、必要なのは%3の形式で%2です。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
+        <translation>&quot;%1&quot; から &quot;%2&quot; へファイル名の変更に失敗しました: %3</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FakeStopProcessForUpdateOperation</name>
     <message>
         <source>Number of arguments does not match: one is required</source>
-        <translation>引数の数が一致しません: 一つのみ指定してください</translation>
+        <translation type="vanished">引数の数が一致しません: 一つのみ指定してください</translation>
     </message>
     <message>
         <source>Cannot get package manager core.</source>
@@ -2300,7 +3026,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Components added as dependency for &apos;%1&apos;:</source>
-        <translation>&apos;%1&apos; が依存しているために追加されたコンポーネント:</translation>
+        <translation type="vanished">&apos;%1&apos; が依存しているために追加されたコンポーネント:</translation>
+    </message>
+    <message>
+        <source>Components added as dependency for &quot;%1&quot;:</source>
+        <translation>&quot;%1&quot; が依存しているために追加されたコンポーネント:</translation>
     </message>
     <message>
         <source>Components that have resolved dependencies:</source>
@@ -2311,60 +3041,76 @@ Do you want to continue?</source>
         <translation>選択されたコンポーネントは依存関係がありません:</translation>
     </message>
     <message>
+        <source>Recursion detected, component &quot;%1&quot; already added with reason: &quot;%2&quot;</source>
+        <translation>再帰を検出しました、コンポーネント &quot;%1&quot; は、&quot;%2&quot; の理由によって既に追加されています</translation>
+    </message>
+    <message>
+        <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
+        <translation>&quot;%2&quot; のために不足している依存関係 &quot;%1&quot; を見つけることができませんでした。</translation>
+    </message>
+    <message>
         <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
-        <translation>再帰を検出しました、コンポーネント &apos;%1&apos; は、&apos;%2&apos; の理由によって既に追加されています</translation>
+        <translation type="vanished">再帰を検出しました、コンポーネント &apos;%1&apos; は、&apos;%2&apos; の理由によって既に追加されています</translation>
     </message>
     <message>
         <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
-        <translation>&apos;%2&apos; のために不足している依存関係 &apos;%1&apos; を見つけることができません。</translation>
+        <translation type="vanished">&apos;%2&apos; のために不足している依存関係 &apos;%1&apos; を見つけることができません。</translation>
     </message>
 </context>
 <context>
     <name>DirectoryGuard</name>
     <message>
         <source>Path exists but is not a folder: %1</source>
-        <translation>パスが存在していますが、フォルダではありません: %1</translation>
+        <translation type="vanished">パスが存在していますが、フォルダではありません: %1</translation>
     </message>
     <message>
         <source>Cannot create folder: %1</source>
-        <translation>フォルダを作成できませんでした: %1</translation>
+        <translation type="vanished">フォルダを作成できませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Path &quot;%1&quot; exists but is not a directory.</source>
+        <translation>パス &quot;%1&quot; が存在していますが、フォルダではありません。</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>フォルダ &quot;%1&quot; を作成できませんでした。</translation>
     </message>
 </context>
 <context>
     <name>QIODeviceSequentialOutStream</name>
     <message>
         <source>No device set for output stream</source>
-        <translation>ストリームを出力するデバイスが指定されていません</translation>
+        <translation type="vanished">ストリームを出力するデバイスが指定されていません</translation>
     </message>
 </context>
 <context>
     <name>OpenArchiveInfo</name>
     <message>
         <source>Cannot load codecs</source>
-        <translation>コーデックをロードできませんでした</translation>
+        <translation type="vanished">コーデックをロードできませんでした</translation>
     </message>
     <message>
         <source>Cannot retrieve default format</source>
-        <translation>デフォルトフォーマットを取得できませんでした</translation>
+        <translation type="vanished">デフォルトフォーマットを取得できませんでした</translation>
     </message>
     <message>
         <source>Cannot open archive</source>
-        <translation>アーカイブを開けませんでした</translation>
+        <translation type="vanished">アーカイブを開けませんでした</translation>
     </message>
     <message>
         <source>No CArc found</source>
-        <translation>CArc が見つかりません</translation>
+        <translation type="vanished">CArc が見つかりません</translation>
     </message>
 </context>
 <context>
     <name>Lib7z</name>
     <message>
         <source>Cannot retrieve number of items in archive</source>
-        <translation>アーカイブ内のアイテム数が取得できませんでした</translation>
+        <translation type="vanished">アーカイブ内のアイテム数が取得できませんでした</translation>
     </message>
     <message>
         <source>Cannot retrieve path of archive item %1</source>
-        <translation>アーカイブアイテム %1 のパスが取得できませんでした</translation>
+        <translation type="vanished">アーカイブアイテム %1 のパスが取得できませんでした</translation>
     </message>
     <message>
         <source>Unknown exception caught (%1)</source>
@@ -2383,59 +3129,139 @@ Do you want to continue?</source>
         <translation>エラー: %1</translation>
     </message>
     <message>
+        <source>Cannot retrieve property %1 for item %2.</source>
+        <translation>アイテム %2. からプロパティ %1 を取得できませんでした。</translation>
+    </message>
+    <message>
+        <source>Property %1 for item %2 not of type VT_FILETIME but %3.</source>
+        <translation>アイテム %2 のプロパティ %1 の型が VT_FILETIME ではなく %3. になっています。</translation>
+    </message>
+    <message>
+        <source>Cannot convert UTC file time to system time.</source>
+        <translation>UTCのファイルの時刻をシステムの時刻へ変換できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot load codecs.</source>
+        <translation>コーデックをロードできませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot;.</source>
+        <translation>アーカイブ &quot;%1&quot; を開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve number of items in archive.</source>
+        <translation>アーカイブ内のアイテム数が取得できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve path of archive item &quot;%1&quot;.</source>
+        <translation>アーカイブアイテム &quot;%1&quot; のパスが取得できませんでした。</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught (%1).</source>
+        <translation>未知の例外が発生しました (%1)。</translation>
+    </message>
+    <message>
+        <source>Cannot create temporary file: %1</source>
+        <translation>一時ファイルを作成できませんでした: %1</translation>
+    </message>
+    <message>
+        <source>Unsupported archive type.</source>
+        <translation>サポートされていないアーカイブ形式です。</translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;</source>
+        <translation>アーカイブ &quot;%1&quot; が作成できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>アーカイブ &quot;%1&quot; が作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove old archive &quot;%1&quot;: %2</source>
+        <translation>古いアーカイブ &quot;%1&quot; を削除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot rename temporary archive &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>一時アーカイブの名前を &quot;%1&quot; から &quot;%2&quot; へ変更できませんでした: %3</translation>
+    </message>
+    <message>
         <source>Cannot load codecs</source>
-        <translation>コーデックをロードできませんでした</translation>
+        <translation type="vanished">コーデックをロードできませんでした</translation>
     </message>
     <message>
         <source>Cannot retrieve default format</source>
-        <translation>デフォルトフォーマットを取得できませんでした</translation>
+        <translation type="vanished">デフォルトフォーマットを取得できませんでした</translation>
     </message>
     <message>
         <source>Cannot create archive %1. %2</source>
-        <translation>アーカイブ %1 が作成できませんでした: %2</translation>
+        <translation type="vanished">アーカイブ %1 が作成できませんでした: %2</translation>
     </message>
     <message>
         <source>CArc index %1 out of bounds [0, %2]</source>
-        <translation>CArc のインデックス %1 が範囲外です [0, %2]</translation>
+        <translation type="vanished">CArc のインデックス %1 が範囲外です [0, %2]</translation>
     </message>
     <message>
         <source>Item index %1 out of bounds [0, %2]</source>
-        <translation>アイテムのインデックス %1 が範囲外です [0, %2]</translation>
+        <translation type="vanished">アイテムのインデックス %1 が範囲外です [0, %2]</translation>
     </message>
     <message>
         <source>Cannot create output file for writing: %1</source>
-        <translation>書き込み用に出力ファイルを作成できませんでした: %1</translation>
+        <translation type="vanished">書き込み用に出力ファイルを作成できませんでした: %1</translation>
     </message>
     <message>
         <source>Could not convert path: %1.</source>
-        <translation>パスを変換できませんでした: %1</translation>
+        <translation type="vanished">パスを変換できませんでした: %1</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
         <source>Cannot retrieve path of archive item %1</source>
-        <translation>アーカイブアイテム %1 のパスが取得できませんでした</translation>
+        <translation type="vanished">アーカイブアイテム %1 のパスが取得できませんでした</translation>
     </message>
     <message>
         <source>Cannot remove already existing symlink. %1</source>
-        <translation>すでに存在するシンボリックリンクは削除できません: %1</translation>
+        <translation type="vanished">すでに存在するシンボリックリンクは削除できません: %1</translation>
     </message>
     <message>
         <source>Cannot open file: %1 (%2)</source>
-        <translation>ファイルが開けません: %1 (%2)</translation>
+        <translation type="vanished">ファイルが開けません: %1 (%2)</translation>
     </message>
     <message>
         <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
-        <translation>&apos;%1&apos; にシンボリックリンクを作成できませんでした。他のリンクがすでに存在します。</translation>
+        <translation type="vanished">&apos;%1&apos; にシンボリックリンクを作成できませんでした。他のリンクがすでに存在します。</translation>
     </message>
     <message>
         <source>Cannot read symlink target from file &apos;%1&apos;.</source>
-        <translation>シンボリックリンクの参照先のファイル &apos;%1&apos; を読み込み用に開けませんでした。</translation>
+        <translation type="vanished">シンボリックリンクの参照先のファイル &apos;%1&apos; を読み込み用に開けませんでした。</translation>
     </message>
     <message>
         <source>Cannot create symlink at %1. %2</source>
-        <translation>%1 にシンボリックリンクを作成できませんでした。 %2</translation>
+        <translation type="vanished">%1 にシンボリックリンクを作成できませんでした。 %2</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve path of archive item %1.</source>
+        <translation>アーカイブアイテム %1. のパスが取得できませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot remove already existing symlink %1.</source>
+        <translation>すでに存在するシンボリックリンクは削除できません: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create symlink at &quot;%1&quot;. Another one is already existing.</source>
+        <translation>&quot;%1&quot; にシンボリックリンクを作成できませんでした。他のリンクがすでに存在します。</translation>
+    </message>
+    <message>
+        <source>Cannot read symlink target from file &quot;%1&quot;.</source>
+        <translation>シンボリックリンクの参照先のファイル &quot;%1&quot; を読み込み用に開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Cannot create symlink at %1: %2</source>
+        <translation>%1 にシンボリックリンクを作成できませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -2447,6 +3273,10 @@ Do you want to continue?</source>
     <message>
         <source>Preparing meta information download...</source>
         <translation>メタ情報のダウンロードの準備...</translation>
+    </message>
+    <message>
+        <source>Unpacking compressed repositories. This may take a while...</source>
+        <translation>リポジトリを解凍中: この処理は時間がかかる場合があります ...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
@@ -2482,15 +3312,27 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
+        <translation type="vanished">&apos;%1&apos; の展開中にエラーが発生しました: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting %1.</source>
-        <translation>%1 の展開中に未知の例外が発生しました。</translation>
+        <translation type="vanished">%1 の展開中に未知の例外が発生しました。</translation>
     </message>
     <message>
         <source>Cannot open %1 for reading. Error: %2</source>
-        <translation>読み込み用に %1 を開けませんでした。エラー: %2</translation>
+        <translation type="vanished">読み込み用に %1 を開けませんでした。エラー: %2</translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>アーカイブ &quot;%1&quot; の展開中にエラーが発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; の展開中に未知の例外が発生しました。</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み込み用にファイル &quot;%1&quot; を開けませんでした: %2</translation>
     </message>
 </context>
 <context>
@@ -2544,35 +3386,35 @@ Do you want to continue?</source>
     <name>QtPatchOperation</name>
     <message>
         <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
+        <translation type="vanished">%0 に無効な引数: %1個の引数が渡されましたが、必要なのは%2です%3。</translation>
     </message>
     <message>
         <source>3 or 4</source>
-        <translation>3あるいは4個</translation>
+        <translation type="vanished">3あるいは4個</translation>
     </message>
     <message>
         <source>Needed installer object in &quot;%1&quot; operation is empty.</source>
-        <translation>&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
+        <translation type="vanished">&quot;%1&quot; のインストーラ作成に必要な操作が見つかりません。</translation>
     </message>
     <message>
         <source>First argument should be &apos;linux&apos;, &apos;mac&apos; or &apos;windows&apos;. No other type is supported at this time.</source>
-        <translation>最初の引数は &apos;linux&apos;, &apos;mac&apos;, &apos;windows&apos; のいずれかを指定してください。それ以外はサポートしていません。</translation>
+        <translation type="vanished">最初の引数は &apos;linux&apos;, &apos;mac&apos;, &apos;windows&apos; のいずれかを指定してください。それ以外はサポートしていません。</translation>
     </message>
     <message>
         <source>Cannot find the needed QmakeOutputInstallerKey(%1) value on the installer object. The ConsumeOutput operation on the valid qmake needs to be called first.</source>
-        <translation>インストーラに必要な QmakeOutputInstallerKey(%1) の値を見つけることができませんでした。適切な qmake で ConsumeOutput 操作を最初に実行する必要があります。</translation>
+        <translation type="vanished">インストーラに必要な QmakeOutputInstallerKey(%1) の値を見つけることができませんでした。適切な qmake で ConsumeOutput 操作を最初に実行する必要があります。</translation>
     </message>
     <message>
         <source>QMake from the current Qt version 
 (%1)is not existing. Please file a bugreport with this dialog at https://bugreports.qt-project.org.</source>
-        <translation>現在の Qt のバージョン(%1)の QMake が見つかりません。このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。</translation>
+        <translation type="vanished">現在の Qt のバージョン(%1)の QMake が見つかりません。このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。</translation>
     </message>
     <message>
         <source>The output of 
 %1 -query
 is not parseable. Please file a bugreport with this dialog https://bugreports.qt-project.org.
 output: &quot;%2&quot;</source>
-        <translation>以下の出力がパースできません。
+        <translation type="vanished">以下の出力がパースできません。
 %1 -query
 このダイアログから https://bugreports.qt-project.org へバグ報告をしてください。
 出力: &quot;%2&quot;</translation>
@@ -2580,12 +3422,12 @@ output: &quot;%2&quot;</source>
     <message>
         <source>Qt patch error: new Qt dir(%1)
 needs to be less than 255 characters.</source>
-        <translation>Qt パッチエラー: 新しい Qt のパス(%1)
+        <translation type="vanished">Qt パッチエラー: 新しい Qt のパス(%1)
 は255文字以下である必要があります。</translation>
     </message>
     <message>
         <source>Qt patch error: Can not open %1.(%2)</source>
-        <translation>Qt パッチエラー: %1 を開けません。(%2)</translation>
+        <translation type="vanished">Qt パッチエラー: %1 を開けません。(%2)</translation>
     </message>
     <message>
         <source>The installer was not able to get the unpatched path from 
@@ -2593,7 +3435,7 @@ needs to be less than 255 characters.</source>
 It tried to patch the Qt binaries, but all other files in Qt are unpatched.
 This could result in a broken Qt version.
 Sometimes it helps to restart the installer with a switched off antivirus software.</source>
-        <translation>インストーラはパッチ未適用時のパスを %1 から取得できませんでした。
+        <translation type="vanished">インストーラはパッチ未適用時のパスを %1 から取得できませんでした。
 (おそらくファイルが壊れているか削除されています)
 Qt のバイナリにパッチを適用しようとしましたが、Qt の他のすべてのファイルに対してパッチは適用されていません。
 このため、この Qt は正常な状態に無い可能性があります。
@@ -2608,12 +3450,34 @@ Qt のバイナリにパッチを適用しようとしましたが、Qt の他�
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights.
+Or accept the elevation of access rights if being asked.</source>
+        <translation>インストールの継続に必要な認証ができませんでした。
+
+適切な権限を持ったユーザーでセットアッププログラムを実行するか、
+権限昇格を確認されたときに承認してください。</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
+ Either abort the installation or use the fallback solution by running
+
+%1
+
+as a user with the appropriate rights and then clicking OK.</source>
+        <translation>インストールの継続に必要な認証ができませんでした。
+インストールを「中止」するか、別の手段として適切な権限を持ったユーザーで
+%1
+を実行した後に「OK」をクリックしてください。</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
 
 as root and then clicking OK.</source>
-        <translation>インストールの継続に必要な認証ができませんでした。
+        <translation type="vanished">インストールの継続に必要な認証ができませんでした。
 インストールを「中止」するか、別の手段として root で
 %1
 を実行した後に「OK」をクリックしてください。</translation>
@@ -2630,26 +3494,76 @@ as root and then clicking OK.</source>
     <name>QInstaller::RemoteServerConnection</name>
     <message>
         <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
+        <translation type="vanished">コマンドを送信した後、すべてのデータを読み込めませんでした: %1。想定バイト数: %2 、受信バイト数: %3。エラー: %4</translation>
     </message>
 </context>
 <context>
     <name>LockFile</name>
     <message>
         <source>Cannot create lock file &apos;%1&apos;: %2</source>
-        <translation>ロックファイル &apos;%1&apos; を作成できませんでした: %2</translation>
+        <translation type="vanished">ロックファイル &apos;%1&apos; を作成できませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
-        <translation>ロックファイル &apos;%1&apos; に PID を書き込めませんでした: %2</translation>
+        <translation type="vanished">ロックファイル &apos;%1&apos; に PID を書き込めませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
-        <translation>ファイル &apos;%1&apos; をロックできませんでした: %2</translation>
+        <translation type="vanished">ファイル &apos;%1&apos; をロックできませんでした: %2</translation>
     </message>
     <message>
         <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
-        <translation>ファイル &apos;%1&apos; のロックを解除できませんでした: %2</translation>
+        <translation type="vanished">ファイル &apos;%1&apos; のロックを解除できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create lock file &quot;%1&quot;: %2</source>
+        <translation>ロックファイル &quot;%1&quot; を作成できませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write PID to lock file &quot;%1&quot;: %2</source>
+        <translation>ロックファイル &quot;%1&quot; に PID を書き込めませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot obtain the lock for file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; をロックできませんでした: %2</translation>
+    </message>
+    <message>
+        <source>Cannot release the lock for file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; のロックを解除できませんでした: %2</translation>
+    </message>
+</context>
+<context>
+    <name>LocalPackageHub</name>
+    <message>
+        <source>%1 contains invalid content: %2</source>
+        <translation>%1 に無効なコンテンツが含まれています: %2</translation>
+    </message>
+    <message>
+        <source>The file %1 does not exist.</source>
+        <translation>ファイル %1 が存在しません。</translation>
+    </message>
+    <message>
+        <source>Cannot open %1.</source>
+        <translation>%1 を開けませんでした。</translation>
+    </message>
+    <message>
+        <source>Parse error in %1 at %2, %3: %4</source>
+        <translation>パースエラー %1 の%2行%3列: %4</translation>
+    </message>
+    <message>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>ルートエレメントに %1 は使用できません。&apos;Packages&apos;を使用してください。</translation>
+    </message>
+</context>
+<context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation>%1 を待機中</translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>別のインスタンス %1 が既に実行中です。終了するのを待つか、システムを再起動してください。</translation>
     </message>
 </context>
 </TS>
