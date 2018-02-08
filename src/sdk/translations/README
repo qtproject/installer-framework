@@ -2,9 +2,9 @@ You need to have a Qt translation for your new language,
 otherwise your language won't be loaded at runtime.
 
 To add a new language:
-1) Run 'cd src/sdk' (change to the parent directory of this file)
+1) Run 'cd src/sdk/translations' (change to the parent directory of this file)
 2) Run 'make ts-untranslated'
-3) Rename translations/ifw_untranslated.ts to translations/ifw_<lang>.ts
+3) Rename ifw_untranslated.ts to ifw_<lang>.ts
 4) Run 'make qmake'
 5) Do your translation. Just run 'make' whenever you want to test it.
 6) Run 'make commit-ts'
