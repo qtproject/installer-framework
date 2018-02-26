@@ -1,0 +1,6 @@
+Shows how to register virtual component to uninstall in component script.
+
+Generate installer with
+
+binarycreator --offline-only -c config/config.xml -p packages installer
+

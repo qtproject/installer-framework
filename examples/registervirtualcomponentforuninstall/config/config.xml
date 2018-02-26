@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Register Component to Uninstall Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Register Component to Uninstall Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/registercomponenttouninstall</TargetDir>
+    <ControlScript>controller.qs</ControlScript>
+</Installer>

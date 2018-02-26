@@ -311,6 +311,7 @@ public:
     Q_INVOKABLE void selectComponent(const QString &id);
     Q_INVOKABLE void deselectComponent(const QString &id);
     Q_INVOKABLE void allowCompressedRepositoryInstall();
+    Q_INVOKABLE bool addVirtualComponentToUninstall(const QString &name);
 
 protected:
     void entering();
