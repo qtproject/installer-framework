@@ -29,6 +29,8 @@
 #include "updateoperations.h"
 #include "errors.h"
 #include "fileutils.h"
+#include "constants.h"
+#include "packagemanagercore.h"
 
 #include <QDir>
 #include <QFile>
@@ -462,6 +464,11 @@ bool MkdirOperation::undoOperation()
     Q_ASSERT(arguments().count() == 1);
 
     QString createdDirValue = value(QLatin1String("createddir")).toString();
+    if (packageManager()) {
+        createdDirValue = QInstaller::replacePath(createdDirValue,
+            QLatin1String(QInstaller::scRelocatable), packageManager()->value(QInstaller::scTargetDir));
+    }
+
     if (createdDirValue.isEmpty())
         createdDirValue = arguments().first();
     QDir createdDir = QDir(createdDirValue);

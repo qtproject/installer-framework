@@ -4,6 +4,11 @@ TARGET = installerbase
 
 include(../../installerfw.pri)
 
+!isEmpty(SQUISH_PATH) {
+    DEFINES += ENABLE_SQUISH
+    include($$SQUISH_PATH/qtbuiltinhook.pri)
+}
+
 QT += network qml xml widgets
 # add the minimal plugin in static build to be able to start the installer headless with:
 # installer-binary --platform minimal
