@@ -1,4 +1,3 @@
-include($QT_INSTALL_DOCS/global/macros.qdocconf)
 include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
 include($QT_INSTALL_DOCS/global/compat.qdocconf)
 include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
@@ -44,6 +43,11 @@ qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Ma
 qhp.InstallerFramework.subprojects.manual.type = manual
 
 macro.ifwversion = $IFW_VERSION
+
+# commands borrowed from qtbase/doc/global/macros.qdocconf
+
+macro.gui               = "\\b"
+macro.key               = "\\b"
 
 # Doxygen compatibility commands
 
