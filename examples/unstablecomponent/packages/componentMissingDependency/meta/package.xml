@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>ComponentMissingDependency</DisplayName>
+    <Description>This component depends on component which does not exists. User is not able to select this component for install.</Description>
+    <Dependencies>componentDoesnotExists</Dependencies>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2018-02-02</ReleaseDate>
+    <SortingPriority>80</SortingPriority>
+</Package>

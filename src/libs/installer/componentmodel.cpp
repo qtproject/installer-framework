@@ -222,13 +222,14 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
                 return component->data(Qt::UserRole + index.column());
         }
         if (role == Qt::CheckStateRole) {
-            if (!component->isCheckable())
-                return QVariant();
-            if (!component->autoDependencies().isEmpty())
+            if (!component->isCheckable() || !component->autoDependencies().isEmpty() || component->isUnstable())
                 return QVariant();
         }
         if (role == ComponentModelHelper::ExpandedByDefault) {
             return component->isExpandedByDefault();
+        }
+        if (component->isUnstable() && role == Qt::ForegroundRole) {
+            return QVariant(QColor(Qt::lightGray));
         }
         return component->data(role);
     }

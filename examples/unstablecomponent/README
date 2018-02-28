@@ -1,0 +1,5 @@
+Shows how to setup an installer that allows install even if there are broken components
+
+Generate installer with:
+
+binarycreator -c config/config.xml -p packages installer

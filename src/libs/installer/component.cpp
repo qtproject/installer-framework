@@ -67,6 +67,7 @@ static const QLatin1String scCurrentState("CurrentState");
 static const QLatin1String scForcedInstallation("ForcedInstallation");
 static const QLatin1String scCheckable("Checkable");
 static const QLatin1String scExpandedByDefault("ExpandedByDefault");
+static const QLatin1String scUnstable("Unstable");
 
 /*!
     \inmodule QtInstallerFramework
@@ -511,9 +512,29 @@ void Component::loadComponentScript(const QString &fileName)
 {
     // introduce the component object as javascript value and call the name to check that it
     // was successful
-    d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
-        QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
-        .arg(name()));
+    try {
+        d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
+            QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
+            .arg(name()));
+        if (packageManagerCore()->settings().allowUnstableComponents()) {
+            // Check if component has dependency to a broken component. Dependencies to broken
+            // components are checked if error is thrown but if dependency to a broken
+            // component is added in script, the script might not be loaded yet
+            foreach (QString dependency, dependencies()) {
+                Component *dependencyComponent = packageManagerCore()->componentByName
+                        (PackageManagerCore::checkableName(dependency));
+                if (dependencyComponent && dependencyComponent->isUnstable())
+                    setUnstable();
+            }
+        }
+    } catch (const Error &error) {
+        if (packageManagerCore()->settings().allowUnstableComponents()) {
+            setUnstable();
+            qWarning() << error.message();
+        } else {
+            throw error;
+        }
+    }
 
     emit loaded();
     languageChanged();
@@ -1008,6 +1029,13 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     return operation;
 }
 
+void Component::markComponentUnstable()
+{
+    setValue(scDefault, scFalse);
+    setCheckState(Qt::Unchecked);
+    setValue(scUnstable, scTrue);
+}
+
 namespace {
 
 inline bool convert(QQmlV4Function *func, QStringList *toArgs)
@@ -1339,6 +1367,31 @@ bool Component::isUninstalled() const
     return scUninstalled == d->m_vars.value(scCurrentState);
 }
 
+bool Component::isUnstable() const
+{
+    return scTrue == d->m_vars.value(scUnstable);
+}
+
+void Component::setUnstable()
+{
+    QList<Component*> dependencies = d->m_core->dependees(this);
+    // Mark this component unstable
+    markComponentUnstable();
+
+    // Marks all components unstable that depend on the unstable component
+    foreach (Component *dependency, dependencies) {
+        dependency->markComponentUnstable();
+        foreach (Component *descendant, dependency->descendantComponents()) {
+            descendant->markComponentUnstable();
+        }
+    }
+
+    // Marks all child components unstable
+    foreach (Component *descendant, this->descendantComponents()) {
+        descendant->markComponentUnstable();
+    }
+}
+
 /*!
     Returns whether the user wants to uninstall the component.
 
@@ -1424,13 +1477,21 @@ void Component::updateModelData(const QString &key, const QString &data)
 
     const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        const QString tooltipText
+        QString tooltipText
                 = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
+        if (isUnstable()) {
+            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                          "This component can not be installed.");
+        }
         setData(tooltipText, Qt::ToolTipRole);
     } else {
-        const QString tooltipText
+        QString tooltipText
                 = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
                 + tr("Update Info: ") + updateInfo;
+        if (isUnstable()) {
+            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                          "This component can not be updated.");
+        }
 
         setData(tooltipText, Qt::ToolTipRole);
     }

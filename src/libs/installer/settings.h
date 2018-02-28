@@ -154,6 +154,9 @@ public:
 
     bool supportsModify() const;
 
+    bool allowUnstableComponents() const;
+    void setAllowUnstableComponents(bool allow);
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

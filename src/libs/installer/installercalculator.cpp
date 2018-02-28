@@ -30,6 +30,7 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
+#include "settings.h"
 
 #include <QDebug>
 
@@ -94,7 +95,8 @@ QString InstallerCalculator::componentsToInstallError() const
 
 void InstallerCalculator::realAppendToInstallComponents(Component *component, const QString &version)
 {
-    if (!component->isInstalled(version) || component->updateRequested()) {
+    if (!component->isUnstable() &&
+            (!component->isInstalled(version) || component->updateRequested())) {
         m_orderedComponentsToInstall.append(component);
         m_toInstallComponentIds.insert(component->name());
     }
@@ -169,7 +171,12 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
                 component->name());
             qWarning().noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
-            return false;
+            if (component->packageManagerCore()->settings().allowUnstableComponents()) {
+                component->setUnstable();
+                return true;
+            } else {
+                return false;
+            }
         }
         //Check if component requires higher version than what might be already installed
         bool isUpdateRequired = false;

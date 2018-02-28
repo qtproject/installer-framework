@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>Component depends on ComponentWithInvalidScript)</DisplayName>
+    <Description>Depends on component with invalid script. User is not able to select this component for install.</Description>
+    <Default>true</Default>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2018-02-02</ReleaseDate>
+    <Script>installscript.js</Script>
+    <SortingPriority>30</SortingPriority>
+</Package>

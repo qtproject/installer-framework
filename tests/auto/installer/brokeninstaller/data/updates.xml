@@ -1,0 +1,163 @@
+<Updates>
+    <ApplicationName>Your application</ApplicationName>
+    <ApplicationVersion>1.2.3</ApplicationVersion>
+    <Checksum>true</Checksum>
+    <PackageUpdate>
+        <Name>componentinvalidscript</Name>
+        <DisplayName>Invalid script component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentb</Name>
+        <DisplayName>The second root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentc</Name>
+        <DisplayName>The third root component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentc.subnode</Name>
+        <DisplayName>A subcomponent for the third root, dependency to component with invalid script</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>1</SortingPriority>
+        <Dependencies>componentinvalidscript</Dependencies>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentc.subnode.sub</Name>
+        <DisplayName>A subcomponent for the third roots subcomponent</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <Default>true</Default>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentmissingdependency</Name>
+        <DisplayName>A component that has missing sha</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+   <PackageUpdate>
+        <Name>componentd</Name>
+        <DisplayName>Component that depends on component which is missing dependency</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentmissingcontent</Name>
+        <DisplayName>A component which is missing 7z</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <SortingPriority>0</SortingPriority>
+        <DownloadableArchives>content.7z</DownloadableArchives>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentmissingcontent.sub</Name>
+        <DisplayName>A subcomponent of component which is missing 7z</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Checkable>true</Checkable>
+        <Default>true</Default>
+        <Script>installscript.qs</Script>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+    <PackageUpdate>
+        <Name>componentE</Name>
+        <DisplayName>A component which is dependent on subcomponent of missing 7z component</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <Script>installscript.qs</Script>
+        <Checkable>true</Checkable>
+        <Default>true</Default>
+        <Dependencies>componentmissingcontent.sub</Dependencies>
+        <UpdateFile UncompressedSize="61"
+                    CompressedSize="61"/>
+        <Licenses>
+            <License name="Beer Public License Agreement"
+                     file="license.txt"/>
+        </Licenses>
+    </PackageUpdate>
+</Updates>

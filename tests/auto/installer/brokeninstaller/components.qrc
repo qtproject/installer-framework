@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/updates.xml</file>
+        <file>data/broken_script.qs</file>
+    </qresource>
+</RCC>

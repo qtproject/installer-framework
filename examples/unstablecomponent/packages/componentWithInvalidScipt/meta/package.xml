@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<Package>
+    <DisplayName>ComponentWithInvalidScript</DisplayName>
+    <Description>This component has an invalid script. User is not able to select this component for install.</Description>
+    <Version>1.0.0</Version>
+    <ReleaseDate>2018-02-02</ReleaseDate>
+    <SortingPriority>100</SortingPriority>
+    <Script>installscript.js</Script>
+</Package>

@@ -62,6 +62,7 @@ class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
     Q_PROPERTY(bool default READ isDefault)
     Q_PROPERTY(bool installed READ isInstalled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
+    Q_PROPERTY(bool unstable READ isUnstable)
 
 public:
     explicit Component(PackageManagerCore *core);
@@ -182,6 +183,8 @@ public:
 
     Q_INVOKABLE bool componentChangeRequested();
 
+    bool isUnstable() const;
+    void setUnstable();
 
     bool isVirtual() const;
     bool isSelected() const;
@@ -212,6 +215,7 @@ private:
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
     Operation *createOperation(const QString &operationName, const QStringList &parameters);
+    void markComponentUnstable();
 
 private:
     QString validatorCallbackName;

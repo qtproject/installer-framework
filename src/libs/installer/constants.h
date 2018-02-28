@@ -89,6 +89,7 @@ static const QLatin1String scUrlQueryString("UrlQueryString");
 static const QLatin1String scProductUUID("ProductUUID");
 static const QLatin1String scAllUsers("AllUsers");
 static const QLatin1String scSupportsModify("SupportsModify");
+static const QLatin1String scAllowUnstableComponents("AllowUnstableComponents");
 
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 

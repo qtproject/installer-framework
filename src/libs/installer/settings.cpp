@@ -256,7 +256,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
-                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify;
+                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -325,7 +325,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scCreateLocalRepository, false);
     if (!s.d->m_data.contains(scInstallActionColumnVisible))
         s.d->m_data.insert(scInstallActionColumnVisible, false);
-
+    if (!s.d->m_data.contains(scAllowUnstableComponents))
+        s.d->m_data.insert(scAllowUnstableComponents, false);
     return s;
 }
 
@@ -742,4 +743,14 @@ QString Settings::controlScript() const
 bool Settings::supportsModify() const
 {
     return d->m_data.value(scSupportsModify, true).toBool();
+}
+
+bool Settings::allowUnstableComponents() const
+{
+    return d->m_data.value(scAllowUnstableComponents, true).toBool();
+}
+
+void Settings::setAllowUnstableComponents(bool allow)
+{
+    d->m_data.insert(scAllowUnstableComponents, allow);
 }
