@@ -1176,7 +1176,6 @@ bool PackageManagerCore::fetchCompressedPackagesTree()
     return fetchPackagesTree(packages, installedPackages);
 }
 
-
 /*!
     Checks for packages to install. Returns \c true if newer versions exist
     and they can be installed.

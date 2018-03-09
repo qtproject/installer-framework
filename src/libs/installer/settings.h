@@ -31,6 +31,7 @@
 
 #include "constants.h"
 #include "installer_global.h"
+#include "repositorycategory.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSharedDataPointer>
@@ -114,8 +115,10 @@ public:
     QSet<Repository> repositories() const;
 
     QSet<Repository> defaultRepositories() const;
+    QSet<RepositoryCategory> repositoryCategories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
+    void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
     Settings::Update updateDefaultRepositories(const RepoHash &updates);
 
     QSet<Repository> temporaryRepositories() const;
@@ -159,6 +162,9 @@ public:
 
     bool saveDefaultRepositories() const;
     void setSaveDefaultRepositories(bool save);
+
+    QString repositoryCategoryDisplayName() const;
+    void setRepositoryCategoryDisplayName(const QString &displayName);
 
 private:
     class Private;

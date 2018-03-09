@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,6 +46,12 @@ struct Metadata
     Repository repository;
 };
 
+struct ArchiveMetadata
+{
+    QString archive;
+    Metadata metaData;
+};
+
 class INSTALLER_EXPORT MetadataJob : public Job
 {
     Q_OBJECT
@@ -61,7 +67,7 @@ public:
     explicit MetadataJob(QObject *parent = 0);
     ~MetadataJob();
 
-    QList<Metadata> metadata() const { return m_metadata.values(); }
+    QList<Metadata> metadata() const;
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
     void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
@@ -85,13 +91,13 @@ private:
     void reset();
     void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
+    QSet<Repository> getRepositories();
 
 private:
     PackageManagerCore *m_core;
 
     QList<FileTaskItem> m_packages;
     TempDirDeleter m_tempDirDeleter;
-    QHash<QString, Metadata> m_metadata;
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
@@ -103,6 +109,9 @@ private:
     int m_taskNumber;
     int m_totalTaskCount;
     QStringList m_shaMissmatchPackages;
+    QHash<QString, ArchiveMetadata> m_fetchedArchive;
+    QHash<QString, Metadata> m_metaFromDefaultRepositories;
+    QHash<QString, Metadata> m_metaFromArchive; //for faster lookups.
 };
 
 }   // namespace QInstaller

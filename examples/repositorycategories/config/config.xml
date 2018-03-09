@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Repository category Installer Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Repository category Installer Example</Title>
+    <Publisher>The Qt Company</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/repositoryCategories</TargetDir>
+    <RemoteRepositories>
+        <Repository>
+            <Url>http://localhost/repository</Url>
+        </Repository>
+    </RemoteRepositories>
+    <RepositoryCategories>
+        <RepositoryCategoryDisplayname>Releases</RepositoryCategoryDisplayname>
+        <RemoteRepositories>
+            <DisplayName>Category 1</DisplayName>
+            <Repository>
+                <Url>http://localhost/repository1</Url>
+            </Repository>
+            <Repository>
+                <Url>http://localhost/repository2</Url>
+            </Repository>
+        </RemoteRepositories>
+        <RemoteRepositories>
+            <DisplayName>Category 2</DisplayName>
+            <Repository>
+                <Url>http://localhost/repository3</Url>
+            </Repository>
+        </RemoteRepositories>
+    </RepositoryCategories>
+</Installer>

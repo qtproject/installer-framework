@@ -39,6 +39,7 @@
 #include "utils.h"
 #include "scriptengine.h"
 #include "productkeycheck.h"
+#include "repositorycategory.h"
 
 #include "sysinfo.h"
 
@@ -71,6 +72,7 @@
 #include <QVBoxLayout>
 #include <QShowEvent>
 #include <QFileDialog>
+#include <QGroupBox>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -1863,6 +1865,8 @@ public:
         , m_updaterModel(m_core->updaterComponentModel())
         , m_currentModel(m_allModel)
         , m_compressedButtonVisible(false)
+        , m_allowCompressedRepositoryInstall(false)
+        , m_archiveButtonVisible(false)
     {
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
@@ -1871,32 +1875,42 @@ public:
         connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)),
             this, SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
 
-        QHBoxLayout *hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_treeView, 3);
+        m_descriptionVLayout = new QVBoxLayout;
+        m_descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
 
         m_descriptionLabel = new QLabel(q);
         m_descriptionLabel->setWordWrap(true);
         m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-
-        m_vlayout = new QVBoxLayout;
-        m_vlayout->setObjectName(QLatin1String("VerticalLayout"));
-        m_vlayout->addWidget(m_descriptionLabel);
+        m_descriptionVLayout->addWidget(m_descriptionLabel);
 
         m_sizeLabel = new QLabel(q);
         m_sizeLabel->setWordWrap(true);
-        m_vlayout->addWidget(m_sizeLabel);
         m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-
-#ifdef INSTALLCOMPRESSED
-        allowCompressedRepositoryInstall();
-#endif
-        m_vlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
+        m_descriptionVLayout->addWidget(m_sizeLabel);
+        m_descriptionVLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
             QSizePolicy::MinimumExpanding));
-        hlayout->addLayout(m_vlayout, 2);
 
-        QVBoxLayout *layout = new QVBoxLayout(q);
-        layout->addLayout(hlayout, 1);
+        m_mainHLayout = new QHBoxLayout;
 
+        m_treeViewVLayout = new QVBoxLayout;
+        m_treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
+
+        m_bspLabel = new QLabel();
+        m_bspLabel->hide();
+        m_treeViewVLayout->addWidget(m_bspLabel);
+
+        m_progressBar = new QProgressBar();
+        m_progressBar->setRange(0, 0);
+        m_progressBar->hide();
+        m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
+        m_treeViewVLayout->addWidget(m_progressBar);
+
+        connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
+        connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
+        connect(m_core, &PackageManagerCore::metaJobTotalProgress, this,
+                &ComponentSelectionPage::Private::setTotalProgress);
+
+        m_buttonHLayout = new QHBoxLayout;
         m_checkDefault = new QPushButton;
         connect(m_checkDefault, &QAbstractButton::clicked,
                 this, &ComponentSelectionPage::Private::selectDefault);
@@ -1912,62 +1926,93 @@ public:
                 "reset to already installed components")));
             m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
         }
-        hlayout = new QHBoxLayout;
-        hlayout->addWidget(m_checkDefault);
+        m_buttonHLayout->addWidget(m_checkDefault);
 
         m_checkAll = new QPushButton;
-        hlayout->addWidget(m_checkAll);
         connect(m_checkAll, &QAbstractButton::clicked,
                 this, &ComponentSelectionPage::Private::selectAll);
         m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
         m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
             "select all components")));
         m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
+        m_buttonHLayout->addWidget(m_checkAll);
 
         m_uncheckAll = new QPushButton;
-        hlayout->addWidget(m_uncheckAll);
         connect(m_uncheckAll, &QAbstractButton::clicked,
                 this, &ComponentSelectionPage::Private::deselectAll);
         m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
         m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
             "deselect all components")));
         m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
+        m_buttonHLayout->addWidget(m_uncheckAll);
 
-        hlayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-            QSizePolicy::MinimumExpanding));
-        layout->addLayout(hlayout);
+        m_treeViewVLayout->addLayout(m_buttonHLayout);
+        m_treeViewVLayout->addWidget(m_treeView, 3);
+
+        m_mainHLayout->addLayout(m_treeViewVLayout, 3);
+        m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+        QVBoxLayout *layout = new QVBoxLayout(q);
+        layout->addLayout(m_mainHLayout, 1);
+
+#ifdef INSTALLCOMPRESSED
+    allowCompressedRepositoryInstall();
+#endif
     }
 
     void allowCompressedRepositoryInstall()
     {
-        if (m_compressedButtonVisible) {
+        m_allowCompressedRepositoryInstall = true;
+    }
+
+    void showCompressedRepositoryButton()
+    {
+        if (m_compressedButtonVisible || !m_allowCompressedRepositoryInstall) {
             return;
         }
-
         connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
         connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
 
-        m_bspLabel = new QLabel(ComponentSelectionPage::tr("To install new "\
-                "compressed repository, browse the repositories from your computer"),q);
-        m_bspLabel->setWordWrap(true);
-        m_bspLabel->setObjectName(QLatin1String("CompressedButtonLabel"));
-
-        m_vlayout->addSpacing(50);
-        m_vlayout->addWidget(m_bspLabel);
-
-        m_progressBar = new QProgressBar();
-        m_progressBar->setRange(0, 0);
-        m_progressBar->hide();
-        m_vlayout->addWidget(m_progressBar);
-        m_progressBar->setObjectName(QLatin1String("CompressedInstallProgressBar"));
-
-        m_installCompressButton = new QPushButton;
-        connect(m_installCompressButton, &QAbstractButton::clicked,
-                this, &ComponentSelectionPage::Private::selectCompressedPackage);
-        m_installCompressButton->setObjectName(QLatin1String("InstallCompressedPackageButton"));
-        m_installCompressButton->setText(ComponentSelectionPage::tr("&Browse QBSP files"));
-        m_vlayout->addWidget(m_installCompressButton);
+        QWizard *wizard = qobject_cast<QWizard*>(m_core->guiObject());
+        if (wizard) {
+            wizard->setOption(QWizard::HaveCustomButton2, true);
+            wizard->setButtonText(QWizard::CustomButton2,
+                    ComponentSelectionPage::tr("&Browse QBSP files"));
+            connect(wizard, &QWizard::customButtonClicked,
+                    this, &ComponentSelectionPage::Private::selectCompressedPackage);
+            q->gui()->updateButtonLayout();
+        }
         m_compressedButtonVisible = true;
+    }
+
+    void setupArchiveButton()
+    {
+        if (m_archiveButtonVisible)
+            return;
+        QVBoxLayout *vLayout = new QVBoxLayout;
+        m_archiveVLayout = new QVBoxLayout;
+        m_archiveGroupBox = new QGroupBox(q);
+        m_archiveGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
+        QVBoxLayout *groupboxLayout = new QVBoxLayout(m_archiveGroupBox);
+
+        m_fetchArchiveButton = new QPushButton(tr("Fetch"));
+        connect(m_fetchArchiveButton, &QPushButton::clicked, this,
+                &ComponentSelectionPage::Private::fetchRepositoryCategories);
+        foreach (RepositoryCategory repository, m_core->settings().repositoryCategories()) {
+            QCheckBox *checkBox = new QCheckBox;
+            connect(checkBox, &QCheckBox::stateChanged, this,
+                    &ComponentSelectionPage::Private::checkboxStateChanged);
+            checkBox->setText(repository.displayname());
+            groupboxLayout->addWidget(checkBox);
+        }
+        m_archiveVLayout->insertWidget(0, m_archiveGroupBox);
+
+        m_metadataProgressLabel = new QLabel(q);
+        m_archiveVLayout->addWidget(m_metadataProgressLabel);
+        vLayout->addWidget(m_archiveGroupBox);
+        vLayout->addWidget(m_fetchArchiveButton);
+        vLayout->addStretch();
+        m_mainHLayout->insertLayout(0, vLayout);
+        m_archiveButtonVisible = true;
     }
 
     void updateTreeView()
@@ -2061,6 +2106,77 @@ public slots:
         m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
     }
 
+    void checkboxStateChanged()
+    {
+        QList<QCheckBox*> checkboxes = m_archiveGroupBox->findChildren<QCheckBox *>();
+        bool enableFetchButton = false;
+        foreach (QCheckBox *checkbox, checkboxes) {
+            if (checkbox->isChecked()) {
+                enableFetchButton = true;
+                break;
+            }
+        }
+    }
+
+    void enableArchiveRepos(int index, bool enable) {
+        RepositoryCategory archiveRepo = m_core->settings().repositoryCategories().toList().at(index);
+        RepositoryCategory replacement = archiveRepo;
+        replacement.setEnabled(enable);
+        QSet<RepositoryCategory> tmpArchiveRepos = m_core->settings().repositoryCategories();
+        if (tmpArchiveRepos.contains(archiveRepo)) {
+            tmpArchiveRepos.remove(archiveRepo);
+            tmpArchiveRepos.insert(replacement);
+            m_core->settings().addRepositoryCategories(tmpArchiveRepos);
+        }
+    }
+
+    void updateWidgetVisibility(bool show)
+    {
+        if (show) {
+            QSpacerItem *verticalSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum,
+                                                           QSizePolicy::Expanding);
+            m_treeViewVLayout->addSpacerItem(verticalSpacer2);
+        } else {
+            QSpacerItem *item = m_treeViewVLayout->spacerItem();
+            m_treeViewVLayout->removeItem(item);
+        }
+        m_fetchArchiveButton->setDisabled(show);
+        m_progressBar->setVisible(show);
+        m_bspLabel->setVisible(show);
+        m_archiveGroupBox->setDisabled(show);
+
+        m_treeView->setVisible(!show);
+        m_checkDefault->setVisible(!show);
+        m_checkAll->setVisible(!show);
+        m_uncheckAll->setVisible(!show);
+        m_descriptionLabel->setVisible(!show);
+        QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
+        b->setEnabled(!show);
+
+        if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
+            bspButton->setEnabled(!show);
+    }
+
+    void fetchRepositoryCategories()
+    {
+        updateWidgetVisibility(true);
+
+        QCheckBox *checkbox;
+        QList<QCheckBox*> checkboxes = m_archiveGroupBox->findChildren<QCheckBox *>();
+        for (int i = 0; i < checkboxes.count(); i++) {
+            checkbox = checkboxes.at(i);
+            enableArchiveRepos(i, checkbox->isChecked());
+        }
+
+        if (!m_core->fetchRemotePackagesTree()) {
+            m_metadataProgressLabel->setText(m_core->error());
+        } else {
+            updateTreeView();
+            m_metadataProgressLabel->setText(QLatin1String());
+        }
+        updateWidgetVisibility(false);
+    }
+
     void selectCompressedPackage()
     {
         QString defaultDownloadDirectory =
@@ -2076,10 +2192,7 @@ public slots:
             set.insert(repository);
         }
         if (set.count() > 0) {
-            m_progressBar->show();
-            m_installCompressButton->hide();
-            QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
-            b->setEnabled(false);
+            updateWidgetVisibility(true);
             m_core->settings().addTemporaryRepositories(set, false);
             if (!m_core->fetchCompressedPackagesTree()) {
                 setMessage(m_core->error());
@@ -2089,11 +2202,8 @@ public slots:
                 setMessage(ComponentSelectionPage::tr("To install new "\
                     "compressed repository, browse the repositories from your computer"));
             }
-
-            m_progressBar->hide();
-            m_installCompressButton->show();
-            b->setEnabled(true);
         }
+        updateWidgetVisibility(false);
     }
 
     /*!
@@ -2112,6 +2222,12 @@ public slots:
         QWizardPage *page = q->gui()->currentPage();
         if (m_bspLabel && page && page->objectName() == QLatin1String("ComponentSelectionPage"))
             m_bspLabel->setText(msg);
+    }
+
+    void setTotalProgress(int totalProgress)
+    {
+        if (m_progressBar)
+            m_progressBar->setRange(0, totalProgress);
     }
 
     void selectDefault()
@@ -2152,10 +2268,19 @@ public:
     QPushButton *m_uncheckAll;
     QPushButton *m_checkDefault;
     QPushButton *m_installCompressButton;
+    QGroupBox *m_archiveGroupBox;
+    QPushButton *m_fetchArchiveButton;
     QLabel *m_bspLabel;
+    QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
-    QVBoxLayout *m_vlayout;
+    QVBoxLayout *m_descriptionVLayout;
+    QHBoxLayout *m_mainHLayout;
+    QVBoxLayout *m_treeViewVLayout;
+    QVBoxLayout *m_archiveVLayout;
+    QHBoxLayout *m_buttonHLayout;
     bool m_compressedButtonVisible;
+    bool m_allowCompressedRepositoryInstall;
+    bool m_archiveButtonVisible;
 };
 
 
@@ -2211,6 +2336,21 @@ void ComponentSelectionPage::entering()
 
     d->updateTreeView();
     setModified(isComplete());
+    if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
+        && !core->isUpdater()) {
+        d->setupArchiveButton();
+    }
+    d->showCompressedRepositoryButton();
+}
+
+void ComponentSelectionPage::leaving()
+{
+    QWizard *wizard = qobject_cast<QWizard*>(d->m_core->guiObject());
+    if (wizard && (gui()->options() & QWizard::HaveCustomButton2)) {
+        wizard->setOption(QWizard::HaveCustomButton2, false);
+        gui()->updateButtonLayout();
+        d->m_compressedButtonVisible = false;
+    }
 }
 
 /*!

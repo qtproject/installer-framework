@@ -266,6 +266,10 @@
                 elements that each contain the \c <Url> child element that specifies the URL to
                 access the repository. For more information,  see \l{Configuring Repositories}.
         \row
+            \li RepositoryCategories
+            \li Name of a category that can contain a list of \c <RemoteRepositories> child elements.
+                For more information,  see \l{Configuring Repository Categories}.
+        \row
             \li MaintenanceToolName
             \li Filename of the generated maintenance tool. Defaults to
                 \e maintenancetool. The platform-specific executable file extension is
@@ -1114,6 +1118,36 @@
     text. Authentication details not set here will be gotten at runtime using a dialog.
     The user can work around these settings at runtime.
 
+    \section1 Configuring Repository Categories
+
+    The \c <RepositoryCategory> element in the installer configuration file
+    (config.xml) can contain a list of several \c <RemoteRepositories> elements. Each \c <RemoteRepositories>
+    element within the \c <RepositoryCagetory> element is considered a category, which has a \c <DisplayName> and can
+    contain several \c <Repository> elements. Repository categories are shown in the component selection page,
+    on the left side of the component selection widget:
+
+    \image ifw-repository-categories.png "Component selection Page"
+
+    By default, only repositories with no category are shown in the component selection widget. Checking one or
+    several repositories and pressing \uicontrol Fetch will update the widget to show content also
+    from the selected categorized repositories.
+
+    Example of creating a repository category:
+
+    \code
+    <RepositoryCategories>
+        <RemoteRepositories>
+             <Displayname>Category 1</Displayname>
+             <Repository>
+                     <Url>http://www.example.com/packages</Url>
+                     <Enabled>1</Enabled>
+                     <Username>user</Username>
+                     <Password>password</Password>
+                     <DisplayName>Example repository</DisplayName>
+             </Repository>
+        </RemoteRepositories>
+    </RepositoryCategories>
+    \endcode
 
     \section1 Creating Installer Binaries
 

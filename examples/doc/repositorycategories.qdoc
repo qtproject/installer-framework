@@ -1,0 +1,117 @@
+/****************************************************************************
+**
+** Copyright (C) 2018 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see http://www.qt.io/terms-conditions. For further
+** information use the contact form at http://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: http://www.gnu.org/copyleft/fdl.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example repositorycategories
+    \ingroup qtifwexamples
+    \title Repository Categories Example
+
+    \brief Using the RepositoryCategories element to set up an
+    online installer where repositories are grouped.
+
+    \image qtifw-examples-repository-categories.png
+
+    \e{Repository Categories} illustrates how to set up an installer
+    where repositories are grouped into categories.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <RepositoryCategories> element shows how to group repositories into categories.
+            \c <RepositoryCategories> can contain one or several \c <RemoteRepositories>
+            child elements that specify a connection to repositories. For more
+            information about \c <RemoteRepositories> see
+            \l{Configuring Repositories}.
+    \endlist
+
+    \quotefile repositorycategories/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <Default> element is set to \c true to preselect the
+            component in the installer.
+    \endlist
+
+    \quotefile online/packages/A/meta/package.xml
+
+    \section1 Generating the Online Repository
+
+    This installer contains four packages that each have two components. The \c Packages directory contains two components
+    that are not grouped categories. They are always visible in tree view in the component selection page. \c Packages_forcategory1
+    and \c packages2_forcategory1 both contain two components, which are visible when \c Category 1 is fetched. \c Packages_forcategory2
+    contains two components that are visible only when \c Category 2 is fetched.
+
+    The packages need to be converted to a file structure that the installer can
+    fetch at runtime. To use the \c repogen tool to convert the packages, switch
+    to the example source directory on the command line and enter the following
+    command:
+
+    \list
+        \li On Windows:
+            \code
+            ..\..\bin\repogen.exe -p packages repository
+            ..\..\bin\repogen.exe -p packages_forcategory1 repository1
+            ..\..\bin\repogen.exe -p packages2_forcategory1 repository2
+            ..\..\bin\repogen.exe -p packages_forcategory2 repository3
+            \endcode
+        \li On Linux or macOS:
+            \code
+            ../../bin/repogen -p packages repository
+            ../../bin/repogen -p packages_forcategory1 repository1
+            ../../bin/repogen -p packages2_forcategory1 repository2
+            ../../bin/repogen -p packages_forcategory2 repository3
+            \endcode
+    \endlist
+
+    The generated \c repository, \c repository1, \c repository2 and \c repository3 directories will now
+    contain a full copy of the package data and some additionally generated metadata, such as SHA
+    checksums.
+
+    The directories now need to be made available at the URL set in
+    \c config.xml: \c{http://localhost/repository}, \c{http://localhost/repository1}, \c{http://localhost/repository2} and
+    \c{http://localhost/repository3}. How this is done depends on
+    the platform and web server used. If you do not have a running web server
+    yet, but have Python available, you should be able to start a minimal web
+    server from the command line. Make sure you are in the example directory,
+    and then enter:
+
+    \code
+        python -m SimpleHTTPServer 80
+    \endcode
+
+    You should now be able to open and explore \l{http://localhost/repository}
+    in your web browser.
+
+    \note If you do not have enough permissions to set up a web server locally,
+    you can also specify an absolute \c{file:///} URL as the value of the \c URL
+    element in \c config.xml. For example,
+    \c file:///C:/Qt/QtIFW/examples/repositorycategories/repository would be a valid URL on
+    Windows if \c repository is located in \c C:\Qt\QtIFW\examples\repositorycategories.
+
+   \include installerfw-examples-generating-online.qdocinc
+*/

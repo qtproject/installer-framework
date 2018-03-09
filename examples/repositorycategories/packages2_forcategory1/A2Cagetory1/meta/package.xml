@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>A2 (from category 1)</DisplayName>
+    <Description>Example component A2</Description>
+    <Version>1.0.3-1</Version>
+    <ReleaseDate>2015-01-01</ReleaseDate>
+    <Default>true</Default>
+</Package>

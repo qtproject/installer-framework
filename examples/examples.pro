@@ -11,6 +11,7 @@ SUBDIRS += \
   openreadme \
   quitinstaller \
   registerfileextension \
+  repositorycategories \
   startmenu \
   systeminfo \
   stylesheet

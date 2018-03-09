@@ -314,6 +314,7 @@ public:
 
 protected:
     void entering();
+    void leaving();
     void showEvent(QShowEvent *event);
 
 private Q_SLOTS:

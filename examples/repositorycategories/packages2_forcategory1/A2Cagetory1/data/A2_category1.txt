@@ -1,0 +1,2 @@
+Example content for package A2, using category 1.
+

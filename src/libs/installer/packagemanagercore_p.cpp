@@ -2210,14 +2210,12 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
 
 bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
 {
-    if (m_repoFetched)
-        return m_repoFetched;
-
     m_updates = false;
     m_repoFetched = false;
     m_updateSourcesAdded = false;
 
     try {
+        m_metadataJob.addCompressedPackages(false);
         m_metadataJob.start();
         m_metadataJob.waitForFinished();
     } catch (Error &error) {

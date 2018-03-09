@@ -1,0 +1,30 @@
+Shows how to set up an online installer and how to use categorized repositories. Categorized repositories are not loaded to the tree view by default, instead you can select
+to show categorized repositories in a tree view combobox. By default, repositories without categories are always shown in the tree view.
+
+The example uses a very simple web server shipped with Python.
+
+Generate the online repositories with
+
+  repogen -p packages repository
+  repogen -p packages_forcategory1 repository1
+  repogen -p packages2_forcategory1 repository2
+  repogen -p packages_forcategory2 repository3
+
+Generate the installer with
+
+  binarycreator --online-only -c config/config.xml -p packages installer
+
+Now launch a minimal web server in the example's directory (admin rights may be needed)
+
+  python -m SimpleHTTPServer 80
+
+This should make the content of the local directory available under
+http://localhost
+
+You should be able to now launch the installer.
+
+To deploy an update, run
+
+  repogen --update-new-components -p packages_update repository
+
+and launch the maintenance tool in your installation.

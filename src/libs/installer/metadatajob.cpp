@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -70,11 +70,33 @@ MetadataJob::~MetadataJob()
     reset();
 }
 
-Repository MetadataJob::repositoryForDirectory(const QString &directory) const
+/*
+ * Parse the metadata of currently selected repositories. We cannot
+ * return all metadata as that contains metadata also from categorized archived
+ * repositories which might not be currently selected.
+ */
+
+QList<Metadata> MetadataJob::metadata() const
 {
-    return m_metadata.value(directory).repository;
+    QList<Metadata> metadata = m_metaFromDefaultRepositories.values();
+    foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled() && m_fetchedArchive.contains(repositoryCategory.displayname()))) {
+            QList<ArchiveMetadata> archiveMetaList = m_fetchedArchive.values(repositoryCategory.displayname());
+            foreach (ArchiveMetadata archiveMeta, archiveMetaList) {
+                metadata.append(archiveMeta.metaData);
+            }
+        }
+    }
+    return metadata;
 }
 
+Repository MetadataJob::repositoryForDirectory(const QString &directory) const
+{
+    if (m_metaFromDefaultRepositories.contains(directory))
+        return m_metaFromDefaultRepositories.value(directory).repository;
+    else
+        return m_metaFromArchive.value(directory).repository;
+}
 
 // -- private slots
 
@@ -86,13 +108,12 @@ void MetadataJob::doStart()
     }
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
     if (!m_addCompressedPackages) {
-        reset();
         emit infoMessage(this, tr("Preparing meta information download..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
-
         if (onlineInstaller || m_core->isMaintainer()) {
             QList<FileTaskItem> items;
-            foreach (const Repository &repo, m_core->settings().repositories()) {
+            QSet<Repository> repositories = getRepositories();
+            foreach (const Repository &repo, repositories) {
                 if (repo.isEnabled() &&
                         productKeyCheck->isValidRepository(repo)) {
                     QAuthenticator authenticator;
@@ -451,7 +472,9 @@ bool MetadataJob::fetchMetaDataPackages()
 void MetadataJob::reset()
 {
     m_packages.clear();
-    m_metadata.clear();
+    m_metaFromDefaultRepositories.clear();
+    m_metaFromArchive.clear();
+    m_fetchedArchive.clear();
 
     setError(Job::NoError);
     setErrorString(QString());
@@ -587,7 +610,17 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 }
             }
         }
-        m_metadata.insert(metadata.directory, metadata);
+        if (metadata.repository.archivename().isEmpty()) {
+            m_metaFromDefaultRepositories.insert(metadata.directory, metadata);
+        } else {
+            //Hash metadata to help checking if meta for repository is already fetched
+            ArchiveMetadata archiveMetadata;
+            archiveMetadata.metaData = metadata;
+            m_fetchedArchive.insertMulti(metadata.repository.archivename(), archiveMetadata);
+            // Hash for faster lookups
+            m_metaFromArchive.insert(metadata.directory, metadata);
+        }
+
 
         // search for additional repositories that we might need to check
         const QDomNode repositoryUpdate = root.firstChildElement(QLatin1String("RepositoryUpdate"));
@@ -670,8 +703,31 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
     }
     double taskCount = m_packages.length()/static_cast<double>(m_downloadableChunkSize);
     m_totalTaskCount = qCeil(taskCount);
+    m_taskNumber = 0;
 
     return XmlDownloadSuccess;
+}
+
+QSet<Repository> MetadataJob::getRepositories()
+{
+    QSet<Repository> repositories;
+
+    //In the first run, m_metadata is empty. Get always the default repositories
+    if (m_metaFromDefaultRepositories.isEmpty()) {
+        repositories = m_core->settings().repositories();
+    }
+
+    // Fetch repositories under archive which are selected in UI.
+    // If repository is already fetched, do not fetch it again.
+    // In updater mode, fetch always all archive repositories to get updates
+    foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled() && !m_fetchedArchive.contains(repositoryCategory.displayname()))) {
+            foreach (Repository repository, repositoryCategory.repositories()) {
+                repositories.insert(repository);
+            }
+        }
+    }
+    return repositories;
 }
 
 }   // namespace QInstaller

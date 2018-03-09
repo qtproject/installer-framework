@@ -91,6 +91,7 @@ static const QLatin1String scAllUsers("AllUsers");
 static const QLatin1String scSupportsModify("SupportsModify");
 static const QLatin1String scAllowUnstableComponents("AllowUnstableComponents");
 static const QLatin1String scSaveDefaultRepositories("SaveDefaultRepositories");
+static const QLatin1String scRepositoryCategoryDisplayName("RepositoryCategoryDisplayName");
 
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 

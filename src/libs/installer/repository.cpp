@@ -57,6 +57,7 @@ Repository::Repository(const Repository &other)
     , m_password(other.m_password)
     , m_displayname(other.m_displayname)
     , m_compressed(other.m_compressed)
+    , m_archivename(other.m_archivename)
 {
     registerMetaType();
 }
@@ -183,7 +184,7 @@ void Repository::setPassword(const QString &password)
 }
 
 /*!
-    Returns the Name for the repository to be displayed instead of the URL
+    Returns the Name for the repository to be displayed instead of the URL.
 */
 QString Repository::displayname() const
 {
@@ -196,6 +197,22 @@ QString Repository::displayname() const
 void Repository::setDisplayName(const QString &displayname)
 {
     m_displayname = displayname;
+}
+
+/*!
+    Returns the archive name if the repository belongs to an archive.
+*/
+QString Repository::archivename() const
+{
+    return m_archivename;
+}
+
+/*!
+    Sets the archive name to \a archivename if the repository belongs to an archive.
+*/
+void Repository::setArchiveName(const QString &archivename)
+{
+    m_archivename = archivename;
 }
 
 /*!
@@ -248,6 +265,7 @@ const Repository &Repository::operator=(const Repository &other)
     m_password = other.m_password;
     m_displayname = other.m_displayname;
     m_compressed = other.m_compressed;
+    m_archivename = other.m_archivename;
 
     return *this;
 }
@@ -273,7 +291,7 @@ QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
 {
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
         << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64()
-        << repository.m_displayname.toUtf8().toBase64();
+        << repository.m_displayname.toUtf8().toBase64() << repository.m_archivename.toUtf8().toBase64();
 }
 
 }
