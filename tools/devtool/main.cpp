@@ -237,13 +237,13 @@ int main(int argc, char *argv[])
                 .collections());    // setup the binary format engine
 
             OperationRunner runner(magicMarker, operations);
-            const QStringList arguments = arguments.last().split(QLatin1Char(','));
-            if (arguments.first() == QLatin1String("DO"))
-                result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Do);
-            else if (arguments.first() == QLatin1String("UNDO"))
-                result = runner.runOperation(arguments.mid(1), OperationRunner::RunMode::Undo);
+            const QStringList operationArguments = arguments.last().split(QLatin1Char(','));
+            if (operationArguments.first() == QLatin1String("DO"))
+                result = runner.runOperation(operationArguments.mid(1), OperationRunner::RunMode::Do);
+            else if (operationArguments.first() == QLatin1String("UNDO"))
+                result = runner.runOperation(operationArguments.mid(1), OperationRunner::RunMode::Undo);
             else
-                std::cerr << "Malformed argument: " << qPrintable(arguments.last()) << std::endl;
+                std::cerr << "Malformed argument: " << qPrintable(operationArguments.last()) << std::endl;
 
         }
     } catch (const QInstaller::Error &error) {
