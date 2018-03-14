@@ -72,6 +72,28 @@ QJSValue InstallerProxy::componentByName(const QString &componentName)
     return QJSValue();
 }
 
+QJSValue QDesktopServicesProxy::findFiles(const QString &path, const QString &pattern)
+{
+    QStringList result;
+    findRecursion(path, pattern, &result);
+
+    QJSValue scriptComponentsObject = m_engine->newArray(result.count());
+    for (int i = 0; i < result.count(); ++i) {
+        scriptComponentsObject.setProperty(i, result.at(i));
+    }
+    return scriptComponentsObject;
+}
+
+void QDesktopServicesProxy::findRecursion(const QString &path, const QString &pattern, QStringList *result)
+{
+    QDir currentDir(path);
+    const QString prefix = path + QLatin1Char('/');
+    foreach (const QString &match, currentDir.entryList(QStringList(pattern), QDir::Files | QDir::NoSymLinks))
+        result->append(prefix + match);
+    foreach (const QString &dir, currentDir.entryList(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot))
+        findRecursion(prefix + dir, pattern, result);
+}
+
 GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
     QObject(parent),
     m_engine(engine),
@@ -526,7 +548,7 @@ QJSValue ScriptEngine::generateDesktopServicesObject()
     SETPROPERTY(desktopServices, GenericCacheLocation, QStandardPaths)
     SETPROPERTY(desktopServices, GenericConfigLocation, QStandardPaths)
 
-    QJSValue object = m_engine.newQObject(new QDesktopServicesProxy);
+    QJSValue object = m_engine.newQObject(new QDesktopServicesProxy(this));
     object.setPrototype(desktopServices);   // attach the properties
     return object;
 }

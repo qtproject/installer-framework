@@ -93,7 +93,8 @@ class QDesktopServicesProxy : public QObject
     Q_DISABLE_COPY(QDesktopServicesProxy)
 
 public:
-    QDesktopServicesProxy() {}
+    QDesktopServicesProxy(ScriptEngine *engine)
+        : m_engine(engine){}
 
 public slots :
     bool openUrl(const QString &url) const {
@@ -108,6 +109,13 @@ public slots :
     QString storageLocation(qint32 location) const {
         return QStandardPaths::writableLocation(QStandardPaths::StandardLocation(location));
     }
+    QJSValue findFiles(const QString &path, const QString &pattern);
+
+private:
+    void findRecursion(const QString &path, const QString &pattern, QStringList *result);
+
+private:
+    ScriptEngine *m_engine;
 };
 
 #if QT_VERSION < 0x050400

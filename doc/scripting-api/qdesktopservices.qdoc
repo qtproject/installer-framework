@@ -99,3 +99,11 @@
 
     Returns the specified \a location.
 */
+
+/*!
+    \qmlmethod array QDesktopServices::findFiles(string path, string pattern)
+
+    Returns file names matching \a pattern. Searches the files recursively from \a path.
+    \a Pattern understands * and ? wildcards.
+*/
+

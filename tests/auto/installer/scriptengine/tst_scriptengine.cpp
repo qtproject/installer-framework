@@ -198,6 +198,7 @@ private slots:
         m_core.appendRootComponent(component);
 
         m_scriptEngine = m_core.componentScriptEngine();
+        m_applicatonDirPath = qApp->applicationDirPath();
     }
 
     void testDefaultScriptEngineValues()
@@ -234,6 +235,8 @@ private slots:
             .hasProperty(QLatin1String("displayName")), true);
         QCOMPARE(global.property(QLatin1String("QDesktopServices"))
             .hasProperty(QLatin1String("storageLocation")), true);
+        QCOMPARE(global.property(QLatin1String("QDesktopServices"))
+                 .hasProperty(QLatin1String("findFiles")), true);
 
         QCOMPARE(global.hasProperty(QLatin1String("buttons")), true);
         QCOMPARE(global.hasProperty(QLatin1String("QInstaller")), true);
@@ -340,6 +343,30 @@ private slots:
         QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
                            value.toString())));
       }
+    }
+
+    void testFindFiles()
+    {
+        const QString expectedOutput = QString::fromLatin1("Found file %1/tst_scriptengine.moc").arg(m_applicatonDirPath);
+        QByteArray array = expectedOutput.toLatin1();
+        const char *c_str2 = array.data();
+
+        setExpectedScriptOutput(c_str2);
+        const QString script = QString::fromLatin1("var directory = \"C:/Qt/test\";"
+                                                   "\n"
+                                                   "var pattern = \"*.moc\";"
+                                                   "\n"
+                                                   "var fileArray = QDesktopServices.findFiles('%1', pattern)"
+                                                   "\n"
+                                                   "for (i = 0; i < fileArray.length; i++) {"
+                                                   "print(\"Found file \"+fileArray[i]);"
+                                                   "}").arg(m_applicatonDirPath);
+        const QJSValue result = m_scriptEngine->evaluate(script);
+        qDebug()<<result.isArray();
+        qDebug()<<result.isObject();
+        qDebug()<<result.isString();
+        qDebug()<<result.isVariant();
+        QCOMPARE(result.isError(), false);
     }
 
     void loadSimpleComponentScript()
@@ -585,6 +612,7 @@ private:
     PackageManagerCore m_core;
     Component *m_component;
     ScriptEngine *m_scriptEngine;
+    QString m_applicatonDirPath;
 
 };
 
