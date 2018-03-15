@@ -1336,7 +1336,7 @@ void KDUpdater::HttpDownloader::httpDone(bool error)
             d->aborted = false;
             setDownloadCanceled();
         } else {
-            d->shutDown(false);
+            setDownloadAborted(err);
             return;
         }
     }
