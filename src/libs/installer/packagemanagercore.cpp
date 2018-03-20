@@ -846,11 +846,12 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
 
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called to set the server side authorization key.
-    RemoteClient::instance().init(socketName, key, mode, Protocol::StartAs::SuperUser);
+    if (!d->isUpdater()) {
+        RemoteClient::instance().init(socketName, key, mode, Protocol::StartAs::SuperUser);
+        RemoteClient::instance().setAuthorizationFallbackDisabled(settings().disableAuthorizationFallback());
+    }
 
     d->initialize(QHash<QString, QString>());
-
-    RemoteClient::instance().setAuthorizationFallbackDisabled(settings().disableAuthorizationFallback());
 
     //
     // Sanity check to detect a broken installations with missing operations.

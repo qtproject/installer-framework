@@ -1,3 +1,3 @@
 TEMPLATE = subdirs
-SUBDIRS += libs sdk
+SUBDIRS += libs sdk sdk/translations
 sdk.depends = libs
