@@ -37,6 +37,7 @@
 #include "testrepository.h"
 
 #include <QTemporaryDir>
+#include <QtMath>
 
 namespace QInstaller {
 
@@ -639,7 +640,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         }
     }
     double taskCount = m_packages.length()/static_cast<double>(m_downloadableChunkSize);
-    m_totalTaskCount = ceil(taskCount);
+    m_totalTaskCount = qCeil(taskCount);
 
     return XmlDownloadSuccess;
 }
