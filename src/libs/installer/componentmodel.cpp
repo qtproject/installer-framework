@@ -229,7 +229,7 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
             return component->isExpandedByDefault();
         }
         if (component->isUnstable() && role == Qt::ForegroundRole) {
-            return QVariant(QColor(Qt::lightGray));
+            return QVariant(QColor(Qt::darkGray));
         }
         return component->data(role);
     }
