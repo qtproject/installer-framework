@@ -99,13 +99,21 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
                 const QString replaces = c->value(scReplaces);
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
                                                                  QString::SkipEmptyParts) << c->name();
-                foreach (const QString &possibleName, possibleNames)
-                    autoDependencies.removeAll(possibleName);
+                foreach (const QString &possibleName, possibleNames) {
+
+                    Component *cc = PackageManagerCore::componentByName(possibleName, m_installedComponents);
+                    if (!cc->uninstallationRequested()) {
+                        autoDependencies.removeAll(possibleName);
+                    }
+                }
             }
 
             // A component requested auto installation, keep it to resolve their dependencies as well.
-            if (!autoDependencies.isEmpty())
+            // Mark it unchecked for their dependencies to know that the component is marked for uninstallation.
+            if (!autoDependencies.isEmpty()) {
                 autoDependOnList.append(component);
+                component->setCheckState(Qt::Unchecked);
+            }
         }
     }
 

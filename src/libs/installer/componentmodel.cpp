@@ -580,9 +580,13 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
         if (node->value(scCheckable, scTrue).toLower() == scFalse) {
             checkable = false;
         }
-
-        if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty())
+        // Let the check state to be checked up if the node is installed even if the component is not
+        // selectable/enabled or is installed as autodependency. Otherwise the node might not be selected
+        // and installer thinks it should be uninstalled.
+        if (!node->isInstalled() &&
+                ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty())) {
             continue;
+        }
 
         Qt::CheckState newState = state;
         const Qt::CheckState recentState = node->checkState();
