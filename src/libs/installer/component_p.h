@@ -98,7 +98,8 @@ public:
         Install,
         Uninstall,
         KeepInstalled,
-        KeepUninstalled
+        KeepUninstalled,
+        AutodependUninstallation
     };
 
     enum Column {
