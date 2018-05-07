@@ -102,10 +102,9 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
                 foreach (const QString &possibleName, possibleNames) {
 
                     Component *cc = PackageManagerCore::componentByName(possibleName, m_installedComponents);
-                    if (!cc->uninstallationRequested()) {
-                        if (cc->installAction() != ComponentModelHelper::AutodependUninstallation) {
-                            autoDependencies.removeAll(possibleName);
-                        }
+                    if (cc && (cc->installAction() != ComponentModelHelper::AutodependUninstallation)) {
+                        autoDependencies.removeAll(possibleName);
+
                     }
                 }
             }
