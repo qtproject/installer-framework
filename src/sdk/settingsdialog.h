@@ -117,10 +117,13 @@ private slots:
     void removeRepository();
     void useTmpRepositoriesOnly(bool use);
     void currentRepositoryChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+    void selectAll();
+    void deselectAll();
 
 private:
     void setupRepositoriesTreeWidget();
     void insertRepositories(const QSet<QInstaller::Repository> repos, QTreeWidgetItem *rootItem);
+    void checkSubTree(QTreeWidgetItem *item, Qt::CheckState state);
 
 private:
     Ui::SettingsDialog *m_ui;

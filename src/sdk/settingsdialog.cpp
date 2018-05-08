@@ -234,7 +234,10 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
         this, &SettingsDialog::currentRepositoryChanged);
     connect(m_ui->m_testRepository, &QAbstractButton::clicked,
             this, &SettingsDialog::testRepository);
-
+    connect(m_ui->m_selectAll, &QAbstractButton::clicked,
+            this, &SettingsDialog::selectAll);
+    connect(m_ui->m_deselectAll, &QAbstractButton::clicked,
+            this, &SettingsDialog::deselectAll);
     useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setEnabled(settings.hasReplacementRepos());
@@ -403,7 +406,25 @@ void SettingsDialog::currentRepositoryChanged(QTreeWidgetItem *current, QTreeWid
         m_ui->m_addRepository->setEnabled((current != m_rootItems.at(0)) & (index == -1));
     }
 }
+void SettingsDialog::checkSubTree(QTreeWidgetItem *item, Qt::CheckState state)
+{
+    if (item->flags() & Qt::ItemIsUserCheckable)
+        item->setData(1, Qt::CheckStateRole, state);
+    for (int i = 0; i < item->childCount(); i++)
+        checkSubTree(item->child(i), state);
+}
 
+void SettingsDialog::selectAll()
+{
+    for (int i = 0; i < m_ui->m_repositoriesView->topLevelItemCount(); i++)
+        checkSubTree(m_ui->m_repositoriesView->topLevelItem(i), Qt::Checked);
+}
+
+void SettingsDialog::deselectAll()
+{
+    for (int i = 0; i < m_ui->m_repositoriesView->topLevelItemCount(); i++)
+        checkSubTree(m_ui->m_repositoriesView->topLevelItem(i), Qt::Unchecked);
+}
 // -- private
 
 void SettingsDialog::setupRepositoriesTreeWidget()

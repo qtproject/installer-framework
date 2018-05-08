@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>491</width>
+    <width>543</width>
     <height>443</height>
    </rect>
   </property>
@@ -233,6 +233,20 @@
           <widget class="QPushButton" name="m_testRepository">
            <property name="text">
             <string>Test</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_selectAll">
+           <property name="text">
+            <string>Select All</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="m_deselectAll">
+           <property name="text">
+            <string>Deselect All</string>
            </property>
           </widget>
          </item>
