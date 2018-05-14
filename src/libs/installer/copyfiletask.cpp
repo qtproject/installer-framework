@@ -111,7 +111,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         fi.setProgressValueAndText(observer.progressValue(), observer.progressText());
     }
 
-    fi.reportResult(FileTaskResult(file->fileName(), observer.checkSum(), item), 0);
+    fi.reportResult(FileTaskResult(file->fileName(), observer.checkSum(), item, false), 0);
     fi.reportFinished();
 }
 

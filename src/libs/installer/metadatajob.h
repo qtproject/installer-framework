@@ -65,6 +65,7 @@ public:
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
     void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
+    QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
 
 private slots:
     void doStart();
@@ -101,6 +102,7 @@ private:
     int m_downloadableChunkSize;
     int m_taskNumber;
     int m_totalTaskCount;
+    QStringList m_shaMissmatchPackages;
 };
 
 }   // namespace QInstaller

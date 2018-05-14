@@ -2573,6 +2573,15 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             return false;
         }
 
+        if (settings().allowUnstableComponents()) {
+            // Check if there are sha checksum mismatch. Component will still show in install tree
+            // but is unselectable.
+            foreach (const QString packageName, d->m_metadataJob.shaMismatchPackages()) {
+                if (packageName == component->name())
+                    component->setUnstable();
+            }
+        }
+
         component->setUninstalled();
         const QString localPath = component->localTempPath();
         if (isVerbose()) {

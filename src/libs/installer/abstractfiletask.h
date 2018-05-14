@@ -44,6 +44,8 @@ enum TaskRole
     TaskItem,
     SourceFile,
     TargetFile,
+    Name,
+    ChecksumMismatch,
     UserRole = 1000
 };
 }
@@ -70,16 +72,18 @@ class FileTaskResult : public AbstractTaskData
 {
 public:
     FileTaskResult() {}
-    FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i)
+    FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i, bool checksumMismatch)
     {
         insert(TaskRole::Checksum, c);
         insert(TaskRole::TargetFile, t);
         insert(TaskRole::TaskItem, QVariant::fromValue(i));
+        insert(TaskRole::ChecksumMismatch, checksumMismatch);
     }
 
     QString target() const { return value(TaskRole::TargetFile).toString(); }
     QByteArray checkSum() const { return value(TaskRole::Checksum).toByteArray(); }
     FileTaskItem taskItem() const { return value(TaskRole::TaskItem).value<FileTaskItem>(); }
+    bool checksumMismatch() const { return value(TaskRole::ChecksumMismatch).toBool(); }
 };
 
 class INSTALLER_EXPORT AbstractFileTask : public AbstractTask<FileTaskResult>

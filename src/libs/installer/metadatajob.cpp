@@ -383,6 +383,16 @@ void MetadataJob::metadataTaskFinished()
                 emit infoMessage(this, tr("Extracting meta information..."));
                 foreach (const FileTaskResult &result, m_metadataResult) {
                     const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
+                    if (result.value(TaskRole::ChecksumMismatch).toBool()) {
+                        QString mismatchMessage = tr("Checksum mismatch detected for \"%1\".")
+                                .arg(item.value(TaskRole::SourceFile).toString());
+                        if (m_core->settings().allowUnstableComponents()) {
+                            m_shaMissmatchPackages.append(item.value(TaskRole::Name).toString());
+                            qWarning() << mismatchMessage;
+                        } else {
+                            throw QInstaller::TaskException(mismatchMessage);
+                        }
+                    }
                     UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
                         item.value(TaskRole::UserRole).toString());
 
@@ -555,6 +565,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 item.insert(TaskRole::UserRole, metadata.directory);
                 item.insert(TaskRole::Checksum, packageHash.toLatin1());
                 item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                item.insert(TaskRole::Name, packageName);
                 m_packages.append(item);
             }
         }

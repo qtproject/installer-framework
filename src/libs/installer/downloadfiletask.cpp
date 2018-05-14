@@ -225,13 +225,13 @@ void Downloader::onFinished(QNetworkReply *reply)
     }
 
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();
+    bool checksumMismatch = false;
     if (!expectedCheckSum.isEmpty()) {
-        if (expectedCheckSum != data.observer->checkSum().toHex()) {
-            m_futureInterface->reportException(TaskException(tr("Checksum mismatch detected for \"%1\".")
-                .arg(reply->url().toString())));
-        }
+        if (expectedCheckSum != data.observer->checkSum().toHex())
+            checksumMismatch = true;
     }
-    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem));
+    m_futureInterface->reportResult(FileTaskResult(filename, data.observer->checkSum(), data.taskItem,
+                                                  checksumMismatch));
 
     m_downloads.erase(reply);
     m_redirects.remove(reply);
