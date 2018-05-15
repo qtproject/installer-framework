@@ -37,6 +37,7 @@
 #include "testrepository.h"
 
 #include <QTemporaryDir>
+#include <QtMath>
 
 namespace QInstaller {
 
@@ -52,6 +53,8 @@ MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
     , m_core(0)
     , m_addCompressedPackages(false)
+    , m_downloadableChunkSize(1000)
+    , m_taskNumber(0)
 {
     setCapabilities(Cancelable);
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
@@ -325,12 +328,7 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        setProcessedAmount(0);
-        DownloadFileTask *const metadataTask = new DownloadFileTask(m_packages);
-        metadataTask->setProxyFactory(m_core->proxyFactory());
-        m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
-        setProgressTotalAmount(100);
-        emit infoMessage(this, tr("Retrieving meta information from remote repository..."));
+        fetchMetaDataPackages();
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {
@@ -379,21 +377,23 @@ void MetadataJob::metadataTaskFinished()
 {
     try {
         m_metadataTask.waitForFinished();
-        QFuture<FileTaskResult> future = m_metadataTask.future();
-        if (future.resultCount() > 0) {
-            emit infoMessage(this, tr("Extracting meta information..."));
-            foreach (const FileTaskResult &result, future.results()) {
-                const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
-                UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
-                    item.value(TaskRole::UserRole).toString());
+        m_metadataResult.append(m_metadataTask.future().results());
+        if (!fetchMetaDataPackages()) {
+            if (m_metadataResult.count() > 0) {
+                emit infoMessage(this, tr("Extracting meta information..."));
+                foreach (const FileTaskResult &result, m_metadataResult) {
+                    const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
+                    UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
+                        item.value(TaskRole::UserRole).toString());
 
-                QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
-                m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));
-                connect(watcher, &QFutureWatcherBase::finished, this, &MetadataJob::unzipTaskFinished);
-                watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
+                    QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
+                    m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));
+                    connect(watcher, &QFutureWatcherBase::finished, this, &MetadataJob::unzipTaskFinished);
+                    watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
+                }
+            } else {
+                emitFinished();
             }
-        } else {
-            emitFinished();
         }
     } catch (const TaskException &e) {
         reset();
@@ -409,6 +409,30 @@ void MetadataJob::metadataTaskFinished()
 
 
 // -- private
+
+bool MetadataJob::fetchMetaDataPackages()
+{
+    //Download files in chunks. QtConcurrent will choke if too many task is given to it
+    int chunkSize = qMin(m_packages.length(), m_downloadableChunkSize);
+    QList<FileTaskItem> tempPackages = m_packages.mid(0, chunkSize);
+    m_packages = m_packages.mid(chunkSize, m_packages.length());
+    if (tempPackages.length() > 0) {
+        m_taskNumber++;
+        setProcessedAmount(0);
+        DownloadFileTask *const metadataTask = new DownloadFileTask(tempPackages);
+        metadataTask->setProxyFactory(m_core->proxyFactory());
+        m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
+        setProgressTotalAmount(100);
+        QString metaInformation;
+        if (m_totalTaskCount > 1)
+            metaInformation = tr("Retrieving meta information from remote repository... %1/%2 ").arg(m_taskNumber).arg(m_totalTaskCount);
+        else
+            metaInformation = tr("Retrieving meta information from remote repository... ");
+        emit infoMessage(this, metaInformation);
+        return true;
+    }
+    return false;
+}
 
 void MetadataJob::reset()
 {
@@ -615,6 +639,9 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             }
         }
     }
+    double taskCount = m_packages.length()/static_cast<double>(m_downloadableChunkSize);
+    m_totalTaskCount = qCeil(taskCount);
+
     return XmlDownloadSuccess;
 }
 

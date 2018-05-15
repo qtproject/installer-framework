@@ -378,11 +378,15 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
             // set the checked state for all components without child (means without tristate)
+            // set checked state also for installed virtual tristate componets as otherwise
+            // those will be uninstalled
             if (component->isCheckable() && !component->isTristate()) {
                 if (component->isDefault() && isInstaller())
                     component->setCheckState(Qt::Checked);
                 else if (component->isInstalled())
                     component->setCheckState(Qt::Checked);
+            } else if (component->isVirtual() && component->isInstalled() && component->isTristate()) {
+                component->setCheckState(Qt::Checked);
             }
         }
 

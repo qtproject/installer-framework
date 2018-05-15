@@ -758,7 +758,7 @@
 
     You can also create hybrid installers that store some components locally
     and receive others via a network connection. For more information, see
-    ###TODO insert link here.
+    \l {Reducing Installer Size}.
 
     For information about how to implement data integration into the
     installer binary, see QInstaller::BinaryContent.
