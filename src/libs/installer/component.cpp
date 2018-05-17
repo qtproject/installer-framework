@@ -1032,7 +1032,15 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
 void Component::markComponentUnstable()
 {
     setValue(scDefault, scFalse);
-    setCheckState(Qt::Unchecked);
+    // Mark unstable component unchecked if:
+    // 1. Installer, so the unstable component won't be installed
+    // 2. Maintenancetool, when component is not installed.
+    // 3. Updater, we don't want to update unstable components
+    // Mark unstable component checked if:
+    // 1. Maintenancetool, if component is installed and
+    //    unstable so it won't get uninstalled.
+    if (d->m_core->isInstaller() || !isInstalled() || d->m_core->isUpdater())
+        setCheckState(Qt::Unchecked);
     setValue(scUnstable, scTrue);
 }
 
@@ -1335,7 +1343,7 @@ void Component::setUpdateAvailable(bool isUpdateAvailable)
 */
 bool Component::updateRequested()
 {
-    return d->m_updateIsAvailable && isSelected();
+    return d->m_updateIsAvailable && isSelected() && !isUnstable();
 }
 
 /*!

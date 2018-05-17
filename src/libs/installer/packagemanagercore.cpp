@@ -2815,7 +2815,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     return false;
 
                 component->loadComponentScript();
-                component->setCheckState(Qt::Checked);
+                if (!component->isUnstable())
+                    component->setCheckState(Qt::Checked);
             }
 
             // after everything is set up, check installed components
@@ -2827,7 +2828,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 if (component->isInstalled()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourselves
-                    component->setCheckState(Qt::Checked);
+                    if (!component->isUnstable())
+                        component->setCheckState(Qt::Checked);
                 }
             }
 
