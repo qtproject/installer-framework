@@ -1,3 +1,9 @@
+3.0.5
+- Decrease metadata dowload amount (QTIFW-975)
+- Print component warnings only in verbose mode (QTIFW-975)
+- Fix nested autodependency uninstall (QTIFW-1114, QTBUG-67106)
+- Fix crash in updater if component does not exist anymore (QTIFW-1140)
+
 3.0.4
 - Fix infinite wait if downloadable package is missing (QTIFW-1064)
 - Fix the maintenancetool that failing to elevate to admin (QTIFW-1010)
