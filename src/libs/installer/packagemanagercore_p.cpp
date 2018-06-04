@@ -406,11 +406,14 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
-        foreach (QInstaller::Component *component, components) {
-            const QStringList warnings = ComponentChecker::checkComponent(component);
-            foreach (const QString &warning, warnings)
-                qCWarning(lcComponentChecker).noquote() << warning;
+        if (m_core->isVerbose()) {
+            foreach (QInstaller::Component *component, components) {
+                const QStringList warnings = ComponentChecker::checkComponent(component);
+                foreach (const QString &warning, warnings)
+                    qCWarning(lcComponentChecker).noquote() << warning;
+            }
         }
+
     } catch (const Error &error) {
         clearAllComponentLists();
         emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());

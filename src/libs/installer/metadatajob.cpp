@@ -39,6 +39,8 @@
 #include <QTemporaryDir>
 #include <QtMath>
 
+const QStringList metaElements = {QLatin1String("Script"), QLatin1String("Licenses"), QLatin1String("UserInterfaces"), QLatin1String("Translations")};
+
 namespace QInstaller {
 
 static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
@@ -544,6 +546,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             if (!el.isNull() && el.tagName() == QLatin1String("PackageUpdate")) {
                 const QDomNodeList c2 = el.childNodes();
                 QString packageName, packageVersion, packageHash;
+                bool metaFound = false;
                 for (int j = 0; j < c2.count(); ++j) {
                     if (c2.at(j).toElement().tagName() == scName)
                         packageName = c2.at(j).toElement().text();
@@ -551,22 +554,33 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                         packageVersion = (online ? c2.at(j).toElement().text() : QString());
                     else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
                         packageHash = c2.at(j).toElement().text();
+                    else {
+                        foreach (QString meta, metaElements) {
+                            if (c2.at(j).toElement().tagName() == meta) {
+                                metaFound = true;
+                                break;
+                            }
+                        }
+                    }
                 }
 
                 const QString repoUrl = metadata.repository.url().toString();
-                FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
-                    packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
-                    .arg(packageName, packageVersion));
+                //If script element is not found, no need to fetch metadata
+                if (metaFound) {
+                    FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
+                        packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
+                        .arg(packageName, packageVersion));
 
-                QAuthenticator authenticator;
-                authenticator.setUser(metadata.repository.username());
-                authenticator.setPassword(metadata.repository.password());
+                    QAuthenticator authenticator;
+                    authenticator.setUser(metadata.repository.username());
+                    authenticator.setPassword(metadata.repository.password());
 
-                item.insert(TaskRole::UserRole, metadata.directory);
-                item.insert(TaskRole::Checksum, packageHash.toLatin1());
-                item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                item.insert(TaskRole::Name, packageName);
-                m_packages.append(item);
+                    item.insert(TaskRole::UserRole, metadata.directory);
+                    item.insert(TaskRole::Checksum, packageHash.toLatin1());
+                    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                    item.insert(TaskRole::Name, packageName);
+                    m_packages.append(item);
+                }
             }
         }
         m_metadata.insert(metadata.directory, metadata);
