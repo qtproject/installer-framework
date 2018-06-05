@@ -95,8 +95,7 @@ QString InstallerCalculator::componentsToInstallError() const
 
 void InstallerCalculator::realAppendToInstallComponents(Component *component, const QString &version)
 {
-    if (!component->isUnstable() &&
-            (!component->isInstalled(version) || component->updateRequested())) {
+    if (!component->isInstalled(version) || component->updateRequested()) {
         m_orderedComponentsToInstall.append(component);
         m_toInstallComponentIds.insert(component->name());
     }
@@ -173,7 +172,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             m_componentsToInstallError.append(errorMessage);
             if (component->packageManagerCore()->settings().allowUnstableComponents()) {
                 component->setUnstable();
-                return true;
+                continue;
             } else {
                 return false;
             }

@@ -32,6 +32,7 @@
 #include <uninstallercalculator.h>
 #include <componentchecker.h>
 #include <packagemanagercore.h>
+#include <settings.h>
 
 #include <QTest>
 
@@ -208,9 +209,16 @@ private slots:
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);
 
-        QTest::newRow("Installer resolved") << core
-                    << (QList<Component *>() << componentA)
-                    << (QList<Component *>());
+        if (core->settings().allowUnstableComponents()) {
+            QTest::newRow("Installer resolved") << core
+                        << (QList<Component *>() << componentA)
+                        << (QList<Component *>() << componentA);
+        } else {
+            QTest::newRow("Installer resolved") << core
+                        << (QList<Component *>() << componentA)
+                        << (QList<Component *>());
+        }
+
     }
 
     void unresolvedDependencyVersion()
