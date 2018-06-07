@@ -450,6 +450,8 @@ void MetadataJob::reset()
         m_metadataTask.cancel();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
+    m_metadataResult.clear();
+    m_taskNumber = 0;
 }
 
 void MetadataJob::resetCompressedFetch()
