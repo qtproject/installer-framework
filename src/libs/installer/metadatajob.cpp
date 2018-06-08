@@ -330,7 +330,9 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        fetchMetaDataPackages();
+        if (!fetchMetaDataPackages()) {
+            emitFinished();
+        }
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {
