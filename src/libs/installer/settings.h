@@ -157,6 +157,9 @@ public:
     bool allowUnstableComponents() const;
     void setAllowUnstableComponents(bool allow);
 
+    bool saveDefaultRepositories() const;
+    void setSaveDefaultRepositories(bool save);
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

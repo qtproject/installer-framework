@@ -761,8 +761,10 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
     cfg.setValue(QLatin1String("Variables"), variables);
 
     QVariantList repos; // Do not change either!
-    foreach (const Repository &repo, m_data.settings().defaultRepositories())
-        repos.append(QVariant().fromValue(repo));
+    if (m_data.settings().saveDefaultRepositories()) {
+        foreach (const Repository &repo, m_data.settings().defaultRepositories())
+            repos.append(QVariant().fromValue(repo));
+    }
     cfg.setValue(QLatin1String("DefaultRepositories"), repos);
     cfg.setValue(QLatin1String("FilesForDelayedDeletion"), m_filesForDelayedDeletion);
 

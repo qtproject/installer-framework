@@ -324,6 +324,11 @@
         \row
             \li SupportsModify
             \li Set to \c false if the product does not support modifying an existing installation.
+         \row
+            \li SaveDefaultRepositories
+            \li Set to \c false if default repositories \c <RemoteRepositories> should not be saved to \e {MaintenanceToolName}.ini.
+                By default default repositories are saved. Not saving the repositories means than when you run  \e maintenancetool
+                there are no default repositories in use.
 
     \endtable
 

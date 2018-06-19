@@ -256,7 +256,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
-                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents;
+                << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
+                << scSaveDefaultRepositories;
 
     Settings s;
     s.d->m_data.insert(scPrefix, prefix);
@@ -327,6 +328,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         s.d->m_data.insert(scInstallActionColumnVisible, false);
     if (!s.d->m_data.contains(scAllowUnstableComponents))
         s.d->m_data.insert(scAllowUnstableComponents, false);
+    if (!s.d->m_data.contains(scSaveDefaultRepositories))
+        s.d->m_data.insert(scSaveDefaultRepositories, true);
     return s;
 }
 
@@ -753,4 +756,14 @@ bool Settings::allowUnstableComponents() const
 void Settings::setAllowUnstableComponents(bool allow)
 {
     d->m_data.insert(scAllowUnstableComponents, allow);
+}
+
+bool Settings::saveDefaultRepositories() const
+{
+    return d->m_data.value(scSaveDefaultRepositories, true).toBool();
+}
+
+void Settings::setSaveDefaultRepositories(bool save)
+{
+    d->m_data.insert(scSaveDefaultRepositories, save);
 }
