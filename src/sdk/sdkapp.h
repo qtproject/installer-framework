@@ -67,26 +67,33 @@ public:
     }
 
     /*!
-        Returns the installer / maintenance tool binary. In case of an installer this will be the
+        Returns the installer binary or installer.dat. In case of an installer this will be the
         installer binary itself, which contains the binary layout and the binary content. In case
-        of an maintenance tool, it will return a binary that has just a binary layout append.
+        of an maintenance tool, it will return a .dat file that has just a binary layout
+        as the binary layout cannot be appended to the actual maintenance tool binary
+        itself because of signing.
 
-        Note on OS X: For compatibility reason this function will return the a .dat file located
-        inside the resource folder in the application bundle, as on OS X the binary layout cannot
-        be appended to the actual installer / maintenance tool binary itself because of signing.
+        On OS X: This function will return always the .dat file
+        .dat file is located inside the resource folder in the application
+        bundle in OS X.
     */
     QString binaryFile() const
     {
         QString binaryFile = QCoreApplication::applicationFilePath();
-#ifdef Q_OS_OSX
-        // The installer binary on OSX does not contain the binary content, it's put into
-        // the resources folder as separate file. Adjust the actual binary path. No error
-        // checking here since we will fail later while reading the binary content.
+
+        // The installer binary on OSX and Windows does not contain the binary
+        // content, it's put into the resources folder as separate file.
+        // Adjust the actual binary path. No error checking here since we
+        // will fail later while reading the binary content.
         QDir resourcePath(QFileInfo(binaryFile).dir());
+
+#ifdef Q_OS_OSX
         resourcePath.cdUp();
         resourcePath.cd(QLatin1String("Resources"));
-        return resourcePath.filePath(QLatin1String("installer.dat"));
 #endif
+        QString datFilePath = resourcePath.filePath(QLatin1String("installer.dat"));
+        if (QFileInfo::exists(datFilePath))
+            return datFilePath;
         return binaryFile;
     }
 
@@ -109,7 +116,11 @@ public:
             QString bundlePath;
             if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
                 fi.setFile(bundlePath);
+#ifdef Q_OS_OSX
             return fi.absoluteDir().filePath(fi.baseName() + QLatin1String(".dat"));
+#else
+            return fi.absoluteDir().filePath(qApp->applicationName() + QLatin1String(".dat"));
+#endif
         }
         return QString();
     }
