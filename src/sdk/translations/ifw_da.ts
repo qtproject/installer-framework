@@ -24,14 +24,14 @@
     </message>
     <message>
         <source>Cannot open meta resource %1.</source>
-        <translation>Kan ikke åbne meta-ressourcen %1.</translation>
+        <translation>Kan ikke åbne metaressourcen %1.</translation>
     </message>
 </context>
 <context>
     <name>BinaryLayout</name>
     <message>
         <source>Cannot seek to %1 to read the embedded meta data count.</source>
-        <translation>Kan ikke søge til %1 for at læse antallet af indlejret meta-data.</translation>
+        <translation>Kan ikke søge til %1 for at læse antallet af indlejret metadata.</translation>
     </message>
     <message>
         <source>Cannot seek to %1 to read the resource collection segment.</source>
@@ -39,7 +39,7 @@
     </message>
     <message>
         <source>Unexpected mismatch of meta resources. Read %1, expected: %2.</source>
-        <translation>Uventet uoverensstemmelse af meta-ressourcer. Læste %1, ventede: %2.</translation>
+        <translation>Uventet uoverensstemmelse af metaressourcer. Læste %1, ventede: %2.</translation>
     </message>
 </context>
 <context>
@@ -50,7 +50,7 @@
     </message>
     <message>
         <source>You need to supply a Username and Password to access this site.</source>
-        <translation>Du skal angive brugernavn og adgangskode for at tilgå dette sted.</translation>
+        <translation>Du skal angive brugernavn og adgangskode for at tilgå stedet.</translation>
     </message>
     <message>
         <source>Username:</source>
@@ -276,7 +276,7 @@
     <name>KDUpdater::HttpDownloader</name>
     <message>
         <source>Cannot download %1. Writing to file &quot;%2&quot; failed: %3</source>
-        <translation>Kan ikke downloade %1. Skrivning til filen &quot;%2&quot; fejlede: %3</translation>
+        <translation>Kan ikke downloade %1. Skrivning til filen &quot;%2&quot; mislykkedes: %3</translation>
     </message>
     <message>
         <source>Cannot download %1. Cannot create file &quot;%2&quot;: %3</source>
@@ -292,7 +292,7 @@
     </message>
     <message>
         <source>Secure Connection Failed</source>
-        <translation>Sikker forbindelse fejlede</translation>
+        <translation>Sikker forbindelse mislykkedes</translation>
     </message>
     <message>
         <source>There was an error during connection to: %1.</source>
@@ -300,11 +300,11 @@
     </message>
     <message>
         <source>This could be a problem with the server&apos;s configuration, or it could be someone trying to impersonate the server.</source>
-        <translation>Der kan være et problem med serverens konfiguration eller det kan være nogen som prøve at udgive sig for at være serveren. </translation>
+        <translation>Der kan være et problem med serverens konfiguration eller det kan være nogen som prøve at udgive sig for at være serveren.</translation>
     </message>
     <message>
         <source>If you have connected to this server successfully in the past or trust this server, the error may be temporary and you can try again.</source>
-        <translation>Hvis du førhen har oprettet forbindelse til denne server eller har tillid til denne server, kan fejlen være midlertidig og du kan prøve igen.</translation>
+        <translation>Hvis du førhen har oprettet forbindelse til serveren eller har tillid til serveren, kan fejlen være midlertidig og du kan prøve igen.</translation>
     </message>
     <message>
         <source>Try again</source>
@@ -323,7 +323,7 @@
     </message>
     <message>
         <source>Writing to file &quot;%1&quot; failed: %2</source>
-        <translation>Skrivning til filen &quot;%1&quot; fejlede: %2</translation>
+        <translation>Skrivning til filen &quot;%1&quot; mislykkedes: %2</translation>
     </message>
 </context>
 <context>
@@ -448,11 +448,11 @@
     <name>KDUpdater::UpdateFinder</name>
     <message>
         <source>Cannot access the package information of this application.</source>
-        <translation>Kan ikke tilgå pakkeinformationen til dette program.</translation>
+        <translation>Kan ikke tilgå pakkeinformationen til programmet.</translation>
     </message>
     <message>
         <source>No package sources set for this application.</source>
-        <translation>Ingen pakkekilder sat til dette program.</translation>
+        <translation>Ingen pakkekilder sat til programmet.</translation>
     </message>
     <message numerus="yes">
         <source>%n update(s) found.</source>
@@ -654,15 +654,15 @@
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
-        <translation>Læsning fejlede efter %1 byte: %2</translation>
+        <translation>Læsning mislykkedes efter %1 byte: %2</translation>
     </message>
     <message>
         <source>Copy failed: %1</source>
-        <translation>Kopiering fejlede: %1</translation>
+        <translation>Kopiering mislykkedes: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
-        <translation>Skrivning fejlede efter %1 byte: %2</translation>
+        <translation>Skrivning mislykkedes efter %1 byte: %2</translation>
     </message>
     <message>
         <source>bytes</source>
@@ -742,7 +742,7 @@
     </message>
     <message>
         <source>The specified module could not be found.</source>
-        <translation>Det specificerede modul blev ikke fundet.</translation>
+        <translation>Det angivne modul blev ikke fundet.</translation>
     </message>
 </context>
 <context>
@@ -777,7 +777,15 @@
     </message>
     <message>
         <source>Update Info: </source>
-        <translation>Opdateringsinfo:</translation>
+        <translation>Opdateringsinfo: </translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component can not be installed.</source>
+        <translation>Der opstod en fejl under indlæsning af den valgte komponent. Komponentet kan ikke installeres.</translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <translation>Der opstod en fejl under indlæsning af den valgte komponent. Komponentet kan ikke opdateres.</translation>
     </message>
 </context>
 <context>
@@ -875,7 +883,7 @@
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Denne komponent vil optage cirka %1 på dit harddisk-drev.</translation>
+        <translation>Komponenten vil optage cirka %1 på dit harddisk-drev.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -929,7 +937,7 @@
     </message>
     <message>
         <source>Invalid argument in %1: Third argument needs to be forceOverwrite, if specified.</source>
-        <translation>Ugyldigt argument i %1: tredje argument skal være forceOverwrite, hvis specificeret.</translation>
+        <translation>Ugyldigt argument i %1: tredje argument skal være forceOverwrite, hvis angivet.</translation>
     </message>
     <message>
         <source>Invalid argument in %1: Directory &quot;%2&quot; is invalid.</source>
@@ -968,7 +976,7 @@
     </message>
     <message>
         <source>Writing to file &quot;%1&quot; failed: %2</source>
-        <translation>Skrivning til filen &quot;%1&quot; fejlede: %2</translation>
+        <translation>Skrivning til filen &quot;%1&quot; mislykkedes: %2</translation>
     </message>
 </context>
 <context>
@@ -1075,7 +1083,7 @@
     </message>
     <message>
         <source>Downloading hash signature failed.</source>
-        <translation>Download af hash-signatur fejlede.</translation>
+        <translation>Download af hash-signatur mislykkedes.</translation>
     </message>
     <message>
         <source>Download Error</source>
@@ -1083,7 +1091,7 @@
     </message>
     <message>
         <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>Hash-verifikation under download fejlede. Dette er en midlertidig fejl, prøv venligst igen.</translation>
+        <translation>Hash-verifikation under download mislykkedes. Det er en midlertidig fejl, prøv venligst igen.</translation>
     </message>
     <message>
         <source>Cannot verify Hash</source>
@@ -1131,15 +1139,11 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>Writing to file &quot;%1&quot; failed: %2</source>
         <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Skrivning til filen &quot;%1&quot; fejlede: %2</translation>
+        <translation>Skrivning til filen &quot;%1&quot; mislykkedes: %2</translation>
     </message>
     <message>
         <source>Redirect loop detected for &quot;%1&quot;.</source>
         <translation>Omdirigeringsløkke registreret for &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
-        <translation>Tjeksum uoverensstemmelse registreret for &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
@@ -1180,7 +1184,7 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
-        <translation>Eksekvering fejlede (uventet afslutningskode: %1): &quot;%2&quot;</translation>
+        <translation>Eksekvering mislykkedes (uventet afslutningskode: %1): &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -1191,11 +1195,11 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>Fejl under udtrækning af arkivet &quot;%1&quot;: %2</translation>
+        <translation>Fejl under udpakning af arkivet &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
-        <translation>Ukendt undtagelse fanget under udtrækning af &quot;%1&quot;.</translation>
+        <translation>Ukendt undtagelse fanget under udpakning af &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1206,7 +1210,7 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>This process should be stopped before continuing: %1</source>
-        <translation>Denne proces bør stoppes inden der fortsættes: %1</translation>
+        <translation>Processen bør stoppes inden der fortsættes: %1</translation>
     </message>
     <message>
         <source>These processes should be stopped before continuing: %1</source>
@@ -1268,11 +1272,11 @@ Fejl under indlæsning af %2</translation>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Completing the %1 Wizard</source>
-        <translation>Fuldfører %1 assistenten</translation>
+        <translation>Fuldfører %1-assistenten</translation>
     </message>
     <message>
         <source>Click %1 to exit the %2 Wizard.</source>
-        <translation>Klik på %1 for at afslutte %2 assistenten.</translation>
+        <translation>Klik på %1 for at afslutte %2-assistenten.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1284,7 +1288,7 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>The %1 Wizard failed.</source>
-        <translation>%1 assistenten fejlede.</translation>
+        <translation>%1-assistenten mislykkedes.</translation>
     </message>
 </context>
 <context>
@@ -1336,24 +1340,12 @@ Fejl under indlæsning af %2</translation>
         <translation>Velkommen til opsætningsassistenten for %1.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
-        <translation>Tilføj eller fjern komponenter</translation>
-    </message>
-    <message>
-        <source>Update components</source>
-        <translation>Opdater komponenter</translation>
-    </message>
-    <message>
-        <source>Remove all components</source>
-        <translation>Fjern alle komponenter</translation>
-    </message>
-    <message>
         <source>Retrieving information from remote installation sources...</source>
         <translation>Henter information fra fjern-installationskilder...</translation>
     </message>
     <message>
         <source>At least one valid and enabled repository required for this action to succeed.</source>
-        <translation>Mindst ét gyldigt og aktiveret repository krævet for at denne handling skal lykkedes.</translation>
+        <translation>Mindst ét gyldigt og aktiveret repository krævet for at handlingen skal lykkedes.</translation>
     </message>
     <message>
         <source>No updates available.</source>
@@ -1364,8 +1356,20 @@ Fejl under indlæsning af %2</translation>
         <translation> Kun lokal pakkehåndtering tilgængeligt.</translation>
     </message>
     <message>
-        <source>Quit</source>
-        <translation>Afslut</translation>
+        <source>&amp;Add or remove components</source>
+        <translation>&amp;Tilføj eller fjern komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>&amp;Opdater komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>&amp;Fjern alle komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>&amp;Afslut</translation>
     </message>
 </context>
 <context>
@@ -1386,7 +1390,7 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
-        <translation>Læs venligst følgende licensaftale. Du skal acceptere vilkårene i denne aftale for at fortsætte installationen.</translation>
+        <translation>Læs venligst følgende licensaftale. Du skal acceptere vilkårene i aftalen for at fortsætte installationen.</translation>
     </message>
     <message>
         <source>I accept the license.</source>
@@ -1447,19 +1451,15 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Preparing meta information download...</source>
-        <translation>Forbedreder download af meta-information...</translation>
-    </message>
-    <message>
-        <source>Unpacking compressed repositories...</source>
-        <translation>Udpakker komprimerede repositories...</translation>
+        <translation>Forbedreder download af metainformation...</translation>
     </message>
     <message>
         <source>Meta data download canceled.</source>
-        <translation>Download af meta-data annulleret.</translation>
+        <translation>Download af metadata annulleret.</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
-        <translation>Ukendt undtagelse under udtrækning.</translation>
+        <translation>Ukendt undtagelse under udpakning.</translation>
     </message>
     <message>
         <source>Missing proxy credentials.</source>
@@ -1467,15 +1467,11 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Authentication failed.</source>
-        <translation>Autentifikation fejlede.</translation>
+        <translation>Autentifikation mislykkedes.</translation>
     </message>
     <message>
         <source>Unknown exception during download.</source>
         <translation>Ukendt undtagelse under download.</translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository...</source>
-        <translation>Henter meta-information fra fjern-repository...</translation>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
@@ -1483,19 +1479,35 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
-        <translation>Udtrækker meta-information...</translation>
+        <translation>Udpakker metainformation...</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>Fejl under udtrækning af arkivet &quot;%1&quot;: %2</translation>
+        <translation>Fejl under udpakning af arkivet &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
-        <translation>Ukendt undtagelse fanget under udtrækning af arkivet &quot;%1&quot;.</translation>
+        <translation>Ukendt undtagelse fanget under udpakning af arkivet &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
+    </message>
+    <message>
+        <source>Unpacking compressed repositories. This may take a while...</source>
+        <translation>Udpakker komprimerede repositories. Det kan tage noget tid...</translation>
+    </message>
+    <message>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>Tjeksum uoverensstemmelse registreret for &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository... %1/%2 </source>
+        <translation>Henter metainformation fra fjern-repository... %1/%2 </translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository... </source>
+        <translation>Henter metainformation fra fjern-repository... </translation>
     </message>
 </context>
 <context>
@@ -1745,7 +1757,7 @@ Installerer komponenten %1</translation>
     </message>
     <message>
         <source>Cannot retrieve meta information: %1</source>
-        <translation>Kan ikke hente meta-information: %1</translation>
+        <translation>Kan ikke hente metainformation: %1</translation>
     </message>
     <message>
         <source>Cannot add temporary update source information.</source>
@@ -1982,11 +1994,11 @@ Kopiér venligst installeren til et lokalt drev</translation>
     </message>
     <message>
         <source>Read failed after %1 bytes: %2</source>
-        <translation>Læsning fejlede efter %1 byte: %2</translation>
+        <translation>Læsning mislykkedes efter %1 byte: %2</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
-        <translation>Skrivning fejlede efter %1 byte: %2</translation>
+        <translation>Skrivning mislykkedes efter %1 byte: %2</translation>
     </message>
 </context>
 <context>
@@ -2009,6 +2021,10 @@ Kopiér venligst installeren til et lokalt drev</translation>
     <message>
         <source>Unknown error.</source>
         <translation>Ukendt fejl.</translation>
+    </message>
+    <message>
+        <source>on line number: </source>
+        <translation>på linje nummer: </translation>
     </message>
 </context>
 <context>
@@ -2034,7 +2050,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
     </message>
     <message>
         <source>You need to supply a username and password to access this site.</source>
-        <translation>Du skal angive brugernavn og adgangskode for at tilgå dette sted.</translation>
+        <translation>Du skal angive brugernavn og adgangskode for at tilgå stedet.</translation>
     </message>
     <message>
         <source>Username:</source>
@@ -2057,7 +2073,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
     </message>
     <message>
         <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>Aktuelle metode-argument som kalder &quot;%1&quot; med argumenterne &quot;%2&quot; understøttes ikke. Brug venligst set, remove, add_array_value eller remove_array_value.</translation>
+        <translation>Nuværende metode-argument som kalder &quot;%1&quot; med argumenterne &quot;%2&quot; understøttes ikke. Brug venligst set, remove, add_array_value eller remove_array_value.</translation>
     </message>
 </context>
 <context>
@@ -2098,7 +2114,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
     </message>
     <message>
         <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Specificer venligst mappen hvor %1 skal installeres.</translation>
+        <translation>Angiv venligst mappen hvor %1 skal installeres.</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2118,9 +2134,9 @@ Kopiér venligst installeren til et lokalt drev</translation>
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this directory as installation might fail.
 Do you want to continue?</source>
-        <translation>Du har valgt en eksisterende, ikke-tom mappe til installation.
-Bemærk at den vil blive fuldstændigt ryddet ved afinstallation af dette program.
-Det anbefales ikke at installere i denne mappe eftersom installationen kan fejle.
+        <translation>Du har valgt en eksisterende mappe til installation som ikke er tom.
+Bemærk at den vil blive fuldstændigt ryddet ved afinstallation af programmet.
+Det anbefales ikke at installere i mappen eftersom installationen kan mislykkes.
 Vil du fortsætte?</translation>
     </message>
     <message>
@@ -2133,11 +2149,11 @@ Vil du fortsætte?</translation>
     </message>
     <message>
         <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke være tom, specificer venligst en gyldig mappe.</translation>
+        <translation>Installationsstien må ikke være tom, angiv venligst en gyldig mappe.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation>Installationsstien må ikke være relativ, specificer venligst en absolut sti.</translation>
+        <translation>Installationsstien må ikke være relativ, angiv venligst en absolut sti.</translation>
     </message>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
@@ -2149,23 +2165,23 @@ Vil du fortsætte?</translation>
     </message>
     <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>Stien du har indtastet er for lang, sørg venligst for at specificere en gyldig sti.</translation>
+        <translation>Stien du har indtastet er for lang, sørg venligst for at angive en gyldig sti.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at specificere et gyldigt mål.</translation>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt mål.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at specificere et gyldigt drev.</translation>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt drev.</translation>
     </message>
     <message>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke slutte med &apos;.&apos;, specificer venligst en gyldig mappe.</translation>
+        <translation>Installationsstien må ikke slutte med &apos;.&apos;, angiv venligst en gyldig mappe.</translation>
     </message>
     <message>
         <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke indholde &quot;%1&quot;, specificer venligst en gyldig mappe.</translation>
+        <translation>Installationsstien må ikke indholde &quot;%1&quot;, angiv venligst en gyldig mappe.</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -2204,7 +2220,7 @@ Vil du fortsætte?</translation>
     </message>
     <message>
         <source>Authentication failed.</source>
-        <translation>Autentifikation fejlede.</translation>
+        <translation>Autentifikation mislykkedes.</translation>
     </message>
     <message>
         <source>Unknown error while testing repository &quot;%1&quot;.</source>
@@ -2351,7 +2367,7 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     </message>
     <message>
         <source>An error occurred while testing this repository.</source>
-        <translation>Der opstod en fejl under test af dette repository.</translation>
+        <translation>Der opstod en fejl under test af repository&apos;et.</translation>
     </message>
     <message>
         <source>The repository was tested successfully.</source>
@@ -2359,7 +2375,7 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     </message>
     <message>
         <source>Do you want to disable the repository?</source>
-        <translation>Vil du deaktivere repository&apos;et? </translation>
+        <translation>Vil du deaktivere repository&apos;et?</translation>
     </message>
     <message>
         <source>Do you want to enable the repository?</source>
@@ -2444,7 +2460,7 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     </message>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
-        <translation>Omdøbning af filen &quot;%1&quot; til &quot;%2&quot; fejlede: %3</translation>
+        <translation>Omdøbning af filen &quot;%1&quot; til &quot;%2&quot; mislykkedes: %3</translation>
     </message>
 </context>
 </TS>
