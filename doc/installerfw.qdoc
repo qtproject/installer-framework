@@ -430,20 +430,13 @@
     component.userInterface( "MyPage" ).checkbox.checked = true;
     \endcode
 
-    \section2 Using Control Scripts to Add Pages
-
-    To register a custom page, use the installer::addWizardPage() method
-    and the object name set in the UI file (for example, \c "MyPage"). Then
-    call the \c{Dynamic${ObjectName}Callback()} function (for example,
-    \c {DynamicMyPageCallback()}):
+    You can also have a callback for the page that is added. To access it,
+    use the object name set in the UI file (for example, \c "MyPage"). Then
+    create the \c{Dynamic${ObjectName}Callback} function (for example,
+    \c {DynamicMyPageCallback}):
 
     \code
-    function Controller()
-    {
-        installer.addWizardPage(component, "MyPage", QInstaller.TargetDirectory)
-    }
-
-    Controller.prototype.DynamicMyPageCallback()
+    Component.prototype.DynamicMyPageCallback = function()
     {
         var page = gui.pageWidgetByObjectName("DynamicMyPage");
         page.myButton.click,

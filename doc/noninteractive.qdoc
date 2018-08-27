@@ -483,13 +483,13 @@
 
     Example code:
     \code
-    function Controller()
+    function Component()
     {
         // add page with widget \c SomePageWidget before the target directory page
         installer.addWizardPage(component, "SomePageWidget", QInstaller.TargetDirectory)
     }
 
-    Controller.prototype.DynamicSomePageWidgetCallback = function()
+    Component.prototype.DynamicSomePageWidgetCallback = function()
     {
         var page = gui.pageWidgetByObjectName("DynamicSomePageWidget");
         page.myButton.click, //direct child of the UI file's widget
