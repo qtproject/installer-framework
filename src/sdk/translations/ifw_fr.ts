@@ -1524,7 +1524,7 @@ Erreur pendant le chargement %2</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup Wizard.</source>
-        <translation>Bienvenue dans l&apos;Assitant d&apos;Installation de : %1.</translation>
+        <translation>Bienvenue dans l&apos;Assistant d&apos;Installation de : %1.</translation>
     </message>
     <message>
         <source>Add or remove components</source>
