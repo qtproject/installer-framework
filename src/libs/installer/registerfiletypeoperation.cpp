@@ -89,7 +89,7 @@ bool RegisterFileTypeOperation::performOperation()
 {
 #ifdef Q_OS_WIN
     ensureOptionalArgumentsRead();
-    if (!checkArgumentCount(2, 5, tr("<extension> <command> [description [contentType [icon]]]")))
+    if (!checkArgumentCount(2, 5, QString::fromLatin1("<extension> <command> [description [contentType [icon]]]")))
         return false;
     QStringList args = arguments();
 
