@@ -844,14 +844,13 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
+    d->initialize(QHash<QString, QString>());
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called to set the server side authorization key.
     if (!d->isUpdater()) {
         RemoteClient::instance().init(socketName, key, mode, Protocol::StartAs::SuperUser);
         RemoteClient::instance().setAuthorizationFallbackDisabled(settings().disableAuthorizationFallback());
     }
-
-    d->initialize(QHash<QString, QString>());
 
     //
     // Sanity check to detect a broken installations with missing operations.

@@ -23,8 +23,8 @@
         <translation>Konnte nicht bis zur Resourcensammlung an Position %1 suchen.</translation>
     </message>
     <message>
-        <source>Cannot open meta resource. Error: %1</source>
-        <translation>Konnte Metainformationen nicht öffnen. Fehlermeldung: %1</translation>
+        <source>Cannot open meta resource %1.</source>
+        <translation>Konnte Metainformationen nicht öffnen: %1</translation>
     </message>
 </context>
 <context>
@@ -68,39 +68,50 @@
 <context>
     <name>DirectoryGuard</name>
     <message>
-        <source>Path exists but is not a folder: %1</source>
-        <translation>Pfad %1 existiert, aber ist kein Ordner.</translation>
+        <source>Path &quot;%1&quot; exists but is not a directory.</source>
+        <translation>Pfad &quot;%1&quot; existiert, aber ist kein Verzeichnis.</translation>
     </message>
     <message>
-        <source>Cannot create folder: %1</source>
-        <translation>Konnte Ordner %1 nicht anlegen.</translation>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen.</translation>
     </message>
 </context>
 <context>
     <name>ExtractCallbackImpl</name>
     <message>
-        <source>Cannot retrieve path of archive item %1</source>
+        <source>Cannot retrieve path of archive item %1.</source>
         <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
     </message>
     <message>
-        <source>Cannot remove already existing symlink. %1</source>
+        <source>Cannot remove already existing symlink %1.</source>
         <translation>Konnte existierende Verknüpfung (Symlink) %1 nicht entfernen.</translation>
     </message>
     <message>
-        <source>Cannot open file: %1 (%2)</source>
-        <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot create symlink at &apos;%1&apos;. Another one is already existing.</source>
+        <source>Cannot create symlink at &quot;%1&quot;. Another one is already existing.</source>
         <translation>Konnte Verknüpfung (Symlink) &apos;%1&apos; nicht erstellen. Es existiert bereits eine an dieser Stelle.</translation>
     </message>
     <message>
-        <source>Cannot read symlink target from file &apos;%1&apos;.</source>
+        <source>Cannot read symlink target from file &quot;%1&quot;.</source>
         <translation>Konnte Ziel der Verknüpfung (Symlink) &apos;%1&apos; nicht lesen.</translation>
     </message>
     <message>
-        <source>Cannot create symlink at %1. %2</source>
-        <translation>Konnte Verknüpfung (Symlink) %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <source>Cannot create symlink at %1: %2</source>
+        <translation>Konnte Verknüpfung (Symlink) %1 nicht anlegen: %2</translation>
+    </message>
+</context>
+<context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Waiting for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -110,7 +121,7 @@
         <translation>Komponenten, die als automatische Abhängigkeiten hinzugefügt wurden:</translation>
     </message>
     <message>
-        <source>Components added as dependency for &apos;%1&apos;:</source>
+        <source>Components added as dependency for &quot;%1&quot;:</source>
         <translation>Komponenten, die als Abhängigkeiten für &apos;%1&apos; hinzugefügt wurden:</translation>
     </message>
     <message>
@@ -122,11 +133,11 @@
         <translation>Ausgewählte Komponenten ohne Abhängigkeiten:</translation>
     </message>
     <message>
-        <source>Recursion detected, component &apos;%1&apos; already added with reason: &apos;%2&apos;</source>
+        <source>Recursion detected, component &quot;%1&quot; already added with reason: &quot;%2&quot;</source>
         <translation>Rekursion entdeckt, Komponente &apos;%1&apos; wurde bereits aufgrund von &apos;%2&apos; hinzugefügt</translation>
     </message>
     <message>
-        <source>Cannot find missing dependency &apos;%1&apos; for &apos;%2&apos;.</source>
+        <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Konnte fehlende Abhängigkeit &apos;%1&apos; für &apos;%2&apos; nicht finden.</translation>
     </message>
 </context>
@@ -138,99 +149,64 @@
     </message>
 </context>
 <context>
-    <name>LockFile</name>
-    <message>
-        <source>Cannot create lock file &apos;%1&apos;: %2</source>
-        <translation>Konnte keine Sperrdatei %1 anlegen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot write PID to lock file &apos;%1&apos;: %2</source>
-        <translation>Konnte PID nicht in die Sperrdatei %1 schreiben. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot obtain the lock for file &apos;%1&apos;: %2</source>
-        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht anlegen: &apos;%2&apos;</translation>
-    </message>
-    <message>
-        <source>Cannot release the lock for file &apos;%1&apos;: %2</source>
-        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht aufheben: &apos;%2&apos;</translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::AppendFileOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>Konnte Sicherungsdatei für &quot;%1&quot; nicht finden.</translation>
     </message>
     <message>
-        <source>Cannot open file &apos;%1&apos; for writing: %2</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen.</translation>
     </message>
     <message>
-        <source>Cannot find backup file for %1.</source>
-        <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1.</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::CopyOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
-    </message>
-    <message>
-        <source>Cannot backup file %1.</source>
-        <translation>Konnte Datei %1 nicht sichern.</translation>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern.</translation>
     </message>
     <message>
         <source>Cannot copy a non-existent file: %1</source>
         <translation>Konnte nicht existierende Datei nicht kopieren: %1</translation>
     </message>
     <message>
-        <source>Cannot remove destination file %1: %2</source>
-        <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Konnte Zieldatei &quot;%1&quot; nicht entfernen: %2</translation>
     </message>
     <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%2&quot; kopieren: %3</translation>
     </message>
     <message>
-        <source>Cannot delete file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot delete file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
-        <source>Cannot restore backup file into %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <source>Cannot restore backup file into &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::DeleteOperation</name>
     <message>
-        <source>Cannot create backup of %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <source>Cannot create backup of file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
@@ -299,12 +275,12 @@
 <context>
     <name>KDUpdater::HttpDownloader</name>
     <message>
-        <source>Cannot download %1: Writing to file &apos;%2&apos; failed: %3</source>
-        <translation>Konnte %1 nicht herunterladen. Schreiben in Datei &apos;%2&apos; fehlgeschlagen. Fehlermeldung: %3</translation>
+        <source>Cannot download %1. Writing to file &quot;%2&quot; failed: %3</source>
+        <translation>Konnte %1 nicht herunterladen. Schreiben in Datei &apos;%2&apos; fehlgeschlagen: %3</translation>
     </message>
     <message>
-        <source>Cannot download %1: Cannot create %2: %3</source>
-        <translation>Konnte %1 nicht herunterladen. Erstellen der Datei %2 fehlgeschlagen. Fehlermeldung: %3</translation>
+        <source>Cannot download %1. Cannot create file &quot;%2&quot;: %3</source>
+        <translation>Konnte %1 nicht herunterladen. Erstellen der Datei &quot;%2&quot; fehlgeschlagen: %3</translation>
     </message>
     <message>
         <source>%1 at %2</source>
@@ -338,142 +314,103 @@
 <context>
     <name>KDUpdater::LocalFileDownloader</name>
     <message>
-        <source>Cannot open source file &apos;%1&apos; for reading.</source>
-        <translation>Konnte Ausgangsdatei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
     </message>
     <message>
-        <source>Cannot open destination file &apos;%1&apos; for writing.</source>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Konnte Zieldatei &apos;%1&apos; nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
-        <source>Writing to %1 failed: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MkdirOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen: %2</translation>
     </message>
     <message>
-        <source>Cannot create folder %1: Unknown error.</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Unbekannter Fehler.</translation>
+        <source>Unknown error.</source>
+        <translation>Unbekannter Fehler.</translation>
     </message>
     <message>
-        <source>Cannot remove directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht löschen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::MoveOperation</name>
     <message>
-        <source>Cannot backup file %1.</source>
-        <translation>Konnte Datei %1 nicht sichern.</translation>
+        <source>Cannot backup file &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern.</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht entfernen: %2</translation>
     </message>
     <message>
-        <source>Cannot remove destination file %1: %2</source>
-        <translation>Konnte Zieldatei %1 nicht entfernen. Fehlermeldung: %2</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%1&quot; kopieren: %3</translation>
     </message>
     <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen.</translation>
     </message>
     <message>
-        <source>Cannot remove file %1.</source>
-        <translation>Konnte Datei %1 nicht löschen.</translation>
-    </message>
-    <message>
-        <source>Cannot copy %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
-    </message>
-</context>
-<context>
-    <name>KDUpdater::PackagesInfo</name>
-    <message>
-        <source>%1 contains invalid content: %2</source>
-        <translation>Inhalt von Datei %1 ungültig: %2</translation>
-    </message>
-    <message>
-        <source>The file %1 does not exist.</source>
-        <translation>Datei %1 existiert nicht.</translation>
-    </message>
-    <message>
-        <source>Cannot open %1.</source>
-        <translation>Konnte Datei %1 nicht öffnen.</translation>
-    </message>
-    <message>
-        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &apos;Packages&apos;.</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::PrependFileOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments: %1 arguments given, 2 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 2 erwartet.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot open file %1 for reading: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot open file %1 for writing: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot find backup file for &quot;%1&quot;.</source>
+        <translation>Konnte Sicherungsdatei für &quot;%1&quot; nicht finden.</translation>
     </message>
     <message>
-        <source>Cannot find backup file for %1.</source>
-        <translation>Konnte Sicherungsdatei für %1 nicht finden.</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen.</translation>
     </message>
     <message>
-        <source>Cannot restore backup file for %1.</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen.</translation>
-    </message>
-    <message>
-        <source>Cannot restore backup file for %1: %2</source>
-        <translation>Konnte Datei %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <source>Cannot restore backup file for &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::ResourceFileDownloader</name>
     <message>
-        <source>Cannot read resource file &quot;%1&quot;. Reason:</source>
-        <translation>Konnte Ressourcendatei %1 nicht zum Lesen öffnen. Grund:</translation>
+        <source>Cannot read resource file &quot;%1&quot;: %2</source>
+        <translation>Konnte Ressourcendatei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::RmdirOperation</name>
     <message>
-        <source>Invalid arguments: %1 arguments given, 1 expected.</source>
-        <translation>Ungültige Argumente: %1 Argumente erhalten, 1 erwartet.</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
-        <source>Cannot remove folder %1: The folder does not exist.</source>
-        <translation>Konnte Ordner %1 nicht entfernen. Der Ordner existiert nicht.</translation>
+        <source>The directory does not exist.</source>
+        <translation>Der Verzeichnis existiert nicht.</translation>
     </message>
     <message>
-        <source>Cannot remove folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot recreate directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht wiederherstellen. Fehlermeldung: %2</translation>
+        <source>Cannot recreate directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht wiederherstellen: %2</translation>
     </message>
 </context>
 <context>
@@ -514,8 +451,8 @@
         <translation>Konnte nicht auf die Paketinformationen dieser Anwendung zugreifen.</translation>
     </message>
     <message>
-        <source>Cannot access the update sources information of this application.</source>
-        <translation>Konnte nicht auf die Aktualisierungsinformationen dieser Anwendung zugreifen.</translation>
+        <source>No package sources set for this application.</source>
+        <translation>Keine Paketquellen für diese Anwendung festgelegt.</translation>
     </message>
     <message numerus="yes">
         <source>%n update(s) found.</source>
@@ -529,7 +466,7 @@
         <translation>Datei Updates.xml wird von der Aktualisierungsquelle heruntergeladen.</translation>
     </message>
     <message>
-        <source>Cannot download update source %1 from (&apos;%2&apos;)</source>
+        <source>Cannot download package source %1 from &quot;%2&quot;.</source>
         <translation>Konnte Aktualisierungen nicht von %1 (&apos;%2&apos;) herunterladen.</translation>
     </message>
     <message>
@@ -546,47 +483,24 @@
     </message>
 </context>
 <context>
-    <name>KDUpdater::UpdateSourcesInfo</name>
-    <message>
-        <source>%1 contains invalid content: %2</source>
-        <translation>Datei %1 enthält ungültige Inhalte: %2</translation>
-    </message>
-    <message>
-        <source>Cannot read &quot;%1&quot;</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
-    </message>
-    <message>
-        <source>XML Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
-    </message>
-    <message>
-        <source>Root element %1 unexpected, should be &quot;UpdateSources&quot;</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;UpdateSources&quot;.</translation>
-    </message>
-    <message>
-        <source>Cannot save changes to &quot;%1&quot;: %2</source>
-        <translation>Konnte Änderungen nicht in Datei %1 speichern. Fehlermeldung: %2</translation>
-    </message>
-</context>
-<context>
     <name>KDUpdater::UpdatesInfoData</name>
+    <message>
+        <source>Updates.xml contains invalid content: %1</source>
+        <translation>Updates.xml enthält ungültige Inhalte: %1</translation>
+    </message>
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>Konnte Datei &quot;%1&quot; nicht lesen.</translation>
     </message>
     <message>
         <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3. Fehlermeldung: %4</translation>
-    </message>
-    <message>
-        <source>Updates.xml contains invalid content: %1</source>
-        <translation>Inhalt von Updates.xml ungültig: %1</translation>
+        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
-        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;Updates&quot;.</translation>
+        <translation>Unerwartetes Wurzelelement %1, erwartet wird &quot;UpdateSources&quot;.</translation>
     </message>
-    <message>
+        <message>
         <source>ApplicationName element is missing.</source>
         <translation>Element ApplicationName fehlt.</translation>
     </message>
@@ -596,31 +510,19 @@
     </message>
     <message>
         <source>PackageUpdate element without Name</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;Name&quot;.</translation>
+        <translation>Element PackageUpdate braucht ein Feld Name.</translation>
     </message>
     <message>
         <source>PackageUpdate element without Version</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;Version&quot;.</translation>
+        <translation>Element PackageUpdate braucht ein Feld Version.</translation>
     </message>
     <message>
         <source>PackageUpdate element without ReleaseDate</source>
-        <translation>Element &quot;PackageUpdate&quot; braucht ein Feld &quot;ReleaseDate&quot;.</translation>
+        <translation>Element PackageUpdate braucht ein Feld ReleaseDate.</translation>
     </message>
 </context>
 <context>
     <name>Lib7z</name>
-    <message>
-        <source>Cannot retrieve number of items in archive</source>
-        <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
-    </message>
-    <message>
-        <source>Cannot retrieve path of archive item %1</source>
-        <translation>Konnte Pfad des Archivs %1 nicht feststellen.</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
-    </message>
     <message>
         <source>internal code: %1</source>
         <translation>Interner Fehlercode: %1</translation>
@@ -634,92 +536,134 @@
         <translation>Fehler: %1</translation>
     </message>
     <message>
-        <source>Cannot load codecs</source>
+        <source>Cannot retrieve property %1 for item %2.</source>
+        <translation>Konnte Eigenschaft %1 von %2 nicht erhalten.</translation>
+    </message>
+    <message>
+        <source>Property %1 for item %2 not of type VT_FILETIME but %3.</source>
+        <translation>Eigenschaft %1 von %2 ist nicht vom Typ VT_FILETIME, sondern vom Typ %3.</translation>
+    </message>
+    <message>
+        <source>Cannot convert UTC file time to system time.</source>
+        <translation>Kann nicht UTC Datei Zeit zur Systemzeit konvertieren.</translation>
+    </message>
+    <message>
+        <source>Cannot load codecs.</source>
         <translation>Konnte Codecs nicht laden.</translation>
     </message>
     <message>
-        <source>Cannot retrieve default format</source>
-        <translation>Konnte Standardformat nicht finden.</translation>
-    </message>
-    <message>
-        <source>Cannot create archive %1. %2</source>
-        <translation>Konnte kein Archiv %1 anlegen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>CArc index %1 out of bounds [0, %2]</source>
-        <translation>CArc Index %1 ausserhalb der Grenzen [0, %2].</translation>
-    </message>
-    <message>
-        <source>Item index %1 out of bounds [0, %2]</source>
-        <translation>Itemindex %1 ausserhalb der Grenzen [0, %2].</translation>
-    </message>
-    <message>
-        <source>Cannot create output file for writing: %1</source>
-        <translation>Konnte Ausgabedatei nicht zum Schreiben öffnen. Fehlermeldung: %1</translation>
-    </message>
-</context>
-<context>
-    <name>Lib7z::ExtractItemJob</name>
-    <message>
-        <source>Cannot list archive: QIODevice not set or already destroyed.</source>
-        <translation>Kann Archiv nicht anzeigen: QIODevice ist nicht gesetzt oder bereits zerstört.</translation>
-    </message>
-    <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
-    </message>
-    <message>
-        <source>Failed</source>
-        <translation>Fehlgeschlagen</translation>
-    </message>
-</context>
-<context>
-    <name>Lib7z::ListArchiveJob</name>
-    <message>
-        <source>Cannot list archive: QIODevice already destroyed.</source>
-        <translation>Kann Archiv nicht anzeigen: QIODevice ist bereits zerstört.</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught (%1)</source>
-        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
-    </message>
-    <message>
-        <source>Failed</source>
-        <translation>Fehlgeschlagen</translation>
-    </message>
-</context>
-<context>
-    <name>OpenArchiveInfo</name>
-    <message>
-        <source>Cannot load codecs</source>
-        <translation>Konnte Codecs nicht laden.</translation>
-    </message>
-    <message>
-        <source>Cannot retrieve default format</source>
-        <translation>Konnte Standardformat nicht finden.</translation>
-    </message>
-    <message>
-        <source>Cannot open archive</source>
+        <source>Cannot open archive &quot;%1&quot;.</source>
         <translation>Konnte Archiv nicht öffnen.</translation>
     </message>
     <message>
-        <source>No CArc found</source>
-        <translation>Keine CArc gefunden.</translation>
+        <source>Cannot retrieve number of items in archive.</source>
+        <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve path of archive item &quot;%1&quot;.</source>
+        <translation>Konnte Pfad des Archivs &quot;%1&quot; nicht feststellen.</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught (%1).</source>
+        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
+    </message>
+    <message>
+        <source>Cannot create temporary file: %1</source>
+        <translation>Konnte temporäre Datei nicht anlegen: %1</translation>
+    </message>
+    <message>
+        <source>Unsupported archive type.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;</source>
+        <translation>Konnte kein Archiv &quot;%1&quot; anlegen.</translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>Konnte kein Archiv &quot;%1&quot; anlegen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove old archive &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot rename temporary archive &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception caught (%1)</source>
+        <translation>Unbekannte Ausnahmebedingung (%1).</translation>
     </message>
 </context>
 <context>
-    <name>QIODeviceSequentialOutStream</name>
+    <name>LocalPackageHub</name>
+<message>
+        <source>%1 contains invalid content: %2</source>
+        <translation>Inhalt von Datei %1 ungültig: %2</translation>
+    </message>
     <message>
-        <source>No device set for output stream</source>
-        <translation>Kein Gerät für den Ausgabestrom gesetzt</translation>
+        <source>The file %1 does not exist.</source>
+        <translation>Datei %1 existiert nicht.</translation>
+    </message>
+    <message>
+        <source>Cannot open %1.</source>
+        <translation>Konnte Datei %1 nicht öffnen.</translation>
+    </message>
+        <message>
+        <source>Parse error in %1 at %2, %3: %4</source>
+        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3: %4</translation>
+    </message>
+    <message>
+        <source>Root element %1 unexpected, should be &apos;Packages&apos;.</source>
+        <translation>Unerwartetes Wurzelelement %1, erwartet wird &apos;Packages&apos;.</translation>
+    </message>
+</context>
+<context>
+<name>LockFile</name>
+    <message>
+        <source>Cannot create lock file &quot;%1&quot;: %2</source>
+        <translation>Konnte keine Sperrdatei &quot;%1&quot; anlegen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write PID to lock file &quot;%1&quot;: %2</source>
+        <translation>Konnte PID nicht in die Sperrdatei &quot;%1&quot; schreiben: %2</translation>
+    </message>
+    <message>
+        <source>Cannot obtain the lock for file &quot;%1&quot;: %2</source>
+        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht anlegen: &apos;%2&apos;</translation>
+    </message>
+    <message>
+        <source>Cannot release the lock for file &quot;%1&quot;: %2</source>
+        <translation>Konnte Sperre für Datei &apos;%1&apos; nicht aufheben: &apos;%2&apos;</translation>
     </message>
 </context>
 <context>
     <name>QInstaller</name>
+    <message>
+        <source>No marker found, stopped after %1.</source>
+        <translation>Keine Markierung gefunden, abgebrochen nach %1.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Read failed after %1 bytes: %2</source>
+        <translation>Das Lesen ist nach %1 Bytes fehlgeschlagen: %2</translation>
+    </message>
+    <message>
+        <source>Copy failed: %1</source>
+        <translation>Kopieren ist fehlgeschlagen: %1</translation>
+    </message>
+    <message>
+        <source>Write failed after %1 bytes: %2</source>
+        <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen: %2</translation>
+    </message>
     <message>
         <source>bytes</source>
         <translation>Bytes</translation>
@@ -757,80 +701,36 @@
         <translation>YiB</translation>
     </message>
     <message>
-        <source>Cannot remove file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
-        <source>Cannot remove folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
-        <source>Cannot create folder %1</source>
-        <translation>Konnte Ordner %1 nicht anlegen.</translation>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen.</translation>
     </message>
     <message>
-        <source>Cannot copy file from %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 kopieren. Fehlermeldung: %3</translation>
+        <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%1&quot; kopieren: %3</translation>
     </message>
     <message>
-        <source>Cannot move file from %1 to %2: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%1&quot; verschieben: %3</translation>
     </message>
     <message>
-        <source>Cannot create folder %1: %2</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen: %2</translation>
     </message>
     <message>
         <source>Cannot open temporary file: %1</source>
-        <translation>Konnte temporäre Datei nicht öffnen. Fehlermeldung: %1</translation>
+        <translation>Konnte temporäre Datei nicht öffnen: %1</translation>
     </message>
     <message>
         <source>Cannot open temporary file for template %1: %2</source>
-        <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>No marker found, stopped after %1.</source>
-        <translation>Keine Markierung gefunden, abgebrochen nach %1.</translation>
-    </message>
-    <message>
-        <source>Cannot open file %1 for reading: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open file %1 for writing: %2</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Read failed after %1 bytes: %2</source>
-        <translation>Das Lesen ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Copy failed. Error: %1</source>
-        <translation>Kopieren ist fehlgeschlagen. Fehlermeldung: %1</translation>
-    </message>
-    <message>
-        <source>Write failed after %1 bytes: %2</source>
-        <translation>Das Schreiben ist nach %1 Bytes fehlgeschlagen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot create temporary file</source>
-        <translation>Konnte temporäre Datei nicht anlegen.</translation>
-    </message>
-    <message>
-        <source>Cannot retrieve property %1 for item %2</source>
-        <translation>Konnte Eigenschaft %1 von %2 nicht erhalten.</translation>
-    </message>
-    <message>
-        <source>Property %1 for item %2 not of type VT_FILETIME but %3</source>
-        <translation>Eigenschaft %1 von %2 ist nicht vom Typ VT_FILETIME, sondern vom Typ %3.</translation>
-    </message>
-    <message>
-        <source>Cannot convert file time to local time</source>
-        <translation>Konnte die Dateizeit nicht in die lokale Zeit umwandeln.</translation>
-    </message>
-    <message>
-        <source>Cannot convert local file time to system time</source>
-        <translation>Konnte die lokale Dateizeit nicht in die Systemzeit umwandeln.</translation>
+        <translation>Konnte keine temporäre Datei für die Vorlage %1 öffnen: %2</translation>
     </message>
     <message>
         <source>Corrupt installation</source>
@@ -844,6 +744,38 @@
         <source>The specified module could not be found.</source>
         <translation>Das angegebene Modul konnte nicht gefunden werden.</translation>
     </message>
+    <message>
+        <source>Error: --include and --exclude are mutually exclusive. Use either one or the other.</source>
+        <translation>Fehler: --include und --exclude schließen sich gegenseitig aus. Benutze entweder das eine oder das andere.</translation>
+    </message>
+    <message>
+        <source>Error: Package to exclude missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Package to include missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Packages parameter missing argument</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error: Package directory not found at the specified location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Argument -r|--remove and --update|--update-new-components are mutually exclusive!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Repository target directory &quot;%1&quot; already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid content in &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
@@ -852,27 +784,23 @@
         <translation>Komponenten können im Updater-Modus keine Kinder haben.</translation>
     </message>
     <message>
-        <source>Cannot open the requested translation file &apos;%1&apos;.</source>
-        <translation>Konnte angeforderte Übersetzungsdatei %1 nicht öffnen.</translation>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
+        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot open the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
+        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden: %2</translation>
     </message>
     <message>
-        <source>Cannot load the requested UI file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &apos;%1&apos;. Error: %2</source>
-        <translation>Konnte angeforderte Lizenzdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
+        <translation>Konnte angeforderte Lizenzdatei &apos;%1&apos; nicht öffnen: %2</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>Error: Operation %1 does not exist</source>
+        <source>Error: Operation %1 does not exist.</source>
         <translation>Fehler: Anweisung %1 existiert nicht.</translation>
     </message>
     <message>
@@ -886,6 +814,22 @@
 </context>
 <context>
     <name>QInstaller::ComponentModel</name>
+    <message>
+        <source>Component is marked for installation.</source>
+        <translation>Komponente wird installiert.</translation>
+    </message>
+        <message>
+        <source>Component is marked for uninstallation.</source>
+        <translation>Komponente wird deinstalliert.</translation>
+    </message>
+    <message>
+        <source>Component is installed.</source>
+        <translation>Komponente ist installiert.</translation>
+    </message>
+    <message>
+        <source>Component is not installed.</source>
+        <translation>Komponente ist nicht installiert.</translation>
+    </message>
     <message>
         <source>Component Name</source>
         <translation>Komponentenname</translation>
@@ -909,22 +853,6 @@
     <message>
         <source>Size</source>
         <translation>Größe</translation>
-    </message>
-    <message>
-        <source>Component is marked for installation.</source>
-        <translation>Komponente wird installiert.</translation>
-    </message>
-    <message>
-        <source>Component is marked for uninstallation.</source>
-        <translation>Komponente wird deinstalliert.</translation>
-    </message>
-    <message>
-        <source>Component is installed.</source>
-        <translation>Komponente ist installiert.</translation>
-    </message>
-    <message>
-        <source>Component is not installed.</source>
-        <translation>Komponente ist nicht installiert.</translation>
     </message>
 </context>
 <context>
@@ -966,6 +894,14 @@
         <translation>Alle a&amp;bwählen</translation>
     </message>
     <message>
+        <source>To install new compressed repository, browse the repositories from your computer</source>
+        <translation>Um das neu komprimierte Repository zu installieren, suche ein Repository von deinem Computer aus.</translation>
+    </message>
+    <message>
+        <source>&amp;Browse QBSP files</source>
+        <translation>Durchsuche QBSP Dateien</translation>
+    </message>
+    <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
         <translation>Diese Komponente wird ungefähr %1 auf Ihrer Festplatte belegen.</translation>
     </message>
@@ -986,74 +922,62 @@
         <translation>Bitte wählen Sie die Komponenten aus, die Sie entfernen möchten.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them.</source>
+        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
         <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>at least 2</source>
-        <translation>mindestens 2</translation>
+        <source>&lt;to be saved installer key name&gt; &lt;executable&gt; [argument1] [argument2] [...]</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation>Das für die Anweisung %1 benötigte Installerobjekt ist leer.</translation>
     </message>
     <message>
-        <source>Can not save the output of %1 to an empty installer key value.</source>
-        <translation>Konnte die Ausgabe von %1 nicht in einen leeren Schlüsselwert des Installers speichern.</translation>
+        <source>Cannot save the output of &quot;%1&quot; to an empty installer key value.</source>
+        <translation>Konnte die Ausgabe von &quot;%1&quot; nicht in einen leeren Schlüsselwert des Installers speichern.</translation>
     </message>
     <message>
-        <source>File &apos;%1&apos; does not exist or is not an executable binary.</source>
+        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
         <translation>Datei &apos;%1&apos; existiert nicht oder ist keine ausführbare Binärdatei.</translation>
     </message>
     <message>
-        <source>Running &apos;%1&apos; resulted in a crash.</source>
+        <source>Running &quot;%1&quot; resulted in a crash.</source>
         <translation>Ausführen von &apos;%1&apos; führte zu einem Absturz.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CopyDirectoryOperation</name>
     <message>
-        <source>2 or 3</source>
-        <translation>2 oder 3</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source> (&lt;source&gt; &lt;target&gt; [forceOverwrite])</source>
+        <source>&lt;source&gt; &lt;target&gt; [&quot;forceOverwrite&quot;]</source>
         <translation> (&lt;Quelle&gt; &lt;Ziel&gt; [forceOverwrite])</translation>
     </message>
     <message>
-        <source>Invalid argument in %0: Third argument needs to be forceOverwrite, if specified</source>
-        <translation>Ungültiges Argument in %0: Drittes Argument muss forceOverwrite sein, wenn es angegeben wird</translation>
+        <source>Invalid argument in %1: Third argument needs to be forceOverwrite, if specified.</source>
+        <translation>Ungültiges Argument in %1: Drittes Argument muss forceOverwrite sein, wenn es angegeben wird</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: Directories are invalid: %1 %2</source>
-        <translation>Ungültige Argumentein %0: Ordner %1 und %2 ungültig.</translation>
+        <source>Invalid argument in %1: Directory &quot;%2&quot; is invalid.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot create %0</source>
-        <translation>Konnte Ordner &quot;%1&quot; nicht anlegen.</translation>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen.</translation>
     </message>
     <message>
-        <source>Failed to overwrite %1</source>
-        <translation>Konnte Datei %1 nicht überschreiben</translation>
+        <source>Failed to overwrite &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht überschreiben</translation>
     </message>
     <message>
-        <source>Cannot copy %0 to %1, error was: %3</source>
-        <translation>Konnte %0 nicht nach %1 kopieren. Fehlermeldung: %3</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte &quot;%1&quot; nicht nach &quot;%1&quot; kopieren: %3</translation>
     </message>
     <message>
-        <source>Cannot remove %0</source>
-        <translation>Konnte Datei %0 nicht löschen.</translation>
+        <source>Cannot remove file &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen.</translation>
     </message>
 </context>
 <context>
@@ -1063,100 +987,76 @@
         <translation>Ungültige Anzahl task items.</translation>
     </message>
     <message>
-        <source>Cannot open source &apos;%1&apos; for read. Error: %2.</source>
-        <translation>Konnte Quelle &apos;%1&apos; nicht zum Lesen öffnen. Fehlermeldung: %2.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Quelle &apos;%1&apos; nicht zum Lesen öffnen: %2.</translation>
     </message>
     <message>
-        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
-        <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen: %2.</translation>
     </message>
     <message>
-        <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen. Fehlermeldung: %2</translation>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateDesktopEntryOperation</name>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <source>Failed to overwrite file &quot;%1&quot;.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht überschreiben.</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
-    </message>
-    <message>
-        <source>Failed to overwrite %1</source>
-        <translation>Konnte Datei %1 nicht überschreiben.</translation>
-    </message>
-    <message>
-        <source>Cannot write Desktop Entry at %1</source>
-        <translation>Konnte keinen Eintrag %1 auf dem Arbeitsplatz anlegen.</translation>
+        <source>Cannot write desktop entry to &quot;%1&quot;.</source>
+        <translation>Konnte keinen Eintrag &quot;%1&quot; auf dem Arbeitsplatz anlegen.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLinkOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <source>Cannot create link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Konnte keinen Link von &quot;%1&quot; nach &quot;%1&quot; erstellen.</translation>
     </message>
     <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
-    </message>
-    <message>
-        <source>Cannot create link from %1 to %2.</source>
-        <translation>Konnte keinen Link von %1 nach %2 erstellen.</translation>
-    </message>
-    <message>
-        <source>Cannot remove link from %1 to %2.</source>
-        <translation>Konnte Link von %1 nach %2 nicht entfernen.</translation>
+        <source>Cannot remove link from &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation>Konnte Link von &quot;%1&quot; nach &quot;%1&quot; nicht entfernen.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateLocalRepositoryOperation</name>
     <message>
-        <source>Cannot set file permissions %1!</source>
-        <translation>Konnte Dateiberechtigungen auf Datei %1 nicht setzen.</translation>
+        <source>Cannot set permissions for file &quot;%1&quot;.</source>
+        <translation>Konnte Dateiberechtigungen auf Datei &quot;%1&quot; nicht setzen.</translation>
     </message>
     <message>
-        <source>Cannot remove file %1: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
-        <source>Cannot move file %1 to %2. Error: %3</source>
-        <translation>Konnte Datei %1 nicht nach %2 verschieben. Fehlermeldung: %3</translation>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%1&quot; verschieben: %3</translation>
     </message>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
-    </message>
-    <message>
-        <source>Installer needs to be an offline version: %1.</source>
+        <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
         <translation>Installer muss eine Offline-Version sein: %1.</translation>
     </message>
     <message>
-        <source>Cannot open file: %1</source>
-        <translation>Konnte Datei %1 nicht öffnen.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading.</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht öffnen.</translation>
     </message>
     <message>
-        <source>Cannot read: %1. Error: %2</source>
-        <translation>Konnte Datei %1 nicht lesen. Fehlermeldung: %2</translation>
+        <source>Cannot read file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht lesen: %2</translation>
     </message>
     <message>
-        <source>Cannot open file: %1. Error: %2</source>
-        <translation>Konnte Datei %1 nicht öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot create target dir: %1.</source>
+        <source>Cannot create target directory: &quot;%1&quot;.</source>
         <translation>Konnte Zielordner %1. nicht anlegen.</translation>
     </message>
     <message>
@@ -1164,43 +1064,35 @@
         <translation>Unbekannte Ausnahmebedingung: %1</translation>
     </message>
     <message>
-        <source>Removing file: %0</source>
+        <source>Removing file &quot;%1&quot;.</source>
         <translation>Datei %0 wird entfernt</translation>
     </message>
     <message>
-        <source>Cannot remove %0.</source>
+        <source>Cannot remove file &quot;%1&quot;.</source>
         <translation>Konnte Datei %0 nicht löschen.</translation>
     </message>
     <message>
-        <source>Cannot remove directory %1: %2</source>
-        <translation>Konnte Ordner %1 nicht löschen. Fehlermeldung: %2</translation>
+        <source>Cannot remove directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht löschen: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>2 or 3</source>
-        <translation>2 oder 3</translation>
-    </message>
-    <message>
         <source> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</source>
         <translation> (optional: &apos;workingDirectory=...&apos;, &apos;iconPath=...&apos;, &apos;iconId=...&apos;)</translation>
     </message>
     <message>
-        <source>Cannot create folder %1: %2.</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen: %2</translation>
     </message>
     <message>
-        <source>Failed to overwrite %1: %2</source>
-        <translation>Konnte Datei %1 nicht überschreiben. Fehlermeldung: %2</translation>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht überschreiben: %2</translation>
     </message>
     <message>
-        <source>Cannot create link %1: %2</source>
-        <translation>Konnte Verweis %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <source>Cannot create link &quot;%1&quot;: %2</source>
+        <translation>Konnte Verweis &quot;%1&quot; nicht anlegen: %2</translation>
     </message>
 </context>
 <context>
@@ -1226,8 +1118,8 @@
         <translation>Prüfsumme konnte nicht geprüft werden.</translation>
     </message>
     <message>
-        <source>Cannot download archive: %1 : %2</source>
-        <translation>Konnte Archiv %1 nicht herunterladen. Fehlermeldung: %2</translation>
+        <source>Cannot download archive %1: %2</source>
+        <translation>Konnte Archiv %1 nicht herunterladen: %2</translation>
     </message>
     <message>
         <source>Cannot fetch archives: %1
@@ -1236,36 +1128,45 @@ Error while loading %2</source>
 Fehler beim Laden von %2</translation>
     </message>
     <message>
-        <source>Downloading archive &apos;%1&apos; for component: %2</source>
+        <source>Downloading archive &quot;%1&quot; for component %2.</source>
         <translation>Archiv &apos;%1&apos; für Komponente %2 wird heruntergeladen.</translation>
     </message>
     <message>
-        <source>Scheme not supported: %1 (%2)</source>
+        <source>Scheme %1 not supported (URL: %2).</source>
         <translation>Schema &quot;%1&quot; nicht unterstützt in &quot;%2&quot;.</translation>
     </message>
     <message>
-        <source>Cannot find component for: %1.</source>
+        <source>Cannot find component for %1.</source>
         <translation>Konnte keine Komponente für Datei %1 finden.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
     <message>
-        <source>Target &apos;%1&apos; not open for write. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Ziel &apos;%1&apos; nicht zum Schreiben geöffnet. Fehlermeldung: %2.</translation>
+        <source>Target file &quot;%1&quot; already exists but is not a file.</source>
+        <translation>Zieldatei &apos;%1&apos; existiert bereits aber ist keine Datei.</translation>
     </message>
     <message>
-        <source>Writing to target &apos;%1&apos; failed. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error.</extracomment>
-        <translation>Schreiben in Datei &apos;%1&apos; fehlgeschlagen. Fehlermeldung: %2.</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <extracomment>%2 is a sentence describing the error</extracomment>
+        <translation>Konnte Datei %1 nicht zum Schreiben öffnen: %2</translation>
     </message>
     <message>
-        <source>Redirect loop detected &apos;%1&apos;.</source>
+        <source>File &quot;%1&quot; not open for writing: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>Datei konnte nicht zum Schreiben geöffnet werden.</translation>
+    </message>
+    <message>
+        <source>Writing to file &quot;%1&quot; failed: %2</source>
+        <extracomment>%2 is a sentence describing the error.</extracomment>
+        <translation>Schreiben in Datei &apos;%1&apos; fehlgeschlagen: %2.</translation>
+    </message>
+    <message>
+        <source>Redirect loop detected for &quot;%1&quot;.</source>
         <translation>Schleife in Umleitung erkannt &apos;%1&apos;.</translation>
     </message>
     <message>
-        <source>Checksum mismatch detected &apos;%1&apos;.</source>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
         <translation>Checksummen stimmen nicht überein &apos;%1&apos;.</translation>
     </message>
     <message>
@@ -1274,49 +1175,36 @@ Fehler beim Laden von %2</translation>
         <translation>Netzwerkfehler beim Herunterladen von &apos;%1&apos;: %2.</translation>
     </message>
     <message>
-        <source>Unknown network error while downloading: %1.</source>
+        <source>Unknown network error while downloading &quot;%1&quot;.</source>
         <extracomment>%1 is a sentence describing the error</extracomment>
         <translation>Unbekannter Netzwerkfehler beim Herunterladen: &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <source>Network transfers canceled.</source>
+        <translation>Netwerkübertragung abgebrochen.</translation>
     </message>
     <message>
         <source>Pause and resume not supported by network transfers.</source>
         <translation>Pausieren und Fortsetzen werden bei Netzwerkübertragungen nicht unterstützt.</translation>
     </message>
     <message>
-        <source>Invalid source &apos;%1&apos;. Error: %2.</source>
+        <source>Invalid source URL &quot;%1&quot;: %2</source>
         <extracomment>%2 is a sentence describing the error</extracomment>
         <translation>Ungültige Quelle &apos;%1&apos;. Fehler: %2.</translation>
-    </message>
-    <message>
-        <source>Target file &apos;%1&apos; already exists but is not a file.</source>
-        <translation>Zieldatei &apos;%1&apos; existiert bereits aber ist keine Datei.</translation>
-    </message>
-    <message>
-        <source>Cannot open target &apos;%1&apos; for write. Error: %2.</source>
-        <extracomment>%2 is a sentence describing the error</extracomment>
-        <translation>Konnte Ziel &apos;%1&apos; nicht zum Schreiben öffnen. Fehler: %2.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ElevatedExecuteOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <source>Cannot start detached: &quot;%1&quot;</source>
+        <translation>Konnte &quot;%1&quot; nicht losgelöst starten.</translation>
     </message>
     <message>
-        <source>at least 1</source>
-        <translation>mindestens 1</translation>
+        <source>Cannot start: &quot;%1&quot;: %2</source>
+        <translation>Konnte &apos;%1&apos; nicht starten: %2</translation>
     </message>
     <message>
-        <source>Execution failed: Cannot start detached: &quot;%1&quot;</source>
-        <translation>Ausführung fehlgeschlagen: Konnte %1 nicht losgelöst starten.</translation>
-    </message>
-    <message>
-        <source>Execution failed: Cannot start: &quot;%1&quot;(%2)</source>
-        <translation>Ausführung fehlgeschlagen: Konnte &apos;%1&apos; nicht starten. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Execution failed(Crash): &quot;%1&quot;</source>
+        <source>Program crashed: &quot;%1&quot;</source>
         <translation>Ausführung fehlgeschlagen (Absturz): &quot;%1&quot;</translation>
     </message>
     <message>
@@ -1325,48 +1213,22 @@ Fehler beim Laden von %2</translation>
     </message>
 </context>
 <context>
-    <name>QInstaller::EnvironmentVariableOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>2 to 4</source>
-        <translation>2 bis 4</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
-        <source>Cannot open %1 for reading: %2.</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
     <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Fehler beim Auspacken von &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
+        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
+        <translation>Beim Auspacken von &quot;%1&quot; ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::FakeStopProcessForUpdateOperation</name>
-    <message>
-        <source>Number of arguments does not match: one is required</source>
-        <translation>Unpassende Anzahl Argumente: Genau eins wird verlangt</translation>
-    </message>
     <message>
         <source>Cannot get package manager core.</source>
         <translation>Konnte PackageManagerCore nicht erhalten.</translation>
@@ -1438,12 +1300,8 @@ Fehler beim Laden von %2</translation>
         <translation>Den %1-Assistent abschließen.</translation>
     </message>
     <message>
-        <source>Click Done to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
-    </message>
-    <message>
-        <source>Click Finish to exit the %1 Wizard.</source>
-        <translation>Klicken Sie &quot;Abschließen&quot;, um den %1 Assistenten zu beenden.</translation>
+        <source>Click %1 to exit the %2 Wizard.</source>
+        <translation>Klicken Sie %1, um den %2 Assistenten zu beenden.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1461,55 +1319,39 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::GlobalSettingsOperation</name>
     <message>
-        <source>Settings are not writable</source>
+        <source>Settings are not writable.</source>
         <translation>Einstellungen konnten nicht geschrieben werden.</translation>
     </message>
     <message>
-        <source>Failed to write settings</source>
+        <source>Failed to write settings.</source>
         <translation>Einstellungen konnten nicht geschrieben werden.</translation>
-    </message>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>3, 4 or 5</source>
-        <translation>3, 4 oder 5</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>1 or 2</source>
-        <translation>1 oder 2</translation>
-    </message>
-    <message>
-        <source> (Sourcepath, [Vendorprefix])</source>
+        <source>&lt;source path&gt; [vendor prefix]</source>
         <translation> (Quellpfad, [Vendorprefix])</translation>
     </message>
     <message>
-        <source>Invalid Argument: source folder must not be empty.</source>
+        <source>Invalid Argument: source directory must not be empty.</source>
         <translation>Ungültiges Argument: Quellordner darf nicht leer sein.</translation>
     </message>
     <message>
-        <source>Cannot backup file %1: %2</source>
-        <translation>Konnte Datei %1 nicht sichern. Fehlermeldung: %2</translation>
+        <source>Cannot backup file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
     <message>
-        <source>Failed to overwrite %1: %2</source>
-        <translation>Konnte Datei %1 nicht überschreiben. Fehlermeldung: %2</translation>
+        <source>Failed to overwrite &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht überschreiben: %2</translation>
     </message>
     <message>
-        <source>Failed to copy file %1: %2</source>
-        <translation>Konnte Datei nicht nach %1 kopieren. Fehlermeldung: %2</translation>
+        <source>Failed to copy file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei nicht nach &quot;%1&quot; kopieren: %2</translation>
     </message>
     <message>
-        <source>Cannot create folder at %1: %2</source>
-        <translation>Konnte Ordner %1 nicht anlegen. Fehlermeldung: %2</translation>
+        <source>Cannot create directory &quot;%1&quot;: %2</source>
+        <translation>Konnte Verzeichnis &quot;%1&quot; nicht anlegen: %2</translation>
     </message>
 </context>
 <context>
@@ -1568,6 +1410,12 @@ Fehler beim Laden von %2</translation>
         <translation>Alt+A</translation>
     </message>
     <message>
+        <source>Alt+D</source>
+        <comment>do not agree license</comment>
+        <translatorcomment>Der Lizenz nicht zustimmen</translatorcomment>
+        <translation>Alt+N</translation>
+    </message>
+    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Bitte lesen Sie das folgende Lizenzabkommen. Sie müssen die Bedingungen in diesem Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
@@ -1584,18 +1432,12 @@ Fehler beim Laden von %2</translation>
         <translation>Bitte lesen Sie die folgenden Lizenzabkommen. Sie müssen die Bedingungen in diesen Abkommen akzeptieren, um die Installation fortsetzen zu können.</translation>
     </message>
     <message>
-        <source>I do not accept the licenses.</source>
-        <translation>Ich akzeptiere die Lizenzvereinbarungen nicht.</translation>
-    </message>
-    <message>
         <source>I accept the licenses.</source>
         <translation>Ich akzeptiere die Lizenzvereinbarungen.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>do not agree license</comment>
-        <translatorcomment>Der Lizenz nicht zustimmen</translatorcomment>
-        <translation>Alt+N</translation>
+        <source>I do not accept the licenses.</source>
+        <translation>Ich akzeptiere die Lizenzvereinbarungen nicht.</translation>
     </message>
 </context>
 <context>
@@ -1609,8 +1451,8 @@ Fehler beim Laden von %2</translation>
         <translation>Das für die Anweisung %1 benötigte Installer-Objekt ist leer.</translation>
     </message>
     <message>
-        <source>Can not write license file: %1.</source>
-        <translation>Konnte Lizenzdatei %1 nicht schreiben.</translation>
+        <source>Can not write license file &quot;%1&quot;.</source>
+        <translation>Konnte Lizenzdatei &quot;%1&quot; nicht schreiben.</translation>
     </message>
     <message>
         <source>No license files found to delete.</source>
@@ -1620,19 +1462,11 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>exactly 3</source>
-        <translation>genau 3</translation>
-    </message>
-    <message>
-        <source>Failed to open &apos;%1&apos; for reading.</source>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Konnte Datei &apos;%1&apos; nicht zum Lesen öffnen.</translation>
     </message>
     <message>
-        <source>Failed to open &apos;%1&apos; for writing.</source>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Konnte Datei &apos;%1&apos; nicht zum Schreiben öffnen.</translation>
     </message>
 </context>
@@ -1646,9 +1480,17 @@ Fehler beim Laden von %2</translation>
         <source>Preparing meta information download...</source>
         <translation>Herunterladen der Metainformationen wird vorbereitet ...</translation>
     </message>
+        <message>
+        <source>Unpacking compressed repositories. This may take a while...</source>
+        <translation>Entpacken des komprimierten Repository, Das könnte eine Weile dauern...</translation>
+    </message>
     <message>
         <source>Meta data download canceled.</source>
         <translation>Herunterladen der Metainformationen abgebrochen.</translation>
+    </message>
+    <message>
+        <source>Unknown exception during extracting.</source>
+        <translation>Beim Auspacken ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Missing proxy credentials.</source>
@@ -1663,36 +1505,40 @@ Fehler beim Laden von %2</translation>
         <translation>Beim Herunterladen ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository...</source>
-        <translation>Metainformationen werden vom Installationsserver empfangen ...</translation>
-    </message>
-    <message>
         <source>Failure to fetch repositories.</source>
         <translation>Herunterladen von Paketquellen fehlgeschlagen.</translation>
-    </message>
-    <message>
-        <source>Unknown exception during extracting.</source>
-        <translation>Beim Auspacken ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
         <translation>Metainformationen werden ausgepackt ...</translation>
     </message>
     <message>
-        <source>Error while extracting &apos;%1&apos;: %2</source>
-        <translation>Fehler beim Auspacken von &apos;%1&apos;. Fehlermeldung: %2</translation>
+        <source>Retrieving meta information from remote repository... %1/%2 </source>
+        <translation>Metainformationen werden vom Installationsserver empfangen ... %1/%2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting %1.</source>
-        <translation>Beim Auspacken von %1 ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Metainformationen werden vom Installationsserver empfangen ...</translation>
     </message>
     <message>
-        <source>Cannot open %1 for reading. Error: %2</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Fehler beim auspacken des Archives &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
+        <translation>Beim Auspacken von &quot;%1&quot; ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Kann die Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Error writing Maintenance Tool</source>
+        <translation>Fehler beim Schreiben des Verwaltungswerkzeugs</translation>
+    </message>
     <message>
         <source>
 Downloading packages...</source>
@@ -1700,7 +1546,7 @@ Downloading packages...</source>
 Pakete werden heruntergeladen ...</translation>
     </message>
     <message>
-        <source>Installation canceled by user</source>
+        <source>Installation canceled by user.</source>
         <translation>Installation durch den Benutzer abgebrochen</translation>
     </message>
     <message>
@@ -1708,24 +1554,16 @@ Pakete werden heruntergeladen ...</translation>
         <translation>Alle Herunterladeprozesse abgeschlossen.</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
-    </message>
-    <message>
         <source>Cancelling the Installer</source>
         <translation>Der Installationsvorgang wird abgebrochen</translation>
-    </message>
-    <message>
-        <source>Error writing Maintenance Tool</source>
-        <translation>Fehler beim Schreiben des Verwaltungswerkzeugs</translation>
     </message>
     <message>
         <source>Authentication Error</source>
         <translation>Autentifizierungsfehler</translation>
     </message>
     <message>
-        <source>Some components could not be removed completely because admin rights could not be acquired: %1.</source>
-        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Administratorrechte nicht erlangt werden konnten. Fehlermeldung: %1</translation>
+        <source>Some components could not be removed completely because administrative rights could not be acquired: %1.</source>
+        <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil die nötigen Administratorrechte nicht erlangt werden konnten: %1</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -1736,7 +1574,7 @@ Pakete werden heruntergeladen ...</translation>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler aufgetreten ist.</translation>
     </message>
     <message>
-        <source>Application not running in Package Manager mode!</source>
+        <source>Application not running in Package Manager mode.</source>
         <translation>Die Anwendung läuft nicht im Paketverwaltungsmodus.</translation>
     </message>
     <message>
@@ -1744,7 +1582,7 @@ Pakete werden heruntergeladen ...</translation>
         <translation>Keine installierten Pakete gefunden.</translation>
     </message>
     <message>
-        <source>Application running in Uninstaller mode!</source>
+        <source>Application running in Uninstaller mode.</source>
         <translation>Die Anwendung läuft im Deinstallationsmodus.</translation>
     </message>
     <message>
@@ -1752,8 +1590,20 @@ Pakete werden heruntergeladen ...</translation>
         <translation>Es gibt eine wichtige Aktualisierung, bitte zuerst den Updater starten.</translation>
     </message>
     <message>
+        <source>Cannot resolve all dependencies.</source>
+        <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
+    </message>
+    <message>
+        <source>Components about to be removed.</source>
+        <translation>Komponenten, die entfernt werden.</translation>
+    </message>
+    <message>
         <source>Error while elevating access rights.</source>
         <translation>Fehler beim Erlangen von Administratorrechten.</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
     </message>
     <message>
         <source>invalid</source>
@@ -1762,6 +1612,10 @@ Pakete werden heruntergeladen ...</translation>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
+    <message>
+        <source>Unresolved dependencies</source>
+        <translation>Ungelöste Abhängigkeiten</translation>
+    </message>
     <message>
         <source>Error</source>
         <translation>Fehler</translation>
@@ -1776,7 +1630,7 @@ Pakete werden heruntergeladen ...</translation>
     </message>
     <message>
         <source>Cannot write installer configuration to %1: %2</source>
-        <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben. Fehlermeldung: %2</translation>
+        <translation>Konnte Einstellungen des Installers nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
         <source>Stop Processes</source>
@@ -1784,15 +1638,41 @@ Pakete werden heruntergeladen ...</translation>
     </message>
     <message>
         <source>These processes should be stopped to continue:
-
 %1</source>
         <translation>Diese Prozesse sollten beendet werden, um fortsetzen zu können:
-
 %1</translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
         <translation>Installation durch den Benutzer abgebrochen</translation>
+    </message>
+    <message>
+        <source>Writing maintenance tool.</source>
+        <translation>Schreiben des Verwaltungswerkzeugs.</translation>
+    </message>
+    <message>
+        <source>Failed to seek in file %1: %2</source>
+        <translation>Suchen in Datei %1 fehlgeschlagen: %2</translation>
+    </message>
+    <message>
+        <source>Maintenance tool is not a bundle</source>
+        <translation>Verwaltungswerkzeug ist kein Bundle</translation>
+    </message>
+    <message>
+        <source>Cannot remove data file &quot;%1&quot;: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write maintenance tool data to %1: %2</source>
+        <translation>Konnte Daten des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write maintenance tool to &quot;%1&quot;: %2</source>
+        <translation>Konnte Verwaltungswerkzeug nicht nach &quot;%1&quot; schreiben: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write maintenance tool binary data to %1: %2</source>
+        <translation>Konnte Binärdaten des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1809,6 +1689,13 @@ Pakete werden heruntergeladen ...</translation>
     <message>
         <source>Creating local repository</source>
         <translation>Lokale Quelle wird erstellt</translation>
+    </message>
+    <message>
+        <source>Creating Maintenance Tool</source>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation></translation>
     </message>
     <message>
         <source>
@@ -1841,42 +1728,6 @@ Aktualisierung beendet!</translation>
 Update aborted!</source>
         <translation>
 Aktualisierung abgebrochen!</translation>
-    </message>
-    <message>
-        <source>Unresolved dependencies</source>
-        <translation>Nicht aufgelöste Abhängigkeiten</translation>
-    </message>
-    <message>
-        <source>Writing maintenance tool.</source>
-        <translation>Schreiben des Verwaltungswerkzeugs.</translation>
-    </message>
-    <message>
-        <source>Failed to seek in file %1: %2</source>
-        <translation>Suchen in Datei %1 fehlgeschlagen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Maintenance tool is not a bundle</source>
-        <translation>Verwaltungswerkzeug ist kein Bundle</translation>
-    </message>
-    <message>
-        <source>Cannot write maintenance tool data to %1: %2</source>
-        <translation>Konnte Daten des Verwaltungswerkzeugs nicht nach %1 schreiben. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot remove data file &apos;%1&apos;: %2</source>
-        <translation>Konnte Datei %1 nicht löschen. Fehlermeldung: %2</translation>
-    </message>
-    <message>
-        <source>Cannot write maintenance tool to %1: %2</source>
-        <translation>Konnte Verwaltungswerkzeug nicht nach %1 schreiben: %2</translation>
-    </message>
-    <message>
-        <source>Cannot write maintenance tool binary data to %1: %2</source>
-        <translation>Konnte Binärdaten des Verwaltungswerkzeugs nicht nach %1 schreiben: %2</translation>
-    </message>
-    <message>
-        <source>Creating Maintenance Tool</source>
-        <translation>Verwaltungswerkzeug wird erstellt</translation>
     </message>
     <message>
         <source>Uninstallation completed successfully.</source>
@@ -1921,11 +1772,11 @@ Komponente %1 wird installiert</translation>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <source>Cannot retrieve remote tree: %1.</source>
-        <translation>Kann entfernten Baum nicht empfangen: %1</translation>
+        <source>Cannot retrieve remote tree %1.</source>
+        <translation>Kann entfernten Baum nicht empfangen %1</translation>
     </message>
     <message>
-        <source>Failure to read packages from: %1.</source>
+        <source>Failure to read packages from %1.</source>
         <translation>Fehler beim Lesen der Pakete von %1</translation>
     </message>
     <message>
@@ -1941,7 +1792,7 @@ Komponente %1 wird installiert</translation>
         <translation>Konnte keine Informationen zu Aktualisierungsquellen finden.</translation>
     </message>
     <message>
-        <source>Dependency cycle between components detected: &apos;%1&apos; and &apos;%2&apos;.</source>
+        <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Zyklische Abhängigkeit zwischen Komponenten entdeckt: &apos;%1&apos; und &apos;%2&apos;.</translation>
     </message>
 </context>
@@ -1976,8 +1827,8 @@ Komponente %1 wird installiert</translation>
         <translation>Möchten Sie das Verwaltungswerkzeug beenden?</translation>
     </message>
     <message>
-        <source>Question</source>
-        <translation>Frage</translation>
+        <source>%1 Question</source>
+        <translation>%1 Frage</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -2071,7 +1922,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Ordner!</translation>
+        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Verzeichnis!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2098,15 +1949,15 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 auf Ihrem Computer zu installieren.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation! Available space: %1, at least required %2.</source>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
         <translation>Nicht genügend Festplattenplatz für temporäre Dateien und die Installation! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store all selected components! Available space: %1, at least required: %2.</source>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
         <translation>Nicht genügend Festplattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! Available space: %1, at least required: %2.</source>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
         <translation>Nicht genügend Festplattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
@@ -2121,25 +1972,9 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <source>Installation will use %1 of disk space.</source>
         <translation>Die Installation wird %1 Festplattenplatz verwenden.</translation>
     </message>
-    <message>
-        <source>Cannot resolve all dependencies.</source>
-        <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
-    </message>
-    <message>
-        <source>Components about to be removed.</source>
-        <translation>Komponenten, die entfernt werden.</translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
-    <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>2 to 5</source>
-        <translation>2 bis 5</translation>
-    </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
         <translation>Dateitypenregistrierung wird nur unter Windows unterstützt.</translation>
@@ -2152,40 +1987,25 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RemoteObject</name>
     <message>
-        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
-        <translation>Konnte nicht alle Daten nach dem Senden des Befehls &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::RemoteServerConnection</name>
-    <message>
-        <source>Cannot read all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
+        <source>all data after sending command: %1. Bytes expected: %2, Bytes received: %3. Error: %4</source>
         <translation>Konnte nicht alle Daten nach dem Senden des Befehls &apos;%1&apos; lesen. Bytes erwartet: %2, Bytes erhalten: %3. Fehler: %4</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::ReplaceOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen</translation>
     </message>
     <message>
-        <source>exactly 3</source>
-        <translation>genau 3</translation>
-    </message>
-    <message>
-        <source>Failed to open %1 for reading</source>
-        <translation>Konnte Datei %1 nicht zum Lesen öffnen</translation>
-    </message>
-    <message>
-        <source>Failed to open %1 for writing</source>
-        <translation>Konnte Datei %1 nicht zum Schreiben öffnen</translation>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::Resource</name>
     <message>
-        <source>Cannot open Resource &apos;%1&apos; read-only.</source>
+        <source>Cannot open resource %1 for reading.</source>
         <translation>Konnte Ressourcendatei &apos;%1&apos; nicht schreibgeschützt öffnen.</translation>
     </message>
     <message>
@@ -2207,18 +2027,22 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::ScriptEngine</name>
     <message>
-        <source>Cannot open the requested script file at %1: %2.</source>
-        <translation>Konnte angeforderte Skriptdatei &apos;%1&apos; nicht öffnen. Fehlermeldung: %2</translation>
+        <source>Cannot open script file at %1: %2</source>
+        <translation>Konnte angeforderte Skriptdatei &apos;%1&apos; nicht öffnen: %2</translation>
     </message>
     <message>
-        <source>Exception while loading the component script &apos;%1&apos;. (%2)</source>
+        <source>Exception while loading the component script &quot;%1&quot;: %2</source>
         <translation>Ausnahme beim Laden des Komponentenskripts &apos;%1&apos;. (%2)</translation>
+    </message>
+    <message>
+        <source>Unknown error.</source>
+        <translation>Unbekannter Fehler.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SelfRestartOperation</name>
     <message>
-        <source>Installer object needed in &apos;%1&apos; operation is empty.</source>
+        <source>Installer object needed in operation %1 is empty.</source>
         <translation>Das für die Anweisung &apos;%1&apos; benötigte Installer-Objekt ist leer.</translation>
     </message>
     <message>
@@ -2256,38 +2080,30 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::SettingsOperation</name>
     <message>
-        <source>Missing argument(s) &apos;%1&apos; calling &apos;%2&apos; with arguments &apos;%3&apos;.</source>
+        <source>Missing argument(s) &quot;%1&quot; calling %2 with arguments &quot;%3&quot;.</source>
         <translation>Fehlende Argumente &apos;%1&apos; beim Aufruf von &apos;%2&apos; mit den Argumenten &apos;%3&apos;.</translation>
     </message>
     <message>
-        <source>Current method argument calling &apos;%1&apos; with arguments &apos;%2&apos; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
         <translation>Aufruf von &apos;%1&apos; mit den Argumenten &apos;%2&apos; nicht unterstützt. Bitte &apos;set&apos;, &apos;remove&apos;, &apos;add_array_value&apos; oder &apos;remove_array_value&apos; verwenden.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SimpleMoveFileOperation</name>
     <message>
-        <source>Invalid arguments in %0: %1 arguments given, %2 expected%3.</source>
-        <translation>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet%3.</translation>
-    </message>
-    <message>
-        <source>exactly 2</source>
-        <translation>genau 2</translation>
-    </message>
-    <message>
-        <source>None of the arguments can be empty: source &apos;%1&apos;, target &apos;%2&apos;.</source>
+        <source>None of the arguments can be empty: source &quot;%1&quot;, target &quot;%2&quot;.</source>
         <translation>Keines der Argumente darf leer sein: Quelle &apos;%1&apos;, Ziel &apos;%2&apos;.</translation>
     </message>
     <message>
-        <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;, because target exists and is not removable.</source>
+        <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;, because the target path exists and is not removable.</source>
         <translation>Konnte Quelle &apos;%1&apos; nicht nach Ziel &apos;%2&apos; verschieben, weil das Ziel bereits existiert und nicht entfernt werden kann.</translation>
     </message>
     <message>
-        <source>Cannot move source &apos;%1&apos; to target &apos;%2&apos;: %3</source>
+        <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
         <translation>Konnte Datei &apos;%1&apos; nicht nach &apos;%2&apos; verschieben: %3</translation>
     </message>
     <message>
-        <source>Move &apos;%1&apos; to &apos;%2&apos;.</source>
+        <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>&apos;%1&apos; nach &apos;%2&apos; verschieben.</translation>
     </message>
 </context>
@@ -2298,8 +2114,8 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <translation>Verknüpfungen im Startmenü</translation>
     </message>
     <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new folder.</source>
-        <translation>Wählen Sie den Ordner im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Ordner anzulegen.</translation>
+        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
+        <translation>Wählen Sie den Verzeichnis im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Verzeichnis anzulegen.</translation>
     </message>
 </context>
 <context>
@@ -2309,8 +2125,8 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <translation>Installationsordner</translation>
     </message>
     <message>
-        <source>Please specify the folder where %1 will be installed.</source>
-        <translation>Bitte geben Sie den Ordner an, in dem %1 installiert werden soll.</translation>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Bitte geben Sie den Verzeichnis an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2323,17 +2139,17 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <translation>&amp;Durchsuchen ...</translation>
     </message>
     <message>
-        <source>The folder you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Der ausgewählte Ordner existiert bereits und enthält eine Installation. Bitte wählen Sie einen anderen Zielordner aus.</translation>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Der ausgewählte Verzeichnis existiert bereits und enthält eine Installation. Bitte wählen Sie einen anderen Zielordner aus.</translation>
     </message>
     <message>
-        <source>You have selected an existing, non-empty folder for installation.
+        <source>You have selected an existing, non-empty directory for installation.
 Note that it will be completely wiped on uninstallation of this application.
-It is not advisable to install into this folder as installation might fail.
+It is not advisable to install into this directory as installation might fail.
 Do you want to continue?</source>
-        <translation>Sie haben einen existierenden, nicht leeren Ordner für die Installation ausgewählt.
+        <translation>Sie haben einen existierenden, nicht leeren Verzeichnis für die Installation ausgewählt.
 Dieser wird bei der Deinstallation dieser Anwendung komplett gelöscht werden.
-Es wird nicht empfohlen, in diesen Ordner zu installieren.
+Es wird nicht empfohlen, in diesen Verzeichnis zu installieren.
 Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
@@ -2341,8 +2157,12 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Existierende Datei oder Symlink ausgewählt, bitte ein anderes Installationsziel auswählen.</translation>
     </message>
     <message>
-        <source>The installation path cannot be empty, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht leer sein. Bitte einen gültigen Ordner angeben.</translation>
+        <source>Select Installation Folder</source>
+        <translation>Installationsordner auswählen.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Der Installationspfad darf nicht leer sein. Bitte einen gültigen Verzeichnis angeben.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
@@ -2351,6 +2171,10 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
         <translation>Der Pfad zum Installationsverzeichnis enthält Zeichen ausserhalb des ASCII-Zeichensatzes. Dies ist zur Zeit nicht unterstützt. Bitte wählen Sie einen anderen Pfad oder Installationsordner.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Da das Installations-Verzeichnis komplett gelöscht wird, ist das Installieren in %1 verboten.</translation>
     </message>
     <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
@@ -2365,55 +2189,55 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Der von Ihnen eingegebene Pfad ist ungültig, bitte geben Sie ein gültiges Laufwerk an.</translation>
     </message>
     <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte geben Sie einen gültigen Ordner ein.</translation>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Der Installationspfad darf nicht auf &apos;.&apos; enden, bitte geben Sie einen gültigen Verzeichnis ein.</translation>
     </message>
     <message>
-        <source>The installation path must not contain &apos;%1&apos;, please specify a valid folder.</source>
-        <translation>Der Installationspfad darf nicht %1 enthalten, bitte geben Sie einen gültigen Ordner ein.</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>Da das Installationsverzeichnis komplett gelöscht wird, ist eine Installation nach %1 nicht zulässig.</translation>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Der Installationspfad darf nicht &quot;%1&quot; enthalten, bitte geben Sie einen gültigen Verzeichnis ein.</translation>
     </message>
     <message>
         <source>Warning</source>
         <translation>Achtung</translation>
     </message>
-    <message>
-        <source>Select Installation Folder</source>
-        <translation>Installationsordner auswählen.</translation>
+     <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::TestRepository</name>
     <message>
+        <source>Missing package manager core engine.</source>
+        <translation>Fehlende Paketmanager-Kernkomponente.</translation>
+    </message>
+    <message>
         <source>Empty repository URL.</source>
         <translation>Leere Quelladresse.</translation>
     </message>
     <message>
-        <source>URL scheme not supported: %1 (%2).</source>
-        <translation>Adressschema &apos;%1&apos; nicht unterstützt in Adresse &apos;%2&apos;.</translation>
+        <source>Download canceled.</source>
+        <translation>Heruntergeladen abgeschlossen.</translation>
     </message>
     <message>
-        <source>Got a timeout while testing: &apos;%1&apos;</source>
-        <translation>Zeitüberschreitung beim Testen von: &apos;%1&apos;</translation>
+        <source>Timeout while testing repository &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot parse Updates.xml! Error: %1.</source>
-        <translation>Ungültiges Format der Updates.xml. Fehlermeldung: %1.</translation>
+        <source>Cannot parse Updates.xml: %1</source>
+        <translation>Ungültiges Format der Updates.xml: %1.</translation>
     </message>
     <message>
-        <source>Updates.xml could not be opened for reading!</source>
+        <source>Cannot open Updates.xml for reading: %1</source>
         <translation>Konnte Updates.xml nicht zum Lesen öffnen.</translation>
     </message>
     <message>
-        <source>Updates.xml could not be found on server!</source>
-        <translation>Updates.xml konnte auf dem Server nicht gefunden werden.</translation>
+        <source>Authentication failed.</source>
+        <translation>Authentifizierung fehlgeschlagen.</translation>
+    </message>
+    <message>
+        <source>Unknown error while testing repository &quot;%1&quot;.</source>
+        <translation>Unbekannte Fehler beim Testen des Repository &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -2432,6 +2256,13 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
 </context>
 <context>
+    <name>Receiver</name>
+    <message>
+        <source>remaining.</source>
+        <translation>verbleibend.</translation>
+    </message>
+</context>
+<context>
     <name>RemoteClient</name>
     <message>
         <source>Cannot get authorization.</source>
@@ -2439,15 +2270,17 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
+Please start the setup program as a user with the appropriate rights.
+Or accept the elevation of access rights if being asked.</source>
+        <translation>Konnte die Autorisierung, die zum Fortsetzen der Installation nötig ist, nicht erhalten. Bitte starten Sie das Programm mit den nötigen Rechten erneut.</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
-
-%1
-
-as root and then clicking OK.</source>
+%1 as a user with the appropriate rights and then clicking OK.</source>
         <translation>Konnte die Autorisierung, die zum Fortsetzen der Installation nötig ist, nicht erhalten.
 Brechen Sie entweder die Installation ab, oder verwenden Sie die Fallback-Lösung, indem Sie
-%1
-als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
+%1 als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     </message>
 </context>
 <context>
@@ -2461,7 +2294,7 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
     <name>Settings</name>
     <message>
         <source>Cannot open settings file %1 for reading: %2</source>
-        <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen. Fehlermeldung: %2</translation>
+        <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen: %2</translation>
     </message>
 </context>
 <context>
@@ -2543,12 +2376,20 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
         <translation>Adresse angeben, die auf eine gültige Quelle zeigt.</translation>
     </message>
     <message>
-        <source>There was an error testing this repository.</source>
+        <source>An error occurred while testing this repository.</source>
         <translation>Beim Testen der Quelle ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <source>Do you want to disable the tested repository?</source>
+        <source>The repository was tested successfully.</source>
+        <translation>Das Repository wurde erfolgreich getestet.</translation>
+    </message>
+    <message>
+        <source>Do you want to disable the repository?</source>
         <translation>Soll die getestete Quelle deaktiviert werden?</translation>
+    </message>
+    <message>
+        <source>Do you want to enable the repository?</source>
+        <translation>Wollen Sie das Repository anschalten?</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
@@ -2586,16 +2427,50 @@ als root aufrufen und dann &quot;Ok&quot; auswählen. </translation>
 <context>
     <name>UpdateOperation</name>
     <message>
-        <source>Registry path %1 is not writable</source>
+        <source>Cannot write to registry path %1.</source>
         <translation>Registrierungspfad %1 ist nicht beschreibbar</translation>
     </message>
     <message>
-        <source>Cannot write to registry path %1</source>
+        <source>Registry path %1 is not writable.</source>
         <translation>Konnte nicht in Registrierungspfad %1 schreiben</translation>
     </message>
     <message>
-        <source>Renaming %1 into %2 failed with %3.</source>
-        <translation>Umbenennung von %1 nach %2 ist mit Meldung %3 fehlgeschlagen.</translation>
+        <source>exactly %1</source>
+        <translation>genau %1</translation>
+    </message>
+    <message>
+        <source>at least %1</source>
+        <translation>mindestens %1</translation>
+    </message>
+    <message>
+        <source>not more than %1</source>
+        <translation>nicht mehr als %1</translation>
+    </message>
+       <message>
+        <source>%1 or %2</source>
+        <translation>%1 oder %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation>%1 zu %2</translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected.</source>
+        <translation type="unfinished">
+            <numerusform>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet.</numerusform>
+            <numerusform>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>Invalid arguments in %1: %n arguments given, %2 arguments expected in the form: %3.</source>
+        <translation>
+            <numerusform>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet.</numerusform>
+            <numerusform>Ungültige Argumente in %0: %1 Argumente erhalten, %2 erwartet.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
+        <translation>Verbleibende Datei &quot;%1&quot; wegen &quot;%2&quot;: %3</translation>
     </message>
 </context>
 </TS>

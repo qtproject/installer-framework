@@ -330,7 +330,9 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        fetchMetaDataPackages();
+        if (!fetchMetaDataPackages()) {
+            emitFinished();
+        }
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {
@@ -460,6 +462,8 @@ void MetadataJob::reset()
         m_metadataTask.cancel();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
+    m_metadataResult.clear();
+    m_taskNumber = 0;
 }
 
 void MetadataJob::resetCompressedFetch()

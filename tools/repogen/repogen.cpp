@@ -125,8 +125,8 @@ int main(int argc, char** argv)
                 args.removeFirst();
                 if (!filteredPackages.isEmpty()) {
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
-                        "Error: --include and --exclude are mutual exclusive options. Use either "
-                        "one or the other."));
+                        "Error: --include and --exclude are mutually exclusive. Use either one or "
+                        "the other."));
                 }
 
                 if (args.isEmpty() || args.first().startsWith(QLatin1Char('-'))) {

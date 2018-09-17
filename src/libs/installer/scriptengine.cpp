@@ -418,7 +418,16 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
         "    else"
         "        throw \"Missing Component constructor. Please check your script.\";"
         "})();").arg(context);
-    QJSValue scriptContext = evaluate(scriptContent, fileName);
+    QString copiedFileName = fileName;
+#ifdef Q_OS_WIN
+    // Workaround bug reported in QTBUG-70425 by appending "file://" when passing a filename to
+    // QJSEngine::evaluate() to ensure it sees it as a valid URL when qsTr() is used.
+    if (!copiedFileName.startsWith(QLatin1String("qrc:/")) &&
+        !copiedFileName.startsWith(QLatin1String(":/"))) {
+        copiedFileName = QLatin1String("file://") + fileName;
+    }
+#endif
+    QJSValue scriptContext = evaluate(scriptContent, copiedFileName);
     scriptContext.setProperty(QLatin1String("Uuid"), QUuid::createUuid().toString());
     if (scriptContext.isError()) {
         throw Error(tr("Exception while loading the component script \"%1\": %2").arg(
