@@ -284,10 +284,6 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scAutoDependOn, package.autoDependencies.join(QLatin1String(",")));
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
-    if (package.forcedInstallation & !PackageManagerCore::noForceInstallation()) {
-        setCheckable(false);
-        setCheckState(Qt::Checked);
-    }
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
     setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
@@ -331,10 +327,6 @@ void Component::loadDataFromPackage(const Package &package)
     if (PackageManagerCore::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
-    if (forced == scTrue) {
-        setCheckable(false);
-        setCheckState(Qt::Checked);
-    }
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
@@ -423,6 +415,12 @@ void Component::setValue(const QString &key, const QString &value)
         this->setCheckable(normalizedValue.toLower() == scTrue);
     if (key == scExpandedByDefault)
         this->setExpandedByDefault(normalizedValue.toLower() == scTrue);
+    if (key == scForcedInstallation) {
+        if (value == scTrue && !PackageManagerCore::noForceInstallation()) {
+            setCheckable(false);
+            setCheckState(Qt::Checked);
+        }
+    }
 
     d->m_vars[key] = normalizedValue;
     emit valueChanged(key, normalizedValue);
