@@ -33,7 +33,6 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QProcessEnvironment>
 #include <QTextStream>
 
 using namespace QInstaller;
@@ -50,10 +49,11 @@ QString CreateDesktopEntryOperation::absoluteFileName()
     if (hasValue(QLatin1String("directory")))
         return QDir(value(QLatin1String("directory")).toString()).absoluteFilePath(filename);
 
-    const QProcessEnvironment env;
-    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
+    QStringList XDG_DATA_DIRS = QString::fromLocal8Bit(qgetenv("XDG_DATA_DIRS"))
+                                                        .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-    QStringList XDG_DATA_HOME = env.value(QLatin1String("XDG_DATA_HOME")).split(QLatin1Char(':'),
+    QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
+                                                        .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
 
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share")); // default path
