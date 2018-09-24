@@ -524,12 +524,12 @@ void Component::loadComponentScript(const QString &fileName)
                 Component *dependencyComponent = packageManagerCore()->componentByName
                         (PackageManagerCore::checkableName(dependency));
                 if (dependencyComponent && dependencyComponent->isUnstable())
-                    setUnstable();
+                    setUnstable(PackageManagerCore::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
             }
         }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable();
+            setUnstable(PackageManagerCore::UnstableError::ScriptLoadingFailed, error.message());
             qWarning() << error.message();
         } else {
             throw error;
@@ -1380,7 +1380,7 @@ bool Component::isUnstable() const
     return scTrue == d->m_vars.value(scUnstable);
 }
 
-void Component::setUnstable()
+void Component::setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage)
 {
     QList<Component*> dependencies = d->m_core->dependees(this);
     // Mark this component unstable
@@ -1398,6 +1398,8 @@ void Component::setUnstable()
     foreach (Component *descendant, this->descendantComponents()) {
         descendant->markComponentUnstable();
     }
+    QMetaEnum metaEnum = QMetaEnum::fromType<PackageManagerCore::UnstableError>();
+    emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 
 /*!

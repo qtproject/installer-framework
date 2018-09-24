@@ -7,4 +7,5 @@
     <StartMenuDir>Qt IFW Examples</StartMenuDir>
     <TargetDir>@HomeDir@/IfwExamples/unstablecomponent</TargetDir>
     <AllowUnstableComponents>true</AllowUnstableComponents>
+    <ControlScript>controller.qs</ControlScript>
 </Installer>

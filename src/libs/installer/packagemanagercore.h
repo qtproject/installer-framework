@@ -65,6 +65,14 @@ public:
         Protocol::Mode mode = Protocol::Mode::Production);
     ~PackageManagerCore();
 
+    enum UnstableError {
+        DepencyToUnstable = 0,
+        ShaMismatch,
+        ScriptLoadingFailed,
+        MissingDependency
+    };
+     Q_ENUM(UnstableError)
+
     // status
     enum Status {
         Success = EXIT_SUCCESS,
@@ -323,6 +331,7 @@ Q_SIGNALS:
     void coreNetworkSettingsChanged();
 
     void guiObjectChanged(QObject *gui);
+    void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
 
 private:
     struct Data {

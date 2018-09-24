@@ -32,6 +32,7 @@
 #include "constants.h"
 #include "component_p.h"
 #include "qinstallerglobal.h"
+#include "packagemanagercore.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QMetaType>
@@ -42,8 +43,6 @@ QT_FORWARD_DECLARE_CLASS(QDebug)
 QT_FORWARD_DECLARE_CLASS(QQmlV4Function)
 
 namespace QInstaller {
-
-class PackageManagerCore;
 
 class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
 {
@@ -184,7 +183,7 @@ public:
     Q_INVOKABLE bool componentChangeRequested();
 
     bool isUnstable() const;
-    void setUnstable();
+    void setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage = QString());
 
     bool isVirtual() const;
     bool isSelected() const;
