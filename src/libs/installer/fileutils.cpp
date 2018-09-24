@@ -173,14 +173,23 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
     const QFileInfoList entries = QDir(path).entryInfoList(QDir::AllEntries | QDir::Hidden);
     foreach (const QFileInfo &fi, entries) {
         if (fi.isSymLink() || fi.isFile()) {
-            QFile f(fi.filePath());
-            if (!f.remove()) {
-                const QString errorMessage = QCoreApplication::translate("QInstaller",
-                    "Cannot remove file \"%1\": %2").arg(
-                            QDir::toNativeSeparators(f.fileName()), f.errorString());
-                if (!ignoreErrors)
-                    throw Error(errorMessage);
-                qWarning().noquote() << errorMessage;
+            QString filePath = fi.filePath();
+            QFile f(filePath);
+            bool ok = f.remove();
+            if (!ok) { //ReadOnly can prevent removing in Windows. Change permission and try again.
+                const QFile::Permissions permissions = f.permissions();
+                if (!(permissions & QFile::WriteUser)) {
+                    ok = f.setPermissions(filePath, permissions | QFile::WriteUser)
+                            && f.remove(filePath);
+                }
+                if (!ok) {
+                    const QString errorMessage = QCoreApplication::translate("QInstaller",
+                        "Cannot remove file \"%1\": %2").arg(
+                                QDir::toNativeSeparators(f.fileName()), f.errorString());
+                    if (!ignoreErrors)
+                        throw Error(errorMessage);
+                    qWarning().noquote() << errorMessage;
+                }
             }
         }
     }
