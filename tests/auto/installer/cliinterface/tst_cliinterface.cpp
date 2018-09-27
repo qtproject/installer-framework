@@ -271,10 +271,11 @@ private slots:
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt"); //Dependency for componentC
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Depends on componentA
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentI", "1.0.0content.txt"); //Virtual, depends on componentC
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentC.txt"
                             << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
-                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
+                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt" << "installcontentI.txt");
     }
 
     void testUninstallWithDependencySilently()
@@ -285,7 +286,7 @@ private slots:
                 << QLatin1String("componentC")));
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentC.txt"
                             << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
-                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
+                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt" << "installcontentI.txt");
 
         core->commitSessionOperations();
         core->setPackageManager();
@@ -298,6 +299,7 @@ private slots:
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Depends on componentA
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
         VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentC");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentI"); //Virtual, depends on componentC
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
                             << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
                             << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");

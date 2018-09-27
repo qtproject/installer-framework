@@ -145,4 +145,16 @@
         <Virtual>true</Virtual>
         <Checkable>true</Checkable>
     </Package>
+    <Package>
+        <Name>componentI</Name>
+        <Title>Component I</Title>
+        <Description>This component has an automatic dependency on Component C. If C is marked for installation, this component is also installed.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <AutoDependOn>componentC</AutoDependOn>
+        <Virtual>true</Virtual>
+        <Checkable>true</Checkable>
+    </Package>
 </Packages>

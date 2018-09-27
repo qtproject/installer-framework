@@ -158,4 +158,14 @@
   <DownloadableArchives>content.7z</DownloadableArchives>
   <Virtual>true</Virtual>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentI</Name>
+  <Description>This component has an automatic dependency on Component C. If C is marked for installation, this component is also installed.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <AutoDependOn>componentC</AutoDependOn>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Virtual>true</Virtual>
+ </PackageUpdate>
 </Updates>
