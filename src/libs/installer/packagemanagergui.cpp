@@ -1866,7 +1866,7 @@ public:
         , m_currentModel(m_allModel)
         , m_compressedButtonVisible(false)
         , m_allowCompressedRepositoryInstall(false)
-        , m_archiveButtonVisible(false)
+        , m_categoryLayoutVisible(false)
     {
         m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
@@ -1984,35 +1984,38 @@ public:
         m_compressedButtonVisible = true;
     }
 
-    void setupArchiveButton()
+    void setupCategoryLayout()
     {
-        if (m_archiveButtonVisible)
+        if (m_categoryLayoutVisible)
             return;
         QVBoxLayout *vLayout = new QVBoxLayout;
-        m_archiveVLayout = new QVBoxLayout;
-        m_archiveGroupBox = new QGroupBox(q);
-        m_archiveGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
-        QVBoxLayout *groupboxLayout = new QVBoxLayout(m_archiveGroupBox);
-
-        m_fetchArchiveButton = new QPushButton(tr("Fetch"));
-        connect(m_fetchArchiveButton, &QPushButton::clicked, this,
+        m_categoryVLayout = new QVBoxLayout;
+        m_categoryGroupBox = new QGroupBox(q);
+        m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
+        m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
+        QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
+        m_fetchCategoryButton = new QPushButton(tr("Fetch"));
+        m_fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
+        connect(m_fetchCategoryButton, &QPushButton::clicked, this,
                 &ComponentSelectionPage::Private::fetchRepositoryCategories);
+
         foreach (RepositoryCategory repository, m_core->settings().repositoryCategories()) {
             QCheckBox *checkBox = new QCheckBox;
+            checkBox->setObjectName(repository.displayname());
             connect(checkBox, &QCheckBox::stateChanged, this,
                     &ComponentSelectionPage::Private::checkboxStateChanged);
             checkBox->setText(repository.displayname());
-            groupboxLayout->addWidget(checkBox);
+            categoryLayout->addWidget(checkBox);
         }
-        m_archiveVLayout->insertWidget(0, m_archiveGroupBox);
+        m_categoryVLayout->insertWidget(0, m_categoryGroupBox);
 
         m_metadataProgressLabel = new QLabel(q);
-        m_archiveVLayout->addWidget(m_metadataProgressLabel);
-        vLayout->addWidget(m_archiveGroupBox);
-        vLayout->addWidget(m_fetchArchiveButton);
+        m_categoryVLayout->addWidget(m_metadataProgressLabel);
+        vLayout->addWidget(m_categoryGroupBox);
+        vLayout->addWidget(m_fetchCategoryButton);
         vLayout->addStretch();
         m_mainHLayout->insertLayout(0, vLayout);
-        m_archiveButtonVisible = true;
+        m_categoryLayoutVisible = true;
     }
 
     void updateTreeView()
@@ -2108,7 +2111,7 @@ public slots:
 
     void checkboxStateChanged()
     {
-        QList<QCheckBox*> checkboxes = m_archiveGroupBox->findChildren<QCheckBox *>();
+        QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
         bool enableFetchButton = false;
         foreach (QCheckBox *checkbox, checkboxes) {
             if (checkbox->isChecked()) {
@@ -2118,15 +2121,15 @@ public slots:
         }
     }
 
-    void enableArchiveRepos(int index, bool enable) {
-        RepositoryCategory archiveRepo = m_core->settings().repositoryCategories().toList().at(index);
-        RepositoryCategory replacement = archiveRepo;
+    void enableRepositoryCategory(int index, bool enable) {
+        RepositoryCategory repoCategory = m_core->settings().repositoryCategories().toList().at(index);
+        RepositoryCategory replacement = repoCategory;
         replacement.setEnabled(enable);
-        QSet<RepositoryCategory> tmpArchiveRepos = m_core->settings().repositoryCategories();
-        if (tmpArchiveRepos.contains(archiveRepo)) {
-            tmpArchiveRepos.remove(archiveRepo);
-            tmpArchiveRepos.insert(replacement);
-            m_core->settings().addRepositoryCategories(tmpArchiveRepos);
+        QSet<RepositoryCategory> tmpRepoCategories = m_core->settings().repositoryCategories();
+        if (tmpRepoCategories.contains(repoCategory)) {
+            tmpRepoCategories.remove(repoCategory);
+            tmpRepoCategories.insert(replacement);
+            m_core->settings().addRepositoryCategories(tmpRepoCategories);
         }
     }
 
@@ -2140,10 +2143,10 @@ public slots:
             QSpacerItem *item = m_treeViewVLayout->spacerItem();
             m_treeViewVLayout->removeItem(item);
         }
-        m_fetchArchiveButton->setDisabled(show);
+        m_fetchCategoryButton->setDisabled(show);
         m_progressBar->setVisible(show);
         m_bspLabel->setVisible(show);
-        m_archiveGroupBox->setDisabled(show);
+        m_categoryGroupBox->setDisabled(show);
 
         m_treeView->setVisible(!show);
         m_checkDefault->setVisible(!show);
@@ -2162,10 +2165,10 @@ public slots:
         updateWidgetVisibility(true);
 
         QCheckBox *checkbox;
-        QList<QCheckBox*> checkboxes = m_archiveGroupBox->findChildren<QCheckBox *>();
+        QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
         for (int i = 0; i < checkboxes.count(); i++) {
             checkbox = checkboxes.at(i);
-            enableArchiveRepos(i, checkbox->isChecked());
+            enableRepositoryCategory(i, checkbox->isChecked());
         }
 
         if (!m_core->fetchRemotePackagesTree()) {
@@ -2268,19 +2271,19 @@ public:
     QPushButton *m_uncheckAll;
     QPushButton *m_checkDefault;
     QPushButton *m_installCompressButton;
-    QGroupBox *m_archiveGroupBox;
-    QPushButton *m_fetchArchiveButton;
+    QGroupBox *m_categoryGroupBox;
+    QPushButton *m_fetchCategoryButton;
     QLabel *m_bspLabel;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
     QVBoxLayout *m_descriptionVLayout;
     QHBoxLayout *m_mainHLayout;
     QVBoxLayout *m_treeViewVLayout;
-    QVBoxLayout *m_archiveVLayout;
+    QVBoxLayout *m_categoryVLayout;
     QHBoxLayout *m_buttonHLayout;
     bool m_compressedButtonVisible;
     bool m_allowCompressedRepositoryInstall;
-    bool m_archiveButtonVisible;
+    bool m_categoryLayoutVisible;
 };
 
 
@@ -2338,7 +2341,7 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {
-        d->setupArchiveButton();
+        d->setupCategoryLayout();
     }
     d->showCompressedRepositoryButton();
 }
