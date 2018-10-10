@@ -2106,9 +2106,12 @@ bool PackageManagerCore::operationExists(const QString &name)
 }
 
 /*!
-    Instantly performs the operation \a name with \a arguments.
+    Performs the operation \a name with \a arguments.
 
     Returns \c false if the operation cannot be created or executed.
+
+    \note The operation is performed threaded. It is not advised to call
+    this function after installation finished signals.
 
     \sa {installer::performOperation}{installer.performOperation}
 */

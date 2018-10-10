@@ -33,7 +33,6 @@
 #include <QDebug>
 #include <QDir>
 #include <QDirIterator>
-#include <QProcessEnvironment>
 
 using namespace QInstaller;
 
@@ -43,8 +42,8 @@ QString InstallIconsOperation::targetDirectory()
     if (hasValue(QLatin1String("targetdirectory")))
         return value(QLatin1String("targetdirectory")).toString();
 
-    const QProcessEnvironment env;
-    QStringList XDG_DATA_DIRS = env.value(QLatin1String("XDG_DATA_DIRS")).split(QLatin1Char(':'),
+    QStringList XDG_DATA_DIRS = QString::fromLocal8Bit(qgetenv("XDG_DATA_DIRS"))
+                                                        .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
     XDG_DATA_DIRS.push_back(QLatin1String("/usr/share/pixmaps")); // default path
     XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
