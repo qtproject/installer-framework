@@ -449,17 +449,16 @@ void PackageManagerCore::writeMaintenanceConfigFiles()
 }
 
 /*!
-    Resets the class to its initial state and applies the values of the
-    parameters specified by \a params.
+    Resets the class to its initial state.
 */
-void PackageManagerCore::reset(const QHash<QString, QString> &params)
+void PackageManagerCore::reset()
 {
     d->m_completeUninstall = false;
     d->m_needsHardRestart = false;
     d->m_status = PackageManagerCore::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
-
-    d->initialize(params);
+    d->m_coreCheckedHash.clear();
+    d->m_componentsToInstallCalculated = false;
 }
 
 /*!

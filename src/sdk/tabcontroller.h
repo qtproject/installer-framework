@@ -51,13 +51,11 @@ public:
 
     void setGui(QInstaller::PackageManagerGui *gui);
     void setManager(QInstaller::PackageManagerCore *core);
-    void setManagerParams(const QHash<QString, QString> &params);
 
     void setControlScript(const QString &script);
 
 public Q_SLOTS:
     int init();
-    void updateManagerParams(const QString &key, const QString &value);
 
 private Q_SLOTS:
     void restartWizard();

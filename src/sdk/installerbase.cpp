@@ -243,13 +243,11 @@ int InstallerBase::run()
         .isSet(QLatin1String(CommandLineOptions::CreateLocalRepository))
         || m_core->settings().createLocalRepository());
 
-    QHash<QString, QString> params;
     const QStringList positionalArguments = parser.positionalArguments();
     foreach (const QString &argument, positionalArguments) {
         if (argument.contains(QLatin1Char('='))) {
             const QString name = argument.section(QLatin1Char('='), 0, 0);
             const QString value = argument.section(QLatin1Char('='), 1, 1);
-            params.insert(name, value);
             m_core->setValue(name, value);
         }
     }
@@ -308,17 +306,11 @@ int InstallerBase::run()
         //create the wizard GUI
         TabController controller(0);
         controller.setManager(m_core);
-        controller.setManagerParams(params);
         controller.setControlScript(controlScript);
-        if (m_core->isInstaller()) {
+        if (m_core->isInstaller())
             controller.setGui(new InstallerGui(m_core));
-        }
-        else {
+        else
             controller.setGui(new MaintenanceGui(m_core));
-            //Start listening to setValue changes that newly installed components might have
-            connect(m_core, &QInstaller::PackageManagerCore::valueChanged, &controller,
-                &TabController::updateManagerParams);
-        }
 
         QInstaller::PackageManagerCore::Status status =
             QInstaller::PackageManagerCore::Status(controller.init());

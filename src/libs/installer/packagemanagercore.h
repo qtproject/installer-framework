@@ -125,7 +125,7 @@ public:
     bool fetchCompressedPackagesTree();
 
     bool run();
-    void reset(const QHash<QString, QString> &params);
+    void reset();
 
     void setGuiObject(QObject *gui);
     QObject *guiObject() const;
