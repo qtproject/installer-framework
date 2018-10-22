@@ -57,7 +57,7 @@ namespace QInstaller {
 class PackageManagerCore;
 class PackageManagerPage;
 class PerformInstallationForm;
-
+class ComponentSelectionPagePrivate;
 
 // -- PackageManagerGui
 
@@ -321,8 +321,8 @@ private Q_SLOTS:
     void setModified(bool modified);
 
 private:
-    class Private;
-    Private *d;
+    friend class ComponentSelectionPagePrivate;
+    ComponentSelectionPagePrivate *const d;
 };
 
 
