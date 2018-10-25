@@ -2233,7 +2233,7 @@ QString TargetDirectoryPage::targetDirWarning() const
     }
 
     target = target.canonicalPath();
-    if (target == QDir::root() || target == QDir::home()) {
+    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
         return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
             .arg(QDir::toNativeSeparators(target.path()));
     }
