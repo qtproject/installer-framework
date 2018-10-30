@@ -165,8 +165,16 @@ int main(int argc, char *argv[])
 
     QString bundlePath;
     QString path = QFileInfo(arguments.first()).absoluteFilePath();
-    if (QInstaller::isInBundle(path, &bundlePath))
+    if (QInstaller::isInBundle(path, &bundlePath)) {
         path = QDir(bundlePath).filePath(QLatin1String("Contents/Resources/installer.dat"));
+    }
+#ifndef Q_OS_OSX
+    QFileInfo fi = QFileInfo(path);
+    bundlePath = path;
+    QString tmp = QDir(fi.path()).filePath(QLatin1String("installer.dat"));
+    if (QFileInfo::exists(tmp))
+        path = tmp;
+#endif
 
     int result = EXIT_FAILURE;
     QVector<QByteArray> resourceMappings;
@@ -184,8 +192,10 @@ int main(int argc, char *argv[])
 
             if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
                 QFileInfo fi(path);
-                if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
-                    fi.setFile(bundlePath);
+
+                QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath);
+                fi.setFile(bundlePath);
+
                 path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
 
                 tmp.close();
