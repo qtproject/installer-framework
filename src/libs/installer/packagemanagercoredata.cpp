@@ -108,7 +108,7 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
     QString dir = QLatin1String("/opt");
 #ifdef Q_OS_WIN
     TCHAR buffer[MAX_PATH + 1] = { 0 };
-    SHGetFolderPath(0, CSIDL_PROGRAM_FILES, 0, 0, buffer);
+    SHGetFolderPath(nullptr, CSIDL_PROGRAM_FILES, nullptr, 0, buffer);
     dir = QString::fromWCharArray(buffer);
 #elif defined (Q_OS_OSX)
     dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);

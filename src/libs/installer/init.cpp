@@ -130,7 +130,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         std::cout << qPrintable(ba) << std::endl;
 
     if (type == QtFatalMsg) {
-        QtMessageHandler oldMsgHandler = qInstallMessageHandler(0);
+        QtMessageHandler oldMsgHandler = qInstallMessageHandler(nullptr);
         qt_message_output(type, context, msg);
         qInstallMessageHandler(oldMsgHandler);
     }

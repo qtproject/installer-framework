@@ -84,8 +84,8 @@ public:
         : m_dirHandle(INVALID_HANDLE_VALUE)
     {
         QString normalizedPath = QString(path).replace(QLatin1Char('/'), QLatin1Char('\\'));
-        m_dirHandle = CreateFile((wchar_t*)normalizedPath.utf16(), GENERIC_READ | GENERIC_WRITE, 0, 0,
-            OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
+        m_dirHandle = CreateFile((wchar_t*)normalizedPath.utf16(), GENERIC_READ | GENERIC_WRITE, 0, nullptr,
+            OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
             qWarning() << "Cannot open" << path << ":" << QInstaller::windowsErrorString(GetLastError());
@@ -112,7 +112,7 @@ QString readWindowsSymLink(const QString &path)
     if (dirHandle.handle() != INVALID_HANDLE_VALUE) {
         REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1, MAXIMUM_REPARSE_DATA_BUFFER_SIZE);
         DWORD bytesReturned = 0;
-        if (::DeviceIoControl(dirHandle.handle(), FSCTL_GET_REPARSE_POINT, 0, 0, reparseStructData,
+        if (::DeviceIoControl(dirHandle.handle(), FSCTL_GET_REPARSE_POINT, nullptr, 0, reparseStructData,
             MAXIMUM_REPARSE_DATA_BUFFER_SIZE, &bytesReturned, 0)) {
                 if (reparseStructData->ReparseTag == IO_REPARSE_TAG_MOUNT_POINT) {
                     int length = reparseStructData->MountPointReparseBuffer.SubstituteNameLength / sizeof(wchar_t);
@@ -170,8 +170,8 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
 
     DWORD bytesReturned;
     if (!::DeviceIoControl(dirHandle.handle(), FSCTL_SET_REPARSE_POINT, reparseStructData,
-        reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, 0, 0,
-        &bytesReturned, 0)) {
+        reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
+        &bytesReturned, nullptr)) {
             qWarning() << "Cannot set the reparse point for" << linkPath << "to" << targetPath
                        << ":" << QInstaller::windowsErrorString(GetLastError());
     }
@@ -191,8 +191,8 @@ bool removeJunction(const QString &path)
 
         DWORD bytesReturned;
         if (!::DeviceIoControl(dirHandle.handle(), FSCTL_DELETE_REPARSE_POINT, reparseStructData,
-            REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, 0, 0,
-            &bytesReturned, 0)) {
+            REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
+            &bytesReturned, nullptr)) {
 
             qWarning() << "Cannot remove the reparse point" << path << ":" << QInstaller::windowsErrorString(GetLastError());
             return false;

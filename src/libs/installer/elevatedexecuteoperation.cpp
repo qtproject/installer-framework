@@ -43,7 +43,7 @@ class ElevatedExecuteOperation::Private
 public:
     explicit Private(ElevatedExecuteOperation *qq)
         : q(qq)
-        , process(0)
+        , process(nullptr)
         , showStandardError(false)
     {
     }
@@ -221,7 +221,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     Q_ASSERT(process);
     Q_ASSERT(process->state() == QProcessWrapper::NotRunning);
     delete process;
-    process = 0;
+    process = nullptr;
 
     return returnValue;
 }

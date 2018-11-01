@@ -293,7 +293,7 @@ void ResourceCollection::setName(const QByteArray &name)
 void ResourceCollection::appendResource(const QSharedPointer<Resource>& resource)
 {
     Q_ASSERT(resource);
-    resource->setParent(0);
+    resource->setParent(nullptr);
     m_resources.append(resource);
 }
 

@@ -83,8 +83,8 @@ bool handleRegExpandSz(const QString &regPath, const QString &name,
     if (res == ERROR_SUCCESS) {
         DWORD dataType;
         DWORD dataSize;
-        res = RegQueryValueEx(handle, reinterpret_cast<const wchar_t *>(name.utf16()), 0,
-                              &dataType, 0, &dataSize);
+        res = RegQueryValueEx(handle, reinterpret_cast<const wchar_t *>(name.utf16()), nullptr,
+                              &dataType, nullptr, &dataSize);
         setAsExpandSZ = (res == ERROR_SUCCESS) && (dataType == REG_EXPAND_SZ);
         if (setAsExpandSZ) {
             RegCloseKey(handle);

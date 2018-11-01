@@ -96,7 +96,7 @@ bool GlobalSettingsOperation::testOperation()
 QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, const QStringList &arguments)
 {
     if (!checkArgumentCount(3, 5))
-        return 0;
+        return nullptr;
 
     if (arguments.count() == 5) {
         QSettingsWrapper::Scope scope = QSettingsWrapper::UserScope;
@@ -120,5 +120,5 @@ QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, c
         return new QSettingsWrapper(filename, QSettingsWrapper::NativeFormat);
     }
 
-    return 0;
+    return nullptr;
 }

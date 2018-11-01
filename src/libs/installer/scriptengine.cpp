@@ -97,7 +97,7 @@ void QDesktopServicesProxy::findRecursion(const QString &path, const QString &pa
 GuiProxy::GuiProxy(ScriptEngine *engine, QObject *parent) :
     QObject(parent),
     m_engine(engine),
-    m_gui(0)
+    m_gui(nullptr)
 {
 }
 

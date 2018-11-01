@@ -46,7 +46,7 @@
 
 static bool isRedirected(HANDLE stdHandle)
 {
-    if (stdHandle == NULL) // launched from GUI
+    if (stdHandle == nullptr) // launched from GUI
         return false;
     DWORD fileType = GetFileType(stdHandle);
     if (fileType == FILE_TYPE_UNKNOWN) {
@@ -73,8 +73,8 @@ static bool isRedirected(HANDLE stdHandle)
  * (e.g. into a file), Console does not interfere.
  */
 Console::Console() :
-    m_oldCout(0),
-    m_oldCerr(0)
+    m_oldCout(nullptr),
+    m_oldCerr(nullptr)
 {
     bool isCoutRedirected = isRedirected(GetStdHandle(STD_OUTPUT_HANDLE));
     bool isCerrRedirected = isRedirected(GetStdHandle(STD_ERROR_HANDLE));
@@ -97,7 +97,7 @@ Console::Console() :
                                | ENABLE_EXTENDED_FLAGS);
 # ifndef Q_CC_MINGW
             HMENU systemMenu = GetSystemMenu(GetConsoleWindow(), FALSE);
-            if (systemMenu != NULL)
+            if (systemMenu != nullptr)
                 RemoveMenu(systemMenu, SC_CLOSE, MF_BYCOMMAND);
             DrawMenuBar(GetConsoleWindow());
 # endif

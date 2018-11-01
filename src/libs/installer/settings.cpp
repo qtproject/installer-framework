@@ -135,7 +135,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
     return arguments;
 }
 
-static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode, QString *displayName = 0)
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode, QString *displayName = nullptr)
 {
     qDebug()<<__FUNCTION__;
     QSet<Repository> set;

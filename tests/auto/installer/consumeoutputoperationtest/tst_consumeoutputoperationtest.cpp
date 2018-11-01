@@ -62,7 +62,7 @@ private slots:
 
     void testMissingArguments()
     {
-        ConsumeOutputOperation operation(0);
+        ConsumeOutputOperation operation(nullptr);
 
         QVERIFY(operation.testOperation());
         QVERIFY(!operation.performOperation());

@@ -104,7 +104,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         }
 
         observer.addSample(read);
-        observer.timerEvent(NULL);
+        observer.timerEvent(nullptr);
         observer.addBytesTransfered(read);
         observer.addCheckSumData(buffer.data(), read);
 

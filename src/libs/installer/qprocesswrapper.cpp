@@ -109,7 +109,7 @@ bool QProcessWrapper::startDetached(const QString &program, const QStringList &a
         const QPair<bool, qint64> result =
             w.callRemoteMethod<QPair<bool, qint64> >(QLatin1String(Protocol::QProcessStartDetached),
                 program, arguments, workingDirectory);
-        if (pid != 0)
+        if (pid != nullptr)
             *pid = result.second;
         w.processSignals();
         return result.first;

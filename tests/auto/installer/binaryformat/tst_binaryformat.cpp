@@ -52,7 +52,7 @@ class TestOperation : public KDUpdater::UpdateOperation
 {
 public:
     TestOperation(const QString &name)
-        : KDUpdater::UpdateOperation(0)
+        : KDUpdater::UpdateOperation(nullptr)
     { setName(name); }
 
     virtual void backup() {}

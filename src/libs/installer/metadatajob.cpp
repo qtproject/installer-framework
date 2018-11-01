@@ -53,7 +53,7 @@ static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 
 MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
-    , m_core(0)
+    , m_core(nullptr)
     , m_addCompressedPackages(false)
     , m_downloadableChunkSize(1000)
     , m_taskNumber(0)

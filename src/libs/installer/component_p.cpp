@@ -41,9 +41,9 @@ namespace QInstaller {
 ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     : q(qq)
     , m_core(core)
-    , m_parentComponent(0)
-    , m_licenseOperation(0)
-    , m_minimumProgressOperation(0)
+    , m_parentComponent(nullptr)
+    , m_licenseOperation(nullptr)
+    , m_minimumProgressOperation(nullptr)
     , m_newlyInstalled (false)
     , m_operationsCreated(false)
     , m_autoCreateOperations(true)
@@ -98,11 +98,11 @@ int ComponentModelHelper::childCount() const
 Component *ComponentModelHelper::childAt(int index) const
 {
     if (index < 0 && index >= childCount())
-        return 0;
+        return nullptr;
 
     if (m_componentPrivate->m_core->virtualComponentsVisible())
-        return m_componentPrivate->m_allChildComponents.value(index, 0);
-    return m_componentPrivate->m_childComponents.value(index, 0);
+        return m_componentPrivate->m_allChildComponents.value(index, nullptr);
+    return m_componentPrivate->m_childComponents.value(index, nullptr);
 }
 
 /*!

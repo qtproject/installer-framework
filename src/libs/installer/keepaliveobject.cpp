@@ -35,8 +35,8 @@
 namespace QInstaller {
 
 KeepAliveObject::KeepAliveObject()
-    : m_timer(0)
-    , m_socket(0)
+    : m_timer(nullptr)
+    , m_socket(nullptr)
 {
 }
 

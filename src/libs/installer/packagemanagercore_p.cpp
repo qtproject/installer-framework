@@ -81,7 +81,7 @@ namespace QInstaller {
 class OperationTracer
 {
 public:
-    OperationTracer(Operation *operation) : m_operation(0)
+    OperationTracer(Operation *operation) : m_operation(nullptr)
     {
         // don't create output for that hacky pseudo operation
         if (operation->name() != QLatin1String("MinimumProgress"))
@@ -197,29 +197,29 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
-    : m_updateFinder(0)
-    , m_compressedFinder(0)
+    : m_updateFinder(nullptr)
+    , m_compressedFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_core(core)
     , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_componentsToInstallCalculated(false)
-    , m_componentScriptEngine(0)
-    , m_controlScriptEngine(0)
-    , m_installerCalculator(0)
-    , m_uninstallerCalculator(0)
-    , m_proxyFactory(0)
-    , m_defaultModel(0)
-    , m_updaterModel(0)
-    , m_guiObject(0)
+    , m_componentScriptEngine(nullptr)
+    , m_controlScriptEngine(nullptr)
+    , m_installerCalculator(nullptr)
+    , m_uninstallerCalculator(nullptr)
+    , m_proxyFactory(nullptr)
+    , m_defaultModel(nullptr)
+    , m_updaterModel(nullptr)
+    , m_guiObject(nullptr)
 {
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations)
-    : m_updateFinder(0)
-    , m_compressedFinder(0)
+    : m_updateFinder(nullptr)
+    , m_compressedFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -234,14 +234,14 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_componentsToInstallCalculated(false)
-    , m_componentScriptEngine(0)
-    , m_controlScriptEngine(0)
-    , m_installerCalculator(0)
-    , m_uninstallerCalculator(0)
-    , m_proxyFactory(0)
-    , m_defaultModel(0)
-    , m_updaterModel(0)
-    , m_guiObject(0)
+    , m_componentScriptEngine(nullptr)
+    , m_controlScriptEngine(nullptr)
+    , m_installerCalculator(nullptr)
+    , m_uninstallerCalculator(nullptr)
+    , m_proxyFactory(nullptr)
+    , m_defaultModel(nullptr)
+    , m_updaterModel(nullptr)
+    , m_guiObject(nullptr)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -363,7 +363,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         for (it = components.constBegin(); it != components.constEnd(); ++it) {
             QString id = it.key();
             QInstaller::Component *component = it.value();
-            while (!id.isEmpty() && component->parentComponent() == 0) {
+            while (!id.isEmpty() && component->parentComponent() == nullptr) {
                 id = id.section(QLatin1Char('.'), 0, -2);
                 if (components.contains(id))
                     components[id]->appendComponent(component);
@@ -372,7 +372,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         // append all components w/o parent to the direct list
         foreach (QInstaller::Component *component, components) {
-            if (component->parentComponent() == 0)
+            if (component->parentComponent() == nullptr)
                 m_core->appendRootComponent(component);
         }
 
@@ -443,7 +443,7 @@ void PackageManagerCorePrivate::cleanUpComponentEnvironment()
     // there could be still some references to already deleted components,
     // so we need to remove the current component script engine
     delete m_componentScriptEngine;
-    m_componentScriptEngine = 0;
+    m_componentScriptEngine = nullptr;
 }
 
 ScriptEngine *PackageManagerCorePrivate::componentScriptEngine() const
@@ -517,7 +517,7 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
 void PackageManagerCorePrivate::clearInstallerCalculator()
 {
     delete m_installerCalculator;
-    m_installerCalculator = 0;
+    m_installerCalculator = nullptr;
 }
 
 InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
@@ -533,7 +533,7 @@ InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
 void PackageManagerCorePrivate::clearUninstallerCalculator()
 {
     delete m_uninstallerCalculator;
-    m_uninstallerCalculator = 0;
+    m_uninstallerCalculator = nullptr;
 }
 
 UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
@@ -685,7 +685,7 @@ Operation *PackageManagerCorePrivate::createOwnedOperation(const QString &type)
 Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 {
     if (!m_ownedOperations.contains(operation))
-        return 0;
+        return nullptr;
 
     m_ownedOperations.removeAll(operation);
     return operation;
@@ -939,7 +939,7 @@ void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const ope
 {
     Q_ASSERT(operationPartSize);
     QObject *const operationObject = dynamic_cast< QObject*> (operation);
-    if (operationObject != 0) {
+    if (operationObject != nullptr) {
         const QMetaObject *const mo = operationObject->metaObject();
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("outputTextChanged(QString)")) > -1) {
             connect(operationObject, SIGNAL(outputTextChanged(QString)), ProgressCoordinator::instance(),
@@ -1653,7 +1653,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         // build a list of undo operations based on the checked state of the component
         foreach (Operation *operation, performedOperationsOld) {
             const QString &name = operation->value(QLatin1String("component")).toString();
-            Component *component = componentsByName.value(name, 0);
+            Component *component = componentsByName.value(name, nullptr);
             if (!component)
                 component = m_core->componentByName(PackageManagerCore::checkableName(name));
             if (component)
@@ -2374,7 +2374,7 @@ void PackageManagerCorePrivate::storeCheckState()
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)
 {
     QObject *const operationObject = dynamic_cast<QObject *> (operation);
-    if (operationObject != 0) {
+    if (operationObject != nullptr) {
         const QMetaObject *const mo = operationObject->metaObject();
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("requestBlockingExecution(QString)")) > -1) {
             connect(operationObject, SIGNAL(requestBlockingExecution(QString)),
@@ -2417,7 +2417,7 @@ OperationList PackageManagerCorePrivate::sortOperationsBasedOnComponentDependenc
 void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &invokableMethodName)
 {
     QObject *obj = QObject::sender();
-    if (obj != 0)
+    if (obj != nullptr)
         QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
 }
 

@@ -48,7 +48,7 @@ private slots:
 
     void testMissingArguments()
     {
-        ExtractArchiveOperation op(0);
+        ExtractArchiveOperation op(nullptr);
 
         QVERIFY(op.testOperation());
         QVERIFY(!op.performOperation());
@@ -62,7 +62,7 @@ private slots:
 
     void testExtractOperationValidFile()
     {
-        ExtractArchiveOperation op(0);
+        ExtractArchiveOperation op(nullptr);
         op.setArguments(QStringList() << ":///data/valid.7z" << QDir::tempPath());
 
         QVERIFY(op.testOperation());
@@ -72,7 +72,7 @@ private slots:
 
     void testExtractOperationInvalidFile()
     {
-        ExtractArchiveOperation op(0);
+        ExtractArchiveOperation op(nullptr);
         op.setArguments(QStringList() << ":///data/invalid.7z" << QDir::tempPath());
 
         QVERIFY(op.testOperation());

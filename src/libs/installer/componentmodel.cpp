@@ -378,7 +378,7 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 {
     if (index.isValid())
         return static_cast<Component*>(index.internalPointer());
-    return 0;
+    return nullptr;
 }
 
 

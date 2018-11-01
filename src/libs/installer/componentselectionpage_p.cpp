@@ -380,7 +380,7 @@ void ComponentSelectionPagePrivate::customButtonClicked(int which)
     if (QWizard::WizardButton(which) == QWizard::CustomButton2) {
         QString defaultDownloadDirectory =
             QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QStringList fileNames = QFileDialog::getOpenFileNames(NULL,
+        QStringList fileNames = QFileDialog::getOpenFileNames(nullptr,
             ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
             QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
 

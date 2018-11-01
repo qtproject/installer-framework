@@ -239,7 +239,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
 class RemoveDirectoryThread : public QThread
 {
 public:
-    explicit RemoveDirectoryThread(const QString &path, bool ignoreErrors = false, QObject *parent = 0)
+    explicit RemoveDirectoryThread(const QString &path, bool ignoreErrors = false, QObject *parent = nullptr)
         : QThread(parent)
         , p(path)
         , ignore(ignoreErrors)
@@ -411,7 +411,7 @@ QString QInstaller::getShortPathName(const QString &name)
 
     // Determine length, then convert.
     const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
-    const DWORD length = GetShortPathName(nameC, NULL, 0);
+    const DWORD length = GetShortPathName(nameC, nullptr, 0);
     if (length == 0)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
@@ -427,7 +427,7 @@ QString QInstaller::getLongPathName(const QString &name)
 
     // Determine length, then convert.
     const LPCTSTR nameC = reinterpret_cast<LPCTSTR>(name.utf16()); // MinGW
-    const DWORD length = GetLongPathName(nameC, NULL, 0);
+    const DWORD length = GetLongPathName(nameC, nullptr, 0);
     if (length == 0)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);

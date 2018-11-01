@@ -64,7 +64,7 @@
 
 InstallerBase::InstallerBase(int &argc, char *argv[])
     : SDKApp<QApplication>(argc, argv)
-    , m_core(0)
+    , m_core(nullptr)
 {
     QInstaller::init(); // register custom operations
 }
@@ -87,7 +87,7 @@ int InstallerBase::run()
         // just silently ignore the fact that we could not create the lock file
         // and check the running processes.
         if (runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
-            QInstaller::MessageBoxHandler::information(0, QLatin1String("AlreadyRunning"),
+            QInstaller::MessageBoxHandler::information(nullptr, QLatin1String("AlreadyRunning"),
                 tr("Waiting for %1").arg(qAppName()),
                 tr("Another %1 instance is already running. Wait "
                 "until it finishes, close it, or restart your system.").arg(qAppName()));
@@ -304,7 +304,7 @@ int InstallerBase::run()
     }
     else {
         //create the wizard GUI
-        TabController controller(0);
+        TabController controller(nullptr);
         controller.setManager(m_core);
         controller.setControlScript(controlScript);
         if (m_core->isInstaller())
