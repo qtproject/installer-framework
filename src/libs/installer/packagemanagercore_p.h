@@ -58,7 +58,6 @@ class ComponentModel;
 class TempDirDeleter;
 class InstallerCalculator;
 class UninstallerCalculator;
-class RemoteFileEngineHandler;
 
 class PackageManagerCorePrivate : public QObject
 {
@@ -263,7 +262,6 @@ private:
     ComponentModel *m_updaterModel;
 
     QObject *m_guiObject;
-    QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...
