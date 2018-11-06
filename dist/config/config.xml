@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
     <Installer>
     <Name>Qt Installer Framework</Name>
-    <Title>Qt Installer Framework 3.0.5</Title>
-    <Version>3.0.5</Version>
+    <Title>Qt Installer Framework 3.0.6</Title>
+    <Version>3.0.6</Version>
     <Publisher>Qt Project</Publisher>
     <ProductUrl>http://qt-project.org</ProductUrl>
     <Watermark>watermark.png</Watermark>
     <MaintenanceToolName>Uninstaller</MaintenanceToolName>
 
     <!-- Tweaked for windows in installscript.qs -->
-    <TargetDir>@HomeDir@/Qt/QtIFW-3.0.5</TargetDir>
+    <TargetDir>@HomeDir@/Qt/QtIFW-3.0.6</TargetDir>
 </Installer>
