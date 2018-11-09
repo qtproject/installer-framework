@@ -106,6 +106,7 @@ public Q_SLOTS:
     void rejectWithoutPrompt();
     void showFinishedPage();
     void setModified(bool value);
+    void setMaxSize();
 
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);

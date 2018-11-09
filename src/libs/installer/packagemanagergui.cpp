@@ -73,6 +73,7 @@
 #include <QShowEvent>
 #include <QFileDialog>
 #include <QGroupBox>
+#include <QDesktopWidget>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -382,8 +383,16 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         d->m_defaultButtonText.insert(i, buttonText(QWizard::WizardButton(i)));
 
     m_core->setGuiObject(this);
+
+    // We need to create this ugly hack so that the installer doesn't exceed the maximum size of the
+    // screen. The screen size where the widget lies is not available until the widget is visible.
+    QTimer::singleShot(30, this, SLOT(setMaxSize()));
 }
 
+void PackageManagerGui::setMaxSize()
+{
+    setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+}
 /*!
     Destructs a package manager UI.
 */
