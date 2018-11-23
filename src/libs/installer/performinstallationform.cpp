@@ -28,7 +28,6 @@
 
 #include "performinstallationform.h"
 
-#include "lazyplaintextedit.h"
 #include "progresscoordinator.h"
 #include "globals.h"
 
@@ -147,7 +146,7 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_productImagesScrollArea->setWidget(m_productImagesLabel);
     bottomLayout->addWidget(m_productImagesScrollArea);
 
-    m_detailsBrowser = new LazyPlainTextEdit(widget);
+    m_detailsBrowser = new QTextEdit(widget);
     m_detailsBrowser->setReadOnly(true);
     m_detailsBrowser->setWordWrapMode(QTextOption::NoWrap);
     m_detailsBrowser->setObjectName(QLatin1String("DetailsBrowser"));
@@ -266,14 +265,6 @@ void PerformInstallationForm::stopUpdateProgress()
 void PerformInstallationForm::setDetailsButtonEnabled(bool enable)
 {
     m_detailsButton->setEnabled(enable);
-}
-
-/*!
-    Scrolls to the bottom of the details browser.
-*/
-void PerformInstallationForm::scrollDetailsToTheEnd()
-{
-    m_detailsBrowser->updateCursor(LazyPlainTextEdit::TextCursorPosition::ForceEnd);
 }
 
 /*!

@@ -32,6 +32,7 @@
 #include "aspectratiolabel.h"
 
 #include <QObject>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -43,7 +44,6 @@ class QWinTaskbarButton;
 class QScrollArea;
 QT_END_NAMESPACE
 
-class LazyPlainTextEdit;
 
 namespace QInstaller {
 
@@ -60,7 +60,6 @@ public:
     void startUpdateProgress();
     void stopUpdateProgress();
     void setDetailsButtonEnabled(bool enable);
-    void scrollDetailsToTheEnd();
     bool isShowingDetails() const;
 
 signals:
@@ -81,7 +80,7 @@ private:
     QScrollArea *m_productImagesScrollArea;
     AspectRatioLabel *m_productImagesLabel;
     QPushButton *m_detailsButton;
-    LazyPlainTextEdit *m_detailsBrowser;
+    QTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;
 
 #ifdef Q_OS_WIN

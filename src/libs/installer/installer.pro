@@ -78,7 +78,6 @@ HEADERS += packagemanagercore.h \
     adminauthorization.h \
     elevatedexecuteoperation.h \
     fakestopprocessforupdateoperation.h \
-    lazyplaintextedit.h \
     progresscoordinator.h \
     minimumprogressoperation.h \
     performinstallationform.h \
@@ -172,7 +171,6 @@ SOURCES += packagemanagercore.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
     fakestopprocessforupdateoperation.cpp \
-    lazyplaintextedit.cpp \
     progresscoordinator.cpp \
     minimumprogressoperation.cpp \
     performinstallationform.cpp \

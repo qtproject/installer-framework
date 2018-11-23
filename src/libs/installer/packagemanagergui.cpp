@@ -2797,7 +2797,6 @@ void PerformInstallationPage::installationFinished()
 {
     m_performInstallationForm->stopUpdateProgress();
     if (!isAutoSwitching()) {
-        m_performInstallationForm->scrollDetailsToTheEnd();
         m_performInstallationForm->setDetailsButtonEnabled(false);
 
         setComplete(true);
