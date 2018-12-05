@@ -30,6 +30,7 @@
 
 #include <QEventLoop>
 #include <QThreadPool>
+#include <QFileInfo>
 
 namespace QInstaller {
 
@@ -68,6 +69,9 @@ bool ExtractArchiveOperation::performOperation()
         Qt::QueuedConnection);
 
     m_files.clear();
+
+    QFileInfo fileInfo(archivePath);
+    emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
 
     QEventLoop loop;
     connect(&receiver, &Receiver::finished, &loop, &QEventLoop::quit);
@@ -126,7 +130,6 @@ bool ExtractArchiveOperation::testOperation()
 void ExtractArchiveOperation::fileFinished(const QString &filename)
 {
     m_files.prepend(filename);
-    emit outputTextChanged(QDir::toNativeSeparators(filename));
 }
 
 } // namespace QInstaller
