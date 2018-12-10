@@ -754,6 +754,13 @@ static int printErrorAndUsageAndExit(const QString &err)
 
 int main(int argc, char **argv)
 {
+// increase maximum numbers of file descriptors
+#if defined (Q_OS_MACOS)
+    struct rlimit rl;
+    getrlimit(RLIMIT_NOFILE, &rl);
+    rl.rlim_cur = qMin(static_cast<rlim_t>(OPEN_MAX), rl.rlim_max);
+    setrlimit(RLIMIT_NOFILE, &rl);
+#endif
     QCoreApplication app(argc, argv);
 
     QInstaller::init();

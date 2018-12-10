@@ -433,6 +433,7 @@ void PackageManagerCore::writeMaintenanceTool()
                 dropAdminRights();
             d->m_needToWriteMaintenanceTool = false;
         } catch (const Error &error) {
+            qCritical() << "Error writing Maintenance Tool: " << error.message();
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("WriteError"), tr("Error writing Maintenance Tool"), error.message(),
                 QMessageBox::Ok, QMessageBox::Ok);
@@ -449,17 +450,16 @@ void PackageManagerCore::writeMaintenanceConfigFiles()
 }
 
 /*!
-    Resets the class to its initial state and applies the values of the
-    parameters specified by \a params.
+    Resets the class to its initial state.
 */
-void PackageManagerCore::reset(const QHash<QString, QString> &params)
+void PackageManagerCore::reset()
 {
     d->m_completeUninstall = false;
     d->m_needsHardRestart = false;
     d->m_status = PackageManagerCore::Unfinished;
     d->m_installerBaseBinaryUnreplaced.clear();
-
-    d->initialize(params);
+    d->m_coreCheckedHash.clear();
+    d->m_componentsToInstallCalculated = false;
 }
 
 /*!
@@ -868,14 +868,9 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     if (!packagesWithoutOperation.isEmpty() || !orphanedOperations.isEmpty())  {
         qCritical() << "Operations missing for installed packages" << packagesWithoutOperation.toList();
         qCritical() << "Orphaned operations" << orphanedOperations.toList();
-        MessageBoxHandler::critical(
-                    MessageBoxHandler::currentBestSuitParent(),
-                    QLatin1String("Corrupt_Installation_Error"),
-                    QCoreApplication::translate("QInstaller", "Corrupt installation"),
-                    QCoreApplication::translate("QInstaller",
-                                                "Your installation seems to be corrupted. "
-                                                "Please consider re-installing from scratch."
-                                                ));
+        qCritical() << "Your installation seems to be corrupted. Please consider re-installing from scratch, "
+                       "remove the packages from components.xml which operations are missing, "
+                       "or reinstall the packages.";
     } else {
         qDebug() << "Operations sanity check succeeded.";
     }

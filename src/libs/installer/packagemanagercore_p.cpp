@@ -1857,9 +1857,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
     const int opCount = operations.count();
     // show only components which do something, MinimumProgress is only for progress calculation safeness
+    bool showDetailsLog = false;
     if (opCount > 1 || (opCount == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
-                .arg(component->displayName()));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1...")
+            .arg(component->displayName()));
+        showDetailsLog = true;
     }
 
     foreach (Operation *operation, operations) {
@@ -1944,6 +1946,9 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
     component->setInstalled();
     component->markAsPerformedInstallation();
+
+    if (showDetailsLog)
+        ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
 }
 
 // -- private

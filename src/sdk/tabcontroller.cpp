@@ -102,11 +102,6 @@ void TabController::setManager(QInstaller::PackageManagerCore *core)
     d->m_core = core;
 }
 
-void TabController::setManagerParams(const QHash<QString, QString> &params)
-{
-    d->m_params = params;
-}
-
 // -- public slots
 
 int TabController::init()
@@ -143,8 +138,8 @@ int TabController::init()
 
 void TabController::restartWizard()
 {
+    d->m_core->reset();
     if (d->m_networkSettingsChanged) {
-        d->m_core->reset(d->m_params);
         d->m_networkSettingsChanged = false;
 
         d->m_core->settings().setFtpProxy(d->m_settings.ftpProxy());
@@ -198,9 +193,4 @@ void TabController::onNetworkSettingsChanged(const QInstaller::Settings &setting
 {
     d->m_settings = settings;
     d->m_networkSettingsChanged = true;
-}
-
-void TabController::updateManagerParams(const QString &key, const QString &value)
-{
-    d->m_params.insert(key, value);
 }

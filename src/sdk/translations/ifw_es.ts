@@ -1422,9 +1422,9 @@ Uninstallation aborted!</source>
     </message>
     <message>
         <source>
-Installing component %1</source>
+Installing component %1...</source>
         <translation>
-Instalando componente %1</translation>
+Instalando componente %1...</translation>
     </message>
     <message>
         <source>Installer Error</source>

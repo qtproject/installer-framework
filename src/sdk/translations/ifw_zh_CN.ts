@@ -1834,9 +1834,9 @@ Update aborted!</source>
     </message>
     <message>
         <source>
-Installing component %1</source>
+Installing component %1...</source>
         <translation>
-正在安装组件 %1</translation>
+正在安装组件 %1...</translation>
     </message>
     <message>
         <source>Installer Error</source>

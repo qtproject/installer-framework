@@ -1988,6 +1988,21 @@ void ComponentSelectionPage::allowCompressedRepositoryInstall()
     d->allowCompressedRepositoryInstall();
 }
 
+bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
+{
+    PackageManagerCore *core = packageManagerCore();
+    const QList<Component *> allComponents = core->components(PackageManagerCore::ComponentType::All);
+    Component *component = PackageManagerCore::componentByName(
+                name, allComponents);
+    if (component && component->isInstalled() && component->isVirtual()) {
+        component->setCheckState(Qt::Unchecked);
+        core->componentsToInstallNeedsRecalculation();
+        qDebug() << "Virtual component " << name << " was selected for uninstall by script.";
+        return true;
+    }
+    return false;
+}
+
 void ComponentSelectionPage::setModified(bool modified)
 {
     setComplete(modified);

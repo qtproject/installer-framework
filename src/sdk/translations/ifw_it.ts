@@ -1885,9 +1885,9 @@ Update aborted!</source>
     </message>
     <message>
         <source>
-Installing component %1</source>
+Installing component %1...</source>
         <translation>
-Installazione componenti %1</translation>
+Installazione componenti %1...</translation>
     </message>
     <message>
         <source>Installer Error</source>

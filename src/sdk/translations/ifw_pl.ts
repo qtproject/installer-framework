@@ -1895,9 +1895,9 @@ Przerwano uaktualnianie.</translation>
     </message>
     <message>
         <source>
-Installing component %1</source>
+Installing component %1...</source>
         <translation>
-Instalacja komponentu %1</translation>
+Instalacja komponentu %1...</translation>
     </message>
     <message>
         <source>Installer Error</source>
