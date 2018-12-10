@@ -1007,6 +1007,19 @@ void PackageManagerCorePrivate::registerPathsForUninstallation(
     }
 }
 
+#ifdef Q_CC_MINGW
+static bool moveTempFile(QTemporaryFile &src, const QString &newpath, QString &errmsg)
+{
+    src.close();
+    QFile filesrc(src.fileName());
+    if (!filesrc.copy(newpath)) {
+        errmsg = filesrc.errorString();
+        return false;
+    }
+    return true;
+}
+#endif
+
 void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
     QString maintenanceToolRenamedName = maintenanceToolName() + QLatin1String(".new");
@@ -1048,13 +1061,17 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
             }
         }
 #ifdef Q_CC_MINGW
-	dataOut.flush();
-	dataOut.close();
-	QFile src(dataOut.fileName());
-	if (!src.copy(resourcePath.filePath(QLatin1String("installer.dat")))) {
-            throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(dataOut.fileName(),
-                dataOut.errorString()));
-	}
+    QString datapath(resourcePath.filePath(maintenanceToolName()));
+    datapath.replace(QLatin1String(".exe"), QLatin1String(".dat"));
+    qDebug() << "creating data file: " << datapath;
+    QString errmsg;
+    if (! moveTempFile(dataOut, datapath, errmsg)) {
+        throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(datapath, errmsg));
+    }
+    QFile datafile(datapath);
+    datafile.setPermissions(datafile.permissions() | QFile::WriteUser | QFile::ReadGroup
+            | QFile::ReadOther);
+
 #else
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
             throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(out.fileName(),
@@ -1074,12 +1091,11 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         }
     }
 #ifdef Q_CC_MINGW
-    out.flush();
-    out.close();
-    QFile src(out.fileName());
-    if (!src.copy(maintenanceToolRenamedName)) {
+    QString errstring;
+    qDebug() << "move temp file: " << out.fileName() << " -> " << maintenanceToolRenamedName;
+    if (!moveTempFile(out, maintenanceToolRenamedName, errstring)) {
         throw Error(tr("Cannot write maintenance tool to \"%1\": %2").arg(maintenanceToolRenamedName,
-            out.errorString()));
+            errstring));
     }
 #else
     if (!out.copy(maintenanceToolRenamedName)) {
@@ -1371,7 +1387,17 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 throw Error(tr("Cannot remove data file \"%1\": %2").arg(dummy.fileName(),
                     dummy.errorString()));
             }
-
+#ifdef Q_CC_MINGW
+            QString errstring;
+            qDebug() << "moving file: " << file.fileName() << " -> " << dataFile + QLatin1String(".new");
+            if (! moveTempFile(file, dataFile + QLatin1String(".new"), errstring)) {
+                throw Error(tr("Cannot write maintenance tool binary data to %1: %2")
+                    .arg(file.fileName(), errstring));
+            }
+            QFile movedFile(dataFile + QLatin1String(".new"));
+            movedFile.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
+                | QFile::ReadOther);
+#else
             if (!file.rename(dataFile + QLatin1String(".new"))) {
                 throw Error(tr("Cannot write maintenance tool binary data to %1: %2")
                     .arg(file.fileName(), file.errorString()));
@@ -1379,6 +1405,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             file.setAutoRemove(false);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
+#endif
         } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
