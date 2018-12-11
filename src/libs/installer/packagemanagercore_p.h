@@ -162,6 +162,10 @@ public:
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
 
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    QString guidInstalled(const QString &targetDirectory);
+    bool hasUninstallEntry(const QString &targetDirectory);
+#endif
 signals:
     void installationStarted();
     void installationFinished();
@@ -201,6 +205,9 @@ public:
 
     bool m_dependsOnLocalInstallerBinary;
 
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    bool m_bSkipRegisterUninstaller;
+#endif
 private slots:
     void infoMessage(Job *, const QString &message) {
         emit m_core->metaJobInfoMessage(message);

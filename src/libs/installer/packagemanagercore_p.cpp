@@ -215,6 +215,9 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updaterModel(0)
     , m_guiObject(0)
     , m_remoteFileEngineHandler(0)
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    , m_bSkipRegisterUninstaller(false)
+#endif
 {
 }
 
@@ -245,6 +248,9 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updaterModel(0)
     , m_guiObject(0)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    , m_bSkipRegisterUninstaller(false)
+#endif
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -578,6 +584,11 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     processFilesForDelayedDeletion();
     m_data.setDynamicPredefinedVariables();
 
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    // indicates 'this custom IFW has special feature...'
+    m_data.setValue(QLatin1String("hasFeature_Windows_Multi_Install"), QLatin1String("true"));
+#endif
+
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
     connect(this, &PackageManagerCorePrivate::installationStarted,
@@ -609,6 +620,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
+
 
 bool PackageManagerCorePrivate::isOfflineOnly() const
 {
@@ -879,6 +891,42 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
     }
 }
 
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+QString PackageManagerCorePrivate::guidInstalled(const QString &targetDirectory)
+{
+    qDebug() << "maintenanceToolIniFile: " << targetDirectory + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile();
+    QSettingsWrapper cfg(targetDirectory + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile(),
+        QSettingsWrapper::IniFormat);
+    const QVariantHash v = cfg.value(QLatin1String("Variables")).toHash(); // Do not change to
+
+    QString strGuid = v[QLatin1String(scProductUUID)].toString();
+
+    qDebug() << "strGuid: " << strGuid;
+    return strGuid;
+}
+
+bool PackageManagerCorePrivate::hasUninstallEntry(const QString &targetDirectory)
+{
+    QString guid = guidInstalled(targetDirectory);
+    if (guid.isEmpty()) {
+        return false;
+    }
+
+    m_data.setValue(scProductUUID, guid);
+
+    QString  regPath = registerPath();
+
+    qDebug() << "registry path: " << regPath;
+    QSettingsWrapper settings(regPath, QSettingsWrapper::NativeFormat);
+
+    QString strUninstallEntry = settings.value(QLatin1String("UninstallString")).toString();
+
+    qDebug() << "uninstall entry in registry: " << strUninstallEntry;
+
+    return ! strUninstallEntry.isEmpty();
+}
+#endif
+
 void PackageManagerCorePrivate::callBeginInstallation(const QList<Component*> &componentList)
 {
     foreach (Component *component, componentList)
@@ -1065,7 +1113,14 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     datapath.replace(QLatin1String(".exe"), QLatin1String(".dat"));
     qDebug() << "creating data file: " << datapath;
     QString errmsg;
+#ifdef CUSTOM_IFW_FEATURE
+    QFile fdst(datapath);
+    if (fdst.exists()) {
+        fdst.remove();
+    }
+#endif
     if (! moveTempFile(dataOut, datapath, errmsg)) {
+        qDebug() << "failed to write installer data.";
         throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(datapath, errmsg));
     }
     QFile datafile(datapath);
@@ -1499,6 +1554,10 @@ bool PackageManagerCorePrivate::runInstaller()
             if (!tempAdminFile.open() || !tempAdminFile.isWritable())
                 adminRightsGained = m_core->gainAdminRights();
         }
+
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+        m_bSkipRegisterUninstaller = hasUninstallEntry(target);
+#endif
 
         // add the operation to create the target directory
         Operation *mkdirOp = createOwnedOperation(QLatin1String("Mkdir"));
@@ -2059,6 +2118,11 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
 void PackageManagerCorePrivate::registerMaintenanceTool()
 {
 #ifdef Q_OS_WIN
+#ifdef CUSTOM_IFW_FEATURE
+    if (m_bSkipRegisterUninstaller) {
+        return;
+    }
+#endif
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
     settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
