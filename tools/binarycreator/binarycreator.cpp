@@ -539,6 +539,74 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
     return EXIT_SUCCESS;
 }
 
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+static int assembleMaintenanceTool(Input input)
+{
+
+    QTemporaryFile file(input.outputPath);
+    if (!file.open()) {
+        throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(input.installerExePath,
+            input.outputPath, file.errorString()));
+    }
+
+    const QString tempFile = file.fileName();
+    file.close();
+    file.remove();
+
+    QFile instExe(input.installerExePath);
+    if (!instExe.copy(tempFile)) {
+        throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(instExe.fileName(),
+            tempFile, instExe.errorString()));
+    }
+
+    QtPatch::patchBinaryFile(tempFile, QByteArray("MY_InstallerCreateDateTime_MY"),
+        QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd - HH:mm:ss")).toLatin1());
+
+
+    input.installerExePath = tempFile;
+
+    QTemporaryFile out;
+    QString targetName = input.outputPath;
+    {
+        QFile target(targetName);
+        if (target.exists() && !target.remove()) {
+            qCritical("Cannot remove target %s: %s", qPrintable(target.fileName()),
+                qPrintable(target.errorString()));
+            QFile::remove(tempFile);
+            return EXIT_FAILURE;
+        }
+    }
+
+    try {
+        QInstaller::openForWrite(&out);
+        QFile exe(input.installerExePath);
+
+        QInstaller::openForRead(&exe);
+        QInstaller::appendData(&out, &exe, exe.size());
+
+        const QList<QInstaller::OperationBlob> operations;
+        BinaryContent::writeBinaryContent(&out, operations, input.manager,
+            BinaryContent::MagicUninstallerMarker, BinaryContent::MagicCookie);
+    } catch (const Error &e) {
+        qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
+        QFile::remove(tempFile);
+        return EXIT_FAILURE;
+    }
+
+    if (!out.rename(targetName)) {
+        qCritical("Cannot write installer to %s: %s", targetName.toUtf8().constData(),
+            out.errorString().toUtf8().constData());
+        QFile::remove(tempFile);
+        return EXIT_FAILURE;
+    }
+    out.setAutoRemove(false);
+
+    QFile::remove(tempFile);
+
+    return EXIT_SUCCESS;
+}
+#endif
+
 QT_BEGIN_NAMESPACE
 int runRcc(int argc, char *argv[]);
 QT_END_NAMESPACE
@@ -661,6 +729,9 @@ static void printUsage()
     std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
     std::cout << "                            signing identity" << std::endl;
 #endif
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    std::cout << "  -m|--maintenance-tool     Just write out maintenance tool for codesigning." << std::endl;
+#endif
     std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
@@ -778,6 +849,9 @@ int main(int argc, char **argv)
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
     bool compileResource = false;
     QString signingIdentity;
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+    bool writeMaintenancetoole = false;
+#endif
 
     const QStringList args = app.arguments().mid(1);
     for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -882,6 +956,12 @@ int main(int argc, char **argv)
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: No code signing identity specified."));
             signingIdentity = *it;
 #endif
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+        } else if (*it == QLatin1String("-m") || *it == QLatin1String("--maintenance-tool")) {
+            configFile = QLatin1String("dummy");
+            packagesDirectories.push_back(QLatin1String("dummy"));
+            writeMaintenancetoole = true;
+#endif
         } else {
             if (it->startsWith(QLatin1String("-"))) {
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: Unknown option \"%1\" used. Maybe you "
@@ -930,6 +1010,14 @@ int main(int argc, char **argv)
     tmp2.setAutoRemove(false);
     const QString tmpRepoDir = tmp2.path();
     try {
+#if defined(Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+        if (writeMaintenancetoole) {
+            input.outputPath = target;
+            input.installerExePath = templateBinary;
+            exitCode = assembleMaintenanceTool(input);
+            return exitCode;
+        }
+#endif
         const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile)
             .absolutePath());
 
