@@ -588,6 +588,9 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     // indicates 'this custom IFW has special feature...'
     m_data.setValue(QLatin1String("hasFeature_Windows_Multi_Install"), QLatin1String("true"));
 #endif
+#ifdef CUSTOM_IFW_FEATURE
+    m_data.setValue(QLatin1String("hasFeature_No_Restart_Button"), QLatin1String("true"));
+#endif
 
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
