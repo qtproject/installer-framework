@@ -371,6 +371,8 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
         return 0;
     }
 
+    qDebug() << "startDownload from url: " << source.toString();
+
     QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
