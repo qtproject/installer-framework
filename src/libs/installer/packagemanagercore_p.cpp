@@ -578,6 +578,10 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     processFilesForDelayedDeletion();
     m_data.setDynamicPredefinedVariables();
 
+#ifdef CUSTOM_IFW_FEATURE
+    m_data.setValue(QLatin1String("hasFeature_No_Restart_Button"), QLatin1String("true"));
+#endif
+
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
     connect(this, &PackageManagerCorePrivate::installationStarted,

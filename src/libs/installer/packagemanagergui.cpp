@@ -2880,6 +2880,13 @@ void FinishedPage::entering()
 
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
+#ifdef CUSTOM_IFW_FEATURE
+    // custom IFW, remove "Restart" button...
+    if (wizard()->button(QWizard::CommitButton)) {
+        wizard()->button(QWizard::CommitButton)->hide();
+    }
+#endif
+
 }
 
 /*!
