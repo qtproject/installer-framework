@@ -1925,7 +1925,8 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
 
             //to keep the ui responsible use QtConcurrent::run
             QFutureWatcher<bool> futureWatcher;
-            const QFuture<bool> future = QtConcurrent::run(KDUpdater::killProcess, process, 30000);
+            // shorten the timeout from 30000ms to 5000ms, because windows killProcess cannot detect the death of target process from some reason.
+            const QFuture<bool> future = QtConcurrent::run(KDUpdater::killProcess, process, 5000);
 
             QEventLoop loop;
             connect(&futureWatcher, &QFutureWatcher<bool>::finished,
