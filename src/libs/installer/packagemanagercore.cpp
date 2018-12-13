@@ -1936,6 +1936,10 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
             if (!future.isFinished())
                 loop.exec();
 
+            if (d->m_data.value(QLatin1String("kill_multi")).toBool() == true) {
+                qDebug() << "kill_multi == true, continue to kill next process...";
+                continue;
+            }
             qDebug() << process.name << "killed!";
             return future.result();
         }
