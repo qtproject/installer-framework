@@ -81,7 +81,11 @@ private:
     void setOpenMode(OpenMode mode) { QIODevice::setOpenMode(mode); }
 
 private:
+#if defined(Q_OS_MACOS) && QT_VERSION >= QT_VERSION_CHECK(5, 12, 0)
+    QFile m_file;
+#else
     QFSFileEngine m_file;
+#endif
     QByteArray m_name;
     Range<qint64> m_segment;
 };
