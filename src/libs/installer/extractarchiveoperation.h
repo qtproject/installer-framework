@@ -56,6 +56,7 @@ private Q_SLOTS:
     void fileFinished(const QString &progress);
 
 private:
+    QStringList m_files;
     class Callback;
     class Runnable;
     class Receiver;

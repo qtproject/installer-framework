@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Registers component for install</DisplayName>
+    <Description>Register a component for installation</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2013-01-01</ReleaseDate>
+    <Default>true</Default>
+    <Dependencies>component</Dependencies>
+</Package>

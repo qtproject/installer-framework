@@ -1,3 +1,15 @@
+3.0.6
+- Remove 'Your install seems to be corrupted' messagebox (QTIFW-1003)
+- Register virtual component for uninstall (QTIFW-1102)
+- Optimize ExctractArchiveOperation::fileFinished() (QTBUG-51337)
+- Do not reset core data values in restart (QTIFW-504)
+- Fix maintenancetool writing in Windows (QTIFW-1096)
+- Fix environment variables for XDG paths not being recognized (QTIFW-1043)
+- Update german translation file (QTIFW-1084)
+- Fix admin query retry (QTIFW-988, QTIFW-1173)
+- Fix install fail if there is no metadata (QTIFW-1150)
+- Reset meta information download result (QTIFW-1137)
+
 3.0.5
 - Decrease metadata dowload amount (QTIFW-975)
 - Print component warnings only in verbose mode (QTIFW-975)

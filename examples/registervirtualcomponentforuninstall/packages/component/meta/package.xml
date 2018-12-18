@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Component selected from script</DisplayName>
+    <Description>This component is selected to uninstall in script</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2018-02-02</ReleaseDate>
+    <Virtual>true</Virtual>
+</Package>

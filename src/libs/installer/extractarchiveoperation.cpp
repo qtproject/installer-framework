@@ -30,6 +30,7 @@
 
 #include <QEventLoop>
 #include <QThreadPool>
+#include <QFileInfo>
 
 namespace QInstaller {
 
@@ -67,6 +68,11 @@ bool ExtractArchiveOperation::performOperation()
     connect(runnable, &Runnable::finished, &receiver, &Receiver::runnableFinished,
         Qt::QueuedConnection);
 
+    m_files.clear();
+
+    QFileInfo fileInfo(archivePath);
+    emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
+
     QEventLoop loop;
     connect(&receiver, &Receiver::finished, &loop, &QEventLoop::quit);
     if (QThreadPool::globalInstance()->tryStart(runnable)) {
@@ -76,6 +82,8 @@ bool ExtractArchiveOperation::performOperation()
         runnable->run();
         receiver.runnableFinished(true, QString());
     }
+
+    setValue(QLatin1String("files"), m_files);
 
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
 
@@ -121,10 +129,7 @@ bool ExtractArchiveOperation::testOperation()
 */
 void ExtractArchiveOperation::fileFinished(const QString &filename)
 {
-    QStringList files = value(QLatin1String("files")).toStringList();
-    files.prepend(filename);
-    setValue(QLatin1String("files"), files);
-    emit outputTextChanged(QDir::toNativeSeparators(filename));
+    m_files.prepend(filename);
 }
 
 } // namespace QInstaller

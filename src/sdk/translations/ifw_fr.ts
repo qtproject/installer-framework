@@ -1892,9 +1892,9 @@ Mise à jour annulée !</translation>
     </message>
     <message>
         <source>
-Installing component %1</source>
+Installing component %1...</source>
         <translation>
-Installation du composant %1</translation>
+Installation du composant %1...</translation>
     </message>
     <message>
         <source>Installer Error</source>
