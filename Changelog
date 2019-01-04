@@ -1,3 +1,22 @@
+3.1.0
+- Fix wizard's maximum size not to exceed screen maximum size (QTIFW-1227)
+- Allow maintenancetool signing in Windows (QTIFW-667)
+- Enable usage of categorized repositories (QTIFW-1147)
+- Add possibility to check/uncheck repositories with one button click (QTIFW-1132)
+- Update danish (da) translation for Qt installer-framework
+- Add attribute to mark parts of install tree unstable (QTIFW-930)
+   -> Setting AllowUnstablecomponents to true in config.xml will
+    * allow installing other components when there are errors in scripts
+    * allow installing other components when there are missing dependencies
+    * allow installing other components when there are sha mismatches in metadata
+    * will mark the 'broken' components uninstallable in treeview
+- Add findFiles method (QTIFW-1094)
+- Enable expanding items by default
+- Add support dash (-) symbol in component name (QTIFW-948)
+- Allow comparing non-numeric versions (QTIFW-948)
+- Add Component::addAutoDependOn method
+- Teach 'binarycreator' and 'repogen' to repack packages from repository (QTIFW-925)
+
 3.0.6
 - Remove 'Your install seems to be corrupted' messagebox (QTIFW-1003)
 - Register virtual component for uninstall (QTIFW-1102)
