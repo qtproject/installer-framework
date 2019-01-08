@@ -585,7 +585,7 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             checkable = false;
         }
 
-       if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty())
+       if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty() || node->isUnstable())
             continue;
 
         Qt::CheckState newState = state;
