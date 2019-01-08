@@ -64,6 +64,7 @@ public:
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
     void setupCategoryLayout();
+    void showCategoryLayout(bool show);
     void updateTreeView();
 
 public slots:

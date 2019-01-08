@@ -1912,7 +1912,9 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {
-        d->setupCategoryLayout();
+        d->showCategoryLayout(true);
+    } else {
+        d->showCategoryLayout(false);
     }
     d->showCompressedRepositoryButton();
 }

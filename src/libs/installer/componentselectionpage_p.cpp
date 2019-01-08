@@ -213,6 +213,15 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     m_mainHLayout->insertWidget(0, m_categoryWidget);
 }
 
+void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
+{
+    if (show) {
+        setupCategoryLayout();
+    }
+    if (m_categoryWidget)
+        m_categoryWidget->setVisible(show);
+}
+
 void ComponentSelectionPagePrivate::updateTreeView()
 {
     m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
