@@ -352,10 +352,15 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
                                                        QSizePolicy::Expanding);
         m_treeViewVLayout->addSpacerItem(verticalSpacer2);
         m_mainHLayout->removeItem(m_descriptionVLayout);
+        //Hide next button during category fetch
+        QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
+        b->setEnabled(!show);
     } else {
         QSpacerItem *item = m_treeViewVLayout->spacerItem();
         m_treeViewVLayout->removeItem(item);
         m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+        //Call completeChanged() to determine if NextButton should be shown or not after category fetch.
+        q->completeChanged();
     }
     if (m_categoryWidget)
         m_categoryWidget->setDisabled(show);
@@ -368,8 +373,6 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     m_uncheckAll->setVisible(!show);
     m_descriptionLabel->setVisible(!show);
     m_sizeLabel->setVisible(!show);
-    QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
-    b->setEnabled(!show);
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
