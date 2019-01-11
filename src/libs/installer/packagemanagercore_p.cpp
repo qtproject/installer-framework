@@ -2354,8 +2354,13 @@ void PackageManagerCorePrivate::restoreCheckState()
     if (m_coreCheckedHash.isEmpty())
         return;
 
-    foreach (Component *component, m_coreCheckedHash.keys())
+    foreach (Component *component, m_coreCheckedHash.keys()) {
         component->setCheckState(m_coreCheckedHash.value(component));
+        // Never allow component to be checked when it is unstable
+        // and not installed
+        if (component->isUnstable() && !component->isInstalled())
+            component->setCheckState(Qt::Unchecked);
+    }
 
     m_coreCheckedHash.clear();
     m_componentsToInstallCalculated = false;
