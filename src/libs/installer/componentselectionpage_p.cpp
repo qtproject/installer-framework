@@ -198,7 +198,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 
-    foreach (RepositoryCategory repository, m_core->settings().repositoryCategories()) {
+    foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setObjectName(repository.displayname());
         connect(checkBox, &QCheckBox::stateChanged, this,
@@ -324,8 +324,17 @@ void ComponentSelectionPagePrivate::checkboxStateChanged()
     }
 }
 
-void ComponentSelectionPagePrivate::enableRepositoryCategory(int index, bool enable) {
-    RepositoryCategory repoCategory = m_core->settings().repositoryCategories().toList().at(index);
+void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repositoryName, bool enable)
+{
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories = m_core->settings().organizedRepositoryCategories();
+
+    QMap<QString, RepositoryCategory>::iterator i = organizedRepositoryCategories.find(repositoryName);
+    RepositoryCategory repoCategory;
+    while (i != organizedRepositoryCategories.end() && i.key() == repositoryName) {
+        repoCategory = i.value();
+        i++;
+    }
+
     RepositoryCategory replacement = repoCategory;
     replacement.setEnabled(enable);
     QSet<RepositoryCategory> tmpRepoCategories = m_core->settings().repositoryCategories();
@@ -374,7 +383,7 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
     QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
     for (int i = 0; i < checkboxes.count(); i++) {
         checkbox = checkboxes.at(i);
-        enableRepositoryCategory(i, checkbox->isChecked());
+        enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
     }
 
     if (!m_core->fetchRemotePackagesTree()) {

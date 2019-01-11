@@ -584,6 +584,16 @@ QSet<RepositoryCategory> Settings::repositoryCategories() const
     return variantListToSet<RepositoryCategory>(d->m_data.values(scRepositoryCategories));
 }
 
+QMap<QString, RepositoryCategory> Settings::organizedRepositoryCategories() const
+{
+    QSet<RepositoryCategory> categories = repositoryCategories();
+    QMap<QString, RepositoryCategory> map;
+    foreach (const RepositoryCategory &category, categories) {
+        map.insert(category.displayname(), category);
+    }
+    return map;
+}
+
 void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
 {
     d->m_data.remove(scRepositories);
