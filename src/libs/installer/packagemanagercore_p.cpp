@@ -36,6 +36,7 @@
 #include "componentmodel.h"
 #include "errors.h"
 #include "fileio.h"
+#include "remotefileengine.h"
 #include "graph.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
@@ -213,6 +214,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_defaultModel(nullptr)
     , m_updaterModel(nullptr)
     , m_guiObject(nullptr)
+    , m_remoteFileEngineHandler(nullptr)
 {
 }
 
@@ -242,6 +244,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_defaultModel(nullptr)
     , m_updaterModel(nullptr)
     , m_guiObject(nullptr)
+    , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
