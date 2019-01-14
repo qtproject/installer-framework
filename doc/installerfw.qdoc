@@ -1139,7 +1139,11 @@
 
     By default, only repositories with no category are shown in the component selection widget. Checking one or
     several repositories and pressing \uicontrol Fetch will update the widget to show content also
-    from the selected categorized repositories.
+    from the selected categorized repositories. Components in the repository
+    categories are marked as \e unstable meaning that you can install other
+    components although some components have missing dependencies, script
+    errors and so on. For more information about \e unstable components, see
+    \l {Summary of Configuration File Elements}.
 
     Example of creating a repository category:
 

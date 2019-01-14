@@ -1913,6 +1913,7 @@ void ComponentSelectionPage::entering()
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {
         d->showCategoryLayout(true);
+        core->settings().setAllowUnstableComponents(true);
     } else {
         d->showCategoryLayout(false);
     }
