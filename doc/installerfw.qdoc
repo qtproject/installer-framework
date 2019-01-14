@@ -333,6 +333,14 @@
             \li Set to \c false if default repositories \c <RemoteRepositories> should not be saved to \e {MaintenanceToolName}.ini.
                 By default default repositories are saved. Not saving the repositories means than when you run  \e maintenancetool
                 there are no default repositories in use.
+         \row
+            \li AllowUnstableComponents
+            \li Set to \c true if other components are allowed to be installed
+                although there are unstable components. A component is \e unstable
+                if it is missing a dependency, has errors in scripts, and so on.
+                Unstable components are grayed in the component tree, and therefore
+                cannot be selected. By default, the value is \c false  which means
+                that the installation will be aborted if unstable components are found.
 
     \endtable
 
