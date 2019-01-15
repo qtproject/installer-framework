@@ -279,7 +279,8 @@ void Repository::registerMetaType()
 QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
     QByteArray url, username, password, displayname, compressed;
-    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password >> displayname;
+    istream >> url >> repository.m_default >> repository.m_enabled >> username >> password
+            >> displayname >> repository.m_archivename;
     repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
     repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
     repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
