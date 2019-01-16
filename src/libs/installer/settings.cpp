@@ -135,9 +135,9 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
     return arguments;
 }
 
-static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode, QString *displayName = nullptr)
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
+                                         QString *displayName = nullptr, bool *preselected = false)
 {
-    qDebug()<<__FUNCTION__;
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("DisplayName"))  {
@@ -169,6 +169,8 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
             if (displayName && !displayName->isEmpty())
                 repo.setArchiveName(*displayName);
             set.insert(repo);
+        }  else if (reader.name() == QLatin1String("Preselected")) {
+            *preselected = (reader.readElementText() == QLatin1String("true") ? true : false);
         } else {
             raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name().toString()),
                 parseMode);
@@ -190,8 +192,10 @@ static QSet<RepositoryCategory> readRepositoryCategories(QXmlStreamReader &reade
         if (reader.name() == QLatin1String("RemoteRepositories")) {
             RepositoryCategory archiveRepo;
             QString displayName;
-            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode, &displayName));
+            bool preselected = false;
+            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode, &displayName, &preselected));
             archiveRepo.setDisplayName(displayName);
+            archiveRepo.setEnabled(preselected);
             archiveSet.insert(archiveRepo);
         } else if (reader.name() == QLatin1String("RepositoryCategoryDisplayname")) {
             *repositoryCategoryName = reader.readElementText();

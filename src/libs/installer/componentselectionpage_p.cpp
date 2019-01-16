@@ -201,6 +201,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setObjectName(repository.displayname());
+        checkBox->setChecked(repository.isEnabled());
         connect(checkBox, &QCheckBox::stateChanged, this,
                 &ComponentSelectionPagePrivate::checkboxStateChanged);
         checkBox->setText(repository.displayname());

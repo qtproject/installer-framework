@@ -24,6 +24,7 @@
             </Repository>
         </RemoteRepositories>
         <RemoteRepositories>
+            <Preselected>true</Preselected>
             <DisplayName>Category 2</DisplayName>
             <Repository>
                 <Url>http://localhost/repository3</Url>

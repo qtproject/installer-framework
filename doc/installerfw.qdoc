@@ -1130,8 +1130,9 @@
 
     The \c <RepositoryCategory> element in the installer configuration file
     (config.xml) can contain a list of several \c <RemoteRepositories> elements. Each \c <RemoteRepositories>
-    element within the \c <RepositoryCagetory> element is considered a category, which has a \c <DisplayName> and can
-    contain several \c <Repository> elements. Repository categories are shown in the component selection page,
+    element within the \c <RepositoryCagetory> element is considered a category. Each catecory can have
+    a \c <DisplayName>, a \c <Preselected> element and several \c <Repository> elements.
+    Repository categories are shown in the component selection page,
     on the left side of the component selection widget:
 
     \image ifw-repository-categories.png "Component selection Page"
@@ -1146,6 +1147,7 @@
     <RepositoryCategories>
         <RemoteRepositories>
              <Displayname>Category 1</Displayname>
+             <Preselected>true</Preselected>
              <Repository>
                      <Url>http://www.example.com/packages</Url>
                      <Enabled>1</Enabled>
