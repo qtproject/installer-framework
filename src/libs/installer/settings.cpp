@@ -136,7 +136,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
 }
 
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
-                                         QString *displayName = nullptr, bool *preselected = false)
+                                         QString *displayName = nullptr, bool *preselected = nullptr)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
