@@ -606,7 +606,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     item.insert(TaskRole::Checksum, packageHash.toLatin1());
                     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                     item.insert(TaskRole::Name, packageName);
+
                     m_packages.append(item);
+                } else {
+                    QString fileName = metadata.directory + QLatin1Char('/') + packageName;
+                    QDir directory(fileName);
+                    if (!directory.exists()) {
+                        directory.mkdir(fileName);
+                    }
                 }
             }
         }

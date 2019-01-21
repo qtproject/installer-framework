@@ -661,18 +661,6 @@ void KDUpdater::FileDownloader::resetCheckSumData()
 }
 
 /*!
-    Creates a directory structure for \a fileName if it does not exist.
-*/
-void KDUpdater::FileDownloader::createDirectoryForFile(const QString fileName)
-{
-    QFileInfo fileInfo(fileName);
-    if (!fileInfo.absoluteDir().exists()) {
-        QDir filePath = fileInfo.absoluteDir();
-        filePath.mkdir(filePath.absolutePath());
-    }
-}
-
-/*!
     Returns a copy of the proxy factory that this FileDownloader object is using to determine the
     proxies to be used for requests.
 */
@@ -825,7 +813,6 @@ void KDUpdater::LocalFileDownloader::doDownload()
         file->open();
         d->destination = file;
     } else {
-        createDirectoryForFile(d->destFileName);
         d->destination = new QFile(d->destFileName, this);
         d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
     }
@@ -1478,7 +1465,6 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
         file->open();
         d->destination = file;
     } else {
-        createDirectoryForFile(d->destFileName);
         d->destination = new QFile(d->destFileName, this);
         d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
     }
