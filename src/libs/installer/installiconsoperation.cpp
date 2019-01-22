@@ -42,20 +42,18 @@ QString InstallIconsOperation::targetDirectory()
     if (hasValue(QLatin1String("targetdirectory")))
         return value(QLatin1String("targetdirectory")).toString();
 
-    QStringList XDG_DATA_DIRS = QString::fromLocal8Bit(qgetenv("XDG_DATA_DIRS"))
+    QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-    XDG_DATA_DIRS.push_back(QLatin1String("/usr/share/pixmaps")); // default path
-    XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
-    XDG_DATA_DIRS.push_back(QDir::home().absoluteFilePath(QLatin1String(".icons"))); // default path
+    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share/icons"))); // default path
 
     QString directory;
-    const QStringList& directories = XDG_DATA_DIRS;
+    const QStringList& directories = XDG_DATA_HOME;
     for (QStringList::const_iterator it = directories.begin(); it != directories.end(); ++it) {
         if (it->isEmpty())
             continue;
 
-        // our default dirs are correct, XDG_DATA_DIRS set via env need "icon" at the end
+        // our default dirs are correct, XDG_DATA_HOME set via env needs "icon" at the end
         if ((it + 1 == directories.end()) || (it + 2 == directories.end()) || (it + 3 == directories.end()))
             directory = QDir(*it).absolutePath();
         else
