@@ -102,6 +102,8 @@ Repository MetadataJob::repositoryForDirectory(const QString &directory) const
 
 void MetadataJob::doStart()
 {
+    setError(Job::NoError);
+    setErrorString(QString());
     if (!m_core) {
         emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
