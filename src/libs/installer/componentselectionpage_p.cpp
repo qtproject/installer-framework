@@ -193,7 +193,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Fetch"));
+    QPushButton *fetchCategoryButton = new QPushButton(tr("Refresh"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);

@@ -826,7 +826,7 @@ void Settings::setSaveDefaultRepositories(bool save)
 QString Settings::repositoryCategoryDisplayName() const
 {
     QString displayName = d->m_data.value(QLatin1String(scRepositoryCategoryDisplayName)).toString();
-    return displayName.isEmpty() ? tr("Package categories") : displayName;
+    return displayName.isEmpty() ? tr("Show package categories") : displayName;
 }
 
 void Settings::setRepositoryCategoryDisplayName(const QString& name)
