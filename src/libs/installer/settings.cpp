@@ -136,7 +136,8 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
 }
 
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
-                                         QString *displayName = nullptr, bool *preselected = nullptr)
+                                         QString *displayName = nullptr, bool *preselected = nullptr,
+                                         QString *tooltip = nullptr)
 {
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
@@ -169,6 +170,8 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
             if (displayName && !displayName->isEmpty())
                 repo.setArchiveName(*displayName);
             set.insert(repo);
+        } else if (reader.name() == QLatin1String("Tooltip")) {
+            *tooltip = reader.readElementText();
         }  else if (reader.name() == QLatin1String("Preselected")) {
             *preselected = (reader.readElementText() == QLatin1String("true") ? true : false);
         } else {
@@ -192,9 +195,12 @@ static QSet<RepositoryCategory> readRepositoryCategories(QXmlStreamReader &reade
         if (reader.name() == QLatin1String("RemoteRepositories")) {
             RepositoryCategory archiveRepo;
             QString displayName;
+            QString tooltip;
             bool preselected = false;
-            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode, &displayName, &preselected));
+            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode,
+                                                         &displayName, &preselected, &tooltip));
             archiveRepo.setDisplayName(displayName);
+            archiveRepo.setTooltip(tooltip);
             archiveRepo.setEnabled(preselected);
             archiveSet.insert(archiveRepo);
         } else if (reader.name() == QLatin1String("RepositoryCategoryDisplayname")) {

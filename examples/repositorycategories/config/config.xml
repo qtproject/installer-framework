@@ -16,6 +16,7 @@
         <RepositoryCategoryDisplayname>Releases</RepositoryCategoryDisplayname>
         <RemoteRepositories>
             <DisplayName>Category 1</DisplayName>
+            <Tooltip>Contains repository1 and repository2</Tooltip>
             <Repository>
                 <Url>http://localhost/repository1</Url>
             </Repository>
@@ -26,6 +27,7 @@
         <RemoteRepositories>
             <Preselected>true</Preselected>
             <DisplayName>Category 2</DisplayName>
+            <Tooltip>Contains repository3</Tooltip>
             <Repository>
                 <Url>http://localhost/repository3</Url>
             </Repository>

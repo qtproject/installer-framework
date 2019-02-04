@@ -1131,7 +1131,7 @@
     The \c <RepositoryCategory> element in the installer configuration file
     (config.xml) can contain a list of several \c <RemoteRepositories> elements. Each \c <RemoteRepositories>
     element within the \c <RepositoryCagetory> element is considered a category. Each catecory can have
-    a \c <DisplayName>, a \c <Preselected> element and several \c <Repository> elements.
+    a \c <DisplayName>, a \c <Tooltip>, a \c <Preselected> element and several \c <Repository> elements.
     Repository categories are shown in the component selection page,
     on the left side of the component selection widget:
 
@@ -1152,6 +1152,7 @@
         <RemoteRepositories>
              <Displayname>Category 1</Displayname>
              <Preselected>true</Preselected>
+             <Tooltip>Tooltip for category 1</Tooltip>
              <Repository>
                      <Url>http://www.example.com/packages</Url>
                      <Enabled>1</Enabled>

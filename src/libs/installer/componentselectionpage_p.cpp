@@ -205,6 +205,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         connect(checkBox, &QCheckBox::stateChanged, this,
                 &ComponentSelectionPagePrivate::checkboxStateChanged);
         checkBox->setText(repository.displayname());
+        checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
 
