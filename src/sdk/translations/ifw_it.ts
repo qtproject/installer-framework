@@ -749,35 +749,35 @@
         <translation></translation>
     </message>
     <message>
-        <source>KiB</source>
+        <source>KB</source>
         <translation></translation>
     </message>
     <message>
-        <source>MiB</source>
+        <source>MB</source>
         <translation></translation>
     </message>
     <message>
-        <source>GiB</source>
+        <source>GB</source>
         <translation></translation>
     </message>
     <message>
-        <source>TiB</source>
+        <source>TB</source>
         <translation></translation>
     </message>
     <message>
-        <source>PiB</source>
+        <source>PB</source>
         <translation></translation>
     </message>
     <message>
-        <source>EiB</source>
+        <source>EB</source>
         <translation></translation>
     </message>
     <message>
-        <source>ZiB</source>
+        <source>ZB</source>
         <translation></translation>
     </message>
     <message>
-        <source>YiB</source>
+        <source>YB</source>
         <translation></translation>
     </message>
     <message>

@@ -662,35 +662,35 @@
         <translation>バイト</translation>
     </message>
     <message>
-        <source>KiB</source>
+        <source>KB</source>
         <translation>KB</translation>
     </message>
     <message>
-        <source>MiB</source>
+        <source>MB</source>
         <translation>MB</translation>
     </message>
     <message>
-        <source>GiB</source>
+        <source>GB</source>
         <translation>GB</translation>
     </message>
     <message>
-        <source>TiB</source>
+        <source>TB</source>
         <translation>TB</translation>
     </message>
     <message>
-        <source>PiB</source>
+        <source>PB</source>
         <translation>PB</translation>
     </message>
     <message>
-        <source>EiB</source>
+        <source>EB</source>
         <translation>EB</translation>
     </message>
     <message>
-        <source>ZiB</source>
+        <source>ZB</source>
         <translation>ZB</translation>
     </message>
     <message>
-        <source>YiB</source>
+        <source>YB</source>
         <translation>YB</translation>
     </message>
     <message>
