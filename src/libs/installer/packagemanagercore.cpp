@@ -1220,17 +1220,17 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
                     const QString name = update->data(scName).toString();
                     if (!installedPackages.contains(name)) {
                         success = false;
-                        break;  // unusual, the maintenance tool should always be available
+                        continue;  // unusual, the maintenance tool should always be available
                     }
 
                     const LocalPackage localPackage = installedPackages.value(name);
                     const QString updateVersion = update->data(scVersion).toString();
                     if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
-                        break;  // remote version equals or is less than the installed maintenance tool
+                        continue;  // remote version equals or is less than the installed maintenance tool
 
                     const QDate updateDate = update->data(scReleaseDate).toDate();
                     if (localPackage.lastUpdateDate >= updateDate)
-                        break;  // remote release date equals or is less than the installed maintenance tool
+                        continue;  // remote release date equals or is less than the installed maintenance tool
 
                     success = false;
                     break;  // we found a newer version of the maintenance tool
