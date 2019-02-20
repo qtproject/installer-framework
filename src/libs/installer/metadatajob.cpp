@@ -700,11 +700,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 if (tmpRepositories.count() > 0) {
                     s.addTemporaryRepositories(tmpRepositories, true);
                     QFile::remove(result.target());
+                    m_metaFromDefaultRepositories.clear();
                     return XmlDownloadRetry;
                 }
             } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
                 if (m_core->isMaintainer())
                     m_core->writeMaintenanceConfigFiles();
+                m_metaFromDefaultRepositories.clear();
                 QFile::remove(result.target());
                 return XmlDownloadRetry;
             }
