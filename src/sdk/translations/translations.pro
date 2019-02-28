@@ -21,12 +21,13 @@ for(file, IB_ALL_TRANSLATIONS) {
 ts-all.commands = cd $$wd && $$LUPDATE $$lupdate_opts $$sources -ts $$IB_ALL_TRANSLATIONS
 QMAKE_EXTRA_TARGETS += ts-all
 
+lconvert_options = -sort-contexts -locations none -i
 isEqual(QMAKE_DIR_SEP, /) {
     commit-ts.commands = \
         cd $$wd; \
         git add -N src/sdk/translations/*_??.ts && \
         for f in `git diff-files --name-only src/sdk/translations/*_??.ts`; do \
-            $$LCONVERT -locations none -i \$\$f -o \$\$f; \
+            $$LCONVERT $$lconvert_options \$\$f -o \$\$f; \
         done; \
         git add src/sdk/translations/*_??.ts && git commit
 } else {
@@ -34,7 +35,7 @@ isEqual(QMAKE_DIR_SEP, /) {
         cd $$wd && \
         git add -N src/sdk/translations/*_??.ts && \
         for /f usebackq %%f in (`git diff-files --name-only src/sdk/translations/*_??.ts`) do \
-            $$LCONVERT -locations none -i %%f -o %%f $$escape_expand(\\n\\t) \
+            $$LCONVERT $$lconvert_options %%f -o %%f $$escape_expand(\\n\\t) \
         cd $$wd && git add src/sdk/translations/*_??.ts && git commit
 }
 QMAKE_EXTRA_TARGETS += commit-ts
