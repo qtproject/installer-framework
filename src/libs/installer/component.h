@@ -124,7 +124,7 @@ public:
     void markAsPerformedInstallation();
 
     QStringList userInterfaces() const;
-    QHash<QString, QPair<QString, QString> > licenses() const;
+    QHash<QString, QVariantMap> licenses() const;
     Q_INVOKABLE QWidget *userInterface(const QString &name) const;
     Q_INVOKABLE virtual void beginInstallation();
     Q_INVOKABLE virtual void createOperations();

@@ -282,6 +282,7 @@ private:
 
     QObject *m_guiObject;
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
+    QHash<QString, QVariantMap> m_licenseItems;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

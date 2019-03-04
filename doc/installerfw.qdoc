@@ -839,7 +839,8 @@
             \li Licenses
             \li List of license agreements to be accepted by the installing
                 user. To add several licenses, add several \c <License> child
-                elements that each specify the license \c name and \c file.
+                elements that each specify the license \c name and \c file and,
+                optionally, \c priority.
                 ASCII and UTF8 file formats are supported for license files.
 
                 If there are translations listed for this component, the installer

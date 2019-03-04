@@ -642,13 +642,14 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
 
 /*!
   Loads the text of the licenses contained in \a licenseHash from \a directory.
-  This is saved into a new hash containing the filename and the text of that file.
+  This is saved into a new hash containing the filename, the text and the priority of that file.
 */
 void Component::loadLicenses(const QString &directory, const QHash<QString, QVariant> &licenseHash)
 {
     QHash<QString, QVariant>::const_iterator it;
     for (it = licenseHash.begin(); it != licenseHash.end(); ++it) {
-        const QString &fileName = it.value().toString();
+        QVariantMap license = it.value().toMap();
+        const QString &fileName = license.value(QLatin1String("file")).toString();
 
         if (!ProductKeyCheck::instance()->isValidLicenseTextFile(fileName))
             continue;
@@ -682,7 +683,8 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
         }
         QTextStream stream(&file);
         stream.setCodec("UTF-8");
-        d->m_licenses.insert(it.key(), qMakePair(fileName, stream.readAll()));
+        license.insert(QLatin1String("content"), stream.readAll());
+        d->m_licenses.insert(it.key(), license);
     }
 }
 
@@ -698,9 +700,9 @@ QStringList Component::userInterfaces() const
 }
 
 /*!
-    Returns a hash that contains the file names and text of license files for the component.
+    Returns a hash that contains the file names, text and priorities of license files for the component.
 */
-QHash<QString, QPair<QString, QString> > Component::licenses() const
+QHash<QString, QVariantMap> Component::licenses() const
 {
     return d->m_licenses;
 }
@@ -965,9 +967,11 @@ OperationList Component::operations() const
             d->m_licenseOperation->setValue(QLatin1String("component"), name());
 
             QVariantMap licenses;
-            const QList<QPair<QString, QString> > values = d->m_licenses.values();
-            for (int i = 0; i < values.count(); ++i)
-                licenses.insert(values.at(i).first, values.at(i).second);
+            const QList<QVariantMap> values = d->m_licenses.values();
+            for (int i = 0; i < values.count(); ++i) {
+                licenses.insert(values.at(i).value(QLatin1String("file")).toString(),
+                        values.at(i).value(QLatin1String("content")));
+            }
             d->m_licenseOperation->setValue(QLatin1String("licenses"), licenses);
             d->m_operations.append(d->m_licenseOperation);
         }

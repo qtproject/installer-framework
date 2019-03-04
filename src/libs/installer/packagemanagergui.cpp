@@ -1992,13 +1992,17 @@ void LicenseAgreementPage::entering()
 
     packageManagerCore()->calculateComponentsToInstall();
     foreach (QInstaller::Component *component, packageManagerCore()->orderedComponentsToInstall())
-        addLicenseItem(component->licenses());
+        packageManagerCore()->addLicenseItem(component->licenses());
+
+    createLicenseWidgets();
 
     const int licenseCount = m_licenseListWidget->count();
     if (licenseCount > 0) {
         m_licenseListWidget->setVisible(licenseCount > 1);
         m_licenseListWidget->setCurrentItem(m_licenseListWidget->item(0));
     }
+
+    packageManagerCore()->clearLicenses();
 
     updateUi();
 }
@@ -2023,12 +2027,22 @@ void LicenseAgreementPage::currentItemChanged(QListWidgetItem *current)
         m_textBrowser->setText(current->data(Qt::UserRole).toString());
 }
 
-void LicenseAgreementPage::addLicenseItem(const QHash<QString, QPair<QString, QString> > &hash)
+void LicenseAgreementPage::createLicenseWidgets()
 {
-    for (QHash<QString, QPair<QString, QString> >::const_iterator it = hash.begin();
-        it != hash.end(); ++it) {
-            QListWidgetItem *item = new QListWidgetItem(it.key(), m_licenseListWidget);
-            item->setData(Qt::UserRole, it.value().second);
+    QHash<QString, QMap<QString, QString>> priorityHash = packageManagerCore()->sortedLicenses();
+
+    QStringList priorities = priorityHash.keys();
+    priorities.sort();
+
+    for (int i = priorities.length() - 1; i >= 0; --i) {
+        QString priority = priorities.at(i);
+        QMap<QString, QString> licenses = priorityHash.value(priority);
+        QStringList licenseNames = licenses.keys();
+        licenseNames.sort(Qt::CaseInsensitive);
+        for (QString licenseName : licenseNames) {
+            QListWidgetItem *item = new QListWidgetItem(licenseName, m_licenseListWidget);
+            item->setData(Qt::UserRole, licenses.value(licenseName));
+        }
     }
 }
 

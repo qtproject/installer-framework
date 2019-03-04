@@ -315,6 +315,9 @@ public:
     static void parseNameAndVersion(const QString &requirement, QString *name, QString *version);
     static QStringList parseNames(const QStringList &requirements);
     void commitSessionOperations();
+    void clearLicenses();
+    QHash<QString, QMap<QString, QString>> sortedLicenses();
+    void addLicenseItem(const QHash<QString, QVariantMap> &licenses);
 
 public Q_SLOTS:
     bool runInstaller();

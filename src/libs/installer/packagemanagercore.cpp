@@ -2343,6 +2343,42 @@ void PackageManagerCore::commitSessionOperations()
 }
 
 /*!
+ * Clears all previously added licenses.
+ */
+void PackageManagerCore::clearLicenses()
+{
+    d->m_licenseItems.clear();
+}
+
+/*!
+ * Returns licenses hash which can be sorted by priority.
+ */
+QHash<QString, QMap<QString, QString>> PackageManagerCore::sortedLicenses()
+{
+    QHash<QString, QMap<QString, QString>> priorityHash;
+    for (QString licenseName : d->m_licenseItems.keys()) {
+        QMap<QString, QString> licenses;
+        QString priority = d->m_licenseItems.value(licenseName).value(QLatin1String("priority")).toString();
+        licenses = priorityHash.value(priority);
+        licenses.insert(licenseName, d->m_licenseItems.value(licenseName).value(QLatin1String("content")).toString());
+        priorityHash.insert(priority, licenses);
+    }
+    return priorityHash;
+}
+
+/*!
+ * Adds new set of \a licenses. If a license with the key already exists, it is not added again.
+ */
+void PackageManagerCore::addLicenseItem(const QHash<QString, QVariantMap> &licenses)
+{
+    for (QHash<QString, QVariantMap>::const_iterator it = licenses.begin();
+        it != licenses.end(); ++it) {
+            if (!d->m_licenseItems.contains(it.key()))
+                d->m_licenseItems.insert(it.key(), it.value());
+    }
+}
+
+/*!
     Uninstalls the selected components \a components without GUI.
     Returns PackageManagerCore installation status.
 */

@@ -296,7 +296,7 @@ private Q_SLOTS:
     void currentItemChanged(QListWidgetItem *current);
 
 private:
-    void addLicenseItem(const QHash<QString, QPair<QString, QString> > &hash);
+    void createLicenseWidgets();
     void updateUi();
 
 private:

@@ -129,8 +129,13 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
                 const QDomNode licenseNode = licenseNodes.at(i);
                 if (licenseNode.nodeName() == QLatin1String("License")) {
                     QDomElement element = licenseNode.toElement();
-                    licenseHash.insert(element.attributeNode(QLatin1String("name")).value(),
-                        element.attributeNode(QLatin1String("file")).value());
+                    QVariantMap attributes;
+                    attributes.insert(QLatin1String("file"), element.attributeNode(QLatin1String("file")).value());
+                    if (!element.attributeNode(QLatin1String("priority")).isNull())
+                        attributes.insert(QLatin1String("priority"), element.attributeNode(QLatin1String("priority")).value());
+                    else
+                        attributes.insert(QLatin1String("priority"), QLatin1String("0"));
+                    licenseHash.insert(element.attributeNode(QLatin1String("name")).value(), attributes);
                 }
             }
             if (!licenseHash.isEmpty())

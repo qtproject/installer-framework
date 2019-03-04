@@ -77,7 +77,7 @@ public:
     QHash<QString, QPointer<QWidget> > m_userInterfaces;
 
     // < display name, < file name, file content > >
-    QHash<QString, QPair<QString, QString> > m_licenses;
+    QHash<QString, QVariantMap> m_licenses;
     QList<QPair<QString, bool> > m_pathsForUninstallation;
 };
 

@@ -2586,21 +2586,31 @@ bool PackageManagerCorePrivate::acceptLicenseAgreements() const
     if (isUninstaller())
         return true;
 
-    typedef QHash<QString, QPair<QString, QString> > LicensesHash;
     foreach (Component *component, m_core->orderedComponentsToInstall()) {
         // Package manager or updater, no need to accept again as long as
         // the component is installed.
         if (m_core->isMaintainer() && component->isInstalled())
             continue;
+        m_core->addLicenseItem(component->licenses());
+    }
 
-        LicensesHash hash = component->licenses();
-        for (LicensesHash::iterator it = hash.begin(); it != hash.end(); ++it) {
-            if (m_autoAcceptLicenses || askUserAcceptLicense(it.key(), it.value().second)) {
+    QHash<QString, QMap<QString, QString>> priorityHash = m_core->sortedLicenses();
+    QStringList priorities = priorityHash.keys();
+    priorities.sort();
+    for (int i = priorities.length() - 1; i >= 0; --i) {
+        QString priority = priorities.at(i);
+        QMap<QString, QString> licenses = priorityHash.value(priority);
+
+        QStringList licenseNames = licenses.keys();
+        licenseNames.sort(Qt::CaseInsensitive);
+        for (QString licenseName : licenseNames) {
+            if (m_autoAcceptLicenses
+                    || askUserAcceptLicense(licenseName, licenses.value(licenseName))) {
                 qCDebug(QInstaller::lcInstallerInstallLog) << "License"
-                    << it.key() << "accepted by user.";
+                    << licenseName << "accepted by user.";
             } else {
                 qCDebug(QInstaller::lcInstallerInstallLog) << "License"
-                    << it.key() << "not accepted by user. Aborting.";
+                    << licenseName<< "not accepted by user. Aborting.";
                 return false;
             }
         }
