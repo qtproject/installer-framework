@@ -71,7 +71,7 @@ void RepositoryManager::setProductionRepository(const QString &repo)
 {
     QUrl url(repo);
     if (!url.isValid()) {
-        QMessageBox::critical(0, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
+        QMessageBox::critical(nullptr, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
         return;
     }
 
@@ -83,7 +83,7 @@ void RepositoryManager::setUpdateRepository(const QString &repo)
 {
     QUrl url(repo);
     if (!url.isValid()) {
-        QMessageBox::critical(0, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
+        QMessageBox::critical(nullptr, QLatin1String("Error"), QLatin1String("Specified URL is not valid"));
         return;
     }
 
@@ -181,7 +181,7 @@ void RepositoryManager::writeUpdateFile(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadWrite | QIODevice::Truncate)) {
-        QMessageBox::critical(0, QLatin1String("Error"),
+        QMessageBox::critical(nullptr, QLatin1String("Error"),
                               QString::fromLatin1("Cannot open file \"%1\" for writing: %2").arg(
                                   QDir::toNativeSeparators(fileName), file.errorString()));
         return;

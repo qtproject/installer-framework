@@ -57,7 +57,7 @@ VolumeInfo updateVolumeSizeInformation(const VolumeInfo &info)
     ULARGE_INTEGER freeBytesPerUser;
 
     VolumeInfo update = info;
-    if (GetDiskFreeSpaceExA(qPrintable(info.volumeDescriptor()), &freeBytesPerUser, &bytesTotal, NULL)) {
+    if (GetDiskFreeSpaceExA(qPrintable(info.volumeDescriptor()), &freeBytesPerUser, &bytesTotal, nullptr)) {
         update.setSize(bytesTotal.QuadPart);
         update.setAvailableSize(freeBytesPerUser.QuadPart);
     }
@@ -197,7 +197,7 @@ bool killProcess(const ProcessInfo &process, int msecs)
 
     // If we can't open the process with PROCESS_TERMINATE rights, then we give up immediately.
     HANDLE hProc = OpenProcess(SYNCHRONIZE | PROCESS_TERMINATE, false, process.id);
-    if (hProc == 0)
+    if (hProc == nullptr)
         return false;
 
     // TerminateAppEnum() posts WM_CLOSE to all windows whose PID matches your process's.

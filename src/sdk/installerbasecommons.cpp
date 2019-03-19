@@ -39,7 +39,7 @@ using namespace QInstaller;
 // -- InstallerGui
 
 InstallerGui::InstallerGui(PackageManagerCore *core)
-    : PackageManagerGui(core, 0)
+    : PackageManagerGui(core, nullptr)
 {
     ProductKeyCheck *checker = ProductKeyCheck::instance();
     foreach (const int id, checker->registeredPages()) {
@@ -71,7 +71,7 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
 // -- MaintenanceGui
 
 MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
-    : PackageManagerGui(core, 0)
+    : PackageManagerGui(core, nullptr)
 {
     ProductKeyCheck *checker = ProductKeyCheck::instance();
     foreach (const int id, checker->registeredPages()) {

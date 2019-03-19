@@ -95,7 +95,7 @@ class DynamicInstallerPage : public PackageManagerPage
     Q_PROPERTY(bool complete READ isComplete WRITE setComplete)
 
 public:
-    explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = 0)
+    explicit DynamicInstallerPage(QWidget *widget, PackageManagerCore *core = nullptr)
         : PackageManagerPage(core)
         , m_widget(widget)
     {
@@ -398,7 +398,7 @@ void PackageManagerGui::setMaxSize()
 */
 PackageManagerGui::~PackageManagerGui()
 {
-    m_core->setGuiObject(0);
+    m_core->setGuiObject(nullptr);
     delete d;
 }
 
@@ -665,7 +665,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
     wizardPageRemovalRequested(widget);
 
     int pageId = static_cast<int>(page) - 1;
-    while (QWizard::page(pageId) != 0)
+    while (QWizard::page(pageId) != nullptr)
         --pageId;
 
     // add it
@@ -679,7 +679,7 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 {
     foreach (int pageId, pageIds()) {
         DynamicInstallerPage *const dynamicPage = qobject_cast<DynamicInstallerPage*>(page(pageId));
-        if (dynamicPage == 0)
+        if (dynamicPage == nullptr)
             continue;
         if (dynamicPage->widget() != widget)
             continue;
@@ -710,7 +710,7 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
-    widget->setParent(0);
+    widget->setParent(nullptr);
     packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
 }
@@ -721,9 +721,9 @@ void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 */
 void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
 {
-    if (visible && page(p) == 0) {
+    if (visible && page(p) == nullptr) {
         setPage(p, d->m_defaultPages[p]);
-    } else if (!visible && page(p) != 0) {
+    } else if (!visible && page(p) != nullptr) {
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
@@ -753,7 +753,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
             return p;
     }
     qWarning() << "No page found for object name" << name;
-    return 0;
+    return nullptr;
 }
 
 /*!
@@ -781,7 +781,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
         return p;
     }
     qWarning() << "No page found for object name" << name;
-    return 0;
+    return nullptr;
 }
 
 /*!
@@ -1057,7 +1057,7 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
     , m_needsSettingsButton(false)
     , m_core(core)
-    , validatorComponent(0)
+    , validatorComponent(nullptr)
 {
     if (!m_core->settings().titleColor().isEmpty()) {
         m_titleColor = m_core->settings().titleColor();
@@ -1192,8 +1192,8 @@ bool PackageManagerPage::validatePage()
 void PackageManagerPage::insertWidget(QWidget *widget, const QString &siblingName, int offset)
 {
     QWidget *sibling = findChild<QWidget *>(siblingName);
-    QWidget *parent = sibling ? sibling->parentWidget() : 0;
-    QLayout *layout = parent ? parent->layout() : 0;
+    QWidget *parent = sibling ? sibling->parentWidget() : nullptr;
+    QLayout *layout = parent ? parent->layout() : nullptr;
     QBoxLayout *blayout = qobject_cast<QBoxLayout *>(layout);
 
     if (blayout) {
@@ -1264,13 +1264,13 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
-    , m_label(0)
-    , m_msgLabel(0)
-    , m_errorLabel(0)
-    , m_progressBar(0)
-    , m_packageManager(0)
-    , m_updateComponents(0)
-    , m_removeAllComponents(0)
+    , m_label(nullptr)
+    , m_msgLabel(nullptr)
+    , m_errorLabel(nullptr)
+    , m_progressBar(nullptr)
+    , m_packageManager(nullptr)
+    , m_updateComponents(nullptr)
+    , m_removeAllComponents(nullptr)
 {
     setObjectName(QLatin1String("IntroductionPage"));
     setColoredTitle(tr("Setup - %1").arg(productName()));
@@ -1347,7 +1347,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
         connect(core, &PackageManagerCore::metaJobProgress,
                 m_taskButton->progress(), &QWinTaskbarProgress::setValue);
     } else {
-        m_taskButton = 0;
+        m_taskButton = nullptr;
     }
 #endif
 }
@@ -1912,7 +1912,10 @@ void ComponentSelectionPage::entering()
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {
-        d->setupCategoryLayout();
+        d->showCategoryLayout(true);
+        core->settings().setAllowUnstableComponents(true);
+    } else {
+        d->showCategoryLayout(false);
     }
     d->showCompressedRepositoryButton();
 }
@@ -2802,7 +2805,7 @@ void PerformInstallationPage::toggleDetailsWereChanged()
 */
 FinishedPage::FinishedPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , m_commitButton(0)
+    , m_commitButton(nullptr)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
@@ -2835,7 +2838,7 @@ void FinishedPage::entering()
 
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
-        m_commitButton = 0;
+        m_commitButton = nullptr;
     }
 
     if (packageManagerCore()->isMaintainer()) {

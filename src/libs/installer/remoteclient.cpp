@@ -31,7 +31,7 @@
 
 namespace QInstaller {
 
-RemoteClient *RemoteClient::s_instance = 0;
+RemoteClient *RemoteClient::s_instance = nullptr;
 
 RemoteClient::RemoteClient()
     : d_ptr(new RemoteClientPrivate(this))
@@ -88,7 +88,7 @@ void RemoteClient::shutdown()
 void RemoteClient::destroy()
 {
     delete s_instance;
-    s_instance = 0;
+    s_instance = nullptr;
 }
 
 bool RemoteClient::isActive() const

@@ -50,7 +50,7 @@ typedef ITEMIDLIST *PIDLIST_ABSOLUTE;
 struct DeCoInitializer
 {
     DeCoInitializer()
-        : neededCoInit(CoInitialize(NULL) == S_OK)
+        : neededCoInit(CoInitialize(nullptr) == S_OK)
     {
     }
     ~DeCoInitializer()
@@ -100,12 +100,12 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     // CoInitialize cleanup object
     DeCoInitializer _;
 
-    IUnknown *iunkn = NULL;
+    IUnknown *iunkn = nullptr;
 
     if (fileName.toLower().startsWith(QLatin1String("http:"))
         || fileName.toLower().startsWith(QLatin1String("ftp:"))) {
-        IUniformResourceLocator *iurl = NULL;
-        if (FAILED(CoCreateInstance(CLSID_InternetShortcut, NULL, CLSCTX_INPROC_SERVER,
+        IUniformResourceLocator *iurl = nullptr;
+        if (FAILED(CoCreateInstance(CLSID_InternetShortcut, nullptr, CLSCTX_INPROC_SERVER,
                                     IID_IUniformResourceLocator, (LPVOID*)&iurl))) {
             return false;
         }

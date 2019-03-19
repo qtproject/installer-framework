@@ -49,17 +49,13 @@ QString CreateDesktopEntryOperation::absoluteFileName()
     if (hasValue(QLatin1String("directory")))
         return QDir(value(QLatin1String("directory")).toString()).absoluteFilePath(filename);
 
-    QStringList XDG_DATA_DIRS = QString::fromLocal8Bit(qgetenv("XDG_DATA_DIRS"))
-                                                        .split(QLatin1Char(':'),
-        QString::SkipEmptyParts);
     QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
 
-    XDG_DATA_DIRS.push_back(QLatin1String("/usr/share")); // default path
     XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default path
 
-    const QStringList directories = XDG_DATA_DIRS + XDG_DATA_HOME;
+    const QStringList directories = XDG_DATA_HOME;
     QString directory;
     for (QStringList::const_iterator it = directories.begin(); it != directories.end(); ++it) {
         if (it->isEmpty())

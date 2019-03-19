@@ -67,7 +67,7 @@ QWidget *PasswordDelegate::createEditor(QWidget *parent, const QStyleOptionViewI
     const
 {
     if (m_disabledEditor)
-        return 0;
+        return nullptr;
 
     QLineEdit *lineEdit = new QLineEdit(parent);
     lineEdit->setEchoMode(m_showPasswords ? QLineEdit::Normal : QLineEdit::Password);

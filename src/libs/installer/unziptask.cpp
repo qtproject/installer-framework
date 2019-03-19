@@ -89,7 +89,7 @@ public:
             m_futureInterface->waitForResume();
 
         COM_TRY_BEGIN
-        *outStream = 0;
+        *outStream = nullptr;
         m_currentIndex = index;
         if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
             return E_FAIL;
@@ -160,8 +160,8 @@ public:
         const bool writeCreationTime = GetTime(kpidCTime, &creationTime);
         const bool writeModificationTime = GetTime(kpidMTime, &modificationTime);
 
-        m_outFileStream->SetTime((writeCreationTime ? &creationTime : NULL),
-            (writeAccessTime ? &accessTime : NULL), (writeModificationTime ? &modificationTime : NULL));
+        m_outFileStream->SetTime((writeCreationTime ? &creationTime : nullptr),
+            (writeAccessTime ? &accessTime : nullptr), (writeModificationTime ? &modificationTime : nullptr));
 
         m_totalUnpacked += m_outFileStream->ProcessedSize;
         m_outFileStream->Close();

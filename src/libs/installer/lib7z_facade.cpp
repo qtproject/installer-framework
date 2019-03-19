@@ -64,7 +64,7 @@
 #include <memory>
 
 #ifdef Q_OS_WIN
-HINSTANCE g_hInstance = 0;
+HINSTANCE g_hInstance = nullptr;
 
 # define S_IFMT 00170000
 # define S_IFLNK 0120000
@@ -353,16 +353,16 @@ static quint32 getUInt32Property(IInArchive *archive, int index, int propId, qui
 static QFile::Permissions getPermissions(IInArchive *archive, int index, bool *hasPermissions)
 {
     quint32 attributes = getUInt32Property(archive, index, kpidAttrib, 0);
-    QFile::Permissions permissions = 0;
+    QFile::Permissions permissions = nullptr;
     if (attributes & FILE_ATTRIBUTE_UNIX_EXTENSION) {
-        if (hasPermissions != 0)
+        if (hasPermissions != nullptr)
             *hasPermissions = true;
         // filter the Unix permissions
         attributes = (attributes >> 16) & 0777;
         permissions |= static_cast<QFile::Permissions>((attributes & 0700) << 2);  // owner rights
         permissions |= static_cast<QFile::Permissions>((attributes & 0070) << 1);  // group
         permissions |= static_cast<QFile::Permissions>((attributes & 0007) << 0);  // and world rights
-    } else if (hasPermissions != 0) {
+    } else if (hasPermissions != nullptr) {
         *hasPermissions = false;
     }
     return permissions;
@@ -536,7 +536,7 @@ QVector<File> listArchive(QFileDevice *archive)
                 f.archiveIndex.setY(item);
                 f.path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 Archive_IsItem_Folder(arch, item, f.isDirectory);
-                f.permissions = getPermissions(arch, item, 0);
+                f.permissions = getPermissions(arch, item, nullptr);
                 getDateTimeProperty(arch, item, kpidMTime, &(f.utcTime));
                 f.uncompressedSize = getUInt64Property(arch, item, kpidSize, 0);
                 f.compressedSize = getUInt64Property(arch, item, kpidPackSize, 0);
@@ -579,7 +579,7 @@ STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 *c)
 // CDecoder::CodeSpec extracted content to an output stream.
 STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 /*askExtractMode*/)
 {
-    *outStream = 0;
+    *outStream = nullptr;
     if (targetDir.isEmpty())
         return E_FAIL;
 
@@ -790,14 +790,14 @@ HRESULT UpdateCallback::OpenFileError(const wchar_t*, DWORD)
 
 HRESULT UpdateCallback::CryptoGetTextPassword2(Int32 *passwordIsDefined, BSTR *password)
 {
-    *password = 0;
+    *password = nullptr;
     *passwordIsDefined = false;
     return S_OK;
 }
 
 HRESULT UpdateCallback::CryptoGetTextPassword(BSTR *password)
 {
-    *password = 0;
+    *password = nullptr;
     return E_NOTIMPL;
 }
 

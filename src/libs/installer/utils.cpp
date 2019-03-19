@@ -85,16 +85,16 @@ bool QInstaller::startDetached(const QString &program, const QStringList &argume
     bool success = false;
 #ifdef Q_OS_WIN
     PROCESS_INFORMATION pinfo;
-    STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), 0, 0, 0,
+    STARTUPINFOW startupInfo = { sizeof(STARTUPINFO), nullptr, nullptr, nullptr,
         static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
         static_cast<ulong>(CW_USEDEFAULT), static_cast<ulong>(CW_USEDEFAULT),
-        0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, 0, 0, 0, 0
+        0, 0, 0, STARTF_USESHOWWINDOW, SW_HIDE, 0, nullptr, nullptr, nullptr, nullptr
     };  // That's the difference over QProcess::startDetached(): STARTF_USESHOWWINDOW, SW_HIDE.
 
     const QString commandline = QInstaller::createCommandline(program, arguments);
-    if (CreateProcessW(0, (wchar_t*) commandline.utf16(),
-        0, 0, false, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE,
-        0, workingDirectory.isEmpty() ? 0 : (wchar_t*) workingDirectory.utf16(),
+    if (CreateProcessW(nullptr, (wchar_t*) commandline.utf16(),
+        nullptr, nullptr, false, CREATE_UNICODE_ENVIRONMENT | CREATE_NEW_CONSOLE,
+        nullptr, workingDirectory.isEmpty() ? nullptr : (wchar_t*) workingDirectory.utf16(),
         &startupInfo, &pinfo)) {
         success = true;
         CloseHandle(pinfo.hThread);
@@ -244,7 +244,7 @@ bool QInstaller::VerboseWriter::flush(VerboseWriterOutput *output)
 
     if (output->write(logFileName, QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text, buffer.data())) {
         preFileBuffer.close();
-        stream.setDevice(0);
+        stream.setDevice(nullptr);
         return true;
     }
     return false;
@@ -341,7 +341,7 @@ static QVector<Char*> qWinCmdLine(Char *cmdParam, int length, int &argc)
             argv[argc++] = start;
         }
     }
-    argv[argc] = 0;
+    argv[argc] = nullptr;
 
     return argv;
 }
@@ -419,14 +419,14 @@ QString QInstaller::createCommandline(const QString &program, const QStringList 
 QString QInstaller::windowsErrorString(int errorCode)
 {
     QString ret;
-    wchar_t *string = 0;
+    wchar_t *string = nullptr;
     FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
+        nullptr,
         errorCode,
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         (LPWSTR) &string,
         0,
-        NULL);
+        nullptr);
     ret = QString::fromWCharArray(string);
     LocalFree((HLOCAL) string);
 

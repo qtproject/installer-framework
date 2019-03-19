@@ -650,35 +650,35 @@
         <translation>байт(ов)</translation>
     </message>
     <message>
-        <source>KiB</source>
+        <source>KB</source>
         <translation>КБ</translation>
     </message>
     <message>
-        <source>MiB</source>
+        <source>MB</source>
         <translation>МБ</translation>
     </message>
     <message>
-        <source>GiB</source>
+        <source>GB</source>
         <translation>ГБ</translation>
     </message>
     <message>
-        <source>TiB</source>
+        <source>TB</source>
         <translation>ТБ</translation>
     </message>
     <message>
-        <source>PiB</source>
+        <source>PB</source>
         <translation>ПБ</translation>
     </message>
     <message>
-        <source>EiB</source>
+        <source>EB</source>
         <translation>ЭБ</translation>
     </message>
     <message>
-        <source>ZiB</source>
+        <source>ZB</source>
         <translation>ЗБ</translation>
     </message>
     <message>
-        <source>YiB</source>
+        <source>YB</source>
         <translation>ИБ</translation>
     </message>
     <message>

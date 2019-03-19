@@ -135,9 +135,10 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
     return arguments;
 }
 
-static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode, QString *displayName = 0)
+static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
+                                         QString *displayName = nullptr, bool *preselected = nullptr,
+                                         QString *tooltip = nullptr)
 {
-    qDebug()<<__FUNCTION__;
     QSet<Repository> set;
     while (reader.readNextStartElement()) {
         if (reader.name() == QLatin1String("DisplayName"))  {
@@ -169,6 +170,10 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
             if (displayName && !displayName->isEmpty())
                 repo.setArchiveName(*displayName);
             set.insert(repo);
+        } else if (reader.name() == QLatin1String("Tooltip")) {
+            *tooltip = reader.readElementText();
+        }  else if (reader.name() == QLatin1String("Preselected")) {
+            *preselected = (reader.readElementText() == QLatin1String("true") ? true : false);
         } else {
             raiseError(reader, QString::fromLatin1("Unexpected element \"%1\".").arg(reader.name().toString()),
                 parseMode);
@@ -190,8 +195,13 @@ static QSet<RepositoryCategory> readRepositoryCategories(QXmlStreamReader &reade
         if (reader.name() == QLatin1String("RemoteRepositories")) {
             RepositoryCategory archiveRepo;
             QString displayName;
-            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode, &displayName));
+            QString tooltip;
+            bool preselected = false;
+            archiveRepo.setRepositories(readRepositories(reader, isDefault, parseMode,
+                                                         &displayName, &preselected, &tooltip));
             archiveRepo.setDisplayName(displayName);
+            archiveRepo.setTooltip(tooltip);
+            archiveRepo.setEnabled(preselected);
             archiveSet.insert(archiveRepo);
         } else if (reader.name() == QLatin1String("RepositoryCategoryDisplayname")) {
             *repositoryCategoryName = reader.readElementText();
@@ -584,6 +594,16 @@ QSet<RepositoryCategory> Settings::repositoryCategories() const
     return variantListToSet<RepositoryCategory>(d->m_data.values(scRepositoryCategories));
 }
 
+QMap<QString, RepositoryCategory> Settings::organizedRepositoryCategories() const
+{
+    QSet<RepositoryCategory> categories = repositoryCategories();
+    QMap<QString, RepositoryCategory> map;
+    foreach (const RepositoryCategory &category, categories) {
+        map.insert(category.displayname(), category);
+    }
+    return map;
+}
+
 void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
 {
     d->m_data.remove(scRepositories);
@@ -812,7 +832,7 @@ void Settings::setSaveDefaultRepositories(bool save)
 QString Settings::repositoryCategoryDisplayName() const
 {
     QString displayName = d->m_data.value(QLatin1String(scRepositoryCategoryDisplayName)).toString();
-    return displayName.isEmpty() ? tr("Package categories") : displayName;
+    return displayName.isEmpty() ? tr("Show package categories") : displayName;
 }
 
 void Settings::setRepositoryCategoryDisplayName(const QString& name)

@@ -64,6 +64,7 @@ public:
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
     void setupCategoryLayout();
+    void showCategoryLayout(bool show);
     void updateTreeView();
 
 public slots:
@@ -71,7 +72,7 @@ public slots:
     void selectAll();
     void deselectAll();
     void checkboxStateChanged();
-    void enableRepositoryCategory(int index, bool enable);
+    void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();
     void customButtonClicked(int which);

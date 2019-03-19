@@ -50,6 +50,9 @@ public:
     QString displayname() const;
     void setDisplayName(const QString &displayname);
 
+    QString tooltip() const;
+    void setTooltip(const QString &tooltip);
+
     QSet<Repository> repositories() const;
     void setRepositories(const QSet<Repository> repositories);
     void addRepository(const Repository repository);
@@ -68,6 +71,7 @@ public:
 private:
     QVariantHash m_data;
     QString m_displayname;
+    QString m_tooltip;
     bool m_enabled;
 };
 

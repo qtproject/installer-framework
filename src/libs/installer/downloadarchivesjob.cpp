@@ -49,7 +49,7 @@ using namespace KDUpdater;
 DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     : Job(core)
     , m_core(core)
-    , m_downloader(0)
+    , m_downloader(nullptr)
     , m_archivesDownloaded(0)
     , m_archivesToDownloadCount(0)
     , m_canceled(false)
@@ -93,7 +93,7 @@ void DownloadArchivesJob::doStart()
 void DownloadArchivesJob::doCancel()
 {
     m_canceled = true;
-    if (m_downloader != 0)
+    if (m_downloader != nullptr)
         m_downloader->cancelDownload();
 }
 
@@ -130,7 +130,7 @@ void DownloadArchivesJob::fetchNextArchiveHash()
 
 void DownloadArchivesJob::finishedHashDownload()
 {
-    Q_ASSERT(m_downloader != 0);
+    Q_ASSERT(m_downloader != nullptr);
 
     QFile sha1HashFile(m_downloader->downloadedFileName());
     if (sha1HashFile.open(QFile::ReadOnly)) {
@@ -156,7 +156,7 @@ void DownloadArchivesJob::fetchNextArchive()
         return;
     }
 
-    if (m_downloader != 0)
+    if (m_downloader != nullptr)
         m_downloader->deleteLater();
 
     m_downloader = setupDownloader(QString(), m_core->value(scUrlQueryString));
@@ -202,7 +202,7 @@ void DownloadArchivesJob::timerEvent(QTimerEvent *event)
 */
 void DownloadArchivesJob::registerFile()
 {
-    Q_ASSERT(m_downloader != 0);
+    Q_ASSERT(m_downloader != nullptr);
 
     if (m_canceled)
         return;
@@ -259,7 +259,7 @@ void DownloadArchivesJob::finishWithError(const QString &error)
 {
     const FileDownloader *const dl = qobject_cast<const FileDownloader*> (sender());
     const QString msg = tr("Cannot fetch archives: %1\nError while loading %2");
-    if (dl != 0)
+    if (dl != nullptr)
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, dl->url().toString()));
     else
         emitFinishedWithError(QInstaller::DownloadError, msg.arg(error, m_downloader->url().toString()));
@@ -267,7 +267,7 @@ void DownloadArchivesJob::finishWithError(const QString &error)
 
 KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &suffix, const QString &queryString)
 {
-    KDUpdater::FileDownloader *downloader = 0;
+    KDUpdater::FileDownloader *downloader = nullptr;
     const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
     const Component *const component = m_core->componentByName(PackageManagerCore::checkableName(QFileInfo(fi.path()).fileName()));
     if (component) {

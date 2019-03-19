@@ -107,7 +107,7 @@ using namespace QInstaller;
             Reports non-critical errors.
 */
 
-MessageBoxHandler *MessageBoxHandler::m_instance = 0;
+MessageBoxHandler *MessageBoxHandler::m_instance = nullptr;
 
 MessageBoxHandler::MessageBoxHandler(QObject *parent)
     : QObject(parent)
@@ -120,7 +120,7 @@ MessageBoxHandler::MessageBoxHandler(QObject *parent)
 */
 MessageBoxHandler *MessageBoxHandler::instance()
 {
-    if (m_instance == 0)
+    if (m_instance == nullptr)
         m_instance = new MessageBoxHandler(qApp);
     return m_instance;
 }
@@ -131,8 +131,8 @@ MessageBoxHandler *MessageBoxHandler::instance()
 */
 QWidget *MessageBoxHandler::currentBestSuitParent()
 {
-    if (qobject_cast<QApplication*> (qApp) == 0)
-        return 0;
+    if (qobject_cast<QApplication*> (qApp) == nullptr)
+        return nullptr;
 
     if (qApp->activeModalWidget())
         return qApp->activeModalWidget();
@@ -363,7 +363,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
 {
     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
     QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
-    Q_ASSERT(buttonBox != 0);
+    Q_ASSERT(buttonBox != nullptr);
 
     uint mask = QMessageBox::FirstButton;
     while (mask <= QMessageBox::LastButton) {
@@ -404,7 +404,7 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     qDebug().nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
                        << " message box " << identifier << ": " << title << ", " << text;
 
-    if (qobject_cast<QApplication*> (qApp) == 0)
+    if (qobject_cast<QApplication*> (qApp) == nullptr)
         return defaultButton;
 
     if (m_automaticAnswers.contains(identifier))

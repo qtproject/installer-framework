@@ -76,18 +76,18 @@ using namespace QInstaller;
 */
 PerformInstallationForm::PerformInstallationForm(QObject *parent)
     : QObject(parent)
-    , m_progressBar(0)
-    , m_progressLabel(0)
-    , m_detailsButton(0)
-    , m_detailsBrowser(0)
-    , m_updateTimer(0)
+    , m_progressBar(nullptr)
+    , m_progressLabel(nullptr)
+    , m_detailsButton(nullptr)
+    , m_detailsBrowser(nullptr)
+    , m_updateTimer(nullptr)
 {
 #ifdef Q_OS_WIN
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
         m_taskButton = new QWinTaskbarButton(this);
         m_taskButton->progress()->setVisible(true);
     } else {
-        m_taskButton = 0;
+        m_taskButton = nullptr;
     }
 #endif
 }

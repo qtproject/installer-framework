@@ -61,8 +61,8 @@ public:
 TabController::Private::Private()
     : m_init(false)
     , m_networkSettingsChanged(false)
-    , m_gui(0)
-    , m_core(0)
+    , m_gui(nullptr)
+    , m_core(nullptr)
 {
 }
 

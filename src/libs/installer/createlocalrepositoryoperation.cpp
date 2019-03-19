@@ -251,7 +251,7 @@ bool CreateLocalRepositoryOperation::performOperation()
 
         // start to read the binary layout
         ResourceCollectionManager manager;
-        BinaryContent::readBinaryContent(&file, 0, &manager, 0, BinaryContent::MagicCookie);
+        BinaryContent::readBinaryContent(&file, nullptr, &manager, 0, BinaryContent::MagicCookie);
 
         emit progressChanged(0.65);
 

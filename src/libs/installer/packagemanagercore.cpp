@@ -392,7 +392,7 @@ using namespace QInstaller;
 
 
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
-static QFont *sVirtualComponentsFont = 0;
+static QFont *sVirtualComponentsFont = nullptr;
 Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
 
 static bool sNoForceInstallation = false;
@@ -697,7 +697,7 @@ void PackageManagerCore::rollBackInstallation()
     // reregister all the undo operations with the new size to the ProgressCoordinator
     foreach (Operation *const operation, d->m_performedOperationsCurrentSession) {
         QObject *const operationObject = dynamic_cast<QObject*> (operation);
-        if (operationObject != 0) {
+        if (operationObject != nullptr) {
             const QMetaObject* const mo = operationObject->metaObject();
             if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
                 ProgressCoordinator::instance()->registerPartProgress(operationObject,
@@ -939,7 +939,7 @@ PackageManagerCore::~PackageManagerCore()
 
     QMutexLocker _(globalVirtualComponentsFontMutex());
     delete sVirtualComponentsFont;
-    sVirtualComponentsFont = 0;
+    sVirtualComponentsFont = nullptr;
 }
 
 /* static */
@@ -1220,17 +1220,17 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
                     const QString name = update->data(scName).toString();
                     if (!installedPackages.contains(name)) {
                         success = false;
-                        break;  // unusual, the maintenance tool should always be available
+                        continue;  // unusual, the maintenance tool should always be available
                     }
 
                     const LocalPackage localPackage = installedPackages.value(name);
                     const QString updateVersion = update->data(scVersion).toString();
                     if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
-                        break;  // remote version equals or is less than the installed maintenance tool
+                        continue;  // remote version equals or is less than the installed maintenance tool
 
                     const QDate updateDate = update->data(scReleaseDate).toDate();
                     if (localPackage.lastUpdateDate >= updateDate)
-                        break;  // remote release date equals or is less than the installed maintenance tool
+                        continue;  // remote release date equals or is less than the installed maintenance tool
 
                     success = false;
                     break;  // we found a newer version of the maintenance tool
@@ -1549,7 +1549,7 @@ Component *PackageManagerCore::componentByName(const QString &name) const
 Component *PackageManagerCore::componentByName(const QString &name, const QList<Component *> &components)
 {
     if (name.isEmpty())
-        return 0;
+        return nullptr;
 
     QString fixedVersion;
     QString fixedName;
@@ -1561,7 +1561,7 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
             return component;
     }
 
-    return 0;
+    return nullptr;
 }
 
 /*!

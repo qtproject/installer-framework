@@ -53,7 +53,7 @@ static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 
 MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
-    , m_core(0)
+    , m_core(nullptr)
     , m_addCompressedPackages(false)
     , m_downloadableChunkSize(1000)
     , m_taskNumber(0)
@@ -102,6 +102,8 @@ Repository MetadataJob::repositoryForDirectory(const QString &directory) const
 
 void MetadataJob::doStart()
 {
+    setError(Job::NoError);
+    setErrorString(QString());
     if (!m_core) {
         emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
@@ -606,7 +608,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     item.insert(TaskRole::Checksum, packageHash.toLatin1());
                     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                     item.insert(TaskRole::Name, packageName);
+
                     m_packages.append(item);
+                } else {
+                    QString fileName = metadata.directory + QLatin1Char('/') + packageName;
+                    QDir directory(fileName);
+                    if (!directory.exists()) {
+                        directory.mkdir(fileName);
+                    }
                 }
             }
         }
@@ -691,11 +700,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 if (tmpRepositories.count() > 0) {
                     s.addTemporaryRepositories(tmpRepositories, true);
                     QFile::remove(result.target());
+                    m_metaFromDefaultRepositories.clear();
                     return XmlDownloadRetry;
                 }
             } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
                 if (m_core->isMaintainer())
                     m_core->writeMaintenanceConfigFiles();
+                m_metaFromDefaultRepositories.clear();
                 QFile::remove(result.target());
                 return XmlDownloadRetry;
             }

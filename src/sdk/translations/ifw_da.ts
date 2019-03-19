@@ -669,36 +669,36 @@
         <translation>byte</translation>
     </message>
     <message>
-        <source>KiB</source>
-        <translation>KiB</translation>
+        <source>KB</source>
+        <translation>KB</translation>
     </message>
     <message>
-        <source>MiB</source>
-        <translation>MiB</translation>
+        <source>MB</source>
+        <translation>MB</translation>
     </message>
     <message>
-        <source>GiB</source>
-        <translation>GiB</translation>
+        <source>GB</source>
+        <translation>GB</translation>
     </message>
     <message>
-        <source>TiB</source>
-        <translation>TiB</translation>
+        <source>TB</source>
+        <translation>TB</translation>
     </message>
     <message>
-        <source>PiB</source>
-        <translation>PiB</translation>
+        <source>PB</source>
+        <translation>PB</translation>
     </message>
     <message>
-        <source>EiB</source>
-        <translation>EiB</translation>
+        <source>EB</source>
+        <translation>EB</translation>
     </message>
     <message>
-        <source>ZiB</source>
-        <translation>ZiB</translation>
+        <source>ZB</source>
+        <translation>ZB</translation>
     </message>
     <message>
-        <source>YiB</source>
-        <translation>YiB</translation>
+        <source>YB</source>
+        <translation>YB</translation>
     </message>
     <message>
         <source>Cannot remove file &quot;%1&quot;: %2</source>

@@ -28,7 +28,7 @@ private slots:
 
     void testMissingPackageManagerCore()
     {
-        FakeStopProcessForUpdateOperation op(0);
+        FakeStopProcessForUpdateOperation op(nullptr);
         op.setArguments(QStringList() << QFileInfo(QCoreApplication::applicationFilePath()).fileName());
 
         QVERIFY(op.testOperation());

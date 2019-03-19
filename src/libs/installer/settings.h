@@ -116,6 +116,7 @@ public:
 
     QSet<Repository> defaultRepositories() const;
     QSet<RepositoryCategory> repositoryCategories() const;
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
     void setDefaultRepositories(const QSet<Repository> &repositories);
     void addDefaultRepositories(const QSet<Repository> &repositories);
     void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);

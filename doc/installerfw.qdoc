@@ -333,6 +333,14 @@
             \li Set to \c false if default repositories \c <RemoteRepositories> should not be saved to \e {MaintenanceToolName}.ini.
                 By default default repositories are saved. Not saving the repositories means than when you run  \e maintenancetool
                 there are no default repositories in use.
+         \row
+            \li AllowUnstableComponents
+            \li Set to \c true if other components are allowed to be installed
+                although there are unstable components. A component is \e unstable
+                if it is missing a dependency, has errors in scripts, and so on.
+                Unstable components are grayed in the component tree, and therefore
+                cannot be selected. By default, the value is \c false  which means
+                that the installation will be aborted if unstable components are found.
 
     \endtable
 
@@ -1122,15 +1130,20 @@
 
     The \c <RepositoryCategory> element in the installer configuration file
     (config.xml) can contain a list of several \c <RemoteRepositories> elements. Each \c <RemoteRepositories>
-    element within the \c <RepositoryCagetory> element is considered a category, which has a \c <DisplayName> and can
-    contain several \c <Repository> elements. Repository categories are shown in the component selection page,
+    element within the \c <RepositoryCagetory> element is considered a category. Each catecory can have
+    a \c <DisplayName>, a \c <Tooltip>, a \c <Preselected> element and several \c <Repository> elements.
+    Repository categories are shown in the component selection page,
     on the left side of the component selection widget:
 
     \image ifw-repository-categories.png "Component selection Page"
 
     By default, only repositories with no category are shown in the component selection widget. Checking one or
     several repositories and pressing \uicontrol Fetch will update the widget to show content also
-    from the selected categorized repositories.
+    from the selected categorized repositories. Components in the repository
+    categories are marked as \e unstable meaning that you can install other
+    components although some components have missing dependencies, script
+    errors and so on. For more information about \e unstable components, see
+    \l {Summary of Configuration File Elements}.
 
     Example of creating a repository category:
 
@@ -1138,6 +1151,8 @@
     <RepositoryCategories>
         <RemoteRepositories>
              <Displayname>Category 1</Displayname>
+             <Preselected>true</Preselected>
+             <Tooltip>Tooltip for category 1</Tooltip>
              <Repository>
                      <Url>http://www.example.com/packages</Url>
                      <Enabled>1</Enabled>

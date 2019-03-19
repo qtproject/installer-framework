@@ -193,17 +193,19 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Fetch"));
+    QPushButton *fetchCategoryButton = new QPushButton(tr("Refresh"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 
-    foreach (RepositoryCategory repository, m_core->settings().repositoryCategories()) {
+    foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setObjectName(repository.displayname());
+        checkBox->setChecked(repository.isEnabled());
         connect(checkBox, &QCheckBox::stateChanged, this,
                 &ComponentSelectionPagePrivate::checkboxStateChanged);
         checkBox->setText(repository.displayname());
+        checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
 
@@ -211,6 +213,15 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     vLayout->addWidget(fetchCategoryButton);
     vLayout->addStretch();
     m_mainHLayout->insertWidget(0, m_categoryWidget);
+}
+
+void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
+{
+    if (show) {
+        setupCategoryLayout();
+    }
+    if (m_categoryWidget)
+        m_categoryWidget->setVisible(show);
 }
 
 void ComponentSelectionPagePrivate::updateTreeView()
@@ -315,8 +326,17 @@ void ComponentSelectionPagePrivate::checkboxStateChanged()
     }
 }
 
-void ComponentSelectionPagePrivate::enableRepositoryCategory(int index, bool enable) {
-    RepositoryCategory repoCategory = m_core->settings().repositoryCategories().toList().at(index);
+void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repositoryName, bool enable)
+{
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories = m_core->settings().organizedRepositoryCategories();
+
+    QMap<QString, RepositoryCategory>::iterator i = organizedRepositoryCategories.find(repositoryName);
+    RepositoryCategory repoCategory;
+    while (i != organizedRepositoryCategories.end() && i.key() == repositoryName) {
+        repoCategory = i.value();
+        i++;
+    }
+
     RepositoryCategory replacement = repoCategory;
     replacement.setEnabled(enable);
     QSet<RepositoryCategory> tmpRepoCategories = m_core->settings().repositoryCategories();
@@ -334,10 +354,15 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
                                                        QSizePolicy::Expanding);
         m_treeViewVLayout->addSpacerItem(verticalSpacer2);
         m_mainHLayout->removeItem(m_descriptionVLayout);
+        //Hide next button during category fetch
+        QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
+        b->setEnabled(!show);
     } else {
         QSpacerItem *item = m_treeViewVLayout->spacerItem();
         m_treeViewVLayout->removeItem(item);
         m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+        //Call completeChanged() to determine if NextButton should be shown or not after category fetch.
+        q->completeChanged();
     }
     if (m_categoryWidget)
         m_categoryWidget->setDisabled(show);
@@ -350,8 +375,6 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     m_uncheckAll->setVisible(!show);
     m_descriptionLabel->setVisible(!show);
     m_sizeLabel->setVisible(!show);
-    QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
-    b->setEnabled(!show);
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
@@ -365,7 +388,7 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
     QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
     for (int i = 0; i < checkboxes.count(); i++) {
         checkbox = checkboxes.at(i);
-        enableRepositoryCategory(i, checkbox->isChecked());
+        enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
     }
 
     if (!m_core->fetchRemotePackagesTree()) {
@@ -380,7 +403,7 @@ void ComponentSelectionPagePrivate::customButtonClicked(int which)
     if (QWizard::WizardButton(which) == QWizard::CustomButton2) {
         QString defaultDownloadDirectory =
             QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QStringList fileNames = QFileDialog::getOpenFileNames(NULL,
+        QStringList fileNames = QFileDialog::getOpenFileNames(nullptr,
             ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
             QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
 

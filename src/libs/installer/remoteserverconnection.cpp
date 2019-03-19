@@ -44,10 +44,10 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
                                                QObject *parent)
     : QThread(parent)
     , m_socketDescriptor(socketDescriptor)
-    , m_process(0)
-    , m_engine(0)
+    , m_process(nullptr)
+    , m_engine(nullptr)
     , m_authorizationKey(key)
-    , m_signalReceiver(0)
+    , m_signalReceiver(nullptr)
 {
     setObjectName(QString::fromLatin1("RemoteServerConnection(%1)").arg(socketDescriptor));
 }
@@ -146,10 +146,10 @@ void RemoteServerConnection::run()
                 } else if (type == QLatin1String(Protocol::QProcess)) {
                     m_signalReceiver->m_receivedSignals.clear();
                     m_process->deleteLater();
-                    m_process = 0;
+                    m_process = nullptr;
                 } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
                     delete m_engine;
-                    m_engine = 0;
+                    m_engine = nullptr;
                 }
                 return;
             }

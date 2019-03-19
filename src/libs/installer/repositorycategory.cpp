@@ -58,7 +58,8 @@ RepositoryCategory::RepositoryCategory()
     Constructs a new category by using all fields of the given category \a other.
 */
 RepositoryCategory::RepositoryCategory(const RepositoryCategory &other)
-    : m_displayname(other.m_displayname), m_data(other.m_data), m_enabled(other.m_enabled)
+    : m_displayname(other.m_displayname), m_data(other.m_data), m_enabled(other.m_enabled),
+      m_tooltip(other.m_tooltip)
 {
     registerMetaType();
 }
@@ -84,6 +85,16 @@ QString RepositoryCategory::displayname() const
 void RepositoryCategory::setDisplayName(const QString &displayname)
 {
     m_displayname = displayname;
+}
+
+QString RepositoryCategory::tooltip() const
+{
+    return m_tooltip;
+}
+
+void RepositoryCategory::setTooltip(const QString &tooltip)
+{
+    m_tooltip = tooltip;
 }
 
 /*!

@@ -546,7 +546,7 @@ QT_END_NAMESPACE
 static int runRcc(const QStringList &args)
 {
     const int argc = args.count();
-    QVector<char*> argv(argc, 0);
+    QVector<char*> argv(argc, nullptr);
     for (int i = 0; i < argc; ++i)
         argv[i] = qstrdup(qPrintable(args[i]));
 

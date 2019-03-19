@@ -48,7 +48,7 @@ namespace QInstaller {
 QAbstractFileEngine *BinaryFormatEngineHandler::create(const QString &fileName) const
 {
     return fileName.startsWith(QLatin1String("installer://"), Qt::CaseInsensitive )
-        ? new BinaryFormatEngine(m_resources, fileName) : 0;
+        ? new BinaryFormatEngine(m_resources, fileName) : nullptr;
 }
 
 /*!
