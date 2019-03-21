@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2019 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -601,18 +601,18 @@ int KDUpdater::compareVersion(const QString &v1, const QString &v2)
         bool v2_ok = false;
 
         if (index == v1_comps.count() && index < v2_comps.count()) {
-            v2_comps.at(index).toInt(&v2_ok);
+            v2_comps.at(index).toLongLong(&v2_ok);
             return v2_ok ? -1 : +1;
         }
         if (index < v1_comps.count() && index == v2_comps.count()) {
-            v1_comps.at(index).toInt(&v1_ok);
+            v1_comps.at(index).toLongLong(&v1_ok);
             return v1_ok ? +1 : -1;
         }
         if (index >= v1_comps.count() || index >= v2_comps.count())
             break;
 
-        int v1_comp = v1_comps.at(index).toInt(&v1_ok);
-        int v2_comp = v2_comps.at(index).toInt(&v2_ok);
+        qlonglong v1_comp = v1_comps.at(index).toLongLong(&v1_ok);
+        qlonglong v2_comp = v2_comps.at(index).toLongLong(&v2_ok);
 
         if (!v1_ok) {
             if (v1_comps.at(index) == QLatin1String("x"))
