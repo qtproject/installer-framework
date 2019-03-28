@@ -37,6 +37,7 @@
 
 class QTreeView;
 class QLabel;
+class QScrollArea;
 class QPushButton;
 class QGroupBox;
 class QListWidgetItem;
@@ -87,6 +88,7 @@ private:
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
     QLabel *m_sizeLabel;
+    QScrollArea *m_descriptionScrollArea;
     QLabel *m_descriptionLabel;
     QVBoxLayout *m_descriptionVLayout;
     QPushButton *m_checkAll;

@@ -37,6 +37,7 @@
 
 #include <QTreeView>
 #include <QLabel>
+#include <QScrollArea>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QProgressBar>
@@ -69,17 +70,22 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_descriptionVLayout = new QVBoxLayout;
     m_descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
 
+    m_descriptionScrollArea = new QScrollArea(q);
+    m_descriptionScrollArea->setWidgetResizable(true);
+    m_descriptionScrollArea->setFrameShape(QFrame::NoFrame);
+    m_descriptionScrollArea->setObjectName(QLatin1String("DescriptionScrollArea"));
+
     m_descriptionLabel = new QLabel(q);
     m_descriptionLabel->setWordWrap(true);
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-    m_descriptionVLayout->addWidget(m_descriptionLabel);
+    m_descriptionLabel->setAlignment(Qt::AlignTop);
+    m_descriptionScrollArea->setWidget(m_descriptionLabel);
+    m_descriptionVLayout->addWidget(m_descriptionScrollArea);
 
     m_sizeLabel = new QLabel(q);
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     m_descriptionVLayout->addWidget(m_sizeLabel);
-    m_descriptionVLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-        QSizePolicy::MinimumExpanding));
 
     m_treeViewVLayout = new QVBoxLayout;
     m_treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
