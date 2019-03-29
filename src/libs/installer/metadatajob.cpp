@@ -619,13 +619,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 }
             }
         }
-        if (metadata.repository.archivename().isEmpty()) {
+        if (metadata.repository.categoryname().isEmpty()) {
             m_metaFromDefaultRepositories.insert(metadata.directory, metadata);
         } else {
             //Hash metadata to help checking if meta for repository is already fetched
             ArchiveMetadata archiveMetadata;
             archiveMetadata.metaData = metadata;
-            m_fetchedArchive.insertMulti(metadata.repository.archivename(), archiveMetadata);
+            m_fetchedArchive.insertMulti(metadata.repository.categoryname(), archiveMetadata);
             // Hash for faster lookups
             m_metaFromArchive.insert(metadata.directory, metadata);
         }

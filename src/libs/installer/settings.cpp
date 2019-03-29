@@ -168,7 +168,7 @@ static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefaul
                 }
             }
             if (displayName && !displayName->isEmpty())
-                repo.setArchiveName(*displayName);
+                repo.setCategoryName(*displayName);
             set.insert(repo);
         } else if (reader.name() == QLatin1String("Tooltip")) {
             *tooltip = reader.readElementText();
