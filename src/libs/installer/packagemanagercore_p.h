@@ -247,6 +247,7 @@ private:
     bool m_updateSourcesAdded;
     qint64 m_magicBinaryMarker;
     bool m_componentsToInstallCalculated;
+    bool m_foundEssentialUpdate;
 
     mutable ScriptEngine *m_componentScriptEngine;
     mutable ScriptEngine *m_controlScriptEngine;

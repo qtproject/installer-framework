@@ -266,6 +266,9 @@ public:
 
     int downloadNeededArchives(double partProgressSize);
 
+    bool foundEssentialUpdate() const;
+    void setFoundEssentialUpdate(bool foundEssentialUpdate = true);
+
     bool needsHardRestart() const;
     void setNeedsHardRestart(bool needsHardRestart = true);
     bool finishedWithSuccess() const;

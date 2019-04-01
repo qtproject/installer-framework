@@ -665,6 +665,22 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 }
 
 /*!
+    Returns \c true if essential component update is found.
+*/
+bool PackageManagerCore::foundEssentialUpdate() const
+{
+    return d->m_foundEssentialUpdate;
+}
+
+/*!
+    Sets the value of \a foundEssentialUpdate, defaults \c true.
+*/
+void PackageManagerCore::setFoundEssentialUpdate(bool foundEssentialUpdate)
+{
+    d->m_foundEssentialUpdate = foundEssentialUpdate;
+}
+
+/*!
     Returns \c true if a hard restart of the application is requested.
 */
 bool PackageManagerCore::needsHardRestart() const
@@ -2733,7 +2749,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     data.components = &components;
     data.installedPackages = &locals;
 
-    bool foundEssentialUpdate = false;
+    setFoundEssentialUpdate(false);
     LocalPackagesHash installedPackages = locals;
     QStringList replaceMes;
 
@@ -2789,7 +2805,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 continue;
 
             if (update->data(scEssential, scFalse).toString().toLower() == scTrue)
-                foundEssentialUpdate = true;
+                setFoundEssentialUpdate(true);
 
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
@@ -2840,7 +2856,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 }
             }
 
-            if (foundEssentialUpdate) {
+            if (foundEssentialUpdate()) {
                 foreach (QInstaller::Component *component, components) {
                     if (d->statusCanceledOrFailed())
                         return false;

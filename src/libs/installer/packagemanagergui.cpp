@@ -1898,7 +1898,8 @@ void ComponentSelectionPage::entering()
         QT_TR_NOOP("Please select the components you want to update."),
         QT_TR_NOOP("Please select the components you want to install."),
         QT_TR_NOOP("Please select the components you want to uninstall."),
-        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.")
+        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated."),
+        QT_TR_NOOP("Mandatory components need to be updated first before you can select other components to update.")
      };
 
     int index = 0;
@@ -1906,6 +1907,7 @@ void ComponentSelectionPage::entering()
     if (core->isInstaller()) index = 1;
     if (core->isUninstaller()) index = 2;
     if (core->isPackageManager()) index = 3;
+    if (core->foundEssentialUpdate() && core->isUpdater()) index = 4;
     setColoredSubTitle(tr(strings[index]));
 
     d->updateTreeView();
