@@ -214,9 +214,9 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
+    categoryLayout->addWidget(fetchCategoryButton);
 
     vLayout->addWidget(m_categoryGroupBox);
-    vLayout->addWidget(fetchCategoryButton);
     vLayout->addStretch();
     m_mainHLayout->insertWidget(0, m_categoryWidget);
 }
