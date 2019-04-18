@@ -1336,7 +1336,11 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 newBinaryWritten = true;
                 QFile tmp(binaryName);
                 QInstaller::openForRead(&tmp);
+#ifdef Q_OS_OSX
                 writeMaintenanceToolBinary(&tmp, tmp.size(), true);
+#else
+                writeMaintenanceToolBinary(&tmp, layout.endOfBinaryContent - layout.binaryContentSize, true);
+#endif
             }
         }
 
