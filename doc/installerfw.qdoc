@@ -585,7 +585,10 @@
                 Translations may be specified similarly to DisplayName tag.
                 If a localization that matches the locale is not found and an untranslated
                 version exists, that one will be used. Otherwise no Description will be
-                shown for that locale.
+                shown for that locale. User clickable external links, for example a component's
+                homepage, can be included in component description by specifying a URL
+                address like this: {external-link}='https://www.qt.io/'. The URL must be valid
+                and contain a full path to the desired resource.
         \row
             \li Version
             \li Version number of the component in the following format:

@@ -77,6 +77,8 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     m_descriptionLabel = new QLabel(q);
     m_descriptionLabel->setWordWrap(true);
+    m_descriptionLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_descriptionLabel->setOpenExternalLinks(true);
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
     m_descriptionLabel->setAlignment(Qt::AlignTop);
     m_descriptionScrollArea->setWidget(m_descriptionLabel);
@@ -296,8 +298,15 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
         return;
 
     m_sizeLabel->setText(QString());
-    m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
-        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
+
+    QString description = m_currentModel->data(m_currentModel->index(current.row(),
+        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
+
+    // replace {external-link}='' fields in component description with proper link tags
+    description.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
+        QLatin1String("<a href=\"\\1\"><span style=\"color:#17a81a;\">\\1</span></a>"));
+
+    m_descriptionLabel->setText(description);
 
     Component *component = m_currentModel->componentFromIndex(current);
     if ((m_core->isUninstaller()) || (!component))
