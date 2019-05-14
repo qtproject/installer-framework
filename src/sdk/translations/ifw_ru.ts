@@ -906,8 +906,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Refresh</source>
-        <translation>Обновить</translation>
+        <source>Filter</source>
+        <translation>Отфильтровать</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2306,8 +2306,8 @@ as a user with the appropriate rights and then clicking OK.</source>
         <translation>Невозможно открыть файл настроек %1 на чтение: %2</translation>
     </message>
     <message>
-        <source>Show package categories</source>
-        <translation>Показать категории пакетов</translation>
+        <source>Select Package Categories</source>
+        <translation>Выберите категории пакетов</translation>
     </message>
 </context>
 <context>
