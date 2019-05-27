@@ -37,6 +37,7 @@
 
 #include <QTreeView>
 #include <QLabel>
+#include <QScrollArea>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QProgressBar>
@@ -69,17 +70,24 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_descriptionVLayout = new QVBoxLayout;
     m_descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
 
+    m_descriptionScrollArea = new QScrollArea(q);
+    m_descriptionScrollArea->setWidgetResizable(true);
+    m_descriptionScrollArea->setFrameShape(QFrame::NoFrame);
+    m_descriptionScrollArea->setObjectName(QLatin1String("DescriptionScrollArea"));
+
     m_descriptionLabel = new QLabel(q);
     m_descriptionLabel->setWordWrap(true);
+    m_descriptionLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    m_descriptionLabel->setOpenExternalLinks(true);
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-    m_descriptionVLayout->addWidget(m_descriptionLabel);
+    m_descriptionLabel->setAlignment(Qt::AlignTop);
+    m_descriptionScrollArea->setWidget(m_descriptionLabel);
+    m_descriptionVLayout->addWidget(m_descriptionScrollArea);
 
     m_sizeLabel = new QLabel(q);
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     m_descriptionVLayout->addWidget(m_sizeLabel);
-    m_descriptionVLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::MinimumExpanding,
-        QSizePolicy::MinimumExpanding));
 
     m_treeViewVLayout = new QVBoxLayout;
     m_treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
@@ -193,7 +201,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Refresh"));
+    QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
@@ -208,9 +216,9 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
+    categoryLayout->addWidget(fetchCategoryButton);
 
     vLayout->addWidget(m_categoryGroupBox);
-    vLayout->addWidget(fetchCategoryButton);
     vLayout->addStretch();
     m_mainHLayout->insertWidget(0, m_categoryWidget);
 }
@@ -290,8 +298,15 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
         return;
 
     m_sizeLabel->setText(QString());
-    m_descriptionLabel->setText(m_currentModel->data(m_currentModel->index(current.row(),
-        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString());
+
+    QString description = m_currentModel->data(m_currentModel->index(current.row(),
+        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
+
+    // replace {external-link}='' fields in component description with proper link tags
+    description.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
+        QLatin1String("<a href=\"\\1\"><span style=\"color:#17a81a;\">\\1</span></a>"));
+
+    m_descriptionLabel->setText(description);
 
     Component *component = m_currentModel->componentFromIndex(current);
     if ((m_core->isUninstaller()) || (!component))

@@ -47,7 +47,11 @@ void tst_CompareVersion::compareVersion()
     QCOMPARE(KDUpdater::compareVersion("2.1", "2.0"), +1);
     QCOMPARE(KDUpdater::compareVersion("2.0", "2.0"), 0);
     QCOMPARE(KDUpdater::compareVersion("2.1", "2.1"), 0);
-
+    QCOMPARE(KDUpdater::compareVersion("2.1", "2.1-201903190747"), -1);
+    QCOMPARE(KDUpdater::compareVersion("2.1-201903190747", "2.1"), +1);
+    QCOMPARE(KDUpdater::compareVersion("2.1-201903190747", "2.1-201903190747"), 0);
+    QCOMPARE(KDUpdater::compareVersion("2.1-0", "2.1-201903190747"), -1);
+    QCOMPARE(KDUpdater::compareVersion("2.1-201903190747", "2.1-0"), +1);
     QCOMPARE(KDUpdater::compareVersion("2.0.12.4", "2.1.10.4"), -1);
 }
 

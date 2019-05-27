@@ -64,8 +64,8 @@ public:
     QString displayname() const;
     void setDisplayName(const QString &displayname);
 
-    QString archivename() const;
-    void setArchiveName(const QString &archivename);
+    QString categoryname() const;
+    void setCategoryName(const QString &categoryname);
 
     bool isCompressed() const;
     void setCompressed(bool compressed);
@@ -85,7 +85,7 @@ private:
     QString m_username;
     QString m_password;
     QString m_displayname;
-    QString m_archivename;
+    QString m_categoryname;
     bool m_compressed;
 };
 

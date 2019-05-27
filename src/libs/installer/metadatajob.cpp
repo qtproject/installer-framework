@@ -619,13 +619,25 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 }
             }
         }
-        if (metadata.repository.archivename().isEmpty()) {
+        if (metadata.repository.categoryname().isEmpty()) {
             m_metaFromDefaultRepositories.insert(metadata.directory, metadata);
         } else {
             //Hash metadata to help checking if meta for repository is already fetched
             ArchiveMetadata archiveMetadata;
             archiveMetadata.metaData = metadata;
-            m_fetchedArchive.insertMulti(metadata.repository.archivename(), archiveMetadata);
+            m_fetchedArchive.insertMulti(metadata.repository.categoryname(), archiveMetadata);
+
+            //Check if other categories have the same url (contains same metadata)
+            //so we can speed up other category fetches
+            foreach (RepositoryCategory category, m_core->settings().repositoryCategories()) {
+                if (category.displayname() != metadata.repository.categoryname()) {
+                    foreach (Repository repository, category.repositories()) {
+                        if (repository.url() == metadata.repository.url()) {
+                            m_fetchedArchive.insertMulti(category.displayname(), archiveMetadata);
+                        }
+                    }
+                }
+            }
             // Hash for faster lookups
             m_metaFromArchive.insert(metadata.directory, metadata);
         }
@@ -732,11 +744,20 @@ QSet<Repository> MetadataJob::getRepositories()
     // If repository is already fetched, do not fetch it again.
     // In updater mode, fetch always all archive repositories to get updates
     foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
-        if (m_core->isUpdater() || (repositoryCategory.isEnabled() && !m_fetchedArchive.contains(repositoryCategory.displayname()))) {
-            foreach (Repository repository, repositoryCategory.repositories()) {
-                repositories.insert(repository);
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled())) {
+                foreach (Repository repository, repositoryCategory.repositories()) {
+                    QHashIterator<QString, ArchiveMetadata> i(m_fetchedArchive);
+                    bool fetch = true;
+                    while (i.hasNext()) {
+                        i.next();
+                        ArchiveMetadata metaData = i.value();
+                        if (repository.url() == metaData.metaData.repository.url())
+                            fetch = false;
+                    }
+                    if (fetch)
+                        repositories.insert(repository);
+                }
             }
-        }
     }
     return repositories;
 }

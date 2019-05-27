@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2019 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -44,6 +44,7 @@ public:
 
 private:
     bool parentConsole;
+    bool newConsoleCreated;
 
     std::ofstream m_newCout;
     std::ofstream m_newCerr;

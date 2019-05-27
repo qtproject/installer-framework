@@ -1835,7 +1835,7 @@ Copiez le programme d’installation sur un disque local</translation>
     </message>
     <message>
         <source>&amp;Install</source>
-        <translation>{&amp;Tahoma8}&amp;Installer</translation>
+        <translation>&amp;Installer</translation>
     </message>
     <message>
         <source>Installing %1</source>
@@ -1901,7 +1901,7 @@ Copiez le programme d’installation sur un disque local</translation>
     </message>
     <message>
         <source>&amp;Install</source>
-        <translation>{&amp;Tahoma8}&amp;Installer</translation>
+        <translation>&amp;Installer</translation>
     </message>
     <message>
         <source>Ready to Install</source>

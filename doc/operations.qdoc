@@ -174,8 +174,8 @@
 
                 \note The operation is using QSettings to store the key value pair. QSettings
                 always treats backslash as a special character and provides no API for reading
-                or writing such entries. Do not use slashes ('/' and '\') in section or key names;
-                the backslash character is used to separate sub keys. On windows, '\' are converted
+                or writing such entries. Do not use slashes ('/' and '\\') in section or key names;
+                the backslash character is used to separate sub keys. On windows, '\\' are converted
                 by QSettings to '/', which makes them identical. Because the backslash character is
                 used by QSettings to separate sub keys, you cannot read or write windows registry
                 entries that contain slashes or backslashes. You should use a native windows API if

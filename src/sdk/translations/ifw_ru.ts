@@ -690,14 +690,6 @@
         <translation>Не удалось открыть временный файл для шаблона %1: %2</translation>
     </message>
     <message>
-        <source>Corrupt installation</source>
-        <translation>Установка повреждена</translation>
-    </message>
-    <message>
-        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
-        <translation>Видимо, установленное приложение повреждено. Попробуйте его заново переустановить.</translation>
-    </message>
-    <message>
         <source>No marker found, stopped after %1.</source>
         <translation>Маркер не найден, остановлено после %1.</translation>
     </message>
@@ -765,8 +757,16 @@
         <translation>Невозможно выполнить метод isDefault в сценарии %1</translation>
     </message>
     <message>
+        <source>There was an error loading the selected component. This component can not be installed.</source>
+        <translation>Возникла ошибка при загрузке выбранного компонента. Установить его не получится.</translation>
+    </message>
+    <message>
         <source>Update Info: </source>
-        <translation>Информация об обновлении:</translation>
+        <translation>Информация об обновлении: </translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <translation>Возникла ошибка при загрузке выбранного компонента. Обновить его не получится.</translation>
     </message>
     <message>
         <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
@@ -899,12 +899,19 @@
         <translation>Выберите компоненты для установки. Для удаления уже установленных компонентов снимите отметки выбора. Уже установленные компоненты не будут обновлены.</translation>
     </message>
     <message>
-        <source>To install new compressed repository, browse the repositories from your computer</source>
-        <translation>Для установки нового хранилища укажите путь к нему на вашем компьютере</translation>
-    </message>
-    <message>
         <source>Open File</source>
         <translation>Открытие файла</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ComponentSelectionPagePrivate</name>
+    <message>
+        <source>Filter</source>
+        <translation>Отфильтровать</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
     </message>
 </context>
 <context>
@@ -1151,10 +1158,6 @@ Error while loading %2</source>
         <translation>Обнаружено кольцо перенаправлений «%1».</translation>
     </message>
     <message>
-        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
-        <translation>Обнаружено несовпадение контрольной суммы «%1».</translation>
-    </message>
-    <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
         <translation>Возникла ошибка сети при загрузке «%1»: %2.</translation>
     </message>
@@ -1190,6 +1193,13 @@ Error while loading %2</source>
     <message>
         <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
         <translation>Не удалось исполнить (неожиданный код завершения: %1): «%2»</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation>Извлечение «%1»</translation>
     </message>
 </context>
 <context>
@@ -1349,16 +1359,16 @@ Error while loading %2</source>
         <translation>Добро пожаловать в мастер установки %1.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
-        <translation>Добавление или удаление компонентов</translation>
+        <source>&amp;Add or remove components</source>
+        <translation>&amp;Добавление или удаление компонентов</translation>
     </message>
     <message>
-        <source>Update components</source>
-        <translation>Обновление компонентов</translation>
+        <source>&amp;Update components</source>
+        <translation>&amp;Обновление компонентов</translation>
     </message>
     <message>
-        <source>Remove all components</source>
-        <translation>Удаление всех компонентов</translation>
+        <source>&amp;Remove all components</source>
+        <translation>&amp;Удаление всех компонентов</translation>
     </message>
     <message>
         <source>Retrieving information from remote installation sources...</source>
@@ -1377,8 +1387,8 @@ Error while loading %2</source>
         <translation> Доступно только локальное управление пакетами.</translation>
     </message>
     <message>
-        <source>Quit</source>
-        <translation>Выйти</translation>
+        <source>&amp;Quit</source>
+        <translation>&amp;Выйти</translation>
     </message>
 </context>
 <context>
@@ -1483,8 +1493,16 @@ Error while loading %2</source>
         <translation>Возникло неизвестное исключение во время загрузки.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository...</source>
-        <translation>Получение метаданных из внешнего хранилища...</translation>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>Обнаружено несовпадение контрольной суммы у «%1».</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository... %1/%2 </source>
+        <translation>Получение метаданных из внешнего хранилища... %1/%2 </translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository... </source>
+        <translation>Получение метаданных из внешнего хранилища... </translation>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
@@ -1636,7 +1654,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>Creating local repository</source>
-        <translation>Создаётся локальный репозиторий</translation>
+        <translation>Создаётся локальное хранилище</translation>
     </message>
     <message>
         <source>
@@ -1720,6 +1738,10 @@ Installing component %1...</source>
         <source>Error during installation process (%1):
 %2</source>
         <translation>Ошибка во время процесса установки (%1): %2</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Готово</translation>
     </message>
     <message>
         <source>Cannot prepare uninstall</source>
@@ -1963,10 +1985,6 @@ Please copy the installer to a local drive</source>
         <source>Register File Type: Invalid arguments</source>
         <translation>Регистрация типов файлов: недопустимые параметры</translation>
     </message>
-    <message>
-        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
-        <translation>&lt;расширение&gt; &lt;команда&gt; [описание [типСодержимого [значок]]]</translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::RemoteObject</name>
@@ -2021,6 +2039,10 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Unknown error.</source>
         <translation>Неизвестная ошибка.</translation>
+    </message>
+    <message>
+        <source>on line number: </source>
+        <translation>в строке: </translation>
     </message>
 </context>
 <context>
@@ -2283,6 +2305,10 @@ as a user with the appropriate rights and then clicking OK.</source>
         <source>Cannot open settings file %1 for reading: %2</source>
         <translation>Невозможно открыть файл настроек %1 на чтение: %2</translation>
     </message>
+    <message>
+        <source>Select Package Categories</source>
+        <translation>Выберите категории пакетов</translation>
+    </message>
 </context>
 <context>
     <name>SettingsDialog</name>
@@ -2320,7 +2346,7 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>Repositories</source>
-        <translation>Репозитории</translation>
+        <translation>Хранилища</translation>
     </message>
     <message>
         <source>Add Username and Password for authentication if needed.</source>
@@ -2328,7 +2354,7 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>Use temporary repositories only</source>
-        <translation>использовать только временные репозитории</translation>
+        <translation>использовать только временные хранилища</translation>
     </message>
     <message>
         <source>Add</source>
@@ -2340,15 +2366,15 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>Test</source>
-        <translation>Тестировать</translation>
+        <translation>Проверить</translation>
     </message>
     <message>
         <source>Show Passwords</source>
-        <translation>Показывать пароль</translation>
+        <translation>Показать пароли</translation>
     </message>
     <message>
         <source>Check this to use repository during fetch.</source>
-        <translation>Поставьте флажок, чтобы использовать репозиторий в процессе получения.</translation>
+        <translation>Поставьте флажок, чтобы использовать хранилище в процессе получения.</translation>
     </message>
     <message>
         <source>Add the username to authenticate on the server.</source>
@@ -2360,7 +2386,7 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>The servers URL that contains a valid repository.</source>
-        <translation>Адреса серверов, которые содержат рабочие репозиторий.</translation>
+        <translation>Адреса серверов, которые содержат рабочие хранилища.</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
@@ -2380,19 +2406,19 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>Repository</source>
-        <translation>Репозиторий</translation>
+        <translation>Хранилище</translation>
     </message>
     <message>
         <source>Default repositories</source>
-        <translation>Репозитории по умолчанию</translation>
+        <translation>Хранилища по умолчанию</translation>
     </message>
     <message>
         <source>Temporary repositories</source>
-        <translation>Временные репозитории</translation>
+        <translation>Временные хранилища</translation>
     </message>
     <message>
         <source>User defined repositories</source>
-        <translation>Использовать назначенные репозитории</translation>
+        <translation>Использовать назначенные хранилища</translation>
     </message>
     <message>
         <source>An error occurred while testing this repository.</source>
@@ -2409,6 +2435,14 @@ as a user with the appropriate rights and then clicking OK.</source>
     <message>
         <source>Do you want to enable the repository?</source>
         <translation>Желаете включить хранилище?</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation>Выбрать всё</translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation>Снять выбор</translation>
     </message>
 </context>
 <context>
