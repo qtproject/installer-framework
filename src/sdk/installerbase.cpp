@@ -319,8 +319,7 @@ int InstallerBase::run()
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
         checkLicense();
-        m_core->setUpdater();
-        m_core->updateComponentsSilently();
+        m_core->updateComponentsSilently(QStringList());
     } else if (parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages))){
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as package manager."));
@@ -333,6 +332,15 @@ int InstallerBase::run()
         checkLicense();
         QString regexp = parser.value(QLatin1String(CommandLineOptions::ListPackages));
         m_core->listAvailablePackages(regexp);
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::UpdatePackages))) {
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
+        checkLicense();
+        QStringList packages;
+        const QString &value = parser.value(QLatin1String(CommandLineOptions::UpdatePackages));
+        if (!value.isEmpty())
+            packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
+        m_core->updateComponentsSilently(packages);
     } else {
         //create the wizard GUI
         TabController controller(nullptr);

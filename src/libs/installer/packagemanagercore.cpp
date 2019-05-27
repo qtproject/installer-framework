@@ -1879,20 +1879,15 @@ void PackageManagerCore::listInstalledPackages()
     }
 }
 
-void PackageManagerCore::updateComponentsSilently()
+void PackageManagerCore::updateComponentsSilently(const QStringList &componentsToUpdate)
 {
     if (d->runningProcessesFound())
         return;
+    setUpdater();
+    autoRejectMessageBoxes();
 
-    autoAcceptMessageBoxes();
-
-    //Prevent infinite loop if installation for some reason fails.
-    setMessageBoxAutomaticAnswer(QLatin1String("installationErrorWithRetry"), QMessageBox::Cancel);
-
-    fetchRemotePackagesTree();
-
-    const QList<QInstaller::Component*> componentList = components(
-        ComponentType::Root | ComponentType::Descendants);
+    // List contains components containing update, if essential found contains only essential component
+    const QList<QInstaller::Component*> componentList = componentsMarkedForInstallation();
 
     if (componentList.count() ==  0) {
         qDebug() << "No updates available.";
@@ -1906,26 +1901,27 @@ void PackageManagerCore::updateComponentsSilently()
                 essentialUpdatesFound = true;
         }
         if (!essentialUpdatesFound) {
-            //Mark all components to be updated
+            int componentToUpdateCount = componentsToUpdate.count();
+            //Mark components to be updated
             foreach (Component *comp, componentList) {
-                comp->setCheckState(Qt::Checked);
-            }
-        }
-        QString htmlOutput;
-        bool componentsOk = calculateComponents(&htmlOutput);
-        if (componentsOk) {
-            if (runPackageUpdater()) {
-                writeMaintenanceTool();
-                if (essentialUpdatesFound) {
-                    qDebug() << "Essential components updated successfully.";
-                }
-                else {
-                    qDebug() << "Components updated successfully.";
+                if (componentToUpdateCount == 0) { // No components given, update all
+                    comp->setCheckState(Qt::Checked);
+                } else { // Check only components we want to update
+                    foreach (const QString &name, componentsToUpdate) {
+                        if (comp->name() == name)
+                            comp->setCheckState(Qt::Checked);
+                        else
+                            comp->setCheckState(Qt::Unchecked);
+                    }
                 }
             }
         }
-        else {
-            qDebug() << htmlOutput;
+
+        if (d->calculateComponentsAndRun()) {
+            if (essentialUpdatesFound)
+                qDebug() << "Essential components updated successfully.";
+            else
+                qDebug() << "Components updated successfully.";
         }
     }
 }

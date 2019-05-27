@@ -118,6 +118,8 @@ CommandLineParser::CommandLineParser()
         QLatin1String("URI,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SilentUpdate),
         QLatin1String("Updates all packages silently.")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::UpdatePackages),
+        QLatin1String("Updates selected packages."), QLatin1String("package,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ListInstalledPackages),
         QLatin1String("Lists installed packages.")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ListPackages),

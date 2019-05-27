@@ -227,8 +227,7 @@ public:
     ComponentModel *updaterComponentModel() const;
     void listInstalledPackages();
     void listAvailablePackages(const QString &regexp);
-    void updateComponentsSilently();
-
+    void updateComponentsSilently(const QStringList &componentsToUpdate);
     // convenience
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
