@@ -92,6 +92,8 @@ public:
     QString targetDir() const;
     QString registerPath();
 
+    bool targetSubDirsWritable();
+
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
 

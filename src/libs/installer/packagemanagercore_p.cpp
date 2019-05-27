@@ -345,6 +345,18 @@ QString PackageManagerCorePrivate::targetDir() const
     return m_core->value(scTargetDir);
 }
 
+bool PackageManagerCorePrivate::targetSubDirsWritable()
+{
+    // Iterate over target directory subdirectories for writing access
+    QDirIterator iterator(targetDir(), QDir::AllDirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+    while (iterator.hasNext()) {
+        QTemporaryFile tempFile(iterator.next() + QLatin1String("/tempFile"));
+        if (!tempFile.open() || !tempFile.isWritable())
+            return false;
+    }
+    return true;
+}
+
 QString PackageManagerCorePrivate::configurationFileName() const
 {
     return m_core->value(scTargetConfigurationFile, QLatin1String("components.xml"));
@@ -1622,10 +1634,16 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         //to have some progress for the cleanup/write component.xml step
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+        // check if we need admin rights and ask before the action happens
+        // on Linux and macOS also check target directory subdirectories
+        if (!QTemporaryFile(targetDir() + QStringLiteral("/XXXXXX")).open() || !targetSubDirsWritable())
+            adminRightsGained = m_core->gainAdminRights();
+#else
         // check if we need admin rights and ask before the action happens
         if (!QTemporaryFile(targetDir() + QStringLiteral("/XXXXXX")).open())
             adminRightsGained = m_core->gainAdminRights();
-
+#endif
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 
