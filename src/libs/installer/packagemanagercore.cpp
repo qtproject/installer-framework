@@ -665,7 +665,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 }
 
 /*!
-    Returns \c true if essential component update is found.
+    Returns \c true if an essential component update is found.
 */
 bool PackageManagerCore::foundEssentialUpdate() const
 {
@@ -673,7 +673,7 @@ bool PackageManagerCore::foundEssentialUpdate() const
 }
 
 /*!
-    Sets the value of \a foundEssentialUpdate, defaults \c true.
+    Sets the value of \a foundEssentialUpdate, defaults to \c true.
 */
 void PackageManagerCore::setFoundEssentialUpdate(bool foundEssentialUpdate)
 {

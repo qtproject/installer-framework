@@ -3,7 +3,7 @@
 - Change text in Select Components view when selection of components is not possible (QTIFW-1241)
 - Fix long description texts not properly shown by enabling scrolling (QTIFW-1308)
 - Fix install button string having a font name in French translation (QTIFW-1333)
-- Fix maintenancetool size (QTIFW-1322)
+- Fix maintenance tool size (QTIFW-1322)
 - Update Russian translation
 - Enable links and text selection in component description fields (QTIFW-1292)
 
