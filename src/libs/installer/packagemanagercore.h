@@ -226,6 +226,7 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
+    void listInstalledPackages();
     void updateComponentsSilently();
 
     // convenience

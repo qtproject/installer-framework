@@ -301,8 +301,16 @@ int InstallerBase::run()
             throw QInstaller::Error(QLatin1String("Silent update not allowed."));
         m_core->setUpdater();
         m_core->updateComponentsSilently();
-    }
-    else {
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages))){
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as package manager."));
+        m_core->setPackageManager();
+
+        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+        if (!productKeyCheck->hasValidLicense())
+            throw QInstaller::Error(QLatin1String("No valid license found."));
+        m_core->listInstalledPackages();
+    } else {
         //create the wizard GUI
         TabController controller(nullptr);
         controller.setManager(m_core);

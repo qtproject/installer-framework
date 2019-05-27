@@ -1824,6 +1824,17 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     return d->m_updaterModel;
 }
 
+void PackageManagerCore::listInstalledPackages()
+{
+    LocalPackagesHash installedPackages = this->localInstalledPackages();
+
+    const QStringList &keys = installedPackages.keys();
+    foreach (const QString &key, keys) {
+        KDUpdater::LocalPackage package = installedPackages.value(key);
+        qDebug() << package.name;
+    }
+}
+
 void PackageManagerCore::updateComponentsSilently()
 {
     //Check if there are processes running in the install
