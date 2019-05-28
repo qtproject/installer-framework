@@ -1,0 +1,40 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>This component depends on componentB.sub2.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <Dependencies>componentB.sub2</Dependencies>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>570dec768b1f266c66656f015e772f0e6e41b73d</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentA.sub1</Name>
+  <DisplayName>Component A subcomponent 1</DisplayName>
+  <Description>component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <UpdateFile CompressedSize="283" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>da5819910a7f7c95eb61a49543e273fd6e2e9aae</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB</Name>
+  <DisplayName>Component B</DisplayName>
+  <Description>Component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>72eee5304ff866e024b477d7b2432df8f2428483</SHA1>
+  <TreeName>componentA.sub1</TreeName>
+ </PackageUpdate>
+</Updates>

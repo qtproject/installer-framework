@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -62,6 +62,7 @@ class INSTALLER_EXPORT Component : public QObject, public ComponentModelHelper
     Q_PROPERTY(bool installed READ isInstalled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
     Q_PROPERTY(bool unstable READ isUnstable)
+    Q_PROPERTY(QString treeName READ treeName)
 
 public:
     explicit Component(PackageManagerCore *core);
@@ -157,6 +158,7 @@ public:
 
     QString name() const;
     QString displayName() const;
+    QString treeName() const;
     quint64 updateUncompressedSize();
 
     QUrl repositoryUrl() const;

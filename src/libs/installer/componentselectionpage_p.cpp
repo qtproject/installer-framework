@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -274,7 +274,7 @@ void ComponentSelectionPagePrivate::updateTreeView()
     m_treeView->setExpanded(m_currentModel->index(0, 0), true);
     foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::All)) {
         if (component->isExpandedByDefault()) {
-            const QModelIndex index = m_currentModel->indexFromComponentName(component->name());
+            const QModelIndex index = m_currentModel->indexFromComponentName(component->treeName());
             m_treeView->setExpanded(index, true);
         }
     }

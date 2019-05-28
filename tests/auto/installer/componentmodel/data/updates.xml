@@ -177,4 +177,14 @@
                      file="license.txt"/>
         </Licenses>
     </PackageUpdate>
+    <PackageUpdate>
+        <Name>com.vendor.fifth.product.noncheckable.sub2</Name>
+        <DisplayName>A sub component, moved to top level</DisplayName>
+        <Description>Install this example.</Description>
+        <Version>0.1.0-1</Version>
+        <ReleaseDate>2010-09-21</ReleaseDate>
+        <SortingPriority>0</SortingPriority>
+        <UpdateFile UncompressedSize="61" CompressedSize="61"/>
+        <TreeName>moved_with_treename</TreeName>
+    </PackageUpdate>
 </Updates>

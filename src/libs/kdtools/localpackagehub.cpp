@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -317,6 +317,7 @@ void LocalPackageHub::refresh()
 void LocalPackageHub::addPackage(const QString &name,
                                  const QString &version,
                                  const QString &title,
+                                 const QString &treeName,
                                  const QString &description,
                                  const QStringList &dependencies,
                                  const QStringList &autoDependencies,
@@ -339,6 +340,7 @@ void LocalPackageHub::addPackage(const QString &name,
         info.inheritVersionFrom = inheritVersionFrom;
         info.installDate = QDate::currentDate();
         info.title = title;
+        info.treeName = treeName;
         info.description = description;
         info.dependencies = dependencies;
         info.autoDependencies = autoDependencies;
@@ -398,6 +400,7 @@ void LocalPackageHub::writeToDisk()
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
             addTextChildHelper(&package, QLatin1String("Title"), info.title);
             addTextChildHelper(&package, QLatin1String("Description"), info.description);
+            addTextChildHelper(&package, scTreeName, info.treeName);
             if (info.inheritVersionFrom.isEmpty())
                 addTextChildHelper(&package, QLatin1String("Version"), info.version);
             else
@@ -468,6 +471,8 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.title = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Description"))
             info.description = childNodeE.text();
+        else if (childNodeE.tagName() == scTreeName)
+            info.treeName = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Version")) {
             info.version = childNodeE.text();
             info.inheritVersionFrom = childNodeE.attribute(QLatin1String("inheritVersionFrom"));

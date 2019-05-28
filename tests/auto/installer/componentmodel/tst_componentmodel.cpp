@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,8 +37,8 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-#define EXPECTED_COUNT_VIRTUALS_VISIBLE 11
-#define EXPECTED_COUNT_VIRTUALS_INVISIBLE 10
+#define EXPECTED_COUNT_VIRTUALS_VISIBLE 12
+#define EXPECTED_COUNT_VIRTUALS_INVISIBLE 11
 
 static const char vendorProduct[] = "com.vendor.product";
 static const char vendorSecondProduct[] = "com.vendor.second.product";
@@ -51,6 +51,7 @@ static const char vendorThirdProductVirtual[] = "com.vendor.third.product.virtua
 static const char vendorFourthProductCheckable[] = "com.vendor.fourth.product.checkable";
 static const char vendorFifthProductNonCheckable[] = "com.vendor.fifth.product.noncheckable";
 static const char vendorFifthProductSub[] = "com.vendor.fifth.product.noncheckable.sub";
+static const char vendorFifthProductSubWithTreeName[] = "moved_with_treename";
 
 static const QMap<QString, QString> rootComponentDisplayNames = {
     {"", QLatin1String("The root component")},
@@ -78,7 +79,7 @@ private slots:
         m_defaultPartially << vendorSecondProduct;
         m_defaultUnchecked << vendorSecondProductSub1 << vendorSecondProductSubnode
             << vendorSecondProductSubnodeSub << vendorFourthProductCheckable
-            << vendorFifthProductSub;
+            << vendorFifthProductSub << vendorFifthProductSubWithTreeName;
         m_uncheckable << vendorFifthProductNonCheckable;
     }
 
@@ -99,7 +100,7 @@ private slots:
         foreach (const QString &name, all) {
             QVERIFY(model.indexFromComponentName(name).isValid());
             QVERIFY(model.componentFromIndex(model.indexFromComponentName(name)) != 0);
-            QCOMPARE(model.componentFromIndex(model.indexFromComponentName(name))->name(), name);
+            QCOMPARE(model.componentFromIndex(model.indexFromComponentName(name))->treeName(), name);
         }
 
         foreach (Component *const component, rootComponents)
@@ -124,7 +125,7 @@ private slots:
         foreach (const QString &name, all) {
             QVERIFY(model.indexFromComponentName(name).isValid());
             QVERIFY(model.componentFromIndex(model.indexFromComponentName(name)) != 0);
-            QCOMPARE(model.componentFromIndex(model.indexFromComponentName(name))->name(), name);
+            QCOMPARE(model.componentFromIndex(model.indexFromComponentName(name))->treeName(), name);
         }
 
         foreach (Component *const component, rootComponents)
@@ -415,8 +416,8 @@ private:
 
     void testComponentsLoaded(const QList<Component *> &rootComponents) const
     {
-        // we need to have five root components
-        QCOMPARE(rootComponents.count(), 5);
+        // we need to have six root components
+        QCOMPARE(rootComponents.count(), 6);
 
         QList<Component*> components = rootComponents;
         foreach (Component *const component, rootComponents)
@@ -431,9 +432,9 @@ private:
     {
         // row count with invalid model index should return:
         if (m_core.virtualComponentsVisible())
-            QCOMPARE(model->rowCount(), 5); // 5 (4 non virtual and 1 virtual root component)
+            QCOMPARE(model->rowCount(), 6); // 6 (5 non virtual and 1 virtual root component)
         else
-            QCOMPARE(model->rowCount(), 4); // 4 (the 4 non virtual root components)
+            QCOMPARE(model->rowCount(), 5); // 5 (the 5 non virtual root components)
         QCOMPARE(model->columnCount(), columnCount);
 
         const QModelIndex firstParent = model->indexFromComponentName(vendorProduct);
@@ -497,15 +498,15 @@ private:
 
         // these components should have checked state
         foreach (Component *const component, model->checked())
-            QVERIFY(checked.contains(component->name()));
+            QVERIFY(checked.contains(component->treeName()));
 
         // these components should not have partially checked state
         foreach (Component *const component, model->partially())
-            QVERIFY(partially.contains(component->name()));
+            QVERIFY(partially.contains(component->treeName()));
 
         // these components should not have checked state
         foreach (Component *const component, model->unchecked())
-            QVERIFY(unchecked.contains(component->name()));
+            QVERIFY(unchecked.contains(component->treeName()));
     }
 
     QList<Component*> loadComponents() const
@@ -520,6 +521,7 @@ private:
 
             // we need at least these to be able to test the model
             component->setValue("Name", info.data.value("Name").toString());
+            component->setValue("TreeName", info.data.value("TreeName").toString());
             QString isDefault = info.data.value("Default").toString();
             if (m_core.noDefaultInstallation())
                 isDefault = scFalse;
@@ -537,7 +539,7 @@ private:
                 component->setCheckable(false);
                 component->setCheckState(Qt::Checked);
             }
-            components.insert(component->name(), component);
+            components.insert(component->treeName(), component);
         }
 
         QList <Component*> rootComponents;

@@ -2233,6 +2233,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     m_localPackageHub->addPackage(component->name(),
                                   component->value(scVersion),
                                   component->value(scDisplayName),
+                                  component->value(scTreeName),
                                   component->value(scDescription),
                                   component->dependencies(),
                                   component->autoDependencies(),
@@ -2273,7 +2274,8 @@ bool PackageManagerCorePrivate::runningProcessesFound()
 void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::CheckState state)
 {
     ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
-    const QModelIndex &idx = model->indexFromComponentName(id);
+    Component *component = m_core->componentByName(id);
+    const QModelIndex &idx = model->indexFromComponentName(component->treeName());
     if (idx.isValid())
         model->setData(idx, state, Qt::CheckStateRole);
 }

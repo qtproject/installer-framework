@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -159,7 +159,7 @@ QModelIndex ComponentModel::parent(const QModelIndex &child) const
 
     if (Component *childComponent = componentFromIndex(child)) {
         if (Component *parent = childComponent->parentComponent())
-            return indexFromComponentName(parent->name());
+            return indexFromComponentName(parent->treeName());
     }
     return QModelIndex();
 }
@@ -513,18 +513,18 @@ void ComponentModel::updateAndEmitModelState()
     emit checkStateChanged(m_modelState);
 
     foreach (const Component *component, m_rootComponentList) {
-        emit dataChanged(indexFromComponentName(component->name()),
-                         indexFromComponentName(component->name()));
+        emit dataChanged(indexFromComponentName(component->treeName()),
+                         indexFromComponentName(component->treeName()));
         QList<Component *> children = component->childItems();
         foreach (const Component *child, children)
-            emit dataChanged(indexFromComponentName(child->name()),
-                             indexFromComponentName(child->name()));
+            emit dataChanged(indexFromComponentName(child->treeName()),
+                             indexFromComponentName(child->treeName()));
     }
 }
 
 void ComponentModel::collectComponents(Component *const component, const QModelIndex &parent) const
 {
-    m_indexByNameCache.insert(component->name(), parent);
+    m_indexByNameCache.insert(component->treeName(), parent);
     for (int i = 0; i < component->childCount(); ++i)
         collectComponents(component->childAt(i), index(i, 0, parent));
 }
@@ -568,8 +568,8 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
     // get all parent nodes for the components we're going to update
     QMap<QString, Component *> sortedNodesMap;
     foreach (Component *component, components) {
-        while (component && !sortedNodesMap.values(component->name()).contains(component)) {
-            sortedNodesMap.insertMulti(component->name(), component);
+        while (component && !sortedNodesMap.values(component->treeName()).contains(component)) {
+            sortedNodesMap.insertMulti(component->treeName(), component);
             component = component->parentComponent();
         }
     }
@@ -596,7 +596,7 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             continue;
 
         node->setCheckState(newState);
-        changed.insert(indexFromComponentName(node->name()));
+        changed.insert(indexFromComponentName(node->treeName()));
 
         m_currentCheckedState[Qt::Checked].remove(node);
         m_currentCheckedState[Qt::Unchecked].remove(node);

@@ -1,0 +1,26 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/repository/Updates.xml</file>
+        <file>data/repository/componentA/1.0.0meta.7z</file>
+        <file>data/repository/componentA/1.0.0content.7z</file>
+        <file>data/repository/componentA.sub1/1.0.0meta.7z</file>
+        <file>data/repository/componentA.sub1/1.0.0content.7z</file>
+        <file>data/repository/componentA.sub2/1.0.0meta.7z</file>
+        <file>data/repository/componentA.sub2/1.0.0content.7z</file>
+        <file>data/repository/componentB/1.0.0meta.7z</file>
+        <file>data/repository/componentB/1.0.0content.7z</file>
+        <file>data/repository/componentB.sub1/1.0.0meta.7z</file>
+        <file>data/repository/componentB.sub1/1.0.0content.7z</file>
+        <file>data/repository/componentB.sub1.sub1/1.0.0meta.7z</file>
+        <file>data/repository/componentB.sub1.sub1/1.0.0content.7z</file>
+        <file>data/repository/componentB.sub1.sub2/1.0.0meta.7z</file>
+        <file>data/repository/componentB.sub1.sub2/1.0.0content.7z</file>
+        <file>data/repository/componentB.sub2/1.0.0meta.7z</file>
+        <file>data/repository/componentB.sub2/1.0.0content.7z</file>
+        <file>data/repository/componentC/1.0.0meta.7z</file>
+        <file>data/repository/componentC/1.0.0content.7z</file>
+        <file>data/repository/componentD/1.0.0meta.7z</file>
+        <file>data/repository/componentD/1.0.0content.7z</file>
+        <file>data/invalid_repository/Updates.xml</file>
+    </qresource>
+</RCC>

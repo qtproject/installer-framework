@@ -1372,11 +1372,11 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     foreach (const QString &key, keys) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         component->loadDataFromPackage(installedPackages.value(key));
-        const QString &name = component->name();
+        const QString &name = component->treeName();
         if (components.contains(name)) {
-            qCritical("Cannot register component! Component with identifier %s already registered.",
-                qPrintable(name));
-            continue;
+            d->setStatus(Failure, tr("Cannot register component! Component with identifier %1 "
+                                     "already exists.").arg(name));
+            return false;
         }
         components.insert(name, component.take());
     }
@@ -2210,7 +2210,7 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
             return false;
     }
     ComponentModel *model = defaultComponentModel();
-    const QModelIndex &idx = model->indexFromComponentName(componentName);
+    const QModelIndex &idx = model->indexFromComponentName(component->treeName());
     if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
         // Component cannot be unselected, check why
         if (component->forcedInstallation()) {
@@ -2246,9 +2246,13 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
 
     ComponentModel *model = defaultComponentModel();
     foreach (const QString &name, components) {
-        const QModelIndex &idx = model->indexFromComponentName(name);
         Component *component = componentByName(name);
-        if (component && idx.isValid()) {
+        if (!component) {
+            errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+            continue;
+        }
+        const QModelIndex &idx = model->indexFromComponentName(component->treeName());
+        if (idx.isValid()) {
             if ((model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) && !component->forcedInstallation()) {
                 // User cannot select the component, check why
                 if (component->autoDependencies().count() > 0) {
@@ -2265,7 +2269,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 installComponentsFound = true;
             }
         } else { // idx is invalid and component valid when we have invisible virtual component
-            component && component->isVirtual()
+            component->isVirtual()
                 ? errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name))
                 : errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
         }
@@ -2330,7 +2334,7 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
             QList<Component*> componentsToBeUpdated;
             //Mark components to be updated
             foreach (Component *comp, componentList) {
-                const QModelIndex &idx = model->indexFromComponentName(comp->name());
+                const QModelIndex &idx = model->indexFromComponentName(comp->treeName());
                 if (!userSelectedComponents) { // No components given, update all
                     model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 } else {
@@ -2350,7 +2354,7 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
                 return PackageManagerCore::Success;
             }
             foreach (Component *componentToUpdate, componentsToBeUpdated) {
-                const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->name());
+                const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->treeName());
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
             }
         }
@@ -2434,11 +2438,11 @@ PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const
     bool uninstallComponentFound = false;
 
     foreach (const QString &componentName, components){
-        const QModelIndex &idx = model->indexFromComponentName(componentName);
         Component *component = componentByName(componentName);
 
         if (component) {
-            if (componentUninstallableFromCommandLine(componentName)) {
+            const QModelIndex &idx = model->indexFromComponentName(component->treeName());
+            if (componentUninstallableFromCommandLine(component->name())) {
                 model->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
                 uninstallComponentFound = true;
             }
@@ -3516,14 +3520,17 @@ QString PackageManagerCore::maintenanceToolName() const
 bool PackageManagerCore::updateComponentData(struct Data &data, Component *component)
 {
     try {
-        // check if we already added the component to the available components list
-        const QString name = data.package->data(scName).toString();
+        // Check if we already added the component to the available components list.
+        // Component treenames and names must be unique.
+        QString name = data.package->data(scTreeName).toString();
+        if (name.isEmpty())
+            name = data.package->data(scName).toString();
         if (data.components->contains(name)) {
-            qCritical("Cannot register component! Component with identifier %s already registered.",
-                qPrintable(name));
+            d->setStatus(Failure, tr("Cannot register component! Component with identifier %1 "
+                                     "already exists.").arg(name));
             return false;
         }
-
+        name = data.package->data(scName).toString();
         if (settings().allowUnstableComponents()) {
             // Check if there are sha checksum mismatch. Component will still show in install tree
             // but is unselectable.
@@ -3643,6 +3650,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     data.components = &components;
     data.installedPackages = &locals;
 
+    QMap<QString, QString> treeNameComponents;
     foreach (Package *const package, remotes) {
         if (d->statusCanceledOrFailed())
             return false;
@@ -3654,17 +3662,42 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         data.package = package;
         component->loadDataFromPackage(*package);
         if (updateComponentData(data, component.data())) {
-            const QString name = component->name();
+            // Create a list where is name and treename. Repo can contain a package with
+            // a different treename of component which is already installed. We don't want
+            // to move already installed local packages.
+            const QString treeName = component->value(scTreeName);
+            if (!treeName.isEmpty())
+                treeNameComponents.insert(component->name(), treeName);
+            QString name = component->treeName();
             components.insert(name, component.take());
+        } else {
+            return false;
         }
     }
 
     foreach (const QString &key, locals.keys()) {
         QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
         component->loadDataFromPackage(locals.value(key));
-        const QString &name = component->name();
-        if (!components.contains(name))
-            components.insert(name, component.take());
+        QString treeName = component->treeName();
+
+        // 1. Component has a treename in local but not in remote
+        if (!treeNameComponents.contains(component->name()) && !component->value(scTreeName).isEmpty()) {
+            Component *comp = components.take(component->name());
+            delete comp;
+            components.insert(treeName, component.take());
+        // 2. Component has different treename in local and remote, add with local treename
+        } else if (treeNameComponents.contains(component->name())) {
+            QString remoteTreeName = treeNameComponents.value(component->name());
+            QString componentTreeName = component->value(scTreeName);
+            if (remoteTreeName != componentTreeName) {
+                Component *comp = components.take(treeNameComponents.value(component->name()));
+                delete comp;
+                components.insert(treeName, component.take());
+            }
+        // 3. Component has same treename in local and remote, don't add the component again.
+        } else if (!components.contains(treeName)) {
+            components.insert(treeName, component.take());
+        }
     }
 
     // store all components that got a replacement
@@ -3750,6 +3783,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
+        } else {
+            return false;
         }
     }
 

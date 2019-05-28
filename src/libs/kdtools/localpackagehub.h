@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -43,6 +43,7 @@ struct KDTOOLS_EXPORT LocalPackage
     QString name;
     QString title;
     QString description;
+    QString treeName;
     QString version;
     QString inheritVersionFrom;
     QStringList dependencies;
@@ -98,6 +99,7 @@ public:
     void addPackage(const QString &pkgName,
                     const QString &version, // mandatory
                     const QString &title,
+                    const QString &treeName,
                     const QString &description,
                     const QStringList &dependencies,
                     const QStringList &autoDependencies,

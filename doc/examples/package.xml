@@ -42,4 +42,5 @@
             <Argument>@TargetDir@/Folder2</Argument>
         </Operation>
     </Operations>
+    <TreeName>com.vendor.subcomponent</TreeName>
 </Package>

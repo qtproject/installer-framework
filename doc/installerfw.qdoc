@@ -938,6 +938,12 @@
                 For more information, see \l{Adding Operations}. For a
                 summary of available operations, see \l {Operations}.
 
+        \row
+            \li TreeName
+            \li Specifies the component location in the install tree view. Overwrites the original
+                location which is calculated from component name. Component names and tree names
+                must be unique. Optional.
+
     \endtable
 
     \section2 Component Dependencies

@@ -37,7 +37,8 @@ SUBDIRS += \
     environmentvariableoperation \
     licenseagreement \
     globalsettingsoperation \
-    elevatedexecuteoperation
+    elevatedexecuteoperation \
+    treename
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

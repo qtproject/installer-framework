@@ -274,6 +274,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 {
     setValue(scName, package.name);
     setValue(scDisplayName, package.title);
+    setValue(scTreeName, package.treeName);
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
     setValue(scInheritVersion, package.inheritVersionFrom);
@@ -301,6 +302,7 @@ void Component::loadDataFromPackage(const Package &package)
 
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
+    setValue(scTreeName, package.data(scTreeName).toString());
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
@@ -520,6 +522,16 @@ QString Component::name() const
 QString Component::displayName() const
 {
     return d->m_vars.value(scDisplayName);
+}
+
+/*!
+    Returns this component's location in the tree view. If the tree name is not
+    set, returns the component name. The tree name must be unique, it must not
+    conflict with other tree names or component names.
+*/
+QString Component::treeName() const
+{
+    return d->m_vars.value(scTreeName, name());
 }
 
 /*!

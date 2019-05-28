@@ -1,0 +1,119 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>This component depends on componentB.sub2.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <Dependencies>componentB.sub2</Dependencies>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>570dec768b1f266c66656f015e772f0e6e41b73d</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentA.sub1</Name>
+  <DisplayName>Component A subcomponent 1</DisplayName>
+  <Description>component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <UpdateFile CompressedSize="283" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>da5819910a7f7c95eb61a49543e273fd6e2e9aae</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentA.sub2</Name>
+  <DisplayName>Component A subcomponent 2</DisplayName>
+  <Description>component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <TreeName>ASub2ToRoot</TreeName>
+  <UpdateFile CompressedSize="283" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>73ac2c332ce01fadf0f1c7e16a27faaf0f853e18</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB</Name>
+  <DisplayName>Component B</DisplayName>
+  <Description>Component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>72eee5304ff866e024b477d7b2432df8f2428483</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB.sub1</Name>
+  <DisplayName>Component B subcomponent 2 1</DisplayName>
+  <Description>Subcomponent for B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile CompressedSize="283" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>e19f1a26698afe0b72c9048b403253421b8fed4b</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB.sub1.sub1</Name>
+  <DisplayName>Component B sub component for sub1</DisplayName>
+  <Description>Subsubcomponent for B. Moved to root with treename.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <TreeName>BSub1Sub1ToRoot</TreeName>
+  <UpdateFile CompressedSize="291" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>6a348979273336862c7a5e16305779e81fee1081</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB.sub1.sub2</Name>
+  <DisplayName>Component B second sub component for sub1</DisplayName>
+  <Description>Subsubcomponent for B. Moved under componentC with treename.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <TreeName>componentC.sub1</TreeName>
+  <UpdateFile CompressedSize="291" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>c1bca8944147ec64343c146f461288990268b4a9</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB.sub2</Name>
+  <DisplayName>Component B subcomponent 2</DisplayName>
+  <Description>Subcomponent for B. Moved to root with treename.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>8000</SortingPriority>
+  <TreeName>BSub2ToRoot</TreeName>
+  <UpdateFile CompressedSize="283" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>bde9feba3a8134e9c1412b674ee21642938fafec</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentC</Name>
+  <DisplayName>Component C</DisplayName>
+  <Description>Component C</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>cc33e730d9127e1636566ea35bbe4f186ba4bcb7</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentD</Name>
+  <DisplayName>Component D</DisplayName>
+  <Description>Component D. Autodepends on moved item componentA.sub2 </Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <AutoDependOn>componentA.sub2</AutoDependOn>
+  <UpdateFile CompressedSize="275" UncompressedSize="101" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>3ca69d6bb062c4442fdb20fe0e62bb0f04e8a419</SHA1>
+ </PackageUpdate>
+</Updates>
