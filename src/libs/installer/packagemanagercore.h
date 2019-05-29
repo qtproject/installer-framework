@@ -227,6 +227,7 @@ public:
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
     void listInstalledPackages();
+    void listAvailablePackages(const QString &regexp);
     void updateComponentsSilently();
 
     // convenience
@@ -361,6 +362,7 @@ private:
     QList<Component *> componentsMarkedForInstallation() const;
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
+    void printPackageInformation(const QString &name, const Package *update);
 
 private:
     PackageManagerCorePrivate *const d;

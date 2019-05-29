@@ -54,7 +54,7 @@ static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 MetadataJob::MetadataJob(QObject *parent)
     : Job(parent)
     , m_core(nullptr)
-    , m_addCompressedPackages(false)
+    , m_downloadType(DownloadType::All)
     , m_downloadableChunkSize(1000)
     , m_taskNumber(0)
 {
@@ -109,7 +109,7 @@ void MetadataJob::doStart()
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
     }
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-    if (!m_addCompressedPackages) {
+    if (m_downloadType == DownloadType::All || m_downloadType == DownloadType::UpdatesXML) {
         emit infoMessage(this, tr("Preparing meta information download..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
         if (onlineInstaller || m_core->isMaintainer()) {
@@ -364,7 +364,10 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        if (!fetchMetaDataPackages()) {
+        if (m_downloadType != DownloadType::UpdatesXML) {
+            if (!fetchMetaDataPackages())
+                emitFinished();
+        } else {
             emitFinished();
         }
     } else if (status == XmlDownloadRetry) {

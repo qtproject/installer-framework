@@ -122,11 +122,17 @@ int InstallerBase::run()
 
     QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
     if (QInstaller::isVerbose()) {
-        loggingRules = QString(); // enable all in verbose mode
         if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
             loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))
                            .split(QLatin1Char(','), QString::SkipEmptyParts)
                            .join(QLatin1Char('\n')); // take rules from command line
+        } else {
+            // enable all in verbose mode except detailed package information
+            loggingRules = QLatin1String("ifw.* = true\n"
+                                         "ifw.package.* = false\n"
+                                         "ifw.package.name = true\n"
+                                         "ifw.package.version = true\n"
+                                         "ifw.package.displayname = true\n");
         }
     }
     QLoggingCategory::setFilterRules(loggingRules);
@@ -305,6 +311,12 @@ int InstallerBase::run()
         checkLicense();
         m_core->setPackageManager();
         m_core->listInstalledPackages();
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::ListPackages))){
+        if (!m_core->isInstaller())
+            m_core->setPackageManager();
+        checkLicense();
+        QString regexp = parser.value(QLatin1String(CommandLineOptions::ListPackages));
+        m_core->listAvailablePackages(regexp);
     } else {
         //create the wizard GUI
         TabController controller(nullptr);

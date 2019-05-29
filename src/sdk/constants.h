@@ -55,6 +55,7 @@ const char StartClient[] = "startclient";
 const char InstallCompressedRepository[] = "installCompressedRepository";
 const char SilentUpdate[] = "silentUpdate";
 const char ListInstalledPackages[] = "listInstalledPackages";
+const char ListPackages[] = "listPackages";
 const char Platform[] = "platform";
 const char SquishPort[] = "squish-port";
 

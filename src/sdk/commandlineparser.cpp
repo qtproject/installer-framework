@@ -120,6 +120,8 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Updates all packages silently.")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ListInstalledPackages),
         QLatin1String("Lists installed packages.")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ListPackages),
+        QLatin1String("Lists available packages."), QLatin1String("regexp")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Platform),
         QLatin1String("Use the specified platform plugin."), QLatin1String("plugin")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),

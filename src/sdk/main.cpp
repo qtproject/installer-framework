@@ -186,7 +186,8 @@ int main(int argc, char *argv[])
     try {
         QScopedPointer<Console> console;
         if (parser.isSet(QLatin1String(CommandLineOptions::VerboseShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong))) {
+            || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong))
+            || parser.isSet(QLatin1String(CommandLineOptions::ListPackages))) {
                 console.reset(new Console);
                 QInstaller::setVerbose(true);
         }

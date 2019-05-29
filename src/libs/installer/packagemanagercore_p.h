@@ -235,7 +235,7 @@ private:
     PackagesList remotePackages();
     PackagesList compressedPackages();
     LocalPackagesHash localInstalledPackages();
-    bool fetchMetaInformationFromRepositories();
+    bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
     bool fetchMetaInformationFromCompressedRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
     void processFilesForDelayedDeletion();

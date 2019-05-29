@@ -52,6 +52,13 @@ struct ArchiveMetadata
     Metadata metaData;
 };
 
+enum DownloadType
+{
+    All,
+    CompressedPackage,
+    UpdatesXML
+};
+
 class INSTALLER_EXPORT MetadataJob : public Job
 {
     Q_OBJECT
@@ -70,7 +77,7 @@ public:
     QList<Metadata> metadata() const;
     Repository repositoryForDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
-    void addCompressedPackages(bool addCompressPackage) { m_addCompressedPackages = addCompressPackage;}
+    void addDownloadType(DownloadType downloadType) { m_downloadType = downloadType;}
     QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
 
 private slots:
@@ -102,7 +109,7 @@ private:
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
-    bool m_addCompressedPackages;
+    DownloadType m_downloadType;
     QList<FileTaskItem> m_unzipRepositoryitems;
     QList<FileTaskResult> m_metadataResult;
     int m_downloadableChunkSize;

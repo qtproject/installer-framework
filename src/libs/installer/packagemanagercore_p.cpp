@@ -2255,14 +2255,14 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
     return installedPackages;
 }
 
-bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories()
+bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadType type)
 {
     m_updates = false;
     m_repoFetched = false;
     m_updateSourcesAdded = false;
 
     try {
-        m_metadataJob.addCompressedPackages(false);
+        m_metadataJob.addDownloadType(type);
         m_metadataJob.start();
         m_metadataJob.waitForFinished();
     } catch (Error &error) {
@@ -2296,10 +2296,9 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromCompressedRepositories()
         //Tell MetadataJob that only compressed packages needed to be fetched and not all.
         //We cannot do this in general fetch meta method as the compressed packages might be
         //installed after components tree is generated
-        m_metadataJob.addCompressedPackages(true);
+        m_metadataJob.addDownloadType(DownloadType::CompressedPackage);
         m_metadataJob.start();
         m_metadataJob.waitForFinished();
-        m_metadataJob.addCompressedPackages(false);
     } catch (Error &error) {
         setStatus(PackageManagerCore::Failure, tr("Cannot retrieve meta information: %1")
             .arg(error.message()));
