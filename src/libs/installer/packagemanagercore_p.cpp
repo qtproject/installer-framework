@@ -2118,6 +2118,14 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     }
 }
 
+inline static QString quotePath(const QString &path)
+{
+  if (path.contains(QLatin1String(" "))) {
+    return QLatin1String("\"") + path + QLatin1String("\"");
+  }
+  return path;
+}
+
 void PackageManagerCorePrivate::registerMaintenanceTool()
 {
 #ifdef Q_OS_WIN
@@ -2133,7 +2141,7 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
     settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
-    const QString maintenanceTool = QDir::toNativeSeparators(maintenanceToolName());
+    const QString maintenanceTool = quotePath(QDir::toNativeSeparators(maintenanceToolName()));
     settings.setValue(QLatin1String("DisplayIcon"), maintenanceTool);
     settings.setValue(scPublisher, m_data.value(scPublisher));
     settings.setValue(QLatin1String("UrlInfoAbout"), m_data.value(QLatin1String("Url")));
