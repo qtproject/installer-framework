@@ -199,6 +199,9 @@ public:
     Q_INVOKABLE bool fileExists(const QString &filePath) const;
     Q_INVOKABLE QString readFile(const QString &filePath, const QString &codecName) const;
 
+    bool checkTargetDir(const QString &targetDirectory);
+    QString targetDirWarning(const QString &targetDirectory) const;
+
 public:
     ScriptEngine *componentScriptEngine() const;
     ScriptEngine *controlScriptEngine() const;
@@ -228,6 +231,8 @@ public:
     void listInstalledPackages();
     void listAvailablePackages(const QString &regexp);
     void updateComponentsSilently(const QStringList &componentsToUpdate);
+    void installSelectedComponentsSilently(const QStringList& components);
+
     // convenience
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;

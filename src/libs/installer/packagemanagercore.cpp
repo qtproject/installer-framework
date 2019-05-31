@@ -834,6 +834,148 @@ QString PackageManagerCore::readFile(const QString &filePath, const QString &cod
     return stream.readAll();
 }
 
+/*!
+    Checks whether the target directory \a targetDirectory exists and has contents:
+    \list
+        \li Returns \c true if the directory exists and is empty.
+        \li Returns \c false if the directory already exists and contains an installation.
+        \li Returns \c false if the target is a file or a symbolic link.
+        \li Returns \c true or \c false if the directory exists but is not empty, depending on the
+            choice that the end users make in the displayed message box.
+    \endlist
+*/
+bool PackageManagerCore::checkTargetDir(const QString &targetDirectory)
+{
+    const QDir dir(targetDirectory);
+    // the directory exists and is empty...
+    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
+        return true;
+
+    const QFileInfo fi(targetDirectory);
+    if (fi.isDir()) {
+        QString fileName = settings().maintenanceToolName();
+#if defined(Q_OS_MACOS)
+        if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
+            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
+#elif defined(Q_OS_WIN)
+        fileName += QLatin1String(".exe");
+#endif
+
+        QFileInfo fi2(targetDirectory + QDir::separator() + fileName);
+        if (fi2.exists()) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("TargetDirectoryInUse"),
+                tr("Error"), tr("The directory you selected already "
+                                "exists and contains an installation. Choose a different target for installation."));
+            return false;
+        }
+
+        QMessageBox::StandardButton bt =
+            MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), QLatin1String("OverwriteTargetDirectory"),
+            tr("Warning"), tr("You have selected an existing, non-empty directory for installation.\nNote that it will be "
+                              "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
+                              "this directory as installation might fail.\nDo you want to continue?"), QMessageBox::Yes | QMessageBox::No);
+        return bt == QMessageBox::Yes;
+    } else if (fi.isFile() || fi.isSymLink()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("WrongTargetDirectory"),
+            tr("Error"),  tr("You have selected an existing file "
+                             "or symlink, please choose a different target for installation."));
+        return false;
+    }
+    return true;
+}
+
+/*!
+    Returns a warning if the path to the target directory \a targetDirectory
+    is not set or if it is invalid.
+*/
+QString PackageManagerCore::targetDirWarning(const QString &targetDirectory) const
+{
+    if (targetDirectory.isEmpty())
+        return tr("The installation path cannot be empty, please specify a valid directory.");
+
+    QDir target(targetDirectory);
+    if (target.isRelative())
+        return tr("The installation path cannot be relative, please specify an absolute path.");
+
+    QString nativeTargetDir = QDir::toNativeSeparators(target.absolutePath());
+    if (!settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < nativeTargetDir.length(); ++i) {
+            if (nativeTargetDir.at(i).unicode() & 0xff80) {
+                return tr("The path or installation directory contains non ASCII characters. This "
+                    "is currently not supported! Please choose a different path or installation "
+                    "directory.");
+            }
+        }
+    }
+
+    target = target.canonicalPath();
+    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
+        return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
+            .arg(QDir::toNativeSeparators(target.path()));
+    }
+
+#ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((nativeTargetDir.length()
+        + settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
+        return tr("The path you have entered is too long, please make sure to "
+            "specify a valid path.");
+    }
+
+    static QRegularExpression reg(QLatin1String(
+        "^(?<drive>[a-zA-Z]:\\\\)|"
+        "^(\\\\\\\\(?<path>\\w+)\\\\)|"
+        "^(\\\\\\\\(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\\\)"));
+    const QRegularExpressionMatch regMatch = reg.match(nativeTargetDir);
+
+    const QString ipMatch = regMatch.captured(QLatin1String("ip"));
+    const QString pathMatch = regMatch.captured(QLatin1String("path"));
+    const QString driveMatch = regMatch.captured(QLatin1String("drive"));
+
+    if (ipMatch.isEmpty() && pathMatch.isEmpty() && driveMatch.isEmpty()) {
+        return tr("The path you have entered is not valid, please make sure to "
+            "specify a valid target.");
+    }
+
+    if (!driveMatch.isEmpty()) {
+        bool validDrive = false;
+        const QFileInfo drive(driveMatch);
+        foreach (const QFileInfo &driveInfo, QDir::drives()) {
+            if (drive == driveInfo) {
+                validDrive = true;
+                break;
+            }
+        }
+        if (!validDrive) {  // right now we can only verify local drives
+            return tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+        }
+        nativeTargetDir = nativeTargetDir.mid(2);
+    }
+
+    if (nativeTargetDir.endsWith(QLatin1Char('.')))
+        return tr("The installation path must not end with '.', please specify a valid directory.");
+
+    QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
+        "|(\\\\CON)(\\\\|$)|(\\\\PRN)(\\\\|$)|(\\\\AUX)(\\\\|$)|(\\\\NUL)(\\\\|$)|(\\\\COM\\d)(\\\\|$)|(\\\\LPT\\d)(\\\\|$)");
+#else // Q_OS_WIN
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
+#endif // Q_OS_WIN
+
+    if (settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
+    static QRegularExpression ambCharRegEx(ambiguousChars, QRegularExpression::CaseInsensitiveOption);
+    // check if there are not allowed characters in the target path
+    QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
+    if (match.hasMatch()) {
+        return tr("The installation path must not contain \"%1\", "
+            "please specify a valid directory.").arg(match.captured(0));
+    }
+
+    return QString();
+}
+
 // -- QInstaller
 
 /*!
@@ -1923,6 +2065,54 @@ void PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             else
                 qDebug() << "Components updated successfully.";
         }
+    }
+}
+
+/*!
+    Installs selected components \a components without user interface. Virtual components
+    cannot be installed unless made visible with --show-virtual-components. AutoDependOn
+    nor non-checkable components cannot be installed directly.
+*/
+void PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
+{
+    // Check if there are processes running in the install if maintenancetool is in used.
+    if (!isInstaller()) {
+        if (d->runningProcessesFound())
+            return;
+        setPackageManager();
+    }
+
+    ComponentModel *model = defaultComponentModel();
+    fetchRemotePackagesTree();
+
+    bool installComponentsFound = false;
+    foreach (const QString &name, components){
+        const QModelIndex &idx = model->indexFromComponentName(name);
+        Component *component = componentByName(name);
+        if (idx.isValid()) {
+            if (model->data(idx, Qt::CheckStateRole) ==  QVariant::Invalid) { // User cannot select the component, check why
+                if (component && component->autoDependencies().count() > 0)
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install component "<< name
+                        << "Component is installed only as automatic dependency to "<< component->autoDependencies().join(QLatin1Char(','));
+                if (component && !component->isCheckable())
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install component "<< name
+                        <<". Component is not checkable meaning you have to select one of the subcomponents.";
+            } else if (model->data(idx, Qt::CheckStateRole) == Qt::Checked ) {
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Component " << name <<" already installed";
+            } else {
+                model->setData(idx, Qt::Checked, Qt::CheckStateRole);
+                installComponentsFound = true;
+            }
+        } else { // idx is invalid and component valid when we have invisible virtual component
+            if (component && component->isVirtual())
+                qCDebug(QInstaller::lcInstallerInstallLog)  << "Cannot install " << name <<". Component is virtual.";
+            else
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install " << name <<". Component not found.";
+        }
+    }
+    if (installComponentsFound) {
+        if (d->calculateComponentsAndRun())
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
     }
 }
 

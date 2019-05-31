@@ -341,6 +341,33 @@ int InstallerBase::run()
         if (!value.isEmpty())
             packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
         m_core->updateComponentsSilently(packages);
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::InstallPackages))) {
+        checkLicense();
+        m_core->autoRejectMessageBoxes();
+        if (m_core->isInstaller()) {
+            if (parser.isSet(QLatin1String(CommandLineOptions::TargetDir))) {
+                const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
+                if (m_core->checkTargetDir(value)) {
+                    QString targetDirWarning = m_core->targetDirWarning(value);
+                    if (!targetDirWarning.isEmpty()) {
+                        qDebug() << m_core->targetDirWarning(value);
+                        return EXIT_FAILURE;
+                    }
+                    m_core->setValue(QLatin1String("TargetDir"), value);
+                } else {
+                    return EXIT_FAILURE;
+                }
+            } else {
+                qWarning() << "Please specify target directory.";
+                return EXIT_FAILURE;
+            }
+        }
+
+        QStringList packages;
+        const QString &value = parser.value(QLatin1String(CommandLineOptions::InstallPackages));
+        if (!value.isEmpty())
+            packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
+        m_core->installSelectedComponentsSilently(packages);
     } else {
         //create the wizard GUI
         TabController controller(nullptr);

@@ -124,10 +124,16 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Lists installed packages.")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ListPackages),
         QLatin1String("Lists available packages."), QLatin1String("regexp")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::InstallPackages),
+        QLatin1String("Install selected packages"),
+        QLatin1String("package,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Platform),
         QLatin1String("Use the specified platform plugin."), QLatin1String("plugin")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),
         QLatin1String("Key Value pair to be set."));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::TargetDir),
+        QLatin1String("Set install directory"),
+        QLatin1String("directory")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SquishPort),
         QLatin1String("Give a port where Squish can connect to. If no port is given, default "
         "port 11233 is used. Note: To enable Squish support you first need to build IFW with "

@@ -55,6 +55,7 @@ const char IFW_PACKAGE_CHECKABLE[] = "ifw.package.checkable";
 const char IFW_PACKAGE_LICENSES[] = "ifw.package.licenses";
 const char IFW_PACKAGE_COMPRESSEDSIZE[] = "ifw.package.compressedsize";
 const char IFW_PACKAGE_UNCOMPRESSEDSIZE[] = "ifw.package.uncompressedsize";
+const char IFW_INSTALLER_INSTALLLOG[] = "ifw.installer.installlog";
 
 namespace QInstaller
 {
@@ -85,6 +86,7 @@ Q_LOGGING_CATEGORY(lcPackageCheckable, IFW_PACKAGE_CHECKABLE)
 Q_LOGGING_CATEGORY(lcPackageLicenses, IFW_PACKAGE_LICENSES)
 Q_LOGGING_CATEGORY(lcPackageUncompressedSize, IFW_PACKAGE_UNCOMPRESSEDSIZE)
 Q_LOGGING_CATEGORY(lcPackageCompressedSize, IFW_PACKAGE_COMPRESSEDSIZE)
+Q_LOGGING_CATEGORY(lcInstallerInstallLog, IFW_INSTALLER_INSTALLLOG)
 
 
 QStringList loggingCategories()
@@ -114,7 +116,8 @@ QStringList loggingCategories()
             << QLatin1String(IFW_PACKAGE_CHECKABLE)
             << QLatin1String(IFW_PACKAGE_LICENSES)
             << QLatin1String(IFW_PACKAGE_UNCOMPRESSEDSIZE)
-            << QLatin1String(IFW_PACKAGE_COMPRESSEDSIZE);
+            << QLatin1String(IFW_PACKAGE_COMPRESSEDSIZE)
+            << QLatin1String(IFW_INSTALLER_INSTALLLOG);
     return categories;
 
 }

@@ -352,8 +352,6 @@ private Q_SLOTS:
 
 private:
     QString targetDirWarning() const;
-    bool askQuestion(const QString &identifier, const QString &message);
-    bool failWithError(const QString &identifier, const QString &message);
 
 private:
     QLineEdit *m_lineEdit;

@@ -57,6 +57,8 @@ const char SilentUpdate[] = "silentUpdate";
 const char UpdatePackages[] = "updatePackages";
 const char ListInstalledPackages[] = "listInstalledPackages";
 const char ListPackages[] = "listPackages";
+const char InstallPackages[] = "installPackages";
+const char TargetDir[] = "targetDir";
 const char Platform[] = "platform";
 const char SquishPort[] = "squish-port";
 
