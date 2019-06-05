@@ -92,7 +92,8 @@ public:
     QString targetDir() const;
     QString registerPath();
 
-    bool targetSubDirsWritable();
+    bool directoryWritable(const QString &path) const;
+    bool subdirectoriesWritable(const QString &path) const;
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;

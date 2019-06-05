@@ -121,6 +121,9 @@ public:
 
     static Component *componentByName(const QString &name, const QList<Component *> &components);
 
+    bool directoryWritable(const QString &path) const;
+    bool subdirectoriesWritable(const QString &path) const;
+
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
 
