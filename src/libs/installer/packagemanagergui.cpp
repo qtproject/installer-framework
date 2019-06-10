@@ -1911,6 +1911,11 @@ void ComponentSelectionPage::entering()
     setColoredSubTitle(tr(strings[index]));
 
     d->updateTreeView();
+
+    // check component model state so we can enable needed component selection buttons
+    if (core->isUpdater())
+        d->onModelStateChanged(d->m_currentModel->checkedState());
+
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
         && !core->isUpdater()) {
