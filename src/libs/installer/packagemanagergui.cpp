@@ -1543,7 +1543,7 @@ void IntroductionPage::setErrorMessage(const QString &error)
 {
     QPalette palette;
     const PackageManagerCore::Status s = packageManagerCore()->status();
-    if (s == PackageManagerCore::Failure || s == PackageManagerCore::Failure) {
+    if (s == PackageManagerCore::Failure) {
         palette.setColor(QPalette::WindowText, Qt::red);
     } else {
         palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
