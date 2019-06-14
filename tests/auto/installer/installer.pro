@@ -21,7 +21,8 @@ SUBDIRS += \
     settingsoperation \
     task \
     clientserver \
-    factory
+    factory \
+    replaceoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation

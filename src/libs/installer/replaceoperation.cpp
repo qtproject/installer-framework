@@ -31,6 +31,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QRegularExpression>
 
 using namespace QInstaller;
 
@@ -46,17 +47,45 @@ void ReplaceOperation::backup()
 
 bool ReplaceOperation::performOperation()
 {
+    static const QLatin1String stringMode("string");
+    static const QLatin1String regexMode("regex");
+
     // Arguments:
     // 1. filename
     // 2. Source-String
     // 3. Replace-String
-    if (!checkArgumentCount(3))
+    // 4. mode=string|regex
+
+    // Calling with three arguments defaults to string search,
+    // this provides backward compatibility with the old syntax.
+    if (!checkArgumentCount(3, 4))
         return false;
 
     const QStringList args = arguments();
     const QString fileName = args.at(0);
     const QString before = args.at(1);
     const QString after = args.at(2);
+    QString mode = args.value(3);
+
+    if (mode.isEmpty())
+        mode = stringMode;
+
+    if (before.isEmpty()) {
+        setError(InvalidArguments);
+        setErrorString(tr("Current search argument calling \"%1\" with "
+            "empty search argument is not supported.").arg(name()));
+
+        return false;
+    }
+
+    if (!(mode == stringMode || mode == regexMode)) {
+        setError(InvalidArguments);
+        setErrorString(tr("Current mode argument calling \"%1\" with "
+            "arguments \"%2\" is not supported. Please use string or regex.")
+            .arg(name(), arguments().join(QLatin1String("; "))));
+
+        return false;
+    }
 
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -78,7 +107,12 @@ bool ReplaceOperation::performOperation()
     }
 
     stream.setDevice(&file);
-    stream << replacedFileContent.replace(before, after);
+    if (mode == regexMode) {
+        QRegularExpression regex(before);
+        stream << replacedFileContent.replace(regex, after);
+    } else if (mode == stringMode) {
+        stream << replacedFileContent.replace(before, after);
+    }
     file.close();
 
     return true;

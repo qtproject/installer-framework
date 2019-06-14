@@ -90,8 +90,16 @@
                 is treated as ASCII text.
         \row
             \li Replace
-            \li "Replace" \c file \c search \ replace
-            \li Opens \c file to find \c search string and replaces that with the \c replace string.
+            \li "Replace" \c file \c search \c replace \c mode
+            \li Opens \c file to find \c search string and replaces that with the \c replace string,
+                using \c mode that can be either \c string or \c regex. For regular expressions
+                containing capturing groups, occurrences of \c \1, \c \2, ..., in \c replace are
+                replaced with the string captured by the corresponding capturing group.
+
+                Note that testing the operation using \c devtool does not support commas inside the
+                \c search pattern as they are used as argument separators. When using \c regex mode you
+                should also ensure the \c search pattern adheres to \c QRegularExpression class
+                documentation, particularly to the escaping rules for characters.
         \row
             \li LineReplace
             \li "LineReplace" \c file \c search \c replace
