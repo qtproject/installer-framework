@@ -1,3 +1,10 @@
+3.1.2
+- Gain admin rights for writing MaintenanceTool config files if needed (QTIFW-1363)
+- Update INSTALL file (QTIFW-1185)
+- Fix initially deactivated buttons when selecting components to update (QTIFW-1320)
+- Fix MaintenanceTool file write permission check on Linux and macOS (QTIFW-1324)
+- Fix installer hang on Windows with empty command prompt window appearing (QTIFW-1250)
+
 3.1.1
 - Add fetch to the same pane with package categories (QTIFW-1284)
 - Change text in Select Components view when selection of components is not possible (QTIFW-1241)
