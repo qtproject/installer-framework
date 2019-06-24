@@ -28,6 +28,7 @@
 
 #include "repositorycategory.h"
 #include "filedownloaderfactory.h"
+#include "constants.h"
 
 #include <QDataStream>
 #include <QFileInfo>
@@ -102,16 +103,20 @@ void RepositoryCategory::setTooltip(const QString &tooltip)
 */
 QSet<Repository> RepositoryCategory::repositories() const
 {
-    return variantListToSet<Repository>(m_data.values(QLatin1String("Repositories")));
+    return variantListToSet<Repository>(m_data.values(scRepositories));
 }
 
 /*!
-    Inserts a set of \a repositories to the category.
+    Inserts a set of \a repositories to the category. Removes old \a repositories
+    if \a replace is set to \c true.
 */
-void RepositoryCategory::setRepositories(const QSet<Repository> repositories)
+void RepositoryCategory::setRepositories(const QSet<Repository> repositories, const bool replace)
 {
+    if (replace)
+        m_data.remove(scRepositories);
+
     foreach (const Repository &repository, repositories)
-        m_data.insertMulti(QLatin1String("Repositories"), QVariant().fromValue(repository));
+        m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!
@@ -119,7 +124,7 @@ void RepositoryCategory::setRepositories(const QSet<Repository> repositories)
 */
 void RepositoryCategory::addRepository(const Repository repository)
 {
-    m_data.insertMulti(QLatin1String("Repositories"), QVariant().fromValue(repository));
+    m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!

@@ -326,6 +326,9 @@ void MetadataJob::xmlTaskFinished()
                     QHash<QString, QPair<Repository, Repository> > update;
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
+                    if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
+                        qDebug() << "Repository categories updated.";
+
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
                             if (m_core->isMaintainer()) {

@@ -616,10 +616,44 @@ void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
         d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }
 
+void Settings::setRepositoryCategories(const QSet<RepositoryCategory> &repositories)
+{
+    d->m_data.remove(scRepositoryCategories);
+    addRepositoryCategories(repositories);
+}
+
 void Settings::addRepositoryCategories(const QSet<RepositoryCategory> &repositories)
 {
     foreach (const RepositoryCategory &repository, repositories)
         d->m_data.insertMulti(scRepositoryCategories, QVariant().fromValue(repository));
+}
+
+Settings::Update Settings::updateRepositoryCategories(const RepoHash &updates)
+{
+    if (updates.isEmpty())
+        return Settings::NoUpdatesApplied;
+
+    QSet<RepositoryCategory> categories = repositoryCategories();
+    QList<RepositoryCategory> categoriesList = categories.values();
+    QPair<Repository, Repository> updateValues = updates.value(QLatin1String("replace"));
+
+    bool update = false;
+
+    foreach (RepositoryCategory category, categoriesList) {
+        QSet<Repository> repositories = category.repositories();
+        if (repositories.contains(updateValues.first)) {
+            update = true;
+            repositories.remove(updateValues.first);
+            repositories.insert(updateValues.second);
+            category.setRepositories(repositories, true);
+            categoriesList.replace(categoriesList.indexOf(category), category);
+        }
+    }
+    if (update) {
+        categories = categoriesList.toSet();
+        setRepositoryCategories(categories);
+    }
+    return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
 static bool apply(const RepoHash &updates, QHash<QUrl, Repository> *reposToUpdate)
