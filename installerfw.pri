@@ -125,7 +125,6 @@ DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUIL
            "_GIT_SHA1_=$$GIT_SHA1" \
            IFW_VERSION_STR=$$IFW_VERSION_STR IFW_VERSION=$$IFW_VERSION
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
-
 LIBS += -l7z
 win32-g++*: LIBS += -lmpr -luuid
 
@@ -137,4 +136,10 @@ equals(TEMPLATE, app) {
 
 CIFW {
 DEFINES += CUSTOM_IFW_FEATURE
+}
+
+7ZIP_ST {
+# multithread 7zip processing causes memory corruption(may be free()ing multiple times).
+# setting _7ZIP_ST makes 7zip processing in single thread, but it takes so long time.
+DEFINES += _7ZIP_ST
 }
