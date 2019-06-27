@@ -330,9 +330,12 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
             << endl;
         plistStream << QLatin1String("\t<key>CFBundlePackageType</key>") << endl;
         plistStream << QLatin1String("\t<string>APPL</string>") << endl;
-        plistStream << QLatin1String("\t<key>CFBundleGetInfoString</key>") << endl;
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
+        plistStream << QLatin1String("\t<key>CFBundleShortVersionString</key>") << endl;
+        plistStream << QLatin1String("\t<string>") << QLatin1String(QUOTE(IFW_VERSION_STR)) << ("</string>")
+            << endl;
+        plistStream << QLatin1String("\t<key>CFBundleVersion</key>") << endl;
         plistStream << QLatin1String("\t<string>") << QLatin1String(QUOTE(IFW_VERSION_STR)) << ("</string>")
             << endl;
 #undef QUOTE
