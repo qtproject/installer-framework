@@ -270,6 +270,12 @@
                 See also the table that lists examples of \l {Applications-directory-on-Windows}
                 {applications directories on Windows}.
         \row
+            \li ApplicationsDirUser
+            \li Applications directory for user-specific programs. This is useful on macOS,
+                on other platforms it is the same as \c ApplicationsDir.
+
+                For example, \c {$HOME/Applications} on macOS.
+        \row
             \li ApplicationsDirX86
             \li Applications Directory for 32 bit programs. This is useful on Windows,
                 on other platforms it is the same as \c ApplicationsDir.
