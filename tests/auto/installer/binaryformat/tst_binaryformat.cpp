@@ -128,7 +128,7 @@ private slots:
             // throws
             QInstaller::BinaryContent::findMagicCookie(&file, QInstaller::BinaryContent::MagicCookie);
         } catch (const QInstaller::Error &error) {
-            QCOMPARE(qPrintable(error.message()), "No marker found, stopped after 71.00 KiB.");
+            QCOMPARE(qPrintable(error.message()), "No marker found, stopped after 71.00 KB.");
         } catch (...) {
             QFAIL("Unexpected error.");
         }
