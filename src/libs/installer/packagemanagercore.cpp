@@ -537,6 +537,14 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 }
 
 /*!
+    \sa {installer::clearComponentsToInstallCalculated}{installer.clearComponentsToInstallCalculated}
+ */
+void PackageManagerCore::clearComponentsToInstallCalculated()
+{
+    d->m_componentsToInstallCalculated = false;
+}
+
+/*!
    \sa {installer::autoAcceptMessageBoxes}{installer.autoAcceptMessageBoxes}
    \sa autoRejectMessageBoxes(), setMessageBoxAutomaticAnswer()
  */

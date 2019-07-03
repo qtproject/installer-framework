@@ -293,6 +293,7 @@ public Q_SLOTS:
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
+    void clearComponentsToInstallCalculated();
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;
