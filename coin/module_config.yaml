@@ -1,0 +1,86 @@
+version: 2
+accept_configuration:
+  condition: or
+  conditions:
+    - condition: property
+      property: features
+      contains_value: LicenseCheck
+    - condition: property
+      property: features
+      contains_value: Documentation
+    - condition: and
+      conditions:
+        - condition: property
+          property: features
+          contains_value: Packaging
+        - condition: property
+          property: features
+          contains_value: DisableTests
+        - condition: property
+          property: configureArgs
+          contains_value: -static
+
+common_environment: &common_environment
+  type: Group
+  instructions:
+    - !include "{{installer-framework/installer-framework}}/common_environment.yaml"
+
+make_instructions: &make_instructions
+  type: Group
+  instructions:
+    - !include "{{installer-framework/installer-framework}}/qmake_module_build.yaml"
+
+make_check_instructions: &make_check_instructions
+  type: Group
+  instructions:
+    - type: MakeDirectory
+      directory: .git
+      userMessageOnFailure: Failed to create .git dir, not related to patch
+    - !include "{{installer-framework/installer-framework}}/make_check_instructions.yaml"
+
+run_license_check: &run_license_check
+     type: Group
+     enable_if:
+       condition: property
+       property: features
+       contains_value: LicenseCheck
+     instructions:
+       - type: EnvironmentVariable
+         variableName: QT_MODULE_TO_TEST
+         variableValue: "installer-framework/installer-framework"
+       - type: InstallSourceArchive
+         maxTimeInSeconds: 600
+         maxTimeBetweenOutput: 600
+         project: qt/qtqa
+         ref: master
+         directory: qt/qtqa
+         userMessageOnFailure: "Could not install qt/qtqa source archive. Please investigate why."
+       - type: InstallSourceArchive
+         maxTimeInSeconds: 600
+         maxTimeBetweenOutput: 600
+         project: qt/qtbase
+         ref: 5.12
+         directory: qt/qtbase
+         userMessageOnFailure: "Could not install qt/base source archive. Please investigate why."
+       - type: ChangeDirectory
+         directory: "{{.AgentWorkingDir}}"
+       - type: ExecuteCommand
+         command: ["perl", "{{.AgentWorkingDir}}/qt/qtqa/tests/prebuild/license/tst_licenses.pl"]
+         maxTimeInSeconds: 7200
+         maxTimeBetweenOutput: 120
+         userMessageOnFailure: "Failed to execute license checker."
+
+instructions:
+    Build:
+      - *common_environment
+      - !include "{{installer-framework/installer-framework}}/find_msvc_compiler.yaml"
+      - *make_instructions
+
+    Test:
+      - *common_environment
+      - *run_license_check
+      - *make_check_instructions
+
+    LicenseCheck:
+      - *run_license_check
+

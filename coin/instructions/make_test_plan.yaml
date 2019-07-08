@@ -1,0 +1,37 @@
+type: Group
+disable_if:
+  condition: property
+  property: features
+  contains_value: DisableTests
+instructions:
+  - type: EnvironmentVariable
+    variableName: QMAKEFEATURES
+    variableValue: "{{.AgentWorkingDir}}/test_plan_hook"
+  - type: WriteFile
+    fileContents: "load(default_post)
+testcase|qmltestcase { !build_pass:contains(TEMPLATE, \".*(lib|app)\"):!insignificant_test:write_file($$PWD/TestLibTestPlan, OUT_PWD, append) }
+else:if(ctest_testcase) { !insignificant_test:write_file($$PWD/GeneralTestPlan, OUT_PWD, append) }"
+    filename: "{{.AgentWorkingDir}}/test_plan_hook/default_post.prf"
+    fileMode: 420
+  - type: ChangeDirectory
+    directory: "{{.SourceDir}}/tests"
+  - type: ExecuteCommand
+    command: "c:{{.BuildDir}}\\bin\\qmake.exe -r {{.SourceDir}}\\tests"
+    maxTimeInSeconds: 6000
+    maxTimeBetweenOutput: 600
+    userMessageOnFailure: "Failed running qmake, check logs."
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+  - type: ExecuteCommand
+    command: "{{.BuildDir}}/bin/qmake -r {{.SourceDir}}/tests"
+    maxTimeInSeconds: 6000
+    maxTimeBetweenOutput: 600
+    userMessageOnFailure: "Failed running qmake, check logs."
+    enable_if:
+      condition: property
+      property: target.compiler
+      not_in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+  - type: UploadTestPlan
+    qtestlibTestPlanPath: "{{.AgentWorkingDir}}/test_plan_hook/TestLibTestPlan"

@@ -1,0 +1,113 @@
+type: Group
+disable_if:
+  condition: property
+  property: features
+  contains_value: LicenseCheck
+instructions:
+  - type: EnvironmentVariable
+    variableName: QTEST_ENVIRONMENT
+    variableValue: "ci"
+  - type: EnvironmentVariable
+    variableName: TESTRUNNER
+    variableValue: "{{.Env.CI_WINRTRUNNER_PATH}}\\winrtrunner.exe"
+    enable_if:
+      condition: property
+      property: target.os
+      equals_value: WinRT
+
+  - type: Group
+    instructions:
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}/tests"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change into tests directory."
+      - type: ExecuteCommand
+        command: "{{.InstallDir}}/bin/qmake.exe INSTALL_PREFIX={{.InstallDir}}"
+        maxTimeInSeconds: 600
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed running qmake, check logs."
+      - type: ExecuteCommand
+        command: Mingw32-make
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: "Failed to run make, check logs."
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}/tests/auto"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change directory."
+      - type: RunQtUnitTest
+        directory: "{{.SourceDir}}/tests/auto"
+        testRepetitionAllowance: 3
+        runTestCommand: ["Mingw32-make", "check", "-j1"]
+        maxTimeInSeconds: 3600
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Test execution failed, check logs."
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [Mingw53, Mingw73]
+
+  - type: Group
+    instructions:
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}/tests"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change into tests directory."
+      - type: ExecuteCommand
+        command: "{{.InstallDir}}/bin/qmake INSTALL_PREFIX={{.InstallDir}}"
+        maxTimeInSeconds: 600
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed running qmake, check logs."
+      - type: ExecuteCommand
+        command: make
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: "Failed to run make, check logs."
+      - type: RunQtUnitTest
+        runTestCommand: ["make", "check", "-j1"]
+        directory: "{{.SourceDir}}/tests/auto"
+        testRepetitionAllowance: 3
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 1200
+        userMessageOnFailure: "Test execution failed, check logs."
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [GCC, Clang]
+
+  - type: Group
+    instructions:
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}/tests"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change into tests directory."
+      - type: ExecuteCommand
+        command: "c:{{.InstallDir}}\\bin\\qmake.exe INSTALL_PREFIX={{.InstallDir}}"
+        maxTimeInSeconds: 600
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed running qmake, check logs."
+      - type: ExecuteCommand
+        command: "jom"
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: "Failed to run jom/make, check logs."
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}/tests/auto"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change dir"
+      - type: RunQtUnitTest
+        testRepetitionAllowance: 3
+        directory: "{{.SourceDir}}/tests/auto"
+        runTestCommand: ["jom", "check"]
+        maxTimeInSeconds: 3600
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed to run make check, check logs."
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
