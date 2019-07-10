@@ -119,15 +119,18 @@ private slots:
 
         QVERIFY(core.calculateComponentsToInstall());
         {
-            QTemporaryFile dummy(testDirectory + QLatin1String("/dummy"));
-            dummy.open();
+            QFile dummy(testDirectory + QLatin1String("/dummy"));
+            QVERIFY(dummy.open(QIODevice::ReadWrite));
 
             core.runInstaller();
 
             QVERIFY(QDir(testDirectory).exists());
             QVERIFY(QFileInfo(dummy.fileName()).exists());
+
+            dummy.close();
+            QVERIFY(dummy.remove());
         }
-        QDir().rmdir(testDirectory);
+        QVERIFY(QDir().rmdir(testDirectory));
         ProgressCoordinator::instance()->reset();
     }
 

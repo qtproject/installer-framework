@@ -324,9 +324,9 @@ bool RemoteFileEngine::open(QIODevice::OpenMode mode)
 {
     if (connectToServer()) {
         return callRemoteMethod<bool>(QString::fromLatin1(Protocol::QAbstractFileEngineOpen),
-            static_cast<qint32>(mode));
+            static_cast<qint32>(mode | QIODevice::Unbuffered));
     }
-    return m_fileEngine.open(mode);
+    return m_fileEngine.open(mode | QIODevice::Unbuffered);
 }
 
 /*!

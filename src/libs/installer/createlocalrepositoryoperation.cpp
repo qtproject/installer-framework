@@ -38,6 +38,7 @@
 #include "lib7z_facade.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
+#include "constants.h"
 
 #include "updateoperations.h"
 
@@ -183,6 +184,23 @@ bool CreateLocalRepositoryOperation::performOperation()
         }
         setValue(QLatin1String("createddir"), mkDirOp.value(QLatin1String("createddir")));
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
+        // Internal changes to QTemporaryFile break copying Qt resources through
+        // QInstaller::RemoteFileEngine. We do not register resources to be handled by
+        // RemoteFileEngine, instead copying using 5.9 succeeded because QFile::copy()
+        // creates a QTemporaryFile object internally that is handled by the remote engine.
+        //
+        // This will not work with Qt 5.10 and above as QTemporaryFile introduced a new
+        // rename() implementation that explicitly uses its own QTemporaryFileEngine.
+        //
+        // Fail and return early if we are working on an elevated permission directory.
+        if (core && !core->directoryWritable(repoPath)) {
+            setError(UserDefinedError);
+            setErrorString(tr("Creating local repository into elevated permissions "
+                              "directory: %1 is not supported.").arg(repoPath));
+            return false;
+        }
+#endif
         // copy the whole meta data into local repository
         CopyDirectoryOperation copyDirOp(core);
         copyDirOp.setArguments(QStringList() << QLatin1String(":/metadata/") << repoPath);

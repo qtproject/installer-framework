@@ -1034,7 +1034,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     qDebug() << "Writing maintenance tool:" << maintenanceToolRenamedName;
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing maintenance tool."));
 
-    QTemporaryFile out;
+    QFile out(generateTemporaryFileName());
     QInstaller::openForWrite(&out); // throws an exception in case of error
 
     if (!input->seek(0))
@@ -1052,7 +1052,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
 #endif
         // It's a bit odd to have only the magic in the data file, but this simplifies
         // other code a lot (since installers don't have any appended data either)
-        QTemporaryFile dataOut;
+        QFile dataOut(generateTemporaryFileName());
         QInstaller::openForWrite(&dataOut);
         QInstaller::appendInt64(&dataOut, 0);   // operations start
         QInstaller::appendInt64(&dataOut, 0);   // operations end
@@ -1070,10 +1070,9 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         }
 
         if (!dataOut.rename(resourcePath.filePath(QLatin1String("installer.dat")))) {
-            throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(out.fileName(),
-                out.errorString()));
+            throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(dataOut.fileName(),
+                dataOut.errorString()));
         }
-        dataOut.setAutoRemove(false);
         dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
             | QFile::ReadOther);
     }
@@ -1097,6 +1096,11 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         qDebug() << "Wrote permissions for maintenance tool.";
     } else {
         qDebug() << "Failed to write permissions for maintenance tool.";
+    }
+
+    if (out.exists() && !out.remove()) {
+        qWarning() << tr("Cannot remove temporary data file \"%1\": %2")
+            .arg(out.fileName(), out.errorString());
     }
 }
 
@@ -1367,7 +1371,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         m_core->setValue(QLatin1String("installedOperationAreSorted"), QLatin1String("true"));
 
         try {
-            QTemporaryFile file;
+            QFile file(generateTemporaryFileName());
             QInstaller::openForWrite(&file);
             writeMaintenanceToolBinaryData(&file, &input, performedOperations, layout);
             QInstaller::appendInt64(&file, BinaryContent::MagicCookieDat);
@@ -1382,7 +1386,6 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 throw Error(tr("Cannot write maintenance tool binary data to %1: %2")
                     .arg(file.fileName(), file.errorString()));
             }
-            file.setAutoRemove(false);
             file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
                 | QFile::ReadOther);
         } catch (const Error &/*error*/) {

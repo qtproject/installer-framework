@@ -53,6 +53,7 @@ public:
 
     QString socketName() const;
     QString authorizationKey() const;
+    QString socketPathName(const QString &socketName) const;
 
 private slots:
     void restartWatchdog();

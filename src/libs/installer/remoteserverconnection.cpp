@@ -382,7 +382,14 @@ void RemoteServerConnection::handleQFSFileEngine(QIODevice *socket, const QStrin
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineCopy)) {
         QString newName;
         data >>newName;
+#ifdef Q_OS_LINUX
+        // QFileSystemEngine::copyFile() is currently unimplemented on Linux,
+        // copy using QFile instead of directly with QFSFileEngine.
+        QFile file(m_engine->fileName(QAbstractFileEngine::AbsoluteName));
+        sendData(socket, file.copy(newName));
+#else
         sendData(socket, m_engine->copy(newName));
+#endif
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineEntryList)) {
         qint32 filters;
         QStringList filterNames;
