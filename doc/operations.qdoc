@@ -122,9 +122,9 @@
             \li Creates a shortcut from the file specified by \c filename to
                 \c linkname.
                 On Windows, this creates a .lnk file which can have
-                \c arguments. Furthermore, on Windows, \c filename can be
+                \c arguments. Furthermore, \c filename can be
                 an HTTP or FTP URL in which case a URL shortcut is created.
-                On Unix, this creates a symbolic link.
+                The operation is currently not implemented on other platforms.
         \row
             \li CreateDesktopEntry
             \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
