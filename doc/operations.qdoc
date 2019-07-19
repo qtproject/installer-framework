@@ -235,10 +235,10 @@
             \li Restarts the updater or package manager specified by \c core.
         \row
             \li Settings
-            \li "Settings" \c path \c method \c key \c aValue
-            \li Sets or removes the value \c aValue of \c key in the settings file
-                or registry located at \c path, depending on the value of
-                \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
+            \li "Settings" \c path \c method \c key \c value
+            \li Sets or removes the \c value of \c key in the settings file located at
+                \c path, depending on the value of \c method: \c set, \c remove,
+                \c add_array_value, and \c remove_array_value.
     \endtable
 
     The Extract, License, and MinimumProgress operations are automatically added for matching
