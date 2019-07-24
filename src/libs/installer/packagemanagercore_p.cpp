@@ -347,23 +347,8 @@ QString PackageManagerCorePrivate::targetDir() const
 
 bool PackageManagerCorePrivate::directoryWritable(const QString &path) const
 {
-    QTemporaryFile tempFile(path + QStringLiteral("/tempFile") + QString::number(qrand() % 1000));
-    if (!tempFile.open() || !tempFile.isWritable())
-        return false;
-    else
-        return true;
-}
-
-bool PackageManagerCorePrivate::subdirectoriesWritable(const QString &path) const
-{
-    // Iterate over target directory subdirectories for writing access
-    QDirIterator iterator(path, QDir::AllDirs | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
-    while (iterator.hasNext()) {
-        QTemporaryFile tempFile(iterator.next() + QLatin1String("/tempFile"));
-        if (!tempFile.open() || !tempFile.isWritable())
-            return false;
-    }
-    return true;
+    QTemporaryFile tempFile(path + QLatin1String("/tempFile.XXXXXX"));
+    return (tempFile.open() && tempFile.isWritable());
 }
 
 QString PackageManagerCorePrivate::configurationFileName() const
@@ -805,6 +790,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             : tr("Format error");
         throw Error(tr("Cannot write installer configuration to %1: %2").arg(iniPath, reason));
     }
+    setDefaultFilePermissions(iniPath, DefaultFilePermissions::NonExecutable);
 
     QFile file(targetDir() + QLatin1Char('/') + QLatin1String("network.xml"));
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
@@ -842,6 +828,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             writer.writeEndElement();
         writer.writeEndElement();
     }
+    setDefaultFilePermissions(&file, DefaultFilePermissions::NonExecutable);
 }
 
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)
@@ -1073,8 +1060,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
             throw Error(tr("Cannot write maintenance tool data to %1: %2").arg(dataOut.fileName(),
                 dataOut.errorString()));
         }
-        dataOut.setPermissions(dataOut.permissions() | QFile::WriteUser | QFile::ReadGroup
-            | QFile::ReadOther);
+        setDefaultFilePermissions(&dataOut, DefaultFilePermissions::NonExecutable);
     }
 
     {
@@ -1091,12 +1077,10 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     }
 
     QFile mt(maintenanceToolRenamedName);
-    if (mt.setPermissions(out.permissions() | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther
-                          | QFile::ExeOther | QFile::ExeGroup | QFile::ExeUser)) {
+    if (setDefaultFilePermissions(&mt, DefaultFilePermissions::Executable))
         qDebug() << "Wrote permissions for maintenance tool.";
-    } else {
+    else
         qDebug() << "Failed to write permissions for maintenance tool.";
-    }
 
     if (out.exists() && !out.remove()) {
         qWarning() << tr("Cannot remove temporary data file \"%1\": %2")
@@ -1386,8 +1370,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 throw Error(tr("Cannot write maintenance tool binary data to %1: %2")
                     .arg(file.fileName(), file.errorString()));
             }
-            file.setPermissions(file.permissions() | QFile::WriteUser | QFile::ReadGroup
-                | QFile::ReadOther);
+            setDefaultFilePermissions(&file, DefaultFilePermissions::NonExecutable);
         } catch (const Error &/*error*/) {
             if (!newBinaryWritten) {
                 newBinaryWritten = true;
@@ -1494,6 +1477,8 @@ bool PackageManagerCorePrivate::runInstaller()
             if (!performOperationThreaded(mkdirOp))
                 throw Error(mkdirOp->errorString());
         }
+        setDefaultFilePermissions(target, DefaultFilePermissions::Executable);
+
         const QString remove = m_core->value(scRemoveTargetDir);
         if (QVariant(remove).toBool())
             addPerformed(takeOwnedOperation(mkdirOp));
@@ -1643,16 +1628,10 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         //to have some progress for the cleanup/write component.xml step
         ProgressCoordinator::instance()->addReservePercentagePoints(1);
 
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
-        // check if we need admin rights and ask before the action happens
-        // on Linux and macOS also check target directory subdirectories
-        if (!directoryWritable(targetDir()) || !subdirectoriesWritable(targetDir()))
-            adminRightsGained = m_core->gainAdminRights();
-#else
         // check if we need admin rights and ask before the action happens
         if (!directoryWritable(targetDir()))
             adminRightsGained = m_core->gainAdminRights();
-#endif
+
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
         qDebug() << "Install size:" << componentsToInstall.size() << "components";
 

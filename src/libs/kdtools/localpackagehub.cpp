@@ -28,6 +28,7 @@
 ****************************************************************************/
 
 #include "localpackagehub.h"
+#include "fileutils.h"
 #include "globals.h"
 #include "constants.h"
 
@@ -431,6 +432,11 @@ void LocalPackageHub::writeToDisk()
 
         file.write(doc.toByteArray(4));
         file.close();
+
+        // Write permissions for installation information file
+        QInstaller::setDefaultFilePermissions(
+            &file, DefaultFilePermissions::NonExecutable);
+
         d->modified = false;
     }
 }

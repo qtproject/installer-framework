@@ -36,10 +36,17 @@
 
 QT_BEGIN_NAMESPACE
 class QFileInfo;
+class QFile;
 class QUrl;
 QT_END_NAMESPACE
 
 namespace QInstaller {
+
+enum DefaultFilePermissions {
+    NonExecutable = 0x6644,
+    Executable = 0x7755
+};
+
 class INSTALLER_EXPORT TempDirDeleter
 {
 public:
@@ -79,6 +86,9 @@ private:
     void INSTALLER_EXPORT removeDirectory(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeSystemGeneratedFiles(const QString &path);
+
+    bool INSTALLER_EXPORT setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions);
+    bool INSTALLER_EXPORT setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions);
 
     QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
 

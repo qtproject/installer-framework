@@ -28,6 +28,8 @@
 
 #include "utils.h"
 
+#include "fileutils.h"
+
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
@@ -277,6 +279,7 @@ bool QInstaller::PlainVerboseWriterOutput::write(const QString &fileName, QIODev
     QFile output(fileName);
     if (output.open(openMode)) {
         output.write(data);
+        setDefaultFilePermissions(&output, DefaultFilePermissions::NonExecutable);
         return true;
     }
     return false;

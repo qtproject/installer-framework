@@ -1585,14 +1585,13 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
     return nullptr;
 }
 
+/*!
+    Returns \c true if directory specified by \a path is writable by
+    the current user.
+*/
 bool PackageManagerCore::directoryWritable(const QString &path) const
 {
     return d->directoryWritable(path);
-}
-
-bool PackageManagerCore::subdirectoriesWritable(const QString &path) const
-{
-    return d->subdirectoriesWritable(path);
 }
 
 /*!

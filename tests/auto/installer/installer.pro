@@ -10,6 +10,7 @@ SUBDIRS += \
     messageboxhandler \
     extractarchiveoperationtest \
     lib7zfacade \
+    fileutils \
     unicodeexecutable \
     scriptengine \
     consumeoutputoperationtest \
