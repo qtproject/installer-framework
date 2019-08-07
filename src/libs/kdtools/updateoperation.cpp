@@ -455,7 +455,7 @@ QDomDocument UpdateOperation::toXml() const
 bool UpdateOperation::fromXml(const QDomDocument &doc)
 {
     QString target = QCoreApplication::applicationDirPath();
-    // Does not change target on non OSX platforms.
+    // Does not change target on non macOS platforms.
     if (QInstaller::isInBundle(target, &target))
         target = QDir::cleanPath(target + QLatin1String("/.."));
 

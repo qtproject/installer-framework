@@ -84,9 +84,9 @@
     \printto /\!validOs/
 
     The script uses \l{systemInfo::productType}{systemInfo.productType} to differentiate
-    between Windows, OS X, and individual Linux distributions.
+    between Windows, macOS, and individual Linux distributions.
 
-    For OS X and Windows, the script checks the operating system kernel version.
+    For macOS and Windows, the script checks the operating system kernel version.
     For a mapping of kernel to operating system versions, see
     \l{http://en.wikipedia.org/wiki/Darwin_%28operating_system%29}{Darwin} and
     \l{http://en.wikipedia.org/wiki/Windows_NT}{Windows NT}.
@@ -95,7 +95,7 @@
     the specific distribution and version the binaries are presumably built for,
     the installer shows a warning in a modal dialog, but allows installation.
 
-    If the Windows or OS X version is too old, though, the script calls the \c cancelInstaller()
+    If the Windows or macOS version is too old, though, the script calls the \c cancelInstaller()
     helper function to prevent an actual installation:
 
     \printuntil /\}/

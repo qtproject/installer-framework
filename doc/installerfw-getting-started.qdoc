@@ -99,9 +99,9 @@
     make module-qtbase module-qtdeclarative module-qttools module-qttranslations
     \endcode
 
-    \section3 Configuring Qt for OS X
+    \section3 Configuring Qt for macOS
 
-    We recommend that you use the following configuration options for OS X:
+    We recommend that you use the following configuration options for macOS:
 
     \code
     configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype

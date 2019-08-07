@@ -99,7 +99,7 @@ int BinaryReplace::replace(const QString &source, const QString &target)
         result = EXIT_FAILURE;
         try {
             QFile installerBaseNew(newInstallerBasePath);
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
             QFile installerBaseOld(target);
             QInstaller::openForAppend(&installerBaseNew);
 

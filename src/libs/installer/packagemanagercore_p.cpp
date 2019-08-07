@@ -590,7 +590,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 #endif
 
     if (!m_core->isInstaller()) {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath() + QLatin1String("/../../.."));
 #else
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
@@ -718,7 +718,7 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 QString PackageManagerCorePrivate::maintenanceToolName() const
 {
     QString filename = m_data.settings().maintenanceToolName();
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
     if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
 #elif defined(Q_OS_WIN)
@@ -1044,7 +1044,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     if (writeBinaryLayout) {
 
         QDir resourcePath(QFileInfo(maintenanceToolRenamedName).dir());
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         if (!resourcePath.path().endsWith(QLatin1String("Contents/MacOS")))
             throw Error(tr("Maintenance tool is not a bundle"));
         resourcePath.cdUp();
@@ -1172,7 +1172,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 
     const QString targetAppDirPath = QFileInfo(maintenanceToolName()).path();
     if (!QDir().exists(targetAppDirPath)) {
-        // create the directory containing the maintenance tool (like a bundle structure on OS X...)
+        // create the directory containing the maintenance tool (like a bundle structure on macOS...)
         Operation *op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << targetAppDirPath);
         performOperationThreaded(op, Backup);
@@ -1180,7 +1180,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         performedOperations.append(takeOwnedOperation(op));
     }
 
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
     if (isInstaller() && QInstaller::isInBundle(sourceAppDirPath)) {
@@ -1340,7 +1340,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             // On Mac data is always in a separate file so that the binary can be signed.
             // On other platforms data is in separate file only after install so that the
             // maintenancetool sign does not break.
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
             QDir dataPath(QFileInfo(binaryName).dir());
             dataPath.cdUp();
             dataPath.cd(QLatin1String("Resources"));
@@ -1355,7 +1355,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 newBinaryWritten = true;
                 QFile tmp(binaryName);
                 QInstaller::openForRead(&tmp);
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
                 writeMaintenanceToolBinary(&tmp, tmp.size(), true);
 #else
                 writeMaintenanceToolBinary(&tmp, layout.endOfBinaryContent - layout.binaryContentSize, true);
@@ -1554,8 +1554,8 @@ bool PackageManagerCorePrivate::runInstaller()
             Operation *createRepo = createOwnedOperation(QLatin1String("CreateLocalRepository"));
             if (createRepo) {
                 QString binaryFile = QCoreApplication::applicationFilePath();
-#ifdef Q_OS_OSX
-                // The installer binary on OSX does not contain the binary content, it's put into
+#ifdef Q_OS_MACOS
+                // The installer binary on macOS does not contain the binary content, it's put into
                 // the resources folder as separate file. Adjust the actual binary path. No error
                 // checking here since we will fail later while reading the binary content.
                 QDir resourcePath(QFileInfo(binaryFile).dir());
@@ -2028,7 +2028,7 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     // every other platform has no problem if we just delete ourselves now
     QFile maintenanceTool(QFileInfo(installerBinaryPath()).absoluteFilePath());
     maintenanceTool.remove();
-# ifdef Q_OS_OSX
+# ifdef Q_OS_MACOS
     if (QInstaller::isInBundle(installerBinaryPath())) {
         const QLatin1String cdUp("/../../..");
         removeDirectoryThreaded(QFileInfo(installerBinaryPath() + cdUp).absoluteFilePath());

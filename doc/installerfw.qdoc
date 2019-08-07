@@ -42,7 +42,7 @@
 
     The Qt Installer Framework provides a set of tools and utilities to
     create installers for the supported desktop Qt platforms: Linux, Microsoft
-    Windows, and OS X.
+    Windows, and macOS.
 
     \note Report bugs and suggestions for the Qt Installer Framework project
     in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
@@ -191,13 +191,13 @@
         \row
             \li Icon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (OS X), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
+                a '.icns' (macOS), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
                 use \c <InstallerApplicationIcon> or \c <InstallerWindowIcon>
                 instead.
         \row
             \li InstallerApplicationIcon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (OS X), '.ico' (Windows). No functionality on Unix.
+                a '.icns' (macOS), '.ico' (Windows). No functionality on Unix.
         \row
             \li InstallerWindowIcon
             \li Filename for a custom window icon in PNG format for the Installer application.
@@ -794,7 +794,7 @@
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> <installer_name>
     \endcode
 
-        \li On Linux and OS X
+        \li On Linux and macOS
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> <installer_name>
@@ -812,7 +812,7 @@
     <location-of-ifw>\binarycreator.exe -t <location-of-ifw>\installerbase.exe -p <package_directory> -c <config_directory>\<config_file> -e <packages> <installer_name>
     \endcode
 
-        \li On Linux and OS X
+        \li On Linux and macOS
 
     \code
     <location-of-ifw>/binarycreator -t <location-of-ifw>/installerbase -p <package_directory> -c <config_directory>/<config_file> -e <packages> <installer_name>
@@ -883,7 +883,7 @@
 
         \row
             \li -s or --sign identity
-            \li Only available on OS X. Allows specifying a code signing identity to be
+            \li Only available on macOS. Allows specifying a code signing identity to be
                 used for signing the generated app bundle.
     \endtable
 
@@ -907,7 +907,7 @@
 
     \section2 Using Icons
 
-    On OS X, if the target binary is suffixed with .app, a OS X
+    On macOS, if the target binary is suffixed with .app, a macOS
     application bundle is created. The icon that you specify in config.xml is
     extended with .icns and used as the icon for the created bundle.
 

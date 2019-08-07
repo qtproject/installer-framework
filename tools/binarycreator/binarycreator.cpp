@@ -263,7 +263,7 @@ static QVersionNumber readMachOMinimumSystemVersion(QIODevice *device)
 
 static int assemble(Input input, const QInstaller::Settings &settings, const QString &signingIdentity)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     if (QInstaller::isInBundle(input.installerExePath)) {
         const QString bundle = input.installerExePath;
         // if the input file was a bundle
@@ -394,7 +394,7 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         // no error handling as this is not fatal
         setApplicationIcon(tempFile, settings.installerApplicationIcon());
     }
-#elif defined(Q_OS_OSX)
+#elif defined(Q_OS_MACOS)
     if (isBundle) {
         // no error handling as this is not fatal
         const QString copyscript = QDir::temp().absoluteFilePath(QLatin1String("copylibsintobundle.sh"));
@@ -411,7 +411,7 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
 
     QTemporaryFile out;
     QString targetName = input.outputPath;
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     QDir resourcePath(QFileInfo(input.outputPath).dir());
     resourcePath.cdUp();
     resourcePath.cd(QLatin1String("Resources"));
@@ -432,7 +432,7 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         QInstaller::openForWrite(&out);
         QFile exe(input.installerExePath);
 
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         if (!exe.copy(input.outputPath)) {
             throw Error(QString::fromLatin1("Cannot copy %1 to %2: %3").arg(exe.fileName(),
                 input.outputPath, exe.errorString()));
@@ -477,7 +477,7 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
 #endif
     QFile::remove(tempFile);
 
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     if (isBundle && !signingIdentity.isEmpty()) {
         qDebug() << "Signing .app bundle...";
 
@@ -660,7 +660,7 @@ static void printUsage()
     std::cout << "  -rcc|--compile-resource   Compiles the default resource and outputs the result into"
         << std::endl;
     std::cout << "                            'update.rcc' in the current path." << std::endl;
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
     std::cout << "                            signing identity" << std::endl;
 #endif
@@ -718,7 +718,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
         QString targetFile;
         QFileInfo elementFileInfo;
         if (tagName == QLatin1String("Icon") || tagName == QLatin1String("InstallerApplicationIcon")) {
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
             const QString suffix = QLatin1String(".icns");
 #elif defined(Q_OS_WIN)
             const QString suffix = QLatin1String(".ico");
@@ -885,7 +885,7 @@ int main(int argc, char **argv)
                 continue;
         } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
             compileResource = true;
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         } else if (*it == QLatin1String("-s") || *it == QLatin1String("--sign")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))
@@ -986,7 +986,7 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
         }
 
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         // on mac, we enforce building a bundle
         if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
             target += QLatin1String(".app");

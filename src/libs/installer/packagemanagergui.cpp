@@ -305,7 +305,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #else
     setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
@@ -408,7 +408,7 @@ PackageManagerGui::~PackageManagerGui()
     \list
         \li \c Classic - Classic UI style for Windows 7 and earlier.
         \li \c Modern - Modern UI style for Windows 8.
-        \li \c Mac - UI style for OS X.
+        \li \c Mac - UI style for macOS.
         \li \c Aero - Aero Peek for Windows 7.
     \endlist
 */
@@ -2178,7 +2178,7 @@ bool TargetDirectoryPage::validatePage()
     const QFileInfo fi(targetDir);
     if (fi.isDir()) {
         QString fileName = packageManagerCore()->settings().maintenanceToolName();
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
         if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
             fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
 #elif defined(Q_OS_WIN)
@@ -2849,7 +2849,7 @@ void FinishedPage::entering()
     }
 
     if (packageManagerCore()->isMaintainer()) {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         gui()->setOption(QWizard::NoCancelButton, false);
 #endif
         if (QAbstractButton *cancel = gui()->button(QWizard::CancelButton)) {
@@ -2913,7 +2913,7 @@ void FinishedPage::entering()
 */
 void FinishedPage::leaving()
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     gui()->setOption(QWizard::NoCancelButton, true);
 #endif
 

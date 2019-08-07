@@ -2201,7 +2201,7 @@ QString PackageManagerCore::findLibrary(const QString &name, const QStringList &
 #if defined(Q_OS_WIN)
     return findPath(QString::fromLatin1("%1.lib").arg(name), findPaths);
 #else
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
     if (findPaths.isEmpty()) {
         findPaths.push_back(QLatin1String("/lib"));
         findPaths.push_back(QLatin1String("/usr/lib"));

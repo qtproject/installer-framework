@@ -44,7 +44,7 @@
 
 #include <iostream>
 
-#if defined(Q_OS_OSX) or defined(Q_OS_UNIX)
+#if defined(Q_OS_MACOS) or defined(Q_OS_UNIX)
 #  include <unistd.h>
 #  include <sys/types.h>
 #endif
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
     }
 #endif
     // increase maximum numbers of file descriptors
-#if defined (Q_OS_OSX)
+#if defined (Q_OS_MACOS)
     QCoreApplication::setSetuidAllowed(true);
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
             Qt::CaseInsensitive) == 0);
         if (production) {
             argumentsValid = (!key.isEmpty()) && (!socketName.isEmpty());
-#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
             /* In production mode detach child so that sudo waiting on us will terminate. */
             pid_t child = fork();
             if (child <= -1) {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
         // make sure effective == real user id.
         uid_t realUserId = getuid();
         uid_t effectiveUserId = geteuid();

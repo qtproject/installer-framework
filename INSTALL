@@ -40,9 +40,9 @@ Recommended configuration options for Linux:
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
 Build Qt:
 make module-qtbase module-qtdeclarative module-qttools module-qttranslations
-### OS X
+### macOS
 
-Recommended configuration options for OS X:
+Recommended configuration options for macOS:
 
 configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
 Build Qt:

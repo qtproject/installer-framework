@@ -55,7 +55,7 @@ function Component()
     //
     // Check whether OS is supported.
     //
-    // For Windows and OS X we check the kernel version:
+    // For Windows and macOS we check the kernel version:
     //  - Require at least Windows Vista (winnt kernel version 6.0.x)
     //  - Require at least OS X 10.7 (Lion) (darwin kernel version 11.x)
     //

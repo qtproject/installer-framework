@@ -65,7 +65,7 @@ void RemoteServer::start()
     if (d->m_localServer)
         return;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
     // avoid writing to stderr:
     // the parent process has redirected stderr to a pipe to work with sudo,
     // but is not reading anymore -> writing to stderr will block after a while.
