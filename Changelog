@@ -4,6 +4,12 @@
 - Fix initially deactivated buttons when selecting components to update (QTIFW-1320)
 - Fix MaintenanceTool file write permission check on Linux and macOS (QTIFW-1324)
 - Fix installer hang on Windows with empty command prompt window appearing (QTIFW-1250)
+- Add IFW version information to installerbase binary on Windows (QTIFW-1397)
+- Fix Mkdir undo operation fail to remove directory in Settings operation (QTIFW-1365)
+- Fix IFW version information not apparent on macOS (QTIFW-1396)
+- Update repository categories on server authentication request (QTIFW-1358)
+- Fix recalculation of components to install in MaintenanceTool (QTIFW-694)
+- Enable support for Qt 5.12. In Windows supported compiler is msvc2017 (QTIFW-1312)
 
 3.1.1
 - Add fetch to the same pane with package categories (QTIFW-1284)
