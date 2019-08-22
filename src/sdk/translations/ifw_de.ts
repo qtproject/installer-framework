@@ -1365,15 +1365,15 @@ Fehler beim Laden von %2</translation>
         <translation>Willkommen zum %1-Einrichtungsassistenten.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>Komponenten hinzufügen oder entfernen</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>Komponenten aktualisieren</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>Alle Komponenten entfernen</translation>
     </message>
     <message>
@@ -1393,7 +1393,7 @@ Fehler beim Laden von %2</translation>
         <translation> Nur lokale Paketverwaltung verfügbar.</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>Beenden</translation>
     </message>
 </context>

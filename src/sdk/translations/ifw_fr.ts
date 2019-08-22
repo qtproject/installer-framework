@@ -1327,15 +1327,15 @@ Erreur lors du chargement de %2</translation>
         <translation>Bienvenue dans l’assistant d’installation de %1</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>Ajouter ou supprimer des composants</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>Mettre à jour des composants</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>Supprimer tous les composants</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Erreur lors du chargement de %2</translation>
         <translation> Seule la gestion des paquetages locaux est disponible.</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>Quitter</translation>
     </message>
 </context>

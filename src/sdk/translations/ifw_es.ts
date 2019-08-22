@@ -1327,15 +1327,15 @@ Error al descargar %2</translation>
         <translation>Bienvenido al Asistente de instalación de %1.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>Agregar o quitar componentes</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>Actualizar componentes</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>Quitar todos los componentes</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Error al descargar %2</translation>
         <translation> Solo está disponible la administración de paquetes locales.</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>Salir</translation>
     </message>
 </context>
