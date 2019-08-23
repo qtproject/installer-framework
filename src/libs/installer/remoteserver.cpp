@@ -65,7 +65,7 @@ void RemoteServer::start()
     if (d->m_localServer)
         return;
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_OSX)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MACOS)
     // avoid writing to stderr:
     // the parent process has redirected stderr to a pipe to work with sudo,
     // but is not reading anymore -> writing to stderr will block after a while.
@@ -93,7 +93,17 @@ void RemoteServer::start()
 void RemoteServer::init(const QString &socketName, const QString &key, Protocol::Mode mode)
 {
     Q_D(RemoteServer);
+
+    // Since Qt 5.12.0, we should determince the full socket path on Unix
+    // platforms before calling QLocalSocketPrivate::_q_connectToSocket().
+    // Otherwise the new canonical implementation of QDir::tempPath()
+    // presents unintended usage of RemoteFileEngine.
+
+#if QT_VERSION >= QT_VERSION_CHECK(5,12,0) && defined(Q_OS_UNIX)
+    d->m_socketName = socketPathName(socketName);
+#else
     d->m_socketName = socketName;
+#endif
     d->m_key = key;
     d->m_mode = mode;
 }
@@ -114,6 +124,18 @@ QString RemoteServer::authorizationKey() const
 {
     Q_D(const RemoteServer);
     return d->m_key;
+}
+
+QString RemoteServer::socketPathName(const QString &socketName) const
+{
+    QString socketPathName;
+    if (socketName.startsWith(QLatin1Char('/'))) {
+        socketPathName = socketName;
+    } else {
+        socketPathName = QDir::tempPath();
+        socketPathName += QLatin1Char('/') + socketName;
+    }
+    return socketPathName;
 }
 
 /*!

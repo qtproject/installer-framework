@@ -1327,15 +1327,15 @@ Error while loading %2</source>
         <translation>欢迎使用 %1 安装向导。</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>添加或移除组件</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>更新组件</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>移除所有组件</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Error while loading %2</source>
         <translation> 仅本地软件包管理可用。</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>退出</translation>
     </message>
 </context>

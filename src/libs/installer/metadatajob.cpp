@@ -326,10 +326,21 @@ void MetadataJob::xmlTaskFinished()
                     QHash<QString, QPair<Repository, Repository> > update;
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
+                    if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
+                        qDebug() << "Repository categories updated.";
+
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {
-                            if (m_core->isMaintainer())
+                            if (m_core->isMaintainer()) {
+                                bool gainedAdminRights = false;
+                                if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
+                                    m_core->gainAdminRights();
+                                    gainedAdminRights = true;
+                                }
                                 m_core->writeMaintenanceConfigFiles();
+                                if (gainedAdminRights)
+                                    m_core->dropAdminRights();
+                            }
                     }
                 }
                 status = XmlDownloadRetry;
@@ -716,8 +727,16 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     return XmlDownloadRetry;
                 }
             } else if (s.updateDefaultRepositories(repositoryUpdates) == Settings::UpdatesApplied) {
-                if (m_core->isMaintainer())
+                if (m_core->isMaintainer()) {
+                    bool gainedAdminRights = false;
+                    if (!m_core->directoryWritable(m_core->value(scTargetDir))) {
+                        m_core->gainAdminRights();
+                        gainedAdminRights = true;
+                    }
                     m_core->writeMaintenanceConfigFiles();
+                    if (gainedAdminRights)
+                        m_core->dropAdminRights();
+                }
                 m_metaFromDefaultRepositories.clear();
                 QFile::remove(result.target());
                 return XmlDownloadRetry;

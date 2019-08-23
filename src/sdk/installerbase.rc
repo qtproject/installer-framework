@@ -1,3 +1,21 @@
+#include <windows.h>
+
+/* Version info for Windows binary */
+VS_VERSION_INFO VERSIONINFO
+    FILEVERSION IFW_VERSION_WIN32
+    FILEOS VOS__WINDOWS32
+    FILETYPE VFT_APP
+    BEGIN
+        BLOCK "StringFileInfo"
+        BEGIN
+            BLOCK "040904B0"
+            BEGIN
+                VALUE "FileVersion", IFW_VERSION_STR_WIN32
+            END
+        END
+    END
+/* End of version info */
+
 IDI_ICON1	ICON	DISCARDABLE
 "installerbase.ico"
 

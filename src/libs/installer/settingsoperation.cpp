@@ -180,7 +180,7 @@ bool SettingsOperation::undoOperation()
         if (!settingsFile.remove())
             qWarning().noquote() << settingsFile.errorString();
         if (!value(QLatin1String("createddir")).toString().isEmpty()) {
-            KDUpdater::MkdirOperation mkDirOperation;
+            KDUpdater::MkdirOperation mkDirOperation(packageManager());
             mkDirOperation.setArguments(QStringList() << QFileInfo(path).absolutePath());
             mkDirOperation.setValue(QLatin1String("createddir"), value(QLatin1String("createddir")));
 

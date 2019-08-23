@@ -330,8 +330,61 @@
         \row
             \li \c ResetComponentsButton
             \li Resets to already installed components.
+
+        \row
+            \li \c FetchCategoryButton
+            \li Fetch components from a category.
     \endtable
 
+    \table
+        \header
+        \li Widgets
+        \li Brief Description
+
+        \row
+            \li \c CategoryGroupBox
+            \li Contains checkboxes for selecting repository categories.
+    \endtable
+
+    Installer Framework 3.1 introduces repository categories as a new feature. When
+    you use an installer that contains repository categories, you can select a category
+    by its display name, fetch its contents, and then select the included components for installation.
+
+    You can fetch the components from a category as follows:
+    \code
+    Controller.prototype.ComponentSelectionPageCallback = function()
+    {
+        var page = gui.pageWidgetByObjectName("ComponentSelectionPage");
+
+        // if CategoryGroupBox is visible, check one of the checkboxes
+        // and click fetch button before selecting any components
+        var groupBox = gui.findChild(page, "CategoryGroupBox");
+        if (groupBox) {
+            console.log("groupBox found");
+            // findChild second argument is the display name of the checkbox
+            var checkBox = gui.findChild(page, "Archive");
+            if (checkBox) {
+                console.log("checkBox found");
+                console.log("checkBox name: " + checkBox.text);
+                if (checkBox.checked == false) {
+                    checkBox.click();
+                    var fetchButton = gui.findChild(page, "FetchCategoryButton");
+                    if (fetchButton) {
+                        console.log("fetchButton found");
+                        fetchButton.click();
+                    } else {
+                        console.log("fetchButton NOT found");
+                    }
+                }
+            } else {
+                console.log("checkBox NOT found");
+            }
+        } else {
+            console.log("groupBox NOT found");
+        }
+        // you can now select components from the fetched category
+    }
+    \endcode
 
     \section2 Start Menu Directory Page
 
@@ -430,13 +483,13 @@
 
     Example code:
     \code
-    function Controller()
+    function Component()
     {
         // add page with widget \c SomePageWidget before the target directory page
         installer.addWizardPage(component, "SomePageWidget", QInstaller.TargetDirectory)
     }
 
-    Controller.prototype.DynamicSomePageWidgetCallback = function()
+    Component.prototype.DynamicSomePageWidgetCallback = function()
     {
         var page = gui.pageWidgetByObjectName("DynamicSomePageWidget");
         page.myButton.click, //direct child of the UI file's widget

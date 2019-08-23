@@ -71,7 +71,7 @@
 
     \image ifw-user-flow-installing.png "Installation workflow"
 
-    This section uses the \e {Your Application Installer} example run on OS X
+    This section uses the \e {Your Application Installer} example run on macOS
     to illustrate the default workflow for end users. The installers have the
     native look and feel on each supported desktop platform, and therefore they
     look and feel different when run on Linux and Windows.
@@ -188,7 +188,7 @@
     \image ifw-user-flow-adding.png "Add components workflow"
 
     This section uses the \e {Maintenance Tool} installed by the Qt 5 installer
-    run on OS X as an example implementation of how end users can add components
+    run on macOS as an example implementation of how end users can add components
     after the initial installation. The Maintenance Tool contains the package
     manager, updater, and uninstaller.
 
@@ -244,7 +244,7 @@
 
     \image ifw-user-flow-removing.png "Remove components workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
     implementation of how end users can remove all or selected components.
 
     \section1 Removing All Components
@@ -297,7 +297,7 @@
 
     \image ifw-user-flow-updating.png "Updating workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on OS X as an example
+    This section uses the Qt 5 Maintenance Tool run on macOS as an example
     implementation of how end users can update installed components.
 
     \section1 Starting Updater

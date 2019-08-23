@@ -1,4 +1,6 @@
 #include "repository.h"
+#include "repositorycategory.h"
+#include "settings.h"
 
 #include <QDataStream>
 #include <QString>
@@ -113,6 +115,51 @@ private slots:
         Repository r1, r2;
         s1 >> r1; s2 >> r2;
         QCOMPARE(r1, r2);
+    }
+
+    void testUpdateRepositoryCategories()
+    {
+        Settings settings;
+
+        RepositoryCategory category;
+        category.setEnabled(true);
+        category.setDisplayName(QLatin1String("category"));
+
+        Repository original(QUrl("http://example.com/"), true);
+        original.setEnabled(true);
+        category.addRepository(original);
+
+        Repository replacement = original;
+        replacement.setUsername(QLatin1String("user"));
+        replacement.setPassword(QLatin1String("pass"));
+
+        QSet<RepositoryCategory> categories;
+        categories.insert(category);
+        settings.setRepositoryCategories(categories);
+
+        QHash<QString, QPair<Repository, Repository>> update;
+
+        // non-empty update
+        update.insert(QLatin1String("replace"), qMakePair(original, replacement));
+        QVERIFY(settings.updateRepositoryCategories(update) == Settings::UpdatesApplied);
+
+        // verify that the values really updated
+        QVERIFY(settings.repositoryCategories().values().at(0)
+            .repositories().values().at(0).username() == "user");
+
+        QVERIFY(settings.repositoryCategories().values().at(0)
+            .repositories().values().at(0).password() == "pass");
+
+        // empty update
+        update.clear();
+        QVERIFY(settings.updateRepositoryCategories(update) == Settings::NoUpdatesApplied);
+
+        // non-matching repository update
+        Repository nonMatching(QUrl("https://www.qt.io/"), true);
+        nonMatching.setEnabled(true);
+
+        update.insert(QLatin1String("replace"), qMakePair(nonMatching, replacement));
+        QVERIFY(settings.updateRepositoryCategories(update) == Settings::NoUpdatesApplied);
     }
 };
 

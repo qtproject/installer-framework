@@ -76,7 +76,7 @@ QString SystemInfo::currentCpuArchitecture() const
     kernel the installer is running on, unless the host operating system is running a form of
     compatibility or virtualization layer.
 
-    For Windows, Linux, and OS X this will return:
+    For Windows, Linux, and macOS this will return:
     \list
         \li "winnt"
         \li "linux"
@@ -96,7 +96,7 @@ QString SystemInfo::kernelType() const
     \property SystemInfo::kernelVersion
 
     The release version of the operating system kernel. On Windows, it returns the version of the
-    NT or CE kernel. On Unix systems, including OS X, it returns the same as the \c {uname -r}
+    NT or CE kernel. On Unix systems, including macOS, it returns the same as the \c {uname -r}
     command would return.
 
     Example values are:

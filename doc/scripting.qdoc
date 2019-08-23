@@ -265,7 +265,7 @@
             \li Applications directory.
 
                 For example, \c {C:\Program Files} on Windows,
-                \c {/opt} on Linux and \c {/Applications} on OS X.
+                \c {/opt} on Linux and \c {/Applications} on macOS.
 
                 See also the table that lists examples of \l {Applications-directory-on-Windows}
                 {applications directories on Windows}.

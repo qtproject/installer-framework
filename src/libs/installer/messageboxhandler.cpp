@@ -381,7 +381,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
                 msgBox.setDefaultButton(button);
         }
     }
-#if defined(Q_OS_OSX)
+#if defined(Q_OS_MACOS)
     msgBox.setWindowModality(Qt::WindowModal);
 #endif
     if (msgBox.exec() == -1)

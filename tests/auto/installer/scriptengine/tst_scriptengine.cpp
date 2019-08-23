@@ -280,7 +280,11 @@ private slots:
         // ignore Output from script
         setExpectedScriptOutput("function receive()");
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,12,0)
+        QTest::ignoreMessage(QtWarningMsg, "<Unknown File>:38: ReferenceError: foo is not defined");
+#else
         QTest::ignoreMessage(QtWarningMsg, ":38: ReferenceError: foo is not defined");
+#endif
         emiter.produceSignal();
 
         const QJSValue value = m_scriptEngine->evaluate("");

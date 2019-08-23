@@ -2,7 +2,7 @@
     <Installer>
     <Name>Qt Installer Framework</Name>
     <Title>Qt Installer Framework 3.2.0</Title>
-    <Version>3.2.0  </Version>
+    <Version>3.2.0</Version>
     <Publisher>Qt Project</Publisher>
     <ProductUrl>http://qt-project.org</ProductUrl>
     <Watermark>watermark.png</Watermark>

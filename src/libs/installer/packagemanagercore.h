@@ -121,6 +121,9 @@ public:
 
     static Component *componentByName(const QString &name, const QList<Component *> &components);
 
+    bool directoryWritable(const QString &path) const;
+    bool subdirectoriesWritable(const QString &path) const;
+
     bool fetchLocalPackagesTree();
     LocalPackagesHash localInstalledPackages();
 
@@ -290,6 +293,7 @@ public Q_SLOTS:
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
+    void clearComponentsToInstallCalculated();
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;

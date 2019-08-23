@@ -54,7 +54,7 @@ public:
     void setTooltip(const QString &tooltip);
 
     QSet<Repository> repositories() const;
-    void setRepositories(const QSet<Repository> repositories);
+    void setRepositories(const QSet<Repository> repositories, const bool replace = false);
     void addRepository(const Repository repository);
 
     bool isEnabled() const;

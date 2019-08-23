@@ -61,7 +61,7 @@
     In installscript.qs, we use the \c Component() function to connect to the
     \c installationFinishedPageIsShown signal when the installation is complete
     and to the \c installationFinished signal when the end users click
-    \uicontrol Finish (\uicontrol Done on OS X):
+    \uicontrol Finish (\uicontrol Done on macOS):
 
     \quotefromfile openreadme/packages/or.qtproject.ifw.example.openreadme/meta/installscript.qs
     \skipto Component()

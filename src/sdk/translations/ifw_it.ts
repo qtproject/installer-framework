@@ -1327,15 +1327,15 @@ Errore durante il caricamento di %2</translation>
         <translation>Installazione guidata di %1.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>Aggiungi o rimuovi componenti</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>Aggiorna componenti</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>Rimuovi tutti i componenti</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Errore durante il caricamento di %2</translation>
         <translation> Disponibile solo gestione pacchetto locale.</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>Esci</translation>
     </message>
 </context>

@@ -51,7 +51,7 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Verbose mode. Prints out more information.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
-        QLatin1String("Use system proxy on Windows and Linux. This option has no effect on OS X.")));
+        QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS.")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoProxy),
         QLatin1String("Do not use system proxy.")));

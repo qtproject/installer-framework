@@ -12,4 +12,4 @@ Linux:
 
 LANGUAGE=de ./installer
 
-On OS X and Windows you need to adapt the system settings to set German as preferred language, and then start the installer.
+On macOS and Windows you need to adapt the system settings to set German as preferred language, and then start the installer.

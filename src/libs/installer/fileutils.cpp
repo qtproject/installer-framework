@@ -286,7 +286,7 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
         return;
-#if defined Q_OS_OSX
+#if defined Q_OS_MACOS
     QFile::remove(path + QLatin1String("/.DS_Store"));
 #elif defined Q_OS_WIN
     QFile::remove(path + QLatin1String("/Thumbs.db"));
@@ -572,7 +572,7 @@ quint64 QInstaller::fileSize(const QFileInfo &info)
 
 bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path).absoluteFilePath();
     while (!fi.isRoot()) {
         if (fi.isBundle()) {

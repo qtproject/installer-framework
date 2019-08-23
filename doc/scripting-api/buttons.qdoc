@@ -42,13 +42,13 @@
     Specifies the buttons on an installer page.
 
     \value  buttons.BackButton
-            The \uicontrol Back button (\uicontrol {Go Back} on OS X.)
+            The \uicontrol Back button (\uicontrol {Go Back} on macOS.)
     \value  buttons.NextButton
-            The \uicontrol Next button (\uicontrol Continue on OS X.)
+            The \uicontrol Next button (\uicontrol Continue on macOS.)
     \value  buttons.CommitButton
             The \uicontrol Commit button.
     \value  buttons.FinishButton
-            The \uicontrol Finish button (\uicontrol Done on OS X.)
+            The \uicontrol Finish button (\uicontrol Done on macOS.)
     \value  buttons.CancelButton
             The \uicontrol Cancel button.
     \value  buttons.HelpButton

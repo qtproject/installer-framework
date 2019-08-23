@@ -66,6 +66,6 @@
     "Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)"
     \endcode
 
-    On Windows, and OS X, this static function will use the native file dialog
+    On Windows, and macOS, this static function will use the native file dialog
     and not a QFileDialog.
 */

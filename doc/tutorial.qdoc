@@ -195,7 +195,7 @@
     ..\..\bin\binarycreator.exe -c config\config.xml -p packages YourInstaller.exe
     \endcode
 
-    \li On Linux or OS X:
+    \li On Linux or macOS:
     \code
     ../../bin/binarycreator -c config/config.xml -p packages YourInstaller
     \endcode

@@ -73,21 +73,21 @@ public:
         as the binary layout cannot be appended to the actual maintenance tool binary
         itself because of signing.
 
-        On OS X: This function will return always the .dat file
+        On macOS: This function will return always the .dat file
         .dat file is located inside the resource folder in the application
-        bundle in OS X.
+        bundle in macOS.
     */
     QString binaryFile() const
     {
         QString binaryFile = QCoreApplication::applicationFilePath();
 
-        // The installer binary on OSX and Windows does not contain the binary
+        // The installer binary on macOS and Windows does not contain the binary
         // content, it's put into the resources folder as separate file.
         // Adjust the actual binary path. No error checking here since we
         // will fail later while reading the binary content.
         QDir resourcePath(QFileInfo(binaryFile).dir());
 
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         resourcePath.cdUp();
         resourcePath.cd(QLatin1String("Resources"));
 #endif
@@ -116,7 +116,7 @@ public:
             QString bundlePath;
             if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
                 fi.setFile(bundlePath);
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
             return fi.absoluteDir().filePath(fi.baseName() + QLatin1String(".dat"));
 #else
             return fi.absoluteDir().filePath(qApp->applicationName() + QLatin1String(".dat"));

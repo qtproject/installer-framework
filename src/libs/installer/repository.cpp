@@ -208,7 +208,7 @@ QString Repository::categoryname() const
 }
 
 /*!
-    Sets the category name to \a categoryname if the repository belongs to an category.
+    Sets the category name to \a categoryname if the repository belongs to a category.
 */
 void Repository::setCategoryName(const QString &categoryname)
 {

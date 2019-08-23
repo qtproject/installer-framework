@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     if (QInstaller::isInBundle(path, &bundlePath)) {
         path = QDir(bundlePath).filePath(QLatin1String("Contents/Resources/installer.dat"));
     }
-#ifndef Q_OS_OSX
+#ifndef Q_OS_MACOS
     QFileInfo fi = QFileInfo(path);
     bundlePath = path;
     QString tmp = QDir(fi.path()).filePath(QLatin1String("installer.dat"));

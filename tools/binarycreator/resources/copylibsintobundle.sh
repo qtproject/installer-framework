@@ -71,7 +71,7 @@ function handleFile()
 
         if [ `basename $FILE` != $NAME ]; then
 
-        # this part handles libraries which are Mac OS X frameworks
+        # this part handles libraries which are macOS frameworks
         if echo $lib | grep '\.framework' >/dev/null; then
             local FRAMEWORKPATH=`echo $lib | sed -ne 's,\(.*\.framework\).*,\1,p'`
             local FRAMEWORKNAME=`basename $FRAMEWORKPATH`

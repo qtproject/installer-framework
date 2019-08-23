@@ -130,9 +130,9 @@
             \li Creates a shortcut from the file specified by \c filename to
                 \c linkname.
                 On Windows, this creates a .lnk file which can have
-                \c arguments. Furthermore, on Windows, \c filename can be
+                \c arguments. Furthermore, \c filename can be
                 an HTTP or FTP URL in which case a URL shortcut is created.
-                On Unix, this creates a symbolic link.
+                The operation is currently not implemented on other platforms.
         \row
             \li CreateDesktopEntry
             \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
@@ -243,10 +243,10 @@
             \li Restarts the updater or package manager specified by \c core.
         \row
             \li Settings
-            \li "Settings" \c path \c method \c key \c aValue
-            \li Sets or removes the value \c aValue of \c key in the settings file
-                or registry located at \c path, depending on the value of
-                \c method: \c set, \c remove, \c add_array_value, and \c remove_array_value.
+            \li "Settings" \c path \c method \c key \c value
+            \li Sets or removes the \c value of \c key in the settings file located at
+                \c path, depending on the value of \c method: \c set, \c remove,
+                \c add_array_value, and \c remove_array_value.
     \endtable
 
     The Extract, License, and MinimumProgress operations are automatically added for matching

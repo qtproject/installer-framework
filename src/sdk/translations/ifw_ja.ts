@@ -1327,15 +1327,15 @@ Error while loading %2</source>
         <translation>%1 設定ウィザードへようこそ。</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>コンポーネントの追加または削除</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>コンポーネントの更新</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>すべてのコンポーネントを削除</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Error while loading %2</source>
         <translation> ローカル パッケージ管理のみ利用可能です。</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>中止</translation>
     </message>
 </context>

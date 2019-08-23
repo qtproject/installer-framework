@@ -37,7 +37,7 @@
     create installers once, and deploy them across all the supported desktop
     Qt platforms without rewriting the source code. The installers will have the
     native look and feel on the platform where they are run: Linux, Microsoft
-    Windows, and OS X.
+    Windows, and macOS.
 
     The Qt Installer Framework tools generate installers with a set of pages
     that guide the users during the installation, update, or uninstallation

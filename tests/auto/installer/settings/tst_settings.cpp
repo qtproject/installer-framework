@@ -49,7 +49,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.ico"));
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".ico"));
-#elif defined(Q_OS_OSX)
+#elif defined(Q_OS_MACOS)
     QCOMPARE(settings.installerApplicationIcon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.installerWindowIcon(), QLatin1String(":/installer.icns"));
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".icns"));

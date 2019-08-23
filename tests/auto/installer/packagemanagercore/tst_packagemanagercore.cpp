@@ -34,6 +34,7 @@
 #include <progresscoordinator.h>
 
 #include <QDir>
+#include <QFile>
 #include <QTemporaryFile>
 #include <QTest>
 
@@ -118,15 +119,18 @@ private slots:
 
         QVERIFY(core.calculateComponentsToInstall());
         {
-            QTemporaryFile dummy(testDirectory + QLatin1String("/dummy"));
-            dummy.open();
+            QFile dummy(testDirectory + QLatin1String("/dummy"));
+            QVERIFY(dummy.open(QIODevice::ReadWrite));
 
             core.runInstaller();
 
             QVERIFY(QDir(testDirectory).exists());
             QVERIFY(QFileInfo(dummy.fileName()).exists());
+
+            dummy.close();
+            QVERIFY(dummy.remove());
         }
-        QDir().rmdir(testDirectory);
+        QVERIFY(QDir().rmdir(testDirectory));
         ProgressCoordinator::instance()->reset();
     }
 
@@ -256,6 +260,58 @@ private slots:
         core.componentsToInstallNeedsRecalculation();
         core.calculateComponentsToInstall();
         QCOMPARE(core.requiredDiskSpace(), 250ULL);
+    }
+
+    void testDirectoryWritable()
+    {
+        PackageManagerCore core;
+
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        QVERIFY(QDir(testDirectory).exists());
+
+        // should be writable
+        QVERIFY(core.directoryWritable(testDirectory));
+
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+        QFile dirDevice(testDirectory);
+        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::ExeOwner);
+
+        // should not be writable
+        QVERIFY(!core.directoryWritable(testDirectory));
+
+        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+#endif
+        QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testSubdirectoriesWritable()
+    {
+        PackageManagerCore core;
+
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        QVERIFY(QDir(testDirectory).exists());
+
+        const QString testSubdirectory = testDirectory + "/" + QString::number(qrand() % 1000);
+
+        QVERIFY(QDir().mkpath(testSubdirectory));
+        QVERIFY(QDir(testSubdirectory).exists());
+
+        // should be writable
+        QVERIFY(core.subdirectoriesWritable(testDirectory));
+
+#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+        QFile dirDevice(testSubdirectory);
+        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::ExeOwner);
+
+        // should not be writable
+        QVERIFY(!core.subdirectoriesWritable(testDirectory));
+
+        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
+#endif
+        QVERIFY(QDir().rmdir(testSubdirectory));
+        QVERIFY(QDir().rmdir(testDirectory));
     }
 };
 

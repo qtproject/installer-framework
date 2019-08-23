@@ -1327,15 +1327,15 @@ Błąd podczas wczytywania %2</translation>
         <translation>Witamy w Kreatorze konfiguracji %1.</translation>
     </message>
     <message>
-        <source>Add or remove components</source>
+        <source>&amp;Add or remove components</source>
         <translation>Dodaj lub usuń elementy</translation>
     </message>
     <message>
-        <source>Update components</source>
+        <source>&amp;Update components</source>
         <translation>Zaktualizuj elementy</translation>
     </message>
     <message>
-        <source>Remove all components</source>
+        <source>&amp;Remove all components</source>
         <translation>Usuń wszystkie elementy</translation>
     </message>
     <message>
@@ -1355,7 +1355,7 @@ Błąd podczas wczytywania %2</translation>
         <translation> Dostępne jedynie lokalne zarządzanie pakietami.</translation>
     </message>
     <message>
-        <source>Quit</source>
+        <source>&amp;Quit</source>
         <translation>Zakończ</translation>
     </message>
 </context>

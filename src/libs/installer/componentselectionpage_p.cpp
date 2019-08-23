@@ -147,6 +147,10 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     m_treeViewVLayout->addWidget(m_treeView, 3);
 
+    // force a recalculation of components to install to keep the state correct
+    connect(q, &ComponentSelectionPage::left,
+            m_core, &PackageManagerCore::clearComponentsToInstallCalculated);
+
     m_mainHLayout = new QHBoxLayout(q);
     m_mainHLayout->addLayout(m_treeViewVLayout, 3);
     m_mainHLayout->addLayout(m_descriptionVLayout, 2);
