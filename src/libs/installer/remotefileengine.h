@@ -100,6 +100,13 @@ public:
 
 private:
     QFSFileEngine m_fileEngine;
+#if ! defined (Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+  // bugfix: for avoid endless recur.
+  static bool m_connecting;
+protected:
+  bool connectToServer(const QVariantList &arguments = QVariantList());
+#endif
+  
 };
 
 } // namespace QInstaller

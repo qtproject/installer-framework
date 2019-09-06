@@ -539,4 +539,30 @@ QDateTime RemoteFileEngine::fileTime(FileTime time) const
     return m_fileEngine.fileTime(time);
 }
 
+#if ! defined (Q_OS_WIN) && defined(CUSTOM_IFW_FEATURE)
+/*
+in RemoteObject.cpp(parent class), the following code uses QDir in its inside,
+QDir uses global list of QFileEngine,
+the QFileEngine list contains RemoteFileEngin(this).
+
+    m_socket = new QLocalSocket;
+    m_socket->connectToServer(RemoteClient::instance().socketName());
+
+to prevent infinite recur, need to avoid to call connectToServer if inside of connectToServer.
+
+ */
+bool RemoteFileEngine::m_connecting = false;
+bool RemoteFileEngine::connectToServer(const QVariantList &arguments)
+{
+  if (m_connecting) {
+    return false;
+  }
+
+  m_connecting = true;
+  bool res = RemoteObject::connectToServer(arguments);
+  m_connecting = false;
+  return res;
+}
+#endif
+
 } // namespace QInstaller
