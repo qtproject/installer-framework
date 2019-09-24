@@ -392,7 +392,7 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     m_checkDefault->setVisible(!show);
     m_checkAll->setVisible(!show);
     m_uncheckAll->setVisible(!show);
-    m_descriptionLabel->setVisible(!show);
+    m_descriptionScrollArea->setVisible(!show);
     m_sizeLabel->setVisible(!show);
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
