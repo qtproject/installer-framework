@@ -10,6 +10,7 @@
 - Fix recalculation of components to install in MaintenanceTool (QTIFW-694)
 - Enable support for Qt 5.12. In Windows supported compilers are msvc2015 and msvc2017 (QTIFW-1312)
 - Set default file permissions to installer created files on Unix (QTIFW-1412)
+- MacOS: Fix widget overlapping in componentselection page in MacOS 10.12 (QTIFW-1437)
 
 3.1.1
 - Add fetch to the same pane with package categories (QTIFW-1284)

@@ -397,6 +397,11 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
+
+    // In macOS 10.12 the widgets are not hidden if those are not updated immediately
+#ifdef Q_OS_MACOS
+    q->repaint();
+#endif
 }
 
 void ComponentSelectionPagePrivate::fetchRepositoryCategories()
