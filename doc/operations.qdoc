@@ -205,8 +205,8 @@
         \row
             \li CreateLink
             \li "CreateLink" \c linkPath \c targetPath
-            \li Creates a link from the location specified by \c linkPath to
-                the location specified by \c targetPath.
+            \li Creates a link in the location specified by \c linkPath that
+                points to the location specified by \c targetPath.
         \row
             \li CreateLocalRepository
             \li "CreateLocalRepository" \c binaryPath \c repoPath
