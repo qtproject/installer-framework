@@ -28,6 +28,8 @@
 
 #include "extractarchiveoperation_p.h"
 
+#include "constants.h"
+
 #include <QEventLoop>
 #include <QThreadPool>
 #include <QFileInfo>
@@ -83,7 +85,44 @@ bool ExtractArchiveOperation::performOperation()
         receiver.runnableFinished(true, QString());
     }
 
-    setValue(QLatin1String("files"), m_files);
+    // Write all file names which belongs to a package to a separate file and only the separate
+    // filename to a .dat file. There can be enormous amount of files in a package, which makes
+    // the dat file very slow to read and write. The .dat file is read into memory in startup,
+    // writing the file names to a separate file we don't need to load all the file names into
+    // memory as we need those only in uninstall. This will save a lot of memory.
+    // Parse a file and directorory structure using archivepath syntax
+    // installer://<component_name>/<filename>.7z Resulting structure is:
+    // -installerResources (dir)
+    //   -<component_name> (dir)
+    //    -<filename>.txt (file)
+
+    QString fileDirectory = targetDir + QLatin1String("/installerResources/") +
+            archivePath.section(QLatin1Char('/'), 1, 1, QString::SectionSkipEmpty) + QLatin1Char('/');
+    QString archiveFileName = archivePath.section(QLatin1Char('/'), 2, 2, QString::SectionSkipEmpty);
+    QFileInfo fileInfo2(archiveFileName);
+    QString suffix = fileInfo2.suffix();
+    archiveFileName.chop(suffix.length() + 1); // removes suffix (e.g. '.7z') from archive filename
+    QString fileName = archiveFileName + QLatin1String(".txt");
+
+    QFileInfo targetDirectoryInfo(fileDirectory);
+
+    QDir dir(targetDirectoryInfo.absolutePath());
+    if (!dir.exists()) {
+        dir.mkpath(targetDirectoryInfo.absolutePath());
+    }
+    QFile file(targetDirectoryInfo.absolutePath() + QLatin1Char('/') + fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+        setDefaultFilePermissions(file.fileName(), DefaultFilePermissions::NonExecutable);
+        QDataStream out (&file);
+        for (int i = 0; i < m_files.count(); ++i) {
+            m_files[i] = replacePath(m_files.at(i), targetDir, QLatin1String(scRelocatable));
+        }
+        out << m_files;
+        setValue(QLatin1String("files"), file.fileName());
+        file.close();
+    } else {
+        qWarning() << "Cannot open file for writing " << file.fileName() << ":" << file.errorString();
+    }
 
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
 
@@ -102,8 +141,46 @@ bool ExtractArchiveOperation::performOperation()
 bool ExtractArchiveOperation::undoOperation()
 {
     Q_ASSERT(arguments().count() == 2);
-    const QStringList files = value(QLatin1String("files")).toStringList();
 
+    // For backward compatibility, check if "files" can be converted to QStringList.
+    // If yes, files are listed in .dat instead of in a separate file.
+    bool useStringListType(value(QLatin1String("files")).type() == QVariant::StringList);
+    QStringList files;
+    if (useStringListType) {
+        files = value(QLatin1String("files")).toStringList();
+        startUndoProcess(files);
+    } else {
+        const QString filePath = value(QLatin1String("files")).toString();
+        QString target = QCoreApplication::applicationDirPath();
+        // Does not change target on non macOS platforms.
+        if (QInstaller::isInBundle(target, &target))
+            target = QDir::cleanPath(target + QLatin1String("/.."));
+        QString fileName = replacePath(filePath, QLatin1String(scRelocatable), target);
+        QFile file(fileName);
+
+        if (file.open(QIODevice::ReadOnly)) {
+            QDataStream in(&file);
+            in >> files;
+            for (int i = 0; i < files.count(); ++i)
+                files[i] = replacePath(files.at(i),  QLatin1String(scRelocatable), target);
+            startUndoProcess(files);
+            QFileInfo fileInfo(file);
+            file.remove();
+            QDir directory(fileInfo.absoluteDir());
+            if (directory.exists() && directory.isEmpty())
+                directory.rmdir(directory.path());
+        } else {
+            setError(UserDefinedError);
+            setErrorString(tr("Cannot open file \"%1\" for reading: %2")
+                .arg(QDir::toNativeSeparators(file.fileName())).arg(file.errorString()));
+            return false;
+        }
+    }
+    return true;
+}
+
+void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
+{
     WorkerThread *const thread = new WorkerThread(this, files);
     connect(thread, &WorkerThread::currentFileChanged, this,
         &ExtractArchiveOperation::outputTextChanged);
@@ -115,7 +192,6 @@ bool ExtractArchiveOperation::undoOperation()
     thread->start();
     loop.exec();
     thread->deleteLater();
-    return true;
 }
 
 bool ExtractArchiveOperation::testOperation()

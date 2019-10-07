@@ -52,6 +52,9 @@ Q_SIGNALS:
     void outputTextChanged(const QString &progress);
     void progressChanged(double);
 
+private:
+    void startUndoProcess(const QStringList &files);
+
 private Q_SLOTS:
     void fileFinished(const QString &progress);
 
