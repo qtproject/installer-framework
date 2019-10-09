@@ -46,6 +46,7 @@ public:
     bool undoOperation() Q_DECL_OVERRIDE;
     bool testOperation() Q_DECL_OVERRIDE;
 
+    QVariant value(const QString &name) const;
 Q_SIGNALS:
     void cancelProcess();
     void outputTextChanged(const QString &text);

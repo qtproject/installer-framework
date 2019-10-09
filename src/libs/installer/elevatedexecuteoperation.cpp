@@ -72,6 +72,20 @@ ElevatedExecuteOperation::~ElevatedExecuteOperation()
     delete d;
 }
 
+QVariant ElevatedExecuteOperation::value(const QString &name) const
+{
+    if (name == QLatin1String("undoonly")) {
+        QStringList args = arguments();
+        if (args.count() > 0) {
+            // if command is '/usr/bin/true', no admin rights required on installation.
+            if (args.at(0) == QLatin1String("/usr/bin/true")) {
+                return QVariant(true);
+            }
+        }
+    }
+    return Operation::value(name);
+}
+
 bool ElevatedExecuteOperation::performOperation()
 {
     // This operation receives only one argument. It is the complete

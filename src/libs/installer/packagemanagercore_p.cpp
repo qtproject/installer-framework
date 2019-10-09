@@ -1974,7 +1974,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
         // maybe this operations wants us to be admin...
         bool becameAdmin = false;
-        if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
+        if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool() && ! operation->value(QLatin1String("undoonly")).toBool()) {
             becameAdmin = m_core->gainAdminRights();
             qDebug() << operation->name() << "as admin:" << becameAdmin;
         }

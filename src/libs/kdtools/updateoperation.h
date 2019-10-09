@@ -61,8 +61,8 @@ public:
 
     bool hasValue(const QString &name) const;
     void clearValue(const QString &name);
-    QVariant value(const QString &name) const;
-    void setValue(const QString &name, const QVariant &value);
+    virtual QVariant value(const QString &name) const;
+    virtual void setValue(const QString &name, const QVariant &value);
 
     void setArguments(const QStringList &args);
     QStringList arguments() const;
