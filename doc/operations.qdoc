@@ -188,6 +188,8 @@
                 persistently. This is currently only supported on Windows.
                 If \c system is set to \c true, the persistent variable is set
                 system-wide, not only for the current user.
+                Note, if you set path to environment variable, use '\\' as separator, for example:
+                @Targetdir@\\lib\\system.
         \row
             \li RegisterFileType
             \li "RegisterFileType" \c extension \c command [\c description [\c contentType [\c icon]]].
