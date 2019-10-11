@@ -1255,6 +1255,18 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     if (autoDependOnList.isEmpty())
         return false;
 
+    // If there is an essential update and autodepend on is not for essential
+    // update component, do not add the autodependency to an installed component as
+    // essential updates needs to be installed first, otherwise non-essential components
+    // will be installed
+    if (packageManagerCore()->foundEssentialUpdate()) {
+        const QSet<QString> autoDependOnSet = autoDependOnList.toSet();
+        if (autoDependOnSet.intersects(componentsToInstall)) {
+            return true;
+        }
+        return false;
+    }
+
     QSet<QString> components = componentsToInstall;
     const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
     foreach (const QString &name, installedPackages)
