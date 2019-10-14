@@ -171,11 +171,11 @@ int InstallerBase::run()
     // From Qt5.8 onwards a separate command line option --proxy is not needed as system
     // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
     // then system proxies are not used by default.
-    if ((parser.isSet(QLatin1String(CommandLineOptions::Proxy))
-#if QT_VERSION > 0x050800
-            || QNetworkProxyFactory::usesSystemConfiguration()
-#endif
-            ) && !parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
+    if (parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
+        m_core->settings().setProxyType(QInstaller::Settings::NoProxy);
+        KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+    } else if ((parser.isSet(QLatin1String(CommandLineOptions::Proxy))
+            || QNetworkProxyFactory::usesSystemConfiguration())) {
         m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
         KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
     }
