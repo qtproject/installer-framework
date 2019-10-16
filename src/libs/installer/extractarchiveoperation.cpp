@@ -59,7 +59,6 @@ bool ExtractArchiveOperation::performOperation()
     Receiver receiver;
     Callback callback;
 
-    connect(&callback, &Callback::currentFileChanged, this, &ExtractArchiveOperation::fileFinished);
     connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
     if (PackageManagerCore *core = packageManager()) {
@@ -69,8 +68,6 @@ bool ExtractArchiveOperation::performOperation()
     Runnable *runnable = new Runnable(archivePath, targetDir, &callback);
     connect(runnable, &Runnable::finished, &receiver, &Receiver::runnableFinished,
         Qt::QueuedConnection);
-
-    m_files.clear();
 
     QFileInfo fileInfo(archivePath);
     emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
@@ -96,6 +93,8 @@ bool ExtractArchiveOperation::performOperation()
     //   -<component_name> (dir)
     //    -<filename>.txt (file)
 
+    QStringList files = callback.extractedFiles();
+
     QString fileDirectory = targetDir + QLatin1String("/installerResources/") +
             archivePath.section(QLatin1Char('/'), 1, 1, QString::SectionSkipEmpty) + QLatin1Char('/');
     QString archiveFileName = archivePath.section(QLatin1Char('/'), 2, 2, QString::SectionSkipEmpty);
@@ -114,10 +113,10 @@ bool ExtractArchiveOperation::performOperation()
     if (file.open(QIODevice::WriteOnly)) {
         setDefaultFilePermissions(file.fileName(), DefaultFilePermissions::NonExecutable);
         QDataStream out (&file);
-        for (int i = 0; i < m_files.count(); ++i) {
-            m_files[i] = replacePath(m_files.at(i), targetDir, QLatin1String(scRelocatable));
+        for (int i = 0; i < files.count(); ++i) {
+            files[i] = replacePath(files.at(i), targetDir, QLatin1String(scRelocatable));
         }
-        out << m_files;
+        out << files;
         setValue(QLatin1String("files"), file.fileName());
         file.close();
     } else {
@@ -197,15 +196,6 @@ void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
 bool ExtractArchiveOperation::testOperation()
 {
     return true;
-}
-
-/*!
-    This slot is direct connected to the caller so please don't call it from another thread in the
-    same time.
-*/
-void ExtractArchiveOperation::fileFinished(const QString &filename)
-{
-    m_files.prepend(filename);
 }
 
 } // namespace QInstaller
