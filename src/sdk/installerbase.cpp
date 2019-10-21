@@ -296,19 +296,14 @@ int InstallerBase::run()
     if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
-        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-        if (!productKeyCheck->hasValidLicense())
-            throw QInstaller::Error(QLatin1String("Silent update not allowed."));
+        checkLicense();
         m_core->setUpdater();
         m_core->updateComponentsSilently();
     } else if (parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages))){
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as package manager."));
+        checkLicense();
         m_core->setPackageManager();
-
-        const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-        if (!productKeyCheck->hasValidLicense())
-            throw QInstaller::Error(QLatin1String("No valid license found."));
         m_core->listInstalledPackages();
     } else {
         //create the wizard GUI
@@ -383,4 +378,13 @@ QStringList InstallerBase::repositories(const QString &list) const
     foreach (const QString &item, items)
         qDebug().noquote() << "Adding custom repository:" << item;
     return items;
+}
+
+void InstallerBase::checkLicense()
+{
+    const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
+    if (!productKeyCheck->hasValidLicense()) {
+        qDebug() << "No valid license found.";
+        throw QInstaller::Error(QLatin1String("No valid license found."));
+    }
 }

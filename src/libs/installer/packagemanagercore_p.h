@@ -165,6 +165,8 @@ public:
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
 
+    bool runningProcessesFound();
+
 signals:
     void installationStarted();
     void installationFinished();
@@ -239,6 +241,7 @@ private:
     void processFilesForDelayedDeletion();
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
+    bool calculateComponentsAndRun();
 
 private:
     PackageManagerCore *m_core;

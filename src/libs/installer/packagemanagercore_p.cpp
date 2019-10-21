@@ -1981,6 +1981,20 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
 }
 
+bool PackageManagerCorePrivate::runningProcessesFound()
+{
+    //Check if there are processes running in the install
+    QStringList excludeFiles;
+    excludeFiles.append(maintenanceToolName());
+    QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
+    if (!runningProcesses.isEmpty()) {
+        qDebug() << "Unable to update components. Please stop these processes: "
+                 << runningProcesses << " and try again.";
+        return true;
+    }
+    return false;
+}
+
 // -- private
 
 void PackageManagerCorePrivate::deleteMaintenanceTool()
@@ -2496,6 +2510,20 @@ QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringLi
     QStringList resultFiles;
     findExecutablesRecursive(QCoreApplication::applicationDirPath(), excludeFiles, &resultFiles);
     return checkRunningProcessesFromList(resultFiles);
+}
+
+bool PackageManagerCorePrivate::calculateComponentsAndRun()
+{
+    QString htmlOutput;
+    bool componentsOk = m_core->calculateComponents(&htmlOutput);
+    qDebug().noquote() << htmlToString(htmlOutput);
+    if (componentsOk) {
+        if (m_core->run()) {
+            m_core->writeMaintenanceTool();
+            return true;
+        }
+    }
+    return false;
 }
 
 

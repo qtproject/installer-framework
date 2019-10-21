@@ -1837,16 +1837,8 @@ void PackageManagerCore::listInstalledPackages()
 
 void PackageManagerCore::updateComponentsSilently()
 {
-    //Check if there are processes running in the install
-    QStringList excludeFiles;
-    excludeFiles.append(maintenanceToolName());
-
-    QStringList runningProcesses = d->runningInstallerProcesses(excludeFiles);
-    if (!runningProcesses.isEmpty()) {
-        qDebug() << "Unable to update components. Please stop these processes: "
-                 << runningProcesses << " and try again.";
+    if (d->runningProcessesFound())
         return;
-    }
 
     autoAcceptMessageBoxes();
 

@@ -49,6 +49,7 @@ public:
 private:
     void dumpResourceTree() const;
     QStringList repositories(const QString &list) const;
+    void checkLicense();
 
 private:
     QInstaller::PackageManagerCore *m_core;

@@ -44,6 +44,8 @@ QStringList INSTALLER_EXPORT loggingCategories();
 
 QRegExp INSTALLER_EXPORT commaRegExp();
 
+QString htmlToString(const QString &html);
+
 }   // QInstaller
 
 #endif  // GLOBALS_H

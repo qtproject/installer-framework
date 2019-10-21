@@ -25,6 +25,8 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include <QTextDocument>
+
 #include "globals.h"
 
 const char IFW_COMPONENT_CHECKER[] = "ifw.componentChecker";
@@ -54,6 +56,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("(, |,)")))
 QRegExp commaRegExp()
 {
     return *staticCommaRegExp();
+}
+
+QString htmlToString(const QString &html)
+{
+    QTextDocument doc;
+    doc.setHtml(html);
+    return doc.toPlainText();
 }
 
 } // namespace QInstaller
