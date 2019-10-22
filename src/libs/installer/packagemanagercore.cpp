@@ -2032,6 +2032,32 @@ void PackageManagerCore::printPackageInformation(const QString &name, const Pack
         qCDebug(QInstaller::lcPackageInstalledVersion).noquote() << "\tInstalled version:" << installedPackages.value(name).version;
 }
 
+bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
+{
+    // We will do a recursive check for every child this component has.
+    Component *component = componentByName(componentName);
+    const QList<Component*> childComponents = component->childItems();
+    foreach (const Component *childComponent, childComponents) {
+        if (!componentUninstallableFromCommandLine(childComponent->name()))
+            return false;
+    }
+    ComponentModel *model = defaultComponentModel();
+    const QModelIndex &idx = model->indexFromComponentName(componentName);
+    if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
+        // Component cannot be unselected, check why
+        if (component->forcedInstallation()) {
+            qCWarning(QInstaller::lcInstallerUninstallLog)
+                << "Cannot uninstall ForcedInstallation component" << component->name();
+        } else if (component->autoDependencies().count() > 0) {
+            qCWarning(QInstaller::lcInstallerUninstallLog) << "Cannot uninstall component"
+                << componentName << "because it is added as auto dependency to"
+                << component->autoDependencies().join(QLatin1Char(','));
+        }
+        return false;
+    }
+    return true;
+}
+
 void PackageManagerCore::listInstalledPackages()
 {
     LocalPackagesHash installedPackages = this->localInstalledPackages();
@@ -2088,6 +2114,37 @@ void PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             else
                 qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
         }
+    }
+}
+
+void PackageManagerCore::uninstallComponentsSilently(const QStringList& components)
+{
+    if (d->runningProcessesFound())
+        return;
+    autoRejectMessageBoxes();
+
+    ComponentModel *model = defaultComponentModel();
+    fetchLocalPackagesTree();
+
+    bool uninstallComponentFound = false;
+
+    foreach (const QString &componentName, components){
+        const QModelIndex &idx = model->indexFromComponentName(componentName);
+        Component *component = componentByName(componentName);
+
+        if (component) {
+            if (componentUninstallableFromCommandLine(componentName)) {
+                model->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+                uninstallComponentFound = true;
+            }
+        } else {
+            qCWarning(QInstaller::lcInstallerUninstallLog) << "Cannot uninstall " << componentName <<". Component not found in install tree.";
+        }
+    }
+
+    if (uninstallComponentFound) {
+        if (d->calculateComponentsAndRun())
+            qCDebug(QInstaller::lcInstallerUninstallLog) << "Components uninstalled successfully";
     }
 }
 

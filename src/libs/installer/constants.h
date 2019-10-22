@@ -128,6 +128,7 @@ const char ListPackages[] = "listPackages";
 const char InstallPackages[] = "installPackages";
 const char InstallDefault[] = "installDefault";
 const char TargetDir[] = "targetDir";
+const char UninstallSelectedPackages[] = "uninstallPackages";
 const char Platform[] = "platform";
 const char SquishPort[] = "squish-port";
 
@@ -136,7 +137,8 @@ static const QStringList scCommandLineInterfaceOptions = {
     QLatin1String(ListPackages),
     QLatin1String(UpdatePackages),
     QLatin1String(InstallPackages),
-    QLatin1String(InstallDefault)
+    QLatin1String(InstallDefault),
+    QLatin1String(UninstallSelectedPackages)
 };
 
 } // namespace CommandLineOptions

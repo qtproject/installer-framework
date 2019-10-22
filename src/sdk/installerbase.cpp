@@ -377,6 +377,15 @@ int InstallerBase::run()
         if (!setTargetDirFromCommandLine(parser))
             return EXIT_FAILURE;
         m_core->installDefaultComponentsSilently();
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::UninstallSelectedPackages))) {
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as package manager."));
+        m_core->setPackageManager();
+        QStringList packages;
+        const QString &value = parser.value(QLatin1String(CommandLineOptions::UninstallSelectedPackages));
+        if (!value.isEmpty())
+            packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
+        m_core->uninstallComponentsSilently(packages);
     } else {
         m_core->setCommandLineInstance(false);
         //create the wizard GUI

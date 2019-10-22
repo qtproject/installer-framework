@@ -129,6 +129,9 @@ CommandLineParser::CommandLineParser()
         QLatin1String("package,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::InstallDefault),
         QLatin1String("Install packages that are checked by default.")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::UninstallSelectedPackages),
+        QLatin1String("Uninstall selected packages. Note that all child components will be uninstalled as well"),
+        QLatin1String("package,...")));
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Platform),
         QLatin1String("Use the specified platform plugin."), QLatin1String("plugin")));
     m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::KeyValue),

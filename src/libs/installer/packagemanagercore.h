@@ -220,6 +220,7 @@ public:
     void updateComponentsSilently(const QStringList &componentsToUpdate);
     void installSelectedComponentsSilently(const QStringList& components);
     void installDefaultComponentsSilently();
+    void uninstallComponentsSilently(const QStringList& components);
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;
@@ -357,6 +358,8 @@ private:
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
     void printPackageInformation(const QString &name, const Package *update);
+
+    bool componentUninstallableFromCommandLine(const QString &componentName);
 
 private:
     PackageManagerCorePrivate *const d;
