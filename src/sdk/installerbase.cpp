@@ -95,6 +95,22 @@ int InstallerBase::run()
         }
     }
 
+    QFile binary(binaryFile());
+
+#ifdef Q_OS_WIN
+    // On some admin user installations it is possible that the installer.dat
+    // file is left without reading permissions for non-administrator users,
+    // we should check this and prompt the user to run the executable as admin if needed.
+    if (!binary.open(QIODevice::ReadOnly)) {
+        QFileInfo binaryInfo(binary.fileName());
+        QInstaller::MessageBoxHandler::information(nullptr, QLatin1String("NoReadingPermissions"),
+            tr("Cannot open file \"%1\" for reading").arg(binaryInfo.fileName()),
+            tr("Please make sure that the current user has reading access "
+            "to file \"%1\" or try running %2 as an administrator.").arg(binaryInfo.fileName(), qAppName()));
+        return EXIT_FAILURE;
+    }
+    binary.close();
+#endif
     QString fileName = datFile(binaryFile());
     quint64 cookie = QInstaller::BinaryContent::MagicCookieDat;
     if (fileName.isEmpty()) {
@@ -102,7 +118,7 @@ int InstallerBase::run()
         cookie = QInstaller::BinaryContent::MagicCookie;
     }
 
-    QFile binary(fileName);
+    binary.setFileName(fileName);
     QInstaller::openForRead(&binary);
 
     qint64 magicMarker;
