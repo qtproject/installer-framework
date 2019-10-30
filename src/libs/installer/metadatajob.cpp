@@ -588,56 +588,55 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);
 
+        // If we have top level sha1 element, we have compressed all metadata inside
+        // one repository to a single 7z file. Fetch that instead of component specific
+        // meta 7z files.
+        const QDomNode sha1 = root.firstChildElement(scSHA1);
         QDomNodeList children = root.childNodes();
-        for (int i = 0; i < children.count(); ++i) {
-            const QDomElement el = children.at(i).toElement();
-            if (!el.isNull() && el.tagName() == QLatin1String("PackageUpdate")) {
-                const QDomNodeList c2 = el.childNodes();
-                QString packageName, packageVersion, packageHash;
-                bool metaFound = false;
-                for (int j = 0; j < c2.count(); ++j) {
-                    if (c2.at(j).toElement().tagName() == scName)
-                        packageName = c2.at(j).toElement().text();
-                    else if (c2.at(j).toElement().tagName() == scVersion)
-                        packageVersion = (online ? c2.at(j).toElement().text() : QString());
-                    else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
-                        packageHash = c2.at(j).toElement().text();
-                    else {
-                        foreach (QString meta, metaElements) {
-                            if (c2.at(j).toElement().tagName() == meta) {
-                                metaFound = true;
-                                break;
+        if (sha1.isNull()) {
+            bool metaFound = false;
+            for (int i = 0; i < children.count(); ++i) {
+                const QDomElement el = children.at(i).toElement();
+                if (!el.isNull() && el.tagName() == QLatin1String("PackageUpdate")) {
+                    const QDomNodeList c2 = el.childNodes();
+                    QString packageName, packageVersion, packageHash;
+                    for (int j = 0; j < c2.count(); ++j) {
+                        if (c2.at(j).toElement().tagName() == scName)
+                            packageName = c2.at(j).toElement().text();
+                        else if (c2.at(j).toElement().tagName() == scVersion)
+                            packageVersion = (online ? c2.at(j).toElement().text() : QString());
+                        else if ((c2.at(j).toElement().tagName() == QLatin1String("SHA1")) && testCheckSum)
+                            packageHash = c2.at(j).toElement().text();
+                        else {
+                            foreach (QString meta, metaElements) {
+                                if (c2.at(j).toElement().tagName() == meta) {
+                                    metaFound = true;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
-
-                const QString repoUrl = metadata.repository.url().toString();
-                //If script element is not found, no need to fetch metadata
-                if (metaFound) {
-                    FileTaskItem item(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName,
-                        packageVersion), metadata.directory + QString::fromLatin1("/%1-%2-meta.7z")
-                        .arg(packageName, packageVersion));
-
-                    QAuthenticator authenticator;
-                    authenticator.setUser(metadata.repository.username());
-                    authenticator.setPassword(metadata.repository.password());
-
-                    item.insert(TaskRole::UserRole, metadata.directory);
-                    item.insert(TaskRole::Checksum, packageHash.toLatin1());
-                    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                    item.insert(TaskRole::Name, packageName);
-
-                    m_packages.append(item);
-                } else {
-                    QString fileName = metadata.directory + QLatin1Char('/') + packageName;
-                    QDir directory(fileName);
-                    if (!directory.exists()) {
-                        directory.mkdir(fileName);
+                    const QString repoUrl = metadata.repository.url().toString();
+                    //If script element is not found, no need to fetch metadata
+                    if (metaFound) {
+                        addFileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName, packageVersion),
+                            metadata.directory + QString::fromLatin1("/%1-%2-meta.7z").arg(packageName, packageVersion),
+                            metadata, packageHash, packageName);
+                    } else {
+                        QString fileName = metadata.directory + QLatin1Char('/') + packageName;
+                        QDir directory(fileName);
+                        if (!directory.exists()) {
+                            directory.mkdir(fileName);
+                        }
                     }
                 }
             }
+        } else {
+            const QString repoUrl = metadata.repository.url().toString();
+            addFileTaskItem(QString::fromLatin1("%1/meta.7z").arg(repoUrl),
+                metadata.directory + QString::fromLatin1("/meta.7z"), metadata, sha1.toElement().text(), QString());
         }
+
         if (metadata.repository.categoryname().isEmpty()) {
             m_metaFromDefaultRepositories.insert(metadata.directory, metadata);
         } else {
@@ -790,6 +789,21 @@ QSet<Repository> MetadataJob::getRepositories()
             }
     }
     return repositories;
+}
+
+void MetadataJob::addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
+                                  const QString &sha1, const QString &packageName)
+{
+    FileTaskItem item(source, target);
+    QAuthenticator authenticator;
+    authenticator.setUser(metadata.repository.username());
+    authenticator.setPassword(metadata.repository.password());
+
+    item.insert(TaskRole::UserRole, metadata.directory);
+    item.insert(TaskRole::Checksum, sha1.toLatin1());
+    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+    item.insert(TaskRole::Name, packageName);
+    m_packages.append(item);
 }
 
 }   // namespace QInstaller

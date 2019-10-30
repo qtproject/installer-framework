@@ -99,6 +99,8 @@ private:
     void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
     QSet<Repository> getRepositories();
+    void addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
+                         const QString &sha1, const QString &packageName);
 
 private:
     PackageManagerCore *m_core;

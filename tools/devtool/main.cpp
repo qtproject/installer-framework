@@ -96,7 +96,7 @@ static QStringList split(int index, const QString &description)
 int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
-    app.setApplicationVersion(QLatin1String("1.0.0"));
+    app.setApplicationVersion(QLatin1String("2.0.0"));
 
     QCommandLineParser parser;
     QCommandLineOption help = parser.addHelpOption();
