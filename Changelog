@@ -1,4 +1,12 @@
 3.1.2
+- Fix extracted files list formation in ExtractArchive operation (QTIFW-1239)
+- Decrease the .dat file file size by writing file names to a separate file instead of .dat (QTIFW-1448)
+- Use grid layout in component selection page (QTIFW-1334)
+- Fix addDependency functionality (QTIFW-1458)
+- Fix --no-proxy option in Windows (QTIFW-1445)
+- Fix env variable remove on Windows (QTIFW-1148)
+- Fix essential package update (QTIFW-1215)
+- Fix CreateLink operation destination string formatting on Windows (QTIFW-1443)
 - Gain admin rights for writing MaintenanceTool config files if needed (QTIFW-1363)
 - Update INSTALL file (QTIFW-1185)
 - Fix initially deactivated buttons when selecting components to update (QTIFW-1320)
