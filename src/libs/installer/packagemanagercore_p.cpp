@@ -215,6 +215,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updaterModel(nullptr)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(nullptr)
+    , m_foundEssentialUpdate(false)
 {
 }
 
@@ -245,6 +246,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updaterModel(nullptr)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
+    , m_foundEssentialUpdate(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
