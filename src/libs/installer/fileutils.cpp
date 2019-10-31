@@ -306,12 +306,11 @@ bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFileP
 /*!
     Sets permissions of file or directory specified by \a file to \c 644 or \c 755
     based by the value of \a permissions. This is effective only on Unix platforms
-    as \c setPermissions() does not manipulate ACLs. On Windows this does nothing
-    and always returns \c true.
+    as \c setPermissions() does not manipulate ACLs. On Windows NTFS volumes this
+    only unsets the legacy read-only flag regardless of the value of \a permissions.
 */
 bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
 {
-#ifdef Q_OS_UNIX
     if (!file->exists()) {
         qWarning() << "Target" << file->fileName() << "does not exists.";
         return false;
@@ -325,9 +324,6 @@ bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions p
         return false;
     }
     return true;
-#else
-    return true;
-#endif
 }
 
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
