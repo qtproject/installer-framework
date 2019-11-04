@@ -48,12 +48,18 @@ public:
     bool undoOperation();
     bool testOperation();
 
+    bool readDataFileContents(QString &targetDir, QStringList *resultList);
+
 Q_SIGNALS:
     void outputTextChanged(const QString &progress);
     void progressChanged(double);
 
 private:
     void startUndoProcess(const QStringList &files);
+    void deleteDataFile(const QString &fileName);
+
+private:
+    QString m_relocatedDataFileName;
 
 private:
     class Callback;
