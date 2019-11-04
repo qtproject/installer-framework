@@ -44,11 +44,39 @@ private slots:
     void testSetDefaultFilePermissions()
     {
 #if defined(Q_OS_WIN)
-        QVERIFY(setDefaultFilePermissions(QInstaller::generateTemporaryFileName(),
-            DefaultFilePermissions::NonExecutable));
+        QString fileName = QInstaller::generateTemporaryFileName();
+        QFile testFile(fileName);
 
-        QVERIFY(setDefaultFilePermissions(QInstaller::generateTemporaryFileName(),
-            DefaultFilePermissions::Executable));
+        QVERIFY(testFile.open(QIODevice::ReadWrite));
+        QVERIFY(testFile.exists());
+        testFile.close();
+
+        // Set permissions containing none of the Write* flags, this will cause
+        // the read-only flag to be set for the file
+        QVERIFY(testFile.setPermissions(QFileDevice::ReadOwner | QFileDevice::ReadUser
+            | QFileDevice::ReadGroup | QFileDevice::ReadOther));
+
+        // Verify that the file cannot be opened for both reading and writing, i.e.
+        // it should be read-only.
+        QVERIFY(!testFile.open(QIODevice::ReadWrite));
+
+        // Now try to remove the read-only flag
+        QVERIFY(setDefaultFilePermissions(&testFile, DefaultFilePermissions::NonExecutable));
+
+        // Verify that the file can now be opened for both reading and writing
+        QVERIFY(testFile.open(QIODevice::ReadWrite));
+        testFile.close();
+
+        QVERIFY(testFile.setPermissions(QFileDevice::ReadOwner | QFileDevice::ReadUser
+            | QFileDevice::ReadGroup | QFileDevice::ReadOther));
+
+        // Check that the behavior is same with 'Executable' argument
+        QVERIFY(setDefaultFilePermissions(&testFile, DefaultFilePermissions::Executable));
+
+        QVERIFY(testFile.open(QIODevice::ReadWrite));
+        testFile.close();
+
+        QVERIFY(testFile.remove());
 #elif defined(Q_OS_UNIX)
         // Need to include the "user" flags here as they will be returned
         // by QFile::permissions(). Same as owner permissions of the file.
