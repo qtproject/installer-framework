@@ -150,18 +150,18 @@ bool ExtractArchiveOperation::undoOperation()
         startUndoProcess(files);
     } else {
         const QString filePath = value(QLatin1String("files")).toString();
-        QString target = QCoreApplication::applicationDirPath();
+        QString targetDir = arguments().at(1);
         // Does not change target on non macOS platforms.
-        if (QInstaller::isInBundle(target, &target))
-            target = QDir::cleanPath(target + QLatin1String("/.."));
-        QString fileName = replacePath(filePath, QLatin1String(scRelocatable), target);
+        if (QInstaller::isInBundle(targetDir, &targetDir))
+            targetDir = QDir::cleanPath(targetDir + QLatin1String("/.."));
+        QString fileName = replacePath(filePath, QLatin1String(scRelocatable), targetDir);
         QFile file(fileName);
 
         if (file.open(QIODevice::ReadOnly)) {
             QDataStream in(&file);
             in >> files;
             for (int i = 0; i < files.count(); ++i)
-                files[i] = replacePath(files.at(i),  QLatin1String(scRelocatable), target);
+                files[i] = replacePath(files.at(i),  QLatin1String(scRelocatable), targetDir);
             startUndoProcess(files);
             QFileInfo fileInfo(file);
             file.remove();
