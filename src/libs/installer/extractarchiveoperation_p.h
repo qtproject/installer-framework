@@ -97,6 +97,10 @@ public:
         return m_backupFiles;
     }
 
+    QStringList extractedFiles() const {
+        return m_extractedFiles;
+    }
+
 public slots:
     void statusChanged(QInstaller::PackageManagerCore::Status status)
     {
@@ -113,13 +117,12 @@ public slots:
     }
 
 signals:
-    void currentFileChanged(const QString &filename);
     void progressChanged(double progress);
 
 private:
     void setCurrentFile(const QString &filename) Q_DECL_OVERRIDE
     {
-        emit currentFileChanged(QDir::toNativeSeparators(filename));
+        m_extractedFiles.prepend(QDir::toNativeSeparators(filename));
     }
 
     static QString generateBackupName(const QString &fn)
@@ -157,6 +160,7 @@ private:
 private:
     HRESULT m_state = S_OK;
     BackupFiles m_backupFiles;
+    QStringList m_extractedFiles;
 };
 
 class ExtractArchiveOperation::Runnable : public QObject, public QRunnable

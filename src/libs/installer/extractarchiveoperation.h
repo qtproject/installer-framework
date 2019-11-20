@@ -52,11 +52,10 @@ Q_SIGNALS:
     void outputTextChanged(const QString &progress);
     void progressChanged(double);
 
-private Q_SLOTS:
-    void fileFinished(const QString &progress);
+private:
+    void startUndoProcess(const QStringList &files);
 
 private:
-    QStringList m_files;
     class Callback;
     class Runnable;
     class Receiver;

@@ -293,6 +293,39 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 #endif
 }
 
+/*!
+    Sets permissions of file or directory specified by \a fileName to \c 644 or \c 755
+    based by the value of \a permissions.
+*/
+bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions)
+{
+    QFile file(fileName);
+    return setDefaultFilePermissions(&file, permissions);
+}
+
+/*!
+    Sets permissions of file or directory specified by \a file to \c 644 or \c 755
+    based by the value of \a permissions. This is effective only on Unix platforms
+    as \c setPermissions() does not manipulate ACLs. On Windows NTFS volumes this
+    only unsets the legacy read-only flag regardless of the value of \a permissions.
+*/
+bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
+{
+    if (!file->exists()) {
+        qWarning() << "Target" << file->fileName() << "does not exists.";
+        return false;
+    }
+    if (file->permissions() == static_cast<QFileDevice::Permission>(permissions))
+        return true;
+
+    if (!file->setPermissions(static_cast<QFileDevice::Permission>(permissions))) {
+        qWarning() << "Cannot set default permissions for target"
+                   << file->fileName() << ":" << file->errorString();
+        return false;
+    }
+    return true;
+}
+
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());

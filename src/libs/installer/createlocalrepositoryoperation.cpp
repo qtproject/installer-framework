@@ -82,8 +82,7 @@ static void fixPermissions(const QString &repoPath)
         if (!it.fileInfo().isFile())
             continue;
 
-        if (!QFile::setPermissions(it.filePath(), QFile::ReadOwner | QFile::WriteOwner
-            | QFile::ReadUser | QFile::WriteUser | QFile::ReadGroup | QFile::ReadOther)) {
+        if (!setDefaultFilePermissions(it.filePath(), DefaultFilePermissions::NonExecutable)) {
                 throw Error(CreateLocalRepositoryOperation::tr("Cannot set permissions for file \"%1\".")
                     .arg(QDir::toNativeSeparators(it.filePath())));
         }

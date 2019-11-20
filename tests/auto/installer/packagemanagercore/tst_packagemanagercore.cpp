@@ -284,35 +284,6 @@ private slots:
 #endif
         QVERIFY(QDir().rmdir(testDirectory));
     }
-
-    void testSubdirectoriesWritable()
-    {
-        PackageManagerCore core;
-
-        const QString testDirectory = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(testDirectory));
-        QVERIFY(QDir(testDirectory).exists());
-
-        const QString testSubdirectory = testDirectory + "/" + QString::number(qrand() % 1000);
-
-        QVERIFY(QDir().mkpath(testSubdirectory));
-        QVERIFY(QDir(testSubdirectory).exists());
-
-        // should be writable
-        QVERIFY(core.subdirectoriesWritable(testDirectory));
-
-#if defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
-        QFile dirDevice(testSubdirectory);
-        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::ExeOwner);
-
-        // should not be writable
-        QVERIFY(!core.subdirectoriesWritable(testDirectory));
-
-        dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
-#endif
-        QVERIFY(QDir().rmdir(testSubdirectory));
-        QVERIFY(QDir().rmdir(testDirectory));
-    }
 };
 
 

@@ -146,8 +146,11 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
         return Link(linkPath);
     }
 
-    const QString szDestDir = QString::fromLatin1("\\??\\").arg(targetPath).replace(QLatin1Char('/'),
+    const QString szDestDir = QString::fromLatin1("\\??\\%1").arg(targetPath).replace(QLatin1Char('/'),
         QLatin1Char('\\'));
+
+    // Get string length in bytes, not in characters count
+    const size_t destDirBytes = szDestDir.size() * sizeof(ushort);
 
     // Allocates a block of memory for an array of num elements(1) and initializes all its bits to zero.
     REPARSE_DATA_BUFFER* reparseStructData = (REPARSE_DATA_BUFFER*)calloc(1,
@@ -156,11 +159,11 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     reparseStructData->ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
     reparseStructData->MountPointReparseBuffer.PrintNameLength = 0;
     reparseStructData->MountPointReparseBuffer.SubstituteNameOffset = 0;
-    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = szDestDir.length();
-    reparseStructData->MountPointReparseBuffer.PrintNameOffset = szDestDir.length() + sizeof(WCHAR);
+    reparseStructData->MountPointReparseBuffer.SubstituteNameLength = destDirBytes;
+    reparseStructData->MountPointReparseBuffer.PrintNameOffset = destDirBytes + sizeof(WCHAR);
 
     uint spaceAfterGeneralData = sizeof(USHORT) * 5 + sizeof(WCHAR); //should be 12
-    reparseStructData->ReparseDataLength = szDestDir.length() + spaceAfterGeneralData;
+    reparseStructData->ReparseDataLength = destDirBytes + spaceAfterGeneralData;
 
 #ifndef Q_CC_MINGW
     StringCchCopy(reparseStructData->MountPointReparseBuffer.PathBuffer, 1024, (wchar_t*)szDestDir.utf16());

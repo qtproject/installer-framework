@@ -85,6 +85,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_descriptionVLayout->addWidget(m_descriptionScrollArea);
 
     m_sizeLabel = new QLabel(q);
+    m_sizeLabel->setMargin(5);
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     m_descriptionVLayout->addWidget(m_sizeLabel);
@@ -128,8 +129,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
     buttonHLayout->addWidget(m_uncheckAll);
 
-    m_treeViewVLayout->addLayout(buttonHLayout);
-
     m_metadataProgressLabel = new QLabel();
     m_metadataProgressLabel->hide();
     m_treeViewVLayout->addWidget(m_metadataProgressLabel);
@@ -151,9 +150,12 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(q, &ComponentSelectionPage::left,
             m_core, &PackageManagerCore::clearComponentsToInstallCalculated);
 
-    m_mainHLayout = new QHBoxLayout(q);
-    m_mainHLayout->addLayout(m_treeViewVLayout, 3);
-    m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+    m_mainGLayout = new QGridLayout(q);
+    m_mainGLayout->addLayout(buttonHLayout, 0, 1);
+    m_mainGLayout->addLayout(m_treeViewVLayout, 1, 1);
+    m_mainGLayout->addLayout(m_descriptionVLayout, 1, 2);
+    m_mainGLayout->setColumnStretch(1, 3);
+    m_mainGLayout->setColumnStretch(2, 2);
 
 #ifdef INSTALLCOMPRESSED
     allowCompressedRepositoryInstall();
@@ -200,6 +202,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         return;
     m_categoryWidget = new QWidget();
     QVBoxLayout *vLayout = new QVBoxLayout;
+    vLayout->setContentsMargins(0, 0, 0, 0);
     m_categoryWidget->setLayout(vLayout);
     m_categoryGroupBox = new QGroupBox(q);
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
@@ -224,7 +227,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
 
     vLayout->addWidget(m_categoryGroupBox);
     vLayout->addStretch();
-    m_mainHLayout->insertWidget(0, m_categoryWidget);
+    m_mainGLayout->addWidget(m_categoryWidget, 1, 0);
 }
 
 void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
@@ -372,19 +375,19 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
         QSpacerItem *verticalSpacer2 = new QSpacerItem(0, 0, QSizePolicy::Minimum,
                                                        QSizePolicy::Expanding);
         m_treeViewVLayout->addSpacerItem(verticalSpacer2);
-        m_mainHLayout->removeItem(m_descriptionVLayout);
+        m_mainGLayout->removeItem(m_descriptionVLayout);
         //Hide next button during category fetch
         QPushButton *const b = qobject_cast<QPushButton *>(q->gui()->button(QWizard::NextButton));
         b->setEnabled(!show);
     } else {
         QSpacerItem *item = m_treeViewVLayout->spacerItem();
         m_treeViewVLayout->removeItem(item);
-        m_mainHLayout->addLayout(m_descriptionVLayout, 2);
+        m_mainGLayout->addLayout(m_descriptionVLayout, 1, 2);
         //Call completeChanged() to determine if NextButton should be shown or not after category fetch.
         q->completeChanged();
     }
     if (m_categoryWidget)
-        m_categoryWidget->setDisabled(show);
+        m_categoryWidget->setVisible(!show);
     m_progressBar->setVisible(show);
     m_metadataProgressLabel->setVisible(show);
 
@@ -392,11 +395,16 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     m_checkDefault->setVisible(!show);
     m_checkAll->setVisible(!show);
     m_uncheckAll->setVisible(!show);
-    m_descriptionLabel->setVisible(!show);
+    m_descriptionScrollArea->setVisible(!show);
     m_sizeLabel->setVisible(!show);
 
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
+
+    // In macOS 10.12 the widgets are not hidden if those are not updated immediately
+#ifdef Q_OS_MACOS
+    q->repaint();
+#endif
 }
 
 void ComponentSelectionPagePrivate::fetchRepositoryCategories()

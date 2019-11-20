@@ -152,8 +152,18 @@ UpdateOperation::Error undoSetting(const QString &regPath,
         SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
         actual = registry.value(name).toString();
     }
-    if (actual != value) //key changed, don't undo
-        return UpdateOperation::UserDefinedError;
+
+    if (actual != value)
+    {
+        //For unknown reason paths with @TargetDir@ variable get modified
+        //so that Windows file separators get replaced with unix style separators,
+        //fix separators before matching to actual value in register
+        QString tempValue = value;
+        QString fixedValue = tempValue.replace(QLatin1Char('/'), QLatin1Char('\\'));
+
+        if (actual != fixedValue) //key changed, don't undo
+            return UpdateOperation::UserDefinedError;
+    }
 
     bool error = false;
     if (handleRegExpandSz(regPath, name, oldValue, errorString, &error))

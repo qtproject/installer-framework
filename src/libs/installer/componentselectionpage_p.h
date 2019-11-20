@@ -44,6 +44,7 @@ class QListWidgetItem;
 class QProgressBar;
 class QVBoxLayout;
 class QHBoxLayout;
+class QGridLayout;
 
 namespace QInstaller {
 
@@ -98,7 +99,7 @@ private:
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
-    QHBoxLayout *m_mainHLayout;
+    QGridLayout *m_mainGLayout;
     QVBoxLayout *m_treeViewVLayout;
     bool m_allowCompressedRepositoryInstall;
     ComponentModel *m_allModel;
