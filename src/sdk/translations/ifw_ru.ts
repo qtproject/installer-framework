@@ -1726,9 +1726,9 @@ Update aborted!</source>
     </message>
     <message>
         <source>
-Installing component %1...</source>
+Installing component %1</source>
         <translation>
-Установка компонента %1...</translation>
+Установка компонента %1</translation>
     </message>
     <message>
         <source>Installer Error</source>

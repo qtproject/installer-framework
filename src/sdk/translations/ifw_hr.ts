@@ -1364,9 +1364,9 @@ Aktualiziranje je prekinuto!</translation>
     </message>
     <message>
         <source>
-Installing component %1...</source>
+Installing component %1</source>
         <translation>
-Instaliranje komponente %1 …</translation>
+Instaliranje komponente %1</translation>
     </message>
     <message>
         <source>Installer Error</source>

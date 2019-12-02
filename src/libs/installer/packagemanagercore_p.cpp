@@ -1872,7 +1872,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     // show only components which do something, MinimumProgress is only for progress calculation safeness
     bool showDetailsLog = false;
     if (opCount > 1 || (opCount == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1...")
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
             .arg(component->displayName()));
         showDetailsLog = true;
     }
