@@ -311,7 +311,8 @@ void LocalPackageHub::refresh()
     \a virtualComp,
     \a uncompressedSize,
     \a inheritVersionFrom,
-    and \a checkable for the package.
+    \a checkable,
+    and \a expandedByDefault for the package.
 */
 void LocalPackageHub::addPackage(const QString &name,
                                  const QString &version,

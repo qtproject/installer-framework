@@ -389,10 +389,14 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     QTimer::singleShot(30, this, SLOT(setMaxSize()));
 }
 
+/*!
+    Limits installer maximum size to screen size.
+*/
 void PackageManagerGui::setMaxSize()
 {
     setMaximumSize(qApp->desktop()->availableGeometry(this).size());
 }
+
 /*!
     Destructs a package manager UI.
 */
@@ -1528,7 +1532,7 @@ void IntroductionPage::onProgressChanged(int progress)
 }
 
 /*!
-    Sets total \a progress value to progress bar.
+    Sets total \a totalProgress value to progress bar.
 */
 void IntroductionPage::setTotalProgress(int totalProgress)
 {
@@ -1927,6 +1931,10 @@ void ComponentSelectionPage::entering()
     d->showCompressedRepositoryButton();
 }
 
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
 void ComponentSelectionPage::leaving()
 {
     d->hideCompressedRepositoryButton();
@@ -1993,11 +2001,21 @@ void ComponentSelectionPage::deselectComponent(const QString &id)
         d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
 }
 
+/*!
+   Adds the possibility to install a compressed repository on component selection
+   page. A new button which opens a file browser is added for compressed
+   repository selection.
+*/
 void ComponentSelectionPage::allowCompressedRepositoryInstall()
 {
     d->allowCompressedRepositoryInstall();
 }
 
+/*!
+    Adds an additional virtual component with the \a name to be installed.
+
+    Returns \c true if the virtual component is found and not installed.
+*/
 bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
 {
     PackageManagerCore *core = packageManagerCore();

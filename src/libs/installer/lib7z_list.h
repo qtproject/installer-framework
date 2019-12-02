@@ -53,6 +53,7 @@ namespace Lib7z
         quint64 uncompressedSize = 0;
         QFile::Permissions permissions = 0;
     };
+
     INSTALLER_EXPORT bool operator==(const File &lhs, const File &rhs);
 
     QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);

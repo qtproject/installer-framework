@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
         }
 
         Lib7z::initSevenZ();
-        Lib7z::createArchive(args[0], args.mid(1), Lib7z::QTmpFile::No, Lib7z::Compression(value),
+        Lib7z::createArchive(args[0], args.mid(1), Lib7z::TmpFile::No, Lib7z::Compression(value),
             [&] () -> Lib7z::UpdateCallback * {
                 if (parser.isSet(verbose))
                     return new VerbosePrinterCallback;

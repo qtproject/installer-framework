@@ -171,7 +171,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             qWarning().noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             if (component->packageManagerCore()->settings().allowUnstableComponents()) {
-                component->setUnstable(PackageManagerCore::UnstableError::MissingDependency, errorMessage);
+                component->setUnstable(Component::UnstableError::MissingDependency, errorMessage);
                 continue;
             } else {
                 return false;

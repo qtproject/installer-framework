@@ -124,6 +124,13 @@
 */
 
 /*!
+    \qmlsignal installer::metaJobTotalProgress(int progress)
+
+    Triggered when total progress value of the communication with a
+    remote repository changes.
+*/
+
+/*!
     \qmlsignal installer::metaJobInfoMessage(string message)
 
     Triggered with informative updates of the communication with a remote repository.
@@ -282,6 +289,12 @@
     \qmlmethod void installer::componentsToInstallNeedsRecalculation()
 
     Ensures that component dependencies are re-calculated.
+*/
+
+/*!
+    \qmlmethod void installer::clearComponentsToInstallCalculated()
+
+    Forces a recalculation of components to install.
 */
 
 /*!

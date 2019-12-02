@@ -359,6 +359,14 @@
 */
 
 /*!
+    \qmlmethod void component::addAutoDependOn(string newDependOn)
+
+     Adds the component specified by \a newDependOn to the automatic depend-on list.
+
+    \sa autoDependencies
+*/
+
+/*!
     \qmlmethod void component::setInstalled()
 
     Set's the components state to installed.

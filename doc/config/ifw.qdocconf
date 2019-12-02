@@ -140,4 +140,6 @@ defines                 += ABSTRACTTASK_H \
                            UI_PROXYCREDENTIALSDIALOG_H \
                            UI_SERVERAUTHENTICATIONDIALOG_H \
                            UNINSTALLERCALCULATOR_H \
-                           UNZIPTASK_H
+                           UNZIPTASK_H \
+                           REPOSITORYCATEGORY_H \
+                           COMPONENTSELECTIONPAGE_P_H
