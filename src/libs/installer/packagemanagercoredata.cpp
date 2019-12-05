@@ -167,6 +167,11 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
     m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"),
         replaceWindowsEnvironmentVariables(allPrograms));
 #endif
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+    m_variables.insert(QLatin1String("IFW_VERSION_STR"),  QLatin1String(QUOTE(IFW_VERSION_STR)));
+#undef QUOTE
+#undef QUOTE_
 }
 
 Settings &PackageManagerCoreData::settings() const
