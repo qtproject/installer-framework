@@ -22,7 +22,8 @@ SUBDIRS += \
     settingsoperation \
     task \
     clientserver \
-    factory
+    factory \
+    brokeninstaller
 
 win32 {
     SUBDIRS += registerfiletypeoperation
