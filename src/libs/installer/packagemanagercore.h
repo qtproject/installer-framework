@@ -223,6 +223,7 @@ public:
     bool uninstallComponentsSilently(const QStringList& components);
 
     // convenience
+    Q_INVOKABLE void setInstaller();
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
 

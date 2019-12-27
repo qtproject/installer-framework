@@ -25,7 +25,8 @@ SUBDIRS += \
     factory \
     replaceoperation \
     brokeninstaller \
-    cliinterface
+    cliinterface \
+    metadatajob
 
 win32 {
     SUBDIRS += registerfiletypeoperation

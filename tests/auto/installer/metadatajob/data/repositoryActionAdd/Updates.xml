@@ -1,0 +1,30 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <RepositoryUpdate>
+  <Repository action="add" url="../repository" displayname="Example repository"/>
+ </RepositoryUpdate>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="222" OS="Any" UncompressedSize="72"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>9d54e3a5adf3563913feee8ba23a99fb80d46590</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B</Name>
+  <DisplayName>B</DisplayName>
+  <Description>Example component B</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="222" OS="Any" UncompressedSize="72"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>9170d55a6af81c1a6a63d708a4ab6ed359775cd9</SHA1>
+ </PackageUpdate>
+</Updates>

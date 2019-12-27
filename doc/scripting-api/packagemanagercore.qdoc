@@ -682,6 +682,14 @@
 */
 
 /*!
+    \qmlmethod void installer::setInstaller()
+
+    Forces an installer context.
+
+    \sa isInstaller, setUpdater, setUninstaller, setPackageManager
+*/
+
+/*!
     \qmlmethod boolean installer::isInstaller()
 
     Returns \c true if the application, binary, or executable is executed in
@@ -701,7 +709,7 @@
 
     Forces an uninstaller context.
 
-    \sa isUninstaller, setUpdater, setPackageManager
+    \sa isUninstaller, setUpdater, setPackageManager, setInstaller
 */
 
 /*!
@@ -718,7 +726,7 @@
 
     Forces an updater context.
 
-    \sa isUpdater, setUninstaller, setPackageManager
+    \sa isUpdater, setUninstaller, setPackageManager, setInstaller
 */
 
 /*!

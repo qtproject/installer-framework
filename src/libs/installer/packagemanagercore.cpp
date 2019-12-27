@@ -2922,6 +2922,15 @@ QString PackageManagerCore::installerBinaryPath() const
 }
 
 /*!
+    \sa {installer::setInstaller}{installer.setInstaller}
+    \sa isInstaller(), setUpdater(), setPackageManager()
+*/
+void PackageManagerCore::setInstaller()
+{
+    d->m_magicBinaryMarker = BinaryContent::MagicInstallerMarker;
+}
+
+/*!
     Returns \c true if running as installer.
 
     \sa {installer::isInstaller}{installer.isInstaller}

@@ -36,6 +36,9 @@
 
 #include <QFutureWatcher>
 
+class QDomNodeList;
+class QDomNode;
+
 namespace QInstaller {
 
 class PackageManagerCore;
@@ -101,6 +104,12 @@ private:
     QSet<Repository> getRepositories();
     void addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
                          const QString &sha1, const QString &packageName);
+    bool parsePackageUpdate(const QDomNodeList &c2, QString &packageName, QString &packageVersion,
+                            QString &packageHash, bool online, bool testCheckSum);
+    QHash<QString, QPair<Repository, Repository> > searchAdditionalRepositories(const QDomNode &repositoryUpdate,
+                            const FileTaskResult &result, const Metadata &metadata);
+    MetadataJob::Status setAdditionalRepositories(QHash<QString, QPair<Repository, Repository> > repositoryUpdates,
+                            const FileTaskResult &result, const Metadata& metadata);
 
 private:
     PackageManagerCore *m_core;

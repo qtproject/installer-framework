@@ -684,7 +684,7 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
             continue;
         const QString absPath = sd.absolutePath();
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
-        const QString tmpTarget = repoDir + QLatin1String("/") +fn;
+        const QString tmpTarget = repoDir + QLatin1String("/") + fn;
         Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::TmpFile::No);
     }
 
