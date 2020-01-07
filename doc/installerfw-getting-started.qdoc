@@ -47,7 +47,7 @@
     \list
         \li Microsoft Windows 7, and later
         \li Ubuntu Linux 16.04, and later
-        \li OS X 10.12, and later
+        \li macOS 10.12, and later
     \endlist
 
     \section1 Building from Sources
@@ -59,8 +59,8 @@
     \section2 Supported Compilers
 
     The Qt Installer Framework can be compiled with Microsoft Visual Studio
-    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer. Currently the
-    tested combination for Windows is Qt5.12.4 with MSVC 2015.
+    2013 and newer, GCC 4.7 and newer, and Clang 3.1 and newer. Currently, the
+    tested combination for Windows is Qt 5.12.4 with MSVC 2015.
 
     \section2 Configuring Qt
 
@@ -70,7 +70,7 @@
     from http://doc.qt.io/qt-5/ssl.html if you are statically linking against
     OpenSSL libraries.
 
-    The required Qt version is 5.9.x - 5.12.x.
+    Qt versions between 5.9.0 and 5.12.x are supported.
 
     \section3 Configuring Qt for Windows
 
