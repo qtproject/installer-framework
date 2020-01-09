@@ -246,11 +246,14 @@ int main(int argc, char** argv)
                 // remove all components that have no update (decision based on the version tag)
                 for (int i = packages.count() - 1; i >= 0; --i) {
                     const QInstallerTools::PackageInfo info = packages.at(i);
-                    if (!hash.contains(info.name))
-                        continue;   // the component is not there, keep it
 
-                    if (KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1)
+                    // check if component already exists & version did not change
+                    if (hash.contains(info.name) && KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1) {
                         packages.remove(i); // the version did not change, no need to update the component
+                        continue;
+                    }
+                    std::cout << QString::fromLatin1("Update component \"%1\" in \"%2\".")
+                        .arg(info.name, repositoryDir) << std::endl;
                 }
 
                 if (packages.isEmpty()) {
