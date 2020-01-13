@@ -1059,16 +1059,14 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
+    , m_titleColor(QString())
     , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(nullptr)
 {
-    if (!m_core->settings().titleColor().isEmpty()) {
+    if (!m_core->settings().titleColor().isEmpty())
         m_titleColor = m_core->settings().titleColor();
-    } else {
-        QColor defaultColor = style()->standardPalette().text().color();
-        m_titleColor = defaultColor.name();
-    }
+
     setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
     setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setPixmap(QWizard::LogoPixmap, logoPixmap());
