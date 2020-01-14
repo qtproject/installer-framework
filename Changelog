@@ -1,3 +1,7 @@
+3.2.1
+- Documentation fixes
+- Fix QWizardPage title color (QTIFW-1557)
+
 3.2.0
 - Fix extracted files list formation in ExtractArchive operation (QTIFW-1239)
 - Decrease the .dat file file size by writing file names to a separate file instead of .dat (QTIFW-1448)
