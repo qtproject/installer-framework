@@ -2383,7 +2383,7 @@ void ReadyForInstallationPage::entering()
         qDebug().nospace() << "Cannot determine available space on device. "
                               "Volume descriptor: " << targetVolume.volumeDescriptor()
                            << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
-        return;     // TODO: Shouldn't this also disable the "Next" button?
+        return;
     }
 
     const bool tempOnSameVolume = (targetVolume == tempVolume);
