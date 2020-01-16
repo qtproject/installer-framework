@@ -26,8 +26,8 @@
 **
 **************************************************************************/
 
-#ifndef ARCHIVEREPOSITORY_H
-#define ARCHIVEREPOSITORY_H
+#ifndef REPOSITORYCATEGORY_H
+#define REPOSITORYCATEGORY_H
 
 #include "installer_global.h"
 #include "repository.h"
@@ -87,4 +87,4 @@ INSTALLER_EXPORT QDataStream &operator<<(QDataStream &ostream, const RepositoryC
 
 Q_DECLARE_METATYPE(QInstaller::RepositoryCategory)
 
-#endif // ARCHIVEREPOSITORY_H
+#endif // REPOSITORYCATEGORY_H

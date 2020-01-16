@@ -70,6 +70,21 @@ static const QLatin1String scExpandedByDefault("ExpandedByDefault");
 static const QLatin1String scUnstable("Unstable");
 
 /*!
+    \enum Component::UnstableError
+
+    This enum type holds the component unstable error reason:
+
+    \value  DepencyToUnstable
+            Component has a dependency to an unstable component.
+    \value  ShaMismatch
+            Component has packages with non-matching SHA values.
+    \value  ScriptLoadingFailed
+            Component script has errors or loading fails.
+    \value  MissingDependency
+            Component has dependencies to missing components.
+*/
+
+/*!
     \inmodule QtInstallerFramework
     \class Component::SortingPriorityLessThan
     \brief The SortingPriorityLessThan class sets an increasing sorting order for child components.
@@ -182,6 +197,14 @@ static const QLatin1String scUnstable("Unstable");
     \property Component::enabled
 
     \brief Whether the component is currently enabled. The property is both readable and writable.
+*/
+
+/*!
+    \property Component::unstable
+
+    \brief Whether the component is unstable. This is a read-only property.
+
+    \note Unstable components cannot be selected for installation.
 */
 
 /*!
@@ -524,12 +547,12 @@ void Component::loadComponentScript(const QString &fileName)
                 Component *dependencyComponent = packageManagerCore()->componentByName
                         (PackageManagerCore::checkableName(dependency));
                 if (dependencyComponent && dependencyComponent->isUnstable())
-                    setUnstable(PackageManagerCore::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
+                    setUnstable(Component::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
             }
         }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable(PackageManagerCore::UnstableError::ScriptLoadingFailed, error.message());
+            setUnstable(Component::Component::ScriptLoadingFailed, error.message());
             qWarning() << error.message();
         } else {
             throw error;
@@ -1090,6 +1113,8 @@ bool Component::addOperation(QQmlV4Function *func)
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values.
 
+    Returns \c true if the operation is created; otherwise returns \c false.
+
     \sa {component::addOperation}{component.addOperation}
 */
 bool Component::addOperation(const QString &operation, const QStringList &parameters)
@@ -1118,6 +1143,8 @@ bool Component::addElevatedOperation(QQmlV4Function *func)
     The variables that the parameters contain, such as \c @TargetDir@, are replaced with their
     values. The operation is executed with elevated rights.
 
+    Returns \c true if the operation is created; otherwise returns \c false.
+
     \sa {component::addElevatedOperation}{component.addElevatedOperation}
 */
 bool Component::addElevatedOperation(const QString &operation, const QStringList &parameters)
@@ -1134,6 +1161,8 @@ bool Component::addElevatedOperation(const QString &operation, const QStringList
     Specifies whether operations should be automatically created when the installation starts. This
     would be done by calling createOperations(). If you set this to \c false, it is completely up
     to the component's script to create all operations.
+
+    Returns \c false when component's script will create all operations; otherwise returns \c true.
 
     \sa {component::autoCreateOperations}{component.autoCreateOperations}
 */
@@ -1215,7 +1244,7 @@ QStringList Component::dependencies() const
     Adds the component specified by \a newDependOn to the automatic depend-on list.
 
     \sa {component::addAutoDependOn}{component.addAutoDependOn}
-    \sa dependencies
+    \sa autoDependencies
 */
 
 void Component::addAutoDependOn(const QString &newDependOn)
@@ -1387,12 +1416,20 @@ bool Component::isUninstalled() const
     return scUninstalled == d->m_vars.value(scCurrentState);
 }
 
+/*!
+    Returns \c true if this component is unstable.
+*/
+
 bool Component::isUnstable() const
 {
     return scTrue == d->m_vars.value(scUnstable);
 }
 
-void Component::setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage)
+/*!
+    Sets this component, all its child components and all the components depending on
+    this component unstable with the error code \a error and message \a errorMessage.
+*/
+void Component::setUnstable(Component::UnstableError error, const QString &errorMessage)
 {
     QList<Component*> dependencies = d->m_core->dependees(this);
     // Mark this component unstable
@@ -1410,7 +1447,7 @@ void Component::setUnstable(PackageManagerCore::UnstableError error, const QStri
     foreach (Component *descendant, this->descendantComponents()) {
         descendant->markComponentUnstable();
     }
-    QMetaEnum metaEnum = QMetaEnum::fromType<PackageManagerCore::UnstableError>();
+    QMetaEnum metaEnum = QMetaEnum::fromType<Component::UnstableError>();
     emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 

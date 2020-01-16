@@ -45,6 +45,7 @@ class QProgressBar;
 class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
+class QStackedLayout;
 
 namespace QInstaller {
 
@@ -89,9 +90,7 @@ private:
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
     QLabel *m_sizeLabel;
-    QScrollArea *m_descriptionScrollArea;
     QLabel *m_descriptionLabel;
-    QVBoxLayout *m_descriptionVLayout;
     QPushButton *m_checkAll;
     QPushButton *m_uncheckAll;
     QPushButton *m_checkDefault;
@@ -100,11 +99,11 @@ private:
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
-    QVBoxLayout *m_treeViewVLayout;
     bool m_allowCompressedRepositoryInstall;
     ComponentModel *m_allModel;
     ComponentModel *m_updaterModel;
     ComponentModel *m_currentModel;
+    QStackedLayout *m_stackedLayout;
 };
 
 }  // namespace QInstaller
