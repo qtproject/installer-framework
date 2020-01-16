@@ -2544,36 +2544,6 @@ bool PackageManagerCore::containsValue(const QString &key) const
 }
 
 /*!
-    \obsolete
-    Sets a shared flag with the name \a key to \a value. This is one option
-    to share information between scripts.
-
-    Deprecated since 2.0.0. Use setValue() instead.
-
-    \sa setValue()
-*/
-void PackageManagerCore::setSharedFlag(const QString &key, bool value)
-{
-    qDebug() << "sharedFlag is deprecated";
-    d->m_sharedFlags.insert(key, value);
-}
-
-/*!
-    \obsolete
-    Returns the shared flag with the name \a key. This is one option
-    to share information between scripts.
-
-    Deprecated since 2.0.0. Use value() or values() instead.
-
-    \sa value(), values()
-*/
-bool PackageManagerCore::sharedFlag(const QString &key) const
-{
-    qDebug() << "sharedFlag is deprecated";
-    return d->m_sharedFlags.value(key, false);
-}
-
-/*!
     Returns \c true if the package manager displays detailed information.
 */
 bool PackageManagerCore::isVerbose() const

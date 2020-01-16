@@ -189,7 +189,6 @@ public:
     bool m_completeUninstall;
     bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;
-    QHash<QString, bool> m_sharedFlags;
     QString m_installerBaseBinaryUnreplaced;
 
     QList<QInstaller::Component*> m_rootComponents;
