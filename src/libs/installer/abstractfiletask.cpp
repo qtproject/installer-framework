@@ -50,6 +50,8 @@ namespace QInstaller {
     \value TaskItem
     \value SourceFile
     \value TargetFile
+    \value Name
+    \value ChecksumMismatch
     \value UserRole     The first role that can be used for user-specific purposes.
 */
 
@@ -125,6 +127,12 @@ namespace QInstaller {
     \fn FileTaskResult::taskItem() const
 
     Returns file task items.
+*/
+
+/*!
+    \fn FileTaskResult::checksumMismatch() const
+
+    Returns \c true if checksum mismatch is detected otherwise returns \c false.
 */
 
 /*!

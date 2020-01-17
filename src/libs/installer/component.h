@@ -67,6 +67,14 @@ public:
     explicit Component(PackageManagerCore *core);
     ~Component();
 
+    enum UnstableError {
+        DepencyToUnstable = 0,
+        ShaMismatch,
+        ScriptLoadingFailed,
+        MissingDependency
+    };
+    Q_ENUM(UnstableError)
+
     struct SortingPriorityLessThan
     {
         bool operator() (const Component *lhs, const Component *rhs) const
@@ -183,7 +191,7 @@ public:
     Q_INVOKABLE bool componentChangeRequested();
 
     bool isUnstable() const;
-    void setUnstable(PackageManagerCore::UnstableError error, const QString &errorMessage = QString());
+    void setUnstable(Component::UnstableError error, const QString &errorMessage = QString());
 
     bool isVirtual() const;
     bool isSelected() const;

@@ -88,11 +88,17 @@ void RepositoryCategory::setDisplayName(const QString &displayname)
     m_displayname = displayname;
 }
 
+/*!
+    Returns the Tooltip for the category to be displayed.
+*/
 QString RepositoryCategory::tooltip() const
 {
     return m_tooltip;
 }
 
+/*!
+    Sets the Tooltip of the category to \a tooltip.
+*/
 void RepositoryCategory::setTooltip(const QString &tooltip)
 {
     m_tooltip = tooltip;

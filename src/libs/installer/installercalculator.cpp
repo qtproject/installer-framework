@@ -158,14 +158,6 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
 bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version)
 {
     QSet<QString> allDependencies = component->dependencies().toSet();
-    // All parents are kind of dependencies as well. If we select sub item in treeview, parent gets
-    // checked or partially checked as well. When adding component as dependency in script or
-    // config.xml we need to add the parent as dependency so the behavior is the same as in visual UI.
-    if (component->parentComponent() &&
-            !allDependencies.contains(component->parentComponent()->name()) &&
-            !m_visitedComponents.contains(component->parentComponent())) {
-        allDependencies.insert(component->parentComponent()->name());
-    }
     QString requiredDependencyVersion = version;
     foreach (const QString &dependencyComponentName, allDependencies) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a
@@ -179,7 +171,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             qWarning().noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             if (component->packageManagerCore()->settings().allowUnstableComponents()) {
-                component->setUnstable(PackageManagerCore::UnstableError::MissingDependency, errorMessage);
+                component->setUnstable(Component::UnstableError::MissingDependency, errorMessage);
                 continue;
             } else {
                 return false;

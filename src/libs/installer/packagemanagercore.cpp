@@ -225,6 +225,15 @@ using namespace QInstaller;
 */
 
 /*!
+    \fn PackageManagerCore::metaJobTotalProgress(int progress)
+
+    Triggered when the total \a progress value of the communication with a
+    remote repository changes.
+
+    \sa {installer::metaJobTotalProgress}{installer.metaJobTotalProgress}
+*/
+
+/*!
     \fn PackageManagerCore::metaJobInfoMessage(const QString &message)
 
     Triggered with informative updates, \a message, of the communication with a remote repository.
@@ -390,6 +399,12 @@ using namespace QInstaller;
     Emitted when the GUI object is set to \a gui.
 */
 
+/*!
+    \fn PackageManagerCore::unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component)
+
+    Emitted when an unstable \a component is found containing an unstable \a type and \a errorMessage.
+*/
+
 
 
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
@@ -538,6 +553,7 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 }
 
 /*!
+    Forces a recalculation of components to install.
     \sa {installer::clearComponentsToInstallCalculated}{installer.clearComponentsToInstallCalculated}
  */
 void PackageManagerCore::clearComponentsToInstallCalculated()
@@ -1558,7 +1574,8 @@ void PackageManagerCore::addUserRepositories(const QStringList &repositories)
 
 /*!
     Sets additional \a repositories for this instance of the installer or updater
-    if \a replace is \c false. Will be removed after invoking it again.
+    if \a replace is \c false. \a compressed repositories can be added as well.
+    Will be removed after invoking it again.
 
     \sa {installer::setTemporaryRepositories}{installer.setTemporaryRepositories}
     \sa addUserRepositories()
@@ -1797,6 +1814,11 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
     return d->installerCalculator()->orderedComponentsToInstall();
 }
+
+/*!
+    Calculates components to install and uninstall. In case of an error, returns \c false
+    and and sets the \a displayString for error detail.
+*/
 
 bool PackageManagerCore::calculateComponents(QString *displayString)
 {
@@ -2809,7 +2831,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             foreach (const QString packageName, d->m_metadataJob.shaMismatchPackages()) {
                 if (packageName == component->name()) {
                     QString errorString = QLatin1String("SHA mismatch detected for component ") + packageName;
-                    component->setUnstable(PackageManagerCore::UnstableError::ShaMismatch, errorString);
+                    component->setUnstable(Component::UnstableError::ShaMismatch, errorString);
                 }
             }
         }
@@ -3183,16 +3205,26 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
     return model;
 }
 
+/*!
+    Returns the file list used for delayed deletion.
+*/
 QStringList PackageManagerCore::filesForDelayedDeletion() const
 {
     return d->m_filesForDelayedDeletion;
 }
 
+/*!
+    Adds \a files for delayed deletion.
+*/
 void PackageManagerCore::addFilesForDelayedDeletion(const QStringList &files)
 {
     d->m_filesForDelayedDeletion.append(files);
 }
 
+/*!
+    Adds a colon symbol to the component \c name as a separator between
+    component \a name and version.
+*/
 QString PackageManagerCore::checkableName(const QString &name)
 {
     // to ensure backward compatibility, fix component name with dash (-) symbol
@@ -3203,6 +3235,10 @@ QString PackageManagerCore::checkableName(const QString &name)
     return name;
 }
 
+/*!
+    Parses \a name and \a version from \a requirement component. \c requirement
+    contains both \a name and \a version separated either with ':' or with '-'.
+*/
 void PackageManagerCore::parseNameAndVersion(const QString &requirement, QString *name, QString *version)
 {
     if (requirement.isEmpty()) {
@@ -3230,6 +3266,12 @@ void PackageManagerCore::parseNameAndVersion(const QString &requirement, QString
     }
 }
 
+/*!
+    Excludes version numbers from names from \a requirements components.
+    \a requirements list contains names that have both name and version.
+
+    Returns a list containing names without version numbers.
+*/
 QStringList PackageManagerCore::parseNames(const QStringList &requirements)
 {
     QString name;

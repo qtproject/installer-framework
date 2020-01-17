@@ -65,14 +65,6 @@ public:
         Protocol::Mode mode = Protocol::Mode::Production);
     ~PackageManagerCore();
 
-    enum UnstableError {
-        DepencyToUnstable = 0,
-        ShaMismatch,
-        ScriptLoadingFailed,
-        MissingDependency
-    };
-     Q_ENUM(UnstableError)
-
     // status
     enum Status {
         Success = EXIT_SUCCESS,

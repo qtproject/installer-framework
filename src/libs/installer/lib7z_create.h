@@ -41,7 +41,7 @@ QT_END_NAMESPACE
 
 namespace Lib7z
 {
-    enum struct QTmpFile {
+    enum struct TmpFile {
         No,
         Yes
     };
@@ -70,7 +70,7 @@ namespace Lib7z
     void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sources,
         Compression level = Compression::Normal, UpdateCallback *callback = 0);
     void INSTALLER_EXPORT createArchive(const QString &archive, const QStringList &sources,
-        QTmpFile mode, Compression level = Compression::Normal, UpdateCallback *callback = 0);
+        TmpFile mode, Compression level = Compression::Normal, UpdateCallback *callback = 0);
 
 } // namespace Lib7z
 

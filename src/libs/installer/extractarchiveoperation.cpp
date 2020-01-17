@@ -144,37 +144,18 @@ bool ExtractArchiveOperation::undoOperation()
     // For backward compatibility, check if "files" can be converted to QStringList.
     // If yes, files are listed in .dat instead of in a separate file.
     bool useStringListType(value(QLatin1String("files")).type() == QVariant::StringList);
+    QString targetDir = arguments().at(1);
     QStringList files;
     if (useStringListType) {
         files = value(QLatin1String("files")).toStringList();
-        startUndoProcess(files);
     } else {
-        const QString filePath = value(QLatin1String("files")).toString();
-        QString targetDir = arguments().at(1);
-        // Does not change target on non macOS platforms.
-        if (QInstaller::isInBundle(targetDir, &targetDir))
-            targetDir = QDir::cleanPath(targetDir + QLatin1String("/.."));
-        QString fileName = replacePath(filePath, QLatin1String(scRelocatable), targetDir);
-        QFile file(fileName);
-
-        if (file.open(QIODevice::ReadOnly)) {
-            QDataStream in(&file);
-            in >> files;
-            for (int i = 0; i < files.count(); ++i)
-                files[i] = replacePath(files.at(i),  QLatin1String(scRelocatable), targetDir);
-            startUndoProcess(files);
-            QFileInfo fileInfo(file);
-            file.remove();
-            QDir directory(fileInfo.absoluteDir());
-            if (directory.exists() && directory.isEmpty())
-                directory.rmdir(directory.path());
-        } else {
-            setError(UserDefinedError);
-            setErrorString(tr("Cannot open file \"%1\" for reading: %2")
-                .arg(QDir::toNativeSeparators(file.fileName())).arg(file.errorString()));
+        if (!readDataFileContents(targetDir, &files))
             return false;
-        }
     }
+    startUndoProcess(files);
+    if (!useStringListType)
+        deleteDataFile(m_relocatedDataFileName);
+
     return true;
 }
 
@@ -193,8 +174,50 @@ void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
     thread->deleteLater();
 }
 
+void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
+{
+    if (fileName.isEmpty()) {
+        qWarning() << Q_FUNC_INFO << "data file name cannot be empty.";
+        return;
+    }
+    QFile file(fileName);
+    QFileInfo fileInfo(file);
+    if (file.remove()) {
+        QDir directory(fileInfo.absoluteDir());
+        if (directory.exists() && directory.isEmpty())
+            directory.rmdir(directory.path());
+    } else {
+        qWarning() << "Cannot remove data file" << file.fileName();
+    }
+}
+
 bool ExtractArchiveOperation::testOperation()
 {
+    return true;
+}
+
+bool ExtractArchiveOperation::readDataFileContents(QString &targetDir, QStringList *resultList)
+{
+    const QString filePath = value(QLatin1String("files")).toString();
+    // Does not change target on non macOS platforms.
+    if (QInstaller::isInBundle(targetDir, &targetDir))
+        targetDir = QDir::cleanPath(targetDir + QLatin1String("/.."));
+    m_relocatedDataFileName = replacePath(filePath, QLatin1String(scRelocatable), targetDir);
+    QFile file(m_relocatedDataFileName);
+
+    if (file.open(QIODevice::ReadOnly)) {
+        QDataStream in(&file);
+        in >> *resultList;
+        for (int i = 0; i < resultList->count(); ++i)
+            resultList->replace(i, replacePath(resultList->at(i),  QLatin1String(scRelocatable), targetDir));
+
+    } else {
+        // We should not be here. Either user has manually deleted the installer related
+        // files or same component is installed several times.
+        qWarning() << "Cannot open file " << file.fileName() << " for reading:"
+                << file.errorString() << ". Component is already uninstalled "
+                << "or file is manually deleted.";
+    }
     return true;
 }
 

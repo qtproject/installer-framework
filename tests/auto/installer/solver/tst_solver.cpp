@@ -153,17 +153,13 @@ private slots:
         NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
         NamedComponent *componentAA = new NamedComponent(core, QLatin1String("A.A"));
         NamedComponent *componentAB = new NamedComponent(core, QLatin1String("A.B"));
-        NamedComponent *componentABC = new NamedComponent(core, QLatin1String("A.B.C"));
-        NamedComponent *componentABD = new NamedComponent(core, QLatin1String("A.B.D"));
         componentA->appendComponent(componentAA);
         componentA->appendComponent(componentAB);
-        componentAB->appendComponent(componentABC);
-        componentAB->appendComponent(componentABD);
         NamedComponent *componentB = new NamedComponent(core, QLatin1String("B"));
         NamedComponent *componentB_NewVersion = new NamedComponent(core, QLatin1String("B_version"), QLatin1String("2.0.0"));
         NamedComponent *componentB_Auto = new NamedComponent(core, QLatin1String("B_auto"));
-        componentB->addDependency(QLatin1String("A.B.C"));
-        componentABC->addDependency(QLatin1String("B_version->=2.0.0"));
+        componentB->addDependency(QLatin1String("A.B"));
+        componentAB->addDependency(QLatin1String("B_version->=2.0.0"));
         componentB_Auto->addAutoDependOn(QLatin1String("B_version"));
         core->appendRootComponent(componentA);
         core->appendRootComponent(componentB);
@@ -172,10 +168,8 @@ private slots:
 
         QTest::newRow("Installer resolved") << core
                     << (QList<Component *>() << componentB)
-                    << (QList<Component *>() << componentA <<  componentAB << componentABC << componentB_NewVersion  << componentB << componentB_Auto)
+                    << (QList<Component *>() << componentB_NewVersion << componentAB << componentB << componentB_Auto)
                     << (QList<int>()
-                        << InstallerCalculator::Dependent
-                        << InstallerCalculator::Dependent
                         << InstallerCalculator::Dependent
                         << InstallerCalculator::Dependent
                         << InstallerCalculator::Resolved
@@ -192,19 +186,12 @@ private slots:
         InstallerCalculator calc(core->components(PackageManagerCore::ComponentType::AllNoReplacements));
         calc.appendComponentsToInstall(selectedComponents);
         QList<Component *> result = calc.orderedComponentsToInstall();
-        int results = 0;
+
         QCOMPARE(result.count(), expectedResult.count());
         for (int i = 0; i < result.count(); i++) {
-            if (result.contains(expectedResult.at(i))) {
-                int index = result.indexOf(expectedResult.at(i));
-                QCOMPARE(result.at(index), expectedResult.at(i));
-                QCOMPARE((int)calc.installReasonType(result.at(index)), installReason.at(i));
-                results++;
-            }
+            QCOMPARE(result.at(i), expectedResult.at(i));
+            QCOMPARE((int)calc.installReasonType(result.at(i)), installReason.at(i));
         }
-        // Check that we have found all expected results. Install order may vary
-        // for dependent components so we cannot do a direct compare
-        QCOMPARE(result.count(), results);
         delete core;
     }
 
