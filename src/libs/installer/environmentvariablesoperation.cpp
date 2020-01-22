@@ -238,7 +238,7 @@ bool EnvironmentVariableOperation::undoOperation()
         const bool doUndo = actual == value;
         if (doUndo)
             Environment::instance().setTemporaryValue(name, oldvalue);
-        return doUndo;
+        return true;
     }
 
 #ifdef Q_OS_WIN
