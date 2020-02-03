@@ -346,22 +346,8 @@ int InstallerBase::run()
         checkLicense();
         m_core->autoRejectMessageBoxes();
         if (m_core->isInstaller()) {
-            if (!setTargetDirFromCommandLine(parser)) {
-                const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
-                if (m_core->checkTargetDir(value)) {
-                    QString targetDirWarning = m_core->targetDirWarning(value);
-                    if (!targetDirWarning.isEmpty()) {
-                        qCWarning(QInstaller::lcGeneral)  << m_core->targetDirWarning(value);
-                        return EXIT_FAILURE;
-                    }
-                    m_core->setValue(QLatin1String("TargetDir"), value);
-                } else {
-                    return EXIT_FAILURE;
-                }
-            } else {
-                qCWarning(QInstaller::lcGeneral) << "Please specify target directory.";
+            if (!setTargetDirForCommandLineInterface(parser))
                 return EXIT_FAILURE;
-            }
         }
 
         QStringList packages;
@@ -374,7 +360,7 @@ int InstallerBase::run()
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as installer."));
         checkLicense();
         m_core->autoRejectMessageBoxes();
-        if (!setTargetDirFromCommandLine(parser))
+        if (!setTargetDirForCommandLineInterface(parser))
             return EXIT_FAILURE;
         m_core->installDefaultComponentsSilently();
     } else if (parser.isSet(QLatin1String(CommandLineOptions::UninstallSelectedPackages))) {
@@ -471,21 +457,23 @@ void InstallerBase::checkLicense()
     }
 }
 
-bool InstallerBase::setTargetDirFromCommandLine(CommandLineParser &parser)
+bool InstallerBase::setTargetDirForCommandLineInterface(CommandLineParser &parser)
 {
+    QString targetDir;
     if (parser.isSet(QLatin1String(CommandLineOptions::TargetDir))) {
-        const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
-        if (m_core->checkTargetDir(value)) {
-            QString targetDirWarning = m_core->targetDirWarning(value);
-            if (!targetDirWarning.isEmpty()) {
-                qDebug() << m_core->targetDirWarning(value);
-            } else {
-                m_core->setValue(QLatin1String("TargetDir"), value);
-                return true;
-            }
-        }
+        targetDir = parser.value(QLatin1String(CommandLineOptions::TargetDir));
     } else {
-        qWarning() << "Please specify target directory.";
+        targetDir = m_core->value(QLatin1String("TargetDir"));
+        qCDebug(QInstaller::lcGeneral) << "No target directory specified, using default value:" << targetDir;
+    }
+    if (m_core->checkTargetDir(targetDir)) {
+        QString targetDirWarning = m_core->targetDirWarning(targetDir);
+        if (!targetDirWarning.isEmpty()) {
+            qCWarning(QInstaller::lcGeneral) << m_core->targetDirWarning(targetDir);
+        } else {
+            m_core->setValue(QLatin1String("TargetDir"), targetDir);
+            return true;
+        }
     }
     return false;
 }

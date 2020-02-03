@@ -51,7 +51,7 @@ private:
     void dumpResourceTree() const;
     QStringList repositories(const QString &list) const;
     void checkLicense();
-    bool setTargetDirFromCommandLine(CommandLineParser &parser);
+    bool setTargetDirForCommandLineInterface(CommandLineParser &parser);
 
 private:
     QInstaller::PackageManagerCore *m_core;
