@@ -219,6 +219,7 @@ public:
     void listAvailablePackages(const QString &regexp);
     void updateComponentsSilently(const QStringList &componentsToUpdate);
     void installSelectedComponentsSilently(const QStringList& components);
+    void installDefaultComponentsSilently();
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;

@@ -30,6 +30,7 @@
 #define INSTALLERBASE_H
 
 #include "sdkapp.h"
+#include "commandlineparser.h"
 
 namespace QInstaller {
     class PackageManagerCore;
@@ -50,6 +51,7 @@ private:
     void dumpResourceTree() const;
     QStringList repositories(const QString &list) const;
     void checkLicense();
+    bool setTargetDirFromCommandLine(CommandLineParser &parser);
 
 private:
     QInstaller::PackageManagerCore *m_core;

@@ -345,22 +345,8 @@ int InstallerBase::run()
         checkLicense();
         m_core->autoRejectMessageBoxes();
         if (m_core->isInstaller()) {
-            if (parser.isSet(QLatin1String(CommandLineOptions::TargetDir))) {
-                const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
-                if (m_core->checkTargetDir(value)) {
-                    QString targetDirWarning = m_core->targetDirWarning(value);
-                    if (!targetDirWarning.isEmpty()) {
-                        qDebug() << m_core->targetDirWarning(value);
-                        return EXIT_FAILURE;
-                    }
-                    m_core->setValue(QLatin1String("TargetDir"), value);
-                } else {
-                    return EXIT_FAILURE;
-                }
-            } else {
-                qWarning() << "Please specify target directory.";
+            if (!setTargetDirFromCommandLine(parser))
                 return EXIT_FAILURE;
-            }
         }
 
         QStringList packages;
@@ -368,6 +354,14 @@ int InstallerBase::run()
         if (!value.isEmpty())
             packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
         m_core->installSelectedComponentsSilently(packages);
+    } else if (parser.isSet(QLatin1String(CommandLineOptions::InstallDefault))) {
+        if (!m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as installer."));
+        checkLicense();
+        m_core->autoRejectMessageBoxes();
+        if (!setTargetDirFromCommandLine(parser))
+            return EXIT_FAILURE;
+        m_core->installDefaultComponentsSilently();
     } else {
         //create the wizard GUI
         TabController controller(nullptr);
@@ -450,4 +444,23 @@ void InstallerBase::checkLicense()
         qDebug() << "No valid license found.";
         throw QInstaller::Error(QLatin1String("No valid license found."));
     }
+}
+
+bool InstallerBase::setTargetDirFromCommandLine(CommandLineParser &parser)
+{
+    if (parser.isSet(QLatin1String(CommandLineOptions::TargetDir))) {
+        const QString &value = parser.value(QLatin1String(CommandLineOptions::TargetDir));
+        if (m_core->checkTargetDir(value)) {
+            QString targetDirWarning = m_core->targetDirWarning(value);
+            if (!targetDirWarning.isEmpty()) {
+                qDebug() << m_core->targetDirWarning(value);
+            } else {
+                m_core->setValue(QLatin1String("TargetDir"), value);
+                return true;
+            }
+        }
+    } else {
+        qWarning() << "Please specify target directory.";
+    }
+    return false;
 }

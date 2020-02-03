@@ -2139,6 +2139,24 @@ void PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
 }
 
 /*!
+    Installs components that are checked by default, i.e. those that are set
+    with <Default> or <ForcedInstallation> and their respective dependencies.
+*/
+void PackageManagerCore::installDefaultComponentsSilently()
+{
+    ComponentModel *model = defaultComponentModel();
+    fetchRemotePackagesTree();
+
+    if (!(model->checkedState() & ComponentModel::AllUnchecked)) {
+        // There are components that are checked by default, we should install them
+        if (d->calculateComponentsAndRun())
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully.";
+    } else {
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No components available for default installation.";
+    }
+}
+
+/*!
     Returns the settings for the package manager.
 */
 Settings &PackageManagerCore::settings() const
