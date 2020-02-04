@@ -2172,6 +2172,11 @@ Settings &PackageManagerCore::settings() const
 */
 bool PackageManagerCore::gainAdminRights()
 {
+    if (isCommandLineInstance()) {
+        throw Error(tr("Cannot elevate access rights while running from command line. "
+                       "Please restart the application as administrator."));
+    }
+
     if (AdminAuthorization::hasAdminRights())
         return true;
 
@@ -2760,6 +2765,22 @@ void PackageManagerCore::setPackageManager()
 bool PackageManagerCore::isPackageManager() const
 {
     return d->isPackageManager();
+}
+
+/*!
+    Set to use command line instance based on \a commandLineInstance.
+*/
+void PackageManagerCore::setCommandLineInstance(bool commandLineInstance)
+{
+    d->m_commandLineInstance = commandLineInstance;
+}
+
+/*!
+    Returns \c true if running as command line instance.
+*/
+bool PackageManagerCore::isCommandLineInstance() const
+{
+    return d->m_commandLineInstance;
 }
 
 /*!

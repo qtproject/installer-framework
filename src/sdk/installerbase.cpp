@@ -314,7 +314,8 @@ int InstallerBase::run()
         }
     }
 
-    //Do not show gui with --silentUpdate, instead update components silently
+    // Do not show gui if any of the following options are set
+    m_core->setCommandLineInstance(true);
     if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
@@ -363,6 +364,7 @@ int InstallerBase::run()
             return EXIT_FAILURE;
         m_core->installDefaultComponentsSilently();
     } else {
+        m_core->setCommandLineInstance(false);
         //create the wizard GUI
         TabController controller(nullptr);
         controller.setManager(m_core);

@@ -234,6 +234,9 @@ public:
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
 
+    void setCommandLineInstance(bool commandLineInstance);
+    Q_INVOKABLE bool isCommandLineInstance() const;
+
     bool isMaintainer() const;
 
     bool isVerbose() const;
