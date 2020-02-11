@@ -185,16 +185,18 @@ int main(int argc, char *argv[])
 
     try {
         QScopedPointer<Console> console;
+
         // Check if any options requiring verbose output is set
-        if (parser.isSet(QLatin1String(CommandLineOptions::VerboseShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong))
-            || parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages))
-            || parser.isSet(QLatin1String(CommandLineOptions::ListPackages))
-            || parser.isSet(QLatin1String(CommandLineOptions::UpdatePackages))
-            || parser.isSet(QLatin1String(CommandLineOptions::InstallPackages))
-            || parser.isSet(QLatin1String(CommandLineOptions::InstallDefault))) {
+        bool setVerbose = parser.isSet(QLatin1String(CommandLineOptions::VerboseShort))
+            || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong));
+
+        foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
+            if (setVerbose) {
                 console.reset(new Console);
                 QInstaller::setVerbose(true);
+                break;
+            }
+            setVerbose = parser.isSet(option);
         }
 
         // On Windows we need the console window from above, we are a GUI application.

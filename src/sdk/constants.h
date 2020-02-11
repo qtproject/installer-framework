@@ -29,6 +29,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <QtCore/QStringList>
+
 namespace CommandLineOptions {
 
 const char HelpShort[] = "h";
@@ -62,6 +64,14 @@ const char InstallDefault[] = "installDefault";
 const char TargetDir[] = "targetDir";
 const char Platform[] = "platform";
 const char SquishPort[] = "squish-port";
+
+static const QStringList scCommandLineInterfaceOptions = {
+    QLatin1String(ListInstalledPackages),
+    QLatin1String(ListPackages),
+    QLatin1String(UpdatePackages),
+    QLatin1String(InstallPackages),
+    QLatin1String(InstallDefault)
+};
 
 } // namespace CommandLineOptions
 
