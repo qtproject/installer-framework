@@ -24,7 +24,8 @@ SUBDIRS += \
     clientserver \
     factory \
     replaceoperation \
-    brokeninstaller
+    brokeninstaller \
+    cliinterface
 
 win32 {
     SUBDIRS += registerfiletypeoperation

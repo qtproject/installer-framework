@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/config.xml</file>
+        <file>data/repository/Updates.xml</file>
+    </qresource>
+    <qresource prefix="/metadata">
+        <file>installer-config/config.xml</file>
+    </qresource>
+</RCC>
