@@ -191,12 +191,12 @@ int main(int argc, char *argv[])
             || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong));
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
-            if (setVerbose) {
-                console.reset(new Console);
-                QInstaller::setVerbose(true);
-                break;
-            }
+            if (setVerbose) break;
             setVerbose = parser.isSet(option);
+        }
+        if (setVerbose) {
+            console.reset(new Console);
+            QInstaller::setVerbose(true);
         }
 
         // On Windows we need the console window from above, we are a GUI application.
