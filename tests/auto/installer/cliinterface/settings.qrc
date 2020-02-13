@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>data/config.xml</file>
         <file>data/repository/Updates.xml</file>
+        <file>data/uninstallableComponentsRepository/Updates.xml</file>
     </qresource>
     <qresource prefix="/metadata">
         <file>installer-config/config.xml</file>

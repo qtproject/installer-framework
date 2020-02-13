@@ -93,6 +93,32 @@ private slots:
         QTest::ignoreMessage(QtDebugMsg, "Id: C");
         core->listAvailablePackages(QLatin1String("^C"));
     }
+
+    void testInstallPackages()
+    {
+        QString loggingRules = (QLatin1String("ifw.* = false\n"
+                                "ifw.installer.installlog = true\n"));
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QLoggingCategory::setFilterRules(loggingRules);
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/uninstallableComponentsRepository");
+        repoList.insert(repo);
+
+        core->settings().setDefaultRepositories(repoList);
+
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.");
+        core->installSelectedComponentsSilently(QStringList() << QLatin1String("A"));
+
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.");
+        core->installSelectedComponentsSilently(QStringList() << QLatin1String("AB"));
+
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.");
+        core->installSelectedComponentsSilently(QStringList() << QLatin1String("B"));
+
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.");
+        core->installSelectedComponentsSilently(QStringList() << QLatin1String("MissingComponent"));
+    }
+
 };
 
 

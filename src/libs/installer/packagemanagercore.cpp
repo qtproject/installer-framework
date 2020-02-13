@@ -2172,22 +2172,22 @@ void PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
         if (idx.isValid()) {
             if (model->data(idx, Qt::CheckStateRole) ==  QVariant::Invalid) { // User cannot select the component, check why
                 if (component && component->autoDependencies().count() > 0)
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install component "<< name
-                        << "Component is installed only as automatic dependency to "<< component->autoDependencies().join(QLatin1Char(','));
+                    qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install component "<< name
+                        << ". Component is installed only as automatic dependency to "<< component->autoDependencies().join(QLatin1Char(',')) << ".";
                 if (component && !component->isCheckable())
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install component "<< name
+                    qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install component "<< name
                         <<". Component is not checkable meaning you have to select one of the subcomponents.";
             } else if (component->isInstalled()) {
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Component " << name <<" already installed";
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Component " << name <<" already installed";
             } else {
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 installComponentsFound = true;
             }
         } else { // idx is invalid and component valid when we have invisible virtual component
             if (component && component->isVirtual())
-                qCDebug(QInstaller::lcInstallerInstallLog)  << "Cannot install " << name <<". Component is virtual.";
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << name <<". Component is virtual.";
             else
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install " << name <<". Component not found.";
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << name <<". Component not found.";
         }
     }
     if (installComponentsFound) {
