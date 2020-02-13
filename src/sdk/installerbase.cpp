@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,7 +26,6 @@
 **
 **************************************************************************/
 
-#include "constants.h"
 #include "commandlineparser.h"
 #include "installerbase.h"
 #include "installerbasecommons.h"
@@ -46,6 +45,7 @@
 #include <settings.h>
 #include <utils.h>
 #include <globals.h>
+#include <constants.h>
 
 #include <runoncechecker.h>
 #include <filedownloaderfactory.h>

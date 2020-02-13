@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 #define CONSTANTS_H
 
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 
 namespace QInstaller {
 
@@ -94,7 +95,49 @@ static const QLatin1String scSaveDefaultRepositories("SaveDefaultRepositories");
 static const QLatin1String scRepositoryCategoryDisplayName("RepositoryCategoryDisplayName");
 
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
-
 }
 
+namespace CommandLineOptions {
+
+const char HelpShort[] = "h";
+const char HelpLong[] = "help";
+const char Version[] = "version";
+const char FrameworkVersion[] = "framework-version";
+const char VerboseShort[] = "v";
+const char VerboseLong[] = "verbose";
+const char Proxy[] = "proxy";
+const char NoProxy[] = "no-proxy";
+const char Script[] = "script";
+const char CheckUpdates[] = "checkupdates";
+const char Updater[] = "updater";
+const char ManagePackages[] = "manage-packages";
+const char NoForceInstallation[] = "no-force-installations";
+const char ShowVirtualComponents[] = "show-virtual-components";
+const char LoggingRules[] = "logging-rules";
+const char CreateLocalRepository[] = "create-local-repository";
+const char AddRepository[] = "addRepository";
+const char AddTmpRepository[] = "addTempRepository";
+const char SetTmpRepository[] = "setTempRepository";
+const char StartServer[] = "startserver";
+const char StartClient[] = "startclient";
+const char InstallCompressedRepository[] = "installCompressedRepository";
+const char SilentUpdate[] = "silentUpdate";
+const char UpdatePackages[] = "updatePackages";
+const char ListInstalledPackages[] = "listInstalledPackages";
+const char ListPackages[] = "listPackages";
+const char InstallPackages[] = "installPackages";
+const char InstallDefault[] = "installDefault";
+const char TargetDir[] = "targetDir";
+const char Platform[] = "platform";
+const char SquishPort[] = "squish-port";
+
+static const QStringList scCommandLineInterfaceOptions = {
+    QLatin1String(ListInstalledPackages),
+    QLatin1String(ListPackages),
+    QLatin1String(UpdatePackages),
+    QLatin1String(InstallPackages),
+    QLatin1String(InstallDefault)
+};
+
+} // namespace CommandLineOptions
 #endif  // CONSTANTS_H

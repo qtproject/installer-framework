@@ -102,7 +102,6 @@ HEADERS += \
            sdkapp.h \
            updatechecker.h \
            installerbase.h \
-           constants.h \
            commandlineparser.h
 
 SOURCES = \
