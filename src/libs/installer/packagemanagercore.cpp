@@ -2119,7 +2119,7 @@ void PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
                 if (component && !component->isCheckable())
                     qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot install component "<< name
                         <<". Component is not checkable meaning you have to select one of the subcomponents.";
-            } else if (model->data(idx, Qt::CheckStateRole) == Qt::Checked ) {
+            } else if (component->isInstalled()) {
                 qCDebug(QInstaller::lcInstallerInstallLog) << "Component " << name <<" already installed";
             } else {
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
