@@ -2050,6 +2050,7 @@ void PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
     setUpdater();
     autoRejectMessageBoxes();
 
+    fetchRemotePackagesTree();
     // List contains components containing update, if essential found contains only essential component
     const QList<QInstaller::Component*> componentList = componentsMarkedForInstallation();
 
