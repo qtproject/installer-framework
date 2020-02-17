@@ -138,7 +138,8 @@ static const QStringList scCommandLineInterfaceOptions = {
     QLatin1String(UpdatePackages),
     QLatin1String(InstallPackages),
     QLatin1String(InstallDefault),
-    QLatin1String(UninstallSelectedPackages)
+    QLatin1String(UninstallSelectedPackages),
+    QLatin1String(CheckUpdates)
 };
 
 } // namespace CommandLineOptions
