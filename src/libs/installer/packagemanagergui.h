@@ -237,6 +237,8 @@ private Q_SLOTS:
     void setPackageManager(bool value);
 
 private:
+    void initializePage();
+
     void entering();
     void leaving();
 

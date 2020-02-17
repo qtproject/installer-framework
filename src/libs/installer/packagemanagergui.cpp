@@ -1296,19 +1296,16 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
     boxLayout->addWidget(m_packageManager);
-    m_packageManager->setChecked(core->isPackageManager());
     connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
     m_updateComponents = new QRadioButton(tr("&Update components"), this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
     boxLayout->addWidget(m_updateComponents);
-    m_updateComponents->setChecked(core->isUpdater());
     connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
     m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
     boxLayout->addWidget(m_removeAllComponents);
-    m_removeAllComponents->setChecked(core->isUninstaller());
     connect(m_removeAllComponents, &QAbstractButton::toggled,
             this, &IntroductionPage::setUninstaller);
     connect(m_removeAllComponents, &QAbstractButton::toggled,
@@ -1337,8 +1334,6 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     layout->addWidget(m_msgLabel);
     layout->addWidget(widget);
     layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
-
-    core->setCompleteUninstallation(core->isUninstaller());
 
     connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
     connect(core, &PackageManagerCore::metaJobTotalProgress, this, &IntroductionPage::setTotalProgress);
@@ -1386,7 +1381,9 @@ bool IntroductionPage::validatePage()
         return true;
 
     setComplete(false);
-    if (!validRepositoriesAvailable()) {
+    bool isOfflineOnlyInstaller = core->isInstaller() && core->isOfflineOnly();
+    // If not offline only installer, at least one valid repository needs to be available
+    if (!isOfflineOnlyInstaller && !validRepositoriesAvailable()) {
         setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
             "repository required for this action to succeed.") + QLatin1String("</font>"));
         return isComplete();
@@ -1573,14 +1570,12 @@ void IntroductionPage::setErrorMessage(const QString &error)
 bool IntroductionPage::validRepositoriesAvailable() const
 {
     const PackageManagerCore *const core = packageManagerCore();
-    bool valid = (core->isInstaller() && core->isOfflineOnly()) || core->isUninstaller();
+    bool valid = false;
 
-    if (!valid) {
-        foreach (const Repository &repo, core->settings().repositories()) {
-            if (repo.isEnabled() && repo.isValid()) {
-                valid = true;
-                break;
-            }
+    foreach (const Repository &repo, core->settings().repositories()) {
+        if (repo.isEnabled() && repo.isValid()) {
+            valid = true;
+            break;
         }
     }
     return valid;
@@ -1615,6 +1610,29 @@ void IntroductionPage::setPackageManager(bool value)
         gui()->showSettingsButton(true);
         packageManagerCore()->setPackageManager();
         emit packageManagerCoreTypeChanged();
+    }
+}
+/*!
+    Initializes the page.
+*/
+void IntroductionPage::initializePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isPackageManager()) {
+        m_packageManager->setChecked(true);
+    } else if (core->isUpdater()) {
+        m_updateComponents->setChecked(true);
+    } else if (core->isUninstaller()) {
+        // If we are running maintenance tool and the default uninstaller
+        // marker is not overridden, set the default checked radio button
+        // based on if we have valid repositories available.
+        if (validRepositoriesAvailable()) {
+            m_packageManager->setChecked(true);
+        } else {
+            // No repositories available, default to complete uninstallation.
+            m_removeAllComponents->setChecked(true);
+            core->setCompleteUninstallation(true);
+        }
     }
 }
 
