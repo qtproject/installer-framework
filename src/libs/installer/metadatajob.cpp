@@ -135,7 +135,7 @@ void MetadataJob::doStart()
                         items.append(item);
                     }
                     else {
-                        qCWarning(QInstaller::lcGeneral) << "Trying to parse compressed repo as "
+                        qCWarning(QInstaller::lcInstallerInstallLog) << "Trying to parse compressed repo as "
                             "normal repository. Check repository syntax.";
                     }
                 }
@@ -197,7 +197,7 @@ void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
 {
     QTemporaryDir tempRepoDir(QDir::tempPath() + QLatin1String("/compressedRepo-XXXXXX"));
     if (!tempRepoDir.isValid()) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot create unique temporary directory.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
         return;
     }
     tempRepoDir.setAutoRemove(false);
@@ -293,10 +293,10 @@ void MetadataJob::xmlTaskFinished()
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
             const QNetworkProxy proxy = e.proxy();
             ProxyCredentialsDialog proxyCredentials(proxy);
-            qCWarning(QInstaller::lcGeneral) << e.message();
+            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
 
             if (proxyCredentials.exec() == QDialog::Accepted) {
-                qCDebug(QInstaller::lcGeneral) << "Retrying with new credentials ...";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Retrying with new credentials ...";
                 PackageManagerProxyFactory *factory = m_core->proxyFactory();
 
                 factory->setProxyCredentials(proxy, proxyCredentials.userName(),
@@ -308,7 +308,7 @@ void MetadataJob::xmlTaskFinished()
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
-            qCWarning(QInstaller::lcGeneral) << e.message();
+            qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
             ServerAuthenticationDialog dlg(e.message(), e.taskItem());
             if (dlg.exec() == QDialog::Accepted) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
@@ -430,7 +430,7 @@ void MetadataJob::metadataTaskFinished()
                                 .arg(item.value(TaskRole::SourceFile).toString());
                         if (m_core->settings().allowUnstableComponents()) {
                             m_shaMissmatchPackages.append(item.value(TaskRole::Name).toString());
-                            qCWarning(QInstaller::lcGeneral) << mismatchMessage;
+                            qCWarning(QInstaller::lcInstallerInstallLog) << mismatchMessage;
                         } else {
                             throw QInstaller::TaskException(mismatchMessage);
                         }
@@ -545,7 +545,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         Metadata metadata;
         QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
         if (!tmp.isValid()) {
-            qCWarning(QInstaller::lcGeneral) << "Cannot create unique temporary directory.";
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
             return XmlDownloadFailure;
         }
 
@@ -555,13 +555,13 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         QFile file(result.target());
         if (!file.rename(metadata.directory + QLatin1String("/Updates.xml"))) {
-            qCWarning(QInstaller::lcGeneral) << "Cannot rename target to Updates.xml:"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot rename target to Updates.xml:"
                 << file.errorString();
             return XmlDownloadFailure;
         }
 
         if (!file.open(QIODevice::ReadOnly)) {
-            qCWarning(QInstaller::lcGeneral) << "Cannot open Updates.xml for reading:"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open Updates.xml for reading:"
                 << file.errorString();
             return XmlDownloadFailure;
         }
@@ -569,7 +569,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         QString error;
         QDomDocument doc;
         if (!doc.setContent(&file, &error)) {
-            qCWarning(QInstaller::lcGeneral).nospace() << "Cannot fetch a valid version of Updates.xml from repository "
+            qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Cannot fetch a valid version of Updates.xml from repository "
                                << metadata.repository.displayname() << ": " << error;
             //If there are other repositories, try to use those
             continue;
@@ -705,7 +705,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                             << oldRepository.displayname() << "with" << newRepository.displayname();
                     }
                 } else {
-                    qCWarning(QInstaller::lcGeneral) << "Invalid additional repositories action set "
+                    qCWarning(QInstaller::lcInstallerInstallLog) << "Invalid additional repositories action set "
                         "in Updates.xml fetched from" << metadata.repository.displayname()
                         << "line:" << el.lineNumber();
                 }

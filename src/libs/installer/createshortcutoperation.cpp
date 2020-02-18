@@ -277,7 +277,7 @@ bool CreateShortcutOperation::undoOperation()
 
     const QString &linkLocation = arguments().at(1);
     if (!deleteFileNowOrLater(linkLocation) )
-        qCWarning(QInstaller::lcGeneral) << "Cannot delete:" << linkLocation;
+        qCWarning(QInstaller::lcInstallerUninstallLog) << "Cannot delete:" << linkLocation;
 
     QDir dir;   // remove all directories we created
     const QStringList directoriesToDelete = value(QLatin1String("createddirs")).toStringList();

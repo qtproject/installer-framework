@@ -2283,7 +2283,7 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
         processPath =  QDir::cleanPath(processPath.replace(QLatin1Char('\\'), QLatin1Char('/')));
 
         if (processPath == normalizedPath) {
-            qCDebug(QInstaller::lcGeneral).nospace() << "try to kill process " << process.name
+            qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "try to kill process " << process.name
                 << " (" << process.id << ")";
 
             //to keep the ui responsible use QtConcurrent::run
@@ -2298,7 +2298,7 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
             if (!future.isFinished())
                 loop.exec();
 
-            qCDebug(QInstaller::lcGeneral) << process.name << "killed!";
+            qCDebug(QInstaller::lcInstallerInstallLog) << process.name << "killed!";
             return future.result();
         }
     }
@@ -2421,7 +2421,7 @@ bool PackageManagerCore::executeDetached(const QString &program, const QStringLi
     QString adjustedWorkingDir = replaceVariables(workingDirectory);
     foreach (const QString &argument, arguments)
         adjustedArguments.append(replaceVariables(argument));
-    qCDebug(QInstaller::lcGeneral) << "run application as detached process:" << adjustedProgram
+    qCDebug(QInstaller::lcInstallerInstallLog) << "run application as detached process:" << adjustedProgram
         << adjustedArguments << adjustedWorkingDir;
     if (workingDirectory.isEmpty())
         return QProcess::startDetached(adjustedProgram, adjustedArguments);

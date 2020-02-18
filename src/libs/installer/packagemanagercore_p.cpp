@@ -92,15 +92,15 @@ public:
     {
         if (!m_operation)
             return;
-        qCDebug(QInstaller::lcGeneral).noquote() << QString::fromLatin1("%1 %2 operation: %3")
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("%1 %2 operation: %3")
             .arg(state, m_operation->value(QLatin1String("component")).toString(), m_operation->name());
-        qCDebug(QInstaller::lcGeneral).noquote() << QString::fromLatin1("\t- arguments: %1")
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("\t- arguments: %1")
             .arg(m_operation->arguments().join(QLatin1String(", ")));
     }
     ~OperationTracer() {
         if (!m_operation)
             return;
-        qCDebug(QInstaller::lcGeneral) << "Done";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Done";
     }
 private:
     Operation *m_operation;
@@ -254,13 +254,13 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
             .create(operation.name, core));
         if (op.isNull()) {
-            qCWarning(QInstaller::lcGeneral) << "Failed to load unknown operation"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to load unknown operation"
                 << operation.name;
             continue;
         }
 
         if (!op->fromXml(operation.xml)) {
-            qCWarning(QInstaller::lcGeneral) << "Failed to load XML for operation"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to load XML for operation"
                 << operation.name;
             continue;
         }
@@ -665,7 +665,7 @@ void PackageManagerCorePrivate::setStatus(int status, const QString &error)
 {
     m_error = error;
     if (!error.isEmpty())
-        qCWarning(QInstaller::lcGeneral) << m_error;
+        qCWarning(QInstaller::lcInstallerInstallLog) << m_error;
     if (m_status != status) {
         m_status = status;
         emit m_core->statusChanged(PackageManagerCore::Status(m_status));
@@ -884,7 +884,7 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
             }   break;
 
             case QXmlStreamReader::Invalid: {
-                qCWarning(QInstaller::lcGeneral) << reader.errorString();
+                qCWarning(QInstaller::lcInstallerInstallLog) << reader.errorString();
             }   break;
 
             default:
@@ -1024,7 +1024,7 @@ void PackageManagerCorePrivate::registerPathsForUninstallation(
 void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout)
 {
     QString maintenanceToolRenamedName = maintenanceToolName() + QLatin1String(".new");
-    qCDebug(QInstaller::lcGeneral) << "Writing maintenance tool:" << maintenanceToolRenamedName;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Writing maintenance tool:" << maintenanceToolRenamedName;
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing maintenance tool."));
 
     QFile out(generateTemporaryFileName());
@@ -1086,10 +1086,10 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
     if (setDefaultFilePermissions(&mt, DefaultFilePermissions::Executable))
         qCDebug(QInstaller::lcGeneral) << "Wrote permissions for maintenance tool.";
     else
-        qCWarning(QInstaller::lcGeneral) << "Failed to write permissions for maintenance tool.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to write permissions for maintenance tool.";
 
     if (out.exists() && !out.remove()) {
-        qCWarning(QInstaller::lcGeneral) << tr("Cannot remove temporary data file \"%1\": %2")
+        qCWarning(QInstaller::lcInstallerInstallLog) << tr("Cannot remove temporary data file \"%1\": %2")
             .arg(out.fileName(), out.errorString());
     }
 }
@@ -1211,7 +1211,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << (targetAppDirPath + QLatin1String("/../Resources/qt_menu.nib")));
         if (!op->performOperation()) {
-            qCWarning(QInstaller::lcGeneral) << "ERROR in Mkdir operation:"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "ERROR in Mkdir operation:"
                 << op->errorString();
         }
 
@@ -1284,34 +1284,34 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         bool replacementExists = false;
         const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
-            qCDebug(QInstaller::lcGeneral) << "Got a replacement installer base binary:"
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << installerBaseBinary;
 
             QFile replacementBinary(installerBaseBinary);
             try {
                 QInstaller::openForRead(&replacementBinary);
                 writeMaintenanceToolBinary(&replacementBinary, replacementBinary.size(), true);
-                qCDebug(QInstaller::lcGeneral) << "Wrote the binary with the new replacement.";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Wrote the binary with the new replacement.";
 
                 newBinaryWritten = true;
                 replacementExists = true;
             } catch (const Error &error) {
-                qCWarning(QInstaller::lcGeneral) << error.message();
+                qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
             }
 
             if (!replacementBinary.remove()) {
                 // Is there anything more sensible we can do with this error? I think not. It's not serious
                 // enough for throwing / aborting the process.
-                qCDebug(QInstaller::lcGeneral) << "Cannot remove installer base binary"
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
                     << installerBaseBinary << "after updating the maintenance tool:"
                     << replacementBinary.errorString();
             } else {
-                qCDebug(QInstaller::lcGeneral) << "Removed installer base binary"
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
                     << installerBaseBinary << "after updating the maintenance tool.";
             }
             m_installerBaseBinaryUnreplaced.clear();
         } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
-            qCWarning(QInstaller::lcGeneral) << "The current maintenance tool could not be updated."
+            qCWarning(QInstaller::lcInstallerInstallLog) << "The current maintenance tool could not be updated."
                 << installerBaseBinary << "does not exist. Please fix the \"setInstallerBaseBinary"
                 "(<temp_installer_base_binary_path>)\" call in your script.";
         }
@@ -1500,7 +1500,7 @@ bool PackageManagerCorePrivate::runInstaller()
 
         m_core->calculateComponentsToInstall();
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
-        qCDebug(QInstaller::lcGeneral) << "Install size:" << componentsToInstall.size()
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Install size:" << componentsToInstall.size()
             << "components";
 
         callBeginInstallation(componentsToInstall);
@@ -1613,7 +1613,7 @@ bool PackageManagerCorePrivate::runInstaller()
             setStatus(PackageManagerCore::Failure);
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
-            qCDebug(QInstaller::lcGeneral) << "ROLLING BACK operations="
+            qCDebug(QInstaller::lcInstallerInstallLog) << "ROLLING BACK operations="
                 << m_performedOperationsCurrentSession.count();
         }
 
@@ -1646,7 +1646,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
             adminRightsGained = m_core->gainAdminRights();
 
         const QList<Component *> componentsToInstall = m_core->orderedComponentsToInstall();
-        qCDebug(QInstaller::lcGeneral) << "Install size:" << componentsToInstall.size()
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Install size:" << componentsToInstall.size()
             << "components";
 
         callBeginInstallation(componentsToInstall);
@@ -1789,7 +1789,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
             setStatus(PackageManagerCore::Failure);
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
-            qCDebug(QInstaller::lcGeneral) << "ROLLING BACK operations="
+            qCDebug(QInstaller::lcInstallerInstallLog) << "ROLLING BACK operations="
                 << m_performedOperationsCurrentSession.count();
         }
 
@@ -1847,7 +1847,7 @@ bool PackageManagerCorePrivate::runUninstaller()
             if (updateAdminRights && !adminRightsGained)
                 adminRightsGained = m_core->gainAdminRights();
             removeDirectoryThreaded(targetDir(), true);
-            qCDebug(QInstaller::lcGeneral) << "Complete uninstallation was chosen.";
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
         }
 
         unregisterMaintenanceTool();
@@ -1908,7 +1908,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool ignoreError = false;
         bool ok = performOperationThreaded(operation);
         while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
-            qCDebug(QInstaller::lcGeneral) << QString::fromLatin1("Operation \"%1\" with arguments "
+            qCDebug(QInstaller::lcInstallerInstallLog) << QString::fromLatin1("Operation \"%1\" with arguments "
                 "\"%2\" failed: %3").arg(operation->name(), operation->arguments()
                 .join(QLatin1String("; ")), operation->errorString());
             const QMessageBox::StandardButton button =
@@ -1982,7 +1982,7 @@ bool PackageManagerCorePrivate::runningProcessesFound()
     excludeFiles.append(maintenanceToolName());
     QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
     if (!runningProcesses.isEmpty()) {
-        qCWarning(QInstaller::lcGeneral()) << "Unable to update components. Please stop these processes: "
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Unable to update components. Please stop these processes: "
                  << runningProcesses << " and try again.";
         return true;
     }
@@ -2120,7 +2120,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 becameAdmin = m_core->gainAdminRights();
 
             connectOperationToInstaller(undoOperation, progressSize);
-            qCDebug(QInstaller::lcGeneral) << "undo operation=" << undoOperation->name();
+            qCDebug(QInstaller::lcInstallerInstallLog) << "undo operation=" << undoOperation->name();
 
             bool ignoreError = false;
             bool ok = performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
@@ -2352,7 +2352,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             try {
                 QInstaller::openForRead(&updatesFile);
             } catch(const Error &e) {
-                qCWarning(QInstaller::lcGeneral) << "Error opening Updates.xml:"
+                qCWarning(QInstaller::lcInstallerInstallLog) << "Error opening Updates.xml:"
                     << e.message();
                 setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
                 return false;
@@ -2363,7 +2363,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             QString error;
             QDomDocument doc;
             if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-                qCWarning(QInstaller::lcGeneral).nospace() << "Parse error in file "
+                qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Parse error in file "
                     << updatesFile.fileName() << ": " << error << " at line " << line
                     << " col " << column;
                 setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
@@ -2477,7 +2477,7 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
     foreach (const QString &i, filesForDelayedDeletion) {
         QFile file(i);   //TODO: this should happen asnyc and report errors, I guess
         if (file.exists() && !file.remove()) {
-            qCWarning(QInstaller::lcGeneral) << "Cannot delete file " << qPrintable(i) <<
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete file " << qPrintable(i) <<
                 ": " << qPrintable(file.errorString());
 
             m_filesForDelayedDeletion << i; // try again next time

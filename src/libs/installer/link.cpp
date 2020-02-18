@@ -89,7 +89,7 @@ public:
             OPEN_EXISTING, FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nullptr);
 
         if (m_dirHandle == INVALID_HANDLE_VALUE) {
-            qCWarning(QInstaller::lcGeneral) << "Cannot open" << path << ":"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open" << path << ":"
                 << QInstaller::windowsErrorString(GetLastError());
         }
     }
@@ -139,12 +139,12 @@ QString readWindowsSymLink(const QString &path)
 Link createJunction(const QString &linkPath, const QString &targetPath)
 {
     if (!QDir().mkpath(linkPath)) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot create the mount directory" << linkPath;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create the mount directory" << linkPath;
         return Link(linkPath);
     }
     FileHandleWrapper dirHandle(linkPath);
     if (dirHandle.handle() == INVALID_HANDLE_VALUE) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot open" << linkPath << ":"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open" << linkPath << ":"
             << QInstaller::windowsErrorString(GetLastError());
         return Link(linkPath);
     }
@@ -178,7 +178,7 @@ Link createJunction(const QString &linkPath, const QString &targetPath)
     if (!::DeviceIoControl(dirHandle.handle(), FSCTL_SET_REPARSE_POINT, reparseStructData,
         reparseStructData->ReparseDataLength + REPARSE_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
         &bytesReturned, nullptr)) {
-           qCWarning(QInstaller::lcGeneral) << "Cannot set the reparse point for" << linkPath << "to" << targetPath
+           qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set the reparse point for" << linkPath << "to" << targetPath
                        << ":" << QInstaller::windowsErrorString(GetLastError());
     }
     return Link(linkPath);
@@ -200,7 +200,7 @@ bool removeJunction(const QString &path)
             REPARSE_GUID_DATA_BUFFER_HEADER_SIZE, nullptr, 0,
             &bytesReturned, nullptr)) {
 
-            qCWarning(QInstaller::lcGeneral) << "Cannot remove the reparse point" << path << ":"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot remove the reparse point" << path << ":"
                 << QInstaller::windowsErrorString(GetLastError());
             return false;
         }
@@ -214,7 +214,7 @@ Link createLnSymlink(const QString &linkPath, const QString &targetPath)
     int linkedError = symlink(QFileInfo(targetPath).absoluteFilePath().toUtf8(),
         QFileInfo(linkPath).absoluteFilePath().toUtf8());
     if (linkedError != 0) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot create a symlink from" << linkPath << "to"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create a symlink from" << linkPath << "to"
             << targetPath << ":" << linkedError;
     }
 
@@ -242,7 +242,7 @@ Link Link::create(const QString &link, const QString &targetPath)
     if (!linkPathExists)
         linkPathExists = QDir().mkpath(linkPath);
     if (!linkPathExists) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot create the needed directories" << link;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create the needed directories" << link;
         return Link(link);
     }
 
@@ -250,7 +250,7 @@ Link Link::create(const QString &link, const QString &targetPath)
     if (QFileInfo(targetPath).isDir())
         return createJunction(link, targetPath);
 
-    qCWarning(QInstaller::lcGeneral) << "At the moment the" << Q_FUNC_INFO
+    qCWarning(QInstaller::lcInstallerInstallLog) << "At the moment the" << Q_FUNC_INFO
         << "can not create anything else as " << "junctions for directories under windows";
     return Link(link);
 #else

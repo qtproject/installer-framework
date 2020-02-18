@@ -137,11 +137,25 @@ int InstallerBase::run()
     parser.parse(arguments());
 
     QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
+    bool isCliInterface = false;
+    foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
+        if (parser.isSet(option)) {
+            isCliInterface = true;
+            break;
+        }
+    }
     if (QInstaller::isVerbose()) {
         if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
             loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))
                            .split(QLatin1Char(','), QString::SkipEmptyParts)
                            .join(QLatin1Char('\n')); // take rules from command line
+        } else if (isCliInterface) {
+            loggingRules = QLatin1String("ifw.* = false\n"
+                                         "ifw.installer.* = true\n"
+                                         "ifw.server = true\n"
+                                         "ifw.package.name = true\n"
+                                         "ifw.package.version = true\n"
+                                         "ifw.package.displayname = true\n");
         } else {
             // enable all in verbose mode except detailed package information
             loggingRules = QLatin1String("ifw.* = true\n"
@@ -155,7 +169,7 @@ int InstallerBase::run()
 
     qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-    qCDebug(QInstaller::lcGeneral).noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
+    qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
 
     SDKApp::registerMetaResources(manager.collectionByName("QResources"));
     if (parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
@@ -169,6 +183,7 @@ int InstallerBase::run()
     } else {
         m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
             QUuid::createUuid().toString(), QUuid::createUuid().toString());
+        m_core->setCommandLineInstance(isCliInterface);
     }
 
     {
@@ -252,7 +267,7 @@ int InstallerBase::run()
             throw QInstaller::Error(QLatin1String("Empty repository list for option 'installCompressedRepository'."));
         foreach (QString repository, repoList) {
             if (!QFileInfo::exists(repository)) {
-                qCWarning(QInstaller::lcGeneral) << "The file " << repository << "does not exist.";
+                qCWarning(QInstaller::lcInstallerInstallLog) << "The file " << repository << "does not exist.";
                 return EXIT_FAILURE;
             }
         }
@@ -310,12 +325,10 @@ int InstallerBase::run()
             const QString path = fontIt.next();
             qCDebug(QInstaller::lcResources) << "Registering custom font" << path;
             if (QFontDatabase::addApplicationFont(path) == -1)
-                qCWarning(QInstaller::lcGeneral) << "Failed to register font!";
+                qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to register font!";
         }
     }
 
-    // Do not show gui if any of the following options are set
-    m_core->setCommandLineInstance(true);
     if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
@@ -373,7 +386,6 @@ int InstallerBase::run()
             packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
         m_core->uninstallComponentsSilently(packages);
     } else {
-        m_core->setCommandLineInstance(false);
         //create the wizard GUI
         TabController controller(nullptr);
         controller.setManager(m_core);
@@ -444,7 +456,7 @@ QStringList InstallerBase::repositories(const QString &list) const
 {
     const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
     foreach (const QString &item, items)
-        qCDebug(QInstaller::lcGeneral).noquote() << "Adding custom repository:" << item;
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Adding custom repository:" << item;
     return items;
 }
 
@@ -464,12 +476,12 @@ bool InstallerBase::setTargetDirForCommandLineInterface(CommandLineParser &parse
         targetDir = parser.value(QLatin1String(CommandLineOptions::TargetDir));
     } else {
         targetDir = m_core->value(QLatin1String("TargetDir"));
-        qCDebug(QInstaller::lcGeneral) << "No target directory specified, using default value:" << targetDir;
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No target directory specified, using default value:" << targetDir;
     }
     if (m_core->checkTargetDir(targetDir)) {
         QString targetDirWarning = m_core->targetDirWarning(targetDir);
         if (!targetDirWarning.isEmpty()) {
-            qCWarning(QInstaller::lcGeneral) << m_core->targetDirWarning(targetDir);
+            qCWarning(QInstaller::lcInstallerInstallLog) << m_core->targetDirWarning(targetDir);
         } else {
             m_core->setValue(QLatin1String("TargetDir"), targetDir);
             return true;

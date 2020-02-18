@@ -117,7 +117,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
     foreach (Component *component, components){
         if (m_toInstallComponentIds.contains(component->name())) {
             const QString errorMessage = recursionError(component);
-            qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
                 qPrintable(errorMessage));
@@ -169,7 +169,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
                 "Cannot find missing dependency \"%1\" for \"%2\".").arg(dependencyComponentName,
                 component->name());
-            qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
             m_componentsToInstallError.append(errorMessage);
             if (component->packageManagerCore()->settings().allowUnstableComponents()) {
                 component->setUnstable(Component::UnstableError::MissingDependency, errorMessage);
@@ -205,7 +205,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
                 && !m_toInstallComponentIds.contains(component->name()))) {
             if (m_visitedComponents.value(component).contains(dependencyComponent)) {
                 const QString errorMessage = recursionError(component);
-                qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
+                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
                 m_componentsToInstallError = errorMessage;
                 Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
                     Q_FUNC_INFO, qPrintable(errorMessage));

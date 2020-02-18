@@ -85,12 +85,12 @@ static void raiseError(QXmlStreamReader &reader, const QString &error, Settings:
     } else {
         QFile *xmlFile = qobject_cast<QFile*>(reader.device());
         if (xmlFile) {
-            qCWarning(QInstaller::lcGeneral).noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                     << "Ignoring following settings reader error in " << xmlFile->fileName()
                                  << ", line " << reader.lineNumber() << ", column " << reader.columnNumber()
                                  << ": " << error;
         } else {
-            qCWarning(QInstaller::lcGeneral) << "Ignoring following settings reader error: "
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Ignoring following settings reader error: "
                 << qPrintable(error);
         }
     }

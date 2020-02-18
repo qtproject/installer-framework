@@ -327,11 +327,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
             if (sheet.open(QIODevice::ReadOnly)) {
                 setStyleSheet(QString::fromLatin1(sheet.readAll()));
             } else {
-                qCWarning(QInstaller::lcGeneral) << "The specified style sheet file "
+                qCWarning(QInstaller::lcInstallerInstallLog) << "The specified style sheet file "
                     "can not be opened.";
             }
         } else {
-            qCWarning(QInstaller::lcGeneral) << "A style sheet file is specified, "
+            qCWarning(QInstaller::lcInstallerInstallLog) << "A style sheet file is specified, "
                 "but it does not exist.";
         }
     }
@@ -469,7 +469,7 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
         return;
     }
 
-    qCWarning(QInstaller::lcGeneral) << "Cannot set text items on object of type"
+    qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
 }
 
@@ -526,7 +526,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
-        qCWarning(QInstaller::lcGeneral) << "Button with type: " << d->buttonType(wb) << "not found!";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
 /*!
@@ -545,7 +545,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         return b->isEnabled();
 
-    qCWarning(QInstaller::lcGeneral) << "Button with type: " << d->buttonType(wb) << "not found!";
+    qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -761,7 +761,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
         if (p && p->objectName() == name)
             return p;
     }
-    qCWarning(QInstaller::lcGeneral) << "No page found for object name" << name;
+    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -789,7 +789,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return dp->widget();
         return p;
     }
-    qCWarning(QInstaller::lcGeneral) << "No page found for object name" << name;
+    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -2419,7 +2419,7 @@ void ReadyForInstallationPage::entering()
 
     // at the moment there is no better way to check this
     if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
-        qCWarning(QInstaller::lcGeneral).nospace() << "Cannot determine available space on device. "
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Cannot determine available space on device. "
                               "Volume descriptor: " << targetVolume.volumeDescriptor()
                            << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
         return;     // TODO: Shouldn't this also disable the "Next" button?
@@ -2427,11 +2427,11 @@ void ReadyForInstallationPage::entering()
 
     const bool tempOnSameVolume = (targetVolume == tempVolume);
     if (tempOnSameVolume) {
-        qCDebug(QInstaller::lcGeneral) << "Tmp and install directories are on the same volume. "
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Tmp and install directories are on the same volume. "
             "Volume mount point:" << targetVolume.mountPath() << "Free space available:"
             << humanReadableSize(installVolumeAvailableSize);
     } else {
-        qCDebug(QInstaller::lcGeneral) << "Tmp is on a different volume than the installation "
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Tmp is on a different volume than the installation "
             "directory. Tmp volume mount point:"
             << tempVolume.mountPath() << "Free space available:"
             << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
@@ -2458,7 +2458,7 @@ void ReadyForInstallationPage::entering()
         required += repositorySize;
     }
 
-    qCDebug(QInstaller::lcGeneral) << "Installation space required:"
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Installation space required:"
         << humanReadableSize(required) << "Temporary space "
         "required:" << humanReadableSize(tempRequired) << "Local repository size:"
         << humanReadableSize(repositorySize);
@@ -2830,7 +2830,7 @@ void FinishedPage::handleFinishClicked()
     if (!m_runItCheckBox->isChecked() || program.isEmpty())
         return;
 
-    qCDebug(QInstaller::lcGeneral) << "starting" << program << args;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "starting" << program << args;
     QProcess::startDetached(program, args);
 }
 

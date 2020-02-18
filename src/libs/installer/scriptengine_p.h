@@ -50,7 +50,7 @@ public:
     ConsoleProxy() {}
 
 public slots :
-        void log(const QString &log) { qCDebug(QInstaller::lcGeneral).noquote() << log; }
+        void log(const QString &log) { qCDebug(QInstaller::lcInstallerInstallLog).noquote() << log; }
 };
 
 class InstallerProxy : public QObject

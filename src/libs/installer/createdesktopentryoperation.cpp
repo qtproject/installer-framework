@@ -159,7 +159,7 @@ bool CreateDesktopEntryOperation::undoOperation()
     // first remove the link
     QFile file(filename);
     if (file.exists() && !file.remove()) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot delete file" << filename
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete file" << filename
             << ":" << file.errorString();
         return true;
     }
@@ -170,13 +170,13 @@ bool CreateDesktopEntryOperation::undoOperation()
     QFile backupFile(value(QLatin1String("backupOfExistingDesktopEntry")).toString());
     if (!backupFile.exists()) {
         // do not treat this as a real error: The backup file might have been just nuked by the user.
-        qCWarning(QInstaller::lcGeneral) << "Cannot restore original desktop entry at" << filename
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot restore original desktop entry at" << filename
             << ": Backup file" << backupFile.fileName() << "does not exist anymore.";
         return true;
     }
 
     if (!backupFile.rename(filename)) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot restore the file" << filename
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot restore the file" << filename
             << ":" << backupFile.errorString();
     }
 

@@ -84,7 +84,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             QByteArray output = process.readAllStandardOutput();
             qmakeOutput->append(output);
             if (process.exitStatus() == QProcess::CrashExit) {
-                qCWarning(QInstaller::lcGeneral) << qmake.absoluteFilePath() << args
+                qCWarning(QInstaller::lcInstallerInstallLog) << qmake.absoluteFilePath() << args
                            << "crashed with exit code" << process.exitCode()
                            << "standard output:" << output
                            << "error output:" << process.readAllStandardError();
@@ -98,13 +98,13 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
             QInstaller::uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
-            qCWarning(QInstaller::lcGeneral) << "qmake process is still running, need to kill it.";
+            qCWarning(QInstaller::lcInstallerInstallLog) << "qmake process is still running, need to kill it.";
             process.kill();
         }
 
     }
     if (qmakeValueHash.isEmpty())
-        qCWarning(QInstaller::lcGeneral) << "Cannot get any query output from qmake.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot get any query output from qmake.";
     return qmakeValueHash;
 }
 
@@ -114,15 +114,15 @@ bool QtPatch::patchBinaryFile(const QString &fileName,
 {
     QFile file(fileName);
     if (!file.exists()) {
-        qCWarning(QInstaller::lcGeneral) << "qpatch: warning: file" << fileName << "not found";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "qpatch: warning: file" << fileName << "not found";
         return false;
     }
 
     openFileForPatching(&file);
     if (!file.isOpen()) {
-        qCWarning(QInstaller::lcGeneral) << "qpatch: warning: file" << qPrintable(fileName)
+        qCWarning(QInstaller::lcInstallerInstallLog) << "qpatch: warning: file" << qPrintable(fileName)
             << "cannot open.";
-        qCWarning(QInstaller::lcGeneral).noquote() << file.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog).noquote() << file.errorString();
         return false;
     }
 
@@ -138,7 +138,7 @@ bool QtPatch::patchBinaryFile(QIODevice *device,
                               const QByteArray &newQtPath)
 {
     if (!(device->openMode() == QIODevice::ReadWrite)) {
-        qCWarning(QInstaller::lcGeneral) << "qpatch: warning: This function needs an "
+        qCWarning(QInstaller::lcInstallerInstallLog) << "qpatch: warning: This function needs an "
             "open device for writing.";
         return false;
     }
@@ -171,7 +171,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     QFile file(fileName);
 
     if (!file.open(QFile::ReadOnly)) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot open file" << fileName << "for patching:"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open file" << fileName << "for patching:"
             << file.errorString();
         return false;
     }
@@ -186,7 +186,7 @@ bool QtPatch::patchTextFile(const QString &fileName,
     }
 
     if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
-        qCWarning(QInstaller::lcGeneral) << "File" << fileName << "not writable.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "File" << fileName << "not writable.";
         return false;
     }
 
@@ -206,7 +206,7 @@ bool QtPatch::openFileForPatching(QFile *file)
         }
         return file->openMode() == QFile::ReadWrite;
     }
-    qCWarning(QInstaller::lcGeneral) << "File" << file->fileName() << "is open, "
+    qCWarning(QInstaller::lcInstallerInstallLog) << "File" << file->fileName() << "is open, "
         "so it cannot be opened again.";
     return false;
 }

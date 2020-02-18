@@ -1575,7 +1575,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
             errorString += QLatin1String(", ");
         errorString += error.errorString();
     }
-    qCWarning(QInstaller::lcGeneral) << errorString;
+    qCWarning(QInstaller::lcInstallerInstallLog) << errorString;
 
     const QStringList arguments = QCoreApplication::arguments();
     if (arguments.contains(QLatin1String("--script")) || arguments.contains(QLatin1String("Script"))

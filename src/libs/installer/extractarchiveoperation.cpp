@@ -121,7 +121,7 @@ bool ExtractArchiveOperation::performOperation()
         setValue(QLatin1String("files"), file.fileName());
         file.close();
     } else {
-        qCWarning(QInstaller::lcGeneral) << "Cannot open file for writing " << file.fileName() << ":" << file.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open file for writing " << file.fileName() << ":" << file.errorString();
     }
 
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
@@ -178,7 +178,7 @@ void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
 void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
 {
     if (fileName.isEmpty()) {
-        qCWarning(QInstaller::lcGeneral) << Q_FUNC_INFO << "data file name cannot be empty.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << Q_FUNC_INFO << "data file name cannot be empty.";
         return;
     }
     QFile file(fileName);
@@ -188,7 +188,7 @@ void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
         if (directory.exists() && directory.isEmpty())
             directory.rmdir(directory.path());
     } else {
-        qCWarning(QInstaller::lcGeneral) << "Cannot remove data file" << file.fileName();
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot remove data file" << file.fileName();
     }
 }
 

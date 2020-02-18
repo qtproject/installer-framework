@@ -274,7 +274,7 @@ struct DirectoryGuard
             return;
         QDir dir(m_path);
         if (!dir.rmdir(m_path))
-            qCWarning(QInstaller::lcGeneral) << "Cannot delete directory " << m_path;
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete directory " << m_path;
     }
 
     /*!

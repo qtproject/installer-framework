@@ -100,7 +100,7 @@ bool ConsumeOutputOperation::performOperation()
         process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                qCWarning(QInstaller::lcGeneral) << executable.absoluteFilePath()
+                qCWarning(QInstaller::lcInstallerInstallLog) << executable.absoluteFilePath()
                     << processArguments << "crashed with exit code"
                     << process.exitCode() << "standard output: "
                     << process.readAllStandardOutput() << "error output: "
@@ -125,7 +125,7 @@ bool ConsumeOutputOperation::performOperation()
 
     }
     if (executableOutput.isEmpty()) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot get any query output from executable"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot get any query output from executable"
             << executable.absoluteFilePath();
     }
     core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));

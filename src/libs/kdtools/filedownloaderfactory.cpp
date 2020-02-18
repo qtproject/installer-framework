@@ -69,7 +69,7 @@ FileDownloaderFactory::FileDownloaderFactory()
     if (QSslSocket::supportsSsl())
         registerFileDownloader<HttpDownloader>(QLatin1String("https"));
     else
-        qCWarning(QInstaller::lcGeneral) << "Cannot register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot register file downloader for https protocol: QSslSocket::supportsSsl() returns false";
 #endif
 
     d->m_followRedirects = false;

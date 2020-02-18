@@ -553,7 +553,7 @@ void Component::loadComponentScript(const QString &fileName)
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
             setUnstable(Component::Component::ScriptLoadingFailed, error.message());
-            qCWarning(QInstaller::lcGeneral) << error.message();
+            qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
         } else {
             throw error;
         }
@@ -1332,7 +1332,7 @@ bool Component::isDefault() const
         }
         if (!valueFromScript.isError())
             return valueFromScript.toBool();
-        qCWarning(QInstaller::lcGeneral) << "Value from script is not valid."
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Value from script is not valid."
             << (valueFromScript.toString().isEmpty()
             ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
         return false;

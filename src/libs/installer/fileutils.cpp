@@ -189,7 +189,7 @@ void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
                                 QDir::toNativeSeparators(f.fileName()), f.errorString());
                     if (!ignoreErrors)
                         throw Error(errorMessage);
-                    qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
+                    qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
                 }
             }
         }
@@ -232,7 +232,7 @@ void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
                                                           errnoToQString(errno));
             if (!ignoreErrors)
                 throw Error(errorMessage);
-            qCWarning(QInstaller::lcGeneral).noquote() << errorMessage;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
         }
     }
 }
@@ -313,14 +313,14 @@ bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFileP
 bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
 {
     if (!file->exists()) {
-        qCWarning(QInstaller::lcGeneral) << "Target" << file->fileName() << "does not exists.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Target" << file->fileName() << "does not exists.";
         return false;
     }
     if (file->permissions() == static_cast<QFileDevice::Permission>(permissions))
         return true;
 
     if (!file->setPermissions(static_cast<QFileDevice::Permission>(permissions))) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot set default permissions for target"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set default permissions for target"
                    << file->fileName() << ":" << file->errorString();
         return false;
     }
@@ -530,13 +530,13 @@ void QInstaller::setApplicationIcon(const QString &application, const QString &i
 {
     QFile iconFile(icon);
     if (!iconFile.open(QIODevice::ReadOnly)) {
-        qCWarning(QInstaller::lcGeneral) << "Cannot use" << icon << "as an application icon:"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon:"
             << iconFile.errorString();
         return;
     }
 
     if (QImageReader::imageFormat(icon) != "ico") {
-        qCWarning(QInstaller::lcGeneral) << "Cannot use" << icon << "as an application icon, "
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot use" << icon << "as an application icon, "
             "unsupported format" << QImageReader::imageFormat(icon).constData();
         return;
     }

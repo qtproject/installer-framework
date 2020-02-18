@@ -403,7 +403,7 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
         messageTypeHash.insert(warningType, QLatin1String("warning"));
     };
 
-    qCDebug(QInstaller::lcGeneral).nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
+    qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
                        << " message box " << identifier << ": " << title << ", " << text;
 
     if (qobject_cast<QApplication*> (qApp) == nullptr)
