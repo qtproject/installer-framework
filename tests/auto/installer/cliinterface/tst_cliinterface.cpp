@@ -119,6 +119,27 @@ private slots:
         core->installSelectedComponentsSilently(QStringList() << QLatin1String("MissingComponent"));
     }
 
+    void testListInstalledPackages()
+    {
+        QString loggingRules = (QLatin1String("ifw.* = false\n"
+                                              "ifw.package.name = true\n"));
+        PackageManagerCore core;
+        core.setPackageManager();
+        QLoggingCategory::setFilterRules(loggingRules);
+
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        QVERIFY(QFile::copy(":/data/components.xml", testDirectory + "/components.xml"));
+
+        core.setValue(scTargetDir, testDirectory);
+
+        QTest::ignoreMessage(QtDebugMsg, "Id: A");
+        QTest::ignoreMessage(QtDebugMsg, "Id: B");
+        core.listInstalledPackages();
+        QDir dir(testDirectory);
+
+        QVERIFY(dir.removeRecursively());
+    }
 };
 
 

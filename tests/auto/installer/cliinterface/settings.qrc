@@ -3,6 +3,7 @@
         <file>data/config.xml</file>
         <file>data/repository/Updates.xml</file>
         <file>data/uninstallableComponentsRepository/Updates.xml</file>
+        <file>data/components.xml</file>
     </qresource>
     <qresource prefix="/metadata">
         <file>installer-config/config.xml</file>

@@ -2050,6 +2050,22 @@ void PackageManagerCore::printPackageInformation(const QString &name, const Pack
         qCDebug(QInstaller::lcPackageInstalledVersion).noquote() << "\tInstalled version:" << installedPackages.value(name).version;
 }
 
+void PackageManagerCore::printLocalPackageInformation(const KDUpdater::LocalPackage package) const
+{
+    qCDebug(QInstaller::lcPackageName).noquote() << "Id:" << package.name;
+    qCDebug(QInstaller::lcPackageDisplayname).noquote() << "\tDisplay name:" << package.title;
+    qCDebug(QInstaller::lcPackageVersion).noquote() << "\tVersion:" << package.version;
+    qCDebug(QInstaller::lcPackageDescription).noquote() << "\tDescription:" <<  package.description;
+    qCDebug(QInstaller::lcPackageDependencies).noquote() << "\tDependencies:" << package.dependencies;
+    qCDebug(QInstaller::lcPackageAutodependon).noquote() << "\tAutodependon:" << package.autoDependencies;
+    qCDebug(QInstaller::lcPackageVirtual).noquote() << "\tVirtual:" << package.virtualComp;
+    qCDebug(QInstaller::lcPackageForcedinstallation).noquote() << "\tForced installation:" << package.forcedInstallation;
+    qCDebug(QInstaller::lcPackageCheckable).noquote() << "\tCheckable:" << package.checkable;
+    qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << package.uncompressedSize;
+    qCDebug(QInstaller::lcPackageInstallDate).noquote() << "\tInstalled:" << package.installDate;
+    qCDebug(QInstaller::lcPackageUpdateDate).noquote() << "\tLast updated:" << package.lastUpdateDate;
+}
+
 bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
 {
     // We will do a recursive check for every child this component has.
@@ -2083,7 +2099,7 @@ void PackageManagerCore::listInstalledPackages()
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
         KDUpdater::LocalPackage package = installedPackages.value(key);
-        qCDebug(QInstaller::lcPackageName) << package.name;
+        printLocalPackageInformation(package);
     }
 }
 

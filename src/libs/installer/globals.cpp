@@ -42,6 +42,8 @@ const char IFW_PACKAGE_DESCRIPTION[] = "ifw.package.description";
 const char IFW_PACKAGE_VERSION[] = "ifw.package.version";
 const char IFW_PACKAGE_INSTALLEDVERSION[] = "ifw.package.installedversion";
 const char IFW_PACKAGE_RELEASEDATE[] = "ifw.package.releasedate";
+const char IFW_PACKAGE_INSTALLDATE[] = "ifw.package.installdate";
+const char IFW_PACKAGE_UPDATEDATE[] = "ifw.package.updatedate";
 const char IFW_PACKAGE_NAME[] = "ifw.package.name";
 const char IFW_PACKAGE_DEPENDENCIES[] = "ifw.package.dependencies";
 const char IFW_PACKAGE_AUTODEPENDON[] = "ifw.package.autodependon";
@@ -76,6 +78,8 @@ Q_LOGGING_CATEGORY(lcPackageDescription, IFW_PACKAGE_DESCRIPTION)
 Q_LOGGING_CATEGORY(lcPackageVersion, IFW_PACKAGE_VERSION)
 Q_LOGGING_CATEGORY(lcPackageInstalledVersion, IFW_PACKAGE_INSTALLEDVERSION)
 Q_LOGGING_CATEGORY(lcPackageReleasedate, IFW_PACKAGE_RELEASEDATE)
+Q_LOGGING_CATEGORY(lcPackageInstalldate, IFW_PACKAGE_INSTALLDATE)
+Q_LOGGING_CATEGORY(lcPackageUpdatedate, IFW_PACKAGE_UPDATEDATE)
 Q_LOGGING_CATEGORY(lcPackageName, IFW_PACKAGE_NAME)
 Q_LOGGING_CATEGORY(lcPackageDependencies, IFW_PACKAGE_DEPENDENCIES)
 Q_LOGGING_CATEGORY(lcPackageAutodependon, IFW_PACKAGE_AUTODEPENDON)
@@ -107,6 +111,8 @@ QStringList loggingCategories()
             << QLatin1String(IFW_PACKAGE_VERSION)
             << QLatin1String(IFW_PACKAGE_INSTALLEDVERSION)
             << QLatin1String(IFW_PACKAGE_RELEASEDATE)
+            << QLatin1String(IFW_PACKAGE_INSTALLDATE)
+            << QLatin1String(IFW_PACKAGE_UPDATEDATE)
             << QLatin1String(IFW_PACKAGE_NAME)
             << QLatin1String(IFW_PACKAGE_DEPENDENCIES)
             << QLatin1String(IFW_PACKAGE_AUTODEPENDON)

@@ -361,6 +361,7 @@ private:
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
     void printPackageInformation(const QString &name, const Package *update);
+    void printLocalPackageInformation(const KDUpdater::LocalPackage package) const;
 
     bool componentUninstallableFromCommandLine(const QString &componentName);
 
