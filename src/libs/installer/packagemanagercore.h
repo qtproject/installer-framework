@@ -235,6 +235,9 @@ public:
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
 
+    void setUserSetBinaryMarker(qint64 magicMarker);
+    Q_INVOKABLE bool isUserSetBinaryMarker() const;
+
     void setCommandLineInstance(bool commandLineInstance);
     Q_INVOKABLE bool isCommandLineInstance() const;
 

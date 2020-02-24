@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
         mutually << QLatin1String(CommandLineOptions::Updater);
     if (parser.isSet(QLatin1String(CommandLineOptions::ManagePackages)))
         mutually << QLatin1String(CommandLineOptions::ManagePackages);
+    if (parser.isSet(QLatin1String(CommandLineOptions::Uninstaller)))
+        mutually << QLatin1String(CommandLineOptions::Uninstaller);
 
     const bool help = parser.isSet(QLatin1String(CommandLineOptions::HelpShort))
         || parser.isSet(QLatin1String(CommandLineOptions::HelpLong));

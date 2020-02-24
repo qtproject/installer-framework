@@ -187,6 +187,7 @@ public:
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_commandLineInstance;
+    bool m_userSetBinaryMarker;
     bool m_completeUninstall;
     bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;

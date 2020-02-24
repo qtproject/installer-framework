@@ -1626,7 +1626,7 @@ void IntroductionPage::initializePage()
         // If we are running maintenance tool and the default uninstaller
         // marker is not overridden, set the default checked radio button
         // based on if we have valid repositories available.
-        if (validRepositoriesAvailable()) {
+        if (!core->isUserSetBinaryMarker() && validRepositoriesAvailable()) {
             m_packageManager->setChecked(true);
         } else {
             // No repositories available, default to complete uninstallation.

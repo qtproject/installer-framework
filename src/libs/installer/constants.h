@@ -111,6 +111,7 @@ const char Script[] = "script";
 const char CheckUpdates[] = "checkupdates";
 const char Updater[] = "updater";
 const char ManagePackages[] = "manage-packages";
+const char Uninstaller[] = "uninstaller";
 const char NoForceInstallation[] = "no-force-installations";
 const char ShowVirtualComponents[] = "show-virtual-components";
 const char LoggingRules[] = "logging-rules";

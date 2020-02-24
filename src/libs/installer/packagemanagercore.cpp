@@ -2828,6 +2828,27 @@ bool PackageManagerCore::isPackageManager() const
 }
 
 /*!
+    Sets the installer magic binary marker based on \a magicMarker and
+    userSetBinaryMarker to \c true.
+*/
+void PackageManagerCore::setUserSetBinaryMarker(qint64 magicMarker)
+{
+    d->m_magicBinaryMarker = magicMarker;
+    d->m_userSetBinaryMarker = true;
+}
+
+/*!
+    Returns \c true if the magic binary marker has been set by user,
+    for example from a command line argument.
+
+    \sa {installer::isUserSetBinaryMarker}{installer.isUserSetBinaryMarker}
+*/
+bool PackageManagerCore::isUserSetBinaryMarker() const
+{
+    return d->m_userSetBinaryMarker;
+}
+
+/*!
     Set to use command line instance based on \a commandLineInstance.
 */
 void PackageManagerCore::setCommandLineInstance(bool commandLineInstance)

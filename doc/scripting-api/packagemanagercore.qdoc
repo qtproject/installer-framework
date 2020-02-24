@@ -746,6 +746,12 @@
 */
 
 /*!
+    \qmlmethod boolean installer::isUserSetBinaryMarker()
+
+    Returns \c true if the magic binary marker has been set by user.
+*/
+
+/*!
     \qmlmethod boolean installer::runInstaller()
 
     Runs the installer. Returns \c true on success, \c false otherwise.

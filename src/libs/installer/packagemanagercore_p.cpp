@@ -217,6 +217,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_remoteFileEngineHandler(nullptr)
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
+    , m_userSetBinaryMarker(false)
 {
 }
 
@@ -249,6 +250,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
+    , m_userSetBinaryMarker(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()

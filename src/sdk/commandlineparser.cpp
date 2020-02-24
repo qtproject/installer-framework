@@ -68,6 +68,9 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ManagePackages),
         QLatin1String("Start application in package manager mode.")));
 
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Uninstaller),
+        QLatin1String("Start application in uninstaller mode.")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoForceInstallation),
         QLatin1String("Allow deselecting components that are marked as forced.")));
 

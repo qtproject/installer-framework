@@ -227,13 +227,19 @@ int InstallerBase::run()
     if (parser.isSet(QLatin1String(CommandLineOptions::Updater))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as updater."));
-        m_core->setUpdater();
+        m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUpdaterMarker);
     }
 
     if (parser.isSet(QLatin1String(CommandLineOptions::ManagePackages))) {
         if (m_core->isInstaller())
             throw QInstaller::Error(QLatin1String("Cannot start installer binary as package manager."));
-        m_core->setPackageManager();
+        m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicPackageManagerMarker);
+    }
+
+    if (parser.isSet(QLatin1String(CommandLineOptions::Uninstaller))) {
+        if (m_core->isInstaller())
+            throw QInstaller::Error(QLatin1String("Cannot start installer binary as uninstaller."));
+        m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUninstallerMarker);
     }
 
     if (parser.isSet(QLatin1String(CommandLineOptions::AddRepository))) {
