@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,7 +31,7 @@
 #include "commandlineparser.h"
 #include "installerbase.h"
 #include "sdkapp.h"
-#include "updatechecker.h"
+#include "commandlineinterface.h"
 
 #include <errors.h>
 #include <selfrestarter.h>
@@ -216,13 +216,28 @@ int main(int argc, char *argv[])
         if (parser.isSet(QLatin1String(CommandLineOptions::NoProxy)))
             QNetworkProxyFactory::setUseSystemConfiguration(false);
 
+        const SelfRestarter restarter(argc, argv);
+
         if (parser.isSet(QLatin1String(CommandLineOptions::CheckUpdates)))
-            return UpdateChecker(argc, argv).check();
+            return CommandLineInterface(argc, argv).checkUpdates();
+        if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate)))
+            return CommandLineInterface(argc, argv).silentUpdate();
+        if (parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages)))
+            return CommandLineInterface(argc, argv).listInstalledPackages();
+        if (parser.isSet(QLatin1String(CommandLineOptions::ListPackages)))
+            return CommandLineInterface(argc, argv).listAvailablePackages();
+        if (parser.isSet(QLatin1String(CommandLineOptions::UpdatePackages)))
+            return CommandLineInterface(argc, argv).updatePackages();
+        if (parser.isSet(QLatin1String(CommandLineOptions::InstallPackages)))
+            return CommandLineInterface(argc, argv).install();
+        if (parser.isSet(QLatin1String(CommandLineOptions::InstallDefault)))
+            return CommandLineInterface(argc, argv).installDefault();
+        if (parser.isSet(QLatin1String(CommandLineOptions::UninstallSelectedPackages)))
+            return CommandLineInterface(argc, argv).uninstallPackages();
 
         if (QInstaller::isVerbose())
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
 
-        const SelfRestarter restarter(argc, argv);
         return InstallerBase(argc, argv).run();
 
     } catch (const QInstaller::Error &e) {

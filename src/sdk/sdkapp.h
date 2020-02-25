@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,23 +29,39 @@
 #ifndef SDKAPP_H
 #define SDKAPP_H
 
+#include "commandlineparser.h"
+
 #include <binarycontent.h>
 #include <binaryformat.h>
 #include <fileio.h>
 #include <fileutils.h>
+#include <constants.h>
+#include <packagemanagercore.h>
+#include <settings.h>
+#include <productkeycheck.h>
+#include <binaryformatenginehandler.h>
+#include <filedownloaderfactory.h>
+#include <packagemanagerproxyfactory.h>
+#include <utils.h>
+#include <runoncechecker.h>
+#include <globals.h>
 
 #include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QResource>
+#include <QLoggingCategory>
+#include <QUuid>
 
 template<class T>
 class SDKApp : public T
 {
 public:
     SDKApp(int& argc, char** argv)
-        : T(argc, argv)
+        : T(argc, argv), m_runCheck(QDir::tempPath() + QLatin1Char('/')
+                            + qApp->applicationName() + QLatin1String("1234865.lock"))
     {
+        m_parser.parse(QCoreApplication::arguments());
     }
 
     virtual ~SDKApp()
@@ -64,6 +80,210 @@ public:
             qFatal("Unknown exception caught.");
         }
         return false;
+    }
+
+    bool init(QString &errorMessage) {
+        QString appname = qApp->applicationName();
+
+        if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
+            // It is possible to install an application and thus the maintenance tool into a
+            // directory that requires elevated permission to create a lock file. Since this
+            // cannot be done without requesting credentials from the user, we silently ignore
+            // the fact that we could not create the lock file and check the running processes.
+            if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
+                errorMessage = QObject::tr("Another %1 instance is already running. Wait "
+                        "until it finishes, close it, or restart your system.").arg(qAppName());
+                return false;
+            }
+        }
+        QFile binary(binaryFile());
+    #ifdef Q_OS_WIN
+        // On some admin user installations it is possible that the installer.dat
+        // file is left without reading permissions for non-administrator users,
+        // we should check this and prompt the user to run the executable as admin if needed.
+        if (!binary.open(QIODevice::ReadOnly)) {
+            QFileInfo binaryInfo(binary.fileName());
+            errorMessage = QObject::tr("Please make sure that the current user has reading access "
+                "to file \"%1\" or try running %2 as an administrator.").arg(binaryInfo.fileName(), qAppName());
+            return false;
+        }
+        binary.close();
+    #endif
+        QString fileName = datFile(binaryFile());
+        quint64 cookie = QInstaller::BinaryContent::MagicCookieDat;
+        if (fileName.isEmpty()) {
+            fileName = binaryFile();
+            cookie = QInstaller::BinaryContent::MagicCookie;
+        }
+
+        binary.setFileName(fileName);
+        QInstaller::openForRead(&binary);
+
+        qint64 magicMarker;
+        QInstaller::ResourceCollectionManager manager;
+        QList<QInstaller::OperationBlob> oldOperations;
+
+        QInstaller::BinaryContent::readBinaryContent(&binary, &oldOperations, &manager, &magicMarker,
+            cookie);
+        // Usually resources simply get mapped into memory and therefore the file does not need to be
+        // kept open during application runtime. Though in case of offline installers we need to access
+        // the appended binary content (packages etc.), so we close only in maintenance mode.
+        if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
+            binary.close();
+
+        QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
+        bool isCliInterface = false;
+        foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
+           if (m_parser.isSet(option)) {
+               isCliInterface = true;
+               break;
+           }
+        }
+        if (QInstaller::isVerbose()) {
+            if (m_parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
+                loggingRules = m_parser.value(QLatin1String(CommandLineOptions::LoggingRules))
+                              .split(QLatin1Char(','), QString::SkipEmptyParts)
+                              .join(QLatin1Char('\n')); // take rules from command line
+            } else if (isCliInterface) {
+                loggingRules = QLatin1String("ifw.* = false\n"
+                                            "ifw.installer.* = true\n"
+                                            "ifw.server = true\n"
+                                            "ifw.package.name = true\n"
+                                            "ifw.package.version = true\n"
+                                            "ifw.package.displayname = true\n");
+            } else {
+                // enable all in verbose mode except detailed package information
+                loggingRules = QLatin1String("ifw.* = true\n"
+                                            "ifw.package.* = false\n"
+                                            "ifw.package.name = true\n"
+                                            "ifw.package.version = true\n"
+                                            "ifw.package.displayname = true\n");
+            }
+        }
+        QLoggingCategory::setFilterRules(loggingRules);
+
+        SDKApp::registerMetaResources(manager.collectionByName("QResources"));
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
+            const QStringList arguments = m_parser.value(QLatin1String(CommandLineOptions::StartClient))
+                .split(QLatin1Char(','), QString::SkipEmptyParts);
+            m_core = new QInstaller::PackageManagerCore(
+                magicMarker, oldOperations,
+                arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
+                arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
+                QInstaller::Protocol::Mode::Debug);
+        } else {
+            m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
+                QUuid::createUuid().toString(), QUuid::createUuid().toString());
+            m_core->setCommandLineInstance(isCliInterface);
+        }
+
+        {
+          using namespace QInstaller;
+          ProductKeyCheck::instance()->init(m_core);
+          ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
+          BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
+        }
+
+        // From Qt5.8 onwards a separate command line option --proxy is not needed as system
+        // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
+        // then system proxies are not used by default.
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
+            m_core->settings().setProxyType(QInstaller::Settings::NoProxy);
+            KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+        } else if ((m_parser.isSet(QLatin1String(CommandLineOptions::Proxy))
+                || QNetworkProxyFactory::usesSystemConfiguration())) {
+            m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
+            KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::ShowVirtualComponents)))
+            QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::Updater))) {
+            if (m_core->isInstaller()) {
+                errorMessage = QObject::tr("Cannot start installer binary as updater.");
+                return false;
+            }
+            m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUpdaterMarker);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::ManagePackages))) {
+            if (m_core->isInstaller()) {
+                errorMessage = QObject::tr("Cannot start installer binary as package manager.");
+                return false;
+            }
+            m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicPackageManagerMarker);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::Uninstaller))) {
+            if (m_core->isInstaller()) {
+                errorMessage = QObject::tr("Cannot start installer binary as uninstaller.");
+                return false;
+            }
+            m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUninstallerMarker);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::AddRepository))) {
+            const QStringList repoList = repositories(m_parser
+                .value(QLatin1String(CommandLineOptions::AddRepository)));
+            if (repoList.isEmpty()) {
+                errorMessage = QObject::tr("Empty repository list for option 'addRepository'.");
+                return false;
+            }
+            m_core->addUserRepositories(repoList);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::AddTmpRepository))) {
+            const QStringList repoList = repositories(m_parser
+                .value(QLatin1String(CommandLineOptions::AddTmpRepository)));
+            if (repoList.isEmpty()) {
+                errorMessage = QObject::tr("Empty repository list for option 'addTempRepository'.");
+                return false;
+            }
+            m_core->setTemporaryRepositories(repoList, false);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::SetTmpRepository))) {
+            const QStringList repoList = repositories(m_parser
+                .value(QLatin1String(CommandLineOptions::SetTmpRepository)));
+            if (repoList.isEmpty()) {
+                errorMessage = QObject::tr("Empty repository list for option 'setTempRepository'.");
+                return false;
+            }
+            m_core->setTemporaryRepositories(repoList, true);
+        }
+
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::InstallCompressedRepository))) {
+            const QStringList repoList = repositories(m_parser
+                .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
+            if (repoList.isEmpty()) {
+                errorMessage = QObject::tr("Empty repository list for option 'installCompressedRepository'.");
+                return false;
+            }
+            foreach (QString repository, repoList) {
+                if (!QFileInfo::exists(repository)) {
+                    errorMessage = QObject::tr("The file %1 does not exist.").arg(repository);
+                    return false;
+                }
+            }
+            m_core->setTemporaryRepositories(repoList, false, true);
+        }
+
+        QInstaller::PackageManagerCore::setNoForceInstallation(m_parser
+            .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));
+        QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(m_parser
+            .isSet(QLatin1String(CommandLineOptions::CreateLocalRepository))
+            || m_core->settings().createLocalRepository());
+
+        const QStringList positionalArguments = m_parser.positionalArguments();
+        foreach (const QString &argument, positionalArguments) {
+            if (argument.contains(QLatin1Char('='))) {
+                const QString name = argument.section(QLatin1Char('='), 0, 0);
+                const QString value = argument.section(QLatin1Char('='), 1, 1);
+                m_core->setValue(name, value);
+            }
+        }
+        return true;
     }
 
     /*!
@@ -147,8 +367,21 @@ public:
         }
     }
 
+    QStringList repositories(const QString &list) const
+    {
+        const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
+        foreach (const QString &item, items)
+            qCDebug(QInstaller::lcGeneral) << "Adding custom repository:" << item;
+        return items;
+    }
+
 private:
     QList<QByteArray> m_resourceMappings;
+
+public:
+    QInstaller::PackageManagerCore *m_core;
+    CommandLineParser m_parser;
+    RunOnceChecker m_runCheck;
 };
 
 #endif  // SDKAPP_H

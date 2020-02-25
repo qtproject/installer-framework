@@ -100,7 +100,7 @@ HEADERS += \
            settingsdialog.h \
            console.h \
            sdkapp.h \
-           updatechecker.h \
+           commandlineinterface.h \
            installerbase.h \
            commandlineparser.h
 
@@ -110,7 +110,7 @@ SOURCES = \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp \
-          updatechecker.cpp \
+          commandlineinterface.cpp \
           commandlineparser.cpp
 
 win32 {

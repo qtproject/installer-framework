@@ -1453,9 +1453,13 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
 */
 bool PackageManagerCore::addWizardPage(Component *component, const QString &name, int page)
 {
-    if (QWidget* const widget = component->userInterface(name)) {
-        emit wizardPageInsertionRequested(widget, static_cast<WizardPage>(page));
-        return true;
+    if (!isCommandLineInstance()) {
+        if (QWidget* const widget = component->userInterface(name)) {
+            emit wizardPageInsertionRequested(widget, static_cast<WizardPage>(page));
+            return true;
+        }
+    } else {
+        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page addition: " << name;
     }
     return false;
 }
@@ -1473,9 +1477,13 @@ bool PackageManagerCore::addWizardPage(Component *component, const QString &name
 */
 bool PackageManagerCore::removeWizardPage(Component *component, const QString &name)
 {
-    if (QWidget* const widget = component->userInterface(name)) {
-        emit wizardPageRemovalRequested(widget);
-        return true;
+    if (!isCommandLineInstance()) {
+        if (QWidget* const widget = component->userInterface(name)) {
+            emit wizardPageRemovalRequested(widget);
+            return true;
+        }
+    } else {
+        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page removal: " << name;
     }
     return false;
 }
@@ -1533,9 +1541,13 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
 */
 bool PackageManagerCore::addWizardPageItem(Component *component, const QString &name, int page)
 {
-    if (QWidget* const widget = component->userInterface(name)) {
-        emit wizardWidgetInsertionRequested(widget, static_cast<WizardPage>(page));
-        return true;
+    if (!isCommandLineInstance()) {
+        if (QWidget* const widget = component->userInterface(name)) {
+            emit wizardWidgetInsertionRequested(widget, static_cast<WizardPage>(page));
+            return true;
+        }
+    } else {
+        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page item addition: " << name;
     }
     return false;
 }
@@ -1554,9 +1566,11 @@ bool PackageManagerCore::addWizardPageItem(Component *component, const QString &
 */
 bool PackageManagerCore::removeWizardPageItem(Component *component, const QString &name)
 {
-    if (QWidget* const widget = component->userInterface(name)) {
-        emit wizardWidgetRemovalRequested(widget);
-        return true;
+    if (!isCommandLineInstance()) {
+        if (QWidget* const widget = component->userInterface(name)) {
+            emit wizardWidgetRemovalRequested(widget);
+            return true;
+        }
     }
     return false;
 }

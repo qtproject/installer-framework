@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the FOO module of the Qt Toolkit.
@@ -49,9 +49,10 @@ addRegisterFileCheckBox = function()
 {
     // don't show when updating or uninstalling
     if (installer.isInstaller()) {
-        installer.addWizardPageItem(component, "RegisterFileCheckBoxForm", QInstaller.TargetDirectory);
-        component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text =
-            component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text + component.unusualFileType;
+        if (installer.addWizardPageItem(component, "RegisterFileCheckBoxForm", QInstaller.TargetDirectory)) {
+            component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text =
+                component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.text + component.unusualFileType;
+        }
     }
 }
 
@@ -61,7 +62,9 @@ Component.prototype.createOperations = function()
     // call default implementation to actually install the registeredfile
     component.createOperations();
 
-    var isRegisterFileChecked = component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.checked;
+    if (component.userInterface("RegisterFileCheckBoxForm")) {
+        var isRegisterFileChecked = component.userInterface("RegisterFileCheckBoxForm").RegisterFileCheckBox.checked;
+    }
     if (installer.value("os") === "win") {
         var iconId = 0;
         var notepadPath = installer.environmentVariable("SystemRoot") + "\\notepad.exe";
@@ -93,8 +96,9 @@ openRegisteredFileIfChecked = function()
 addOpenFileCheckBoxToFinishPage = function()
 {
     if (installer.isInstaller() && installer.status == QInstaller.Success) {
-        installer.addWizardPageItem(component, "OpenFileCheckBoxForm", QInstaller.InstallationFinished);
-        component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text =
-            component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text + component.unusualFileType;
+        if (installer.addWizardPageItem(component, "OpenFileCheckBoxForm", QInstaller.InstallationFinished)) {
+            component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text =
+                component.userInterface("OpenFileCheckBoxForm").OpenRegisteredFileCheckBox.text + component.unusualFileType;
+        }
     }
 }

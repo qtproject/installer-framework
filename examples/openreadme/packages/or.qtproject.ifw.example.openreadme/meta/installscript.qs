@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the FOO module of the Qt Toolkit.
@@ -52,8 +52,8 @@ Component.prototype.installationFinished = function()
 {
     try {
         if (installer.isInstaller() && installer.status == QInstaller.Success) {
-            var isReadMeCheckBoxChecked = component.userInterface( "ReadMeCheckBoxForm" ).readMeCheckBox.checked;
-            if (isReadMeCheckBoxChecked) {
+            var checkboxForm = component.userInterface( "ReadMeCheckBoxForm" );
+            if (checkboxForm && checkboxForm.readMeCheckBox.checked) {
                 QDesktopServices.openUrl("file:///" + installer.value("TargetDir") + "/README.txt");
             }
         }

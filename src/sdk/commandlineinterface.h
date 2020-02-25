@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,19 +26,31 @@
 **
 **************************************************************************/
 
-#ifndef UPDATECHECKER_H
-#define UPDATECHECKER_H
+#ifndef COMMANDLINEINTERFACE_H
+#define COMMANDLINEINTERFACE_H
 
 #include "sdkapp.h"
 
-class UpdateChecker : public SDKApp<QCoreApplication>
+class CommandLineInterface : public SDKApp<QCoreApplication>
 {
     Q_OBJECT
-    Q_DISABLE_COPY(UpdateChecker)
+    Q_DISABLE_COPY(CommandLineInterface)
 
 public:
-    UpdateChecker(int &argc, char *argv[]);
-    int check();
+    CommandLineInterface(int &argc, char *argv[]);
+    int checkUpdates();
+    int silentUpdate();
+    int listInstalledPackages();
+    int listAvailablePackages();
+    int updatePackages();
+    int install();
+    int installDefault();
+    int uninstallPackages();
+
+private:
+    bool initialize();
+    bool checkLicense();
+    bool setTargetDir();
 };
 
-#endif // UPDATECHECKER_H
+#endif // COMMANDLINEINTERFACE_H
