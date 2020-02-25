@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -184,6 +184,8 @@ void MetadataJob::startXMLTask(const QList<FileTaskItem> items)
 {
     DownloadFileTask *const xmlTask = new DownloadFileTask(items);
     xmlTask->setProxyFactory(m_core->proxyFactory());
+    connect(&m_xmlTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
+        &MetadataJob::progressChanged);
     m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
 }
 

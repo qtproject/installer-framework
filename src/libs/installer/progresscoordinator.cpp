@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -28,6 +28,8 @@
 
 #include "progresscoordinator.h"
 
+#include <iostream>
+
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDebug>
 
@@ -53,10 +55,13 @@ ProgressCoordinator::ProgressCoordinator(QObject *parent)
 {
     // it has to be in the main thread to be able refresh the ui with processEvents
     Q_ASSERT(thread() == qApp->thread());
+    m_progressSpinner = new ProgressSpinner();
 }
 
 ProgressCoordinator::~ProgressCoordinator()
 {
+    delete m_progressSpinner;
+    m_progressSpinner = nullptr;
 }
 
 ProgressCoordinator *ProgressCoordinator::instance()
@@ -197,6 +202,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
             m_senderPendingCalculatedPercentageHash.insert(sender(), pendingCalculatedPartPercentage);
         }
     } //if (m_undoMode)
+    printProgressPercentage(progressInPercentage());
 }
 
 
@@ -259,6 +265,11 @@ void ProgressCoordinator::setLabelText(const QString &text)
     if (m_installationLabelText == text)
         return;
     m_installationLabelText = text;
+
+    // Refresh both message & progress percentage on console
+    // when the label text is changed
+    printProgressMessage(text);
+    printProgressPercentage(progressInPercentage());
 }
 
 /*!
@@ -277,7 +288,7 @@ void ProgressCoordinator::emitDetailTextChanged(const QString &text)
 void ProgressCoordinator::emitLabelAndDetailTextChanged(const QString &text)
 {
     emit detailTextChanged(text);
-    m_installationLabelText = QString(text).remove(QLatin1String("\n"));
+    setLabelText(QString(text).remove(QLatin1String("\n")));
     qApp->processEvents(); //makes the result available in the ui
 }
 
@@ -296,4 +307,23 @@ double ProgressCoordinator::allPendingCalculatedPartPercentages(QObject *exclude
 void ProgressCoordinator::emitDownloadStatus(const QString &status)
 {
     emit downloadStatusChanged(status);
+}
+
+void ProgressCoordinator::printProgressPercentage(int progress)
+{
+    Q_ASSERT(m_progressSpinner->currentIndex < m_progressSpinner->spinnerChars.size());
+
+    QString formatted = QString::fromLatin1("[%1 %2%] ").arg(
+        m_progressSpinner->spinnerChars.at(m_progressSpinner->currentIndex), QString::number(progress));
+
+    std::cout << formatted.toStdString() << "\r" << std::flush;
+
+    m_progressSpinner->currentIndex == (m_progressSpinner->spinnerChars.size() - 1)
+        ? m_progressSpinner->currentIndex = 0
+        : m_progressSpinner->currentIndex++;
+}
+
+void ProgressCoordinator::printProgressMessage(const QString &message)
+{
+    qCDebug(QInstaller::lcInstallerInstallLog) << message;
 }

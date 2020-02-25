@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,6 +41,15 @@ class INSTALLER_EXPORT ProgressCoordinator : public QObject
 {
     Q_OBJECT
 
+    struct ProgressSpinner {
+        ProgressSpinner()
+            : spinnerChars(QLatin1String("/-\\|"))
+            , currentIndex(0) {}
+
+        const QString spinnerChars;
+        quint8 currentIndex;
+    };
+
 public:
     static ProgressCoordinator *instance();
     ~ProgressCoordinator();
@@ -64,6 +73,8 @@ public slots:
     void emitLabelAndDetailTextChanged(const QString &text);
 
     void emitDownloadStatus(const QString &status);
+    void printProgressPercentage(int progress);
+    void printProgressMessage(const QString &message);
 
 signals:
     void detailTextChanged(const QString &text);
@@ -80,6 +91,7 @@ private:
 private:
     QHash<QPointer<QObject>, double> m_senderPendingCalculatedPercentageHash;
     QHash<QPointer<QObject>, double> m_senderPartProgressSizeHash;
+    ProgressSpinner *m_progressSpinner;
     QString m_installationLabelText;
     double m_currentCompletePercentage;
     double m_currentBasePercentage;

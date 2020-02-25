@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1055,6 +1055,10 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     } else {
         qCDebug(QInstaller::lcGeneral) << "Operations sanity check succeeded.";
     }
+    connect(this, &PackageManagerCore::metaJobProgress,
+            ProgressCoordinator::instance(), &ProgressCoordinator::printProgressPercentage);
+    connect(this, &PackageManagerCore::metaJobInfoMessage,
+            ProgressCoordinator::instance(), &ProgressCoordinator::printProgressMessage);
 }
 
 class VerboseWriterAdminOutput : public VerboseWriterOutput
