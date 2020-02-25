@@ -216,6 +216,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(nullptr)
     , m_foundEssentialUpdate(false)
+    , m_checkAvailableSpace(true)
 {
 }
 
@@ -247,6 +248,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
     , m_foundEssentialUpdate(false)
+    , m_checkAvailableSpace(true)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()

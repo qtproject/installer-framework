@@ -184,6 +184,7 @@ public:
     bool m_needsHardRestart;
     bool m_testChecksum;
     bool m_launchedAsRoot;
+    bool m_checkAvailableSpace;
     bool m_completeUninstall;
     bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;

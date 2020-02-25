@@ -44,6 +44,7 @@ const char CheckUpdates[] = "checkupdates";
 const char Updater[] = "updater";
 const char ManagePackages[] = "manage-packages";
 const char NoForceInstallation[] = "no-force-installations";
+const char NoSizeChecking[] = "no-size-checking";
 const char ShowVirtualComponents[] = "show-virtual-components";
 const char LoggingRules[] = "logging-rules";
 const char CreateLocalRepository[] = "create-local-repository";

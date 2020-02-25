@@ -71,6 +71,9 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoForceInstallation),
         QLatin1String("Allow deselecting components that are marked as forced.")));
 
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoSizeChecking),
+        QLatin1String("Disable checking of free space for installation target.")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ShowVirtualComponents),
         QLatin1String("Show virtual components in installer and package manager.")));
 

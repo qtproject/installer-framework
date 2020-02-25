@@ -1943,6 +1943,109 @@ void PackageManagerCore::dropAdminRights()
 }
 
 /*!
+    Sets checkAvailableSpace based on value of \c check.
+*/
+void PackageManagerCore::setCheckAvailableSpace(bool check)
+{
+    d->m_checkAvailableSpace = check;
+}
+
+/*!
+    Checks available disk space if the feature is not explicitly disabled. Informative
+    text about space status can be retrieved by passing \c message parameter. Returns
+    \a true if there is sufficient free space on installation and temporary volumes.
+*/
+bool PackageManagerCore::checkAvailableSpace(QString &message) const
+{
+    const quint64 extraSpace = 256 * 1024 * 1024LL;
+    quint64 required(requiredDiskSpace());
+    quint64 tempRequired(requiredTemporaryDiskSpace());
+    if (required < extraSpace) {
+        required += 0.1 * required;
+        tempRequired += 0.1 * tempRequired;
+    } else {
+        required += extraSpace;
+        tempRequired += extraSpace;
+    }
+
+    quint64 repositorySize = 0;
+    const bool createLocalRepository = createLocalRepositoryFromBinary();
+    if (createLocalRepository && isInstaller()) {
+        repositorySize = QFile(QCoreApplication::applicationFilePath()).size();
+        // if we create a local repository, take that space into account as well
+        required += repositorySize;
+    }
+
+    qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space "
+        "required:" << humanReadableSize(tempRequired) << "Local repository size:"
+        << humanReadableSize(repositorySize);
+
+    if (d->m_checkAvailableSpace) {
+        const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
+        const VolumeInfo targetVolume = VolumeInfo::fromPath(value(scTargetDir));
+
+        const quint64 tempVolumeAvailableSize = tempVolume.availableSize();
+        const quint64 installVolumeAvailableSize = targetVolume.availableSize();
+
+        // at the moment there is no better way to check this
+        if (targetVolume.size() == 0 && installVolumeAvailableSize == 0) {
+            qDebug().nospace() << "Cannot determine available space on device. "
+                                  "Volume descriptor: " << targetVolume.volumeDescriptor()
+                               << ", Mount path: " << targetVolume.mountPath() << ". Continue silently.";
+            return true;
+        }
+
+        const bool tempOnSameVolume = (targetVolume == tempVolume);
+        if (tempOnSameVolume) {
+            qDebug() << "Tmp and install directories are on the same volume. Volume mount point:"
+                << targetVolume.mountPath() << "Free space available:"
+                << humanReadableSize(installVolumeAvailableSize);
+        } else {
+            qDebug() << "Tmp is on a different volume than the installation directory. Tmp volume mount point:"
+                << tempVolume.mountPath() << "Free space available:"
+                << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
+                << targetVolume.mountPath() << "Free space available:"
+                << humanReadableSize(installVolumeAvailableSize);
+        }
+
+        if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
+            message = tr("Not enough disk space to store temporary files and the "
+                "installation. %1 are available, while %2 are at least required.").arg(
+                humanReadableSize(installVolumeAvailableSize), humanReadableSize(required + tempRequired));
+            return false;
+        }
+
+        if (installVolumeAvailableSize < required) {
+            message = tr("Not enough disk space to store all selected components! %1 are "
+                "available while %2 are at least required.").arg(humanReadableSize(installVolumeAvailableSize),
+                humanReadableSize(required));
+            return false;
+        }
+
+        if (tempVolumeAvailableSize < tempRequired) {
+            message = tr("Not enough disk space to store temporary files! %1 are available "
+                "while %2 are at least required.").arg(humanReadableSize(tempVolumeAvailableSize),
+                humanReadableSize(tempRequired));
+            return false;
+        }
+
+        if (installVolumeAvailableSize - required < 0.01 * targetVolume.size()) {
+            // warn for less than 1% of the volume's space being free
+            message = tr("The volume you selected for installation seems to have sufficient space for "
+                "installation, but there will be less than 1% of the volume's space available afterwards.");
+        } else if (installVolumeAvailableSize - required < 100 * 1024 * 1024LL) {
+            // warn for less than 100MB being free
+            message = tr("The volume you selected for installation seems to have sufficient "
+                "space for installation, but there will be less than 100 MB available afterwards.");
+        }
+    }
+    message = QString::fromLatin1("%1 %2").arg(message, tr("Installation will use %1 of disk space.")
+        .arg(humanReadableSize(requiredDiskSpace()))).simplified();
+
+    return true;
+}
+
+/*!
     Returns \c true if a process with \a name is running. On Windows, the comparison
     is case-insensitive.
 
