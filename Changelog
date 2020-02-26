@@ -1,3 +1,10 @@
+3.2.2
+- Using Qt5.12.7 for binary builds (QTIFW-1632)
+- Add a command line argument to disable size check (QTIFW-1602)
+- Show information about updated components in repogen (QTIFW-1543)
+- Fix EnvironmentVariableOp undo behavior with non-persistent variables
+- Fix building against Qt 5.14 and newer (QTIFW-1526)
+
 3.2.1
 - Documentation fixes
 - Fix QWizardPage title color (QTIFW-1557)
