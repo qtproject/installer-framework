@@ -4,6 +4,7 @@
 :: Contact: http://www.qt.io/licensing/
 ::
 :: This file is part of the Qt Installer Framework.
+::
 :: $QT_BEGIN_LICENSE:GPL-EXCEPT$
 :: Commercial License Usage
 :: Licensees holding valid commercial Qt licenses may use this file in
