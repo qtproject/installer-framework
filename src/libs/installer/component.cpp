@@ -556,7 +556,7 @@ void Component::loadComponentScript(const QString &fileName)
         }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable(Component::Component::ScriptLoadingFailed, error.message());
+            setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
             qWarning() << error.message();
         } else {
             throw error;
