@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1034,15 +1034,15 @@
             \li --verbose
             \li Display additional information.
         \row
-            \li --update <file>
+            \li update <binary> <installerbase>
             \li Update an existing installer or maintenance tool with a new
                 installer base.
         \row
-            \li --dump <folder>
+            \li dump <binary> <folder>
             \li Dump the binary content that belongs to an installer or
                 maintenance tool into the target.
         \row
-            \li --operation <mode,name,args,...>
+            \li operation <mode,name,args,...>
             \li Execute an operation with a list of arguments.
 
                 \c mode can be \c DO or \c UNDO, depending on whether the step
