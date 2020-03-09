@@ -34,6 +34,7 @@
 #include <QtCore/QDebug>
 
 #include "globals.h"
+#include "utils.h"
 
 using namespace QInstaller;
 
@@ -311,6 +312,9 @@ void ProgressCoordinator::emitDownloadStatus(const QString &status)
 
 void ProgressCoordinator::printProgressPercentage(int progress)
 {
+    if (!isVerbose())
+        return;
+
     Q_ASSERT(m_progressSpinner->currentIndex < m_progressSpinner->spinnerChars.size());
 
     QString formatted = QString::fromLatin1("[%1 %2%] ").arg(
