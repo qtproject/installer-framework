@@ -1,0 +1,27 @@
+type: Group
+instructions:
+  - type: InstallSourceArchive
+    maxTimeInSeconds: 600
+    maxTimeBetweenOutput: 600
+    project: qt/qtqa
+    ref: master
+    directory: qt/qtqa
+    userMessageOnFailure: "Could not install qt/qtqa source archive. Please investigate why."
+  - type: InstallSourceArchive
+    maxTimeInSeconds: 600
+    maxTimeBetweenOutput: 600
+    project: qt/qtbase
+    ref: dev
+    directory: qt/qtbase
+    userMessageOnFailure: "Could not install qt/base source archive. Please investigate why."
+  - type: ChangeDirectory
+    directory: "{{.AgentWorkingDir}}"
+  - type: ExecuteCommand
+    command: ["perl", "{{.AgentWorkingDir}}/qt/qtqa/tests/prebuild/license/tst_licenses.pl"]
+    maxTimeInSeconds: 7200
+    maxTimeBetweenOutput: 120
+    userMessageOnFailure: "Running license check failed."
+enable_if:
+  condition: property
+  property: features
+  contains_value: LicenseCheck

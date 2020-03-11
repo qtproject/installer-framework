@@ -1,0 +1,40 @@
+type: Group
+enable_if:
+  condition: and
+  conditions:
+    - condition: property
+      property: host.os
+      equals_value: Linux
+    - condition: property
+      property: target.os
+      equals_property: host.os
+    - condition: property
+      property: configureArgs
+      not_contains_value: "-no-widgets"
+instructions:
+  - type: InstallSourceArchive
+    maxTimeInSeconds: 600
+    maxTimeBetweenOutput: 600
+    project: qt/qtqa
+    ref: master
+    directory: qt/qtqa
+    userMessageOnFailure: "Could not install qt/qtqa source archive. Please investigate why."
+  - type: EnvironmentVariable
+    variableName: QT_MODULE_TO_TEST
+    variableValue: "{{.SourceDir}}"
+  - type: ChangeDirectory
+    directory: "{{.AgentWorkingDir}}/qt/qtqa/tests/postbuild/bic"
+  - type: ExecuteCommand
+    command: ['{{.InstallDir}}/bin/qmake']
+    maxTimeInSeconds: 1800
+    maxTimeBetweenOutput: 1800
+    userMessageOnFailure: "Failed to run qmake, check logs."
+  - type: SetExecutionPhaseName
+    executionPhaseName: "testing {{.AgentWorkingDir}}/qt/qtqa/tests/postbuild/bic"
+  - type: RunQtUnitTest
+    directory: "{{.AgentWorkingDir}}/qt/qtqa/tests/postbuild/bic"
+    runTestCommand: ['make', 'check', '-j1']
+    maxTimeInSeconds: 1800
+    maxTimeBetweenOutput: 600
+    testRepetitionAllowance: 1
+    userMessageOnFailure: "Failed to execute bic tests."

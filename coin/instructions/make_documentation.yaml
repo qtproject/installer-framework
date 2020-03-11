@@ -1,0 +1,18 @@
+type: Group
+enable_if:
+  condition: property
+  property: features
+  contains_value: Documentation
+instructions:
+  - type: ChangeDirectory
+    directory: "{{.BuildDir}}"
+  - type: ExecuteCommand
+    command: ['make', 'docs']
+    userMessageOnFailure: 'Could not build documentation.'
+    maxTimeInSeconds: 1200
+    maxTimeBetweenOutput: 1200
+  - type: UploadArtifact
+    archiveDirectory: '{{.BuildDir}}/doc'
+    transferType: UploadModuleDocumentation
+    maxTimeInSeconds: 1800
+    maxTimeBetweenOutput: 1800

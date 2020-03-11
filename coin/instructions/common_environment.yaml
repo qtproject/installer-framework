@@ -1,0 +1,64 @@
+type: Group
+instructions:
+  - type: Group
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [MSVC2015, MSVC2017, MSVC2019]
+    instructions:
+      - type: EnvironmentVariable
+        variableName: MAKEFLAGS
+        variableValue: ""
+
+  - type: PrependToEnvironmentVariable
+    variableName: PATH
+    variableValue: "{{.InstallDir}}\\bin;"
+    enable_if:
+      condition: property
+      property: target.os
+      equals_value: Windows
+
+  - type: PrependToEnvironmentVariable
+    variableName: PATH
+    variableValue: "C:\\Utils\\gnuwin32\\bin;"
+    enable_if:
+      condition: property
+      property: target.os
+      equals_value: Windows
+
+  - type: PrependToEnvironmentVariable
+    variableName: PATH
+    variableValue: "{{.Env.MINGW730}}\\bin;"
+    enable_if:
+      condition: property
+      property: target.compiler
+      equals_value: Mingw73
+
+  - type: PrependToEnvironmentVariable
+    variableName: PATH
+    variableValue: "{{.Env.MINGW530}}\\bin;"
+    enable_if:
+      condition: property
+      property: target.compiler
+      equals_value: Mingw53
+
+  - type: EnvironmentVariable
+    variableName: LANG
+    variableValue: en_US.UTF-8
+    enable_if:
+      condition: property
+      property: host.os
+      in_values: [MacOS, Linux]
+
+  - type: Group
+    instructions:
+      - type: PrependToEnvironmentVariable
+        variableName: PATH
+        variableValue: "{{.InstallDir}}/bin:"
+      - type: EnvironmentVariable
+        variableName: DISPLAY
+        variableValue: ":0"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: Linux
