@@ -26,31 +26,8 @@
 **
 **************************************************************************/
 
-#ifndef COMMANDLINEINTERFACE_H
-#define COMMANDLINEINTERFACE_H
+#include "commandlineparser_p.h"
 
-#include "sdkapp.h"
-
-class CommandLineInterface : public SDKApp<QCoreApplication>
+CommandLineParserPrivate::CommandLineParserPrivate()
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(CommandLineInterface)
-
-public:
-    CommandLineInterface(int &argc, char *argv[]);
-    int checkUpdates();
-    int listInstalledPackages();
-    int searchAvailablePackages();
-    int updatePackages();
-    int installPackages();
-    int uninstallPackages();
-
-private:
-    bool initialize();
-    bool checkLicense();
-    bool setTargetDir();
-
-    QStringList m_positionalArguments;
-};
-
-#endif // COMMANDLINEINTERFACE_H
+}

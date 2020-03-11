@@ -134,7 +134,7 @@ public:
         QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
         bool isCliInterface = false;
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
-           if (m_parser.isSet(option)) {
+           if (m_parser.positionalArguments().contains(option)) {
                isCliInterface = true;
                break;
            }
@@ -184,14 +184,12 @@ public:
           BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
         }
 
-        // From Qt5.8 onwards a separate command line option --proxy is not needed as system
-        // proxy is used by default. If Qt is built with QT_USE_SYSTEM_PROXIES false
-        // then system proxies are not used by default.
+        // From Qt5.8 onwards system proxy is used by default. If Qt is built with
+        // QT_USE_SYSTEM_PROXIES false then system proxies are not used by default.
         if (m_parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
             m_core->settings().setProxyType(QInstaller::Settings::NoProxy);
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
-        } else if ((m_parser.isSet(QLatin1String(CommandLineOptions::Proxy))
-                || QNetworkProxyFactory::usesSystemConfiguration())) {
+        } else if (QNetworkProxyFactory::usesSystemConfiguration()) {
             m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         }
@@ -199,7 +197,7 @@ public:
         if (m_parser.isSet(QLatin1String(CommandLineOptions::ShowVirtualComponents)))
             QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::Updater))) {
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartUpdater))) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as updater.");
                 return false;
@@ -207,7 +205,7 @@ public:
             m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUpdaterMarker);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::ManagePackages))) {
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartPackageManager))) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as package manager.");
                 return false;
@@ -215,7 +213,7 @@ public:
             m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicPackageManagerMarker);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::Uninstaller))) {
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartUninstaller))) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as uninstaller.");
                 return false;

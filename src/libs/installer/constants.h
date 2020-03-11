@@ -99,49 +99,61 @@ const char scRelocatable[] = "@RELOCATABLE_PATH@";
 
 namespace CommandLineOptions {
 
+// Help & version information
 const char HelpShort[] = "h";
 const char HelpLong[] = "help";
 const char Version[] = "version";
-const char FrameworkVersion[] = "framework-version";
+
+// Output related options
 const char VerboseShort[] = "v";
 const char VerboseLong[] = "verbose";
-const char Proxy[] = "proxy";
+const char LoggingRules[] = "logging-rules";
+
+// Consumer commands
+const char Install[] = "install";
+const char CheckUpdates[] = "check-updates";
+const char Update[] = "update";
+const char Remove[] = "remove";
+const char List[] = "list";
+const char Search[] = "search";
+
+// Repository management options
+const char AddRepository[] = "add-repository";
+const char AddTmpRepository[] = "add-temp-repository";
+const char SetTmpRepository[] = "set-temp-repository";
+
+// Proxy options
+const char SystemProxy[] = "system-proxy";
 const char NoProxy[] = "no-proxy";
-const char Script[] = "script";
-const char CheckUpdates[] = "checkupdates";
-const char Updater[] = "updater";
-const char ManagePackages[] = "manage-packages";
-const char Uninstaller[] = "uninstaller";
+
+// Starting mode options
+const char StartUpdater[] = "start-updater";
+const char StartPackageManager[] = "start-package-manager";
+const char StartUninstaller[] = "start-uninstaller";
+
+// Misc installation options
+const char Root[] = "root";
+const char Platform[] = "platform";
 const char NoForceInstallation[] = "no-force-installations";
 const char NoSizeChecking[] = "no-size-checking";
 const char ShowVirtualComponents[] = "show-virtual-components";
-const char LoggingRules[] = "logging-rules";
+const char InstallCompressedRepository[] = "install-compressed-repository";
 const char CreateLocalRepository[] = "create-local-repository";
-const char AddRepository[] = "addRepository";
-const char AddTmpRepository[] = "addTempRepository";
-const char SetTmpRepository[] = "setTempRepository";
-const char StartServer[] = "startserver";
-const char StartClient[] = "startclient";
-const char InstallCompressedRepository[] = "installCompressedRepository";
-const char SilentUpdate[] = "silentUpdate";
-const char UpdatePackages[] = "updatePackages";
-const char ListInstalledPackages[] = "listInstalledPackages";
-const char ListPackages[] = "listPackages";
-const char InstallPackages[] = "installPackages";
-const char InstallDefault[] = "installDefault";
-const char TargetDir[] = "targetDir";
-const char UninstallSelectedPackages[] = "uninstallPackages";
-const char Platform[] = "platform";
+
+// Developer options
+const char Script[] = "script";
+const char StartServer[] = "start-server";
+const char StartClient[] = "start-client";
 const char SquishPort[] = "squish-port";
 
+// Options supposed to be used without graphical interface
 static const QStringList scCommandLineInterfaceOptions = {
-    QLatin1String(ListInstalledPackages),
-    QLatin1String(ListPackages),
-    QLatin1String(UpdatePackages),
-    QLatin1String(InstallPackages),
-    QLatin1String(InstallDefault),
-    QLatin1String(UninstallSelectedPackages),
-    QLatin1String(CheckUpdates)
+    QLatin1String(Install),
+    QLatin1String(CheckUpdates),
+    QLatin1String(Update),
+    QLatin1String(Remove),
+    QLatin1String(List),
+    QLatin1String(Search)
 };
 
 } // namespace CommandLineOptions

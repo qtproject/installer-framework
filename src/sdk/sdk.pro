@@ -101,8 +101,7 @@ HEADERS += \
            console.h \
            sdkapp.h \
            commandlineinterface.h \
-           installerbase.h \
-           commandlineparser.h
+           installerbase.h
 
 SOURCES = \
           main.cpp \
@@ -110,8 +109,7 @@ SOURCES = \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp \
-          commandlineinterface.cpp \
-          commandlineparser.cpp
+          commandlineinterface.cpp
 
 win32 {
     # Use our own manifest file

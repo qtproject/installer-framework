@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2017 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,31 +26,29 @@
 **
 **************************************************************************/
 
-#ifndef COMMANDLINEINTERFACE_H
-#define COMMANDLINEINTERFACE_H
+#ifndef COMMANDLINEPARSER_H
+#define COMMANDLINEPARSER_H
 
-#include "sdkapp.h"
+#include "commandlineparser_p.h"
 
-class CommandLineInterface : public SDKApp<QCoreApplication>
+#include <QCommandLineParser>
+
+class CommandLineParser
 {
-    Q_OBJECT
-    Q_DISABLE_COPY(CommandLineInterface)
-
 public:
-    CommandLineInterface(int &argc, char *argv[]);
-    int checkUpdates();
-    int listInstalledPackages();
-    int searchAvailablePackages();
-    int updatePackages();
-    int installPackages();
-    int uninstallPackages();
+    CommandLineParser();
+    ~CommandLineParser();
+
+    QString helpText() const { return m_parser.helpText(); }
+    bool isSet(const QString &option) { return m_parser.isSet(option); }
+    QStringList unknownOptionNames() const { return m_parser.unknownOptionNames(); }
+    QStringList positionalArguments() const { return m_parser.positionalArguments(); }
+    bool parse(const QStringList &argumens) { return m_parser.parse(argumens); }
+    QString value(const QString &option) const { return m_parser.value(option); }
 
 private:
-    bool initialize();
-    bool checkLicense();
-    bool setTargetDir();
-
-    QStringList m_positionalArguments;
+    QCommandLineParser m_parser;
+    class CommandLineParserPrivate *const d;
 };
 
-#endif // COMMANDLINEINTERFACE_H
+#endif // COMMANDLINEPARSER_H

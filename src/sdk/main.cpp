@@ -82,22 +82,37 @@ int main(int argc, char *argv[])
     CommandLineParser parser;
     parser.parse(QInstaller::parseCommandLineArgs(argc, argv));
 
-    QStringList mutually;
-    if (parser.isSet(QLatin1String(CommandLineOptions::CheckUpdates)))
-        mutually << QLatin1String(CommandLineOptions::CheckUpdates);
-    if (parser.isSet(QLatin1String(CommandLineOptions::Updater)))
-        mutually << QLatin1String(CommandLineOptions::Updater);
-    if (parser.isSet(QLatin1String(CommandLineOptions::ManagePackages)))
-        mutually << QLatin1String(CommandLineOptions::ManagePackages);
-    if (parser.isSet(QLatin1String(CommandLineOptions::Uninstaller)))
-        mutually << QLatin1String(CommandLineOptions::Uninstaller);
+    bool sanityCheck = true;
+    QString sanityMessage;
 
+    QStringList mutually;
+    if (parser.isSet(QLatin1String(CommandLineOptions::StartUpdater)))
+        mutually << QLatin1String(CommandLineOptions::StartUpdater);
+    if (parser.isSet(QLatin1String(CommandLineOptions::StartPackageManager)))
+        mutually << QLatin1String(CommandLineOptions::StartPackageManager);
+    if (parser.isSet(QLatin1String(CommandLineOptions::StartUninstaller)))
+        mutually << QLatin1String(CommandLineOptions::StartUninstaller);
+
+    if (mutually.count() > 1) {
+        sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
+            .arg(mutually.join(QLatin1String(", ")));
+        sanityCheck = false;
+    }
+    const QSet<QString> commands = parser.positionalArguments().toSet()
+        .intersect(CommandLineOptions::scCommandLineInterfaceOptions.toSet());
+    // Check sanity of the given argument sequence.
+    if (commands.size() > 1) {
+        sanityMessage = QString::fromLatin1("%1 commands provided, only one can be used at a time.")
+            .arg(commands.size());
+        sanityCheck = false;
+    } else if (!commands.isEmpty() && parser.positionalArguments().indexOf(commands.values().first()) != 0) {
+        sanityMessage = QString::fromLatin1("Found command but it is not given as the first positional "
+            "argument. \"%1\" given.").arg(parser.positionalArguments().first());
+        sanityCheck = false;
+    }
     const bool help = parser.isSet(QLatin1String(CommandLineOptions::HelpShort))
         || parser.isSet(QLatin1String(CommandLineOptions::HelpLong));
-    if (help
-            || parser.isSet(QLatin1String(CommandLineOptions::Version))
-            || parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))
-            || mutually.count() > 1) {
+    if (help || parser.isSet(QLatin1String(CommandLineOptions::Version)) || !sanityCheck) {
         Console c;
         QCoreApplication app(argc, argv);
 
@@ -110,15 +125,9 @@ int main(int argc, char *argv[])
             return EXIT_SUCCESS;
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::FrameworkVersion))) {
-            std::cout << QUOTE(IFW_VERSION_STR) << std::endl;
-            return EXIT_SUCCESS;
-        }
-
         std::cout << qPrintable(parser.helpText()) << std::endl;
-        if (mutually.count() > 1) {
-            std::cerr << qPrintable(QString::fromLatin1("The following options are mutually "
-                "exclusive: %1.").arg(mutually.join(QLatin1String(", ")))) << std::endl;
+        if (!sanityCheck) {
+            std::cerr << qPrintable(sanityMessage) << std::endl;
         }
         return help ? EXIT_SUCCESS : EXIT_FAILURE;
     }
@@ -194,7 +203,7 @@ int main(int argc, char *argv[])
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
             if (setVerbose) break;
-            setVerbose = parser.isSet(option);
+            setVerbose = parser.positionalArguments().contains(option);
         }
         if (setVerbose) {
             console.reset(new Console);
@@ -208,7 +217,7 @@ int main(int argc, char *argv[])
             std::cerr << "Unknown option: " << qPrintable(options) << std::endl;
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::Proxy))) {
+        if (parser.isSet(QLatin1String(CommandLineOptions::SystemProxy))) {
             // Make sure we honor the system's proxy settings
             QNetworkProxyFactory::setUseSystemConfiguration(true);
         }
@@ -218,21 +227,17 @@ int main(int argc, char *argv[])
 
         const SelfRestarter restarter(argc, argv);
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::CheckUpdates)))
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::CheckUpdates)))
             return CommandLineInterface(argc, argv).checkUpdates();
-        if (parser.isSet(QLatin1String(CommandLineOptions::SilentUpdate)))
-            return CommandLineInterface(argc, argv).silentUpdate();
-        if (parser.isSet(QLatin1String(CommandLineOptions::ListInstalledPackages)))
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::List)))
             return CommandLineInterface(argc, argv).listInstalledPackages();
-        if (parser.isSet(QLatin1String(CommandLineOptions::ListPackages)))
-            return CommandLineInterface(argc, argv).listAvailablePackages();
-        if (parser.isSet(QLatin1String(CommandLineOptions::UpdatePackages)))
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Search)))
+            return CommandLineInterface(argc, argv).searchAvailablePackages();
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Update)))
             return CommandLineInterface(argc, argv).updatePackages();
-        if (parser.isSet(QLatin1String(CommandLineOptions::InstallPackages)))
-            return CommandLineInterface(argc, argv).install();
-        if (parser.isSet(QLatin1String(CommandLineOptions::InstallDefault)))
-            return CommandLineInterface(argc, argv).installDefault();
-        if (parser.isSet(QLatin1String(CommandLineOptions::UninstallSelectedPackages)))
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Install)))
+            return CommandLineInterface(argc, argv).installPackages();
+        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Remove)))
             return CommandLineInterface(argc, argv).uninstallPackages();
 
         if (QInstaller::isVerbose())

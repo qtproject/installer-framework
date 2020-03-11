@@ -53,6 +53,14 @@ bool CommandLineInterface::initialize()
         qCWarning(QInstaller::lcInstallerInstallLog) << errorMessage;
         return false;
     }
+    // Filter the arguments list by removing the command itself
+    // and any key=value pair occurrences.
+    m_positionalArguments = m_parser.positionalArguments();
+    m_positionalArguments.removeFirst();
+    foreach (const QString &argument, m_positionalArguments) {
+        if (argument.contains(QLatin1Char('=')))
+            m_positionalArguments.removeOne(argument);
+    }
     return true;
 }
 
@@ -93,20 +101,6 @@ int CommandLineInterface::checkUpdates()
     return EXIT_SUCCESS;
 }
 
-int CommandLineInterface::silentUpdate()
-{
-    if (!initialize())
-        return EXIT_FAILURE;
-    if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot perform update with installer.";
-        return EXIT_FAILURE;
-    }
-    if (!checkLicense())
-        return EXIT_FAILURE;
-    m_core->updateComponentsSilently(QStringList());
-    return EXIT_SUCCESS;
-}
-
 int CommandLineInterface::listInstalledPackages()
 {
     if (!initialize())
@@ -120,7 +114,7 @@ int CommandLineInterface::listInstalledPackages()
     return EXIT_SUCCESS;
 }
 
-int CommandLineInterface::listAvailablePackages()
+int CommandLineInterface::searchAvailablePackages()
 {
     if (!initialize())
         return EXIT_FAILURE;
@@ -128,7 +122,9 @@ int CommandLineInterface::listAvailablePackages()
         m_core->setPackageManager();
     if (!checkLicense())
         return EXIT_FAILURE;
-    QString regexp = m_parser.value(QLatin1String(CommandLineOptions::ListPackages));
+    QString regexp;
+    if (!m_positionalArguments.isEmpty())
+        regexp = m_positionalArguments.first();
     m_core->listAvailablePackages(regexp);
     return EXIT_SUCCESS;
 }
@@ -143,37 +139,25 @@ int CommandLineInterface::updatePackages()
     }
     if (!checkLicense())
         return EXIT_FAILURE;
-    QStringList packages;
-    const QString &value = m_parser.value(QLatin1String(CommandLineOptions::UpdatePackages));
-    if (!value.isEmpty())
-        packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
-    m_core->updateComponentsSilently(packages);
+    m_core->updateComponentsSilently(m_positionalArguments);
     return EXIT_SUCCESS;
 }
 
-int CommandLineInterface::install()
+int CommandLineInterface::installPackages()
 {
     if (!initialize() || (m_core->isInstaller() && !setTargetDir()) || !checkLicense())
         return EXIT_FAILURE;
-    QStringList packages;
-    const QString &value = m_parser.value(QLatin1String(CommandLineOptions::InstallPackages));
-    if (!value.isEmpty())
-        packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
-    m_core->installSelectedComponentsSilently(packages);
-    return EXIT_SUCCESS;
-}
-
-int CommandLineInterface::installDefault()
-{
-    if (!initialize())
-        return EXIT_FAILURE;
-    if (!m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot perform default installation with maintenance tool.";
-        return EXIT_FAILURE;
+    if (m_positionalArguments.isEmpty()) {
+        if (!m_core->isInstaller()) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "Cannot perform default installation with maintenance tool.";
+            return EXIT_FAILURE;
+        }
+        // No packages provided, install default components
+        m_core->installDefaultComponentsSilently();
+        return EXIT_SUCCESS;
     }
-    if (!setTargetDir() || !checkLicense())
-        return EXIT_FAILURE;
-    m_core->installDefaultComponentsSilently();
+    m_core->installSelectedComponentsSilently(m_positionalArguments);
     return EXIT_SUCCESS;
 }
 
@@ -186,11 +170,7 @@ int CommandLineInterface::uninstallPackages()
         return EXIT_FAILURE;
     }
     m_core->setPackageManager();
-    QStringList packages;
-    const QString &value = m_parser.value(QLatin1String(CommandLineOptions::UninstallSelectedPackages));
-    if (!value.isEmpty())
-        packages = value.split(QLatin1Char(','), QString::SkipEmptyParts);
-    m_core->uninstallComponentsSilently(packages);
+    m_core->uninstallComponentsSilently(m_positionalArguments);
     return EXIT_SUCCESS;
 }
 
@@ -207,8 +187,8 @@ bool CommandLineInterface::checkLicense()
 bool CommandLineInterface::setTargetDir()
 {
     QString targetDir;
-    if (m_parser.isSet(QLatin1String(CommandLineOptions::TargetDir))) {
-        targetDir = m_parser.value(QLatin1String(CommandLineOptions::TargetDir));
+    if (m_parser.isSet(QLatin1String(CommandLineOptions::Root))) {
+        targetDir = m_parser.value(QLatin1String(CommandLineOptions::Root));
     } else {
         targetDir = m_core->value(QLatin1String("TargetDir"));
         qCDebug(QInstaller::lcInstallerInstallLog) << "No target directory specified, using default value:" << targetDir;

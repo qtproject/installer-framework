@@ -2008,6 +2008,8 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 
 void PackageManagerCore::listAvailablePackages(const QString &regexp)
 {
+    qCDebug(QInstaller::lcInstallerInstallLog)
+        << "Searching packages with regular expression:" << regexp;
     d->fetchMetaInformationFromRepositories(DownloadType::UpdatesXML);
 
     d->addUpdateResourcesFromRepositories(true);
