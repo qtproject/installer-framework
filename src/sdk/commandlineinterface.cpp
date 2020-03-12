@@ -61,7 +61,7 @@ int CommandLineInterface::checkUpdates()
     if (!initialize())
         return EXIT_FAILURE;
     if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as updater.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot check updates with installer.";
         return EXIT_FAILURE;
     }
     m_core->setUpdater();
@@ -98,7 +98,7 @@ int CommandLineInterface::silentUpdate()
     if (!initialize())
         return EXIT_FAILURE;
     if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as updater.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot perform update with installer.";
         return EXIT_FAILURE;
     }
     if (!checkLicense())
@@ -112,7 +112,7 @@ int CommandLineInterface::listInstalledPackages()
     if (!initialize())
         return EXIT_FAILURE;
     if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as package manager.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot list installed packages with installer.";
         return EXIT_FAILURE;
     }
     m_core->setPackageManager();
@@ -138,7 +138,7 @@ int CommandLineInterface::updatePackages()
     if (!initialize())
         return EXIT_FAILURE;
     if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as updater.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot update packages with installer.";
         return EXIT_FAILURE;
     }
     if (!checkLicense())
@@ -168,7 +168,7 @@ int CommandLineInterface::installDefault()
     if (!initialize())
         return EXIT_FAILURE;
     if (!m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as updater.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot perform default installation with maintenance tool.";
         return EXIT_FAILURE;
     }
     if (!setTargetDir() || !checkLicense())
@@ -182,7 +182,7 @@ int CommandLineInterface::uninstallPackages()
     if (!initialize())
         return EXIT_FAILURE;
     if (m_core->isInstaller()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot start installer binary as package manager.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot uninstall packages with installer.";
         return EXIT_FAILURE;
     }
     m_core->setPackageManager();
