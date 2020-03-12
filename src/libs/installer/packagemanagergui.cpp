@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -2519,6 +2519,12 @@ void PerformInstallationPage::entering()
 {
     setComplete(false);
 
+    m_performInstallationForm->enableDetails();
+    emit setAutomatedPageSwitchEnabled(true);
+
+    if (isVerbose()) {
+        m_performInstallationForm->toggleDetails();
+    }
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Uninstalling %1").arg(productName()));
@@ -2533,14 +2539,11 @@ void PerformInstallationPage::entering()
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Installing %1").arg(productName()));
 
-        QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
+        if (packageManagerCore()->runInstaller()) {
+            packageManagerCore()->writeMaintenanceTool();
+            emit packageManagerCore()->installationFinished();
+        }
     }
-
-    m_performInstallationForm->enableDetails();
-    emit setAutomatedPageSwitchEnabled(true);
-
-    if (isVerbose())
-        m_performInstallationForm->toggleDetails();
 }
 
 /*!

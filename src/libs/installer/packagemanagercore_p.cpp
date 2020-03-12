@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1596,22 +1596,7 @@ bool PackageManagerCorePrivate::runInstaller()
                 }
             }
         }
-
-        emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
-
-        writeMaintenanceTool(m_performedOperationsOld + m_performedOperationsCurrentSession);
-
-        // fake a possible wrong value to show a full progress bar
-        const int progress = ProgressCoordinator::instance()->progressInPercentage();
-        // usually this should be only the reserved one from the beginning
-        if (progress < 100)
-            ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
-
-        if (adminRightsGained)
-            m_core->dropAdminRights();
-        setStatus(PackageManagerCore::Success);
-        emit installationFinished();
+        m_needToWriteMaintenanceTool = true;
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
@@ -2518,10 +2503,7 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
     bool componentsOk = m_core->calculateComponents(&htmlOutput);
     qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
     if (componentsOk) {
-        if (m_core->run()) {
-            m_core->writeMaintenanceTool();
-            return true;
-        }
+        return m_core->run();
     }
     return false;
 }

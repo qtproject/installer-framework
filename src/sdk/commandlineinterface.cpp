@@ -33,6 +33,7 @@
 #include <packagemanagercore.h>
 #include <globals.h>
 #include <productkeycheck.h>
+#include <errors.h>
 
 #include <QDir>
 #include <QDomDocument>
@@ -139,26 +140,38 @@ int CommandLineInterface::updatePackages()
     }
     if (!checkLicense())
         return EXIT_FAILURE;
-    m_core->updateComponentsSilently(m_positionalArguments);
-    return EXIT_SUCCESS;
+    try {
+        if (m_core->updateComponentsSilently(m_positionalArguments))
+            m_core->writeMaintenanceTool();
+        return EXIT_SUCCESS;
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
+        return EXIT_FAILURE;
+    }
 }
 
 int CommandLineInterface::installPackages()
 {
     if (!initialize() || (m_core->isInstaller() && !setTargetDir()) || !checkLicense())
         return EXIT_FAILURE;
-    if (m_positionalArguments.isEmpty()) {
-        if (!m_core->isInstaller()) {
-            qCWarning(QInstaller::lcInstallerInstallLog)
-                << "Cannot perform default installation with maintenance tool.";
-            return EXIT_FAILURE;
+    try {
+        if (m_positionalArguments.isEmpty()) {
+            if (!m_core->isInstaller()) {
+                qCWarning(QInstaller::lcInstallerInstallLog)
+                    << "Cannot perform default installation with maintenance tool.";
+                return EXIT_FAILURE;
+            }
+            // No packages provided, install default components
+            if (m_core->installDefaultComponentsSilently())
+                m_core->writeMaintenanceTool();
+        } else if (m_core->installSelectedComponentsSilently(m_positionalArguments)) {
+            m_core->writeMaintenanceTool();
         }
-        // No packages provided, install default components
-        m_core->installDefaultComponentsSilently();
         return EXIT_SUCCESS;
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
+        return EXIT_FAILURE;
     }
-    m_core->installSelectedComponentsSilently(m_positionalArguments);
-    return EXIT_SUCCESS;
 }
 
 int CommandLineInterface::uninstallPackages()
@@ -170,8 +183,14 @@ int CommandLineInterface::uninstallPackages()
         return EXIT_FAILURE;
     }
     m_core->setPackageManager();
-    m_core->uninstallComponentsSilently(m_positionalArguments);
-    return EXIT_SUCCESS;
+    try {
+        if (m_core->uninstallComponentsSilently(m_positionalArguments))
+            m_core->writeMaintenanceTool();
+        return EXIT_SUCCESS;
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
+        return EXIT_FAILURE;
+    }
 }
 
 bool CommandLineInterface::checkLicense()

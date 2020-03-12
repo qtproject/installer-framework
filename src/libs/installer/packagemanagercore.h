@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -217,10 +217,10 @@ public:
     ComponentModel *updaterComponentModel() const;
     void listInstalledPackages();
     void listAvailablePackages(const QString &regexp);
-    void updateComponentsSilently(const QStringList &componentsToUpdate);
-    void installSelectedComponentsSilently(const QStringList& components);
-    void installDefaultComponentsSilently();
-    void uninstallComponentsSilently(const QStringList& components);
+    bool updateComponentsSilently(const QStringList &componentsToUpdate);
+    bool installSelectedComponentsSilently(const QStringList& components);
+    bool installDefaultComponentsSilently();
+    bool uninstallComponentsSilently(const QStringList& components);
 
     // convenience
     Q_INVOKABLE bool isInstaller() const;
