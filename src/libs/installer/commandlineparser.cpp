@@ -33,9 +33,9 @@
 
 namespace CommandLineOptions {
 
-const char Command[] = "Command";
-const char Arguments[] = "Args";
-const char InstallerValue[] = "InstallerValue";
+static const QLatin1String scCommand("Command");
+static const QLatin1String scArguments("Args");
+static const QLatin1String scInstallerValue("InstallerValue");
 
 } // namespace CommandLineOptions
 
@@ -43,32 +43,33 @@ CommandLineParser::CommandLineParser()
     : d(new CommandLineParserPrivate())
 {
     static const QString preformatted = QLatin1String("\nCommands:\n")
-        + QString::fromLatin1("\t%1 - install default or selected packages - <pkg1 pkg2 pkg3...>\n")
-            .arg(QLatin1String(CommandLineOptions::Install))
-        + QString::fromLatin1("\t%1 - show available updates information on maintenance tool\n")
-            .arg(QLatin1String(CommandLineOptions::CheckUpdates))
-        + QString::fromLatin1("\t%1 - update all or selected packages - <pkg1 pkg2 pkg3...>\n")
-            .arg(QLatin1String(CommandLineOptions::Update))
-        + QString::fromLatin1("\t%1 - uninstall packages and their child components - <pkg1 pkg2 pkg3...>\n")
-            .arg(QLatin1String(CommandLineOptions::Remove))
-        + QString::fromLatin1("\t%1 - list currently installed packages\n")
-            .arg(QLatin1String(CommandLineOptions::List))
-        + QString::fromLatin1("\t%1 - search available packages - <regexp>")
-            .arg(QLatin1String(CommandLineOptions::Search));
+        + QString::fromLatin1("\t%1, %2 - install default or selected packages - <pkg1 pkg2 pkg3...>\n")
+            .arg(CommandLineOptions::scInstallShort, CommandLineOptions::scInstallLong)
+        + QString::fromLatin1("\t%1, %2 - show available updates information on maintenance tool\n")
+            .arg(CommandLineOptions::scCheckUpdatesShort, CommandLineOptions::scCheckUpdatesLong)
+        + QString::fromLatin1("\t%1, %2 - update all or selected packages - <pkg1 pkg2 pkg3...>\n")
+            .arg(CommandLineOptions::scUpdateShort, CommandLineOptions::scUpdateLong)
+        + QString::fromLatin1("\t%1, %2 - uninstall packages and their child components - <pkg1 pkg2 pkg3...>\n")
+            .arg(CommandLineOptions::scRemoveShort, CommandLineOptions::scRemoveLong)
+        + QString::fromLatin1("\t%1, %2 - list currently installed packages\n")
+            .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
+        + QString::fromLatin1("\t%1, %2 - search available packages - <regexp>")
+            .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong);
 
     m_parser.setApplicationDescription(preformatted);
 
     // Help & version information
     m_parser.addHelpOption();
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Version),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scVersionShort << CommandLineOptions::scVersionLong,
         QLatin1String("Displays version information.")));
 
     // Output related options
     m_parser.addOption(QCommandLineOption(QStringList()
-        << QLatin1String(CommandLineOptions::VerboseShort)
-        << QLatin1String(CommandLineOptions::VerboseLong),
+        << CommandLineOptions::scVerboseShort << CommandLineOptions::scVerboseLong,
         QLatin1String("Verbose mode. Prints out more information.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::LoggingRules),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scLoggingRulesShort << CommandLineOptions::scLoggingRulesLong,
         QLatin1String("Enables logging according to passed rules. Comma separated logging rules "
                       "have the following syntax: loggingCategory=true/false. Passing empty logging "
                       "rules enables all logging categories. The following rules enable a single "
@@ -77,71 +78,91 @@ CommandLineParser::CommandLineParser()
         QLatin1String("rules")));
 
     // Repository management options
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::AddRepository),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scAddRepositoryShort << CommandLineOptions::scAddRepositoryLong,
         QLatin1String("Add a local or remote repository to the list of user defined repositories."),
         QLatin1String("URI,...")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::AddTmpRepository),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scAddTmpRepositoryShort << CommandLineOptions::scAddTmpRepositoryLong,
         QLatin1String("Add a local or remote repository to the list of temporary available repositories."),
         QLatin1String("URI,...")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SetTmpRepository),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scSetTmpRepositoryShort << CommandLineOptions::scSetTmpRepositoryLong,
         QLatin1String("Set a local or remote repository as temporary repository, it is the only "
                       "one used during fetch.\nNote: URI must be prefixed with the protocol, i.e. "
                       "file:///, https://, http:// or ftp://."),
         QLatin1String("URI,...")));
 
     // Proxy options
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SystemProxy),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scSystemProxyShort << CommandLineOptions::scSystemProxyLong,
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS. (Default)")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoProxy),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scNoProxyShort << CommandLineOptions::scNoProxyLong,
         QLatin1String("Do not use system proxy.")));
 
     // Starting mode options
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartUpdater),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scStartUpdaterShort << CommandLineOptions::scStartUpdaterLong,
         QLatin1String("Start application in updater mode. This will override the internal "
                       "marker that is used to distinguish which kind of binary is currently running.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartPackageManager),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scStartPackageManagerShort << CommandLineOptions::scStartPackageManagerLong,
         QLatin1String("Start application in package manager mode. This will override the internal "
                       "marker that is used to distinguish which kind of binary is currently running.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartUninstaller),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scStartUninstallerShort << CommandLineOptions::scStartUninstallerLong,
         QLatin1String("Start application in uninstaller mode. This will override the internal "
                       "marker that is used to distinguish which kind of binary is currently running.")));
 
     // Misc installation options
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Root),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scRootShort << CommandLineOptions::scRootLong,
         QLatin1String("Set installation root directory."),
         QLatin1String("directory")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Platform),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scPlatformShort << CommandLineOptions::scPlatformLong,
         QLatin1String("Use the specified platform plugin."),
         QLatin1String("plugin")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoForceInstallation),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scNoForceInstallationShort << CommandLineOptions::scNoForceInstallationLong,
         QLatin1String("Allow deselecting components that are marked as forced.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoSizeChecking),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scNoSizeCheckingShort << CommandLineOptions::scNoSizeCheckingLong,
         QLatin1String("Disable checking of free space for installation target.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ShowVirtualComponents),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scShowVirtualComponentsShort << CommandLineOptions::scShowVirtualComponentsLong,
         QLatin1String("Show virtual components in installer and package manager.")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::InstallCompressedRepository),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scInstallCompressedRepositoryShort
+        << CommandLineOptions::scInstallCompressedRepositoryLong,
         QLatin1String("Installs QBSP or 7z file. The QBSP (Board Support Package) file must be a .7z "
                       "file which contains a valid repository."),
         QLatin1String("URI,...")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CreateLocalRepository),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scCreateLocalRepositoryShort << CommandLineOptions::scCreateLocalRepositoryLong,
         QLatin1String("Create a local repository inside the installation directory. This option "
                       "has no effect on online installers.")));
 
     // Developer options
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Script),
+    m_parser.addOption(QCommandLineOption(QStringList()
+         << CommandLineOptions::scScriptShort << CommandLineOptions::scScriptLong,
         QLatin1String("Execute the script given as argument."),
         QLatin1String("file")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartServer),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scStartServerShort << CommandLineOptions::scStartServerLong,
         QLatin1String("Starts the application as headless process waiting for commands to execute. Mode "
                       "can be DEBUG or PRODUCTION. In DEBUG mode, the option values can be omitted. Note: "
                       "The server will not shutdown on his own, you need to quit the process by hand."),
         QLatin1String("mode, socketname, key")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::StartClient),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scStartClientShort << CommandLineOptions::scStartClientLong,
         QLatin1String("Starts the application to debug the client-server communication. If a value is "
                       "omitted, the client will use a default instead. Note: The server process is not "
                       "started by the client application in that case, you need to start it on your own."),
         QLatin1String("socketname, key")));
-    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::SquishPort),
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scSquishPortShort << CommandLineOptions::scSquishPortLong,
         QLatin1String("Give a port where Squish can connect to. If no port is given, default port 11233 is "
                       "used. Note: To enable Squish support you first need to build IFW with SQUISH_PATH "
                       "parameter where SQUISH_PATH is pointing to your Squish installation folder: "
@@ -152,16 +173,15 @@ CommandLineParser::CommandLineParser()
     m_parser.addOptions(d->extensionsOptions());
 
     // Positional arguments
-    m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::Command),
+    m_parser.addPositionalArgument(CommandLineOptions::scCommand,
         QLatin1String("Command to be run by installer."),
         QLatin1String("command"));
-    m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::Arguments),
+    m_parser.addPositionalArgument(CommandLineOptions::scArguments,
         QLatin1String("Extra arguments for command, each separated by space."),
         QLatin1String("<args>"));
-    m_parser.addPositionalArgument(QLatin1String(CommandLineOptions::InstallerValue),
+    m_parser.addPositionalArgument(CommandLineOptions::scInstallerValue,
         QLatin1String("Key-value pair to be set internally by the framework."),
         QLatin1String("<key=value>"));
-
 }
 
 CommandLineParser::~CommandLineParser()

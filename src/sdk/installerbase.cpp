@@ -66,14 +66,14 @@ int InstallerBase::run()
         return EXIT_FAILURE;
     }
 
-    if (m_parser.isSet(QLatin1String(CommandLineOptions::ShowVirtualComponents))) {
+    if (m_parser.isSet(CommandLineOptions::scShowVirtualComponentsLong)) {
         QFont f;
         f.setItalic(true);
         QInstaller::PackageManagerCore::setVirtualComponentsFont(f);
     }
     QString controlScript;
-    if (m_parser.isSet(QLatin1String(CommandLineOptions::Script))) {
-        controlScript = m_parser.value(QLatin1String(CommandLineOptions::Script));
+    if (m_parser.isSet(CommandLineOptions::scScriptLong)) {
+        controlScript = m_parser.value(CommandLineOptions::scScriptLong);
         if (!QFileInfo(controlScript).exists()) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Script file does not exist.";
             return false;
@@ -144,8 +144,8 @@ int InstallerBase::run()
 
 #ifdef ENABLE_SQUISH
     int squishPort = 11233;
-    if (m_parser.isSet(QLatin1String(CommandLineOptions::SquishPort))) {
-        squishPort = m_parser.value(QLatin1String(CommandLineOptions::SquishPort)).toInt();
+    if (m_parser.isSet(CommandLineOptions::scSquishPortLong)) {
+        squishPort = m_parser.value(CommandLineOptions::scSquishPortLong).toInt();
     }
     if (squishPort != 0) {
         if (Squish::allowAttaching(squishPort))

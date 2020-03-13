@@ -100,60 +100,93 @@ const char scRelocatable[] = "@RELOCATABLE_PATH@";
 namespace CommandLineOptions {
 
 // Help & version information
-const char HelpShort[] = "h";
-const char HelpLong[] = "help";
-const char Version[] = "version";
+static const QLatin1String scHelpShort("h");
+static const QLatin1String scHelpLong("help");
+static const QLatin1String scVersionShort("v");
+static const QLatin1String scVersionLong("version");
 
 // Output related options
-const char VerboseShort[] = "v";
-const char VerboseLong[] = "verbose";
-const char LoggingRules[] = "logging-rules";
+static const QLatin1String scVerboseShort("d");
+static const QLatin1String scVerboseLong("verbose");
+static const QLatin1String scLoggingRulesShort("g");
+static const QLatin1String scLoggingRulesLong("logging-rules");
 
 // Consumer commands
-const char Install[] = "install";
-const char CheckUpdates[] = "check-updates";
-const char Update[] = "update";
-const char Remove[] = "remove";
-const char List[] = "list";
-const char Search[] = "search";
+static const QLatin1String scInstallShort("in");
+static const QLatin1String scInstallLong("install");
+static const QLatin1String scCheckUpdatesShort("ch");
+static const QLatin1String scCheckUpdatesLong("check-updates");
+static const QLatin1String scUpdateShort("up");
+static const QLatin1String scUpdateLong("update");
+static const QLatin1String scRemoveShort("rm");
+static const QLatin1String scRemoveLong("remove");
+static const QLatin1String scListShort("li");
+static const QLatin1String scListLong("list");
+static const QLatin1String scSearchShort("se");
+static const QLatin1String scSearchLong("search");
 
 // Repository management options
-const char AddRepository[] = "add-repository";
-const char AddTmpRepository[] = "add-temp-repository";
-const char SetTmpRepository[] = "set-temp-repository";
+static const QLatin1String scAddRepositoryShort("ar");
+static const QLatin1String scAddRepositoryLong("add-repository");
+static const QLatin1String scAddTmpRepositoryShort("at");
+static const QLatin1String scAddTmpRepositoryLong("add-temp-repository");
+static const QLatin1String scSetTmpRepositoryShort("st");
+static const QLatin1String scSetTmpRepositoryLong("set-temp-repository");
 
 // Proxy options
-const char SystemProxy[] = "system-proxy";
-const char NoProxy[] = "no-proxy";
+static const QLatin1String scSystemProxyShort("sp");
+static const QLatin1String scSystemProxyLong("system-proxy");
+static const QLatin1String scNoProxyShort("np");
+static const QLatin1String scNoProxyLong("no-proxy");
 
 // Starting mode options
-const char StartUpdater[] = "start-updater";
-const char StartPackageManager[] = "start-package-manager";
-const char StartUninstaller[] = "start-uninstaller";
+static const QLatin1String scStartUpdaterShort("su");
+static const QLatin1String scStartUpdaterLong("start-updater");
+static const QLatin1String scStartPackageManagerShort("sm");
+static const QLatin1String scStartPackageManagerLong("start-package-manager");
+static const QLatin1String scStartUninstallerShort("sr");
+static const QLatin1String scStartUninstallerLong("start-uninstaller");
 
 // Misc installation options
-const char Root[] = "root";
-const char Platform[] = "platform";
-const char NoForceInstallation[] = "no-force-installations";
-const char NoSizeChecking[] = "no-size-checking";
-const char ShowVirtualComponents[] = "show-virtual-components";
-const char InstallCompressedRepository[] = "install-compressed-repository";
-const char CreateLocalRepository[] = "create-local-repository";
+static const QLatin1String scRootShort("t");
+static const QLatin1String scRootLong("root");
+static const QLatin1String scPlatformShort("p");
+static const QLatin1String scPlatformLong("platform");
+static const QLatin1String scNoForceInstallationShort("nf");
+static const QLatin1String scNoForceInstallationLong("no-force-installations");
+static const QLatin1String scNoSizeCheckingShort("ns");
+static const QLatin1String scNoSizeCheckingLong("no-size-checking");
+static const QLatin1String scShowVirtualComponentsShort("sv");
+static const QLatin1String scShowVirtualComponentsLong("show-virtual-components");
+static const QLatin1String scInstallCompressedRepositoryShort("i");
+static const QLatin1String scInstallCompressedRepositoryLong("install-compressed-repository");
+static const QLatin1String scCreateLocalRepositoryShort("c");
+static const QLatin1String scCreateLocalRepositoryLong("create-local-repository");
 
 // Developer options
-const char Script[] = "script";
-const char StartServer[] = "start-server";
-const char StartClient[] = "start-client";
-const char SquishPort[] = "squish-port";
+static const QLatin1String scScriptShort("s");
+static const QLatin1String scScriptLong("script");
+static const QLatin1String scStartServerShort("ss");
+static const QLatin1String scStartServerLong("start-server");
+static const QLatin1String scStartClientShort("sc");
+static const QLatin1String scStartClientLong("start-client");
+static const QLatin1String scSquishPortShort("q");
+static const QLatin1String scSquishPortLong("squish-port");
 
 // Options supposed to be used without graphical interface
 static const QStringList scCommandLineInterfaceOptions = {
-    QLatin1String(Install),
-    QLatin1String(CheckUpdates),
-    QLatin1String(Update),
-    QLatin1String(Remove),
-    QLatin1String(List),
-    QLatin1String(Search)
+    scInstallShort,
+    scInstallLong,
+    scCheckUpdatesShort,
+    scCheckUpdatesLong,
+    scUpdateShort,
+    scUpdateLong,
+    scRemoveShort,
+    scRemoveLong,
+    scListShort,
+    scListLong,
+    scSearchShort,
+    scSearchLong
 };
 
 } // namespace CommandLineOptions

@@ -86,12 +86,12 @@ int main(int argc, char *argv[])
     QString sanityMessage;
 
     QStringList mutually;
-    if (parser.isSet(QLatin1String(CommandLineOptions::StartUpdater)))
-        mutually << QLatin1String(CommandLineOptions::StartUpdater);
-    if (parser.isSet(QLatin1String(CommandLineOptions::StartPackageManager)))
-        mutually << QLatin1String(CommandLineOptions::StartPackageManager);
-    if (parser.isSet(QLatin1String(CommandLineOptions::StartUninstaller)))
-        mutually << QLatin1String(CommandLineOptions::StartUninstaller);
+    if (parser.isSet(CommandLineOptions::scStartUpdaterLong))
+        mutually << CommandLineOptions::scStartUpdaterLong;
+    if (parser.isSet(CommandLineOptions::scStartPackageManagerLong))
+        mutually << CommandLineOptions::scStartPackageManagerLong;
+    if (parser.isSet(CommandLineOptions::scStartUninstallerLong))
+        mutually << CommandLineOptions::scStartUninstallerLong;
 
     if (mutually.count() > 1) {
         sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
@@ -110,13 +110,12 @@ int main(int argc, char *argv[])
             "argument. \"%1\" given.").arg(parser.positionalArguments().first());
         sanityCheck = false;
     }
-    const bool help = parser.isSet(QLatin1String(CommandLineOptions::HelpShort))
-        || parser.isSet(QLatin1String(CommandLineOptions::HelpLong));
-    if (help || parser.isSet(QLatin1String(CommandLineOptions::Version)) || !sanityCheck) {
+    const bool help = parser.isSet(CommandLineOptions::scHelpLong);
+    if (help || parser.isSet(CommandLineOptions::scVersionLong) || !sanityCheck) {
         Console c;
         QCoreApplication app(argc, argv);
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::Version))) {
+        if (parser.isSet(CommandLineOptions::scVersionLong)) {
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
             const QDateTime dateTime = QDateTime::fromString(QLatin1String(PLACEHOLDER),
                 QLatin1String("yyyy-MM-dd - HH:mm:ss"));
@@ -132,8 +131,8 @@ int main(int argc, char *argv[])
         return help ? EXIT_SUCCESS : EXIT_FAILURE;
     }
 
-    if (parser.isSet(QLatin1String(CommandLineOptions::StartServer))) {
-        const QStringList arguments = parser.value(QLatin1String(CommandLineOptions::StartServer))
+    if (parser.isSet(CommandLineOptions::scStartServerLong)) {
+        const QStringList arguments = parser.value(CommandLineOptions::scStartServerLong)
             .split(QLatin1Char(','), QString::SkipEmptyParts);
 
         QString socketName, key;
@@ -198,8 +197,7 @@ int main(int argc, char *argv[])
         QScopedPointer<Console> console;
 
         // Check if any options requiring verbose output is set
-        bool setVerbose = parser.isSet(QLatin1String(CommandLineOptions::VerboseShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::VerboseLong));
+        bool setVerbose = parser.isSet(CommandLineOptions::scVerboseLong);
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
             if (setVerbose) break;
@@ -217,29 +215,35 @@ int main(int argc, char *argv[])
             std::cerr << "Unknown option: " << qPrintable(options) << std::endl;
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::SystemProxy))) {
+        if (parser.isSet(CommandLineOptions::scSystemProxyLong)) {
             // Make sure we honor the system's proxy settings
             QNetworkProxyFactory::setUseSystemConfiguration(true);
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::NoProxy)))
+        if (parser.isSet(CommandLineOptions::scNoProxyLong))
             QNetworkProxyFactory::setUseSystemConfiguration(false);
 
         const SelfRestarter restarter(argc, argv);
 
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::CheckUpdates)))
+        if (parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesLong)) {
             return CommandLineInterface(argc, argv).checkUpdates();
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::List)))
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scListShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scListLong)) {
             return CommandLineInterface(argc, argv).listInstalledPackages();
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Search)))
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scSearchShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scSearchLong)) {
             return CommandLineInterface(argc, argv).searchAvailablePackages();
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Update)))
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scUpdateShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scUpdateLong)) {
             return CommandLineInterface(argc, argv).updatePackages();
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Install)))
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scInstallShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scInstallLong)) {
             return CommandLineInterface(argc, argv).installPackages();
-        if (parser.positionalArguments().contains(QLatin1String(CommandLineOptions::Remove)))
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scRemoveShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scRemoveLong)){
             return CommandLineInterface(argc, argv).uninstallPackages();
-
+        }
         if (QInstaller::isVerbose())
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
 

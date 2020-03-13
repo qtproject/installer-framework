@@ -140,8 +140,8 @@ public:
            }
         }
         if (QInstaller::isVerbose()) {
-            if (m_parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
-                loggingRules = m_parser.value(QLatin1String(CommandLineOptions::LoggingRules))
+            if (m_parser.isSet(CommandLineOptions::scLoggingRulesLong)) {
+                loggingRules = m_parser.value(CommandLineOptions::scLoggingRulesLong)
                               .split(QLatin1Char(','), QString::SkipEmptyParts)
                               .join(QLatin1Char('\n')); // take rules from command line
             } else if (isCliInterface) {
@@ -163,8 +163,8 @@ public:
         QLoggingCategory::setFilterRules(loggingRules);
 
         SDKApp::registerMetaResources(manager.collectionByName("QResources"));
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartClient))) {
-            const QStringList arguments = m_parser.value(QLatin1String(CommandLineOptions::StartClient))
+        if (m_parser.isSet(CommandLineOptions::scStartClientLong)) {
+            const QStringList arguments = m_parser.value(CommandLineOptions::scStartClientLong)
                 .split(QLatin1Char(','), QString::SkipEmptyParts);
             m_core = new QInstaller::PackageManagerCore(
                 magicMarker, oldOperations,
@@ -186,7 +186,7 @@ public:
 
         // From Qt5.8 onwards system proxy is used by default. If Qt is built with
         // QT_USE_SYSTEM_PROXIES false then system proxies are not used by default.
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::NoProxy))) {
+        if (m_parser.isSet(CommandLineOptions::scNoProxyLong)) {
             m_core->settings().setProxyType(QInstaller::Settings::NoProxy);
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         } else if (QNetworkProxyFactory::usesSystemConfiguration()) {
@@ -194,10 +194,10 @@ public:
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::ShowVirtualComponents)))
+        if (m_parser.isSet(CommandLineOptions::scShowVirtualComponentsLong))
             QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartUpdater))) {
+        if (m_parser.isSet(CommandLineOptions::scStartUpdaterLong)) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as updater.");
                 return false;
@@ -205,7 +205,7 @@ public:
             m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUpdaterMarker);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartPackageManager))) {
+        if (m_parser.isSet(CommandLineOptions::scStartPackageManagerLong)) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as package manager.");
                 return false;
@@ -213,7 +213,7 @@ public:
             m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicPackageManagerMarker);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::StartUninstaller))) {
+        if (m_parser.isSet(CommandLineOptions::scStartUninstallerLong)) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as uninstaller.");
                 return false;
@@ -221,9 +221,8 @@ public:
             m_core->setUserSetBinaryMarker(QInstaller::BinaryContent::MagicUninstallerMarker);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::AddRepository))) {
-            const QStringList repoList = repositories(m_parser
-                .value(QLatin1String(CommandLineOptions::AddRepository)));
+        if (m_parser.isSet(CommandLineOptions::scAddRepositoryLong)) {
+            const QStringList repoList = repositories(m_parser.value(CommandLineOptions::scAddRepositoryLong));
             if (repoList.isEmpty()) {
                 errorMessage = QObject::tr("Empty repository list for option 'addRepository'.");
                 return false;
@@ -231,9 +230,8 @@ public:
             m_core->addUserRepositories(repoList);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::AddTmpRepository))) {
-            const QStringList repoList = repositories(m_parser
-                .value(QLatin1String(CommandLineOptions::AddTmpRepository)));
+        if (m_parser.isSet(CommandLineOptions::scAddTmpRepositoryLong)) {
+            const QStringList repoList = repositories(m_parser.value(CommandLineOptions::scAddTmpRepositoryLong));
             if (repoList.isEmpty()) {
                 errorMessage = QObject::tr("Empty repository list for option 'addTempRepository'.");
                 return false;
@@ -241,9 +239,8 @@ public:
             m_core->setTemporaryRepositories(repoList, false);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::SetTmpRepository))) {
-            const QStringList repoList = repositories(m_parser
-                .value(QLatin1String(CommandLineOptions::SetTmpRepository)));
+        if (m_parser.isSet(CommandLineOptions::scSetTmpRepositoryLong)) {
+            const QStringList repoList = repositories(m_parser.value(CommandLineOptions::scSetTmpRepositoryLong));
             if (repoList.isEmpty()) {
                 errorMessage = QObject::tr("Empty repository list for option 'setTempRepository'.");
                 return false;
@@ -251,9 +248,8 @@ public:
             m_core->setTemporaryRepositories(repoList, true);
         }
 
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::InstallCompressedRepository))) {
-            const QStringList repoList = repositories(m_parser
-                .value(QLatin1String(CommandLineOptions::InstallCompressedRepository)));
+        if (m_parser.isSet(CommandLineOptions::scInstallCompressedRepositoryLong)) {
+            const QStringList repoList = repositories(m_parser.value(CommandLineOptions::scInstallCompressedRepositoryLong));
             if (repoList.isEmpty()) {
                 errorMessage = QObject::tr("Empty repository list for option 'installCompressedRepository'.");
                 return false;
@@ -267,13 +263,13 @@ public:
             m_core->setTemporaryRepositories(repoList, false, true);
         }
         // Disable checking for free space on target
-        if (m_parser.isSet(QLatin1String(CommandLineOptions::NoSizeChecking)))
+        if (m_parser.isSet(CommandLineOptions::scNoSizeCheckingLong))
             m_core->setCheckAvailableSpace(false);
 
         QInstaller::PackageManagerCore::setNoForceInstallation(m_parser
-            .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));
+            .isSet(CommandLineOptions::scNoForceInstallationLong));
         QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(m_parser
-            .isSet(QLatin1String(CommandLineOptions::CreateLocalRepository))
+            .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());
 
         const QStringList positionalArguments = m_parser.positionalArguments();

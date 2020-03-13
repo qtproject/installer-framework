@@ -187,8 +187,8 @@ bool CommandLineInterface::checkLicense()
 bool CommandLineInterface::setTargetDir()
 {
     QString targetDir;
-    if (m_parser.isSet(QLatin1String(CommandLineOptions::Root))) {
-        targetDir = m_parser.value(QLatin1String(CommandLineOptions::Root));
+    if (m_parser.isSet(CommandLineOptions::scRootLong)) {
+        targetDir = m_parser.value(CommandLineOptions::scRootLong);
     } else {
         targetDir = m_core->value(QLatin1String("TargetDir"));
         qCDebug(QInstaller::lcInstallerInstallLog) << "No target directory specified, using default value:" << targetDir;
