@@ -268,6 +268,9 @@ public:
             }
             m_core->setTemporaryRepositories(repoList, false, true);
         }
+        // Disable checking for free space on target
+        if (m_parser.isSet(QLatin1String(CommandLineOptions::NoSizeChecking)))
+            m_core->setCheckAvailableSpace(false);
 
         QInstaller::PackageManagerCore::setNoForceInstallation(m_parser
             .isSet(QLatin1String(CommandLineOptions::NoForceInstallation)));

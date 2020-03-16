@@ -50,7 +50,11 @@
 
 #include <QtUiTools/QUiLoader>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5,14,0)
+#include <private/qv4engine_p.h>
+#else
 #include <private/qv8engine_p.h>
+#endif
 #include <private/qv4scopedvalue_p.h>
 #include <private/qv4object_p.h>
 
@@ -552,7 +556,7 @@ void Component::loadComponentScript(const QString &fileName)
         }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable(Component::Component::ScriptLoadingFailed, error.message());
+            setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
             qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
         } else {
             throw error;

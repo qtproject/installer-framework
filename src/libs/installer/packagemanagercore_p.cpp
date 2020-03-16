@@ -218,6 +218,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
     , m_userSetBinaryMarker(false)
+    , m_checkAvailableSpace(true)
 {
 }
 
@@ -251,6 +252,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_foundEssentialUpdate(false)
     , m_commandLineInstance(false)
     , m_userSetBinaryMarker(false)
+    , m_checkAvailableSpace(true)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()

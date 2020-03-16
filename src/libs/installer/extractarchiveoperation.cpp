@@ -34,6 +34,7 @@
 #include <QEventLoop>
 #include <QThreadPool>
 #include <QFileInfo>
+#include <QDataStream>
 
 namespace QInstaller {
 
