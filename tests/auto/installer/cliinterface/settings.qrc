@@ -4,6 +4,21 @@
         <file>data/repository/Updates.xml</file>
         <file>data/uninstallableComponentsRepository/Updates.xml</file>
         <file>data/components.xml</file>
+        <file>data/installPackagesRepository/Updates.xml</file>
+        <file>data/installPackagesRepository/componentA/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentB/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentC/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentD/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentE/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentG/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentG/1.0.0meta.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
     </qresource>
     <qresource prefix="/metadata">
         <file>installer-config/config.xml</file>

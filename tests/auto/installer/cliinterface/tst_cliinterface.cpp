@@ -28,6 +28,7 @@
 
 #include "metadatajob.h"
 #include "settings.h"
+#include "init.h"
 
 #include <binarycontent.h>
 #include <component.h>
@@ -54,69 +55,96 @@ private:
         QTest::ignoreMessage(QtDebugMsg, "Id: AB");
     }
 
+    void verifyInstallerResources(const QString &componentName, const QString &fileName)
+    {
+        QDir dir(m_installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
+        QVERIFY(dir.exists());
+        QFileInfo fileInfo;
+        fileInfo.setFile(dir, fileName);
+        QVERIFY(fileInfo.exists());
+    }
+
+    void verifyFileExistence(const QStringList &fileList)
+    {
+        foreach (const QString &file, fileList) {
+            QVERIFY(QFileInfo::exists(m_installDir + QDir::separator() + file));
+        }
+        QDir dir(m_installDir);
+        QCOMPARE(dir.entryList(QStringList() << "*.*", QDir::Files).count(), fileList.count());
+    }
+
+    PackageManagerCore &initPackagemanager(const QString &repository)
+    {
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(repository);
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        m_installDir = QInstaller::generateTemporaryFileName();
+        QDir().mkpath(m_installDir);
+        core->setValue(scTargetDir, m_installDir);
+        return *core;
+    }
+
 private slots:
     void testListAvailablePackages()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"
                                 "ifw.package.name = true\n"));
-        Settings settings = Settings::fromFileAndPrefix(":///data/config.xml", ":///data");
-        const QList<OperationBlob> ops;
 
         QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, ops);
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
 
-        core->settings().setDefaultRepositories(repoList);
+        PackageManagerCore &core = initPackagemanager(":///data/repository");
 
         QLoggingCategory::setFilterRules(loggingRules);
 
         setIgnoreMessage();
-        core->listAvailablePackages(QLatin1String("."));
+        core.listAvailablePackages(QLatin1String("."));
 
         QTest::ignoreMessage(QtDebugMsg, "Id: A");
         QTest::ignoreMessage(QtDebugMsg, "Id: AB");
-        core->listAvailablePackages(QLatin1String("A"));
+        core.listAvailablePackages(QLatin1String("A"));
 
         QTest::ignoreMessage(QtDebugMsg, "Id: A");
         QTest::ignoreMessage(QtDebugMsg, "Id: AB");
-        core->listAvailablePackages(QLatin1String("A.*"));
+        core.listAvailablePackages(QLatin1String("A.*"));
 
 
         QTest::ignoreMessage(QtDebugMsg, "Id: B");
-        core->listAvailablePackages(QLatin1String("^B"));
+        core.listAvailablePackages(QLatin1String("^B"));
 
         QTest::ignoreMessage(QtDebugMsg, "Id: B");
-        core->listAvailablePackages(QLatin1String("^B.*"));
+        core.listAvailablePackages(QLatin1String("^B.*"));
 
         QTest::ignoreMessage(QtDebugMsg, "Id: C");
-        core->listAvailablePackages(QLatin1String("^C"));
+        core.listAvailablePackages(QLatin1String("^C"));
     }
 
-    void testInstallPackages()
+    void testInstallPackageFails()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"
                                 "ifw.installer.installlog = true\n"));
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+
+        PackageManagerCore &core = initPackagemanager(":///data/uninstallableComponentsRepository");
+
         QLoggingCategory::setFilterRules(loggingRules);
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/uninstallableComponentsRepository");
-        repoList.insert(repo);
 
-        core->settings().setDefaultRepositories(repoList);
-
+        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.");
-        core->installSelectedComponentsSilently(QStringList() << QLatin1String("A"));
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("A"));
 
+        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.");
-        core->installSelectedComponentsSilently(QStringList() << QLatin1String("AB"));
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("AB"));
 
+        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.");
-        core->installSelectedComponentsSilently(QStringList() << QLatin1String("B"));
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("B"));
 
+        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.");
-        core->installSelectedComponentsSilently(QStringList() << QLatin1String("MissingComponent"));
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("MissingComponent"));
     }
 
     void testListInstalledPackages()
@@ -137,9 +165,73 @@ private slots:
         QTest::ignoreMessage(QtDebugMsg, "Id: B");
         core.listInstalledPackages();
         QDir dir(testDirectory);
-
         QVERIFY(dir.removeRecursively());
     }
+
+    void testInstallPackageSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentA"));
+        verifyInstallerResources("componentA", "1.0.0content.txt");
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Depends on componentA
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testInstallWithDependencySilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentC"));
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentC
+        verifyInstallerResources("componentB", "1.0.0content.txt"); //Dependency for componentC
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Depends on componentA
+        verifyInstallerResources("componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentC.txt"
+                            << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
+                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testInstallSubcomponentSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentF.subcomponent2.subsubcomponent2"));
+        verifyInstallerResources("componentF.subcomponent2.subsubcomponent2", "1.0.0content.txt");
+        verifyInstallerResources("componentF.subcomponent2", "1.0.0content.txt");
+        verifyInstallerResources("componentF", "1.0.0content.txt");
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentG
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Default install
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentF.txt"
+                            << "installcontentF_2.txt"  << "installcontentF_2_2.txt"
+                            << "installcontent.txt" << "installcontentA.txt"
+                            << "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testInstallDefaultPackagesSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installDefaultComponentsSilently();
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentG
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Default
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void cleanup()
+    {
+        QDir dir(m_installDir);
+        QVERIFY(dir.removeRecursively());
+    }
+
+private:
+    QString m_installDir;
 };
 
 
