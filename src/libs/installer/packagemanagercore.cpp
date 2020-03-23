@@ -2091,10 +2091,10 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
         // Component cannot be unselected, check why
         if (component->forcedInstallation()) {
-            qCWarning(QInstaller::lcInstallerUninstallLog)
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote()
                 << "Cannot uninstall ForcedInstallation component" << component->name();
         } else if (component->autoDependencies().count() > 0) {
-            qCWarning(QInstaller::lcInstallerUninstallLog) << "Cannot uninstall component"
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote() << "Cannot uninstall component"
                 << componentName << "because it is added as auto dependency to"
                 << component->autoDependencies().join(QLatin1Char(','));
         }
@@ -2170,6 +2170,11 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
     return true;
 }
 
+void PackageManagerCore::commitSessionOperations()
+{
+    d->commitSessionOperations();
+}
+
 /*!
     Uninstalls the selected components \a components without GUI.
     Returns \c true if components are uninstalled and the maintenance tool
@@ -2196,7 +2201,7 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
                 uninstallComponentFound = true;
             }
         } else {
-            qCWarning(QInstaller::lcInstallerUninstallLog) << "Cannot uninstall " << componentName <<". Component not found in install tree.";
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace() << "Cannot uninstall component " << componentName <<". Component not found in install tree.";
         }
     }
 

@@ -1,0 +1,137 @@
+<Packages>
+    <ApplicationName>Dependency Solving Example</ApplicationName>
+    <ApplicationVersion>1.0.0</ApplicationVersion>
+    <Package>
+        <Name>componentA</Name>
+        <Title>Component A</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>158</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentB</Name>
+        <Title>Component B</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentC</Name>
+        <Title>Component C (depends on A and B)</Title>
+        <Description>This component depends on Component A and Component B. Selecting this component for installation also marks Component A and Component B for installation, which in turn marks Component D, because it has an automatic dependency on Component A and Component B.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Dependencies>componentA,componentB</Dependencies>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentD</Name>
+        <Title>Component D (auto depends on A and B)</Title>
+        <Description>This component has an automatic dependency on Component A and Component B. If both A and B are marked for installation, this component is also installed.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <AutoDependOn>componentA,componentB</AutoDependOn>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentE</Name>
+        <Title>Component E (forced)</Title>
+        <Description>This is a forced component that is always installed.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <ForcedInstallation>true</ForcedInstallation>
+    </Package>
+    <Package>
+        <Name>componentF</Name>
+        <Title>Component F</Title>
+        <Description>This component contains 2 subcomponents.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent1</Name>
+        <Title>Subcomponent 1</Title>
+        <Description>This component contains 2 leaf components.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent1.subsubcomponent1</Name>
+        <Title>Subsubcomponent 1</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent1.subsubcomponent2</Name>
+        <Title>Subsubcomponent 2</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent2</Name>
+        <Title>Subcomponent 2</Title>
+        <Description>This component contains 2 leaf components.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent2.subsubcomponent1</Name>
+        <Title>Subsubcomponent 1</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentF.subcomponent2.subsubcomponent2</Name>
+        <Title>Subsubcomponent 2</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentG</Name>
+        <Title>Component G (default, depends on A, dependency added dynamically)</Title>
+        <Description>By default, this component is selected for installation. It depends on component A. Dependency is added from inside component script.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Dependencies>componentA</Dependencies>
+        <Checkable>true</Checkable>
+    </Package>
+</Packages>

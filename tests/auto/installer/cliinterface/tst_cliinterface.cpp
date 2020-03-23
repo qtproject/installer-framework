@@ -64,6 +64,15 @@ private:
         QVERIFY(fileInfo.exists());
     }
 
+    void verifyInstallerResourcesDeletion(const QString &componentName, const QString &fileName)
+    {
+        QDir dir(m_installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
+        QVERIFY(!dir.exists());
+        QFileInfo fileInfo;
+        fileInfo.setFile(dir, fileName);
+        QVERIFY(!fileInfo.exists());
+    }
+
     void verifyFileExistence(const QStringList &fileList)
     {
         foreach (const QString &file, fileList) {
@@ -147,6 +156,28 @@ private slots:
         core.installSelectedComponentsSilently(QStringList() << QLatin1String("MissingComponent"));
     }
 
+    void testUninstallPackageFails()
+    {
+        QString loggingRules = (QLatin1String("ifw.installer.installog = true\n"));
+        PackageManagerCore core;
+        core.setPackageManager();
+        QLoggingCategory::setFilterRules(loggingRules);
+
+        m_installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(m_installDir));
+        QVERIFY(QFile::copy(":/data/componentsFromInstallPackagesRepository.xml", m_installDir + "/components.xml"));
+
+        core.setValue(scTargetDir, m_installDir);
+        QTest::ignoreMessage(QtWarningMsg, "Cannot uninstall ForcedInstallation component componentE");
+        core.uninstallComponentsSilently(QStringList() << "componentE");
+
+        QTest::ignoreMessage(QtWarningMsg, "Cannot uninstall component componentD because it is added as auto dependency to componentA,componentB");
+        core.uninstallComponentsSilently(QStringList() << "componentD");
+
+        QTest::ignoreMessage(QtWarningMsg, "Cannot uninstall component MissingComponent. Component not found in install tree.");
+        core.uninstallComponentsSilently(QStringList() << "MissingComponent");
+    }
+
     void testListInstalledPackages()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"
@@ -180,6 +211,23 @@ private slots:
                             << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
     }
 
+    void testUninstallPackageSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentA"));
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentE.txt"
+                            << "installcontentA.txt" << "installcontent.txt" << "installcontentG.txt");
+
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << QLatin1String("componentA"));
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResourcesDeletion("componentA", "1.0.0content.txt");
+        verifyInstallerResourcesDeletion("componentG", "1.0.0content.txt"); //Depends on componentA
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentE.txt");
+    }
+
     void testInstallWithDependencySilently()
     {
         QInstaller::init(); //This will eat debug output
@@ -191,6 +239,29 @@ private slots:
         verifyInstallerResources("componentG", "1.0.0content.txt"); //Depends on componentA
         verifyInstallerResources("componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
         verifyFileExistence(QStringList() << "components.xml" << "installcontentC.txt"
+                            << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
+                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testUninstallWithDependencySilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentC"));
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentC.txt"
+                            << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
+                            << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
+
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << QLatin1String("componentC"));
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentC
+        verifyInstallerResources("componentB", "1.0.0content.txt"); //Dependency for componentC
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Depends on componentA
+        verifyInstallerResources("componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
+        verifyInstallerResourcesDeletion("componentC", "1.0.0content.txt");
+        verifyFileExistence(QStringList() << "components.xml"
                             << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
                             << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
     }
@@ -212,6 +283,29 @@ private slots:
                             << "installcontentE.txt" << "installcontentG.txt");
     }
 
+    void testUninstallSubcomponentSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentF.subcomponent2.subsubcomponent2"));
+        verifyFileExistence(QStringList() << "components.xml" << "installcontentF.txt"
+                            << "installcontentF_2.txt"  << "installcontentF_2_2.txt"
+                            << "installcontent.txt" << "installcontentA.txt"
+                            << "installcontentE.txt" << "installcontentG.txt");
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << QLatin1String("componentF.subcomponent2"));
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentG
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Default install
+        verifyInstallerResourcesDeletion("componentF.subcomponent2.subsubcomponent2", "1.0.0content.txt");
+        verifyInstallerResourcesDeletion("componentF.subcomponent2", "1.0.0content.txt");
+        verifyInstallerResourcesDeletion("componentF", "1.0.0content.txt");
+        verifyFileExistence(QStringList() << "components.xml"
+                            << "installcontent.txt" << "installcontentA.txt"
+                            << "installcontentE.txt" << "installcontentG.txt");
+    }
+
     void testInstallDefaultPackagesSilently()
     {
         QInstaller::init(); //This will eat debug output
@@ -222,6 +316,59 @@ private slots:
         verifyInstallerResources("componentG", "1.0.0content.txt"); //Default
         verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
                             << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testUnInstallDefaultPackagesSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installDefaultComponentsSilently();
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << "componentG");
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentG
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResourcesDeletion("componentG", "1.0.0content.txt");
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt");
+    }
+
+    void testUninstallForcedPackagesSilenly()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installDefaultComponentsSilently();
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << "componentE");
+        //Nothing is uninstalled as componentE is forced install and cannot be uninstalled
+        verifyInstallerResources("componentA", "1.0.0content.txt"); //Dependency for componentG
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Default
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+    }
+
+    void testUninstallAutodependencyPackagesSilenly()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << "componentA" << "componentB");
+        core.commitSessionOperations();
+        core.setPackageManager();
+        core.uninstallComponentsSilently(QStringList() << "componentD");
+        //Nothing is uninstalled as componentD is installed as autodependency to componentA and componentB
+        verifyInstallerResources("componentA", "1.0.0content.txt");
+        verifyInstallerResources("componentB", "1.0.0content.txt");
+        verifyInstallerResources("componentD", "1.0.0content.txt");
+        verifyInstallerResources("componentE", "1.0.0content.txt"); //ForcedInstall
+        verifyInstallerResources("componentG", "1.0.0content.txt"); //Default
+        verifyFileExistence(QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
+                            << "installcontentB.txt" << "installcontentD.txt");
     }
 
     void cleanup()
