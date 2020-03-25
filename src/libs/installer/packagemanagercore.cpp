@@ -2091,11 +2091,11 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
         // Component cannot be unselected, check why
         if (component->forcedInstallation()) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote()
-                << "Cannot uninstall ForcedInstallation component" << component->name();
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+                << "Cannot uninstall ForcedInstallation component " << component->name();
         } else if (component->autoDependencies().count() > 0) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote() << "Cannot uninstall component"
-                << componentName << "because it is added as auto dependency to"
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace() << "Cannot uninstall component "
+                << componentName << " because it is added as auto dependency to "
                 << component->autoDependencies().join(QLatin1Char(','));
         }
         return false;
@@ -2145,19 +2145,23 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
         }
         if (!essentialUpdatesFound) {
             int componentToUpdateCount = componentsToUpdate.count();
+            QList<Component*> componentsToBeUpdated;
             //Mark components to be updated
             foreach (Component *comp, componentList) {
                 if (componentToUpdateCount == 0) { // No components given, update all
                     comp->setCheckState(Qt::Checked);
-                } else { // Check only components we want to update
+                } else {
+                    //Collect the componets to list which we want to update
                     foreach (const QString &name, componentsToUpdate) {
                         if (comp->name() == name)
-                            comp->setCheckState(Qt::Checked);
+                            componentsToBeUpdated.append(comp);
                         else
                             comp->setCheckState(Qt::Unchecked);
                     }
                 }
             }
+            foreach (Component *componentToUpdate, componentsToBeUpdated)
+                componentToUpdate->setCheckState(Qt::Checked);
         }
 
         if (d->calculateComponentsAndRun()) {

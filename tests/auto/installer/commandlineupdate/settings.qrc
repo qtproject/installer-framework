@@ -1,0 +1,38 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/config.xml</file>
+        <file>data/installPackagesRepository/Updates.xml</file>
+        <file>data/installPackagesRepository/componentA/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentB/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentC/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentD/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentE/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentG/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentG/1.0.0meta.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/Updates.xml</file>
+        <file>data/installPackagesRepositoryUpdate/componentA/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentB/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentC/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentD/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentE/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentG/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentG/2.0.0meta.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+    </qresource>
+    <qresource prefix="/metadata">
+        <file>installer-config/config.xml</file>
+    </qresource>
+</RCC>
