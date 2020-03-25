@@ -30,6 +30,7 @@ SUBDIRS += \
     metadatajob \
     simplemovefileoperation \
     deleteoperation \
+    copydirectoryoperation \
     commandlineupdate \
     moveoperation
 
