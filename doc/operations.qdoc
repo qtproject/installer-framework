@@ -137,7 +137,8 @@
             \li CreateDesktopEntry
             \li "CreateDesktopEntry" \c {filename "key=value[ key2=value2[ key3=value3]]]"}
             \li Creates a .desktop initialization file, as specified by
-                freedesktop.org.
+                freedesktop.org. This operation is useful only on X11 or
+                Wayland based Linux distributions.
 
                 If \c filename is absolute, the desktop entry is stored there.
                 Otherwise, it is stored in the location specified in

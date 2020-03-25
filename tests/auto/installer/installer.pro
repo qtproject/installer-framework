@@ -31,4 +31,9 @@ SUBDIRS += \
 win32 {
     SUBDIRS += registerfiletypeoperation
 }
+
+linux-g++* {
+    SUBDIRS += createdesktopentryoperation
+}
+
 scriptengine.depends += unicodeexecutable
