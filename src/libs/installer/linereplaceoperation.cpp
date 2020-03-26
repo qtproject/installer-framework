@@ -58,6 +58,14 @@ bool LineReplaceOperation::performOperation()
     const QString searchString = args.at(1);
     const QString replaceString = args.at(2);
 
+    if (searchString.isEmpty()) {
+        setError(InvalidArguments);
+        setErrorString(tr("Invalid argument in %1: Empty search "
+            "argument is not supported.").arg(name()));
+
+        return false;
+    }
+
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         setError(UserDefinedError);

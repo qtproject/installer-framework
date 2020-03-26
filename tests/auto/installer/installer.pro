@@ -26,6 +26,7 @@ SUBDIRS += \
     replaceoperation \
     brokeninstaller \
     cliinterface \
+    linereplaceoperation \
     metadatajob \
     simplemovefileoperation
 
