@@ -37,6 +37,7 @@
 #include <QFile>
 #include <QTemporaryFile>
 #include <QTest>
+#include <QRegularExpression>
 
 using namespace QInstaller;
 
@@ -282,6 +283,40 @@ private slots:
 
         dirDevice.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner);
 #endif
+        QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testAllowRunningProcess()
+    {
+        PackageManagerCore core;
+        core.setPackageManager();
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        core.setValue(scTargetDir, testDirectory);
+
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core.setAllowedRunningProcesses(QStringList() << appFilePath);
+        const QString warningMessage =  QString("Failure to read packages from ");
+        const QRegularExpression re(warningMessage);
+        QTest::ignoreMessage(QtWarningMsg, re);
+        QTest::ignoreMessage(QtDebugMsg, "No updates available.");
+        core.updateComponentsSilently(QStringList());
+        QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testDisallowRunningProcess()
+    {
+        PackageManagerCore core;
+        core.setPackageManager();
+        const QString testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(testDirectory));
+        core.setValue(scTargetDir, testDirectory);
+
+        const QString warningMessage =  QString("Unable to update components. Please stop these processes: ");
+        const QRegularExpression re(warningMessage);
+        QTest::ignoreMessage(QtWarningMsg, re);
+        QVERIFY_EXCEPTION_THROWN(core.updateComponentsSilently(QStringList()), Error);
+
         QVERIFY(QDir().rmdir(testDirectory));
     }
 };

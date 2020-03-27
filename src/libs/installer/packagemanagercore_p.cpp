@@ -1967,11 +1967,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 bool PackageManagerCorePrivate::runningProcessesFound()
 {
     //Check if there are processes running in the install
-    QStringList excludeFiles;
+    QStringList excludeFiles = m_allowedRunningProcesses;
     excludeFiles.append(maintenanceToolName());
     QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
     if (!runningProcesses.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Unable to update components. Please stop these processes: "
+        qCWarning(QInstaller::lcInstallerInstallLog).noquote() << "Unable to update components. Please stop these processes: "
                  << runningProcesses << " and try again.";
         return true;
     }
@@ -2476,18 +2476,13 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
 
 void PackageManagerCorePrivate::findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result)
 {
-    QString executable;
     QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Executable | QDir::Files | QDir::System, QDirIterator::Subdirectories );
 
-    while (it.hasNext()) {
-        executable = it.next();
-        foreach (QString exclude, excludeFiles) {
-            if (QDir::toNativeSeparators(executable.toLower())
-                    != QDir::toNativeSeparators(exclude.toLower())) {
-                result->append(executable);
-            }
-        }
-    }
+    while (it.hasNext())
+        result->append(QDir::toNativeSeparators(it.next().toLower()));
+
+    foreach (const QString &process, excludeFiles)
+        result->removeAll(QDir::toNativeSeparators(process.toLower()));
 }
 
 QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringList &excludeFiles)

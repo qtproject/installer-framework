@@ -258,6 +258,8 @@ public:
 
     Q_INVOKABLE bool isProcessRunning(const QString &name) const;
     Q_INVOKABLE bool killProcess(const QString &absoluteFilePath) const;
+    Q_INVOKABLE void setAllowedRunningProcesses(const QStringList &processes);
+    Q_INVOKABLE QStringList allowedRunningProcesses() const;
 
     Settings &settings() const;
 

@@ -206,6 +206,7 @@ public:
     OperationList m_performedOperationsCurrentSession;
 
     bool m_dependsOnLocalInstallerBinary;
+    QStringList m_allowedRunningProcesses;
 
 private slots:
     void infoMessage(Job *, const QString &message) {

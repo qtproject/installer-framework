@@ -2489,6 +2489,23 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
     return true;
 }
 
+/*!
+    Sets additional \a processes that can run when
+    updating with the mainenance tool.
+*/
+void PackageManagerCore::setAllowedRunningProcesses(const QStringList &processes)
+{
+    d->m_allowedRunningProcesses = processes;
+}
+
+/*!
+    Returns processes that are allowed to run when
+    updating with the maintenance tool.
+*/
+QStringList PackageManagerCore::allowedRunningProcesses() const
+{
+    return d->m_allowedRunningProcesses;
+}
 
 /*!
     Makes sure the installer runs from a local drive. Otherwise the user will get an
