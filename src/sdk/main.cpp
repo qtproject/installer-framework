@@ -172,7 +172,8 @@ int main(int argc, char *argv[])
         if (!argumentsValid) {
             Console c;
             std::cout << qPrintable(parser.helpText()) << std::endl;
-            std::cerr << "Wrong argument(s) for option --startserver." << std::endl;
+            QString startServerStr = CommandLineOptions::scStartServerLong;
+            std::cerr << "Wrong argument(s) for option --" << startServerStr.toStdString() << std::endl;
             return EXIT_FAILURE;
         }
 
