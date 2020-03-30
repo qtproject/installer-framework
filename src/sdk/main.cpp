@@ -244,6 +244,9 @@ int main(int argc, char *argv[])
         } else if (parser.positionalArguments().contains(CommandLineOptions::scRemoveShort)
                 || parser.positionalArguments().contains(CommandLineOptions::scRemoveLong)){
             return CommandLineInterface(argc, argv).uninstallPackages();
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scPurgeShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scPurgeLong)){
+            return CommandLineInterface(argc, argv).removeInstallation();
         }
         if (QInstaller::isVerbose())
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;

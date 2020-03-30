@@ -206,6 +206,30 @@ private slots:
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentE.txt");
     }
 
+    void testRemoveAllSilently()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore &core = initPackagemanager(":///data/installPackagesRepository");
+        core.installSelectedComponentsSilently(QStringList() << QLatin1String("componentA"));
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentE.txt"
+                            << "installcontentA.txt" << "installcontent.txt" << "installcontentG.txt");
+
+        core.commitSessionOperations();
+        core.setUninstaller();
+        QVERIFY(core.removeInstallationSilently());
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentA");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentE");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentG");
+
+        // On Windows we have to settle for the resources check above as maintenance
+        // tool (if it would exists) and target directory are only removed later via
+        // started VBScript process. On Unix platforms the target directory should
+        // be removed in PackageManagerCorePrivate::runUninstaller().
+#if defined(Q_OS_UNIX)
+        QVERIFY(!QDir(m_installDir).exists());
+#endif
+    }
+
     void testInstallWithDependencySilently()
     {
         QInstaller::init(); //This will eat debug output

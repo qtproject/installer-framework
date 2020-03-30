@@ -2219,6 +2219,22 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
 }
 
 /*!
+    Uninstalls all installed components without GUI and removes
+    the program directory. Returns \c true if components are
+    uninstalled successfully, otherwise returns \c false.
+*/
+bool PackageManagerCore::removeInstallationSilently()
+{
+    if (d->runningProcessesFound())
+        throw Error(tr("Running processes found."));
+
+    autoRejectMessageBoxes();
+
+    setCompleteUninstallation(true);
+    return run();
+}
+
+/*!
     Installs the selected components \a components without displaying a user
     interface. Virtual components cannot be installed unless made visible with
     --show-virtual-components. AutoDependOn nor non-checkable components cannot

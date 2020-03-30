@@ -221,6 +221,7 @@ public:
     bool installSelectedComponentsSilently(const QStringList& components);
     bool installDefaultComponentsSilently();
     bool uninstallComponentsSilently(const QStringList& components);
+    bool removeInstallationSilently();
 
     // convenience
     Q_INVOKABLE void setInstaller();

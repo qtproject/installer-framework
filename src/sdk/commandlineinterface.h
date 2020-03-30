@@ -44,6 +44,7 @@ public:
     int updatePackages();
     int installPackages();
     int uninstallPackages();
+    int removeInstallation();
 
 private:
     bool initialize();

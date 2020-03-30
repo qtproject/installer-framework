@@ -193,6 +193,23 @@ int CommandLineInterface::uninstallPackages()
     }
 }
 
+int CommandLineInterface::removeInstallation()
+{
+    if (!initialize())
+        return EXIT_FAILURE;
+    if (m_core->isInstaller()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot uninstall packages with installer.";
+        return EXIT_FAILURE;
+    }
+    m_core->setUninstaller();
+    try {
+        return m_core->removeInstallationSilently() ? EXIT_SUCCESS : EXIT_FAILURE;
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
+        return EXIT_FAILURE;
+    }
+}
+
 bool CommandLineInterface::checkLicense()
 {
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();

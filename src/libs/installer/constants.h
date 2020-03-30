@@ -124,6 +124,8 @@ static const QLatin1String scListShort("li");
 static const QLatin1String scListLong("list");
 static const QLatin1String scSearchShort("se");
 static const QLatin1String scSearchLong("search");
+static const QLatin1String scPurgeShort("pr");
+static const QLatin1String scPurgeLong("purge");
 
 // Repository management options
 static const QLatin1String scAddRepositoryShort("ar");
@@ -186,7 +188,9 @@ static const QStringList scCommandLineInterfaceOptions = {
     scListShort,
     scListLong,
     scSearchShort,
-    scSearchLong
+    scSearchLong,
+    scPurgeShort,
+    scPurgeLong
 };
 
 } // namespace CommandLineOptions

@@ -53,8 +53,10 @@ CommandLineParser::CommandLineParser()
             .arg(CommandLineOptions::scRemoveShort, CommandLineOptions::scRemoveLong)
         + QString::fromLatin1("\t%1, %2 - list currently installed packages\n")
             .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
-        + QString::fromLatin1("\t%1, %2 - search available packages - <regexp>")
-            .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong);
+        + QString::fromLatin1("\t%1, %2 - search available packages - <regexp>\n")
+            .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong)
+        + QString::fromLatin1("\t%1, %2 - uninstall all packages and remove entire program directory")
+            .arg(CommandLineOptions::scPurgeShort, CommandLineOptions::scPurgeLong);
 
     m_parser.setApplicationDescription(preformatted);
 
