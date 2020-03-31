@@ -63,6 +63,8 @@ private slots:
     void initTestCase()
     {
         core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core->setAllowedRunningProcesses(QStringList() << appFilePath);
         m_installDir = QInstaller::generateTemporaryFileName();
         QDir().mkpath(m_installDir);
         core->setValue(scTargetDir, m_installDir);

@@ -59,6 +59,8 @@ private:
     PackageManagerCore &initPackagemanager(const QString &repository)
     {
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core->setAllowedRunningProcesses(QStringList() << appFilePath);
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(repository);
         repoList.insert(repo);
@@ -135,6 +137,8 @@ private slots:
         QString loggingRules = (QLatin1String("ifw.installer.installog = true\n"));
         PackageManagerCore core;
         core.setPackageManager();
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core.setAllowedRunningProcesses(QStringList() << appFilePath);
         QLoggingCategory::setFilterRules(loggingRules);
 
         m_installDir = QInstaller::generateTemporaryFileName();
