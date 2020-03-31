@@ -23,7 +23,7 @@ instructions:
         maxTimeBetweenOutput: 120
         userMessageOnFailure: "Failed to change into tests directory."
       - type: ExecuteCommand
-        command: "{{.InstallDir}}/bin/qmake.exe INSTALL_PREFIX={{.InstallDir}}"
+        command: "{{.InstallDir}}/bin/qmake.exe INSTALL_PREFIX={{.InstallDir}} IFW_LIB_PATH={{.InstallDir}}/lib"
         maxTimeInSeconds: 600
         maxTimeBetweenOutput: 600
         userMessageOnFailure: "Failed running qmake, check logs."
@@ -57,7 +57,7 @@ instructions:
         maxTimeBetweenOutput: 120
         userMessageOnFailure: "Failed to change into tests directory."
       - type: ExecuteCommand
-        command: "{{.InstallDir}}/bin/qmake INSTALL_PREFIX={{.InstallDir}}"
+        command: "{{.InstallDir}}/bin/qmake INSTALL_PREFIX={{.InstallDir}} IFW_LIB_PATH={{.InstallDir}}/lib"
         maxTimeInSeconds: 600
         maxTimeBetweenOutput: 600
         userMessageOnFailure: "Failed running qmake, check logs."
@@ -86,7 +86,7 @@ instructions:
         maxTimeBetweenOutput: 120
         userMessageOnFailure: "Failed to change into tests directory."
       - type: ExecuteCommand
-        command: "c:{{.InstallDir}}\\bin\\qmake.exe INSTALL_PREFIX={{.InstallDir}}"
+        command: "c:{{.InstallDir}}\\bin\\qmake.exe INSTALL_PREFIX={{.InstallDir}} IFW_LIB_PATH={{.InstallDir}}/lib"
         maxTimeInSeconds: 600
         maxTimeBetweenOutput: 600
         userMessageOnFailure: "Failed running qmake, check logs."

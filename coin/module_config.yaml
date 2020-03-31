@@ -14,9 +14,6 @@ accept_configuration:
           property: features
           contains_value: Packaging
         - condition: property
-          property: features
-          contains_value: DisableTests
-        - condition: property
           property: configureArgs
           contains_value: -static
 
