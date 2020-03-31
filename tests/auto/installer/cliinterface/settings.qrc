@@ -21,7 +21,4 @@
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
         <file>data/componentsFromInstallPackagesRepository.xml</file>
     </qresource>
-    <qresource prefix="/metadata">
-        <file>installer-config/config.xml</file>
-    </qresource>
 </RCC>

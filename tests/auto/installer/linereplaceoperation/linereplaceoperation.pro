@@ -6,4 +6,5 @@ QT += testlib
 SOURCES += tst_linereplaceoperation.cpp
 
 RESOURCES += \
-    settings.qrc
+    settings.qrc \
+    ..\shared\config.qrc

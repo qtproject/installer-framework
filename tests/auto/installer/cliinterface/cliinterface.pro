@@ -5,4 +5,5 @@ QT += qml
 SOURCES += tst_cliinterface.cpp
 
 RESOURCES += \
-    settings.qrc
+    settings.qrc \
+    ..\shared\config.qrc

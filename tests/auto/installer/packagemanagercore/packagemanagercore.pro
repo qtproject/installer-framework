@@ -5,4 +5,4 @@ QT += qml
 SOURCES += tst_packagemanagercore.cpp
 
 RESOURCES += \
-    settings.qrc
+    ..\shared\config.qrc
