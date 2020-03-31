@@ -28,6 +28,12 @@
 
 #include <linereplaceoperation.h>
 
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <fileutils.h>
+#include <init.h>
+
 #include <QObject>
 #include <QFile>
 #include <QTest>
@@ -112,6 +118,31 @@ private slots:
 
         file.close();
         QVERIFY(file.remove());
+    }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QDir().mkpath(installDir);
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+
+        QFile file(installDir + QDir::separator() + "A.txt");
+        QVERIFY(file.open(QIODevice::ReadOnly) | QIODevice::Text);
+        QTextStream stream(&file);
+        QCOMPARE(stream.readLine(), QLatin1String("This line was replaced."));
+        QCOMPARE(stream.readLine(), QLatin1String("Another line."));
+        file.close();
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
 private:
