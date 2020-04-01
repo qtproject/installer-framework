@@ -26,9 +26,12 @@
 **
 **************************************************************************/
 
-#include "init.h"
-#include "registerfiletypeoperation.h"
-#include "packagemanagercore.h"
+#include <init.h>
+#include <registerfiletypeoperation.h>
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <fileutils.h>
 
 #include <QDir>
 #include <QObject>
@@ -36,6 +39,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QSettings>
+#include <QtGlobal>
+
 #include "qsettingswrapper.h"
 
 using namespace KDUpdater;
@@ -44,6 +49,24 @@ using namespace QInstaller;
 class tst_registerfiletypeoperation : public QObject
 {
     Q_OBJECT
+
+private:
+    void verifySettings()
+    {
+        QCOMPARE(m_settings->value(m_defaultKey).toString(), m_progId);
+        QCOMPARE(m_settings->value(m_openWithProgIdkey).toString(), QString());
+        QCOMPARE(m_settings->value(m_shellKey).toString(), m_command);
+        QCOMPARE(m_settings->value(m_shellAppkey).toString(), m_command);
+    }
+
+    void verifySettingsCleaned()
+    {
+         //Test that values have been removed after undo operation
+        QCOMPARE(m_settings->value(m_defaultKey).toString(), QString());
+        QCOMPARE(m_settings->value(m_openWithProgIdkey).toString(), QString());
+        QCOMPARE(m_settings->value(m_shellKey).toString(), QString());
+        QCOMPARE(m_settings->value(m_shellAppkey).toString(), QString());
+    }
 
 private slots:
     void initTestCase()
@@ -62,7 +85,22 @@ private slots:
 
         m_command = m_core.environmentVariable("SystemRoot") + "\\notepad.exe";
         m_progId = "QtProject.QtInstallerFramework." + m_fileType;
+        qputenv("ifw_random_filetype", m_fileType.toUtf8());
+        qputenv("ifw_random_programid", m_progId.toUtf8());
 
+        const QString settingsPath = QString::fromLatin1("HKEY_CURRENT_USER\\Software\\Classes\\");
+        m_settings = new QSettings(settingsPath, QSettings::NativeFormat);
+        m_defaultKey = "." + m_fileType + "/Default";
+        m_openWithProgIdkey = "." + m_fileType + "/OpenWithProgIds/" + m_progId;
+        m_shellKey = m_progId + "/shell/Open/Command/Default/";
+        m_shellAppkey = "/Applications/" + m_progId + "/shell/Open/Command/Default/";
+    }
+
+    void cleanupTestCase()
+    {
+        qunsetenv("ifw_random_filetype");
+        qunsetenv("ifw_random_programid");
+        delete m_settings;
     }
 
     void testMissingArguments()
@@ -82,31 +120,37 @@ private slots:
         RegisterFileTypeOperation op(&m_core);
         op.setArguments(QStringList() << m_fileType << m_command << "test filetype" <<
                                        "text/plain" << 0 << "ProgId="+m_progId);
-
-        const QString settingsPath = QString::fromLatin1("HKEY_CURRENT_USER\\Software\\Classes\\");
-        QSettings settings(settingsPath, QSettings::NativeFormat);
-
-
         QVERIFY(op.testOperation());
         QVERIFY(op.performOperation());
 
-        QString defaultKey = "."+m_fileType+ "/Default";
-        QString openWithProgIdkey = "." + m_fileType + "/OpenWithProgIds/" +m_progId;
-        QString shellKey = m_progId + "/shell/Open/Command/Default/";
-        QString shellAppkey = "/Applications/" + m_progId + "/shell/Open/Command/Default/";
-
-        QCOMPARE(settings.value(defaultKey).toString(), m_progId);
-        QCOMPARE(settings.value(openWithProgIdkey).toString(), QString());
-        QCOMPARE(settings.value(shellKey).toString(), m_command);
-        QCOMPARE(settings.value(shellAppkey).toString(), m_command);
-
+        verifySettings();
         QVERIFY(op.undoOperation());
+        verifySettingsCleaned();
+    }
 
-        //Test that values have been removed after undo operation
-        QCOMPARE(settings.value(defaultKey).toString(), QString());
-        QCOMPARE(settings.value(openWithProgIdkey).toString(), QString());
-        QCOMPARE(settings.value(shellKey).toString(), QString());
-        QCOMPARE(settings.value(shellAppkey).toString(), QString());
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QDir().mkpath(installDir);
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+        verifySettings();
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        verifySettingsCleaned();
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
 private:
@@ -114,6 +158,11 @@ private:
     QString m_command;
     QString m_progId;
     PackageManagerCore m_core;
+    QSettings *m_settings;
+    QString m_defaultKey = "."+m_fileType+ "/Default";
+    QString m_openWithProgIdkey = "." + m_fileType + "/OpenWithProgIds/" +m_progId;
+    QString m_shellKey = m_progId + "/shell/Open/Command/Default/";
+    QString m_shellAppkey = "/Applications/" + m_progId + "/shell/Open/Command/Default/";
 };
 
 QTEST_MAIN(tst_registerfiletypeoperation)
