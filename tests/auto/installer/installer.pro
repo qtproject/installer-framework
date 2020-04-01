@@ -28,7 +28,8 @@ SUBDIRS += \
     cliinterface \
     linereplaceoperation \
     metadatajob \
-    simplemovefileoperation
+    simplemovefileoperation \
+    deleteoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation
