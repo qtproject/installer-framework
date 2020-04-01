@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2019 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,10 @@
 #include <fileutils.h>
 #include <replaceoperation.h>
 #include <qinstallerglobal.h>
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <init.h>
 
 #include <QObject>
 #include <QDir>
@@ -172,6 +176,31 @@ private slots:
         file.close();
         QVERIFY(file.remove());
         QVERIFY(QDir().rmdir(m_testDirectory));
+    }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker,
+                                                          QList<OperationBlob> ());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QVERIFY(QDir().mkpath(m_testDirectory));
+        core->setValue(scTargetDir, m_testDirectory);
+        core->installDefaultComponentsSilently();
+
+        QFile file(m_testDirectory + QDir::separator() + "A.txt");
+        QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+        QTextStream stream(&file);
+        QCOMPARE(stream.readLine(), QLatin1String("text to replace."));
+        QCOMPARE(stream.readLine(), QLatin1String("Another text."));
+        file.close();
+        QDir dir(m_testDirectory);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
 private:
