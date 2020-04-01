@@ -29,6 +29,10 @@
 #include <init.h>
 #include <updateoperations.h>
 #include <utils.h>
+#include <binarycontent.h>
+#include <packagemanagercore.h>
+#include <settings.h>
+#include <fileutils.h>
 
 #include <QDir>
 #include <QObject>
@@ -134,6 +138,40 @@ private slots:
         currentFileHash = QInstaller::calculateHash(m_testDestinationFilePath, QCryptographicHash::Sha1);
         QVERIFY(testFileHash == currentFileHash);
     }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QDir().mkpath(installDir);
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+
+        QFile copiedFile(installDir + QDir::separator() + "AnotherFolder/A.txt");
+        QVERIFY(copiedFile.exists());
+        QFile originalFile(installDir + QDir::separator() + "A.txt");
+        QVERIFY(originalFile.exists());
+
+        QByteArray destinationFileHash = QInstaller::calculateHash(copiedFile.fileName(), QCryptographicHash::Sha1);
+        QByteArray testFileHash = QInstaller::calculateHash(originalFile.fileName(), QCryptographicHash::Sha1);
+        QVERIFY(testFileHash == destinationFileHash);
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!copiedFile.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
     void init()
     {
         QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Destination \"%1\" should not exist "
