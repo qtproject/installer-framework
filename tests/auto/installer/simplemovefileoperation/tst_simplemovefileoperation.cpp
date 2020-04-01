@@ -27,6 +27,11 @@
 **************************************************************************/
 
 #include <simplemovefileoperation.h>
+
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <init.h>
 #include <fileutils.h>
 #include <utils.h>
 
@@ -108,6 +113,44 @@ private slots:
         QVERIFY(testFileHash == sourceFileHash);
 
         QVERIFY(QFile(source).remove());
+    }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+
+        QString destinationDir = installDir + QDir::separator() + "destination";
+        QVERIFY(QDir().mkpath(destinationDir));
+
+        // Matches filename in component install script
+        QFile file(installDir + QDir::toNativeSeparators("/test"));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.close();
+
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+        QVERIFY(!file.exists());
+
+        QFile movedFile(destinationDir + QDir::separator() + "test");
+        QVERIFY(movedFile.exists());
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!movedFile.exists() && file.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 };
 
