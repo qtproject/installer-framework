@@ -45,7 +45,7 @@ struct VerifyInstaller
         QVERIFY(fileInfo.exists());
     }
 
-    static void verifyInstallerResourcesDeletion(const QString &installDir, const QString &componentName, const QString &fileName)
+    static void verifyInstallerResourcesDeletion(const QString &installDir, const QString &componentName)
     {
         QDir dir(installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
         QVERIFY(!dir.exists());

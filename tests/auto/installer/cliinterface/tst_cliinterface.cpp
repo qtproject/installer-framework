@@ -201,8 +201,8 @@ private slots:
         core.setPackageManager();
         core.uninstallComponentsSilently(QStringList() << QLatin1String("componentA"));
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentA", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentG", "1.0.0content.txt"); //Depends on componentA
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentA");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentG"); //Depends on componentA
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentE.txt");
     }
 
@@ -238,7 +238,7 @@ private slots:
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Depends on componentA
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt"); //Autodepend on componentA and componentB
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentC", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentC");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
                             << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
                             << "installcontentD.txt"<< "installcontentE.txt" << "installcontentG.txt");
@@ -276,9 +276,9 @@ private slots:
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt"); //Dependency for componentG
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Default install
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF.subcomponent2.subsubcomponent2", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF.subcomponent2", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF.subcomponent2.subsubcomponent2");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF.subcomponent2");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
                             << "installcontent.txt" << "installcontentA.txt"
                             << "installcontentE.txt" << "installcontentG.txt");
@@ -309,7 +309,7 @@ private slots:
         core.uninstallComponentsSilently(QStringList() << "componentG");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt"); //Dependency for componentG
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
-        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentG", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentG");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontent.txt"
                             << "installcontentA.txt" << "installcontentE.txt");
     }
