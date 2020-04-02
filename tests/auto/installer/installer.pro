@@ -30,7 +30,8 @@ SUBDIRS += \
     metadatajob \
     simplemovefileoperation \
     deleteoperation \
-    commandlineupdate
+    commandlineupdate \
+    moveoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation
