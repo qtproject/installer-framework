@@ -29,7 +29,8 @@ SUBDIRS += \
     linereplaceoperation \
     metadatajob \
     simplemovefileoperation \
-    deleteoperation
+    deleteoperation \
+    commandlineupdate
 
 win32 {
     SUBDIRS += registerfiletypeoperation
