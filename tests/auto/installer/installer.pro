@@ -28,6 +28,7 @@ SUBDIRS += \
     cliinterface \
     linereplaceoperation \
     metadatajob \
+    appendfileoperation \
     simplemovefileoperation \
     deleteoperation \
     copydirectoryoperation \
