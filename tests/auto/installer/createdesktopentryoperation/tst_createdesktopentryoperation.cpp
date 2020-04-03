@@ -26,7 +26,14 @@
 **
 **************************************************************************/
 
-#include "createdesktopentryoperation.h"
+#include <createdesktopentryoperation.h>
+
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <fileutils.h>
+#include <init.h>
+#include <component.h>
 
 #include <QObject>
 #include <QTest>
@@ -100,6 +107,58 @@ private slots:
         QVERIFY(QFileInfo().exists(filename));
 
         QVERIFY(QFile(filename).remove());
+    }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+
+        CreateDesktopEntryOperation *createDesktopEntryOp = nullptr;
+        OperationList operations = core->componentByName("A")->operations();
+        foreach (Operation *op, operations) {
+            if (op->name() == QLatin1String("CreateDesktopEntry"))
+                createDesktopEntryOp = dynamic_cast<CreateDesktopEntryOperation *>(op);
+        }
+        QVERIFY(createDesktopEntryOp);
+
+        QString entryFileName = createDesktopEntryOp->absoluteFileName();
+        QVERIFY(QFileInfo(entryFileName).exists());
+        if (QFileInfo(createDesktopEntryOp->arguments().first()).isRelative()) {
+            QStringList directories = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
+                .split(QLatin1Char(':'), QString::SkipEmptyParts);
+            // Default path if XDG_DATA_HOME is not set
+            directories.append(QDir::home().absoluteFilePath(QLatin1String(".local/share")));
+            bool validPath = false;
+            foreach (const QString &dir, directories) {
+                // Desktop entry should be in one of the expected locations
+                if (QFileInfo(entryFileName).absolutePath() == QDir(dir).absoluteFilePath("applications")) {
+                    validPath = true;
+                    break;
+                }
+            }
+            QVERIFY(validPath);
+        }
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY2(!QFileInfo(entryFileName).exists(), "Please make sure there "
+            "does not exist a desktop entry with the same name.");
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
 private:
