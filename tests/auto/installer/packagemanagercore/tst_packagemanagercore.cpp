@@ -32,6 +32,8 @@
 #include <fileutils.h>
 #include <packagemanagercore.h>
 #include <progresscoordinator.h>
+#include <init.h>
+#include <settings.h>
 
 #include <QDir>
 #include <QFile>
@@ -318,6 +320,43 @@ private slots:
         QVERIFY_EXCEPTION_THROWN(core.updateComponentsSilently(QStringList()), Error);
 
         QVERIFY(QDir().rmdir(testDirectory));
+    }
+
+    void testCoreDataValues()
+    {
+        QHash<QString, QString> userValues;
+
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
+                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          userValues, true);
+        QCOMPARE(core->value("AllUsers"), "");
+        QCOMPARE(core->value("ProductName"), "Unit Test Application");
+        QCOMPARE(core->value("ProductVersion"), "1.0.0");
+        QCOMPARE(core->value("Title"), "Unit Test Application Title");
+        QCOMPARE(core->value("RootDir"), QDir::rootPath());
+
+        core->deleteLater();
+        core->deleteLater();
+    }
+
+    void testOverwrittenCoreDataValues()
+    {
+        QHash<QString, QString> userValues;
+        userValues.insert("AllUsers", "true");
+        userValues.insert("ProductName", "Overwritten ProductName");
+        userValues.insert("ProductVersion", "2.0.0");
+        userValues.insert("Title", "Overwritten Title");
+        userValues.insert("RootDir", "Overwritten RootDir");
+
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
+                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          userValues, true);
+        QCOMPARE(core->value("AllUsers"), "true");
+        QCOMPARE(core->value("ProductName"), "Overwritten ProductName");
+        QCOMPARE(core->value("ProductVersion"), "2.0.0");
+        QCOMPARE(core->value("Title"), "Overwritten Title");
+        QCOMPARE(core->value("RootDir"), "Overwritten RootDir");
+        core->deleteLater();
     }
 };
 

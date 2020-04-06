@@ -132,10 +132,10 @@ public:
             binary.close();
 
         QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
-        bool isCliInterface = false;
+        bool isCommandLineInterface = false;
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
            if (m_parser.positionalArguments().contains(option)) {
-               isCliInterface = true;
+               isCommandLineInterface = true;
                break;
            }
         }
@@ -144,7 +144,7 @@ public:
                 loggingRules = m_parser.value(CommandLineOptions::scLoggingRulesLong)
                               .split(QLatin1Char(','), QString::SkipEmptyParts)
                               .join(QLatin1Char('\n')); // take rules from command line
-            } else if (isCliInterface) {
+            } else if (isCommandLineInterface) {
                 loggingRules = QLatin1String("ifw.* = false\n"
                                             "ifw.installer.* = true\n"
                                             "ifw.server = true\n"
@@ -163,6 +163,8 @@ public:
         QLoggingCategory::setFilterRules(loggingRules);
 
         SDKApp::registerMetaResources(manager.collectionByName("QResources"));
+
+        const QHash<QString, QString> userArgs = userArguments();
         if (m_parser.isSet(CommandLineOptions::scStartClientLong)) {
             const QStringList arguments = m_parser.value(CommandLineOptions::scStartClientLong)
                 .split(QLatin1Char(','), QString::SkipEmptyParts);
@@ -170,11 +172,11 @@ public:
                 magicMarker, oldOperations,
                 arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
                 arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
-                QInstaller::Protocol::Mode::Debug);
+                QInstaller::Protocol::Mode::Debug, userArgs, isCommandLineInterface);
         } else {
             m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
-                QUuid::createUuid().toString(), QUuid::createUuid().toString());
-            m_core->setCommandLineInstance(isCliInterface);
+                QUuid::createUuid().toString(), QUuid::createUuid().toString(),
+                QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
         }
 
         {
@@ -272,14 +274,6 @@ public:
             .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());
 
-        const QStringList positionalArguments = m_parser.positionalArguments();
-        foreach (const QString &argument, positionalArguments) {
-            if (argument.contains(QLatin1Char('='))) {
-                const QString name = argument.section(QLatin1Char('='), 0, 0);
-                const QString value = argument.section(QLatin1Char('='), 1, 1);
-                m_core->setValue(name, value);
-            }
-        }
         return true;
     }
 
@@ -370,6 +364,20 @@ public:
         foreach (const QString &item, items)
             qCDebug(QInstaller::lcGeneral) << "Adding custom repository:" << item;
         return items;
+    }
+
+    QHash<QString, QString> userArguments()
+    {
+        QHash<QString, QString> params;
+        const QStringList positionalArguments = m_parser.positionalArguments();
+        foreach (const QString &argument, positionalArguments) {
+            if (argument.contains(QLatin1Char('='))) {
+                const QString name = argument.section(QLatin1Char('='), 0, 0);
+                const QString value = argument.section(QLatin1Char('='), 1, 1);
+                params.insert(name, value);
+            }
+        }
+        return params;
     }
 
 private:

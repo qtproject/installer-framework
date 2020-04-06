@@ -62,7 +62,9 @@ public:
     PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops,
         const QString &socketName = QString(),
         const QString &key = QLatin1String(Protocol::DefaultAuthorizationKey),
-        Protocol::Mode mode = Protocol::Mode::Production);
+        Protocol::Mode mode = Protocol::Mode::Production,
+        const QHash<QString, QString> &params = QHash<QString, QString>(),
+        const bool commandLineInstance = false);
     ~PackageManagerCore();
 
     // status

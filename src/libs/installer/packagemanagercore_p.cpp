@@ -592,7 +592,6 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 #endif
     }
     processFilesForDelayedDeletion();
-    m_data.setDynamicPredefinedVariables();
 
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);

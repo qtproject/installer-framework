@@ -1027,14 +1027,17 @@ PackageManagerCore::PackageManagerCore()
     and \a mode to set the server side authorization key.
 */
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
-        const QString &socketName, const QString &key, Protocol::Mode mode)
+        const QString &socketName, const QString &key, Protocol::Mode mode,
+        const QHash<QString, QString> &params, const bool commandLineInstance)
     : d(new PackageManagerCorePrivate(this, magicmaker, operations))
 {
+    setCommandLineInstance(commandLineInstance);
     Repository::registerMetaType(); // register, cause we stream the type as QVariant
     qRegisterMetaType<QInstaller::PackageManagerCore::Status>("QInstaller::PackageManagerCore::Status");
     qRegisterMetaType<QInstaller::PackageManagerCore::WizardPage>("QInstaller::PackageManagerCore::WizardPage");
 
-    d->initialize(QHash<QString, QString>());
+    d->initialize(params);
+
     // Creates and initializes a remote client, makes us get admin rights for QFile, QSettings
     // and QProcess operations. Init needs to called to set the server side authorization key.
     if (!d->isUpdater()) {

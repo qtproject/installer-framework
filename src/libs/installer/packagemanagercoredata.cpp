@@ -46,7 +46,6 @@ namespace QInstaller
 
 PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables)
 {
-    m_variables = variables;
     setDynamicPredefinedVariables();
 
     // Set some common variables that may used e.g. as placeholder in some of the settings variables or
@@ -86,6 +85,12 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
 
     m_variables.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
     m_variables.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
+
+    // Iterate over user defined parameters. If those are found, add to table or
+    // replace existing values.
+    QHash<QString, QString>::const_iterator it;
+    for (it = variables.begin(); it != variables.end(); ++it)
+        m_variables.insert(it.key(), it.value());
 }
 
 void PackageManagerCoreData::clear()
