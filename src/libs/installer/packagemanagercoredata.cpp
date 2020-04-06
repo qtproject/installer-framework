@@ -167,9 +167,9 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
         desktop = user.value(QLatin1String("Desktop")).toString();
     }
     m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
-    m_variables.insert(QLatin1String("UserStartMenuProgramsPath"),
+    m_variables.insert(scUserStartMenuProgramsPath,
         replaceWindowsEnvironmentVariables(programs));
-    m_variables.insert(QLatin1String("AllUsersStartMenuProgramsPath"),
+    m_variables.insert(scAllUsersStartMenuProgramsPath,
         replaceWindowsEnvironmentVariables(allPrograms));
 #endif
 #define QUOTE_(x) #x

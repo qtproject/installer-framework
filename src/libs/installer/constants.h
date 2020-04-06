@@ -38,6 +38,8 @@ namespace QInstaller {
 static const QLatin1String scTrue("true");
 static const QLatin1String scFalse("false");
 static const QLatin1String scScript("script");
+static const QLatin1String scAllUsersStartMenuProgramsPath("AllUsersStartMenuProgramsPath");
+static const QLatin1String scUserStartMenuProgramsPath("UserStartMenuProgramsPath");
 
 static const QLatin1String scName("Name");
 static const QLatin1String scVersion("Version");

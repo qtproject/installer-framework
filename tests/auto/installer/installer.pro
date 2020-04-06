@@ -37,7 +37,8 @@ SUBDIRS += \
     environmentvariableoperation
 
 win32 {
-    SUBDIRS += registerfiletypeoperation
+    SUBDIRS += registerfiletypeoperation \
+        createshortcutoperation
 }
 
 linux-g++* {

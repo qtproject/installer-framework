@@ -593,6 +593,20 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     }
     processFilesForDelayedDeletion();
 
+    // Set shortcut path for command line interface, in GUI version
+    // we have a separate page where the whole path is set.
+#ifdef Q_OS_WIN
+    if (m_core->isCommandLineInstance()) {
+        QString startMenuPath;
+        if (params.value(QLatin1String("AllUsers")) == scTrue)
+            startMenuPath = m_data.value(scAllUsersStartMenuProgramsPath).toString();
+        else
+            startMenuPath = m_data.value(scUserStartMenuProgramsPath).toString();
+        QString startMenuDir = m_core->value(scStartMenuDir, m_core->value(QLatin1String("ProductName")));
+        m_data.setValue(scStartMenuDir, startMenuPath + QDir::separator() + startMenuDir);
+    }
+#endif
+
     disconnect(this, &PackageManagerCorePrivate::installationStarted,
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
     connect(this, &PackageManagerCorePrivate::installationStarted,
@@ -1901,10 +1915,10 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                 .join(QLatin1String("; ")), operation->errorString());
             const QMessageBox::StandardButton button =
                 MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
+                QLatin1String("installationErrorWithCancel"), tr("Installer Error"),
                 tr("Error during installation process (%1):\n%2").arg(component->name(),
                 operation->errorString()),
-                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Retry);
+                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Cancel);
 
             if (button == QMessageBox::Retry)
                 ok = performOperationThreaded(operation);

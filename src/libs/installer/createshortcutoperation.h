@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,7 +37,7 @@ class INSTALLER_EXPORT CreateShortcutOperation : public Operation
 {
     Q_DECLARE_TR_FUNCTIONS(QInstaller::CreateShortcutOperation)
 public:
-    explicit CreateShortcutOperation(PackageManagerCore *core);
+    explicit CreateShortcutOperation(PackageManagerCore *core = nullptr);
 
     void backup();
     bool performOperation();
