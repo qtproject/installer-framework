@@ -39,7 +39,9 @@ win32 {
 }
 
 linux-g++* {
-    SUBDIRS += createdesktopentryoperation
+    SUBDIRS += \
+        createdesktopentryoperation \
+        installiconsoperation
 }
 
 scriptengine.depends += unicodeexecutable

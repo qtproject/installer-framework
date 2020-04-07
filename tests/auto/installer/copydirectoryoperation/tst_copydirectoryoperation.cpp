@@ -26,6 +26,8 @@
 **
 **************************************************************************/
 
+#include "../shared/commonfunctions.h"
+
 #include <fileutils.h>
 #include <copydirectoryoperation.h>
 #include <binarycontent.h>
@@ -36,7 +38,6 @@
 #include <QObject>
 #include <QDir>
 #include <QFile>
-#include <QCryptographicHash>
 #include <QTest>
 
 using namespace KDUpdater;
@@ -161,11 +162,11 @@ private slots:
         // Matches path in component install script
         QFileInfo targetInfo(installDir + QDir::toNativeSeparators("/directory"));
         QMap<QString, QByteArray> targetMap;
-        addToFileMap(QDir(targetInfo.absoluteFilePath()), targetInfo, targetMap);
+        VerifyInstaller::addToFileMap(QDir(targetInfo.absoluteFilePath()), targetInfo, targetMap);
 
         QFileInfo destinationInfo(installDir + QDir::toNativeSeparators("/destination/directory"));
         QMap<QString, QByteArray> destinationMap;
-        addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
+        VerifyInstaller::addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
 
         QVERIFY(targetMap == destinationMap);
 
@@ -180,27 +181,6 @@ private slots:
     }
 
 private:
-    void addToFileMap(const QDir &baseDir, const QFileInfo &fileInfo, QMap<QString, QByteArray> &map)
-    {
-        QDir directory(fileInfo.absoluteFilePath());
-        directory.setFilter(QDir::NoDotAndDotDot | QDir::NoSymLinks | QDir::AllDirs | QDir::Files);
-        QFileInfoList fileInfoList = directory.entryInfoList();
-
-        foreach (const QFileInfo &info, fileInfoList) {
-            if (info.isDir()) {
-                map.insert(baseDir.relativeFilePath(info.filePath()), QByteArray());
-                addToFileMap(baseDir, info, map);
-            } else {
-                QCryptographicHash hash(QCryptographicHash::Sha1);
-                QFile file(info.absoluteFilePath());
-                QVERIFY(file.open(QIODevice::ReadOnly));
-                QVERIFY(hash.addData(&file));
-                map.insert(baseDir.relativeFilePath(info.filePath()), hash.result().toHex());
-                file.close();
-            }
-        }
-    }
-
     QString m_sourcePath;
     QString m_destinationPath;
 };
