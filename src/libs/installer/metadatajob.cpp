@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -58,6 +58,13 @@ MetadataJob::MetadataJob(QObject *parent)
     , m_downloadableChunkSize(1000)
     , m_taskNumber(0)
 {
+    QByteArray downloadableChunkSize = qgetenv("IFW_METADATA_SIZE");
+    if (!downloadableChunkSize.isEmpty()) {
+        int chunkSize = QString::fromLocal8Bit(downloadableChunkSize).toInt();
+        if (chunkSize > 0)
+            m_downloadableChunkSize = chunkSize;
+    }
+
     setCapabilities(Cancelable);
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
