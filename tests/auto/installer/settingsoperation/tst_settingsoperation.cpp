@@ -28,6 +28,11 @@
 #include <utils.h>
 #include <settingsoperation.h>
 #include <qinstallerglobal.h>
+#include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <settings.h>
+#include <fileutils.h>
+#include <init.h>
 
 #include <QObject>
 #include <QTest>
@@ -278,6 +283,42 @@ private slots:
             QCOMPARE(verifySettings.value(testKeys.at(0)), verifySettings.value(testKeys.at(1)));
             QCOMPARE(verifySettings.value(testKeys.at(1)), verifySettings.value(testKeys.at(2)));
         }
+    }
+
+    void testPerformingFromCLI()
+    {
+        QInstaller::init(); //This will eat debug output
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+
+        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QDir().mkpath(installDir);
+        core->setValue(scTargetDir, installDir);
+
+        QSettings testSettings(QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename),
+            QSettings::IniFormat);
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
+                 "value2" << "value3");
+
+        core->installDefaultComponentsSilently();
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
+                 "value2" << "value3" << "valueFromScript");
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "A");
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
+                 "value2" << "value3");
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 
     // called after all tests
