@@ -143,6 +143,7 @@ private slots:
     {
         QInstaller::init(); //This will eat debug output
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(":///data/repository");
         repoList.insert(repo);
