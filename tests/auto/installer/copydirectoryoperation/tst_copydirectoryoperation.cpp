@@ -91,7 +91,6 @@ private slots:
                                            "if specified."));
 
         op.setArguments(QStringList() << "" << "");
-        QTest::ignoreMessage(QtWarningMsg, "QFileInfo::absolutePath: Constructed with empty filename");
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
