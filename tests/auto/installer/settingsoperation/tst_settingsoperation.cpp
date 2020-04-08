@@ -302,20 +302,20 @@ private slots:
 
         QSettings testSettings(QDir(m_testSettingsDirPath).filePath(m_testSettingsFilename),
             QSettings::IniFormat);
-        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
-                 "value2" << "value3");
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3");
 
         core->installDefaultComponentsSilently();
 
-        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
-                 "value2" << "value3" << "valueFromScript");
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3" << "valueFromScript");
 
         core->commitSessionOperations();
         core->setPackageManager();
         core->uninstallComponentsSilently(QStringList() << "A");
 
-        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1"), QStringList() << "value1" <<
-                 "value2" << "value3");
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "value1" << "value2" << "value3");
         QDir dir(installDir);
         QVERIFY(dir.removeRecursively());
         core->deleteLater();
