@@ -32,7 +32,8 @@ SUBDIRS += \
     deleteoperation \
     copydirectoryoperation \
     commandlineupdate \
-    moveoperation
+    moveoperation \
+    environmentvariableoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation

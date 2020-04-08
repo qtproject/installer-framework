@@ -2,5 +2,4 @@ TEMPLATE = subdirs
 
 SUBDIRS = \
         auto \
-        downloadspeed \
-        environmentvariable
+        downloadspeed
