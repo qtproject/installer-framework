@@ -274,6 +274,11 @@ public:
             .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());
 
+        if (m_parser.isSet(CommandLineOptions::scAcceptMessageQuery))
+            m_core->autoAcceptMessageBoxes();
+        if (m_parser.isSet(CommandLineOptions::scRejectMessageQuery))
+            m_core->autoRejectMessageBoxes();
+
         return true;
     }
 

@@ -814,7 +814,7 @@ void KDUpdater::LocalFileDownloader::doDownload()
     if (!d->source->open(QFile::ReadOnly)) {
         onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for reading: %2").arg(QFileInfo(localFile)
-            .fileName(), d->source->errorString()));
+            .fileName(), d->source ? d->source->errorString() : tr("File not found")));
         return;
     }
 

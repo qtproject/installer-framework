@@ -406,8 +406,12 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Created " << messageTypeHash.value(messageType).toUtf8().constData()
                        << " message box " << identifier << ": " << title << ", " << text;
 
-    if (qobject_cast<QApplication*> (qApp) == nullptr)
-        return defaultButton;
+    if (qobject_cast<QApplication*> (qApp) == nullptr) {
+        if (m_defaultAction != AskUser)
+            return autoReply(buttons);
+        else
+            return defaultButton;
+    }
 
     if (m_automaticAnswers.contains(identifier))
         return m_automaticAnswers.value(identifier);

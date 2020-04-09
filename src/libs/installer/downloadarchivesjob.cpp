@@ -215,7 +215,10 @@ void DownloadArchivesJob::registerFile()
             "downloading failed. This is a temporary error, please retry."),
             QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel);
 
-        if (res == QMessageBox::Cancel) {
+        // If run from command line instance, do not continue if hash verification failed.
+        // Same download is tried again and again causing infinite loop if hash not
+        // fixed to repositories.
+        if (res == QMessageBox::Cancel || m_core->isCommandLineInstance()) {
             finishWithError(tr("Cannot verify Hash"));
             return;
         }
@@ -249,7 +252,9 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
         QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Cannot download archive %1: %2")
         .arg(m_archivesToDownload.first().second, error), QMessageBox::Retry | QMessageBox::Cancel);
 
-    if (b == QMessageBox::Retry)
+    // Do not call fetchNextArchiveHash when using command line instance,
+    // installer tries to download the same archive causing infinite loop
+    if (b == QMessageBox::Retry && !m_core->isCommandLineInstance())
         QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
     else
         downloadCanceled();

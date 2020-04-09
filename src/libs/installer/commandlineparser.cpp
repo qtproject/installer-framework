@@ -146,6 +146,12 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Create a local repository inside the installation directory. This option "
                       "has no effect on online installers.")));
 
+    // Message query options
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQuery,
+         QLatin1String("Accepts all message queries without user input.")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scRejectMessageQuery,
+         QLatin1String("Rejects all message queries without user input.")));
+
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()
          << CommandLineOptions::scScriptShort << CommandLineOptions::scScriptLong,

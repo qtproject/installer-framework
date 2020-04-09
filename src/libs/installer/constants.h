@@ -151,6 +151,10 @@ static const QLatin1String scStartPackageManagerLong("start-package-manager");
 static const QLatin1String scStartUninstallerShort("sr");
 static const QLatin1String scStartUninstallerLong("start-uninstaller");
 
+// Message acceptance options
+static const QLatin1String scAcceptMessageQuery("accept-messages");
+static const QLatin1String scRejectMessageQuery("reject-messages");
+
 // Misc installation options
 static const QLatin1String scRootShort("t");
 static const QLatin1String scRootLong("root");
