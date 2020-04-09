@@ -937,7 +937,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
             QLatin1String("stopProcessesForUpdates"), tr("Stop Processes"), tr("These processes "
             "should be stopped to continue:\n\n%1").arg(QDir::toNativeSeparators(processes
             .join(QLatin1String("\n")))), QMessageBox::Retry | QMessageBox::Ignore
-            | QMessageBox::Cancel, QMessageBox::Retry);
+            | QMessageBox::Cancel, QMessageBox::Cancel);
         if (button == QMessageBox::Ignore)
             return;
         if (button == QMessageBox::Cancel) {
@@ -2133,9 +2133,9 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
                     const QMessageBox::StandardButton button =
                         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
-                        QLatin1String("installationErrorWithRetry"), tr("Installer Error"),
+                        QLatin1String("installationErrorWithIgnore"), tr("Installer Error"),
                         tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
-                        QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Retry);
+                        QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Ignore);
 
                     if (button == QMessageBox::Retry)
                         ok = performOperationThreaded(undoOperation, Undo);

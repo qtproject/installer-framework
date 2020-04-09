@@ -1042,7 +1042,7 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
         const QMessageBox::StandardButton button =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("OperationDoesNotExistError"), tr("Error"), tr("Error: Operation %1 does not exist.")
-                .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore);
+                .arg(operationName), QMessageBox::Abort | QMessageBox::Ignore, QMessageBox::Abort);
         if (button == QMessageBox::Abort)
             d->m_operationsCreatedSuccessfully = false;
         return operation;

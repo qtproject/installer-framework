@@ -135,7 +135,7 @@ public:
                                 "Cannot get authorization that is needed for continuing the installation.\n\n"
                                 "Please start the setup program as a user with the appropriate rights.\n"
                                 "Or accept the elevation of access rights if being asked."),
-                                QMessageBox::Abort | QMessageBox::Retry, QMessageBox::Retry);
+                                QMessageBox::Abort | QMessageBox::Retry, QMessageBox::Abort);
                         if (res == QMessageBox::Retry)
                             started = AdminAuthorization::execute(0, m_serverCommand, m_serverArguments);
                     }
