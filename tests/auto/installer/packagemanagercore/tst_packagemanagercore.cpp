@@ -329,10 +329,10 @@ private slots:
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
                                                           QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                                           userValues, true);
-        QCOMPARE(core->value("AllUsers"), "");
-        QCOMPARE(core->value("ProductName"), "Unit Test Application");
-        QCOMPARE(core->value("ProductVersion"), "1.0.0");
-        QCOMPARE(core->value("Title"), "Unit Test Application Title");
+        QCOMPARE(core->value("AllUsers"), QLatin1String(""));
+        QCOMPARE(core->value("ProductName"), QLatin1String("Unit Test Application"));
+        QCOMPARE(core->value("ProductVersion"), QLatin1String("1.0.0"));
+        QCOMPARE(core->value("Title"), QLatin1String("Unit Test Application Title"));
         QCOMPARE(core->value("RootDir"), QDir::rootPath());
 
         core->deleteLater();
@@ -351,11 +351,11 @@ private slots:
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
                                                           QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                                           userValues, true);
-        QCOMPARE(core->value("AllUsers"), "true");
-        QCOMPARE(core->value("ProductName"), "Overwritten ProductName");
-        QCOMPARE(core->value("ProductVersion"), "2.0.0");
-        QCOMPARE(core->value("Title"), "Overwritten Title");
-        QCOMPARE(core->value("RootDir"), "Overwritten RootDir");
+        QCOMPARE(core->value("AllUsers"), QLatin1String("true"));
+        QCOMPARE(core->value("ProductName"), QLatin1String("Overwritten ProductName"));
+        QCOMPARE(core->value("ProductVersion"), QLatin1String("2.0.0"));
+        QCOMPARE(core->value("Title"), QLatin1String("Overwritten Title"));
+        QCOMPARE(core->value("RootDir"), QLatin1String("Overwritten RootDir"));
         core->deleteLater();
     }
 };
