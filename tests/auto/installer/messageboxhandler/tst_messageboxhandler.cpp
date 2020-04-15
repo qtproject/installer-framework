@@ -197,6 +197,32 @@ private slots:
         QCOMPARE(PackageManagerCore::Canceled, core->status());
     }
 
+    void messageBoxFromScriptDefaultAnswer()
+    {
+        setRepository(":///data/messagebox");
+        // Resets in autoAcceptMessageBoxes set in previous function
+        MessageBoxHandler::instance()->setDefaultAction(MessageBoxHandler::AskUser);
+        core->installSelectedComponentsSilently(QStringList () << "A");
+
+        // These values are written in script based on default
+        // messagebox query results.
+        QCOMPARE(core->value("test.question.default.ok"), QLatin1String("Ok"));
+        QCOMPARE(core->value("test.question.default.cancel"), QLatin1String("Cancel"));
+    }
+
+    void messageBoxFromScriptAutoAnswer()
+    {
+        setRepository(":///data/messagebox");
+        core->setMessageBoxAutomaticAnswer("test.question.default.ok", QMessageBox::Cancel);
+        core->setMessageBoxAutomaticAnswer("test.question.default.cancel", QMessageBox::Ok);
+        core->installSelectedComponentsSilently(QStringList () << "A");
+
+        // These values are written in script based on
+        // messagebox query results.
+        QCOMPARE(core->value("test.question.default.ok"), QLatin1String("Cancel"));
+        QCOMPARE(core->value("test.question.default.cancel"), QLatin1String("Ok"));
+    }
+
     void cleanupTestCase()
     {
         core->deleteLater();
@@ -211,6 +237,6 @@ private:
     QString m_installDir;
 };
 
-QTEST_MAIN(tst_MessageBoxHandler)
+QTEST_GUILESS_MAIN(tst_MessageBoxHandler)
 
 #include "tst_messageboxhandler.moc"

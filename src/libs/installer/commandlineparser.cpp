@@ -151,6 +151,11 @@ CommandLineParser::CommandLineParser()
          QLatin1String("Accepts all message queries without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scRejectMessageQuery,
          QLatin1String("Rejects all message queries without user input.")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageAutomaticAnswer,
+         QLatin1String("Automatically answers the message queries with the message identifier and button value. "
+                       "Several identifier=value pairs can be given separated with comma, "
+                       "for example --auto-answer message.id=QMessageBox::Ok,message.id2=QMessageBox::Cancel."),
+         QLatin1String("identifier=value")));
 
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()

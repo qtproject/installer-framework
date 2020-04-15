@@ -52,6 +52,8 @@
 #include <QResource>
 #include <QLoggingCategory>
 #include <QUuid>
+#include <QMessageBox>
+#include <QMetaEnum>
 
 template<class T>
 class SDKApp : public T
@@ -279,6 +281,18 @@ public:
         if (m_parser.isSet(CommandLineOptions::scRejectMessageQuery))
             m_core->autoRejectMessageBoxes();
 
+        if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswer)) {
+            const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswer);
+            const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+            if (items.count() > 0) {
+                errorMessage = setMessageBoxAutomaticAnswers(items);
+                if (!errorMessage.isEmpty())
+                    return false;
+            } else {
+                errorMessage = QObject::tr("Arguments missing for option %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
+                return false;
+            }
+        }
         return true;
     }
 
@@ -383,6 +397,30 @@ public:
             }
         }
         return params;
+    }
+
+    QString setMessageBoxAutomaticAnswers(const QStringList &items)
+    {
+        foreach (const QString &item, items) {
+            if (item.contains(QLatin1Char('='))) {
+                const QMetaObject metaObject = QMessageBox::staticMetaObject;
+                int enumIndex = metaObject.indexOfEnumerator("StandardButton");
+                if (enumIndex != -1) {
+                    QMetaEnum en = metaObject.enumerator(enumIndex);
+                    const QString name = item.section(QLatin1Char('='), 0, 0);
+                    const QString value = item.section(QLatin1Char('='), 1, 1);
+                    bool ok = false;
+                    int buttonValue = en.keyToValue(value.toLocal8Bit().data(), &ok);
+                    if (ok)
+                        m_core->setMessageBoxAutomaticAnswer(name, buttonValue);
+                    else
+                        return QObject::tr("Invalid button value %1 ").arg(value);
+                }
+            } else {
+                return QObject::tr("Incorrect arguments for %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
+            }
+        }
+        return QString();
     }
 
 private:

@@ -154,6 +154,7 @@ static const QLatin1String scStartUninstallerLong("start-uninstaller");
 // Message acceptance options
 static const QLatin1String scAcceptMessageQuery("accept-messages");
 static const QLatin1String scRejectMessageQuery("reject-messages");
+static const QLatin1String scMessageAutomaticAnswer("auto-answer");
 
 // Misc installation options
 static const QLatin1String scRootShort("t");
