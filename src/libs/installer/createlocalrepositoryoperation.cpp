@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,6 +39,7 @@
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
 #include "constants.h"
+#include "remoteclient.h"
 
 #include "updateoperations.h"
 
@@ -183,7 +184,6 @@ bool CreateLocalRepositoryOperation::performOperation()
         }
         setValue(QLatin1String("createddir"), mkDirOp.value(QLatin1String("createddir")));
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
         // Internal changes to QTemporaryFile break copying Qt resources through
         // QInstaller::RemoteFileEngine. We do not register resources to be handled by
         // RemoteFileEngine, instead copying using 5.9 succeeded because QFile::copy()
@@ -192,22 +192,50 @@ bool CreateLocalRepositoryOperation::performOperation()
         // This will not work with Qt 5.10 and above as QTemporaryFile introduced a new
         // rename() implementation that explicitly uses its own QTemporaryFileEngine.
         //
-        // Fail and return early if we are working on an elevated permission directory.
-        if (core && !core->directoryWritable(repoPath)) {
-            setError(UserDefinedError);
-            setErrorString(tr("Creating local repository into elevated permissions "
-                              "directory: %1 is not supported.").arg(repoPath));
-            return false;
+        // During elevated installation, first dump the resources to a writable directory
+        // as a normal user, then do the real copy work. We will drop admin rights temporarily.
+
+        QString metaSource = QLatin1String(":/metadata/");
+        QDir metaSourceDir;
+        bool createdMetaDir = false;
+
+        if (RemoteClient::instance().isActive()) {
+            core->dropAdminRights();
+
+            metaSource = generateTemporaryFileName() + QDir::separator();
+            metaSourceDir.setPath(metaSource);
+            if (!metaSourceDir.mkpath(metaSource)) {
+                setError(UserDefinedError);
+                setErrorString(tr("Cannot create path \"%1\".")
+                    .arg(QDir::toNativeSeparators(metaSource)));
+                return false;
+            }
+            createdMetaDir = true;
+
+            CopyDirectoryOperation copyMetadata(nullptr);
+            copyMetadata.setArguments(QStringList() << QLatin1String(":/metadata/") << metaSource);
+            if (!copyMetadata.performOperation()) {
+                setError(copyMetadata.error());
+                setErrorString(copyMetadata.errorString());
+                return false;
+            }
+            core->gainAdminRights();
         }
-#endif
         // copy the whole meta data into local repository
         CopyDirectoryOperation copyDirOp(core);
-        copyDirOp.setArguments(QStringList() << QLatin1String(":/metadata/") << repoPath);
+        copyDirOp.setArguments(QStringList() << metaSource << repoPath);
         connect(&copyDirOp, &CopyDirectoryOperation::outputTextChanged,
                 this, &CreateLocalRepositoryOperation::outputTextChanged);
 
         const bool success = copyDirOp.performOperation();
         helper.m_files = copyDirOp.value(QLatin1String("files")).toStringList();
+
+        if (createdMetaDir && !metaSourceDir.removeRecursively()) {
+            setError(UserDefinedError);
+            setErrorString(tr("Cannot remove directory \"%1\".")
+                .arg(QDir::toNativeSeparators(metaSourceDir.absolutePath())));
+            return false;
+        }
         if (!success) {
             setError(copyDirOp.error());
             setErrorString(copyDirOp.errorString());
