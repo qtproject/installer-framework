@@ -2027,12 +2027,17 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
     d->addUpdateResourcesFromRepositories(true);
     QRegularExpression re(regexp);
     const PackagesList &packages = d->remotePackages();
+
+    bool foundMatch = false;
     foreach (const Package *update, packages) {
         const QString name = update->data(scName).toString();
         if (re.match(name).hasMatch()) {
             printPackageInformation(name, update);
+            foundMatch = true;
         }
     }
+    if (!foundMatch)
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
 }
 
 void PackageManagerCore::printPackageInformation(const QString &name, const Package *update)
