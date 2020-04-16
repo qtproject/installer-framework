@@ -70,7 +70,7 @@
     from http://doc.qt.io/qt-5/ssl.html if you are statically linking against
     OpenSSL libraries.
 
-    Qt versions between 5.9.0 and 5.12.x are supported.
+    The supported Qt version is 5.12.7.
 
     \section3 Configuring Qt for Windows
 
