@@ -64,7 +64,9 @@ isEmpty(IFW_BUILD_TREE) {
 
 IFW_SOURCE_TREE = $$PWD
 IFW_APP_PATH = $$IFW_BUILD_TREE/bin
-IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
+isEmpty(IFW_LIB_PATH) {
+    IFW_LIB_PATH = $$IFW_BUILD_TREE/lib
+}
 
 RCC = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/rcc))
 LRELEASE = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_BINS]/lrelease))
