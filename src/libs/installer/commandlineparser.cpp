@@ -158,6 +158,8 @@ CommandLineParser::CommandLineParser()
          QLatin1String("identifier=value")));
      m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswer,
         QLatin1String("Automatically answers to message queries with their default values.")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicenses,
+         QLatin1String("Accepts all licenses without user input.")));
 
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()

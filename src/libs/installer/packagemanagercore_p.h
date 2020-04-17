@@ -207,6 +207,7 @@ public:
 
     bool m_dependsOnLocalInstallerBinary;
     QStringList m_allowedRunningProcesses;
+    bool m_autoAcceptLicenses;
 
 private slots:
     void infoMessage(Job *, const QString &message) {
@@ -244,6 +245,8 @@ private:
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
     bool calculateComponentsAndRun();
+    bool acceptLicenseAgreements();
+    bool askUserAcceptLicense(const QString &name, const QString &content);
 
 private:
     PackageManagerCore *m_core;

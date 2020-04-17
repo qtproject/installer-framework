@@ -34,7 +34,8 @@ SUBDIRS += \
     copydirectoryoperation \
     commandlineupdate \
     moveoperation \
-    environmentvariableoperation
+    environmentvariableoperation \
+    licenseagreement
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

@@ -219,6 +219,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_commandLineInstance(false)
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
+    , m_autoAcceptLicenses(false)
 {
 }
 
@@ -253,6 +254,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_commandLineInstance(false)
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
+    , m_autoAcceptLicenses(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -2510,10 +2512,66 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
     QString htmlOutput;
     bool componentsOk = m_core->calculateComponents(&htmlOutput);
     qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-    if (componentsOk) {
+    if (componentsOk && acceptLicenseAgreements()) {
         return m_core->run();
     }
     return false;
+}
+
+bool PackageManagerCorePrivate::acceptLicenseAgreements()
+{
+    // Always skip for uninstaller
+    if (isUninstaller())
+        return true;
+
+    typedef QHash<QString, QPair<QString, QString> > LicensesHash;
+    foreach (Component *component, m_core->orderedComponentsToInstall()) {
+        // Package manager or updater, no need to accept again as long as
+        // the component is installed.
+        if (m_core->isMaintainer() && component->isInstalled())
+            continue;
+
+        LicensesHash hash = component->licenses();
+        for (LicensesHash::iterator it = hash.begin(); it != hash.end(); ++it) {
+            if (m_autoAcceptLicenses || askUserAcceptLicense(it.key(), it.value().second)) {
+                qCDebug(QInstaller::lcInstallerInstallLog) << "License"
+                    << it.key() << "accepted by user.";
+            } else {
+                qCDebug(QInstaller::lcInstallerInstallLog) << "License"
+                    << it.key() << "not accepted by user. Aborting.";
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const QString &content)
+{
+    qCDebug(QInstaller::lcInstallerInstallLog) << "You must accept "
+        "the terms contained in the following license agreement "
+        "before continuing with the installation:" << name;
+
+    forever {
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Accept|Reject|Show";
+
+        QTextStream stream(stdin);
+        QString input;
+        stream.readLineInto(&input);
+
+        if (QString::compare(input, QLatin1String("Accept"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("A"), Qt::CaseInsensitive) == 0) {
+            return true;
+        } else if (QString::compare(input, QLatin1String("Reject"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("R"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else if (QString::compare(input, QLatin1String("Show"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("S"), Qt::CaseInsensitive) == 0) {
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote() << content;
+        } else {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
+        }
+    }
 }
 
 

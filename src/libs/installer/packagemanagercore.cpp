@@ -614,6 +614,14 @@ void PackageManagerCore::acceptMessageBoxDefaultButton()
 }
 
 /*!
+    Automatically accept all licenses required by components to install.
+*/
+void PackageManagerCore::setAutoAcceptLicenses()
+{
+    d->m_autoAcceptLicenses = true;
+}
+
+/*!
     Returns the size of the component \a component as \a value.
 */
 quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const

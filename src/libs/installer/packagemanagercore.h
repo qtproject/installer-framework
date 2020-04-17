@@ -183,6 +183,8 @@ public:
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
     Q_INVOKABLE void acceptMessageBoxDefaultButton();
 
+    Q_INVOKABLE void setAutoAcceptLicenses();
+
     quint64 size(QInstaller::Component *component, const QString &value) const;
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;
