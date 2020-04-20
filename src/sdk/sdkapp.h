@@ -291,6 +291,10 @@ public:
                 return false;
             }
         }
+
+        if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer)) {
+            m_core->acceptMessageBoxDefaultButton();
+        }
         return true;
     }
 

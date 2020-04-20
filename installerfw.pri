@@ -116,6 +116,7 @@ CONFIG(static, static|shared) {
     QT += concurrent network qml xml
 }
 CONFIG += depend_includepath no_private_qt_headers_warning c++11
+win32:CONFIG += console
 
 exists(".git") {
     GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)

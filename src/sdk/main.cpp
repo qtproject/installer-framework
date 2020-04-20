@@ -26,7 +26,6 @@
 **
 **************************************************************************/
 
-#include "console.h"
 #include "constants.h"
 #include "commandlineparser.h"
 #include "installerbase.h"
@@ -112,7 +111,6 @@ int main(int argc, char *argv[])
     }
     const bool help = parser.isSet(CommandLineOptions::scHelpLong);
     if (help || parser.isSet(CommandLineOptions::scVersionLong) || !sanityCheck) {
-        Console c;
         QCoreApplication app(argc, argv);
 
         if (parser.isSet(CommandLineOptions::scVersionLong)) {
@@ -170,7 +168,6 @@ int main(int argc, char *argv[])
 
         SDKApp<QCoreApplication> app(argc, argv);
         if (!argumentsValid) {
-            Console c;
             std::cout << qPrintable(parser.helpText()) << std::endl;
             QString startServerStr = CommandLineOptions::scStartServerLong;
             std::cerr << "Wrong argument(s) for option --" << startServerStr.toStdString() << std::endl;
@@ -195,8 +192,6 @@ int main(int argc, char *argv[])
     }
 
     try {
-        QScopedPointer<Console> console;
-
         // Check if any options requiring verbose output is set
         bool setVerbose = parser.isSet(CommandLineOptions::scVerboseLong);
 
@@ -205,11 +200,9 @@ int main(int argc, char *argv[])
             setVerbose = parser.positionalArguments().contains(option);
         }
         if (setVerbose) {
-            console.reset(new Console);
             QInstaller::setVerbose(true);
         }
 
-        // On Windows we need the console window from above, we are a GUI application.
         const QStringList unknownOptionNames = parser.unknownOptionNames();
         if (!unknownOptionNames.isEmpty()) {
             const QString options = unknownOptionNames.join(QLatin1String(", "));
@@ -225,7 +218,6 @@ int main(int argc, char *argv[])
             QNetworkProxyFactory::setUseSystemConfiguration(false);
 
         const SelfRestarter restarter(argc, argv);
-
         if (parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesShort)
                 || parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesLong)) {
             return CommandLineInterface(argc, argv).checkUpdates();
@@ -248,9 +240,22 @@ int main(int argc, char *argv[])
                 || parser.positionalArguments().contains(CommandLineOptions::scPurgeLong)){
             return CommandLineInterface(argc, argv).removeInstallation();
         }
-        if (QInstaller::isVerbose())
+        if (QInstaller::isVerbose()) {
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
-
+        } else {
+#ifdef Q_OS_WIN
+            // Check if installer is started from console. If so, restart the installer so it
+            // won't reserve the console handles.
+            DWORD procIDs[2];
+            DWORD maxCount = 2;
+            DWORD result = GetConsoleProcessList((LPDWORD)procIDs, maxCount);
+            FreeConsole(); // Closes console in GUI version
+            if (result > 1) {
+                restarter.setRestartOnQuit(true);
+                return EXIT_FAILURE;
+            }
+#endif
+        }
         return InstallerBase(argc, argv).run();
 
     } catch (const QInstaller::Error &e) {

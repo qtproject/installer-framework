@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,6 +26,7 @@
 **
 **************************************************************************/
 #include <QTextDocument>
+#include <QMetaEnum>
 
 #include "globals.h"
 
@@ -148,6 +149,17 @@ QString htmlToString(const QString &html)
     QTextDocument doc;
     doc.setHtml(html);
     return doc.toPlainText();
+}
+
+QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key)
+{
+    QString value = QString();
+    int enumIndex = metaObject.indexOfEnumerator(enumerator);
+    if (enumIndex != -1) {
+        QMetaEnum en = metaObject.enumerator(enumIndex);
+        value = QLatin1String(en.valueToKey(key));
+    }
+    return value;
 }
 
 } // namespace QInstaller

@@ -604,6 +604,16 @@ void PackageManagerCore::setMessageBoxAutomaticAnswer(const QString &identifier,
 }
 
 /*!
+   Automatically uses the default button value set for the message box.
+
+   This can be used for unattended (automatic) installations.
+ */
+void PackageManagerCore::acceptMessageBoxDefaultButton()
+{
+    MessageBoxHandler::instance()->setDefaultAction(MessageBoxHandler::Default);
+}
+
+/*!
     Returns the size of the component \a component as \a value.
 */
 quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const

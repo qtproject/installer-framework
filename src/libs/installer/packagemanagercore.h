@@ -181,6 +181,7 @@ public:
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
+    Q_INVOKABLE void acceptMessageBoxDefaultButton();
 
     quint64 size(QInstaller::Component *component, const QString &value) const;
 

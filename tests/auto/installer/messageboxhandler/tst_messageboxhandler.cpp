@@ -200,8 +200,7 @@ private slots:
     void messageBoxFromScriptDefaultAnswer()
     {
         setRepository(":///data/messagebox");
-        // Resets in autoAcceptMessageBoxes set in previous function
-        MessageBoxHandler::instance()->setDefaultAction(MessageBoxHandler::AskUser);
+        core->acceptMessageBoxDefaultButton();
         core->installSelectedComponentsSilently(QStringList () << "A");
 
         // These values are written in script based on default

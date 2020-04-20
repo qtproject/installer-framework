@@ -156,6 +156,8 @@ CommandLineParser::CommandLineParser()
                        "Several identifier=value pairs can be given separated with comma, "
                        "for example --auto-answer message.id=QMessageBox::Ok,message.id2=QMessageBox::Cancel."),
          QLatin1String("identifier=value")));
+     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswer,
+        QLatin1String("Automatically answers to message queries with their default values.")));
 
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()

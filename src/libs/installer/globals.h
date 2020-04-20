@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -73,6 +73,7 @@ QStringList INSTALLER_EXPORT loggingCategories();
 QRegExp INSTALLER_EXPORT commaRegExp();
 
 QString htmlToString(const QString &html);
+QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);
 
 }   // QInstaller
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -45,7 +45,8 @@ public:
     enum DefaultAction {
         AskUser,
         Accept,
-        Reject
+        Reject,
+        Default
     };
 
     enum MessageType{
@@ -79,16 +80,16 @@ public:
         QMessageBox::StandardButton button = QMessageBox::NoButton);
 
     Q_INVOKABLE int critical(const QString &identifier, const QString &title, const QString &text,
-        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton);
 
     Q_INVOKABLE int information(const QString &identifier, const QString &title, const QString &text,
-        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton);
 
     Q_INVOKABLE int question(const QString &identifier, const QString &title, const QString &text,
-        int buttons = QMessageBox::Yes | QMessageBox::No, int button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Yes | QMessageBox::No, int button = QMessageBox::NoButton);
 
     Q_INVOKABLE int warning(const QString &identifier, const QString &title, const QString &text,
-        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton) const;
+        int buttons = QMessageBox::Ok, int button = QMessageBox::NoButton);
 
     static QList<QMessageBox::Button> orderedButtons();
 
@@ -105,7 +106,11 @@ private:
     QMessageBox::StandardButton showMessageBox(MessageType messageType, QWidget *parent,
         const QString &identifier, const QString &title, const QString &text,
         QMessageBox::StandardButtons buttons = QMessageBox::Ok,
-        QMessageBox::StandardButton defaultButton = QMessageBox::NoButton) const;
+        const QMessageBox::StandardButton defaultButton = QMessageBox::NoButton);
+    bool askAnswerFromUser(QMessageBox::StandardButton &selectedButton,
+                           QMessageBox::StandardButtons &availableButtons) const;
+    QString availableAnswerOptions(const QFlags<QMessageBox::StandardButton> &flags) const;
+
 
 private:
     static MessageBoxHandler *m_instance;
