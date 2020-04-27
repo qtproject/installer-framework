@@ -133,7 +133,6 @@ public:
         if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
             binary.close();
 
-        QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
         bool isCommandLineInterface = false;
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
            if (m_parser.positionalArguments().contains(option)) {
@@ -141,26 +140,25 @@ public:
                break;
            }
         }
-        if (QInstaller::isVerbose()) {
-            if (m_parser.isSet(CommandLineOptions::scLoggingRulesLong)) {
-                loggingRules = m_parser.value(CommandLineOptions::scLoggingRulesLong)
-                              .split(QLatin1Char(','), QString::SkipEmptyParts)
-                              .join(QLatin1Char('\n')); // take rules from command line
-            } else if (isCommandLineInterface) {
-                loggingRules = QLatin1String("ifw.* = false\n"
-                                            "ifw.installer.* = true\n"
-                                            "ifw.server = true\n"
-                                            "ifw.package.name = true\n"
-                                            "ifw.package.version = true\n"
-                                            "ifw.package.displayname = true\n");
-            } else {
-                // enable all in verbose mode except detailed package information
-                loggingRules = QLatin1String("ifw.* = true\n"
-                                            "ifw.package.* = false\n"
-                                            "ifw.package.name = true\n"
-                                            "ifw.package.version = true\n"
-                                            "ifw.package.displayname = true\n");
-            }
+        QString loggingRules;
+        if (m_parser.isSet(CommandLineOptions::scLoggingRulesLong)) {
+            loggingRules = m_parser.value(CommandLineOptions::scLoggingRulesLong)
+                          .split(QLatin1Char(','), QString::SkipEmptyParts)
+                          .join(QLatin1Char('\n')); // take rules from command line
+        } else if (isCommandLineInterface) {
+            loggingRules = QLatin1String("ifw.* = false\n"
+                                        "ifw.installer.* = true\n"
+                                        "ifw.server = true\n"
+                                        "ifw.package.name = true\n"
+                                        "ifw.package.version = true\n"
+                                        "ifw.package.displayname = true\n");
+        } else {
+            // enable all except detailed package information
+            loggingRules = QLatin1String("ifw.* = true\n"
+                                        "ifw.package.* = false\n"
+                                        "ifw.package.name = true\n"
+                                        "ifw.package.version = true\n"
+                                        "ifw.package.displayname = true\n");
         }
         QLoggingCategory::setFilterRules(loggingRules);
 

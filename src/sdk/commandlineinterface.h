@@ -38,6 +38,9 @@ class CommandLineInterface : public SDKApp<QCoreApplication>
 
 public:
     CommandLineInterface(int &argc, char *argv[]);
+    ~CommandLineInterface();
+
+public:
     int checkUpdates();
     int listInstalledPackages();
     int searchAvailablePackages();

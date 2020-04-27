@@ -47,6 +47,11 @@ CommandLineInterface::CommandLineInterface(int &argc, char *argv[])
     m_parser.parse(arguments());
 }
 
+CommandLineInterface::~CommandLineInterface()
+{
+    delete m_core;
+}
+
 bool CommandLineInterface::initialize()
 {
     QString errorMessage;
