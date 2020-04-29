@@ -163,6 +163,7 @@ public:
         QLoggingCategory::setFilterRules(loggingRules);
 
         SDKApp::registerMetaResources(manager.collectionByName("QResources"));
+        QInstaller::BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
 
         const QHash<QString, QString> userArgs = userArguments();
         if (m_parser.isSet(CommandLineOptions::scStartClientLong)) {
@@ -177,13 +178,6 @@ public:
             m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString(),
                 QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
-        }
-
-        {
-          using namespace QInstaller;
-          ProductKeyCheck::instance()->init(m_core);
-          ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
-          BinaryFormatEngineHandler::instance()->registerResources(manager.collections());
         }
 
         // From Qt5.8 onwards system proxy is used by default. If Qt is built with
@@ -298,6 +292,10 @@ public:
         if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer)) {
             m_core->acceptMessageBoxDefaultButton();
         }
+
+        ProductKeyCheck::instance()->init(m_core);
+        ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
+
         return true;
     }
 
