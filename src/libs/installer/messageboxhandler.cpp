@@ -400,8 +400,20 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     qCDebug(QInstaller::lcInstallerInstallLog).noquote() << identifier << ":" << title << ":" << text
         << availableAnswers;
 
-    if (m_automaticAnswers.contains(identifier))
-        return m_automaticAnswers.value(identifier);
+    if (m_automaticAnswers.contains(identifier)) {
+        QMessageBox::StandardButton selectedButton = m_automaticAnswers.value(identifier);
+        const QString buttonName = enumToString(QMessageBox::staticMetaObject, "StandardButton", selectedButton);
+        if (buttons & selectedButton) {
+            qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Automatic answer for "<< identifier
+                << ": " << buttonName;
+        } else {
+            qCDebug(QInstaller::lcInstallerInstallLog()).nospace() << "Invalid answer " << buttonName
+                << "for " << identifier << ". Using default value " << enumToString(QMessageBox::staticMetaObject,
+                    "StandardButton", defaultButton) << " instead.";
+            selectedButton = defaultButton;
+        }
+        return selectedButton;
+    }
 
     if (qobject_cast<QApplication*> (qApp) == nullptr) {
         QMessageBox::StandardButton button = defaultButton;
