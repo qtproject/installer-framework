@@ -154,7 +154,7 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageAutomaticAnswer,
          QLatin1String("Automatically answers the message queries with the message identifier and button value. "
                        "Several identifier=value pairs can be given separated with comma, "
-                       "for example --auto-answer message.id=QMessageBox::Ok,message.id2=QMessageBox::Cancel."),
+                       "for example --auto-answer message.id=Ok,message.id2=Cancel."),
          QLatin1String("identifier=value")));
      m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswer,
         QLatin1String("Automatically answers to message queries with their default values.")));

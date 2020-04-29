@@ -411,7 +411,8 @@ public:
                 if (enumIndex != -1) {
                     QMetaEnum en = metaObject.enumerator(enumIndex);
                     const QString name = item.section(QLatin1Char('='), 0, 0);
-                    const QString value = item.section(QLatin1Char('='), 1, 1);
+                    QString value = item.section(QLatin1Char('='), 1, 1);
+                    value.prepend(QLatin1String("QMessageBox::"));
                     bool ok = false;
                     int buttonValue = en.keyToValue(value.toLocal8Bit().data(), &ok);
                     if (ok)
