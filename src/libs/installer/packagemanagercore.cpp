@@ -2353,14 +2353,13 @@ Settings &PackageManagerCore::settings() const
 */
 bool PackageManagerCore::gainAdminRights()
 {
+    if (AdminAuthorization::hasAdminRights())
+        return true;
+
     if (isCommandLineInstance()) {
         throw Error(tr("Cannot elevate access rights while running from command line. "
                        "Please restart the application as administrator."));
     }
-
-    if (AdminAuthorization::hasAdminRights())
-        return true;
-
     RemoteClient::instance().setActive(true);
     if (!RemoteClient::instance().isActive())
         throw Error(tr("Error while elevating access rights."));
