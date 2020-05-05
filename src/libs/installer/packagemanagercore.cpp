@@ -625,6 +625,55 @@ void PackageManagerCore::setAutoAcceptLicenses()
 }
 
 /*!
+   Automatically sets the existing directory or filename \a value to QFileDialog with the ID
+   \a identifier. QFileDialog can be called from script.
+
+   This can be used for unattended (automatic) installations.
+
+   \sa {installer::setFileDialogAutomaticAnswer){installer.setFileDialogAutomaticAnswer}
+   \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
+   \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
+ */
+void PackageManagerCore::setFileDialogAutomaticAnswer(const QString &identifier, const QString &value)
+{
+    m_fileDialogAutomaticAnswers.insert(identifier, value);
+}
+
+/*!
+   Removes the automatic answer from QFileDialog with the ID \a identifier.
+   QFileDialog can be called from script.
+
+   \sa {installer::removeFileDialogAutomaticAnswer){installer.removeFileDialogAutomaticAnswer}
+   \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
+   \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
+ */
+void PackageManagerCore::removeFileDialogAutomaticAnswer(const QString &identifier)
+{
+    m_fileDialogAutomaticAnswers.remove(identifier);
+}
+
+/*!
+   Returns \c true if QFileDialog  with the ID \a identifier has an automatic answer set.
+
+   \sa {installer.containsFileDialogAutomaticAnswer}{installer::containsFileDialogAutomaticAnswer}
+   \sa {installer::removeFileDialogAutomaticAnswer){installer.removeFileDialogAutomaticAnswer}
+   \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
+   \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
+ */
+bool PackageManagerCore::containsFileDialogAutomaticAnswer(const QString &identifier) const
+{
+    return m_fileDialogAutomaticAnswers.contains(identifier);
+}
+/*!
+ * Returns the hash of file dialog automatic answers
+ * \sa setFileDialogAutomaticAnswer()
+ */
+QHash<QString, QString> PackageManagerCore::fileDialogAutomaticAnswers() const
+{
+    return m_fileDialogAutomaticAnswers;
+}
+
+/*!
     Returns the size of the component \a component as \a value.
 */
 quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const

@@ -187,6 +187,10 @@ public:
     Q_INVOKABLE void acceptMessageBoxDefaultButton();
 
     Q_INVOKABLE void setAutoAcceptLicenses();
+    Q_INVOKABLE void setFileDialogAutomaticAnswer(const QString &identifier, const QString &value);
+    Q_INVOKABLE void removeFileDialogAutomaticAnswer(const QString &identifier);
+    Q_INVOKABLE bool containsFileDialogAutomaticAnswer(const QString &identifier) const;
+    QHash<QString, QString> fileDialogAutomaticAnswers() const;
 
     quint64 size(QInstaller::Component *component, const QString &value) const;
 
@@ -385,6 +389,7 @@ private:
 private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
+    QHash<QString, QString> m_fileDialogAutomaticAnswers;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

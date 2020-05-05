@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -329,6 +329,23 @@
     Automatically accepts all license agreements required to install the selected components. This
     can be used to skip the command line license acceptance query. The names of the accepted
     individual licenses are still printed to a console.
+*/
+
+/*!
+   \qmlmethod void installer::setFileDialogAutomaticAnswer(string identifier, string &value)
+
+    Automatically sets the existing directory or filename \a value to QFileDialog with the ID
+   \a identifier.
+
+   \sa removeFileDialogAutomaticAnswer
+*/
+
+/*!
+   \qmlmethod void installer::removeFileDialogAutomaticAnswer(string identifier)
+
+   Removes the automatic answer from QFileDialog with the ID \a identifier.
+
+   \sa setFileDialogAutomaticAnswer
 */
 
 /*!

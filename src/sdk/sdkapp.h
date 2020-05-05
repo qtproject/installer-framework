@@ -292,6 +292,18 @@ public:
             }
         }
 
+        if (m_parser.isSet(CommandLineOptions::scFileDialogAutomaticAnswer)) {
+            const QString positionalArguments = m_parser.value(CommandLineOptions::scFileDialogAutomaticAnswer);
+            const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+
+            foreach (const QString &item, items) {
+                if (item.contains(QLatin1Char('='))) {
+                    const QString name = item.section(QLatin1Char('='), 0, 0);
+                    QString value = item.section(QLatin1Char('='), 1, 1);
+                    m_core->setFileDialogAutomaticAnswer(name, value);
+                }
+            }
+        }
         if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer)) {
             m_core->acceptMessageBoxDefaultButton();
         }

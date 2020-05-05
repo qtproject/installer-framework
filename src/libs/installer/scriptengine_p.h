@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -77,15 +77,21 @@ class QFileDialogProxy : public QObject
     Q_DISABLE_COPY(QFileDialogProxy)
 
 public:
-    QFileDialogProxy() {}
+    QFileDialogProxy(PackageManagerCore *core);
 
 public slots :
-    QString getExistingDirectory(const QString &caption, const QString &dir) const {
-        return QFileDialog::getExistingDirectory(0, caption, dir);
-    }
-    QString getOpenFileName(const QString &caption, const QString &dir, const QString &filter) const {
-        return QFileDialog::getOpenFileName(0, caption, dir, filter);
-    }
+    QString getExistingDirectory(const QString &caption, const QString &dir,
+            const QString &identifier = QLatin1String("GetExistingDirectory"));
+
+    QString getOpenFileName(const QString &caption, const QString &dir, const QString &filter,
+            const QString &identifier = QLatin1String("GetExistingFile"));
+
+private:
+    QString getExistingFileOrDirectory(const QString &caption, const QString &identifier,
+                                       bool isDirectory);
+
+private:
+    PackageManagerCore *m_core;
 };
 
 class QDesktopServicesProxy : public QObject

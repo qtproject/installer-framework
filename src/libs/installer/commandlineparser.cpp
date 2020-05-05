@@ -163,6 +163,12 @@ CommandLineParser::CommandLineParser()
         QLatin1String("Automatically answers to message queries with their default values.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicenses,
          QLatin1String("Accepts all licenses without user input.")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scFileDialogAutomaticAnswer,
+         QLatin1String("Automatically sets the QFileDialog values getExistingDirectory() or getOpenFileName() "
+                       "requested by install script. "
+                       "Several identifier=value pairs can be given separated with comma, "
+                       "for example --file-query filedialog.id=C:\Temp,filedialog.id2=C:\Temp2"),
+         QLatin1String("identifier=value")));
 
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()

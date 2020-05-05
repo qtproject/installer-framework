@@ -158,6 +158,7 @@ static const QLatin1String scRejectMessageQuery("reject-messages");
 static const QLatin1String scMessageAutomaticAnswer("auto-answer");
 static const QLatin1String scMessageDefaultAnswer("default-answer");
 static const QLatin1String scAcceptLicenses("accept-licenses");
+static const QLatin1String scFileDialogAutomaticAnswer("file-query");
 
 // Misc installation options
 static const QLatin1String scRootShort("t");

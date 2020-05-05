@@ -351,6 +351,31 @@ private slots:
                             << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
                             << "installcontentB.txt" << "installcontentD.txt");
     }
+    void testFileQuery()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_installDir,
+                                    ":///data/filequeryrepository");
+        core->setCommandLineInstance(true);
+        core->setFileDialogAutomaticAnswer("ValidDirectory", m_installDir);
+
+        QString testFile = qApp->applicationDirPath() + QDir::toNativeSeparators("/test");
+        QFile file(testFile);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+        core->setFileDialogAutomaticAnswer("ValidFile", testFile);
+
+        //File dialog launched without ID
+        core->setFileDialogAutomaticAnswer("GetExistingDirectory", m_installDir);
+        core->setFileDialogAutomaticAnswer("GetExistingFile", testFile);
+
+        core->installDefaultComponentsSilently();
+
+        QVERIFY(core->containsFileDialogAutomaticAnswer("ValidFile"));
+        core->removeFileDialogAutomaticAnswer("ValidFile");
+        QVERIFY(!core->containsFileDialogAutomaticAnswer("ValidFile"));
+
+        QVERIFY(file.remove());
+        core->deleteLater();
+    }
 
     void init()
     {

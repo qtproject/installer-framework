@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -265,6 +265,71 @@ void GuiProxy::setModified(bool value)
         m_gui->setModified(value);
 }
 
+QFileDialogProxy::QFileDialogProxy(PackageManagerCore *core): m_core(core)
+{
+}
+
+QString QFileDialogProxy::getExistingDirectory(const QString &caption,
+                                               const QString &dir, const QString &identifier)
+{
+    if (m_core->isCommandLineInstance()) {
+        return getExistingFileOrDirectory(caption, identifier, true);
+    } else {
+        return QFileDialog::getExistingDirectory(0, caption, dir);
+    }
+}
+
+QString QFileDialogProxy::getOpenFileName(const QString &caption, const QString &dir,
+                                          const QString &filter, const QString &identifier)
+{
+    if (m_core->isCommandLineInstance()) {
+        return getExistingFileOrDirectory(caption, identifier, false);
+    } else {
+        return QFileDialog::getOpenFileName(0, caption, dir, filter);
+    }
+}
+
+QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
+                            const QString &identifier, bool isDirectory)
+{
+    QHash<QString, QString> autoAnswers = m_core->fileDialogAutomaticAnswers();
+    QString selectedDirectoryOrFile;
+    QString errorString;
+    if (autoAnswers.contains(identifier)) {
+        selectedDirectoryOrFile = autoAnswers.value(identifier);
+        QFileInfo fileInfo(selectedDirectoryOrFile);
+        if (isDirectory ? fileInfo.isDir() : fileInfo.isFile()) {
+            qCDebug(QInstaller::lcInstallerInstallLog).nospace() << "Automatic answer for "<< identifier
+                << ": " << selectedDirectoryOrFile;
+        } else {
+            if (isDirectory)
+                errorString = QString::fromLatin1("Automatic answer for %1: Directory '%2' not found.")
+                        .arg(identifier, selectedDirectoryOrFile);
+            else
+                errorString = QString::fromLatin1("Automatic answer for %1: File '%2' not found.")
+                        .arg(identifier, selectedDirectoryOrFile);
+            selectedDirectoryOrFile = QString();
+        }
+    } else {
+        qDebug().nospace().noquote() << identifier << ": " << caption << ": ";
+        QTextStream stream(stdin);
+        stream.readLineInto(&selectedDirectoryOrFile);
+        QFileInfo fileInfo(selectedDirectoryOrFile);
+        if (isDirectory ? !fileInfo.isDir() : !fileInfo.isFile()) {
+            if (isDirectory)
+                errorString = QString::fromLatin1("Directory '%1' not found.")
+                        .arg(selectedDirectoryOrFile);
+            else
+                errorString = QString::fromLatin1("File '%1' not found.")
+                        .arg(selectedDirectoryOrFile);
+            selectedDirectoryOrFile = QString();
+        }
+    }
+    if (!errorString.isEmpty())
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace() << errorString;
+    return selectedDirectoryOrFile;
+}
+
 
 /*!
     Constructs a script engine with \a core as parent.
@@ -275,7 +340,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
 {
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
-    global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy));
+    global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy(core)));
     const QJSValue proxy = m_engine.newQObject(new InstallerProxy(this, core));
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
