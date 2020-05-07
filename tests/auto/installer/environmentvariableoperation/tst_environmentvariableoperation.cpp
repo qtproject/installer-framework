@@ -26,13 +26,11 @@
 **
 **************************************************************************/
 
+#include "../shared/packagemanager.h"
+
 #include <environmentvariablesoperation.h>
-#include <init.h>
 #include <environment.h>
 #include <packagemanagercore.h>
-#include <fileutils.h>
-#include <settings.h>
-#include <binarycontent.h>
 
 #include <QSettings>
 #include <QTest>
@@ -139,17 +137,10 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
-        core->setValue(scTargetDir, installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
         core->installDefaultComponentsSilently();
 
         QVERIFY(m_settings->value("IFW_UNIT_TEST_LOCAL").toString().isEmpty());

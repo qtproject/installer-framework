@@ -76,7 +76,7 @@ private slots:
         core->settings().setDefaultRepositories(repoList);
 
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
+        QVERIFY(QDir().mkpath(installDir));
         core->setValue(scTargetDir, installDir);
         core->installDefaultComponentsSilently();
 

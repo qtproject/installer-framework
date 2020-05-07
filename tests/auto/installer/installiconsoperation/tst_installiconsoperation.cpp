@@ -26,20 +26,15 @@
 **
 **************************************************************************/
 
-#include "../shared/commonfunctions.h"
+#include "../shared/packagemanager.h"
+#include "../shared/verifyinstaller.h"
 
 #include <installiconsoperation.h>
 
 #include <packagemanagercore.h>
-#include <binarycontent.h>
-#include <settings.h>
-#include <fileutils.h>
-#include <init.h>
 #include <component.h>
 
-#include <QObject>
 #include <QTest>
-#include <QFile>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -84,17 +79,10 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(installDir));
-        core->setValue(scTargetDir, installDir);
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
         core->installDefaultComponentsSilently();
 
         InstallIconsOperation *installIconsOp = nullptr;

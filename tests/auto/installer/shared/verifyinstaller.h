@@ -29,8 +29,6 @@
 #ifndef VERIFYINSTALLER_H
 #define VERIFYINSTALLER_H
 
-#include <QDir>
-#include <QTest>
 #include <QString>
 #include <QStringList>
 #include <QCryptographicHash>
@@ -90,6 +88,5 @@ struct VerifyInstaller
             }
         }
     }
-
 };
 #endif

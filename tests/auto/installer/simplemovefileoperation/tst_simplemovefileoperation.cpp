@@ -25,14 +25,12 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "../shared/packagemanager.h"
 
 #include <simplemovefileoperation.h>
 
 #include <packagemanagercore.h>
-#include <binarycontent.h>
-#include <settings.h>
-#include <init.h>
-#include <fileutils.h>
+
 #include <utils.h>
 
 #include <QObject>
@@ -117,16 +115,10 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
 
         QString destinationDir = installDir + QDir::separator() + "destination";
         QVERIFY(QDir().mkpath(destinationDir));
@@ -136,7 +128,6 @@ private slots:
         QVERIFY(file.open(QIODevice::ReadWrite));
         file.close();
 
-        core->setValue(scTargetDir, installDir);
         core->installDefaultComponentsSilently();
         QVERIFY(!file.exists());
 

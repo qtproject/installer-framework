@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,20 +25,13 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "../shared/packagemanager.h"
 
-#include <init.h>
 #include <updateoperations.h>
 #include <utils.h>
-#include <binarycontent.h>
 #include <packagemanagercore.h>
-#include <settings.h>
-#include <fileutils.h>
 
-#include <QDir>
-#include <QObject>
 #include <QTest>
-#include <QFile>
-#include <QDebug>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -141,17 +134,9 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
-        core->setValue(scTargetDir, installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, ":///data/repository");
         core->installDefaultComponentsSilently();
 
         QFile copiedFile(installDir + QDir::separator() + "AnotherFolder/A.txt");

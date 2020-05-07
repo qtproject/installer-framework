@@ -26,16 +26,12 @@
 **
 **************************************************************************/
 
-#include "../shared/commonfunctions.h"
+#include "../shared/packagemanager.h"
+#include "../shared/verifyinstaller.h"
 
-#include <fileutils.h>
 #include <copydirectoryoperation.h>
-#include <binarycontent.h>
 #include <packagemanagercore.h>
-#include <settings.h>
-#include <init.h>
 
-#include <QObject>
 #include <QDir>
 #include <QFile>
 #include <QTest>
@@ -146,16 +142,11 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
+
         core->setValue(scTargetDir, installDir);
         core->installDefaultComponentsSilently();
 

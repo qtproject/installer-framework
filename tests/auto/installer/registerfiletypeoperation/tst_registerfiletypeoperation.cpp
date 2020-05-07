@@ -25,13 +25,10 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "../shared/packagemanager.h"
 
-#include <init.h>
 #include <registerfiletypeoperation.h>
 #include <packagemanagercore.h>
-#include <binarycontent.h>
-#include <settings.h>
-#include <fileutils.h>
 
 #include <QDir>
 #include <QObject>
@@ -130,17 +127,11 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
-        core->setValue(scTargetDir, installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
+
         core->installDefaultComponentsSilently();
         verifySettings();
 

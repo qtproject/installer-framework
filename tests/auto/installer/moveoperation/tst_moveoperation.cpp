@@ -25,20 +25,12 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+#include "../shared/packagemanager.h"
 
 #include <updateoperations.h>
-#include <utils.h>
 #include <packagemanagercore.h>
-#include <binarycontent.h>
-#include <settings.h>
-#include <fileutils.h>
-#include <init.h>
 
-#include <QDir>
-#include <QObject>
 #include <QTest>
-#include <QFile>
-#include <QDebug>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -111,16 +103,8 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        QString appFilePath = QCoreApplication::applicationFilePath();
-        core->setAllowedRunningProcesses(QStringList() << appFilePath);
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
-        core->setValue(scTargetDir, m_testDirectory);
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_testDirectory, ":///data/repository");
         core->installDefaultComponentsSilently();
 
         QFile movedFile(m_testDirectory + QDir::separator() + "DestinationFolder/testFile.txt");

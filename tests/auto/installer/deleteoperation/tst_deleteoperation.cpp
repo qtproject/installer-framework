@@ -26,17 +26,13 @@
 **
 **************************************************************************/
 
+#include "../shared/packagemanager.h"
+
 #include <updateoperations.h>
-
 #include <packagemanagercore.h>
-#include <binarycontent.h>
 #include <settings.h>
-#include <fileutils.h>
 #include <utils.h>
-#include <init.h>
 
-#include <QObject>
-#include <QFile>
 #include <QTest>
 
 using namespace KDUpdater;
@@ -108,23 +104,15 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, ":///data/repository");
 
         // Matches filename in component install script
         QFile file(installDir + QDir::toNativeSeparators("/test"));
         QVERIFY(file.open(QIODevice::ReadWrite));
         file.close();
 
-        core->setValue(scTargetDir, installDir);
         core->installDefaultComponentsSilently();
         QVERIFY(!file.exists());
 

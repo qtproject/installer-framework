@@ -25,21 +25,15 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include <init.h>
+#include "../shared/packagemanager.h"
+
 #include <packagemanagercore.h>
 #include <consumeoutputoperation.h>
 #include <qinstallerglobal.h>
-#include <fileutils.h>
 #include <errors.h>
-#include <settings.h>
-#include <binarycontent.h>
 
-#include <QObject>
 #include <QTest>
 #include <QProcess>
-#include <QDir>
-#include <QEventLoop>
-#include <QDebug>
 
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
@@ -96,16 +90,11 @@ private slots:
 
     void testPerformingFromCLI()
     {
-        QInstaller::init(); //This will eat debug output
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
-        repoList.insert(repo);
-        core->settings().setDefaultRepositories(repoList);
-
         QString installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(installDir);
-        core->setValue(scTargetDir, installDir);
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, ":///data/repository");
+
         core->installDefaultComponentsSilently();
         QCOMPARE(core->value("testConsumeOutputKeyFromScript"), m_testOutput);
 

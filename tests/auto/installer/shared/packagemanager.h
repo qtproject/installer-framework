@@ -25,39 +25,40 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "../shared/packagemanager.h"
+
+#ifndef PACKAGEMANAGER_H
+#define PACKAGEMANAGER_H
 
 #include <packagemanagercore.h>
+#include <binarycontent.h>
+#include <fileutils.h>
+#include <settings.h>
+#include <init.h>
 
-#include <QFile>
 #include <QTest>
 
-using namespace KDUpdater;
 using namespace QInstaller;
 
-class tst_licenseagreement : public QObject
+struct PackageManager
 {
-    Q_OBJECT
-
-private slots:
-    void testAutoAcceptFromCLI()
+    static PackageManagerCore *getPackageManager(const QString &targetDir, const QString &repository = QString())
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
+        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
+        QString appFilePath = QCoreApplication::applicationFilePath();
+        core->setAllowedRunningProcesses(QStringList() << appFilePath);
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(repository);
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
 
-        core->setAutoAcceptLicenses();
-        core->installDefaultComponentsSilently();
+        core->setValue(scTargetDir, targetDir);
+        return core;
+    }
 
-        QFile file(installDir + "/Licenses/gpl3.txt");
-        QVERIFY(file.exists());
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    static PackageManagerCore *getPackageManagerWithInit(const QString &targetDir, const QString &repository = QString())
+    {
+        QInstaller::init();
+        return getPackageManager(targetDir, repository);
     }
 };
-
-QTEST_MAIN(tst_licenseagreement)
-
-#include "tst_licenseagreement.moc"
+#endif

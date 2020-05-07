@@ -26,17 +26,11 @@
 **
 **************************************************************************/
 
-#include "metadatajob.h"
-#include "settings.h"
-#include "init.h"
-#include "../shared/commonfunctions.h"
+#include "../shared/packagemanager.h"
+#include "../shared/verifyinstaller.h"
 
-#include <binarycontent.h>
 #include <component.h>
-#include <errors.h>
-#include <fileutils.h>
 #include <packagemanagercore.h>
-#include <progresscoordinator.h>
 
 #include <QLoggingCategory>
 #include <QTest>
@@ -62,17 +56,12 @@ private:
 private slots:
     void initTestCase()
     {
-        core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
-        QString appFilePath = QCoreApplication::applicationFilePath();
-        core->setAllowedRunningProcesses(QStringList() << appFilePath);
         m_installDir = QInstaller::generateTemporaryFileName();
-        QDir().mkpath(m_installDir);
-        core->setValue(scTargetDir, m_installDir);
+        core = PackageManager::getPackageManagerWithInit(m_installDir);
     }
 
     void testUpdatePackageSilently()
     {
-        QInstaller::init(); //This will eat debug output
         setRepository(":///data/installPackagesRepository");
         core->installSelectedComponentsSilently(QStringList() << "componentA" << "componentB");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt");
@@ -94,7 +83,6 @@ private slots:
 
     void testUpdateTwoPackageSilently()
     {
-        QInstaller::init(); //This will eat debug output
         setRepository(":///data/installPackagesRepository");
         core->installSelectedComponentsSilently(QStringList() << "componentA" << "componentB" << "componentG");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt");
@@ -111,7 +99,6 @@ private slots:
 
     void testUpdateAllPackagesSilently()
     {
-        QInstaller::init(); //This will eat debug output
         setRepository(":///data/installPackagesRepository");
         core->installSelectedComponentsSilently(QStringList() << "componentA" << "componentB" << "componentG" << "componentF");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentF", "1.0.0content.txt");
