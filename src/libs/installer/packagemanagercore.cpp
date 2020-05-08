@@ -878,6 +878,29 @@ QString PackageManagerCore::readFile(const QString &filePath, const QString &cod
 }
 
 /*!
+ * Prints \a title to console and reads console input. Function will halt the
+ * installer and wait for user input. Returns a line which user has typed into
+ * console. The maximum allowed line length is set to \a maxlen. If the stream
+ * contains lines longer than this, then the line will be split after maxlen
+ * characters. If \a maxlen is 0, the line can be of any length.
+ *
+ * \note Can be only called when installing from command line instance without GUI.
+ *
+ * \sa {installer::readConsoleLine}{installer.readConsoleLine}
+ */
+QString PackageManagerCore::readConsoleLine(const QString &title, qint64 maxlen) const
+{
+    if (!isCommandLineInstance())
+        return QString();
+    if (!title.isEmpty())
+        qDebug() << title;
+    QTextStream stream(stdin);
+    QString input;
+    stream.readLineInto(&input, maxlen);
+    return input;
+}
+
+/*!
     Checks whether the target directory \a targetDirectory exists and has contents:
     \list
         \li Returns \c true if the directory exists and is empty.

@@ -358,6 +358,20 @@
 */
 
 /*!
+    \qmlmethod string installer::readConsoleLine(string title, int maxlen)
+
+    Prints \a title to a console and reads console input. Function halts the
+    installer and waits for user input. Function returns a line which user has
+    typed into the console. The maximum allowed line length is set to
+    \a maxlen. If the stream contains lines longer than this, then the line is
+    split after \a maxlen characters. If \a maxlen is 0, the line can be of
+    any length.
+
+    \note This function can only be called when installing from a command line
+    instance without GUI.
+*/
+
+/*!
     \qmlmethod boolean installer::fileExists(string filePath)
 
     Returns \c true if the \a filePath exists; otherwise returns \c false.
