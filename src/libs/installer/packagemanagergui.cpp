@@ -309,7 +309,8 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #else
-    setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
+    if (!m_core->settings().wizardShowPageList())
+        setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
 #endif
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
@@ -338,6 +339,33 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
+
+    if (m_core->settings().wizardShowPageList()) {
+        QWidget *sideWidget = new QWidget(this);
+
+        m_pageListWidget = new QListWidget(sideWidget);
+        m_pageListWidget->viewport()->setAutoFillBackground(false);
+        m_pageListWidget->setFrameShape(QFrame::NoFrame);
+        m_pageListWidget->setMinimumWidth(200);
+        // The widget should be view-only but we do not want it to be grayed out,
+        // so instead of calling setEnabled(false), do not accept keyboard focus
+        // and disable delivery of mouse events.
+        m_pageListWidget->setFocusPolicy(Qt::NoFocus);
+        m_pageListWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
+        m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
+        m_pageListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        QFrame *verticalLine = new QFrame(sideWidget);
+        verticalLine->setFrameShape(QFrame::VLine);
+        verticalLine->setFrameShadow(QFrame::Sunken);
+
+        QHBoxLayout *sideWidgetLayout = new QHBoxLayout(sideWidget);
+        sideWidgetLayout->addWidget(m_pageListWidget);
+        sideWidgetLayout->addWidget(verticalLine);
+        sideWidget->setLayout(sideWidgetLayout);
+
+        setSideWidget(sideWidget);
+    }
 
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
@@ -399,6 +427,54 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 void PackageManagerGui::setMaxSize()
 {
     setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+}
+
+/*!
+    Updates the installer page list.
+*/
+void PackageManagerGui::updatePageListWidget()
+{
+    if (!m_core->settings().wizardShowPageList() || !m_pageListWidget)
+        return;
+
+    static const QRegularExpression regExp1 {QLatin1String("(.)([A-Z][a-z]+)")};
+    static const QRegularExpression regExp2 {QLatin1String("([a-z0-9])([A-Z])")};
+
+    m_pageListWidget->clear();
+    foreach (int id, pageIds()) {
+        PackageManagerPage *page = qobject_cast<PackageManagerPage *>(pageById(id));
+        if (!page->showOnPageList())
+            continue;
+
+        // Use page list title if set, otherwise try to use the normal title. If that
+        // is not set either, use the object name with spaces added between words.
+        QString itemText;
+        if (!page->pageListTitle().isEmpty()) {
+            itemText = page->pageListTitle();
+        } else if (!page->title().isEmpty()) {
+            // Title may contain formatting, return only contained plain text
+            QTextDocument doc;
+            doc.setHtml(page->title());
+            itemText = doc.toPlainText().trimmed();
+        } else {
+            // Remove "Page" suffix from object name if exists and add spaces between words
+            itemText = page->objectName();
+            itemText.remove(QLatin1String("Page"), Qt::CaseInsensitive);
+            itemText.replace(regExp1, QLatin1String("\\1 \\2"));
+            itemText.replace(regExp2, QLatin1String("\\1 \\2"));
+        }
+        QListWidgetItem *item = new QListWidgetItem(itemText, m_pageListWidget);
+        item->setSizeHint(QSize(item->sizeHint().width(), 30));
+
+        // Give visual indication about current & non-visited pages
+        if (id == d->m_currentId) {
+            QFont currentItemFont = item->font();
+            currentItemFont.setBold(true);
+            item->setFont(currentItemFont);
+        } else if (!visitedPages().contains(id)) {
+            item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
+        }
+    }
 }
 
 /*!
@@ -693,6 +769,7 @@ void PackageManagerGui::wizardPageInsertionRequested(QWidget *widget,
 
     // add it
     setPage(pageId, new DynamicInstallerPage(widget, m_core));
+    updatePageListWidget();
 }
 
 /*!
@@ -711,6 +788,7 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
         packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(dynamicPage);
         packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(dynamicPage);
     }
+    updatePageListWidget();
 }
 
 /*!
@@ -750,6 +828,7 @@ void PackageManagerGui::wizardPageVisibilityChangeRequested(bool visible, int p)
         d->m_defaultPages[p] = page(p);
         removePage(p);
     }
+    updatePageListWidget();
 }
 
 /*!
@@ -976,7 +1055,8 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
 /*!
     Called when the current page changes to \a newId. Calls the leaving() method for the old page
     and the entering() method for the new one. Also, executes the control script associated with the
-    new page by calling executeControlScript().
+    new page by calling executeControlScript(). Updates the page list set as QWizard::sideWidget().
+
 
     Emits the left() and entered() signals.
 */
@@ -994,6 +1074,7 @@ void PackageManagerGui::currentPageChanged(int newId)
     if (newPage) {
         newPage->entering();
         emit newPage->entered();
+        updatePageListWidget();
     }
 
     executeControlScript(newId);
@@ -1082,13 +1163,22 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(nullptr)
+    , m_showOnPageList(true)
 {
     if (!m_core->settings().titleColor().isEmpty())
         m_titleColor = m_core->settings().titleColor();
 
-    setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
+    if (!m_core->settings().wizardShowPageList())
+        setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
+
     setPixmap(QWizard::BannerPixmap, bannerPixmap());
     setPixmap(QWizard::LogoPixmap, logoPixmap());
+
+    // Can't use PackageManagerPage::gui() here as the page is not set yet
+    if (PackageManagerGui *gui = qobject_cast<PackageManagerGui *>(core->guiObject())) {
+        connect(this, &PackageManagerPage::showOnPageListChanged,
+                gui, &PackageManagerGui::updatePageListWidget);
+    }
 }
 
 /*!
@@ -1159,6 +1249,44 @@ void PackageManagerPage::setColoredTitle(const QString &title)
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
     setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+}
+
+/*!
+    Sets the title shown on installer page indicator for this page to \a title.
+    Pages that do not set this will use a fallback title instead.
+*/
+void PackageManagerPage::setPageListTitle(const QString &title)
+{
+    m_pageListTitle = title;
+}
+
+/*!
+    Returns the title shown on installer page indicator for this page. If empty,
+    a fallback title is being used instead.
+*/
+QString PackageManagerPage::pageListTitle() const
+{
+    return m_pageListTitle;
+}
+
+/*!
+    Sets the page visibility on installer page indicator based on \a show.
+    All pages are shown by default.
+*/
+void PackageManagerPage::setShowOnPageList(bool show)
+{
+    if (m_showOnPageList != show)
+        emit showOnPageListChanged();
+
+    m_showOnPageList = show;
+}
+
+/*!
+    Returns \c true if the page should be shown on installer page indicator.
+*/
+bool PackageManagerPage::showOnPageList() const
+{
+    return m_showOnPageList;
 }
 
 /*!
@@ -2356,6 +2484,7 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ReadyForInstallationPage"));
+    updatePageListTitle();
 
     QVBoxLayout *baseLayout = new QVBoxLayout();
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
@@ -2384,6 +2513,9 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
 
     setCommitPage(true);
     setLayout(baseLayout);
+
+    connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
+            this, &ReadyForInstallationPage::updatePageListTitle);
 }
 
 /*!
@@ -2443,6 +2575,20 @@ void ReadyForInstallationPage::leaving()
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
 }
 
+/*!
+    Updates page list title based on installer binary type.
+*/
+void ReadyForInstallationPage::updatePageListTitle()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isInstaller())
+        setPageListTitle(tr("Ready to Install"));
+    else if (core->isMaintainer())
+        setPageListTitle(tr("Ready to Update"));
+    else if (core->isUninstaller())
+        setPageListTitle(tr("Ready to Uninstall"));
+}
+
 // -- PerformInstallationPage
 
 /*!
@@ -2476,6 +2622,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
+    updatePageListTitle();
 
     m_performInstallationForm->setupUi(this);
 
@@ -2500,6 +2647,9 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
             this, &PerformInstallationPage::setTitleMessage);
     connect(this, &PerformInstallationPage::setAutomatedPageSwitchEnabled,
             core, &PackageManagerCore::setAutomatedPageSwitchEnabled);
+
+    connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
+            this, &PerformInstallationPage::updatePageListTitle);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
@@ -2564,6 +2714,20 @@ void PerformInstallationPage::entering()
 void PerformInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+}
+
+/*!
+    Updates page list title based on installer binary type.
+*/
+void PerformInstallationPage::updatePageListTitle()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isInstaller())
+        setPageListTitle(tr("Installing"));
+    else if (core->isMaintainer())
+        setPageListTitle(tr("Updating"));
+    else if (core->isUninstaller())
+        setPageListTitle(tr("Uninstalling"));
 }
 
 // -- public slots
@@ -2634,6 +2798,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
+    setPageListTitle(tr("Finished"));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -2805,6 +2970,8 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setObjectName(QLatin1String("RestartPage"));
     setColoredTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
 
+    // Never show this page on the page list
+    setShowOnPageList(false);
     setFinalPage(false);
 }
 

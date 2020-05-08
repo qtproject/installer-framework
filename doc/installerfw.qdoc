@@ -206,13 +206,15 @@
             \li Filename for a logo used as \c QWizard::LogoPixmap.
         \row
             \li Watermark
-            \li Filename for a watermark used as \c QWizard::WatermarkPixmap.
+            \li Filename for a watermark used as \c QWizard::WatermarkPixmap. If
+                \c <WizardShowPageList> is set to \c true, the watermark is hidden.
         \row
             \li Banner
             \li Filename for a banner used as \c QWizard::BannerPixmap (only used by ModernStyle).
         \row
             \li Background
             \li Filename for an image used as \c QWizard::BackgroundPixmap (only used by MacStyle).
+                If \c <WizardShowPageList> is set to \c true, the background is hidden.
         \row
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
@@ -229,6 +231,12 @@
             \li Sets the default height of the wizard in pixels. Setting a watermark image will
                 override this. You can add the \c em or \c ex suffix to the specified value to
                 use the \e em or \e ex unit, as in a CSS file.
+        \row
+            \li WizardShowPageList
+            \li Set to \c false if the widget listing installer pages on the left side of the
+                wizard should not be shown. Defaults to \c true. If visible, this widget hides
+                \c QWizard::WatermarkPixmap on \c QWizard::ClassicStyle and \c QWizard::ModernStyle,
+                and \c QWizard::BackgroundPixmap on \c QWizard::MacStyle.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,

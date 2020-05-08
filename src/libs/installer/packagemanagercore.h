@@ -362,6 +362,7 @@ Q_SIGNALS:
 
     void guiObjectChanged(QObject *gui);
     void unstableComponentFound(const QString &type, const QString &errorMessage, const QString &component);
+    void installerBinaryMarkerChanged(qint64 magicMarker);
 
 private:
     struct Data {

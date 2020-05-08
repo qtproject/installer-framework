@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -88,6 +88,7 @@ public:
     QString titleColor() const;
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;
+    bool wizardShowPageList() const;
 
     QString applicationName() const;
     QString version() const;

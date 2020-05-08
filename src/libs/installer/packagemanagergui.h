@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -108,6 +108,7 @@ public Q_SLOTS:
     void showFinishedPage();
     void setModified(bool value);
     void setMaxSize();
+    void updatePageListWidget();
 
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
@@ -136,6 +137,7 @@ private:
     class Private;
     Private *const d;
     PackageManagerCore *m_core;
+    QListWidget *m_pageListWidget;
 };
 
 
@@ -157,6 +159,12 @@ public:
     void setColoredTitle(const QString &title);
     void setColoredSubTitle(const QString &subTitle);
 
+    void setPageListTitle(const QString &title);
+    QString pageListTitle() const;
+
+    void setShowOnPageList(bool show);
+    bool showOnPageList() const;
+
     virtual bool isComplete() const;
     void setComplete(bool complete);
 
@@ -173,6 +181,7 @@ public:
 signals:
     void entered();
     void left();
+    void showOnPageListChanged();
 
 protected:
     PackageManagerCore *packageManagerCore() const;
@@ -193,6 +202,8 @@ protected:
 private:
     bool m_complete;
     QString m_titleColor;
+    QString m_pageListTitle;
+    bool m_showOnPageList;
     bool m_needsSettingsButton;
 
     PackageManagerCore *m_core;
@@ -401,6 +412,9 @@ protected:
     void entering();
     void leaving();
 
+private Q_SLOTS:
+    void updatePageListTitle();
+
 private:
     QLabel *m_msgLabel;
     QTextBrowser* m_taskDetailsBrowser;
@@ -437,6 +451,7 @@ private Q_SLOTS:
     void uninstallationFinished();
 
     void toggleDetailsWereChanged();
+    void updatePageListTitle();
 
 private:
     PerformInstallationForm *m_performInstallationForm;

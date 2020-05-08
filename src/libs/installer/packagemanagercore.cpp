@@ -3111,6 +3111,7 @@ QString PackageManagerCore::installerBinaryPath() const
 void PackageManagerCore::setInstaller()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicInstallerMarker;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!
@@ -3141,6 +3142,7 @@ bool PackageManagerCore::isOfflineOnly() const
 void PackageManagerCore::setUninstaller()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicUninstallerMarker;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!
@@ -3161,6 +3163,7 @@ bool PackageManagerCore::isUninstaller() const
 void PackageManagerCore::setUpdater()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicUpdaterMarker;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!
@@ -3180,6 +3183,7 @@ bool PackageManagerCore::isUpdater() const
 void PackageManagerCore::setPackageManager()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicPackageManagerMarker;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 
@@ -3202,6 +3206,7 @@ void PackageManagerCore::setUserSetBinaryMarker(qint64 magicMarker)
 {
     d->m_magicBinaryMarker = magicMarker;
     d->m_userSetBinaryMarker = true;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!

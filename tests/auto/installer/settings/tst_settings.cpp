@@ -87,8 +87,9 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.systemIconSuffix(), QLatin1String(".png"));
 #endif
     QCOMPARE(settings.wizardStyle(), QString());
-    QCOMPARE(settings.wizardDefaultWidth(), 0);
+    QCOMPARE(settings.wizardDefaultWidth(), settings.wizardShowPageList() ? 800 : 0);
     QCOMPARE(settings.wizardDefaultHeight(), 0);
+    QCOMPARE(settings.wizardShowPageList(), true);
     QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QStringList());
