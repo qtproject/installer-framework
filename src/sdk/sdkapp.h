@@ -45,6 +45,7 @@
 #include <utils.h>
 #include <runoncechecker.h>
 #include <globals.h>
+#include <errors.h>
 
 #include <QApplication>
 #include <QDir>
@@ -293,7 +294,12 @@ public:
             m_core->acceptMessageBoxDefaultButton();
         }
 
-        ProductKeyCheck::instance()->init(m_core);
+        try {
+            ProductKeyCheck::instance()->init(m_core);
+        } catch (const QInstaller::Error &e) {
+            errorMessage = e.message();
+            return false;
+        }
         ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
 
         return true;
