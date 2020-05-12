@@ -137,6 +137,7 @@ public:
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;
     bool disableAuthorizationFallback() const;
+    bool disableCommandLineInterface() const;
 
     bool containsValue(const QString &key) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;

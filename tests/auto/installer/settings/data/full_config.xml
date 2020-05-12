@@ -38,6 +38,7 @@ File should contain all elements we allow in a config.xml
     <AllowSpaceInPath>true</AllowSpaceInPath>
     <AllowNonAsciiCharacters>true</AllowNonAsciiCharacters>
     <DisableAuthorizationFallback>true</DisableAuthorizationFallback>
+    <DisableCommandLineInterface>true</DisableCommandLineInterface>
     <RepositorySettingsPageVisible>false</RepositorySettingsPageVisible>
     <CreateLocalRepository>false</CreateLocalRepository>
     <TargetConfigurationFile>components.xml</TargetConfigurationFile>

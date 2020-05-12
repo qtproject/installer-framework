@@ -290,6 +290,11 @@
             \li Set to \c true if the installation should not ask users to run the authorization
                 fallback in case of authorization errors. Instead abort the installation immediately.
         \row
+            \li DisableCommandLineInterface
+            \li Set to \c true if command line interface features should be disabled. This prevents
+                the user from passing any consumer command to installer, like \c install, \c update
+                and \c remove. Other options can still be used normally. Defaults to \c false.
+        \row
             \li RepositorySettingsPageVisible
             \li Set to \c false to hide the repository settings page inside the settings dialog.
         \row

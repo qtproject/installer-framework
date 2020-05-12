@@ -289,6 +289,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
+                << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
@@ -565,6 +566,11 @@ bool Settings::allowNonAsciiCharacters() const
 bool Settings::disableAuthorizationFallback() const
 {
     return d->m_data.value(scDisableAuthorizationFallback, false).toBool();
+}
+
+bool Settings::disableCommandLineInterface() const
+{
+    return d->m_data.value(scDisableCommandLineInterface, false).toBool();
 }
 
 bool Settings::dependsOnLocalInstallerBinary() const

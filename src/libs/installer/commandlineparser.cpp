@@ -191,7 +191,7 @@ CommandLineParser::CommandLineParser()
 
     // Positional arguments
     m_parser.addPositionalArgument(CommandLineOptions::scCommand,
-        QLatin1String("Command to be run by installer."),
+        QLatin1String("Command to be run by installer. Note that this feature may be disabled by vendor."),
         QLatin1String("command"));
     m_parser.addPositionalArgument(CommandLineOptions::scArguments,
         QLatin1String("Extra arguments for command, each separated by space."),

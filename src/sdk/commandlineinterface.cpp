@@ -59,6 +59,11 @@ bool CommandLineInterface::initialize()
         qCWarning(QInstaller::lcInstallerInstallLog) << errorMessage;
         return false;
     }
+    if (m_core->settings().disableCommandLineInterface()) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+                << "Command line interface support disabled from installer configuration by vendor!";
+        return false;
+    }
     // Filter the arguments list by removing the command itself
     // and any key=value pair occurrences.
     m_positionalArguments = m_parser.positionalArguments();

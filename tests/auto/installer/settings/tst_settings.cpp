@@ -75,6 +75,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
     QCOMPARE(settings.disableAuthorizationFallback(), false);
+    QCOMPARE(settings.disableCommandLineInterface(), false);
     QCOMPARE(settings.createLocalRepository(), false);
     QCOMPARE(settings.installActionColumnVisible(), false);
 
