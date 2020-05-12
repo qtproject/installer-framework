@@ -614,7 +614,9 @@ void PackageManagerCore::acceptMessageBoxDefaultButton()
 }
 
 /*!
-    Automatically accept all licenses required by components to install.
+    Automatically accepts all license agreements required to install the selected components.
+
+    \sa {installer::setAutoAcceptLicenses}{installer.setAutoAcceptLicenses}
 */
 void PackageManagerCore::setAutoAcceptLicenses()
 {

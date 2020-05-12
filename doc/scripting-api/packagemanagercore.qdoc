@@ -324,6 +324,14 @@
 */
 
 /*!
+    \qmlmethod void installer::setAutoAcceptLicenses()
+
+    Automatically accepts all license agreements required to install the selected components. This
+    can be used to skip the command line license acceptance query. The names of the accepted
+    individual licenses are still printed to a console.
+*/
+
+/*!
    \qmlmethod float installer::requiredDiskSpace()
 
    Returns the additional estimated amount of disk space in bytes required after installation.
