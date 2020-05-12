@@ -1517,7 +1517,6 @@ bool PackageManagerCorePrivate::runInstaller()
         ProgressCoordinator::instance()->addManualPercentagePoints(1);
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing the installation..."));
 
-        m_core->calculateComponentsToInstall();
         const QList<Component*> componentsToInstall = m_core->orderedComponentsToInstall();
         qCDebug(QInstaller::lcInstallerInstallLog) << "Install size:" << componentsToInstall.size()
             << "components";
