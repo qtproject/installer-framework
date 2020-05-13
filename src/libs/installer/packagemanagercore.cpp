@@ -1451,7 +1451,9 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
     bool success = false;
     if (!isUpdater()) {
         success = fetchAllPackages(packages, installedPackages);
-        if (success && !d->statusCanceledOrFailed() && isPackageManager()) {
+        if (d->statusCanceledOrFailed())
+            return false;
+        if (success && isPackageManager()) {
             foreach (Package *const update, packages) {
                 if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
                     const QString name = update->data(scName).toString();

@@ -2510,11 +2510,14 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
 {
     QString htmlOutput;
     bool componentsOk = m_core->calculateComponents(&htmlOutput);
-    qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-    if (componentsOk && acceptLicenseAgreements()) {
-        return m_core->run();
+    bool success = false;
+    if (statusCanceledOrFailed()) {
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
+    } else if (componentsOk && acceptLicenseAgreements()) {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
+        success = m_core->run();
     }
-    return false;
+    return success;
 }
 
 bool PackageManagerCorePrivate::acceptLicenseAgreements()
