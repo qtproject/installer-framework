@@ -1,3 +1,31 @@
+/**************************************************************************
+**
+** Copyright (C) 2020 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+**************************************************************************/
+
 #include "component.h"
 #include "componentmodel.h"
 #include "updatesinfo_p.h"
@@ -38,7 +66,8 @@ public:
     enum Option {
         NoFlags = 0x00,
         VirtualsVisible = 0x01,
-        NoForcedInstallation = 0x02
+        NoForcedInstallation = 0x02,
+        NoDefaultInstallation = 0x04
     };
     Q_DECLARE_FLAGS(Options, Option);
 
@@ -358,11 +387,30 @@ private slots:
         }
     }
 
+    void testNoDefaultInstallation()
+    {
+        setPackageManagerOptions(NoDefaultInstallation);
+
+        QList<Component*> rootComponents = loadComponents();
+        testComponentsLoaded(rootComponents);
+
+        // setup the model with 1 column
+        ComponentModel model(1, &m_core);
+        model.setRootComponents(rootComponents);
+        testDefaultInheritedModelBehavior(&model, 1);
+
+        model.setCheckedState(ComponentModel::DefaultChecked);
+        QCOMPARE(model.checkedState(), ComponentModel::DefaultChecked);
+        testModelState(&model, QStringList() << vendorProduct, QStringList(), m_defaultUnchecked
+            + m_uncheckable + m_defaultPartially + QStringList() << vendorSecondProductSub);
+    }
+
 private:
     void setPackageManagerOptions(Options flags) const
     {
         m_core.setNoForceInstallation(flags.testFlag(NoForcedInstallation));
         m_core.setVirtualComponentsVisible(flags.testFlag(VirtualsVisible));
+        m_core.setNoDefaultInstallation(flags.testFlag(NoDefaultInstallation));
     }
 
     void testComponentsLoaded(const QList<Component *> &rootComponents) const
@@ -472,7 +520,10 @@ private:
 
             // we need at least these to be able to test the model
             component->setValue("Name", info.data.value("Name").toString());
-            component->setValue("Default", info.data.value("Default").toString());
+            QString isDefault = info.data.value("Default").toString();
+            if (m_core.noDefaultInstallation())
+                isDefault = scFalse;
+            component->setValue("Default", isDefault);
             component->setValue("Virtual", info.data.value("Virtual").toString());
             component->setValue("DisplayName", info.data.value("DisplayName").toString());
             component->setValue("Checkable", info.data.value("Checkable").toString());
@@ -516,6 +567,7 @@ private:
     QStringList m_defaultPartially;
     QStringList m_defaultUnchecked;
     QStringList m_uncheckable;
+    QStringList m_defaultNoChecked;
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(tst_ComponentModel::Options)
 

@@ -412,6 +412,7 @@ static QFont *sVirtualComponentsFont = nullptr;
 Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
 
 static bool sNoForceInstallation = false;
+static bool sNoDefaultInstallation = false;
 static bool sVirtualComponentsVisible = false;
 static bool sCreateLocalRepositoryFromBinary = false;
 
@@ -1246,6 +1247,26 @@ void PackageManagerCore::setNoForceInstallation(bool value)
     sNoForceInstallation = value;
 }
 
+/* static */
+/*!
+    Returns \c true if components are not selected by default although
+    \c <Default> element is set in the package information file.
+*/
+bool PackageManagerCore::noDefaultInstallation()
+{
+    return sNoDefaultInstallation;
+}
+
+/* static */
+/*!
+    Overwrites the value specified for the component in the \c <Default>
+    element in the package information file with \a value. Setting \a value
+    to \c true unselects the components.
+*/
+void PackageManagerCore::setNoDefaultInstallation(bool value)
+{
+    sNoDefaultInstallation = value;
+}
 /* static */
 /*!
     Returns \c true if a local repository should be created from binary content.

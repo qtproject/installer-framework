@@ -110,6 +110,9 @@ public:
     static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
 
+    static bool noDefaultInstallation();
+    static void setNoDefaultInstallation(bool value);
+
     static bool createLocalRepositoryFromBinary();
     static void setCreateLocalRepositoryFromBinary(bool create);
 

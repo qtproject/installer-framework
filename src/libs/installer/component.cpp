@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -305,7 +305,12 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
     setValue(scDescription, package.data(scDescription).toString());
-    setValue(scDefault, package.data(scDefault).toString());
+
+    QString isDefault = package.data(scDefault, scFalse).toString().toLower();
+    if (PackageManagerCore::noDefaultInstallation())
+        isDefault = scFalse;
+    setValue(scDefault, isDefault);
+
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
     setValue(scCompressedSize, package.data(scCompressedSize).toString());
     setValue(scUncompressedSize, package.data(scUncompressedSize).toString());

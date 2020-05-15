@@ -265,6 +265,8 @@ public:
 
         QInstaller::PackageManagerCore::setNoForceInstallation(m_parser
             .isSet(CommandLineOptions::scNoForceInstallationLong));
+        QInstaller::PackageManagerCore::setNoDefaultInstallation(m_parser
+            .isSet(CommandLineOptions::scNoDefaultInstallationLong));
         QInstaller::PackageManagerCore::setCreateLocalRepositoryFromBinary(m_parser
             .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());

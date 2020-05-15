@@ -130,6 +130,9 @@ CommandLineParser::CommandLineParser()
         << CommandLineOptions::scNoForceInstallationShort << CommandLineOptions::scNoForceInstallationLong,
         QLatin1String("Allow deselecting components that are marked as forced.")));
     m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scNoDefaultInstallationLong,
+        QLatin1String("Deselects components that are marked as default.")));
+    m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scNoSizeCheckingShort << CommandLineOptions::scNoSizeCheckingLong,
         QLatin1String("Disable checking of free space for installation target.")));
     m_parser.addOption(QCommandLineOption(QStringList()
