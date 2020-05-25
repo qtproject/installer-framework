@@ -274,38 +274,41 @@ public:
         if (m_parser.isSet(CommandLineOptions::scAcceptLicenses))
             m_core->setAutoAcceptLicenses();
 
-        if (m_parser.isSet(CommandLineOptions::scAcceptMessageQuery))
-            m_core->autoAcceptMessageBoxes();
-        if (m_parser.isSet(CommandLineOptions::scRejectMessageQuery))
-            m_core->autoRejectMessageBoxes();
+        // Ignore message acceptance options when running the installer with GUI
+        if (m_core->isCommandLineInstance()) {
+            if (m_parser.isSet(CommandLineOptions::scAcceptMessageQuery))
+                m_core->autoAcceptMessageBoxes();
 
-        if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswer)) {
-            const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswer);
-            const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
-            if (items.count() > 0) {
-                errorMessage = setMessageBoxAutomaticAnswers(items);
-                if (!errorMessage.isEmpty())
+            if (m_parser.isSet(CommandLineOptions::scRejectMessageQuery))
+                m_core->autoRejectMessageBoxes();
+
+            if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer))
+                m_core->acceptMessageBoxDefaultButton();
+
+            if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswer)) {
+                const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswer);
+                const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+                if (items.count() > 0) {
+                    errorMessage = setMessageBoxAutomaticAnswers(items);
+                    if (!errorMessage.isEmpty())
+                        return false;
+                } else {
+                    errorMessage = QObject::tr("Arguments missing for option %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
                     return false;
-            } else {
-                errorMessage = QObject::tr("Arguments missing for option %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
-                return false;
-            }
-        }
-
-        if (m_parser.isSet(CommandLineOptions::scFileDialogAutomaticAnswer)) {
-            const QString positionalArguments = m_parser.value(CommandLineOptions::scFileDialogAutomaticAnswer);
-            const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
-
-            foreach (const QString &item, items) {
-                if (item.contains(QLatin1Char('='))) {
-                    const QString name = item.section(QLatin1Char('='), 0, 0);
-                    QString value = item.section(QLatin1Char('='), 1, 1);
-                    m_core->setFileDialogAutomaticAnswer(name, value);
                 }
             }
-        }
-        if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer)) {
-            m_core->acceptMessageBoxDefaultButton();
+            if (m_parser.isSet(CommandLineOptions::scFileDialogAutomaticAnswer)) {
+                const QString positionalArguments = m_parser.value(CommandLineOptions::scFileDialogAutomaticAnswer);
+                const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+
+                foreach (const QString &item, items) {
+                    if (item.contains(QLatin1Char('='))) {
+                        const QString name = item.section(QLatin1Char('='), 0, 0);
+                        QString value = item.section(QLatin1Char('='), 1, 1);
+                        m_core->setFileDialogAutomaticAnswer(name, value);
+                    }
+                }
+            }
         }
 
         try {

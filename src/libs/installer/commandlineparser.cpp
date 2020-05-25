@@ -42,7 +42,10 @@ static const QLatin1String scInstallerValue("InstallerValue");
 CommandLineParser::CommandLineParser()
     : d(new CommandLineParserPrivate())
 {
-    static const QString preformatted = QLatin1String("\nCommands:\n")
+    static const QString preformatted = QLatin1String("\nQt Installer Framework supports both GUI and "
+        "headless mode. The installation operations can be invoked with the following commands and "
+        "options. Note that the options marked with \"CLI\" are available in the headless mode only.\n")
+        + QLatin1String("\nCommands:\n")
         + QString::fromLatin1("\t%1, %2 - install default or selected packages - <pkg1 pkg2 pkg3...>\n")
             .arg(CommandLineOptions::scInstallShort, CommandLineOptions::scInstallLong)
         + QString::fromLatin1("\t%1, %2 - show available updates information on maintenance tool\n")
@@ -120,7 +123,7 @@ CommandLineParser::CommandLineParser()
     // Misc installation options
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scRootShort << CommandLineOptions::scRootLong,
-        QLatin1String("Set installation root directory."),
+        QLatin1String("[CLI] Set installation root directory."),
         QLatin1String("directory")));
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scPlatformShort << CommandLineOptions::scPlatformLong,
@@ -151,20 +154,20 @@ CommandLineParser::CommandLineParser()
 
     // Message query options
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQuery,
-         QLatin1String("Accepts all message queries without user input.")));
+         QLatin1String("[CLI] Accepts all message queries without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scRejectMessageQuery,
-         QLatin1String("Rejects all message queries without user input.")));
+         QLatin1String("[CLI] Rejects all message queries without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageAutomaticAnswer,
-         QLatin1String("Automatically answers the message queries with the message identifier and button value. "
+         QLatin1String("[CLI] Automatically answers the message queries with the message identifier and button value. "
                        "Several identifier=value pairs can be given separated with comma, "
                        "for example --auto-answer message.id=Ok,message.id2=Cancel."),
          QLatin1String("identifier=value")));
      m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswer,
-        QLatin1String("Automatically answers to message queries with their default values.")));
+        QLatin1String("[CLI] Automatically answers to message queries with their default values.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicenses,
-         QLatin1String("Accepts all licenses without user input.")));
+         QLatin1String("[CLI] Accepts all licenses without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scFileDialogAutomaticAnswer,
-         QLatin1String("Automatically sets the QFileDialog values getExistingDirectory() or getOpenFileName() "
+         QLatin1String("[CLI] Automatically sets the QFileDialog values getExistingDirectory() or getOpenFileName() "
                        "requested by install script. "
                        "Several identifier=value pairs can be given separated with comma, "
                        "for example --file-query filedialog.id=C:\Temp,filedialog.id2=C:\Temp2"),
