@@ -1,3 +1,43 @@
+4.0.0
+- Add support for disabling CLI features from configuration file (QTIFW-1760)
+- Fix interrupt() call from script
+- CLI: Add option to read arbitrary user input (QTIFW-1631)
+- Use default button if auto-answer value not found
+- Fix addElevatedOperation prevents installing from CLI (QTIFW-1700)
+- Add possibility to accept licenses from CLI (QTIFW-1742, QTIFW-1745)
+- Answer queries from command line (QTIFW-1739)
+- Fix creation of local repository with elevated permissions (QTIFW-1500)
+- Update minimum required Qt version to Qt5.12.7
+- Add new option --auto-answer (QTIFW-1740)
+- Allow setting IFW_LIB_PATH with qmake
+- Add possibility to auto accept or reject IFW queries from CLI (QTIFW-1736)
+- Fix bugs in InstallIconsOperation and add unit tests (QTIFW-1715, QTIFW-1465)
+- Initialize user arguments earlier (QTIFW-576, QTIFW-1730)
+- Remove existing installation from command line (QTIFW-1574)
+- Add function to allow additional processes to be run (QTIFW-1019)
+- Add possibility to compress metadata per repository
+- Separate maintenance tool writing for testing purpose
+- Add short versions of CLI options (QTIFW-1634)
+- Perform headless commands without GUI dependency (QTIFW-1633)
+- Show progress in CLI when performing time consuming operations (QTIFW-1625)
+- Add command line option to start the installer binary as uninstaller (QTIFW-1639)
+- Change IntroductionPage radio button handling in maintenance tool (QTIFW-349)
+- Enable optional targetDir argument on command line installation (QTIFW-1608)
+- Uninstall selected packages from command line
+- Use of QLoggingCategory
+- Do not prompt admin query when command line interface is used (QTIFW-1598)
+- Enable command line default components installation (QTIFW-1583)
+- Remove obsolete sharedFlag() function
+- Update IFW version number
+- Install selected packages from CLI
+- Update selected components from command line
+- List available packages from command line
+- List installed packages from command line
+- Add regular expression support to replace operation (QTIFW-889)
+- Change ApplicationsDir variable on macOS to return "/Applications"(QTIFW-1011)
+- Add Brazilian portuguese translation file
+- Accept translation file names in ifw_language_COUNTRY.ts format
+
 3.2.3
 - Translation fixes (QTIFW-1435, QTBUG-75911)
 - Provide a means to use fixed translations for Qt and IFW
