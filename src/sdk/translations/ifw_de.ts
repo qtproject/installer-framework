@@ -1739,9 +1739,9 @@ Aktualisierung abgebrochen!</translation>
     </message>
     <message>
         <source>
-Installing component %1...</source>
+Installing component %1</source>
         <translation>
-Komponente %1 wird installiert...</translation>
+Komponente %1 wird installiert</translation>
     </message>
     <message>
         <source>Installer Error</source>

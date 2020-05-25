@@ -90,12 +90,18 @@ int InstallerBase::run()
     dumpResourceTree();
 
     const QString directory = QLatin1String(":/translations");
+    // Check if there is a modified translation first to enable people
+    // to easily provide corrected translations to Qt/IFW for their installers
+    const QString newDirectory = QLatin1String(":/translations_new");
     const QStringList translations = m_core->settings().translations();
 
     if (translations.isEmpty()) {
         foreach (const QLocale locale, QLocale().uiLanguages()) {
             QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
-            const bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+            bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                              QLatin1String("_"), newDirectory);
+            if (!qtLoaded)
+                qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
                                               QLatin1String("_"), directory);
 
             if (qtLoaded || locale.language() == QLocale::English) {
@@ -103,7 +109,10 @@ int InstallerBase::run()
                     QCoreApplication::instance()->installTranslator(qtTranslator.take());
 
                 QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
-                if (ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory))
+                bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
+                if (!ifwLoaded)
+                    ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
+                if (ifwLoaded)
                     QCoreApplication::instance()->installTranslator(ifwTranslator.take());
 
                 // To stop loading other translations it's sufficient that

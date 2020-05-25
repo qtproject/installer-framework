@@ -1,3 +1,7 @@
+3.2.3
+- Translation fixes (QTIFW-1435, QTBUG-75911)
+- Provide a means to use fixed translations for Qt and IFW
+
 3.2.2
 - Using patched Qt5.12.4 for binary builds (QTIFW-1632)
 - Add a command line argument to disable size check (QTIFW-1602)

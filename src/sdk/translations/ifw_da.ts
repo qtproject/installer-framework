@@ -1715,9 +1715,9 @@ Opdatering afbrudt!</translation>
     </message>
     <message>
         <source>
-Installing component %1...</source>
+Installing component %1</source>
         <translation>
-Installerer komponenten %1...</translation>
+Installerer komponenten %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
