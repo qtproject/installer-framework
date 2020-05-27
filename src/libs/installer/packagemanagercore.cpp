@@ -2220,6 +2220,12 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
             qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace() << "Cannot uninstall component "
                 << componentName << " because it is added as auto dependency to "
                 << component->autoDependencies().join(QLatin1Char(','));
+        } else if (component->isVirtual() && !virtualComponentsVisible()) {
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+                << "Cannot uninstall virtual component " << component->name();
+        } else {
+            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+                << "Cannot uninstall component " << component->name();
         }
         return false;
     }

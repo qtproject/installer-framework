@@ -134,4 +134,15 @@
         <Dependencies>componentA</Dependencies>
         <Checkable>true</Checkable>
     </Package>
+    <Package>
+        <Name>componentH</Name>
+        <Title>Component H</Title>
+        <Description>This component does not depend on any other component.</Description>
+        <Version>1.0.0</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2020-03-23</InstallDate>
+        <Size>99</Size>
+        <Virtual>true</Virtual>
+        <Checkable>true</Checkable>
+    </Package>
 </Packages>

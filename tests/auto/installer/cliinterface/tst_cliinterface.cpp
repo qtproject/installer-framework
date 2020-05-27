@@ -133,6 +133,9 @@ private slots:
 
         QTest::ignoreMessage(QtWarningMsg, "Cannot uninstall component MissingComponent. Component not found in install tree.");
         core.uninstallComponentsSilently(QStringList() << "MissingComponent");
+
+        QTest::ignoreMessage(QtWarningMsg, "Cannot uninstall virtual component componentH");
+        core.uninstallComponentsSilently(QStringList() << "componentH");
     }
 
     void testListInstalledPackages()
@@ -351,6 +354,21 @@ private slots:
                             << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
                             << "installcontentB.txt" << "installcontentD.txt");
     }
+
+    void testUninstallVirtualSetVisibleSilently()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository");
+        core->setVirtualComponentsVisible(true);
+        core->installSelectedComponentsSilently(QStringList() <<"componentH");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentH", "1.0.0content.txt");
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "componentH");
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentH");
+    }
+
     void testFileQuery()
     {
         PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_installDir,
