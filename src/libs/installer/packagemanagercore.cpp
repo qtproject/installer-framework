@@ -2254,7 +2254,6 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
     setUpdater();
-    autoRejectMessageBoxes();
 
     fetchRemotePackagesTree();
     // List contains components containing update, if essential found contains only essential component
@@ -2317,7 +2316,6 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
 {
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
-    autoRejectMessageBoxes();
 
     ComponentModel *model = defaultComponentModel();
     fetchLocalPackagesTree();
@@ -2356,8 +2354,6 @@ bool PackageManagerCore::removeInstallationSilently()
 {
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
-
-    autoRejectMessageBoxes();
 
     setCompleteUninstallation(true);
     return run();
