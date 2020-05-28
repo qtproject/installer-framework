@@ -2272,11 +2272,11 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
                 essentialUpdatesFound = true;
         }
         if (!essentialUpdatesFound) {
-            int componentToUpdateCount = componentsToUpdate.count();
+            const bool userSelectedComponents = !componentsToUpdate.isEmpty();
             QList<Component*> componentsToBeUpdated;
             //Mark components to be updated
             foreach (Component *comp, componentList) {
-                if (componentToUpdateCount == 0) { // No components given, update all
+                if (!userSelectedComponents) { // No components given, update all
                     comp->setCheckState(Qt::Checked);
                 } else {
                     //Collect the componets to list which we want to update
@@ -2287,6 +2287,12 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
                             comp->setCheckState(Qt::Unchecked);
                     }
                 }
+            }
+            // No updates for selected components, do not run updater
+            if (userSelectedComponents && componentsToBeUpdated.isEmpty()) {
+                qCDebug(QInstaller::lcInstallerInstallLog)
+                    << "No updates available for selected components.";
+                return false;
             }
             foreach (Component *componentToUpdate, componentsToBeUpdated)
                 componentToUpdate->setCheckState(Qt::Checked);

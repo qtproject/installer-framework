@@ -81,6 +81,12 @@ private slots:
                            << "installcontentB.txt" << "installcontentD.txt");
     }
 
+    void testUpdateNoUpdatesForSelectedPackage()
+    {
+        setRepository(":///data/installPackagesRepositoryUpdate");
+        QVERIFY(!core->updateComponentsSilently(QStringList() << "componentInvalid"));
+    }
+
     void testUpdateTwoPackageSilently()
     {
         setRepository(":///data/installPackagesRepository");
