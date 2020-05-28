@@ -598,7 +598,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     // Set shortcut path for command line interface, in GUI version
     // we have a separate page where the whole path is set.
 #ifdef Q_OS_WIN
-    if (m_core->isCommandLineInstance()) {
+    if (m_core->isCommandLineInstance() && m_core->isInstaller()) {
         QString startMenuPath;
         if (params.value(QLatin1String("AllUsers")) == scTrue)
             startMenuPath = m_data.value(scAllUsersStartMenuProgramsPath).toString();
