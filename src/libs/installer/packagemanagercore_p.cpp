@@ -2520,7 +2520,7 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
     return success;
 }
 
-bool PackageManagerCorePrivate::acceptLicenseAgreements()
+bool PackageManagerCorePrivate::acceptLicenseAgreements() const
 {
     // Always skip for uninstaller
     if (isUninstaller())
@@ -2548,7 +2548,7 @@ bool PackageManagerCorePrivate::acceptLicenseAgreements()
     return true;
 }
 
-bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const QString &content)
+bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const QString &content) const
 {
     qCDebug(QInstaller::lcInstallerInstallLog) << "You must accept "
         "the terms contained in the following license agreement "

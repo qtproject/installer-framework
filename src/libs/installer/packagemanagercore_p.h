@@ -244,8 +244,8 @@ private:
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
     bool calculateComponentsAndRun();
-    bool acceptLicenseAgreements();
-    bool askUserAcceptLicense(const QString &name, const QString &content);
+    bool acceptLicenseAgreements() const;
+    bool askUserAcceptLicense(const QString &name, const QString &content) const;
 
 private:
     PackageManagerCore *m_core;
