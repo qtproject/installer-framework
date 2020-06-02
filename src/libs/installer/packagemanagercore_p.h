@@ -128,7 +128,6 @@ public:
     bool runUninstaller();
     bool isUninstaller() const;
 
-    void runUpdater();
     bool isUpdater() const;
 
     bool runPackageUpdater();
