@@ -160,6 +160,7 @@ public:
 
     Q_INVOKABLE QString defaultButtonText(int wizardButton) const;
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
+    Q_INVOKABLE void clickButton(const QString &objectName, int delayInMs = 0) const;
     Q_INVOKABLE bool isButtonEnabled(int wizardButton);
 
     Q_INVOKABLE void showSettingsButton(bool show);

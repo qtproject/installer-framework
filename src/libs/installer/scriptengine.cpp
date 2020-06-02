@@ -178,6 +178,16 @@ void GuiProxy::clickButton(int wizardButton, int delayInMs)
         m_gui->clickButton(wizardButton, delayInMs);
 }
 
+/*!
+    Automatically clicks the button specified by \a objectName after a delay
+    in milliseconds specified by \a delayInMs.
+*/
+void GuiProxy::clickButton(const QString &objectName, int delayInMs) const
+{
+    if (m_gui)
+        m_gui->clickButton(objectName, delayInMs);
+}
+
 bool GuiProxy::isButtonEnabled(int wizardButton)
 {
     if (!m_gui)

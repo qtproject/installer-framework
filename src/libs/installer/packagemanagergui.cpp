@@ -530,6 +530,20 @@ void PackageManagerGui::clickButton(int wb, int delay)
 }
 
 /*!
+    Clicks the button specified by \a objectName after the delay specified by \a delay.
+
+    \sa {gui::clickButton}{gui.clickButton}
+*/
+void PackageManagerGui::clickButton(const QString &objectName, int delay) const
+{
+    QPushButton *button = findChild<QPushButton *>(objectName);
+    if (button)
+        QTimer::singleShot(delay, button, &QAbstractButton::click);
+    else
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with objectname: " << objectName << "not found!";
+}
+
+/*!
     Returns \c true if the button specified by \a wb is enabled. Returns \c false
     if a button of the specified type is not found.
 

@@ -80,6 +80,7 @@ public:
 
     QString defaultButtonText(int wizardButton) const;
     void clickButton(int wizardButton, int delayInMs = 0);
+    void clickButton(const QString &objectName, int delayInMs = 0) const;
     bool isButtonEnabled(int wizardButton);
 
     void showSettingsButton(bool show);

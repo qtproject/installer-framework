@@ -104,6 +104,13 @@
 */
 
 /*!
+    \qmlmethod void gui::clickButton(string objectName, int delayInMs)
+
+    Automatically clicks the button specified by \a objectName after a delay
+    in milliseconds specified by \a delayInMs.
+*/
+
+/*!
     \qmlmethod boolean gui::isButtonEnabled(int wizardButton)
 
     Returns \c true if the button specified by \a wizardButton is enabled.
