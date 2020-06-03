@@ -46,6 +46,7 @@ struct PackageManager
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
         QString appFilePath = QCoreApplication::applicationFilePath();
         core->setAllowedRunningProcesses(QStringList() << appFilePath);
+        core->disableWriteMaintenanceTool();
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(repository);
         repoList.insert(repo);

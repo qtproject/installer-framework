@@ -70,6 +70,7 @@ private slots:
                                                           QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                                           QHash<QString, QString>(), true);
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        core->disableWriteMaintenanceTool();
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(":///data/repository");
         repoList.insert(repo);

@@ -172,6 +172,8 @@ public:
     void writeMaintenanceTool();
     void writeMaintenanceConfigFiles();
 
+    void disableWriteMaintenanceTool(bool disable = true);
+
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
 

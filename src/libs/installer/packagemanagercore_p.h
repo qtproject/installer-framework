@@ -207,6 +207,7 @@ public:
     bool m_dependsOnLocalInstallerBinary;
     QStringList m_allowedRunningProcesses;
     bool m_autoAcceptLicenses;
+    bool m_disableWriteMaintenanceTool;
 
 private slots:
     void infoMessage(Job *, const QString &message) {

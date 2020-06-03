@@ -90,7 +90,8 @@ private slots:
     void testUpdateNoUpdatesForSelectedPackage()
     {
         setRepository(":///data/installPackagesRepositoryUpdate");
-        QVERIFY(!core->updateComponentsSilently(QStringList() << "componentInvalid"));
+        // Succeeds as no updates available for component so nothing to do
+        QVERIFY(core->updateComponentsSilently(QStringList() << "componentInvalid"));
     }
 
     void testUpdateTwoPackageSilently()

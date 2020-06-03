@@ -96,6 +96,7 @@ private slots:
                                       QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                       QHash<QString, QString>(), true);
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
+        core->disableWriteMaintenanceTool();
         m_installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(m_installDir));
         core->setValue(scTargetDir, m_installDir);
@@ -162,7 +163,7 @@ private slots:
         setRepository(":///data/invalidoperation");
         core->autoAcceptMessageBoxes();
         core->installDefaultComponentsSilently();
-        QCOMPARE(PackageManagerCore::Running, core->status());
+        QCOMPARE(PackageManagerCore::Success, core->status());
     }
 
     void invalidHashAutoReject()

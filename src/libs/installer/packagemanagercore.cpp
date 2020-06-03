@@ -434,9 +434,13 @@ static bool componentMatches(const Component *component, const QString &name,
 */
 void PackageManagerCore::writeMaintenanceTool()
 {
+    if (d->m_disableWriteMaintenanceTool) {
+        qCDebug(QInstaller::lcInstallerInstallLog()) << "Maintenance tool writing disabled.";
+        return;
+    }
+
     if (d->m_needToWriteMaintenanceTool) {
         try {
-            emit titleMessageChanged(tr("Creating Maintenance Tool"));
             d->writeMaintenanceTool(d->m_performedOperationsOld + d->m_performedOperationsCurrentSession);
 
             bool gainedAdminRights = false;
@@ -448,14 +452,6 @@ void PackageManagerCore::writeMaintenanceTool()
             if (gainedAdminRights)
                 dropAdminRights();
             d->m_needToWriteMaintenanceTool = false;
-
-            // fake a possible wrong value to show a full progress bar
-            const int progress = ProgressCoordinator::instance()->progressInPercentage();
-            // usually this should be only the reserved one from the beginning
-            if (progress < 100)
-                ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
-            ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
-            d->setStatus(PackageManagerCore::Success);
         } catch (const Error &error) {
             qCritical() << "Error writing Maintenance Tool: " << error.message();
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -471,6 +467,15 @@ void PackageManagerCore::writeMaintenanceTool()
 void PackageManagerCore::writeMaintenanceConfigFiles()
 {
     d->writeMaintenanceConfigFiles();
+}
+
+/*!
+    Disables writing of maintenance tool for the current session.
+    \sa {installer::disableWriteMaintenanceTool}{installer.disableWriteMaintenanceTool}
+ */
+void PackageManagerCore::disableWriteMaintenanceTool(bool disable)
+{
+    d->m_disableWriteMaintenanceTool = disable;
 }
 
 /*!
@@ -2247,8 +2252,8 @@ void PackageManagerCore::listInstalledPackages()
 /*!
     Updates the selected components \a componentsToUpdate without GUI.
     If essential components are found, then only those will be updated.
-    Returns \c true if components are updated and the maintenance tool needs
-    to be written, otherwise returns \c false.
+    Returns \c true if components are updated successfully or there are
+    no updates to perform, otherwise returns \c false.
 */
 bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsToUpdate)
 {
@@ -2264,7 +2269,6 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
 
     if (componentList.count() ==  0) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No updates available.";
-        return false;
     } else {
         // Check if essential components are available (essential components are disabled).
         // If essential components are found, update first essential updates,
@@ -2296,7 +2300,7 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             if (userSelectedComponents && componentsToBeUpdated.isEmpty()) {
                 qCDebug(QInstaller::lcInstallerInstallLog)
                     << "No updates available for selected components.";
-                return false;
+                return true;
             }
             foreach (Component *componentToUpdate, componentsToBeUpdated) {
                 const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->name());
@@ -2304,12 +2308,13 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             }
         }
 
-        if (d->calculateComponentsAndRun()) {
-            if (essentialUpdatesFound)
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully.";
-            else
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
-        }
+        if (!d->calculateComponentsAndRun())
+            return false;
+
+        if (essentialUpdatesFound)
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully.";
+        else
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
     }
     return true;
 }
@@ -2321,8 +2326,8 @@ void PackageManagerCore::commitSessionOperations()
 
 /*!
     Uninstalls the selected components \a components without GUI.
-    Returns \c true if components are uninstalled and the maintenance tool
-    needs to be written, otherwise returns \c false.
+    Returns \c true if components are uninstalled successfully or
+    there are no components to uninstall, otherwise returns \c false.
 */
 bool PackageManagerCore::uninstallComponentsSilently(const QStringList& components)
 {
@@ -2349,12 +2354,12 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
     }
 
     if (uninstallComponentFound) {
-        if (d->calculateComponentsAndRun()) {
-            qCDebug(QInstaller::lcInstallerUninstallLog) << "Components uninstalled successfully";
-            return true;
-        }
+        if (!d->calculateComponentsAndRun())
+            return false;
+
+        qCDebug(QInstaller::lcInstallerUninstallLog) << "Components uninstalled successfully";
     }
-    return false;
+    return true;
 }
 
 /*!
@@ -2375,8 +2380,8 @@ bool PackageManagerCore::removeInstallationSilently()
     Installs the selected components \a components without displaying a user
     interface. Virtual components cannot be installed unless made visible with
     --show-virtual-components. AutoDependOn nor non-checkable components cannot
-    be installed directly. Returns \c true if components are installed and the
-    maintenance tool needs to be written, otherwise returns \c false.
+    be installed directly. Returns \c true if components are installed or there
+    is nothing to install, otherwise returns \c false.
 */
 bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
 {
@@ -2416,12 +2421,12 @@ bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
         }
     }
     if (installComponentsFound) {
-        if (d->calculateComponentsAndRun()) {
-            qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
-            return true;
-        }
+        if (!d->calculateComponentsAndRun())
+            return false;
+
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
     }
-    return false;
+    return true;
 }
 
 /*!

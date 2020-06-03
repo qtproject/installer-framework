@@ -220,6 +220,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
+    , m_disableWriteMaintenanceTool(false)
 {
 }
 
@@ -255,6 +256,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_userSetBinaryMarker(false)
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
+    , m_disableWriteMaintenanceTool(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -1178,6 +1180,11 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
 
 void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
 {
+    if (m_disableWriteMaintenanceTool) {
+        qCDebug(QInstaller::lcInstallerInstallLog()) << "Maintenance tool writing disabled.";
+        return;
+    }
+
     bool gainedAdminRights = false;
     if (!directoryWritable(targetDir())) {
         m_core->gainAdminRights();
@@ -1610,7 +1617,24 @@ bool PackageManagerCorePrivate::runInstaller()
                 }
             }
         }
+        emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
+
         m_needToWriteMaintenanceTool = true;
+        m_core->writeMaintenanceTool();
+
+        // fake a possible wrong value to show a full progress bar
+        const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        // usually this should be only the reserved one from the beginning
+        if (progress < 100)
+            ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
+
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
+
+        if (adminRightsGained)
+            m_core->dropAdminRights();
+
+        setStatus(PackageManagerCore::Success);
+        emit installationFinished();
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {
             setStatus(PackageManagerCore::Failure);
@@ -2510,14 +2534,17 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
 {
     QString htmlOutput;
     bool componentsOk = m_core->calculateComponents(&htmlOutput);
-    bool success = false;
     if (statusCanceledOrFailed()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-        success = m_core->run();
+        if (m_core->run()) {
+            // Write maintenance tool if required
+            m_core->writeMaintenanceTool();
+            return true;
+        }
     }
-    return success;
+    return false;
 }
 
 bool PackageManagerCorePrivate::acceptLicenseAgreements() const

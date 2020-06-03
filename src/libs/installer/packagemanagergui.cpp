@@ -2553,10 +2553,7 @@ void PerformInstallationPage::entering()
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Installing %1").arg(productName()));
 
-        if (packageManagerCore()->runInstaller()) {
-            packageManagerCore()->writeMaintenanceTool();
-            emit packageManagerCore()->installationFinished();
-        }
+        QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
 }
 
