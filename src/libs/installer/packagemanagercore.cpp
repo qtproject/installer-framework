@@ -2146,7 +2146,8 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
     bool foundMatch = false;
     foreach (const Package *update, packages) {
         const QString name = update->data(scName).toString();
-        if (re.match(name).hasMatch()) {
+        if (re.match(name).hasMatch() &&
+                (virtualComponentsVisible() ? true : !update->data(scVirtual, false).toBool())) {
             printPackageInformation(name, update);
             foundMatch = true;
         }
