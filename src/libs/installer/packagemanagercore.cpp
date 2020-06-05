@@ -2256,6 +2256,8 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
         throw Error(tr("Running processes found."));
     setUpdater();
 
+    ComponentModel *model = updaterComponentModel();
+
     fetchRemotePackagesTree();
     // List contains components containing update, if essential found contains only essential component
     const QList<QInstaller::Component*> componentList = componentsMarkedForInstallation();
@@ -2277,15 +2279,16 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             QList<Component*> componentsToBeUpdated;
             //Mark components to be updated
             foreach (Component *comp, componentList) {
+                const QModelIndex &idx = model->indexFromComponentName(comp->name());
                 if (!userSelectedComponents) { // No components given, update all
-                    comp->setCheckState(Qt::Checked);
+                    model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 } else {
                     //Collect the componets to list which we want to update
                     foreach (const QString &name, componentsToUpdate) {
                         if (comp->name() == name)
                             componentsToBeUpdated.append(comp);
                         else
-                            comp->setCheckState(Qt::Unchecked);
+                            model->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
                     }
                 }
             }
@@ -2295,8 +2298,10 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
                     << "No updates available for selected components.";
                 return false;
             }
-            foreach (Component *componentToUpdate, componentsToBeUpdated)
-                componentToUpdate->setCheckState(Qt::Checked);
+            foreach (Component *componentToUpdate, componentsToBeUpdated) {
+                const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->name());
+                model->setData(idx, Qt::Checked, Qt::CheckStateRole);
+            }
         }
 
         if (d->calculateComponentsAndRun()) {

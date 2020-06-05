@@ -73,12 +73,18 @@ private slots:
 
         setRepository(":///data/installPackagesRepositoryUpdate");
         core->updateComponentsSilently(QStringList() << "componentA");
+        // componentD is autodependent and cannot be deselected
+        // componentE is a forced component and thus will be updated
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "2.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentA", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentD", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentE", "1.0.0content.txt");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentA_update.txt"
-                           << "installcontentE.txt" << "installcontentG.txt"
-                           << "installcontentB.txt" << "installcontentD.txt");
+                           << "installcontentE_update.txt" << "installcontentG.txt"
+                           << "installcontentB.txt" << "installcontentD_update.txt");
     }
 
     void testUpdateNoUpdatesForSelectedPackage()
