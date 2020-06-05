@@ -198,6 +198,15 @@ CommandLineParser::CommandLineParser()
                       "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
         QLatin1String("port number")));
 
+    // Deprecated options
+    QCommandLineOption deprecatedUpdater(CommandLineOptions::scDeprecatedUpdater);
+    deprecatedUpdater.setHidden(true);
+    m_parser.addOption(deprecatedUpdater);
+
+    QCommandLineOption deprecatedCheckUpdates(CommandLineOptions::scDeprecatedCheckUpdates);
+    deprecatedCheckUpdates.setHidden(true);
+    m_parser.addOption(deprecatedCheckUpdates); // Behaves like check-updates but does not default to verbose output
+
     // Custom extension options
     m_parser.addOptions(d->extensionsOptions());
 

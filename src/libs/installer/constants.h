@@ -187,6 +187,10 @@ static const QLatin1String scStartClientLong("start-client");
 static const QLatin1String scSquishPortShort("q");
 static const QLatin1String scSquishPortLong("squish-port");
 
+// Deprecated options, provided only for backward compatibility
+static const QLatin1String scDeprecatedUpdater("updater");
+static const QLatin1String scDeprecatedCheckUpdates("checkupdates");
+
 // Options supposed to be used without graphical interface
 static const QStringList scCommandLineInterfaceOptions = {
     scInstallShort,

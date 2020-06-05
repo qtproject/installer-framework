@@ -141,6 +141,9 @@ public:
                break;
            }
         }
+        if (m_parser.isSet(CommandLineOptions::scDeprecatedCheckUpdates))
+            isCommandLineInterface = true;
+
         QString loggingRules;
         if (m_parser.isSet(CommandLineOptions::scLoggingRulesLong)) {
             loggingRules = m_parser.value(CommandLineOptions::scLoggingRulesLong)
@@ -194,7 +197,9 @@ public:
         if (m_parser.isSet(CommandLineOptions::scShowVirtualComponentsLong))
             QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
 
-        if (m_parser.isSet(CommandLineOptions::scStartUpdaterLong)) {
+        // IFW 3.x.x style --updater option support provided for backward compatibility
+        if (m_parser.isSet(CommandLineOptions::scStartUpdaterLong)
+                || m_parser.isSet(CommandLineOptions::scDeprecatedUpdater)) {
             if (m_core->isInstaller()) {
                 errorMessage = QObject::tr("Cannot start installer binary as updater.");
                 return false;

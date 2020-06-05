@@ -91,6 +91,9 @@ int main(int argc, char *argv[])
         mutually << CommandLineOptions::scStartPackageManagerLong;
     if (parser.isSet(CommandLineOptions::scStartUninstallerLong))
         mutually << CommandLineOptions::scStartUninstallerLong;
+    // IFW 3.x.x style --updater option support provided for backward compatibility
+    if (parser.isSet(CommandLineOptions::scDeprecatedUpdater))
+        mutually << CommandLineOptions::scDeprecatedUpdater;
 
     if (mutually.count() > 1) {
         sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
@@ -219,7 +222,10 @@ int main(int argc, char *argv[])
 
         const SelfRestarter restarter(argc, argv);
         if (parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesShort)
-                || parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesLong)) {
+                || parser.positionalArguments().contains(CommandLineOptions::scCheckUpdatesLong)
+                || parser.isSet(CommandLineOptions::scDeprecatedCheckUpdates)) {
+            // Also check for deprecated --checkupdates option, which is superseded by check-updates
+            // command in IFW 4.x.x. Should not be used for normal interactive usage.
             return CommandLineInterface(argc, argv).checkUpdates();
         } else if (parser.positionalArguments().contains(CommandLineOptions::scListShort)
                 || parser.positionalArguments().contains(CommandLineOptions::scListLong)) {

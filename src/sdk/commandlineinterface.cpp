@@ -64,13 +64,21 @@ bool CommandLineInterface::initialize()
                 << "Command line interface support disabled from installer configuration by vendor!";
         return false;
     }
-    // Filter the arguments list by removing the command itself
-    // and any key=value pair occurrences.
+    // Filter the arguments list by removing any key=value pair occurrences.
     m_positionalArguments = m_parser.positionalArguments();
-    m_positionalArguments.removeFirst();
     foreach (const QString &argument, m_positionalArguments) {
         if (argument.contains(QLatin1Char('=')))
             m_positionalArguments.removeOne(argument);
+    }
+    if (m_positionalArguments.isEmpty()) {
+        // Special case, normally positional arguments should contain
+        // at least the command invoked.
+        qCDebug(QInstaller::lcInstallerInstallLog)
+                << "Command line interface initialized but no command argument found.";
+    } else {
+        // Sanity and order of arguments already checked in main(), we should be
+        // quite safe to assume that command is the first positional argument.
+        m_positionalArguments.removeFirst();
     }
     return true;
 }
