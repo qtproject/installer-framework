@@ -659,7 +659,7 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
 }
 
 void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
-    const QHash<QString, QString> &versionMapping, bool createUnitedMetadata, bool createOnlyUnitedMetadata)
+    const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata)
 {
     QDomDocument doc;
     QDomElement root;
@@ -673,69 +673,14 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
     existingUpdatesXml.close();
 
     QDir dir(repoDir);
-    const QStringList sub = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    QDomNodeList elements =  doc.elementsByTagName(QLatin1String("PackageUpdate"));
-    foreach (const QString &i, sub) {
-        QDir sd(dir);
-        sd.cd(i);
-        const QString path = QString(i).remove(baseDir);
-        const QString versionPrefix = versionMapping[path];
-        if (path.isNull())
-            continue;
-        const QString absPath = sd.absolutePath();
-        const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
-        const QString tmpTarget = repoDir + QLatin1String("/") + fn;
-        Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::TmpFile::No);
-    }
+    const QStringList entryList = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     QStringList absPaths;
-    if (createUnitedMetadata || createOnlyUnitedMetadata) {
-        QStringList finalTargets;
-        foreach (const QString &i, sub) {
-            QDir sd(dir);
-            sd.cd(i);
-            const QString absPath = sd.absolutePath();
-            finalTargets.append(absPath);
-            absPaths.append(absPath);
-        }
-
-        // Compress all metadata from repository to one single 7z
-        const QString fn = QLatin1String("meta.7z");
-        const QString tmpTarget = repoDir + QLatin1String("/") +fn;
-        Lib7z::createArchive(tmpTarget, finalTargets, Lib7z::TmpFile::No);
-
-        QFile tmp(tmpTarget);
-        tmp.open(QFile::ReadOnly);
-        const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
-        elements =  doc.elementsByTagName(QLatin1String("Updates"));
-        writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString());
+    if (createUnifiedMetadata) {
+        absPaths = unifyMetadata(entryList, repoDir, doc);
     }
-
-    if (!createOnlyUnitedMetadata) {
-        foreach (const QString &i, sub) {
-            QDir sd(dir);
-            sd.cd(i);
-            const QString absPath = sd.absolutePath();
-            const QString path = QString(i).remove(baseDir);
-            const QString versionPrefix = versionMapping[path];
-            if (path.isNull())
-                continue;
-            const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
-            const QString tmpTarget = repoDir + QLatin1String("/") + fn;
-            Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::TmpFile::No);
-            // remove the files that got compressed
-            QInstaller::removeFiles(absPath, true);
-            QFile tmp(tmpTarget);
-            tmp.open(QFile::ReadOnly);
-            const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
-            writeSHA1ToNodeWithName(doc, elements, sha1Sum, path);
-            const QString finalTarget = absPath + QLatin1String("/") + fn;
-            if (!tmp.rename(finalTarget)) {
-                throw QInstaller::Error(QString::fromLatin1("Cannot move file \"%1\" to \"%2\".").arg(
-                                            QDir::toNativeSeparators(tmpTarget), QDir::toNativeSeparators(finalTarget)));
-            }
-
-        }
+    if (createSplitMetadata) {
+        splitMetadata(entryList, repoDir, doc, baseDir, versionMapping);
     } else {
         // remove the files that got compressed
         foreach (const QString path, absPaths)
@@ -745,6 +690,61 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
     QInstaller::openForWrite(&existingUpdatesXml);
     QInstaller::blockingWrite(&existingUpdatesXml, doc.toByteArray());
     existingUpdatesXml.close();
+}
+
+QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc)
+{
+    QStringList absPaths;
+    QDir dir(repoDir);
+    foreach (const QString &i, entryList) {
+        dir.cd(i);
+        const QString absPath = dir.absolutePath();
+        absPaths.append(absPath);
+        dir.cdUp();
+    }
+
+    // Compress all metadata from repository to one single 7z
+    const QString tmpTarget = repoDir + QLatin1String("/meta.7z");
+    Lib7z::createArchive(tmpTarget, absPaths, Lib7z::TmpFile::No);
+
+    QFile tmp(tmpTarget);
+    tmp.open(QFile::ReadOnly);
+    const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
+    QDomNodeList elements =  doc.elementsByTagName(QLatin1String("Updates"));
+    writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString());
+    return absPaths;
+}
+
+void QInstallerTools::splitMetadata(const QStringList &entryList, const QString &repoDir,
+                                    QDomDocument doc, const QString &baseDir,
+                                    const QHash<QString, QString> &versionMapping)
+{
+    QStringList absPaths;
+    QDomNodeList elements =  doc.elementsByTagName(QLatin1String("PackageUpdate"));
+    QDir dir(repoDir);
+    foreach (const QString &i, entryList) {
+        dir.cd(i);
+        const QString absPath = dir.absolutePath();
+        const QString path = QString(i).remove(baseDir);
+        if (path.isNull())
+            continue;
+        const QString versionPrefix = versionMapping[path];
+        const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
+        const QString tmpTarget = repoDir + QLatin1String("/") + fn;
+        Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::TmpFile::No);
+        // remove the files that got compressed
+        QInstaller::removeFiles(absPath, true);
+        QFile tmp(tmpTarget);
+        tmp.open(QFile::ReadOnly);
+        const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
+        writeSHA1ToNodeWithName(doc, elements, sha1Sum, path);
+        const QString finalTarget = absPath + QLatin1String("/") + fn;
+        if (!tmp.rename(finalTarget)) {
+            throw QInstaller::Error(QString::fromLatin1("Cannot move file \"%1\" to \"%2\".").arg(
+                                        QDir::toNativeSeparators(tmpTarget), QDir::toNativeSeparators(finalTarget)));
+        }
+        dir.cdUp();
+    }
 }
 
 void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QString &repoDir,

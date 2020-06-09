@@ -33,6 +33,7 @@
 #include <QString>
 #include <QStringList>
 #include <QVector>
+#include <QDomDocument>
 
 namespace QInstallerTools {
 
@@ -67,7 +68,11 @@ PackageInfoVector createListOfRepositoryPackages(const QStringList &repositoryDi
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
 void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
-    const QHash<QString, QString> &versionMapping, bool createUnitedMetadata, bool createOnlyUnitedMetadata);
+    const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata);
+
+QStringList unifyMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc);
+void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc, const QString &baseDir,
+                   const QHash<QString, QString> &versionMapping);
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
     const QString &appName, const QString& appVersion);
