@@ -63,6 +63,9 @@ const char IFW_PACKAGE_COMPRESSEDSIZE[] = "ifw.package.compressedsize";
 const char IFW_PACKAGE_UNCOMPRESSEDSIZE[] = "ifw.package.uncompressedsize";
 const char IFW_INSTALLER_INSTALLLOG[] = "ifw.installer.installlog";
 
+// Internal-only, hidden in --help text
+const char IFW_PROGRESS_INDICATOR[] = "ifw.progress.indicator";
+
 namespace QInstaller
 {
 
@@ -98,6 +101,7 @@ Q_LOGGING_CATEGORY(lcPackageLicenses, IFW_PACKAGE_LICENSES)
 Q_LOGGING_CATEGORY(lcPackageUncompressedSize, IFW_PACKAGE_UNCOMPRESSEDSIZE)
 Q_LOGGING_CATEGORY(lcPackageCompressedSize, IFW_PACKAGE_COMPRESSEDSIZE)
 Q_LOGGING_CATEGORY(lcInstallerInstallLog, IFW_INSTALLER_INSTALLLOG)
+Q_LOGGING_CATEGORY(lcProgressIndicator, IFW_PROGRESS_INDICATOR)
 
 
 QStringList loggingCategories()

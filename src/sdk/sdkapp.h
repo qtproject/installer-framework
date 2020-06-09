@@ -153,6 +153,7 @@ public:
             loggingRules = QLatin1String("ifw.* = false\n"
                                         "ifw.installer.* = true\n"
                                         "ifw.server = true\n"
+                                        "ifw.progress.indicator = true\n"
                                         "ifw.package.name = true\n"
                                         "ifw.package.version = true\n"
                                         "ifw.package.displayname = true\n");

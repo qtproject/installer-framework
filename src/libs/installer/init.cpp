@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,6 +47,7 @@
 #include "licenseoperation.h"
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
+#include "globals.h"
 
 #include "lib7z_facade.h"
 #include "utils.h"
@@ -59,6 +60,12 @@
 
 #include <iostream>
 
+#if defined(Q_OS_UNIX)
+#include <unistd.h>
+#elif defined(Q_OS_WIN)
+#include <fileapi.h>
+#endif
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -68,6 +75,8 @@ static void initResources()
     Q_INIT_RESOURCE(installer);
 }
 #endif
+
+static bool s_outputRedirected = false;
 
 static QString trimAndPrepend(QtMsgType type, const QString &msg)
 {
@@ -111,6 +120,12 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     // suppress warning from QPA minimal plugin
     if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
         return;
+
+    if (context.category == lcProgressIndicator().categoryName()) {
+        if (!s_outputRedirected)
+            std::cout << msg.toStdString() << "\r" << std::flush;
+        return;
+    }
 
     static Uptime uptime;
 
@@ -168,5 +183,10 @@ void QInstaller::init()
 
     FileDownloaderFactory::setFollowRedirects(true);
 
-   qInstallMessageHandler(messageHandler);
+#if defined(Q_OS_UNIX)
+    s_outputRedirected = !isatty(fileno(stdout));
+#elif defined(Q_OS_WIN)
+    s_outputRedirected = (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) == FILE_TYPE_DISK);
+#endif
+    qInstallMessageHandler(messageHandler);
 }
