@@ -194,6 +194,8 @@ public:
     Q_INVOKABLE bool containsFileDialogAutomaticAnswer(const QString &identifier) const;
     QHash<QString, QString> fileDialogAutomaticAnswers() const;
 
+    void setAutoConfirmCommand();
+
     quint64 size(QInstaller::Component *component, const QString &value) const;
 
     Q_INVOKABLE bool isFileExtensionRegistered(const QString &extension) const;

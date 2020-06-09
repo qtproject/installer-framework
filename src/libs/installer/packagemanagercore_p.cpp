@@ -222,6 +222,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
+    , m_autoConfirmCommand(false)
 {
 }
 
@@ -259,6 +260,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_checkAvailableSpace(true)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
+    , m_autoConfirmCommand(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -2548,7 +2550,9 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-        if (m_core->run()) {
+        if (!(m_autoConfirmCommand || askUserConfirmCommand())) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Installation aborted.";
+        } else if (m_core->run()) {
             // Write maintenance tool if required
             m_core->writeMaintenanceTool();
             return true;
@@ -2592,11 +2596,7 @@ bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const 
         "before continuing with the installation:" << name;
 
     forever {
-        qCDebug(QInstaller::lcInstallerInstallLog) << "Accept|Reject|Show";
-
-        QTextStream stream(stdin);
-        QString input;
-        stream.readLineInto(&input);
+        const QString input = m_core->readConsoleLine(QLatin1String("Accept|Reject|Show"));
 
         if (QString::compare(input, QLatin1String("Accept"), Qt::CaseInsensitive) == 0
                 || QString::compare(input, QLatin1String("A"), Qt::CaseInsensitive) == 0) {
@@ -2656,6 +2656,25 @@ void PackageManagerCorePrivate::printLocalPackageInformation(const KDUpdater::Lo
     qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << package.uncompressedSize;
     qCDebug(QInstaller::lcPackageInstallDate).noquote() << "\tInstalled:" << package.installDate;
     qCDebug(QInstaller::lcPackageUpdateDate).noquote() << "\tLast updated:" << package.lastUpdateDate;
+}
+
+bool PackageManagerCorePrivate::askUserConfirmCommand() const
+{
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Do you want to continue?";
+
+    forever {
+        const QString input = m_core->readConsoleLine(QLatin1String("Yes|No"));
+
+        if (QString::compare(input, QLatin1String("Yes"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("Y"), Qt::CaseInsensitive) == 0) {
+            return true;
+        } else if (QString::compare(input, QLatin1String("No"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("N"), Qt::CaseInsensitive) == 0) {
+            return false;
+        } else {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
+        }
+    }
 }
 
 } // namespace QInstaller

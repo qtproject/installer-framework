@@ -685,6 +685,14 @@ QHash<QString, QString> PackageManagerCore::fileDialogAutomaticAnswers() const
 }
 
 /*!
+    Set to automatically confirm install, update or remove without asking user.
+*/
+void PackageManagerCore::setAutoConfirmCommand()
+{
+    d->m_autoConfirmCommand = true;
+}
+
+/*!
     Returns the size of the component \a component as \a value.
 */
 quint64 PackageManagerCore::size(QInstaller::Component *component, const QString &value) const
@@ -2370,6 +2378,11 @@ bool PackageManagerCore::removeInstallationSilently()
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
 
+    qCDebug(QInstaller::lcInstallerUninstallLog) << "Complete uninstallation was chosen.";
+    if (!(d->m_autoConfirmCommand || d->askUserConfirmCommand())) {
+        qCDebug(QInstaller::lcInstallerUninstallLog) << "Uninstallation aborted.";
+        return false;
+    }
     setCompleteUninstallation(true);
     return run();
 }

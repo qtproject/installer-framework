@@ -210,6 +210,7 @@ public:
     QStringList m_allowedRunningProcesses;
     bool m_autoAcceptLicenses;
     bool m_disableWriteMaintenanceTool;
+    bool m_autoConfirmCommand;
 
 private slots:
     void infoMessage(Job *, const QString &message) {
@@ -249,6 +250,7 @@ private:
     bool calculateComponentsAndRun();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
+    bool askUserConfirmCommand() const;
     void printPackageInformation(const QString &name, const Package *update);
     void printLocalPackageInformation(const KDUpdater::LocalPackage package) const;
 

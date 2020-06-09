@@ -71,6 +71,7 @@ private slots:
                                                           QHash<QString, QString>(), true);
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();
+        core->setAutoConfirmCommand();
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(":///data/repository");
         repoList.insert(repo);

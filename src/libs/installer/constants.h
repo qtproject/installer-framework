@@ -160,6 +160,7 @@ static const QLatin1String scMessageAutomaticAnswer("auto-answer");
 static const QLatin1String scMessageDefaultAnswer("default-answer");
 static const QLatin1String scAcceptLicenses("accept-licenses");
 static const QLatin1String scFileDialogAutomaticAnswer("file-query");
+static const QLatin1String scConfirmCommand("confirm-command");
 
 // Misc installation options
 static const QLatin1String scRootShort("t");

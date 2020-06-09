@@ -47,6 +47,7 @@ struct PackageManager
         QString appFilePath = QCoreApplication::applicationFilePath();
         core->setAllowedRunningProcesses(QStringList() << appFilePath);
         core->disableWriteMaintenanceTool();
+        core->setAutoConfirmCommand();
         QSet<Repository> repoList;
         Repository repo = Repository::fromUserInput(repository);
         repoList.insert(repo);

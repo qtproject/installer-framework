@@ -97,6 +97,7 @@ private slots:
                                       QHash<QString, QString>(), true);
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();
+        core->setAutoConfirmCommand();
         m_installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(m_installDir));
         core->setValue(scTargetDir, m_installDir);

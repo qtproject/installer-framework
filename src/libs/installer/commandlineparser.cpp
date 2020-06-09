@@ -172,6 +172,8 @@ CommandLineParser::CommandLineParser()
                        "Several identifier=value pairs can be given separated with comma, "
                        "for example --file-query filedialog.id=C:\Temp,filedialog.id2=C:\Temp2"),
          QLatin1String("identifier=value")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scConfirmCommand,
+         QLatin1String("[CLI] Confirms starting of installation, update or removal of components without user input.")));
 
     // Developer options
     m_parser.addOption(QCommandLineOption(QStringList()
