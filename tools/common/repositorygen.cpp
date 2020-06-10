@@ -626,7 +626,7 @@ QHash<QString, QString> QInstallerTools::buildPathToVersionMapping(const Package
 }
 
 static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const QByteArray &sha1sum,
-    const QString &nodename = QString())
+    const QString &nodename = QString(), const QString &metadataName = QString())
 {
     if (nodename.isEmpty())
         qDebug() << "Searching sha1sum node.";
@@ -650,6 +650,13 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
                 }
             } else {
                 sha1Node = doc.createElement(scSHA1);
+                //Create also unique metadata name
+                if (!metadataName.isEmpty()) {
+                    qDebug() << "Writing the metadata node with name " << metadataName;
+                    QDomNode metaName = doc.createElement(QLatin1String("MetadataName"));
+                    metaName.appendChild(doc.createTextNode(metadataName));
+                    curNode.appendChild(metaName);
+                }
             }
             qDebug() << "- writing the sha1sum" << sha1Value;
             sha1Node.appendChild(doc.createTextNode(sha1Value));
@@ -704,14 +711,17 @@ QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const Q
     }
 
     // Compress all metadata from repository to one single 7z
-    const QString tmpTarget = repoDir + QLatin1String("/meta.7z");
+    const QString metadataFilename = QDateTime::currentDateTime().
+            toString(QLatin1String("yyyy-MM-dd-hhmm")) + QLatin1String("_meta.7z");
+    QDateTime dateTime = QDateTime::currentDateTime();
+    const QString tmpTarget = repoDir + QDir::separator() + metadataFilename;
     Lib7z::createArchive(tmpTarget, absPaths, Lib7z::TmpFile::No);
 
     QFile tmp(tmpTarget);
     tmp.open(QFile::ReadOnly);
     const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
     QDomNodeList elements =  doc.elementsByTagName(QLatin1String("Updates"));
-    writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString());
+    writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString(), metadataFilename);
     return absPaths;
 }
 

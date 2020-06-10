@@ -627,8 +627,17 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             }
         } else {
             const QString repoUrl = metadata.repository.url().toString();
-            addFileTaskItem(QString::fromLatin1("%1/meta.7z").arg(repoUrl),
-                metadata.directory + QString::fromLatin1("/meta.7z"), metadata, sha1.toElement().text(), QString());
+            QDomElement metadataNameElement = root.firstChildElement(QLatin1String("MetadataName"));
+            if (!metadataNameElement.isNull()) {
+                const QString metadataName = metadataNameElement.toElement().text();
+                addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
+                    metadata.directory + QString::fromLatin1("/%1").arg(metadataName),
+                    metadata, sha1.toElement().text(), QString());
+            } else {
+                qCWarning(QInstaller::lcInstallerInstallLog) <<
+                    "Unable to find MetadataName element from Updates.xml";
+                return XmlDownloadFailure;
+            }
         }
 
         if (metadata.repository.categoryname().isEmpty()) {
