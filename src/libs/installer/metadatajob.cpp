@@ -595,12 +595,19 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (!checksum.isNull())
             testCheckSum = (checksum.toElement().text().toLower() == scTrue);
 
-        // If we have top level sha1 element, we have compressed all metadata inside
-        // one repository to a single 7z file. Fetch that instead of component specific
-        // meta 7z files.
+        // If we have top level sha1 and MetadataName elements, we have compressed
+        // all metadata inside one repository to a single 7z file. Fetch that
+        // instead of component specific meta 7z files.
         const QDomNode sha1 = root.firstChildElement(scSHA1);
+        QDomElement metadataNameElement = root.firstChildElement(QLatin1String("MetadataName"));
         QDomNodeList children = root.childNodes();
-        if (sha1.isNull()) {
+        if (!sha1.isNull() && !metadataNameElement.isNull()) {
+           const QString repoUrl = metadata.repository.url().toString();
+           const QString metadataName = metadataNameElement.toElement().text();
+           addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
+               metadata.directory + QString::fromLatin1("/%1").arg(metadataName),
+               metadata, sha1.toElement().text(), QString());
+        } else {
             bool metaFound = false;
             for (int i = 0; i < children.count(); ++i) {
                 const QDomElement el = children.at(i).toElement();
@@ -624,19 +631,6 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                         }
                     }
                 }
-            }
-        } else {
-            const QString repoUrl = metadata.repository.url().toString();
-            QDomElement metadataNameElement = root.firstChildElement(QLatin1String("MetadataName"));
-            if (!metadataNameElement.isNull()) {
-                const QString metadataName = metadataNameElement.toElement().text();
-                addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
-                    metadata.directory + QString::fromLatin1("/%1").arg(metadataName),
-                    metadata, sha1.toElement().text(), QString());
-            } else {
-                qCWarning(QInstaller::lcInstallerInstallLog) <<
-                    "Unable to find MetadataName element from Updates.xml";
-                return XmlDownloadFailure;
             }
         }
 
