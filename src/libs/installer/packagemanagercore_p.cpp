@@ -2016,6 +2016,14 @@ bool PackageManagerCorePrivate::runningProcessesFound()
     return false;
 }
 
+void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::CheckState state)
+{
+    ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
+    const QModelIndex &idx = model->indexFromComponentName(id);
+    if (idx.isValid())
+        model->setData(idx, state, Qt::CheckStateRole);
+}
+
 // -- private
 
 void PackageManagerCorePrivate::deleteMaintenanceTool()

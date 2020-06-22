@@ -1658,6 +1658,26 @@ void PackageManagerCore::setValidatorForCustomPage(Component *component, const Q
 }
 
 /*!
+    Selects the component with \a id.
+    \sa {installer::selectComponent}{installer.selectComponent}
+    \sa deselectComponent()
+*/
+void PackageManagerCore::selectComponent(const QString &id)
+{
+    d->setComponentSelection(id, Qt::Checked);
+}
+
+/*!
+    Deselects the component with \a id.
+    \sa {installer::deselectComponent}{installer.deselectComponent}
+    \sa selectComponent()
+*/
+void PackageManagerCore::deselectComponent(const QString &id)
+{
+    d->setComponentSelection(id, Qt::Unchecked);
+}
+
+/*!
     \fn PackageManagerCore::addWizardPageItem(QInstaller::Component * component, const QString & name, int page)
 
     Adds the widget with the object name \a name registered by \a component as a GUI element

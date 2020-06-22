@@ -2149,9 +2149,7 @@ void ComponentSelectionPage::selectDefault()
 */
 void ComponentSelectionPage::selectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Checked, Qt::CheckStateRole);
+    d->m_core->selectComponent(id);
 }
 
 /*!
@@ -2159,9 +2157,7 @@ void ComponentSelectionPage::selectComponent(const QString &id)
 */
 void ComponentSelectionPage::deselectComponent(const QString &id)
 {
-    const QModelIndex &idx = d->m_currentModel->indexFromComponentName(id);
-    if (idx.isValid())
-        d->m_currentModel->setData(idx, Qt::Unchecked, Qt::CheckStateRole);
+    d->m_core->deselectComponent(id);
 }
 
 /*!

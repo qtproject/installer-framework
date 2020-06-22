@@ -273,6 +273,18 @@
 */
 
 /*!
+    \qmlmethod void installer::selectComponent(string id)
+
+    Selects the component with \a id.
+*/
+
+/*!
+    \qmlmethod void installer::deselectComponent(string id)
+
+    Deselects the component with \a id.
+*/
+
+/*!
     \qmlmethod void installer::setCompleteUninstallation(bool complete)
 
     Sets the uninstallation to be \a complete. If \a complete is false, only components deselected

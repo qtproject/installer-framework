@@ -164,6 +164,7 @@ public:
         bool adminRightsGained = false);
 
     bool runningProcessesFound();
+    void setComponentSelection(const QString &id, Qt::CheckState state);
 
 signals:
     void installationStarted();

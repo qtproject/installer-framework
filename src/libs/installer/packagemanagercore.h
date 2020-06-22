@@ -286,6 +286,8 @@ public:
     Q_INVOKABLE bool setDefaultPageVisible(int page, bool visible);
     Q_INVOKABLE void setValidatorForCustomPage(QInstaller::Component *component, const QString &name,
                                                const QString &callbackName);
+    Q_INVOKABLE void selectComponent(const QString &id);
+    Q_INVOKABLE void deselectComponent(const QString &id);
 
     void rollBackInstallation();
 
