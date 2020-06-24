@@ -230,9 +230,11 @@
 */
 
 /*!
-    \qmlsignal installer::wizardWidgetInsertionRequested(Widget widget, WizardPage page)
+    \qmlsignal installer::wizardWidgetInsertionRequested(Widget widget,
+        WizardPage page, int position)
 
-    Emitted when a \a widget is inserted into \a page by addWizardPageItem.
+    Emitted when a \a widget is inserted into \a page by addWizardPageItem
+    ordered by \a position.
 */
 
 /*!
@@ -461,10 +463,13 @@
 */
 
 /*!
-    \qmlmethod boolean installer::addWizardPageItem(Component component, string name, int page)
+    \qmlmethod boolean installer::addWizardPageItem(Component component,
+        string name, int page, int position)
 
     Adds the widget with objectName() \a name registered by \a component as a GUI element
-    into the installer's GUI wizard. The widget is added on \a page.
+    into the installer's GUI wizard. The widget is added on \a page ordered by \a position.
+    If several widgets are added to the same page, the widget with lower position number
+    will be inserted on top.
 
     See \l{Controller Scripting} for the possible values of \a page.
 

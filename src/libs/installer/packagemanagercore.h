@@ -282,7 +282,8 @@ public:
 
     Q_INVOKABLE bool addWizardPage(QInstaller::Component *component, const QString &name, int page);
     Q_INVOKABLE bool removeWizardPage(QInstaller::Component *component, const QString &name);
-    Q_INVOKABLE bool addWizardPageItem(QInstaller::Component *component, const QString &name, int page);
+    Q_INVOKABLE bool addWizardPageItem(QInstaller::Component *component, const QString &name,
+                                       int page, int position = 100);
     Q_INVOKABLE bool removeWizardPageItem(QInstaller::Component *component, const QString &name);
     Q_INVOKABLE bool setDefaultPageVisible(int page, bool visible);
     Q_INVOKABLE void setValidatorForCustomPage(QInstaller::Component *component, const QString &name,
@@ -354,7 +355,8 @@ Q_SIGNALS:
 
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
+                                        int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,

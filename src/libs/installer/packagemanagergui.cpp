@@ -792,14 +792,31 @@ void PackageManagerGui::wizardPageRemovalRequested(QWidget *widget)
 }
 
 /*!
-    Requests the insertion of \a widget on \a page.
+    Requests the insertion of \a widget on \a page. Widget with lower
+    \a position number will be inserted on top.
 */
 void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
-    QInstaller::PackageManagerCore::WizardPage page)
+    QInstaller::PackageManagerCore::WizardPage page, int position)
 {
     Q_ASSERT(widget);
-    if (QWizardPage *const p = QWizard::page(page)) {
-        p->layout()->addWidget(widget);
+
+    if (PackageManagerPage *p = qobject_cast<PackageManagerPage *>(QWizard::page(page))) {
+        p->m_customWidgets.insert(position, widget);
+        if (p->m_customWidgets.count() > 1 ) {
+            //Reorder the custom widgets based on their position
+            QMultiMap<int, QWidget*>::Iterator it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->removeWidget(it.value());
+                ++it;
+            }
+            it = p->m_customWidgets.begin();
+            while (it != p->m_customWidgets.end()) {
+                p->layout()->addWidget(it.value());
+                ++it;
+            }
+        } else {
+            p->layout()->addWidget(widget);
+        }
         packageManagerCore()->controlScriptEngine()->addToGlobalObject(p);
         packageManagerCore()->componentScriptEngine()->addToGlobalObject(p);
     }

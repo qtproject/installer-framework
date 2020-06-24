@@ -113,7 +113,8 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
-    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
+    void wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page,
+                                        int position);
     void wizardWidgetRemovalRequested(QWidget *widget);
     void wizardPageVisibilityChangeRequested(bool visible, int page);
     void setValidatorForCustomPageRequested(QInstaller::Component *component, const QString &name,
@@ -208,6 +209,7 @@ private:
 
     PackageManagerCore *m_core;
     QInstaller::Component *validatorComponent;
+    QMultiMap<int, QWidget*> m_customWidgets;
 
     friend class PackageManagerGui;
 };

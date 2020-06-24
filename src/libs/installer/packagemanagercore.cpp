@@ -340,9 +340,11 @@ using namespace QInstaller;
 */
 
 /*!
-    \fn PackageManagerCore::wizardWidgetInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page)
+    \fn PackageManagerCore::wizardWidgetInsertionRequested(QWidget *widget,
+        QInstaller::PackageManagerCore::WizardPage page, int position)
 
-    Emitted when a \a widget is inserted into \a page by addWizardPageItem().
+    Emitted when a \a widget is inserted into \a page by addWizardPageItem(). If several widgets
+    are added to the same \a page, widget with lower \a position number will be inserted on top.
 
     \sa {installer::wizardWidgetInsertionRequested}{installer.wizardWidgetInsertionRequested}
 */
@@ -1678,10 +1680,13 @@ void PackageManagerCore::deselectComponent(const QString &id)
 }
 
 /*!
-    \fn PackageManagerCore::addWizardPageItem(QInstaller::Component * component, const QString & name, int page)
+    \fn PackageManagerCore::addWizardPageItem(QInstaller::Component * component, const QString & name,
+        int page, int position)
 
     Adds the widget with the object name \a name registered by \a component as a GUI element
-    into the installer's GUI wizard. The widget is added on \a page.
+    into the installer's GUI wizard. The widget is added on \a page ordered by
+    \a position number. If several widgets are added to the same page, the widget
+    with lower \a position number will be inserted on top.
 
     See \l{Controller Scripting} for the possible values of \a page.
 
@@ -1691,11 +1696,11 @@ void PackageManagerCore::deselectComponent(const QString &id)
     \sa {installer::addWizardPageItem}{installer.addWizardPageItem}
     \sa removeWizardPageItem(), wizardWidgetInsertionRequested()
 */
-bool PackageManagerCore::addWizardPageItem(Component *component, const QString &name, int page)
+bool PackageManagerCore::addWizardPageItem(Component *component, const QString &name, int page, int position)
 {
     if (!isCommandLineInstance()) {
         if (QWidget* const widget = component->userInterface(name)) {
-            emit wizardWidgetInsertionRequested(widget, static_cast<WizardPage>(page));
+            emit wizardWidgetInsertionRequested(widget, static_cast<WizardPage>(page), position);
             return true;
         }
     } else {
