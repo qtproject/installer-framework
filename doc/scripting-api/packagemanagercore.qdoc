@@ -811,6 +811,12 @@
 */
 
 /*!
+    \qmlmethod boolean installer::isCommandLineDefaultInstall()
+
+    Returns \c true if installation is performed with default components.
+*/
+
+/*!
     \qmlmethod boolean installer::runInstaller()
 
     Runs the installer. Returns \c true on success, \c false otherwise.

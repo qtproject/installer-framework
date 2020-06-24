@@ -187,6 +187,7 @@ public:
     bool m_testChecksum;
     bool m_launchedAsRoot;
     bool m_commandLineInstance;
+    bool m_defaultInstall;
     bool m_userSetBinaryMarker;
     bool m_checkAvailableSpace;
     bool m_completeUninstall;

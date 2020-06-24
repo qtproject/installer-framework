@@ -257,6 +257,7 @@ public:
 
     void setCommandLineInstance(bool commandLineInstance);
     Q_INVOKABLE bool isCommandLineInstance() const;
+    Q_INVOKABLE bool isCommandLineDefaultInstall() const;
 
     bool isMaintainer() const;
 

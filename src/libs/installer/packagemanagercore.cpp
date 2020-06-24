@@ -2458,6 +2458,7 @@ bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
 */
 bool PackageManagerCore::installDefaultComponentsSilently()
 {
+    d->m_defaultInstall = true;
     ComponentModel *model = defaultComponentModel();
     fetchRemotePackagesTree();
 
@@ -3256,6 +3257,15 @@ bool PackageManagerCore::isCommandLineInstance() const
     return d->m_commandLineInstance;
 }
 
+/*!
+    Returns \c true if installation is performed with default components.
+
+    \sa {installer::isCommandLineDefaultInstall}{installer.isCommandLineDefaultInstall}
+*/
+bool PackageManagerCore::isCommandLineDefaultInstall() const
+{
+    return d->m_defaultInstall;
+}
 /*!
     Returns \c true if it is a package manager or an updater.
 */
