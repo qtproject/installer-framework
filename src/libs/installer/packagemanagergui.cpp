@@ -1165,6 +1165,12 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
+    \fn PackageManagerPage::showOnPageListChanged()
+
+    Called when page visibility on page list has changed and refresh is needed.
+*/
+
+/*!
     \fn PackageManagerPage::leaving()
 
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()

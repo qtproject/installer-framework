@@ -93,6 +93,8 @@ using namespace QInstaller;
             Accept the message box.
     \value  Reject
             Reject the message box.
+    \value  Default
+            Uses default answer set for message box.
 */
 
 /*!

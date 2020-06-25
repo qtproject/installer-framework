@@ -407,7 +407,11 @@ using namespace QInstaller;
     Emitted when an unstable \a component is found containing an unstable \a type and \a errorMessage.
 */
 
+/*!
+    \fn PackageManagerCore::installerBinaryMarkerChanged(qint64 magicMarker)
 
+    Emitted when installer binary marker \a magicMarker has changed.
+*/
 
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
 static QFont *sVirtualComponentsFont = nullptr;
@@ -473,7 +477,6 @@ void PackageManagerCore::writeMaintenanceConfigFiles()
 
 /*!
     Disables writing of maintenance tool for the current session.
-    \sa {installer::disableWriteMaintenanceTool}{installer.disableWriteMaintenanceTool}
  */
 void PackageManagerCore::disableWriteMaintenanceTool(bool disable)
 {
@@ -637,7 +640,7 @@ void PackageManagerCore::setAutoAcceptLicenses()
 
    This can be used for unattended (automatic) installations.
 
-   \sa {installer::setFileDialogAutomaticAnswer){installer.setFileDialogAutomaticAnswer}
+   \sa {installer::setFileDialogAutomaticAnswer}{installer.setFileDialogAutomaticAnswer}
    \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
    \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
  */
@@ -650,7 +653,7 @@ void PackageManagerCore::setFileDialogAutomaticAnswer(const QString &identifier,
    Removes the automatic answer from QFileDialog with the ID \a identifier.
    QFileDialog can be called from script.
 
-   \sa {installer::removeFileDialogAutomaticAnswer){installer.removeFileDialogAutomaticAnswer}
+   \sa {installer::removeFileDialogAutomaticAnswer}{installer.removeFileDialogAutomaticAnswer}
    \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
    \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
  */
@@ -662,8 +665,8 @@ void PackageManagerCore::removeFileDialogAutomaticAnswer(const QString &identifi
 /*!
    Returns \c true if QFileDialog  with the ID \a identifier has an automatic answer set.
 
-   \sa {installer.containsFileDialogAutomaticAnswer}{installer::containsFileDialogAutomaticAnswer}
-   \sa {installer::removeFileDialogAutomaticAnswer){installer.removeFileDialogAutomaticAnswer}
+   \sa {installer::containsFileDialogAutomaticAnswer}{installer.containsFileDialogAutomaticAnswer}
+   \sa {installer::removeFileDialogAutomaticAnswer}{installer.removeFileDialogAutomaticAnswer}
    \sa {QFileDialog::getExistingDirectory}{QFileDialog.getExistingDirectory}
    \sa {QFileDialog::getOpenFileName}{QFileDialog.getOpenFileName}
  */
@@ -671,6 +674,7 @@ bool PackageManagerCore::containsFileDialogAutomaticAnswer(const QString &identi
 {
     return m_fileDialogAutomaticAnswers.contains(identifier);
 }
+
 /*!
  * Returns the hash of file dialog automatic answers
  * \sa setFileDialogAutomaticAnswer()
@@ -2163,6 +2167,12 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     return d->m_updaterModel;
 }
 
+/*!
+    Lists available packages filtered with \a regexp without GUI. Virtual
+    components are not listed unless set visible.
+
+    \sa setVirtualComponentsVisible()
+*/
 void PackageManagerCore::listAvailablePackages(const QString &regexp)
 {
     qCDebug(QInstaller::lcInstallerInstallLog)
@@ -2178,57 +2188,12 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
         const QString name = update->data(scName).toString();
         if (re.match(name).hasMatch() &&
                 (virtualComponentsVisible() ? true : !update->data(scVirtual, false).toBool())) {
-            printPackageInformation(name, update);
+            d->printPackageInformation(name, update);
             foundMatch = true;
         }
     }
     if (!foundMatch)
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
-}
-
-void PackageManagerCore::printPackageInformation(const QString &name, const Package *update)
-{
-    qCDebug(QInstaller::lcPackageName).noquote() << "Id:" << name;
-    qCDebug(QInstaller::lcPackageDisplayname).noquote() << "\tDisplay name:" << update->data(scDisplayName).toString();
-    qCDebug(QInstaller::lcPackageVersion).noquote() << "\tVersion:" << update->data(scVersion).toString();
-    qCDebug(QInstaller::lcPackageDescription).noquote() << "\tDescription:" <<  update->data(scDescription).toString();
-    qCDebug(QInstaller::lcPackageReleasedate).noquote() << "\tRelease date:" << update->data(scReleaseDate).toString();
-    qCDebug(QInstaller::lcPackageDependencies).noquote() << "\tDependencies:" << update->data(scDependencies).toString();
-    qCDebug(QInstaller::lcPackageAutodependon).noquote() << "\tAutodependon:" << update->data(scAutoDependOn).toString();
-    qCDebug(QInstaller::lcPackageVirtual).noquote() << "\tVirtual:" << update->data(scVirtual, false).toString();
-    qCDebug(QInstaller::lcPackageSortingpriority).noquote() << "\tSorting priority:" << update->data(scSortingPriority).toString();
-    qCDebug(QInstaller::lcPackageScript).noquote() << "\tScript:" << update->data(scScript).toString();
-    qCDebug(QInstaller::lcPackageDefault).noquote() << "\tDefault:"<< update->data(scDefault, false).toString();
-    qCDebug(QInstaller::lcPackageEssential).noquote() << "\tEssential:" << update->data(scEssential, false).toString();
-    qCDebug(QInstaller::lcPackageForcedinstallation).noquote() << "\tForced installation:" << update->data(QLatin1String("ForcedInstallation"), false).toString();
-    qCDebug(QInstaller::lcPackageReplaces).noquote() << "\tReplaces:" << update->data(scReplaces).toString();
-    qCDebug(QInstaller::lcPackageDownloadableArchives).noquote() << "\tDownloadable archives:" << update->data(scDownloadableArchives).toString();
-    qCDebug(QInstaller::lcPackageRequiresAdminRights).noquote() << "\tRequires admin rights:" << update->data(scRequiresAdminRights).toString();
-    qCDebug(QInstaller::lcPackageCheckable).noquote() << "\tCheckable:" << update->data(scCheckable).toString();
-    qCDebug(QInstaller::lcPackageLicenses).noquote() << "\tLicenses:" << update->data(QLatin1String("Licenses")).toString();
-    qCDebug(QInstaller::lcPackageCompressedSize).noquote() << "\tCompressed size:" << update->data(QLatin1String("CompressedSize")).toString();
-    qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << update->data(QLatin1String("UncompressedSize")).toString();
-
-    //Check if package already installed
-    LocalPackagesHash installedPackages = this->localInstalledPackages();
-    if (installedPackages.contains(name))
-        qCDebug(QInstaller::lcPackageInstalledVersion).noquote() << "\tInstalled version:" << installedPackages.value(name).version;
-}
-
-void PackageManagerCore::printLocalPackageInformation(const KDUpdater::LocalPackage package) const
-{
-    qCDebug(QInstaller::lcPackageName).noquote() << "Id:" << package.name;
-    qCDebug(QInstaller::lcPackageDisplayname).noquote() << "\tDisplay name:" << package.title;
-    qCDebug(QInstaller::lcPackageVersion).noquote() << "\tVersion:" << package.version;
-    qCDebug(QInstaller::lcPackageDescription).noquote() << "\tDescription:" <<  package.description;
-    qCDebug(QInstaller::lcPackageDependencies).noquote() << "\tDependencies:" << package.dependencies;
-    qCDebug(QInstaller::lcPackageAutodependon).noquote() << "\tAutodependon:" << package.autoDependencies;
-    qCDebug(QInstaller::lcPackageVirtual).noquote() << "\tVirtual:" << package.virtualComp;
-    qCDebug(QInstaller::lcPackageForcedinstallation).noquote() << "\tForced installation:" << package.forcedInstallation;
-    qCDebug(QInstaller::lcPackageCheckable).noquote() << "\tCheckable:" << package.checkable;
-    qCDebug(QInstaller::lcPackageUncompressedSize).noquote() << "\tUncompressed size:" << package.uncompressedSize;
-    qCDebug(QInstaller::lcPackageInstallDate).noquote() << "\tInstalled:" << package.installDate;
-    qCDebug(QInstaller::lcPackageUpdateDate).noquote() << "\tLast updated:" << package.lastUpdateDate;
 }
 
 bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
@@ -2263,6 +2228,9 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     return true;
 }
 
+/*!
+    Lists installed packages without GUI.
+*/
 void PackageManagerCore::listInstalledPackages()
 {
     LocalPackagesHash installedPackages = this->localInstalledPackages();
@@ -2270,7 +2238,7 @@ void PackageManagerCore::listInstalledPackages()
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
         KDUpdater::LocalPackage package = installedPackages.value(key);
-        printLocalPackageInformation(package);
+        d->printLocalPackageInformation(package);
     }
 }
 
@@ -2344,6 +2312,11 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
     return true;
 }
 
+/*!
+    Saves temporarily current operations for installer usage. This is needed
+    for unit tests when several commands (for example install and uninstall)
+    are performed with the same installer instance.
+*/
 void PackageManagerCore::commitSessionOperations()
 {
     d->commitSessionOperations();
@@ -2518,7 +2491,7 @@ void PackageManagerCore::dropAdminRights()
 }
 
 /*!
-    Sets checkAvailableSpace based on value of \c check.
+    Sets checkAvailableSpace based on value of \a check.
 */
 void PackageManagerCore::setCheckAvailableSpace(bool check)
 {
@@ -2527,8 +2500,8 @@ void PackageManagerCore::setCheckAvailableSpace(bool check)
 
 /*!
     Checks available disk space if the feature is not explicitly disabled. Informative
-    text about space status can be retrieved by passing \c message parameter. Returns
-    \a true if there is sufficient free space on installation and temporary volumes.
+    text about space status can be retrieved by passing \a message parameter. Returns
+    \c true if there is sufficient free space on installation and temporary volumes.
 */
 bool PackageManagerCore::checkAvailableSpace(QString &message) const
 {
@@ -2674,7 +2647,9 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
 
 /*!
     Sets additional \a processes that can run when
-    updating with the mainenance tool.
+    updating with the maintenance tool.
+
+    \sa {installer::setAllowedRunningProcesses}{installer.setAllowedRunningProcesses}
 */
 void PackageManagerCore::setAllowedRunningProcesses(const QStringList &processes)
 {
@@ -2684,6 +2659,8 @@ void PackageManagerCore::setAllowedRunningProcesses(const QStringList &processes
 /*!
     Returns processes that are allowed to run when
     updating with the maintenance tool.
+
+    \sa {installer::allowedRunningProcesses}{installer.allowedRunningProcesses}
 */
 QStringList PackageManagerCore::allowedRunningProcesses() const
 {
@@ -3256,6 +3233,8 @@ void PackageManagerCore::setCommandLineInstance(bool commandLineInstance)
 
 /*!
     Returns \c true if running as command line instance.
+
+    \sa {installer::isCommandLineInstance}{installer.isCommandLineInstance}
 */
 bool PackageManagerCore::isCommandLineInstance() const
 {

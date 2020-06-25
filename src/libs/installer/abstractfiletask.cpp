@@ -105,10 +105,12 @@ namespace QInstaller {
 */
 
 /*!
-    \fn FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c, const FileTaskItem &i)
+    \fn FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c,
+        const FileTaskItem &i, bool checksumMismatch)
 
     Creates file task results using the target file specified by \a t, checksum
-    specified by \a c, and file task item specified by \a i.
+    specified by \a c, file task item specified by \a i, and checksum mismatch
+    specified by \a checksumMismatch.
 */
 
 /*!

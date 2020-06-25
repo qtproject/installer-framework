@@ -249,6 +249,8 @@ private:
     bool calculateComponentsAndRun();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
+    void printPackageInformation(const QString &name, const Package *update);
+    void printLocalPackageInformation(const KDUpdater::LocalPackage package) const;
 
 private:
     PackageManagerCore *m_core;

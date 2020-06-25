@@ -346,7 +346,7 @@
 */
 
 /*!
-   \qmlmethod void installer::setFileDialogAutomaticAnswer(string identifier, string &value)
+   \qmlmethod void installer::setFileDialogAutomaticAnswer(string identifier, string value)
 
     Automatically sets the existing directory or filename \a value to QFileDialog with the ID
    \a identifier.
@@ -360,6 +360,15 @@
    Removes the automatic answer from QFileDialog with the ID \a identifier.
 
    \sa setFileDialogAutomaticAnswer
+*/
+
+/*!
+   \qmlmethod boolean installer::containsFileDialogAutomaticAnswer(string identifier)
+
+   Returns \c true if QFileDialog  with the ID \a identifier has an automatic answer set.
+
+   \sa setFileDialogAutomaticAnswer
+   \sa removeFileDialogAutomaticAnswer
 */
 
 /*!
@@ -550,6 +559,20 @@
     not running.
 
     \note This is implemented in a semi blocking way (to keep the main thread to paint the UI).
+*/
+
+/*!
+    \qmlmethod void installer::setAllowedRunningProcesses(stringlist processes)
+
+    Sets additional \a processes that can run when
+    updating with the maintenance tool.
+*/
+
+/*!
+    \qmlmethod stringlist installer::allowedRunningProcesses()
+
+    Returns processes that are allowed to run when updating with
+    the maintenance tool.
 */
 
 /*!
@@ -819,6 +842,12 @@
     \qmlmethod boolean installer::isCommandLineDefaultInstall()
 
     Returns \c true if installation is performed with default components.
+*/
+
+/*!
+    \qmlmethod boolean installer::isCommandLineInstance()
+
+    Returns \c true if running as command line instance.
 */
 
 /*!
