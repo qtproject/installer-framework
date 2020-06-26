@@ -620,6 +620,16 @@ QMap<QString, RepositoryCategory> Settings::organizedRepositoryCategories() cons
     return map;
 }
 
+QHash<QString, QSet<QUrl> > Settings::repositoryUrlsForCategories() const
+{
+    // < category displayname, repo urls >
+    QHash<QString, QSet<QUrl> > repoUrlsForCategories;
+    foreach (const RepositoryCategory &repoCategory, repositoryCategories())
+        repoUrlsForCategories.insert(repoCategory.displayname(), repoCategory.repositoryUrls());
+
+    return repoUrlsForCategories;
+}
+
 void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
 {
     d->m_data.remove(scRepositories);

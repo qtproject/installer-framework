@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -54,6 +54,8 @@ public:
     void setTooltip(const QString &tooltip);
 
     QSet<Repository> repositories() const;
+    QSet<QUrl> repositoryUrls() const;
+
     void setRepositories(const QSet<Repository> repositories, const bool replace = false);
     void addRepository(const Repository repository);
 
