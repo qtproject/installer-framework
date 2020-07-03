@@ -64,6 +64,7 @@ namespace QInstaller {
 
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
+    uint INSTALLER_EXPORT verboseLevel();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

@@ -50,7 +50,7 @@ RunOnceChecker::RunOnceChecker(const QString &filename)
 RunOnceChecker::~RunOnceChecker()
 {
     if (!m_lockfile.unlock())
-        qCWarning(QInstaller::lcGeneral).noquote() << m_lockfile.errorString();
+        qCWarning(QInstaller::lcInstallerInstallLog).noquote() << m_lockfile.errorString();
 }
 
 class ProcessnameEquals
@@ -98,7 +98,7 @@ bool RunOnceChecker::isRunning(RunOnceChecker::ConditionFlags flags)
     if (flags.testFlag(ConditionFlag::Lockfile)) {
         const bool locked = m_lockfile.lock();
         if (!locked)
-            qCWarning(QInstaller::lcGeneral).noquote() << m_lockfile.errorString();
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << m_lockfile.errorString();
         return !locked;
     }
     return false;

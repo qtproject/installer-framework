@@ -257,10 +257,10 @@ bool InstallIconsOperation::undoOperation()
     }
 
     if (!warningMessages.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerUninstallLog) << "Undo of operation" << name() << "with arguments"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Undo of operation" << name() << "with arguments"
                    << arguments().join(QLatin1String(", ")) << "had some problems.";
         foreach (const QString &message, warningMessages) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote() << message;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << message;
         }
     }
 

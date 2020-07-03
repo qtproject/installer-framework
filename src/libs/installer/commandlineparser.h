@@ -45,6 +45,7 @@ public:
     QStringList positionalArguments() const { return m_parser.positionalArguments(); }
     bool parse(const QStringList &argumens) { return m_parser.parse(argumens); }
     QString value(const QString &option) const { return m_parser.value(option); }
+    QStringList optionNames() const { return m_parser.optionNames(); }
 
 private:
     QCommandLineParser m_parser;

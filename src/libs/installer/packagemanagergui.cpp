@@ -328,11 +328,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
             if (sheet.open(QIODevice::ReadOnly)) {
                 setStyleSheet(QString::fromLatin1(sheet.readAll()));
             } else {
-                qCWarning(QInstaller::lcInstallerInstallLog) << "The specified style sheet file "
+                qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
                     "can not be opened.";
             }
         } else {
-            qCWarning(QInstaller::lcInstallerInstallLog) << "A style sheet file is specified, "
+            qCWarning(QInstaller::lcDeveloperBuild) << "A style sheet file is specified, "
                 "but it does not exist.";
         }
     }
@@ -545,7 +545,7 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
         return;
     }
 
-    qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot set text items on object of type"
+    qCWarning(QInstaller::lcDeveloperBuild) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
 }
 
@@ -602,7 +602,7 @@ void PackageManagerGui::clickButton(int wb, int delay)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         QTimer::singleShot(delay, b, &QAbstractButton::click);
     else
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
 }
 
 /*!
@@ -616,7 +616,7 @@ void PackageManagerGui::clickButton(const QString &objectName, int delay) const
     if (button)
         QTimer::singleShot(delay, button, &QAbstractButton::click);
     else
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Button with objectname: " << objectName << "not found!";
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with objectname: " << objectName << "not found!";
 }
 
 /*!
@@ -635,7 +635,7 @@ bool PackageManagerGui::isButtonEnabled(int wb)
     if (QAbstractButton *b = button(static_cast<QWizard::WizardButton>(wb)))
         return b->isEnabled();
 
-    qCWarning(QInstaller::lcInstallerInstallLog) << "Button with type: " << d->buttonType(wb) << "not found!";
+    qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
 }
 
@@ -668,7 +668,7 @@ void PackageManagerGui::loadControlScript(const QString &scriptPath)
 {
     d->m_controlScriptContext = m_core->controlScriptEngine()->loadInContext(
         QLatin1String("Controller"), scriptPath);
-    qCDebug(QInstaller::lcGeneral) << "Loaded control script" << scriptPath;
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Loaded control script" << scriptPath;
 }
 
 /*!
@@ -682,7 +682,7 @@ void PackageManagerGui::callControlScriptMethod(const QString &methodName)
         const QJSValue returnValue = m_core->controlScriptEngine()->callScriptMethod(
             d->m_controlScriptContext, methodName);
         if (returnValue.isUndefined()) {
-            qCDebug(QInstaller::lcGeneral) << "Control script callback" << methodName
+            qCDebug(QInstaller::lcDeveloperBuild) << "Control script callback" << methodName
                 << "does not exist.";
             return;
         }
@@ -871,7 +871,7 @@ QWidget *PackageManagerGui::pageByObjectName(const QString &name) const
         if (p && p->objectName() == name)
             return p;
     }
-    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -899,7 +899,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
             return dp->widget();
         return p;
     }
-    qCWarning(QInstaller::lcInstallerInstallLog) << "No page found for object name" << name;
+    qCDebug(QInstaller::lcDeveloperBuild) << "No page found for object name" << name;
     return nullptr;
 }
 
@@ -2207,7 +2207,7 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
     if (component && component->isInstalled() && component->isVirtual()) {
         component->setCheckState(Qt::Unchecked);
         core->componentsToInstallNeedsRecalculation();
-        qCDebug(QInstaller::lcGeneral) << "Virtual component " << name << " was selected for uninstall by script.";
+        qCDebug(QInstaller::lcDeveloperBuild) << "Virtual component " << name << " was selected for uninstall by script.";
         return true;
     }
     return false;

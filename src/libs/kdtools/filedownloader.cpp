@@ -1398,7 +1398,7 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         if (d->http == 0)
             return;
         const QUrl url = d->http->url();
-        if (url.isValid() && QInstaller::lcNetwork().isDebugEnabled()){
+        if (url.isValid() && QInstaller::lcServer().isDebugEnabled()){
             const QFileInfo fi(d->http->url().toString());
             if (fi.suffix() != QLatin1String("sha1")){
                 const QString hostName = url.host();
@@ -1406,7 +1406,7 @@ void KDUpdater::HttpDownloader::httpReqFinished()
                 QStringList hostAddresses;
                 foreach (const QHostAddress &address, info.addresses())
                     hostAddresses << address.toString();
-                qCDebug(QInstaller::lcNetwork) << "Using host:" << hostName
+                qCDebug(QInstaller::lcServer) << "Using host:" << hostName
                         << "for" << url.fileName() << "\nIP:" << hostAddresses;
             }
         }

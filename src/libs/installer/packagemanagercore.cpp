@@ -1177,7 +1177,7 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
                        "remove the packages from components.xml which operations are missing, "
                        "or reinstall the packages.";
     } else {
-        qCDebug(QInstaller::lcGeneral) << "Operations sanity check succeeded.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Operations sanity check succeeded.";
     }
     connect(this, &PackageManagerCore::metaJobProgress,
             ProgressCoordinator::instance(), &ProgressCoordinator::printProgressPercentage);
@@ -1605,7 +1605,7 @@ bool PackageManagerCore::addWizardPage(Component *component, const QString &name
             return true;
         }
     } else {
-        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page addition: " << name;
+        qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page addition: " << name;
     }
     return false;
 }
@@ -1629,7 +1629,7 @@ bool PackageManagerCore::removeWizardPage(Component *component, const QString &n
             return true;
         }
     } else {
-        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page removal: " << name;
+        qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page removal: " << name;
     }
     return false;
 }
@@ -1716,7 +1716,7 @@ bool PackageManagerCore::addWizardPageItem(Component *component, const QString &
             return true;
         }
     } else {
-        qCDebug(QInstaller::lcGeneral) << "Headless installation: skip wizard page item addition: " << name;
+        qCDebug(QInstaller::lcDeveloperBuild) << "Headless installation: skip wizard page item addition: " << name;
     }
     return false;
 }
@@ -2218,17 +2218,17 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
         // Component cannot be unselected, check why
         if (component->forcedInstallation()) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                 << "Cannot uninstall ForcedInstallation component " << component->name();
         } else if (component->autoDependencies().count() > 0) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace() << "Cannot uninstall component "
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot uninstall component "
                 << componentName << " because it is added as auto dependency to "
                 << component->autoDependencies().join(QLatin1Char(','));
         } else if (component->isVirtual() && !virtualComponentsVisible()) {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                 << "Cannot uninstall virtual component " << component->name();
         } else {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace()
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
                 << "Cannot uninstall component " << component->name();
         }
         return false;
@@ -2355,7 +2355,7 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
                 uninstallComponentFound = true;
             }
         } else {
-            qCWarning(QInstaller::lcInstallerUninstallLog).noquote().nospace() << "Cannot uninstall component " << componentName <<". Component not found in install tree.";
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot uninstall component " << componentName <<". Component not found in install tree.";
         }
     }
 
@@ -2363,7 +2363,7 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
         if (!d->calculateComponentsAndRun())
             return false;
 
-        qCDebug(QInstaller::lcInstallerUninstallLog) << "Components uninstalled successfully";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Components uninstalled successfully";
     }
     return true;
 }
@@ -2378,9 +2378,9 @@ bool PackageManagerCore::removeInstallationSilently()
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
 
-    qCDebug(QInstaller::lcInstallerUninstallLog) << "Complete uninstallation was chosen.";
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
     if (!(d->m_autoConfirmCommand || d->askUserConfirmCommand())) {
-        qCDebug(QInstaller::lcInstallerUninstallLog) << "Uninstallation aborted.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Uninstallation aborted.";
         return false;
     }
     setCompleteUninstallation(true);
@@ -3031,8 +3031,16 @@ bool PackageManagerCore::isVerbose() const
 }
 
 /*!
+    Returns verbose level.
+*/
+uint PackageManagerCore::verboseLevel() const
+{
+    return QInstaller::verboseLevel();
+}
+
+/*!
     Determines that the package manager displays detailed information if
-    \a on is \c true.
+    \a on is \c true. Calling setVerbose() more than once increases verbosity.
 */
 void PackageManagerCore::setVerbose(bool on)
 {
@@ -3357,10 +3365,10 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         component->setUninstalled();
         const QString localPath = component->localTempPath();
-        if (isVerbose()) {
+        if (verboseLevel() > 1) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
-                qCDebug(QInstaller::lcGeneral) << "Url is:" << localPath;
+                qCDebug(QInstaller::lcDeveloperBuild()) << "Url is:" << localPath;
             lastLocalPath = localPath;
         }
 
@@ -3436,7 +3444,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                 // installer binary or the installed component list, just ignore it. This
                 // can happen when in installer mode and probably package manager mode too.
                 if (isUpdater())
-                    qCWarning(QInstaller::lcGeneral) << componentName << "- Does not exist in the repositories anymore.";
+                    qCWarning(QInstaller::lcDeveloperBuild) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
             if (!componentToReplace && !d->componentsToReplace().contains(componentName)) {

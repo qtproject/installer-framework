@@ -440,11 +440,11 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
-        if (m_core->isVerbose()) {
+        if (m_core->verboseLevel() > 1) {
             foreach (QInstaller::Component *component, components) {
                 const QStringList warnings = ComponentChecker::checkComponent(component);
                 foreach (const QString &warning, warnings)
-                    qCWarning(lcComponentChecker).noquote() << warning;
+                    qCWarning(lcDeveloperBuild).noquote() << warning;
             }
         }
 
@@ -514,7 +514,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
     for (int i = 0; i < list.count(); ++i) {
         if (usedComponents.contains(list.at(i).second))
-            qCWarning(QInstaller::lcGeneral) << "a replacement was already in the list - is that correct?";
+            qCWarning(QInstaller::lcDeveloperBuild) << "a replacement was already in the list - is that correct?";
         else
             usedComponents.insert(list.at(i).second);
     }
@@ -1109,7 +1109,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
 
     QFile mt(maintenanceToolRenamedName);
     if (setDefaultFilePermissions(&mt, DefaultFilePermissions::Executable))
-        qCDebug(QInstaller::lcGeneral) << "Wrote permissions for maintenance tool.";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Wrote permissions for maintenance tool.";
     else
         qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to write permissions for maintenance tool.";
 
@@ -1138,7 +1138,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
             file.remove();  // clear all possible leftovers
             m_core->setValue(QString::fromLatin1("DefaultResourceReplacement"), QString());
         } else {
-            qCWarning(QInstaller::lcGeneral) << "Cannot replace default resource with"
+            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot replace default resource with"
                 << QDir::toNativeSeparators(newDefaultResource);
         }
     }
@@ -1353,7 +1353,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         try {
             if (isInstaller()) {
                 if (QFile::exists(dataFile)) {
-                    qCWarning(QInstaller::lcGeneral) << "Found binary data file" << dataFile
+                    qCWarning(QInstaller::lcInstallerInstallLog) << "Found binary data file" << dataFile
                         << "but deliberately not used. Running as installer requires to read the "
                         "resources from the application binary.";
                 }
@@ -1436,7 +1436,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         if (newBinaryWritten) {
             const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
             deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
-            qCDebug(QInstaller::lcResources) << "Maintenance tool restart:"
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool restart:"
                 << (restart ? "true." : "false.");
         }
     } catch (const Error &err) {
@@ -1927,7 +1927,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         bool becameAdmin = false;
         if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
             becameAdmin = m_core->gainAdminRights();
-            qCDebug(QInstaller::lcGeneral) << operation->name() << "as admin:" << becameAdmin;
+            qCDebug(QInstaller::lcInstallerInstallLog) << operation->name() << "as admin:" << becameAdmin;
         }
 
         connectOperationToInstaller(operation, progressOperationSize);

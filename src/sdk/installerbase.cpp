@@ -83,11 +83,8 @@ int InstallerBase::run()
         controlScript = QLatin1String(":/metadata/installer-config/")
             + m_core->settings().controlScript();
     }
-    qCDebug(QInstaller::lcTranslations) << "Language:" << QLocale().uiLanguages()
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-    qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Arguments:" << arguments().join(QLatin1String(", "));
-
-    dumpResourceTree();
 
     const QString directory = QLatin1String(":/translations");
     // Check if there is a modified translation first to enable people
@@ -132,9 +129,9 @@ int InstallerBase::run()
         QDirIterator fontIt(QStringLiteral(":/fonts"));
         while (fontIt.hasNext()) {
             const QString path = fontIt.next();
-            qCDebug(QInstaller::lcResources) << "Registering custom font" << path;
+            qCDebug(QInstaller::lcDeveloperBuild) << "Registering custom font" << path;
             if (QFontDatabase::addApplicationFont(path) == -1)
-                qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to register font!";
+                qCWarning(QInstaller::lcDeveloperBuild) << "Failed to register font!";
         }
     }
     //create the wizard GUI
@@ -158,11 +155,11 @@ int InstallerBase::run()
     }
     if (squishPort != 0) {
         if (Squish::allowAttaching(squishPort))
-            qCDebug(QInstaller::lcGeneral)  << "Attaching to squish port " << squishPort << " succeeded";
+            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish port " << squishPort << " succeeded";
         else
-            qCDebug(QInstaller::lcGeneral)  << "Attaching to squish failed.";
+            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish failed.";
     } else {
-        qCWarning(QInstaller::lcGeneral)  << "Invalid squish port number: " << squishPort;
+        qCWarning(QInstaller::lcDeveloperBuild)  << "Invalid squish port number: " << squishPort;
     }
 #endif
     const int result = QCoreApplication::instance()->exec();
@@ -185,19 +182,4 @@ int InstallerBase::run()
     }
     return QInstaller::PackageManagerCore::Failure;
 
-}
-
-
-// -- private
-
-void InstallerBase::dumpResourceTree() const
-{
-    qCDebug(QInstaller::lcResources) << "Resource tree:";
-    QDirIterator it(QLatin1String(":/"), QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden,
-        QDirIterator::Subdirectories);
-    while (it.hasNext()) {
-        if (it.next().startsWith(QLatin1String(":/qt-project.org")))
-            continue;
-        qCDebug(QInstaller::lcResources) << "    " << it.filePath().toUtf8().constData();
-    }
 }

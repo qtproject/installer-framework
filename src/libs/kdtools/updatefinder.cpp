@@ -418,7 +418,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if (match > 0) {
             // new package has higher version, use
-            qCDebug(QInstaller::lcGeneral).nospace() << "Remove Package 'Name: " << name
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
                 << ", Version: "<< existingPackage->data(QLatin1String("Version")).toString()
                 << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
                 << "' found a package with higher version 'Name: "
@@ -429,7 +429,7 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 
         if ((match == 0) && (source.priority > existingPackage->packageSource().priority)) {
             // new package version equals but priority is higher, use
-            qCDebug(QInstaller::lcGeneral).nospace() << "Remove Package 'Name: " << name
+            qCDebug(QInstaller::lcDeveloperBuild).nospace() << "Remove Package 'Name: " << name
                 << ", Priority: " << existingPackage->packageSource().priority
                 << ", Source: " << QFileInfo(existingPackage->packageSource().url.toLocalFile()).fileName()
                 << "' found a package with higher priority 'Name: "

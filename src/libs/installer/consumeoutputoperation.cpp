@@ -118,7 +118,7 @@ bool ConsumeOutputOperation::performOperation()
             uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
-            qCWarning(QInstaller::lcGeneral) << executable.absoluteFilePath()
+            qCWarning(QInstaller::lcInstallerInstallLog) << executable.absoluteFilePath()
                 << "process is still running, need to kill it.";
             process.kill();
         }

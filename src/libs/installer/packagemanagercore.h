@@ -266,6 +266,8 @@ public:
     bool isVerbose() const;
     void setVerbose(bool on);
 
+    uint verboseLevel() const;
+
     Q_INVOKABLE bool gainAdminRights();
     Q_INVOKABLE void dropAdminRights();
 

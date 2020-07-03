@@ -72,7 +72,9 @@ CommandLineParser::CommandLineParser()
     // Output related options
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scVerboseShort << CommandLineOptions::scVerboseLong,
-        QLatin1String("Verbose mode. Prints out more information.")));
+        QString::fromLatin1("Verbose mode. Prints out more information. Adding -%1 or --%2 more "
+                      "than once increases verbosity.").arg(CommandLineOptions::scVerboseShort,
+                      CommandLineOptions::scVerboseLong)));
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scLoggingRulesShort << CommandLineOptions::scLoggingRulesLong,
         QLatin1String("Enables logging according to passed rules. Comma separated logging rules "

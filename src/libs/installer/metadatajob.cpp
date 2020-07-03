@@ -335,7 +335,7 @@ void MetadataJob::xmlTaskFinished()
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
                     if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
-                        qCDebug(QInstaller::lcGeneral()) << "Repository categories updated.";
+                        qCDebug(QInstaller::lcDeveloperBuild) << "Repository categories updated.";
 
                     if (s.updateDefaultRepositories(update) == Settings::UpdatesApplied
                         || s.updateUserRepositories(update) == Settings::UpdatesApplied) {

@@ -127,16 +127,24 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
 }
 
 
-static bool verb = false;
+static uint verbLevel = 0;
 
 void QInstaller::setVerbose(bool v)
 {
-    verb = v;
+    if (v)
+        verbLevel++;
+    else if (verbLevel > 0)
+        verbLevel--;
 }
 
 bool QInstaller::isVerbose()
 {
-    return verb;
+    return verbLevel > 0 ? true : false;
+}
+
+uint QInstaller::verboseLevel()
+{
+    return verbLevel;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

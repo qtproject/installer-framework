@@ -147,7 +147,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     process = new QProcessWrapper();
     if (!workingDirectory.isEmpty()) {
         process->setWorkingDirectory(workingDirectory);
-        qCDebug(QInstaller::lcGeneral) << "ElevatedExecuteOperation setWorkingDirectory:"
+        qCDebug(QInstaller::lcInstallerInstallLog) << "ElevatedExecuteOperation setWorkingDirectory:"
             << workingDirectory;
     }
 
@@ -169,7 +169,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
     process->start(args.front(), args.mid(1));
-    qCDebug(QInstaller::lcGeneral) << args.front() << "started, arguments:"
+    qCDebug(QInstaller::lcInstallerInstallLog) << args.front() << "started, arguments:"
         << QStringList(args.mid(1)).join(QLatin1String(" "));
 
     bool success = false;
@@ -216,7 +216,7 @@ bool ElevatedExecuteOperation::Private::run(const QStringList &arguments)
         QByteArray standardErrorOutput = process->readAllStandardError();
         // in error case it would be useful to see something in verbose output
         if (!standardErrorOutput.isEmpty())
-            qCWarning(QInstaller::lcGeneral).noquote() << standardErrorOutput;
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << standardErrorOutput;
 
         returnValue = false;
     }
@@ -243,15 +243,15 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     Q_ASSERT(process);
     Q_ASSERT(QThread::currentThread() == process->thread());
     if (QThread::currentThread() != process->thread()) {
-        qCDebug(QInstaller::lcGeneral) << Q_FUNC_INFO << "can only be called from the "
+        qCDebug(QInstaller::lcInstallerInstallLog) << Q_FUNC_INFO << "can only be called from the "
             "same thread as the process is.";
     }
     const QByteArray output = process->readAll();
     if (!output.isEmpty()) {
         if (q->error() == UserDefinedError)
-            qCWarning(QInstaller::lcGeneral)<< output;
+            qCWarning(QInstaller::lcInstallerInstallLog)<< output;
         else
-            qCDebug(QInstaller::lcGeneral) << output;
+            qCDebug(QInstaller::lcInstallerInstallLog) << output;
         emit q->outputTextChanged(QString::fromLocal8Bit(output));
     }
 }

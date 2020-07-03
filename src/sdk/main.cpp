@@ -195,15 +195,22 @@ int main(int argc, char *argv[])
     }
 
     try {
-        // Check if any options requiring verbose output is set
-        bool setVerbose = parser.isSet(CommandLineOptions::scVerboseLong);
+        QStringList optionNames = parser.optionNames();
+
+        //Verbose level can be increased by setting the verbose multiple times
+        foreach (QString value, optionNames) {
+            if (value == CommandLineOptions::scVerboseShort
+                    || value == CommandLineOptions::scVerboseLong) {
+                QInstaller::setVerbose(true);
+            }
+        }
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
-            if (setVerbose) break;
-            setVerbose = parser.positionalArguments().contains(option);
-        }
-        if (setVerbose) {
-            QInstaller::setVerbose(true);
+            bool setVerbose = parser.positionalArguments().contains(option);
+            if (setVerbose) {
+                QInstaller::setVerbose(setVerbose);
+                break;
+            }
         }
 
         const QStringList unknownOptionNames = parser.unknownOptionNames();

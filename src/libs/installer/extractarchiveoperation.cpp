@@ -216,7 +216,7 @@ bool ExtractArchiveOperation::readDataFileContents(QString &targetDir, QStringLi
     } else {
         // We should not be here. Either user has manually deleted the installer related
         // files or same component is installed several times.
-        qCWarning(QInstaller::lcGeneral) << "Cannot open file " << file.fileName() << " for reading:"
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open file " << file.fileName() << " for reading:"
                 << file.errorString() << ". Component is already uninstalled "
                 << "or file is manually deleted.";
     }

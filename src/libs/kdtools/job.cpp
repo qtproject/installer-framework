@@ -184,7 +184,7 @@ void Job::cancel()
         }
         emitFinished();
     } else {
-        qCDebug(QInstaller::lcGeneral) << "The current job cannot be canceled, "
+        qCDebug(QInstaller::lcInstallerInstallLog) << "The current job cannot be canceled, "
             "missing \"Cancelable\" capability.";
     }
 }

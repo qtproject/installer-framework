@@ -176,12 +176,12 @@ QString Task::progressText() const
 void Task::run()
 {
     if (m_started) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to start an already started task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to start an already started task";
         return;
     }
 
     if (m_stopped) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to start a finished or canceled task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to start a finished or canceled task";
         return;
     }
 
@@ -208,13 +208,13 @@ void Task::stop()
     }
 
     if (!m_started) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to stop an unstarted task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to stop an unstarted task";
         return;
     }
 
     if(m_finished || m_stopped)
     {
-        qCDebug(QInstaller::lcGeneral) << "Trying to stop a finished or canceled task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to stop a finished or canceled task";
         return;
     }
 
@@ -245,12 +245,12 @@ void Task::pause()
     }
 
     if (!m_started) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to pause an unstarted task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to pause an unstarted task";
         return;
     }
 
     if (m_finished || m_stopped) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to pause a finished or canceled task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to pause a finished or canceled task";
         return;
     }
 
@@ -278,7 +278,7 @@ void Task::pause()
 void Task::resume()
 {
     if (!m_paused) {
-        qCDebug(QInstaller::lcGeneral) << "Trying to resume an unpaused task";
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Trying to resume an unpaused task";
         return;
     }
 

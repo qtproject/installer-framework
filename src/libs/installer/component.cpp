@@ -562,7 +562,7 @@ void Component::loadComponentScript(const QString &fileName)
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
             setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
-            qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
+            qCWarning(QInstaller::lcDeveloperBuild) << error.message();
         } else {
             throw error;
         }
@@ -879,8 +879,7 @@ QStringList Component::archives() const
 void Component::addDownloadableArchive(const QString &path)
 {
     Q_ASSERT(isFromOnlineRepository());
-
-    qCDebug(QInstaller::lcGeneral) << "addDownloadable" << path;
+    qCDebug(QInstaller::lcDeveloperBuild) << "addDownloadable" << path;
     d->m_downloadableArchives.append(d->m_vars.value(scVersion) + path);
 }
 
@@ -1341,7 +1340,7 @@ bool Component::isDefault() const
         }
         if (!valueFromScript.isError())
             return valueFromScript.toBool();
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Value from script is not valid."
+        qCWarning(QInstaller::lcDeveloperBuild) << "Value from script is not valid."
             << (valueFromScript.toString().isEmpty()
             ? QString::fromLatin1("Unknown error.") : valueFromScript.toString());
         return false;
