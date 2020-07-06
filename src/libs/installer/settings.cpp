@@ -514,7 +514,7 @@ QString Settings::runProgram() const
 
 QStringList Settings::runProgramArguments() const
 {
-    const QVariant variant = d->m_data.values(scRunProgramArguments);
+    const QVariant variant = d->m_data.value(scRunProgramArguments);
     if (variant.canConvert<QStringList>())
         return variant.value<QStringList>();
     return QStringList();
@@ -848,7 +848,7 @@ void Settings::setHttpProxy(const QNetworkProxy &proxy)
 
 QStringList Settings::translations() const
 {
-    const QVariant variant = d->m_data.values(scTranslations);
+    const QVariant variant = d->m_data.value(scTranslations);
     if (variant.canConvert<QStringList>())
         return variant.value<QStringList>();
     return QStringList();
