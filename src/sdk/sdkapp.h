@@ -105,6 +105,17 @@ public:
     {
         QFile file(binaryFile);
         QInstaller::openForRead(&file);
+#ifdef CIFW_MAINTENANCETOOL
+	QFileInfo fi(binaryFile);
+	QString bundlePath;
+	if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
+	  fi.setFile(bundlePath);
+#ifdef Q_OS_OSX
+	return fi.absoluteDir().filePath(fi.baseName() + QLatin1String(".dat"));
+#else
+	return fi.absoluteDir().filePath(qApp->applicationName() + QLatin1String(".dat"));
+#endif
+#else
         const quint64 cookiePos = QInstaller::BinaryContent::findMagicCookie(&file,
             QInstaller::BinaryContent::MagicCookie);
         if (!file.seek(cookiePos - sizeof(qint64)))    // seek to read the marker
@@ -123,6 +134,7 @@ public:
 #endif
         }
         return QString();
+#endif
     }
 
     void registerMetaResources(const QInstaller::ResourceCollection &collection)

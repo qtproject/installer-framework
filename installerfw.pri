@@ -137,6 +137,9 @@ equals(TEMPLATE, app) {
 CIFW {
 DEFINES += CUSTOM_IFW_FEATURE
 }
+CIFW_MAINTENANCETOOL {
+DEFINES += CIFW_MAINTENANCETOOL
+}
 
 7ZIP_ST {
 # multithread 7zip processing causes memory corruption(may be free()ing multiple times).
