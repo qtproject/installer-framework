@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -54,6 +54,8 @@
         \li \l{Updating Components}
 
         \li \l{Specifying Settings}
+
+        \li \l{Using from Command Line}
 
     \endlist
 */
@@ -339,7 +341,7 @@
     \contentspage index.html
     \previouspage ifw-use-cases-update.html
     \page ifw-use-cases-settings.html
-    \nextpage ifw-tutorial.html
+    \nextpage ifw-use-cases-cli.html
 
     \title Specifying Settings
 
@@ -370,4 +372,116 @@
     After the installation, only default and user-defined repositories will be
     available.
 
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-use-cases-settings.html
+    \page ifw-use-cases-cli.html
+    \nextpage ifw-tutorial.html
+
+    \title Using from Command Line
+
+    Qt Installer Framework 4.0.0 introduces a new command line interface workflow. Most
+    of the end user use cases can now be performed using a text based interface, either
+    interactively, or unattended by specifying the desired options beforehand. This
+    topic describes the basic use cases. For more information about the syntax
+    and a description of all supported options, see \l{Command Line Interface}.
+
+    \section1 Installing Components
+
+    Both the installer and the maintenance tool support installation of new components from
+    command line. The following will install the components given as an argument and
+    their respective dependencies:
+
+    \code
+    maintenancetool.exe install componentA componentB componentC
+    \endcode
+
+    If no components are specified, the default set of components will be installed instead.
+    This includes components with elements \c <Default> or \c <ForcedInstallation> set to \c true.
+    The default installation can be only done with an installer binary. The \c --root option can be
+    used to select an installation target directory:
+
+    \code
+    installer.exe --root "C:\Users\MyUser\MyInstallation" install
+    \endcode
+
+    \section1 Checking for Available Updates
+
+    To print information about available component updates, run the \c check-updates
+    command with the maintenance tool:
+
+    \code
+    maintenancetool.exe check-updates
+    \endcode
+
+    \section1 Updating Components
+
+    Running \c update without arguments will update all components that have an update
+    available. Essential components are always updated first, same way as it is done when
+    launching updater from GUI. To update only a specific subset of installed components,
+    they can be provided as an optional argument for \c update:
+
+    \code
+    maintenancetool.exe update componentA componentB
+    \endcode
+
+    \section1 Uninstalling Components
+
+    The \c remove command can be used to uninstall selected components. This will
+    automatically uninstall their children and other components depending on the
+    components about to be uninstalled:
+
+    \code
+    // This would also automatically uninstall componentC.subcomponent1, componentC.subcomponent2,...
+    maintenancetool.exe remove componentC
+    \endcode
+
+    \section1 Listing Installed Components
+
+    To get a list and print additional information about currently installed components, run the
+    \c list command with the maintenance tool:
+
+    \code
+    maintenancetool.exe list
+    \endcode
+
+    \section1 Searching for Available Components
+
+    The \c search command can be used to search components from available repositories, or
+    from integrated binary content in case of an offline installer. It can be used with
+    no arguments to list all available components or with a regular expression to get a list
+    of only components matching the pattern:
+
+    \code
+    installer.exe search "expression"
+    \endcode
+
+    \section1 Performing Full Uninstallation
+
+    To uninstall all components and remove the program directory, including maintenance tool,
+    run \c purge command:
+
+    \code
+    maintenancetool.exe purge
+    \endcode
+
+    \section1 Unattended Usage
+
+    By default, the generated installers may ask for additional information during installation,
+    which requires user attention. Unattended usage is possible by providing all information
+    beforehand with appropriate options:
+
+    \code
+    installer.exe --root "C:\MyInstallation" --accept-licenses --default-answer install componentA
+    \endcode
+
+    In this example, \c --accept-licenses is used to automatically accept all license agreements
+    required by components to be installed. The \c --default-answer option is used to answer all
+    message queries with their default answer. Alternatively, \c --accept-messages and \c --reject-messages
+    can be used to accept or reject all message queries. To provide unique answers for individual
+    queries, for example to confirm overwriting of an existing directory, you could use
+    \c {--auto-answer OverwriteTargetDirectory=Yes}. Automatic answers are shown on the
+    console output and installation log.
 */

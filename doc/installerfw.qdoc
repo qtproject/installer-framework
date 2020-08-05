@@ -57,6 +57,7 @@
             \li \l{Removing Components}
             \li \l{Updating Components}
             \li \l{Specifying Settings}
+            \li \l{Using From Command Line}
         \endlist
         \li \l{Tutorial: Creating an Installer}
         \li \l{Creating Installers}
@@ -69,6 +70,7 @@
         \li \l{Qt Installer Framework Examples}
         \li \l{Reference}
         \list
+            \li \l{Command Line Interface}
             \li \l{Configuration File}
             \li \l{Package Directory}
             \li \l{Controller Scripting}
@@ -136,6 +138,185 @@
 /*!
     \contentspage index.html
     \previouspage ifw-reference.html
+    \page ifw-cli.html
+    \nextpage ifw-globalconfig.html
+
+    \title Command Line Interface
+
+    Installers created with the Qt Installer Framework have the following command
+    line interface syntax:
+
+    \code
+    installer.exe [options] command <args> <key=value>
+    \endcode
+
+    Here \c [options] is one or a combination of supported options in either short
+    or long form. In addition some options may require mandatory value(s) that can
+    be passed using the assignment operator or space.
+
+    The \c command is one of the supported command line installer operations to be
+    run headless in text mode. Some commands may be provided with optional \c <args>
+    separated by space. The \c <key=value> list is used to set internal key-value
+    pairs by the framework.
+
+    \section1 Summary of Options
+
+    Options marked with \c CLI are only available when running in headless mode,
+    the rest of the options can be used also in graphical mode. For the most
+    up-to-date list of available options with a specific version of Qt Installer
+    Framework, refer \c --help option output of \l installerbase.
+
+    \table
+        \header
+            \li Option
+            \li Usage
+        \row
+            \li -?, -h, --help
+            \li Displays help.
+        \row
+            \li -v, --version
+            \li Displays version information.
+        \row
+            \li -d, --verbose
+            \li Verbose mode. Prints out more information.
+        \row
+            \li -g, --logging-rules <rules>
+            \li Enables logging according to passed rules. Comma separated logging rules
+                have the following syntax: \c{loggingCategory=true/false}. Passing empty logging
+                rules enables all logging categories. The following rules enable a single
+                category: \c{ifw.*=false, ifw.category=true}. The available logging categories
+                can be referenced with --help option.
+        \row
+            \li --ar, --add-repository <URI,...>
+            \li Add a local or remote repository to the list of user defined repositories.
+        \row
+            \li --at, --add-temp-repository <URI,...>
+            \li Add a local or remote repository to the list of temporary available repositories.
+        \row
+            \li --st, --set-temp-repository <URI,...>
+            \li Set a local or remote repository as temporary repository, it is the only one
+                used during fetch. Note: a URI must be prefixed with the protocol, i.e. file:///,
+                https://, http:// or ftp://.
+        \row
+            \li --sp, --system-proxy
+            \li Use system proxy on Windows and Linux. This option has no effect on macOS. (Default)
+        \row
+            \li --np, --no-proxy
+            \li Do not use system proxy.
+        \row
+            \li --su, --start-updater
+            \li Start application in updater mode. This will override the internal marker that is used
+                to distinguish which kind of binary is currently running.
+        \row
+            \li --sm, --start-package-manager
+            \li Start application in package manager mode. This will override the internal marker
+                that is used to distinguish which kind of binary is currently running.
+        \row
+            \li --sr, --start-uninstaller
+            \li Start application in uninstaller mode. This will override the internal marker
+                that is used to distinguish which kind of binary is currently running.
+        \row
+            \li -t, --root <directory>
+            \li [CLI] Set the installation root directory.
+        \row
+            \li -p, --platform <plugin>
+            \li Use the specified platform plugin.
+        \row
+            \li --nf, --no-force-installations
+            \li Allow deselecting components that are marked as forced.
+        \row
+            \li --no-default-installations
+            \li Deselects components that are marked as default.
+        \row
+            \li --ns, --no-size-checking
+            \li Disable checking of free space for the installation target.
+        \row
+            \li --sv, --show-virtual-components
+            \li Show virtual components in the installer and the package manager.
+        \row
+            \li -i, --install-compressed-repository <URI,...>
+            \li Installs a QBSP or a 7z file. The QBSP (Board Support Package) file must be a .7z file
+                which contains a valid repository.
+        \row
+            \li -c, --create-local-repository
+            \li Create a local repository inside the installation directory. This option has no
+                effect on online installers.
+        \row
+            \li --accept-messages
+            \li [CLI] Accepts all message queries without user input.
+        \row
+            \li --reject-messages
+            \li [CLI] Rejects all message queries without user input.
+        \row
+            \li --auto-answer <identifier=value>
+            \li [CLI] Automatically answers the message queries with the message identifier and a button
+                value. Several \c{identifier=value} pairs can be given separated with a comma, for example
+                \c{--auto-answer message.id=Ok,message.id2=Cancel}.
+        \row
+            \li --default-answer
+            \li [CLI] Automatically answers to message queries with their default values.
+        \row
+            \li --accept-licenses
+            \li [CLI] Accepts all licenses without user input.
+        \row
+            \li --file-query <identifier=value>
+            \li [CLI] Automatically sets the QFileDialog values getExistingDirectory() or
+                getOpenFileName() requested by the install script. Several \c{identifier=value} pairs can be
+                given separated with a comma, for example \c{--file-query filedialog.id=C:Temp,filedialog.id2=C:Temp2}.
+        \row
+            \li -s, --script <file>
+            \li Execute the script given as an argument.
+        \row
+            \li --ss, --start-server <mode, socketname, key>
+            \li Starts the application as headless process waiting for commands to execute. Mode can
+                be DEBUG or PRODUCTION. In the DEBUG mode, the option values can be omitted. Note: The
+                server will not shutdown on its own, you need to quit the process by hand.
+        \row
+            \li --sc, --start-client <socketname, key>
+            \li Starts the application to debug the client-server communication. If a value is
+                omitted, the client will use a default instead. Note: The server process is not started
+                by the client application in that case, you need to start it on your own.
+        \row
+            \li -q, --squish-port <port number>
+            \li Give a port where Squish can connect to. If no port is given, default port 11233 is used.
+                Note: To enable Squish support, you first need to build IFW with SQUISH_PATH parameter
+                where SQUISH_PATH is pointing to your Squish installation folder:
+                \c{<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>}.
+    \endtable
+
+    \section1 Summary of Commands
+
+    \table
+        \header
+            \li Command
+            \li Usage
+        \row
+            \li in, install <pkg ...>
+            \li Install packages given as an argument. If no packages are given, install the default package set.
+        \row
+            \li ch, check-updates
+            \li Show information about available updates on the maintenance tool.
+        \row
+            \li up, update <pkg ...>
+            \li Update packages given as an argument. If no packages are given, install all available updates.
+        \row
+            \li rm, remove <pkg ...>
+            \li Uninstall selected packages and their child components.
+        \row
+            \li li, list
+            \li List information about currently installed packages.
+        \row
+            \li se, search <regexp>
+            \li Search available packages. If no search pattern is given, show all available packages.
+        \row
+            \li pr, purge
+            \li Uninstall all packages and remove the program directory.
+    \endtable
+*/
+
+/*!
+    \contentspage index.html
+    \previouspage ifw-cli.html
     \page ifw-globalconfig.html
     \nextpage ifw-component-description.html
 
