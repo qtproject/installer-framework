@@ -308,10 +308,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
 #ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
-#else
+#endif
     if (!m_core->settings().wizardShowPageList())
         setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
-#endif
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
