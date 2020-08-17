@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,7 @@ class QPushButton;
 class QTimer;
 class QWidget;
 class QWinTaskbarButton;
+class QScrollArea;
 QT_END_NAMESPACE
 
 class LazyPlainTextEdit;
@@ -69,11 +70,14 @@ public slots:
     void toggleDetails();
     void clearDetailsBrowser();
     void onDownloadStatusChanged(const QString &status);
+    void setImageFromFileName(const QString &fileName);
 
 private:
     QProgressBar *m_progressBar;
     QLabel *m_progressLabel;
     QLabel *m_downloadStatus;
+    QScrollArea *m_productImagesScrollArea;
+    QLabel *m_productImagesLabel;
     QPushButton *m_detailsButton;
     LazyPlainTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;

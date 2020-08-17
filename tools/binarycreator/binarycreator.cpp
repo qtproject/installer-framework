@@ -712,6 +712,21 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
         const QString elementText = domElement.text();
         qDebug().noquote() << QString::fromLatin1("Read dom element: <%1>%2</%1>.").arg(tagName, elementText);
 
+        if (tagName == QLatin1String("ProductImages")) {
+            const QDomNodeList childNodes = domElement.childNodes();
+            for (int i = 0; i < childNodes.count(); ++i) {
+                const QDomElement childElement = childNodes.at(i).toElement();
+                const QString childName = childElement.tagName();
+                if (childName != QLatin1String("Image"))
+                    continue;
+
+                const QString targetFile = targetDir + QLatin1Char('/') + childElement.text();
+                const QFileInfo childFileInfo = QFileInfo(sourceConfigFilePath, childElement.text());
+                QInstallerTools::copyWithException(childFileInfo.absoluteFilePath(), targetFile, childName);
+            }
+            continue;
+        }
+
         QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.|:")),
             QLatin1String("_"));
 

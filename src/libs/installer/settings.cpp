@@ -291,7 +291,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
                 << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
-                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardShowPageList
+                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardShowPageList << scProductImages
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
                 << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
@@ -316,6 +316,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));
         } else if (name == scRunProgramArguments) {
             s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
+        } else if (name == scProductImages) {
+            s.setProductImages(readArgumentAttributes(reader, parseMode, QLatin1String("Image")));
         } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
         } else if (name == scRepositoryCategories) {
@@ -469,6 +471,25 @@ int Settings::wizardDefaultHeight() const
 bool Settings::wizardShowPageList() const
 {
     return d->m_data.value(scWizardShowPageList, true).toBool();
+}
+
+QStringList Settings::productImages() const
+{
+    const QVariant variant = d->m_data.value(scProductImages);
+    QStringList imagePaths;
+    if (variant.canConvert<QStringList>()) {
+        foreach (const QString &imagePath, variant.value<QStringList>()) {
+            QFileInfo(imagePath).isAbsolute()
+                ? imagePaths.append(imagePath)
+                : imagePaths.append(d->m_data.value(scPrefix).toString() + QLatin1Char('/') + imagePath);
+        }
+    }
+    return imagePaths;
+}
+
+void Settings::setProductImages(const QStringList &images)
+{
+    d->m_data.insert(scProductImages, images);
 }
 
 QString Settings::installerApplicationIcon() const

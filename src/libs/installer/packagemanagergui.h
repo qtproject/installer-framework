@@ -441,6 +441,7 @@ protected:
 
 public Q_SLOTS:
     void setTitleMessage(const QString& title);
+    void changeCurrentImage();
 
 Q_SIGNALS:
     void setAutomatedPageSwitchEnabled(bool request);
@@ -457,6 +458,8 @@ private Q_SLOTS:
 
 private:
     PerformInstallationForm *m_performInstallationForm;
+    QTimer m_imageChangeTimer;
+    QString m_currentImage;
 };
 
 

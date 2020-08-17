@@ -2644,6 +2644,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     updatePageListTitle();
 
     m_performInstallationForm->setupUi(this);
+    m_imageChangeTimer.setInterval(10000);
 
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextChanged,
         m_performInstallationForm, &PerformInstallationForm::appendProgressDetails);
@@ -2669,6 +2670,9 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
             this, &PerformInstallationPage::updatePageListTitle);
+
+    connect(&m_imageChangeTimer, &QTimer::timeout,
+            this, &PerformInstallationPage::changeCurrentImage);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
 
@@ -2705,6 +2709,11 @@ void PerformInstallationPage::entering()
     m_performInstallationForm->enableDetails();
     emit setAutomatedPageSwitchEnabled(true);
 
+    changeCurrentImage();
+    // No need to start the timer if we only have one, or no images
+    if (packageManagerCore()->settings().productImages().count() > 1)
+        m_imageChangeTimer.start();
+
     if (isVerbose()) {
         m_performInstallationForm->toggleDetails();
     }
@@ -2733,6 +2742,7 @@ void PerformInstallationPage::entering()
 void PerformInstallationPage::leaving()
 {
     setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
+    m_imageChangeTimer.stop();
 }
 
 /*!
@@ -2757,6 +2767,27 @@ void PerformInstallationPage::updatePageListTitle()
 void PerformInstallationPage::setTitleMessage(const QString &title)
 {
     setColoredTitle(title);
+}
+
+/*!
+    Changes the currently shown product image to the next available
+    image from installer configuration.
+*/
+void PerformInstallationPage::changeCurrentImage()
+{
+    const QStringList productImages = packageManagerCore()->settings().productImages();
+    if (productImages.isEmpty())
+        return;
+
+    const QString nextImage = (m_currentImage.isEmpty() || m_currentImage == productImages.last())
+       ? productImages.first()
+       : productImages.at(productImages.indexOf(m_currentImage) + 1);
+
+    // Do not update the pixmap if there was only one image available
+    if (nextImage != m_currentImage) {
+        m_performInstallationForm->setImageFromFileName(nextImage);
+        m_currentImage = nextImage;
+    }
 }
 
 // -- private slots

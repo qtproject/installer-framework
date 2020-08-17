@@ -238,6 +238,10 @@
                 \c QWizard::WatermarkPixmap on \c QWizard::ClassicStyle and \c QWizard::ModernStyle,
                 and \c QWizard::BackgroundPixmap on \c QWizard::MacStyle.
         \row
+            \li ProductImages
+            \li A list of images to be shown on \c PerformInstallationPage. This element can have
+                one or several \c <Image> child elements that contain a filename for an image.
+        \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
                 such as "#88FF33").
