@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -74,9 +74,10 @@ public slots:
     void currentSelectedChanged(const QModelIndex &current);
     void selectAll();
     void deselectAll();
+    void checkboxStateChanged();
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
-    void updateRepositoryCategories();
+    void fetchRepositoryCategories();
     void customButtonClicked(int which);
     void onProgressChanged(int progress);
     void setMessage(const QString &msg);

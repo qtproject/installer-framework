@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -110,18 +110,6 @@ void RepositoryCategory::setTooltip(const QString &tooltip)
 QSet<Repository> RepositoryCategory::repositories() const
 {
     return variantListToSet<Repository>(m_data.values(scRepositories));
-}
-
-/*!
-    Returns the list of repository URLs the category has.
-*/
-QSet<QUrl> RepositoryCategory::repositoryUrls() const
-{
-    QSet<QUrl> repositoryUrls;
-    foreach (const Repository &repository, repositories())
-        repositoryUrls.insert(repository.url());
-
-    return repositoryUrls;
 }
 
 /*!

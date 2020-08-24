@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2018 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -216,24 +216,26 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
+    QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
+    fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
+    connect(fetchCategoryButton, &QPushButton::clicked, this,
+            &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 
     foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setObjectName(repository.displayname());
         checkBox->setChecked(repository.isEnabled());
         connect(checkBox, &QCheckBox::stateChanged, this,
-                &ComponentSelectionPagePrivate::updateRepositoryCategories, Qt::QueuedConnection);
+                &ComponentSelectionPagePrivate::checkboxStateChanged);
         checkBox->setText(repository.displayname());
         checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
     }
+    categoryLayout->addWidget(fetchCategoryButton);
 
     vLayout->addWidget(m_categoryGroupBox);
     vLayout->addStretch();
     m_mainGLayout->addWidget(m_categoryWidget, 1, 0);
-
-    // Apply default enabled categories as initial component filters
-    QMetaObject::invokeMethod(this, "updateRepositoryCategories", Qt::QueuedConnection);
 }
 
 void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
@@ -342,6 +344,18 @@ void ComponentSelectionPagePrivate::deselectAll()
     m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
 }
 
+void ComponentSelectionPagePrivate::checkboxStateChanged()
+{
+    QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
+    bool enableFetchButton = false;
+    foreach (QCheckBox *checkbox, checkboxes) {
+        if (checkbox->isChecked()) {
+            enableFetchButton = true;
+            break;
+        }
+    }
+}
+
 void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repositoryName, bool enable)
 {
     QMap<QString, RepositoryCategory> organizedRepositoryCategories = m_core->settings().organizedRepositoryCategories();
@@ -379,7 +393,7 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 #endif
 }
 
-void ComponentSelectionPagePrivate::updateRepositoryCategories()
+void ComponentSelectionPagePrivate::fetchRepositoryCategories()
 {
     updateWidgetVisibility(true);
 
@@ -390,43 +404,10 @@ void ComponentSelectionPagePrivate::updateRepositoryCategories()
         enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
     }
 
-    // < name, visible >
-    QHash<QString, bool> componentVisibleHash;
-    // Prepare a QHash dictionary for repository urls, so we don't have to get
-    // copies of Repository objects later by value when iterating over categories.
-    const QHash<QString, QSet<QUrl> > repoUrlsForCategories = m_core->settings().repositoryUrlsForCategories();
-    const QSet<RepositoryCategory> repoCategories = m_core->settings().repositoryCategories();
-    const QList<Component *> components = m_core->components(PackageManagerCore::ComponentType::All);
-    foreach (const Component *component, components) {
-        bool hasRepoCategory = false;
-        bool hasEnabledCategory = false;
-
-        foreach (const RepositoryCategory &repoCategory, repoCategories) {
-            const QSet<QUrl> repoUrls = repoUrlsForCategories.value(repoCategory.displayname());
-            foreach (const QUrl &url, repoUrls) {
-                if (component->repositoryUrl() == url) {
-                    hasRepoCategory = true;
-                    hasEnabledCategory = repoCategory.isEnabled();
-                    break;
-                }
-            }
-            if (hasEnabledCategory)
-                break;
-        }
-        const QString componentName = component->name();
-        const QModelIndex &idx = m_currentModel->indexFromComponentName(componentName);
-        if (idx.isValid()) {
-            // Same component name can appear in multiple repositories, only one enabled
-            // category or non-categorized repo is required to show the component in view.
-            if (componentVisibleHash.value(componentName))
-                continue;
-
-            const bool show = (!hasRepoCategory || hasEnabledCategory);
-            m_treeView->setRowHidden(idx.row(), idx.parent(), !show);
-            componentVisibleHash.insert(componentName, show);
-        }
+    if (!m_core->fetchRemotePackagesTree()) {
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());
     }
-
     updateWidgetVisibility(false);
 }
 

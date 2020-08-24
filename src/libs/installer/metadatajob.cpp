@@ -88,9 +88,11 @@ QList<Metadata> MetadataJob::metadata() const
 {
     QList<Metadata> metadata = m_metaFromDefaultRepositories.values();
     foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
-        QList<ArchiveMetadata> archiveMetaList = m_fetchedArchive.values(repositoryCategory.displayname());
-        foreach (ArchiveMetadata archiveMeta, archiveMetaList) {
-            metadata.append(archiveMeta.metaData);
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled() && m_fetchedArchive.contains(repositoryCategory.displayname()))) {
+            QList<ArchiveMetadata> archiveMetaList = m_fetchedArchive.values(repositoryCategory.displayname());
+            foreach (ArchiveMetadata archiveMeta, archiveMetaList) {
+                metadata.append(archiveMeta.metaData);
+            }
         }
     }
     return metadata;
@@ -688,18 +690,20 @@ QSet<Repository> MetadataJob::getRepositories()
     // If repository is already fetched, do not fetch it again.
     // In updater mode, fetch always all archive repositories to get updates
     foreach (RepositoryCategory repositoryCategory, m_core->settings().repositoryCategories()) {
-        foreach (Repository repository, repositoryCategory.repositories()) {
-            QHashIterator<QString, ArchiveMetadata> i(m_fetchedArchive);
-            bool fetch = true;
-            while (i.hasNext()) {
-                i.next();
-                ArchiveMetadata metaData = i.value();
-                if (repository.url() == metaData.metaData.repository.url())
-                    fetch = false;
+        if (m_core->isUpdater() || (repositoryCategory.isEnabled())) {
+                foreach (Repository repository, repositoryCategory.repositories()) {
+                    QHashIterator<QString, ArchiveMetadata> i(m_fetchedArchive);
+                    bool fetch = true;
+                    while (i.hasNext()) {
+                        i.next();
+                        ArchiveMetadata metaData = i.value();
+                        if (repository.url() == metaData.metaData.repository.url())
+                            fetch = false;
+                    }
+                    if (fetch)
+                        repositories.insert(repository);
+                }
             }
-            if (fetch)
-                repositories.insert(repository);
-        }
     }
     return repositories;
 }

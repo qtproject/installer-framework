@@ -124,7 +124,6 @@ public:
 
     QSet<RepositoryCategory> repositoryCategories() const;
     QMap<QString, RepositoryCategory> organizedRepositoryCategories() const;
-    QHash<QString, QSet<QUrl> > repositoryUrlsForCategories() const;
     void setRepositoryCategories(const QSet<RepositoryCategory> &repositories);
     void addRepositoryCategories(const QSet<RepositoryCategory> &repositories);
     Settings::Update updateRepositoryCategories(const RepoHash &updates);
