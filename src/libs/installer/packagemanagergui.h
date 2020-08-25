@@ -178,6 +178,7 @@ public:
 
     bool settingsButtonRequested() const { return m_needsSettingsButton; }
     void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
+    void removeCustomWidget(const QWidget *widget);
 
 signals:
     void entered();

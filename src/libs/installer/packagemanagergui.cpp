@@ -828,6 +828,12 @@ void PackageManagerGui::wizardWidgetInsertionRequested(QWidget *widget,
 void PackageManagerGui::wizardWidgetRemovalRequested(QWidget *widget)
 {
     Q_ASSERT(widget);
+
+    const QList<int> pages = pageIds();
+    foreach (int id, pages) {
+        PackageManagerPage *managerPage = qobject_cast<PackageManagerPage *>(page(id));
+        managerPage->removeCustomWidget(widget);
+    }
     widget->setParent(nullptr);
     packageManagerCore()->controlScriptEngine()->removeFromGlobalObject(widget);
     packageManagerCore()->componentScriptEngine()->removeFromGlobalObject(widget);
@@ -1356,6 +1362,18 @@ bool PackageManagerPage::validatePage()
     return true;
 }
 
+/*!
+    \internal
+*/
+void PackageManagerPage::removeCustomWidget(const QWidget *widget)
+{
+    for (auto it = m_customWidgets.begin(); it != m_customWidgets.end();) {
+        if (it.value() == widget)
+            it = m_customWidgets.erase(it);
+        else
+            ++it;
+    }
+}
 /*!
     Inserts \a widget at the position specified by \a offset in relation to
     another widget specified by \a siblingName. The default position is directly
