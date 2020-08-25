@@ -346,12 +346,12 @@ void Component::loadDataFromPackage(const Package &package)
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
-
+#ifndef IFW_DISABLE_TRANSLATIONS
     const QStringList qms = package.data(QLatin1String("Translations")).toString()
         .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
-
+#endif
     QHash<QString, QVariant> licenseHash = package.data(QLatin1String("Licenses")).toHash();
     if (!licenseHash.isEmpty())
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);

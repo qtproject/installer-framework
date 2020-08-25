@@ -85,7 +85,7 @@ int InstallerBase::run()
     }
     qCDebug(QInstaller::lcInstallerInstallLog) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
-
+#ifndef IFW_DISABLE_TRANSLATIONS
     const QString directory = QLatin1String(":/translations");
     // Check if there is a modified translation first to enable people
     // to easily provide corrected translations to Qt/IFW for their installers
@@ -124,7 +124,7 @@ int InstallerBase::run()
                 QCoreApplication::instance()->installTranslator(translator.take());
         }
     }
-
+#endif
     {
         QDirIterator fontIt(QStringLiteral(":/fonts"));
         while (fontIt.hasNext()) {
