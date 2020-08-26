@@ -160,8 +160,9 @@ public:
                                         "ifw.package.version = true\n"
                                         "ifw.package.displayname = true\n");
         } else {
-            // enable all except detailed package information
+            // enable all except detailed package information and developer specific logging
             loggingRules = QLatin1String("ifw.* = true\n"
+                                        "ifw.developer.build = false\n"
                                         "ifw.package.* = false\n"
                                         "ifw.package.name = true\n"
                                         "ifw.package.version = true\n"
