@@ -1,4 +1,12 @@
 4.0.0
+- Add support for vendor set image decoration (QTIFW-1900)
+- Add verbose levels (QTIFW-1914)
+- CLI: Ask user confirmation before performing installer actions (QTIFW-1834)
+- Add possibility to add custom widget from script to certain position (QTIFW-1847)
+- Add function to get information if default install is performed (QTIFW-1847)
+- Add possibility to select/deselect component from script using core (QTIFW-1847)
+- Add a page list widget to installer wizard (QTIFW-1755)
+- Add function to enable button click with objectname (QTIFW-1707)
 - Add support for disabling CLI features from configuration file (QTIFW-1760)
 - Fix interrupt() call from script
 - CLI: Add option to read arbitrary user input (QTIFW-1631)
