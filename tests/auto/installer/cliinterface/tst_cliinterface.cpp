@@ -159,6 +159,18 @@ private slots:
         QVERIFY(dir.removeRecursively());
     }
 
+    void testInstallForcedPackageSilently()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository");
+        core->installSelectedComponentsSilently(QStringList() << QLatin1String("componentE"));
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Depends on componentA
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontent.txt"
+                            << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+    }
+
     void testInstallPackageSilently()
     {
         PackageManagerCore *core = PackageManager::getPackageManagerWithInit

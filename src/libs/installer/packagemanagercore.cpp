@@ -2411,7 +2411,8 @@ bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
         const QModelIndex &idx = model->indexFromComponentName(name);
         Component *component = componentByName(name);
         if (idx.isValid()) {
-            if (model->data(idx, Qt::CheckStateRole) ==  QVariant::Invalid) { // User cannot select the component, check why
+            if ((model->data(idx, Qt::CheckStateRole) ==  QVariant::Invalid) &&
+                    !component->forcedInstallation()) { // User cannot select the component, check why
                 if (component && component->autoDependencies().count() > 0)
                     qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install component "<< name
                         << ". Component is installed only as automatic dependency to "<< component->autoDependencies().join(QLatin1Char(',')) << ".";
