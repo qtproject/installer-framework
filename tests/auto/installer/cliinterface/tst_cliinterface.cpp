@@ -159,6 +159,17 @@ private slots:
         QVERIFY(dir.removeRecursively());
     }
 
+    void testNoDefaultInstallations()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository");
+        core->setNoDefaultInstallation(true);
+        core->installDefaultComponentsSilently();
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                            << "installcontentE.txt");
+        core->setNoDefaultInstallation(false);
+    }
+
     void testInstallForcedPackageSilently()
     {
         PackageManagerCore *core = PackageManager::getPackageManagerWithInit

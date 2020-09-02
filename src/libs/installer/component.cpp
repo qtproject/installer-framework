@@ -305,12 +305,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
     setValue(scDescription, package.data(scDescription).toString());
-
-    QString isDefault = package.data(scDefault, scFalse).toString().toLower();
-    if (PackageManagerCore::noDefaultInstallation())
-        isDefault = scFalse;
-    setValue(scDefault, isDefault);
-
+    setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
     setValue(scCompressedSize, package.data(scCompressedSize).toString());
     setValue(scUncompressedSize, package.data(scUncompressedSize).toString());
@@ -419,6 +414,8 @@ void Component::setValue(const QString &key, const QString &value)
 
     if (d->m_vars.value(key) == normalizedValue)
         return;
+    if (key == scDefault && d->m_core->noDefaultInstallation())
+        normalizedValue = scFalse;
 
     if (key == scName)
         d->m_componentName = normalizedValue;
