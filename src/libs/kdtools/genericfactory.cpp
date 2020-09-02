@@ -87,13 +87,13 @@
 */
 
 /*!
-    \fn GenericFactory::GenericFactory()
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::GenericFactory()
 
     Creates the generic factory.
 */
 
 /*!
-    \fn GenericFactory::~GenericFactory()
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::~GenericFactory()
 
     Destroys the generic factory.
 */
@@ -105,7 +105,7 @@
 */
 
 /*!
-    \fn void GenericFactory::registerProduct(const IDENTIFIER &id)
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::registerProduct(const IDENTIFIER &id)
 
     Registers a type DERIVED, identified by \a id in the factory. Any type with the same id gets
     unregistered.
@@ -113,20 +113,20 @@
 
 /*!
     \overload
-    \fn void GenericFactory::registerProduct(const IDENTIFIER &id, FactoryFunction func)
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::registerProduct(const IDENTIFIER &id, FactoryFunction func)
 
     Registers a function \a func that can create the type DERIVED, identified by \a id in the
     factory. Any type with the same id gets unregistered.
 */
 
 /*!
-    \fn bool GenericFactory::containsProduct(const IDENTIFIER &id) const
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::containsProduct(const IDENTIFIER &id) const
 
     Returns \c true if the factory contains a type with the \a id; otherwise returns false.
 */
 
 /*!
-    \fn BASE *GenericFactory::create(const IDENTIFIER &id, ARGUMENTS... args) const
+    \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> BASE *GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::create(const IDENTIFIER &id, ARGUMENTS... args) const
 
     Creates and returns the type identified by \a id, but automatically upcasted to BASE. Ownership
     of the type is transferred to the caller.

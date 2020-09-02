@@ -255,7 +255,7 @@ QString errorMessageFrom7zResult(const LONG  &extractResult)
     return errorMessage;
 }
 
-/*!
+/*
     RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
 */
 struct DirectoryGuard
@@ -277,7 +277,7 @@ struct DirectoryGuard
             qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete directory " << m_path;
     }
 
-    /*!
+    /*
         Tries to create the directory structure.
         Returns a list of every directory created.
     */
@@ -931,7 +931,7 @@ HRESULT UpdateCallback::SetOperationResult(Int32)
     return S_OK;
 }
 
-/*!
+/*
     Function to create an empty 7z container. Using a temporary file only is not working, since
     7z checks the output file for a valid signature, otherwise it rejects overwriting the file.
 */

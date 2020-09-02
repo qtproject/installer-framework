@@ -35,7 +35,6 @@
 
 namespace QInstaller {
 
-
 // -- RemoteFileEngineHandler
 
 QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) const
@@ -80,7 +79,7 @@ private:
     QStringList entries;
 };
 
-/*!
+/*
     Advances the iterator to the next entry, and returns the current file path of this new
     entry. If hasNext() returns \c false, the function does nothing and returns an empty QString.
 */
@@ -89,7 +88,7 @@ bool RemoteFileEngineIterator::hasNext() const
     return index < entries.size() - 1;
 }
 
-/*!
+/*
     Returns \c true if there is at least one more entry in the directory, otherwise returns
     \c false.
 */
@@ -101,7 +100,7 @@ QString RemoteFileEngineIterator::next()
     return currentFilePath();
 }
 
-/*!
+/*
     Returns the name of the current directory entry, excluding the path.
 */
 QString RemoteFileEngineIterator::currentFileName() const
@@ -110,8 +109,10 @@ QString RemoteFileEngineIterator::currentFileName() const
 }
 
 
-// -- RemoteFileEngine
-
+/*!
+    \class QInstaller::RemoteFileEngine
+    \inmodule QtInstallerFramework
+*/
 RemoteFileEngine::RemoteFileEngine()
     : RemoteObject(QLatin1String(Protocol::QAbstractFileEngine))
 {
@@ -122,7 +123,6 @@ RemoteFileEngine::~RemoteFileEngine()
 }
 
 /*!
-    \reimp
 */
 bool RemoteFileEngine::atEnd() const
 {
@@ -197,7 +197,6 @@ QStringList RemoteFileEngine::entryList(QDir::Filters filters, const QStringList
 }
 
 /*!
-    \reimp
 */
 QFile::FileError RemoteFileEngine::error() const
 {
@@ -209,7 +208,6 @@ QFile::FileError RemoteFileEngine::error() const
 }
 
 /*!
-    \reimp
 */
 QString RemoteFileEngine::errorString() const
 {

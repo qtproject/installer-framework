@@ -252,41 +252,32 @@ public:
 */
 
 /*!
-    \fn void PackageManagerGui::interrupted()
+    \fn void QInstaller::PackageManagerGui::interrupted()
     \sa {gui::interrupted}{gui.interrupted}
 */
 
 /*!
-    \fn void PackageManagerGui::languageChanged()
+    \fn void QInstaller::PackageManagerGui::languageChanged()
     \sa {gui::languageChanged}{gui.languageChanged}
 */
 
 /*!
-    \fn void PackageManagerGui::finishButtonClicked()
+    \fn void QInstaller::PackageManagerGui::finishButtonClicked()
     \sa {gui::finishButtonClicked}{gui.finishButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::gotRestarted()
+    \fn void QInstaller::PackageManagerGui::gotRestarted()
     \sa {gui::gotRestarted}{gui.gotRestarted}
 */
 
 /*!
-    \fn void PackageManagerGui::settingsButtonClicked()
+    \fn void QInstaller::PackageManagerGui::settingsButtonClicked()
     \sa {gui::settingsButtonClicked}{gui.settingsButtonClicked}
 */
 
 /*!
-    \fn void PackageManagerGui::setValidatorForCustomPageRequested(QInstaller::Component *component,
-        const QString &name,
-        const QString &callbackName)
-
-    Sets a validator for the custom page specified by \a name and
-    \a callbackName requested by \a component.
-*/
-
-/*!
-    \fn void PackageManagerGui::packageManagerCore() const
+    \fn void QInstaller::PackageManagerGui::packageManagerCore() const
 
     Returns the package manager core.
 */
@@ -1118,55 +1109,49 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::~PackageManagerPage()
+    \fn QInstaller::PackageManagerPage::~PackageManagerPage()
 
     Destructs a package manager page.
 */
 
 /*!
-    \fn PackageManagerPage::gui() const
+    \fn QInstaller::PackageManagerPage::gui() const
 
     Returns the wizard this page belongs to.
 */
 
 /*!
-    \fn PackageManagerPage::isInterruptible() const
+    \fn QInstaller::PackageManagerPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PackageManagerPage::setValidatePageComponent(QInstaller::Component *component)
-
-    Sets \a component as the component that validates the page.
-*/
-
-/*!
-    \fn PackageManagerPage::settingsButtonRequested() const
+    \fn QInstaller::PackageManagerPage::settingsButtonRequested() const
 
     Returns \c true if the page requests the wizard to show the \uicontrol Settings button.
 */
 
 /*!
-    \fn PackageManagerPage::setSettingsButtonRequested(bool request)
+    \fn QInstaller::PackageManagerPage::setSettingsButtonRequested(bool request)
 
     Determines that the page should request the \uicontrol Settings button if \a request is \c true.
 */
 
 /*!
-    \fn PackageManagerPage::entered()
+    \fn QInstaller::PackageManagerPage::entered()
 
     This signal is called when a page is entered.
 */
 
 /*!
-    \fn PackageManagerPage::left()
+    \fn QInstaller::PackageManagerPage::left()
 
     This signal is called when a page is left.
 */
 
 /*!
-    \fn PackageManagerPage::entering()
+    \fn QInstaller::PackageManagerPage::entering()
 
     Called when end users enter the page and the PackageManagerGui:currentPageChanged()
     signal is triggered. Supports the QWizardPage::​initializePage() function to ensure
@@ -1176,13 +1161,13 @@ void PackageManagerGui::currentPageChanged(int newId)
 */
 
 /*!
-    \fn PackageManagerPage::showOnPageListChanged()
+    \fn QInstaller::PackageManagerPage::showOnPageListChanged()
 
     Called when page visibility on page list has changed and refresh is needed.
 */
 
 /*!
-    \fn PackageManagerPage::leaving()
+    \fn QInstaller::PackageManagerPage::leaving()
 
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()
     signal is triggered.
@@ -1447,7 +1432,7 @@ int PackageManagerPage::nextId() const
 */
 
 /*!
-    \fn IntroductionPage::packageManagerCoreTypeChanged()
+    \fn QInstaller::IntroductionPage::packageManagerCoreTypeChanged()
 
     This signal is emitted when the package manager core type changes.
 */
@@ -2368,7 +2353,7 @@ void TargetDirectoryPage::initializePage()
 }
 
 /*!
-    Checks whether the target directory exists and has correct content.
+    Returns \c true if the target directory exists and has correct content.
 */
 bool TargetDirectoryPage::validatePage()
 {
@@ -2643,13 +2628,13 @@ void ReadyForInstallationPage::updatePageListTitle()
 */
 
 /*!
-    \fn PerformInstallationPage::isInterruptible() const
+    \fn QInstaller::PerformInstallationPage::isInterruptible() const
 
     Returns \c true if the installation can be interrupted.
 */
 
 /*!
-    \fn PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
+    \fn QInstaller::PerformInstallationPage::setAutomatedPageSwitchEnabled(bool request)
 
     Enables automatic switching of pages when \a request is \c true.
 */
@@ -3029,7 +3014,7 @@ void FinishedPage::cleanupChangedConnects()
 */
 
 /*!
-    \fn RestartPage::restart()
+    \fn QInstaller::RestartPage::restart()
 
     This signal is emitted when the installer is restarted.
 */

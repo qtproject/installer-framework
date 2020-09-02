@@ -74,7 +74,7 @@ static const QLatin1String scExpandedByDefault("ExpandedByDefault");
 static const QLatin1String scUnstable("Unstable");
 
 /*!
-    \enum Component::UnstableError
+    \enum QInstaller::Component::UnstableError
 
     This enum type holds the component unstable error reason:
 
@@ -90,7 +90,7 @@ static const QLatin1String scUnstable("Unstable");
 
 /*!
     \inmodule QtInstallerFramework
-    \class Component::SortingPriorityLessThan
+    \class QInstaller::Component::SortingPriorityLessThan
     \brief The SortingPriorityLessThan class sets an increasing sorting order for child components.
 
     If the component contains several children and has this sorting priority set, the child list
@@ -98,14 +98,14 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::SortingPriorityLessThan::operator() (const Component *lhs, const Component *rhs) const
+    \fn QInstaller::Component::SortingPriorityLessThan::operator() (const Component *lhs, const Component *rhs) const
 
     Returns \c true if \a lhs is less than \a rhs; otherwise returns \c false.
 */
 
 /*!
     \inmodule QtInstallerFramework
-    \class Component::SortingPriorityGreaterThan
+    \class QInstaller::Component::SortingPriorityGreaterThan
     \brief The SortingPriorityGreaterThan class sets a decreasing sorting priority for child
     components.
 
@@ -114,7 +114,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::SortingPriorityGreaterThan::operator() (const Component *lhs, const Component *rhs) const
+    \fn QInstaller::Component::SortingPriorityGreaterThan::operator() (const Component *lhs, const Component *rhs) const
 
     Returns \c true if \a lhs is greater than \a rhs; otherwise returns \c false.
 */
@@ -126,20 +126,20 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::name
+    \property QInstaller::Component::name
 
     \brief The name of the component as set in the \c <Name> tag of the package
     information file.
 */
 
 /*!
-    \property Component::displayName
+    \property QInstaller::Component::displayName
 
     \brief The name of the component as shown in the user interface.
 */
 
 /*!
-    \property Component::autoCreateOperations
+    \property QInstaller::Component::autoCreateOperations
 
     \brief Whether some standard operations for the component should be
     automatically created when the installation starts.
@@ -148,7 +148,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::archives
+    \property QInstaller::Component::archives
 
     \brief The list of archive URLs registered for the component.
 
@@ -158,25 +158,25 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::dependencies
+    \property QInstaller::Component::dependencies
 
     \brief The components this component depends on. This is a read-only property.
 */
 
 /*!
-    \property Component::autoDependencies
+    \property QInstaller::Component::autoDependencies
 
     \brief The value of the \c <AutoDependOn> element in the package information file.
 */
 
 /*!
-    \property Component::fromOnlineRepository
+    \property QInstaller::Component::fromOnlineRepository
 
     \brief Whether this component has been loaded from an online repository.
 */
 
 /*!
-    \property Component::repositoryUrl
+    \property QInstaller::Component::repositoryUrl
 
     \brief The repository URL the component is downloaded from.
 
@@ -184,7 +184,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::default
+    \property QInstaller::Component::default
 
     \brief Whether the component is a default one. This is a read-only property.
 
@@ -192,19 +192,19 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \property Component::installed
+    \property QInstaller::Component::installed
 
     \brief Whether the component is installed.  This is a read-only property.
 */
 
 /*!
-    \property Component::enabled
+    \property QInstaller::Component::enabled
 
     \brief Whether the component is currently enabled. The property is both readable and writable.
 */
 
 /*!
-    \property Component::unstable
+    \property QInstaller::Component::unstable
 
     \brief Whether the component is unstable. This is a read-only property.
 
@@ -212,13 +212,13 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::loaded()
+    \fn QInstaller::Component::loaded()
 
     \sa {component::loaded}{component.loaded}
 */
 
 /*!
-    \fn Component::valueChanged(const QString &key, const QString &value)
+    \fn QInstaller::Component::valueChanged(const QString &key, const QString &value)
 
     Emitted when the value of the variable with the name \a key changes to \a value.
 
@@ -226,7 +226,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
-    \fn Component::virtualStateChanged()
+    \fn QInstaller::Component::virtualStateChanged()
 
     \sa {component::virtualStateChanged}{component.virtualStateChanged}
 */
@@ -690,7 +690,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
 
 
 /*!
-    \property Component::userInterfaces
+    \property QInstaller::Component::userInterfaces
 
     \brief A list of all user interface class names known to this component.
 */

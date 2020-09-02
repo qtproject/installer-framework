@@ -254,7 +254,7 @@ public:
     }
 
 protected:
-    /*!
+    /*
      \reimp
      */
     void run()
@@ -297,6 +297,8 @@ void QInstaller::removeSystemGeneratedFiles(const QString &path)
 /*!
     Sets permissions of file or directory specified by \a fileName to \c 644 or \c 755
     based by the value of \a permissions.
+
+    Returns \c true on success, \c false otherwise.
 */
 bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFilePermissions permissions)
 {

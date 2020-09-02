@@ -45,7 +45,7 @@ namespace QInstaller {
 */
 
 /*!
-    \fn OperationBlob::OperationBlob(const QString &n, const QString &x)
+    \fn QInstaller::OperationBlob::OperationBlob(const QString &n, const QString &x)
 
     Constructs the operation blob with the given arguments, while \a n stands for the name part and
     \a x for the XML representation of the operation.
@@ -75,13 +75,13 @@ namespace QInstaller {
 */
 
 /*!
-    \fn Range<qint64> Resource::segment() const
+    \fn Range<qint64> QInstaller::Resource::segment() const
 
     Returns the range inside the file this resource represents.
 */
 
 /*!
-    \fn void Resource::setSegment(const Range<qint64> &segment)
+    \fn void QInstaller::Resource::setSegment(const Range<qint64> &segment)
 
     Sets the range to the \a segment of the file that this resource represents.
 */
@@ -215,7 +215,7 @@ qint64 Resource::writeData(const char* data, qint64 maxSize)
 }
 
 /*!
-    \fn void Resource::copyData(QFileDevice *out)
+    \fn void QInstaller::Resource::copyData(QFileDevice *out)
 
     Copies the resource data to a file called \a out. Throws Error on failure.
 */

@@ -398,7 +398,7 @@ void Task::setAutoDelete(bool autoDelete)
 */
 
 /*!
-   \fn void Task::error(int code, const QString &errorText)
+   \fn void KDUpdater::Task::error(int code, const QString &errorText)
 
    This signal is emitted to notify an error during the execution of this task.
 
@@ -407,45 +407,45 @@ void Task::setAutoDelete(bool autoDelete)
 */
 
 /*!
-    \fn void Task::progressValue(int percent)
+    \fn void KDUpdater::Task::progressValue(int percent)
 
     This signal is emitted to report progress made by the task. The \a percent parameter gives
     the progress made as a percentage.
 */
 
 /*!
-    \fn void Task::progressText(const QString &progressText)
+    \fn void KDUpdater::Task::progressText(const QString &progressText)
 
     This signal is emitted to report the progress made by the task. The \a progressText parameter
     represents the progress made in a human-readable form.
 */
 
 /*!
-   \fn void Task::started()
+   \fn void KDUpdater::Task::started()
 
    This signal is emitted when the task has started.
 */
 
 /*!
-   \fn void Task::paused()
+   \fn void KDUpdater::Task::paused()
 
    This signal is emitted when the task has paused.
 */
 
 /*!
-   \fn void Task::resumed()
+   \fn void KDUpdater::Task::resumed()
 
    This signal is emitted when the task has resumed.
 */
 
 /*!
-   \fn void Task::stopped()
+   \fn void KDUpdater::Task::stopped()
 
    This signal is emitted when the task has stopped (or canceled).
 */
 
 /*!
-   \fn void Task::finished()
+   \fn void KDUpdater::Task::finished()
 
    This signal is emitted when the task has finished.
 */

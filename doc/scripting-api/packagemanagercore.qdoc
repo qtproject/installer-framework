@@ -39,7 +39,7 @@
     If the repository metadata have not been fetched yet,
     the array will be empty.
 
-    \sa component, installer::finishAllComponentsReset(), installer::finishUpdaterComponentsReset()
+    \sa component, finishAllComponentsReset(), finishUpdaterComponentsReset()
 */
 
 /*!
@@ -71,7 +71,7 @@
 
     Emitted when a new root component is added.
 
-    \sa rootComponentsAdded, updaterComponentsAdded
+    \sa rootComponentsAdded(), updaterComponentsAdded()
 */
 
 /*!
@@ -79,7 +79,7 @@
 
     Emitted when a new list of root components is added.
 
-    \sa componentAdded, updaterComponentsAdded
+    \sa componentAdded(), updaterComponentsAdded()
 */
 
 /*!
@@ -87,7 +87,7 @@
 
     Emitted when a new list of updater components is added.
 
-    \sa componentAdded, rootComponentsAdded
+    \sa componentAdded(), rootComponentsAdded()
 */
 
 /*!
@@ -95,7 +95,7 @@
 
     Emitted when a value changes.
 
-    \sa setValue
+    \sa setValue()
 */
 
 /*!
@@ -141,7 +141,7 @@
 
     Triggered when the list of components starts to get updated.
 
-    \sa finishAllComponentsReset
+    \sa finishAllComponentsReset()
 */
 
 /*!
@@ -149,7 +149,7 @@
 
     Triggered when the list of new root components has been updated.
 
-    \sa startAllComponentsReset
+    \sa startAllComponentsReset()
 */
 
 /*!
@@ -169,7 +169,7 @@
 
     Triggered when installation has started.
 
-    \sa installationFinished installationInterrupted
+    \sa installationFinished(), installationInterrupted()
 */
 
 /*!
@@ -177,7 +177,7 @@
 
     Triggered when installation has been interrupted (cancelled).
 
-    \sa interrupt installationStarted installationFinished
+    \sa interrupt(), installationStarted(), installationFinished()
 */
 
 /*!
@@ -185,7 +185,7 @@
 
     Triggered when installation has finished.
 
-    \sa installationStarted installationInterrupted
+    \sa installationStarted(), installationInterrupted()
 */
 
 /*!
@@ -199,7 +199,7 @@
 
     Triggered when uninstallation has started.
 
-    \sa uninstallationFinished
+    \sa uninstallationFinished()
 */
 
 /*!
@@ -207,7 +207,7 @@
 
     Triggered when uninstallation has finished.
 
-    \sa uninstallationStarted
+    \sa uninstallationStarted()
 */
 
 /*!
@@ -248,7 +248,7 @@
 
     Emitted when the visibility of the page with id \a page changes to \a visible.
 
-    \sa setDefaultPageVisible
+    \sa setDefaultPageVisible()
 */
 
 /*!
@@ -316,7 +316,7 @@
 
    Automatically accept all user message boxes.
 
-   \sa autoRejectMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa autoRejectMessageBoxes(), setMessageBoxAutomaticAnswer()
 */
 
 /*!
@@ -324,7 +324,7 @@
 
    Automatically reject all user message boxes.
 
-   \sa autoAcceptMessageBoxes, setMessageBoxAutomaticAnswer
+   \sa autoAcceptMessageBoxes(), setMessageBoxAutomaticAnswer()
 */
 
 /*!
@@ -334,7 +334,7 @@
 
    This can be used for unattended (automatic) installations.
 
-   \sa QMessageBox, autoAcceptMessageBoxes, autoRejectMessageBoxes
+   \sa QMessageBox, autoAcceptMessageBoxes(), autoRejectMessageBoxes()
 */
 
 /*!
@@ -351,7 +351,7 @@
     Automatically sets the existing directory or filename \a value to QFileDialog with the ID
    \a identifier.
 
-   \sa removeFileDialogAutomaticAnswer
+   \sa removeFileDialogAutomaticAnswer()
 */
 
 /*!
@@ -359,7 +359,7 @@
 
    Removes the automatic answer from QFileDialog with the ID \a identifier.
 
-   \sa setFileDialogAutomaticAnswer
+   \sa setFileDialogAutomaticAnswer()
 */
 
 /*!
@@ -367,8 +367,7 @@
 
    Returns \c true if QFileDialog  with the ID \a identifier has an automatic answer set.
 
-   \sa setFileDialogAutomaticAnswer
-   \sa removeFileDialogAutomaticAnswer
+   \sa setFileDialogAutomaticAnswer(), removeFileDialogAutomaticAnswer()
 */
 
 /*!
@@ -376,7 +375,7 @@
 
    Returns the additional estimated amount of disk space in bytes required after installation.
 
-   \sa requiredTemporaryDiskSpace
+   \sa requiredTemporaryDiskSpace()
 */
 
 /*!
@@ -384,7 +383,7 @@
 
    Returns the estimated required disk space during installation in bytes.
 
-   \sa requiredDiskSpace
+   \sa requiredDiskSpace()
 */
 
 /*!
@@ -438,7 +437,7 @@
 
     Returns \c true if the operation succeeded.
 
-    \sa removeWizardPage, setDefaultPageVisible
+    \sa removeWizardPage(), setDefaultPageVisible()
 */
 
 /*!
@@ -449,7 +448,7 @@
 
     Returns \c true if the operation succeeded.
 
-    \sa addWizardPage, setDefaultPageVisible, wizardPageRemovalRequested
+    \sa addWizardPage(), setDefaultPageVisible(), wizardPageRemovalRequested()
 */
 
 /*!
@@ -461,14 +460,14 @@
 
     Returns \c true.
 
-    \sa addWizardPage, removeWizardPage
+    \sa addWizardPage(), removeWizardPage()
 */
 
 /*!
     \qmlmethod void installer::setValidatorForCustomPage(Component component, string name,
                                                          string callbackName)
 
-    \sa setValidatorForCustomPageRequested
+    \sa setValidatorForCustomPageRequested()
 */
 
 /*!
@@ -482,7 +481,7 @@
 
     See \l{Controller Scripting} for the possible values of \a page.
 
-    \sa removeWizardPageItem, wizardWidgetInsertionRequested
+    \sa removeWizardPageItem(), wizardWidgetInsertionRequested()
 */
 
 /*!
@@ -491,7 +490,7 @@
     Removes the widget with objectName() \a name previously added to the installer's wizard
     by \a component.
 
-    \sa addWizardPageItem
+    \sa addWizardPageItem()
 */
 
 /*!
@@ -499,7 +498,7 @@
 
     Registers additional \a repositories.
 
-    \sa setTemporaryRepositories
+    \sa setTemporaryRepositories()
 */
 
 /*!
@@ -508,7 +507,7 @@
     Sets additional \a repositories for this instance of the installer or updater.
     Will be removed after invoking it again.
 
-    \sa addUserRepositories
+    \sa addUserRepositories()
 */
 
 /*!
@@ -534,7 +533,7 @@
 
     Tries to gain admin rights. On success, it returns \c true.
 
-    \sa dropAdminRights
+    \sa dropAdminRights()
 */
 
 /*!
@@ -542,7 +541,7 @@
 
     Drops admin rights gained by gainAdminRights.
 
-    \sa gainAdminRights
+    \sa gainAdminRights()
 */
 
 /*!
@@ -583,7 +582,7 @@
 
     \note This only works on Windows.
 
-    \sa localInstallerBinaryUsed
+    \sa localInstallerBinaryUsed()
 */
 
 /*!
@@ -592,7 +591,7 @@
     Returns \c false if the installer is run on Windows, and the installer has been started from
     a remote file system drive. Otherwise returns \c true.
 
-    \sa setDependsOnLocalInstallerBinary
+    \sa setDependsOnLocalInstallerBinary()
 */
 
 /*!
@@ -616,7 +615,7 @@
 
     \note On Unix, the output is just the output to stdout, not to stderr.
 
-    \sa executeDetached
+    \sa executeDetached()
 */
 
 /*!

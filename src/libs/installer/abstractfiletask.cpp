@@ -62,32 +62,32 @@ namespace QInstaller {
 */
 
 /*!
-    \fn FileTaskItem::FileTaskItem()
+    \fn QInstaller::FileTaskItem::FileTaskItem()
 
     Creates a file task item.
 */
 
 /*!
-    \fn FileTaskItem::FileTaskItem(const QString &s)
+    \fn QInstaller::FileTaskItem::FileTaskItem(const QString &s)
 
     Creates a file task item using the source specified by \a s.
 */
 
 /*!
-    \fn FileTaskItem::FileTaskItem(const QString &s, const QString &t)
+    \fn QInstaller::FileTaskItem::FileTaskItem(const QString &s, const QString &t)
 
     Creates a file task item using the source specified by \a s and target
     specified by \a t.
 */
 
 /*!
-    \fn FileTaskItem::source() const
+    \fn QInstaller::FileTaskItem::source() const
 
     Returns the source file of the file task item.
 */
 
 /*!
-    \fn FileTaskItem::target() const
+    \fn QInstaller::FileTaskItem::target() const
 
     Returns the target file of the file task item.
 */
@@ -99,13 +99,13 @@ namespace QInstaller {
 */
 
 /*!
-    \fn FileTaskResult::FileTaskResult()
+    \fn QInstaller::FileTaskResult::FileTaskResult()
 
     Creates file task results.
 */
 
 /*!
-    \fn FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c,
+    \fn QInstaller::FileTaskResult::FileTaskResult(const QString &t, const QByteArray &c,
         const FileTaskItem &i, bool checksumMismatch)
 
     Creates file task results using the target file specified by \a t, checksum
@@ -114,25 +114,25 @@ namespace QInstaller {
 */
 
 /*!
-    \fn FileTaskResult::target() const
+    \fn QInstaller::FileTaskResult::target() const
 
     Returns the target file of the task result.
 */
 
 /*!
-    \fn FileTaskResult::checkSum() const
+    \fn QInstaller::FileTaskResult::checkSum() const
 
     Returns the checksum of the task result.
 */
 
 /*!
-    \fn FileTaskResult::taskItem() const
+    \fn QInstaller::FileTaskResult::taskItem() const
 
     Returns file task items.
 */
 
 /*!
-    \fn FileTaskResult::checksumMismatch() const
+    \fn QInstaller::FileTaskResult::checksumMismatch() const
 
     Returns \c true if checksum mismatch is detected otherwise returns \c false.
 */
@@ -146,7 +146,7 @@ AbstractFileTask::AbstractFileTask()
 }
 
 /*!
-    \fn AbstractFileTask::~AbstractFileTask()
+    \fn QInstaller::AbstractFileTask::~AbstractFileTask()
 
     Destroys the abstract file task object.
 */

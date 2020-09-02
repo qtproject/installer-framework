@@ -120,7 +120,7 @@ bool Repository::isDefault() const
 }
 
 /*!
-    Returns the URL of the repository. By default an invalid \sa QUrl is returned.
+    Returns the URL of the repository. By default an invalid QUrl is returned.
 */
 QUrl Repository::url() const
 {

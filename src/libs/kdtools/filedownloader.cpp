@@ -80,107 +80,107 @@ static double calcProgress(qint64 done, qint64 total)
 */
 
 /*!
-    \property FileDownloader::autoRemoveDownloadedFile
+    \property KDUpdater::FileDownloader::autoRemoveDownloadedFile
     \brief Whether the downloaded file should be automatically removed after it
     is downloaded and the class goes out of scope.
 */
 
 /*!
-    \property FileDownloader::url
+    \property KDUpdater::FileDownloader::url
     \brief The URL to download files from.
 */
 
 /*!
-    \property FileDownloader::scheme
+    \property KDUpdater::FileDownloader::scheme
     \brief The scheme to use for downloading files.
     */
 
 /*!
-    \fn FileDownloader::authenticatorChanged(const QAuthenticator &authenticator)
+    \fn KDUpdater::FileDownloader::authenticatorChanged(const QAuthenticator &authenticator)
     This signal is emitted when the authenticator changes to \a authenticator.
 */
 
 /*!
-    \fn FileDownloader::canDownload() const = 0
+    \fn KDUpdater::FileDownloader::canDownload() const = 0
     Returns \c true if the file exists and is readable.
 */
 
 /*!
-    \fn FileDownloader::clone(QObject *parent=0) const = 0
+    \fn KDUpdater::FileDownloader::clone(QObject *parent=0) const = 0
     Clones the local file downloader and assigns it the parent \a parent.
 */
 
 /*!
-    \fn FileDownloader::downloadCanceled()
+    \fn KDUpdater::FileDownloader::downloadCanceled()
     This signal is emitted if downloading a file is canceled.
 */
 
 /*!
-    \fn FileDownloader::downloadedFileName() const = 0
+    \fn KDUpdater::FileDownloader::downloadedFileName() const = 0
     Returns the file name of the downloaded file.
 */
 
 /*!
-    \fn FileDownloader::downloadProgress(double progress)
+    \fn KDUpdater::FileDownloader::downloadProgress(double progress)
     This signal is emitted with the current download \a progress.
 */
 
 /*!
-    \fn FileDownloader::downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
+    \fn KDUpdater::FileDownloader::downloadProgress(qint64 bytesReceived, qint64 bytesToReceive)
     This signal is emitted with the download progress as the number of received bytes,
     \a bytesReceived, and the total size of the file to download, \a bytesToReceive.
 */
 
 /*!
-    \fn FileDownloader::downloadSpeed(qint64 bytesPerSecond)
+    \fn KDUpdater::FileDownloader::downloadSpeed(qint64 bytesPerSecond)
     This signal is emitted with the download speed in bytes per second as \a bytesPerSecond.
 */
 
 /*!
-    \fn FileDownloader::downloadStarted()
+    \fn KDUpdater::FileDownloader::downloadStarted()
     This signal is emitted when downloading a file starts.
 */
 
 /*!
-    \fn FileDownloader::downloadStatus(const QString &status)
+    \fn KDUpdater::FileDownloader::downloadStatus(const QString &status)
     This signal is emitted with textual representation of the current download \a status in the
     following format: "100 MiB of 150 MiB - (DAYS) (HOURS) (MINUTES) (SECONDS) remaining".
 */
 
 /*!
-    \fn FileDownloader::downloadCompleted()
+    \fn KDUpdater::FileDownloader::downloadCompleted()
     This signal is emitted when downloading a file ends.
 */
 
 /*!
-    \fn FileDownloader::downloadAborted(const QString &errorMessage)
+    \fn KDUpdater::FileDownloader::downloadAborted(const QString &errorMessage)
     This signal is emitted when downloading a file is aborted with \a errorMessage.
 */
 
 /*!
-    \fn FileDownloader::estimatedDownloadTime(int seconds)
+    \fn KDUpdater::FileDownloader::estimatedDownloadTime(int seconds)
     This signal is emitted with the estimated download time in \a seconds.
 */
 
 /*!
-    \fn FileDownloader::isDownloaded() const = 0
+    \fn KDUpdater::FileDownloader::isDownloaded() const = 0
     Returns \c true if the file is downloaded.
 */
 
 /*!
-    \fn FileDownloader::onError() = 0
+    \fn KDUpdater::FileDownloader::onError() = 0
     Closes the destination file if an error occurs during copying and stops
     the download speed timer.
 */
 
 /*!
-    \fn FileDownloader::onSuccess() = 0
+    \fn KDUpdater::FileDownloader::onSuccess() = 0
     Closes the destination file after it has been successfully copied and stops
     the download speed timer.
 */
 
 /*!
-    \fn FileDownloader::setDownloadedFileName(const QString &name) = 0
+    \fn KDUpdater::FileDownloader::setDownloadedFileName(const QString &name) = 0
     Sets the file name of the downloaded file to \a name.
 */
 

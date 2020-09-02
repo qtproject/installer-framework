@@ -74,7 +74,7 @@ void QInstaller::uiDetachedWait(int ms)
 
     The process will be started in the directory \a workingDirectory.
 
-    If the function is successful then \a *pid is set to the process identifier of the started
+    If the function is successful then \a pid is set to the process identifier of the started
     process.
 
     Additional note: The difference in using this function over its equivalent from QProcess

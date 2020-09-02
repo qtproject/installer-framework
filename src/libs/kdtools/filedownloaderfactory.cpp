@@ -181,13 +181,13 @@ FileDownloader *FileDownloaderFactory::create(const QString &scheme, QObject *pa
 */
 
 /*!
-    \fn FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
+    \fn KDUpdater::FileDownloaderProxyFactory::~FileDownloaderProxyFactory()
 
     Destroys the file downloader proxy factory.
 */
 
 /*!
-    \fn FileDownloaderProxyFactory::clone() const
+    \fn KDUpdater::FileDownloaderProxyFactory::clone() const
 
     Clones a file downloader proxy factory.
 */

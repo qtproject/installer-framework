@@ -552,7 +552,7 @@ void UpdateFinder::Private::slotDownloadDone()
 /*!
    \inmodule kdupdater
 
-   This function compares two version strings \c v1 and \c v2 and returns
+   This function compares two version strings \a v1 and \a v2 and returns
    -1, 0 or +1 based on the following rule
 
     \list

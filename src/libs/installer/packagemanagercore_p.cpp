@@ -310,7 +310,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // delete m_gui;
 }
 
-/*!
+/*
     Return true, if a process with \a name is running. On Windows, comparison is case-insensitive.
 */
 /* static */

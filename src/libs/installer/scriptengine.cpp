@@ -46,7 +46,7 @@ namespace QInstaller {
 */
 
 /*!
-    \fn ScriptEngine::globalObject() const
+    \fn QInstaller::ScriptEngine::globalObject() const
     Returns a global object.
 */
 

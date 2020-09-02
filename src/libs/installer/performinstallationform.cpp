@@ -68,7 +68,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \fn PerformInstallationForm::showDetailsChanged()
+    \fn QInstaller::PerformInstallationForm::showDetailsChanged()
 
     This signal is emitted when the end users select the details button to show
     or hide progress details.
