@@ -317,7 +317,7 @@ void ProgressCoordinator::printProgressPercentage(int progress)
 
     Q_ASSERT(m_progressSpinner->currentIndex < m_progressSpinner->spinnerChars.size());
 
-    QString formatted = QString::fromLatin1("[%1 %2%] ").arg(
+    QString formatted = QString::fromLatin1("[%1 %2%]").arg(
         m_progressSpinner->spinnerChars.at(m_progressSpinner->currentIndex), QString::number(progress));
 
     qCDebug(QInstaller::lcProgressIndicator).noquote() << formatted;
