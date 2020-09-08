@@ -341,8 +341,10 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     if (m_core->settings().wizardShowPageList()) {
         QWidget *sideWidget = new QWidget(this);
+        sideWidget->setObjectName(QLatin1String("SideWidget"));
 
         m_pageListWidget = new QListWidget(sideWidget);
+        m_pageListWidget->setObjectName(QLatin1String("PageListWidget"));
         m_pageListWidget->viewport()->setAutoFillBackground(false);
         m_pageListWidget->setFrameShape(QFrame::NoFrame);
         m_pageListWidget->setMinimumWidth(200);
@@ -354,13 +356,17 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
         m_pageListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-        QFrame *verticalLine = new QFrame(sideWidget);
-        verticalLine->setFrameShape(QFrame::VLine);
-        verticalLine->setFrameShadow(QFrame::Sunken);
+        QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
 
-        QHBoxLayout *sideWidgetLayout = new QHBoxLayout(sideWidget);
+        const QString pageListPixmap = m_core->settings().pageListPixmap();
+        if (!pageListPixmap.isEmpty()) {
+            QLabel *pageListPixmapLabel = new QLabel(sideWidget);
+            pageListPixmapLabel->setObjectName(QLatin1String("PageListPixmapLabel"));
+            pageListPixmapLabel->setPixmap(pageListPixmap);
+            pageListPixmapLabel->setMinimumWidth(QPixmap(pageListPixmap).width());
+            sideWidgetLayout->addWidget(pageListPixmapLabel);
+        }
         sideWidgetLayout->addWidget(m_pageListWidget);
-        sideWidgetLayout->addWidget(verticalLine);
         sideWidget->setLayout(sideWidgetLayout);
 
         setSideWidget(sideWidget);

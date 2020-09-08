@@ -397,6 +397,10 @@
             \li Filename for an image used as \c QWizard::BackgroundPixmap (only used by MacStyle).
                 If \c <WizardShowPageList> is set to \c true, the background is hidden.
         \row
+            \li PageListPixmap
+            \li Filename for an image shown on top of installer page list. The image is shown
+                only if \c <WizardShowPageList> is also set to \c true.
+        \row
             \li WizardStyle
             \li Set the wizard style to be used ("Modern", "Mac", "Aero" or "Classic").
         \row
