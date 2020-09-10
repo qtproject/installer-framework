@@ -29,6 +29,8 @@
 #ifndef PERFORMINSTALLATIONFORM_H
 #define PERFORMINSTALLATIONFORM_H
 
+#include "aspectratiolabel.h"
+
 #include <QObject>
 
 QT_BEGIN_NAMESPACE
@@ -77,7 +79,7 @@ private:
     QLabel *m_progressLabel;
     QLabel *m_downloadStatus;
     QScrollArea *m_productImagesScrollArea;
-    QLabel *m_productImagesLabel;
+    AspectRatioLabel *m_productImagesLabel;
     QPushButton *m_detailsButton;
     LazyPlainTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;

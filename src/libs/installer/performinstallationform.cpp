@@ -139,11 +139,10 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_productImagesScrollArea->setObjectName(QLatin1String("ProductImagesScrollArea"));
     m_productImagesScrollArea->setWidgetResizable(true);
     m_productImagesScrollArea->setFrameShape(QFrame::NoFrame);
+    m_productImagesScrollArea->setStyleSheet(QLatin1String("background-color:transparent;"));
 
-    m_productImagesLabel = new QLabel(widget);
+    m_productImagesLabel = new AspectRatioLabel(widget);
     m_productImagesLabel->setObjectName(QLatin1String("ProductImagesLabel"));
-    m_productImagesLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_productImagesLabel->setScaledContents(true);
 
     m_productImagesScrollArea->setWidget(m_productImagesLabel);
     bottomLayout->addWidget(m_productImagesScrollArea);
