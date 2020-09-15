@@ -156,10 +156,14 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Packages parameter missing argument"));
                 }
-
-                if (!QFileInfo(args.first()).exists()) {
+                const QDir dir(args.first());
+                if (!dir.exists()) {
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Package directory not found at the specified location"));
+                }
+                if (dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot).isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Package directory is empty"));
                 }
 
                 packagesDirectories.append(args.first());
