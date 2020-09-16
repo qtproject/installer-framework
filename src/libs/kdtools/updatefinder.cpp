@@ -482,7 +482,7 @@ void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 }
 
 /*!
-    Sets the package sources information to use when searching for applicable packages.
+    Sets the package \a sources information when searching for applicable packages.
 */
 void UpdateFinder::setPackageSources(const QSet<PackageSource> &sources)
 {

@@ -50,6 +50,14 @@
 
 using namespace QInstaller;
 
+/*!
+    \enum QInstaller::DefaultFilePermissions
+
+    \value NonExecutable
+           Default permissions for a non-executable file.
+    \value Executable
+           Default permissions for an executable file.
+*/
 
 // -- TempDirDeleter
 
@@ -125,6 +133,10 @@ void TempDirDeleter::releaseAndDelete(const QString &path)
     }
 }
 
+/*!
+    Returns the given \a size in a measuring unit suffixed human readable format,
+    with \a precision marking the number of shown decimals.
+*/
 QString QInstaller::humanReadableSize(const qint64 &size, int precision)
 {
     double sizeAsDouble = size;
@@ -154,11 +166,17 @@ QString QInstaller::humanReadableSize(const qint64 &size, int precision)
 
 // -- read, write operations
 
+/*!
+    \internal
+*/
 bool QInstaller::isLocalUrl(const QUrl &url)
 {
     return url.scheme().isEmpty() || url.scheme().toLower() == QLatin1String("file");
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::pathFromUrl(const QUrl &url)
 {
     if (isLocalUrl(url))
@@ -169,6 +187,9 @@ QString QInstaller::pathFromUrl(const QUrl &url)
     return str;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::removeFiles(const QString &path, bool ignoreErrors)
 {
     const QFileInfoList entries = QDir(path).entryInfoList(QDir::AllEntries | QDir::Hidden);
@@ -208,6 +229,16 @@ static QString errnoToQString(int error)
 #endif
 }
 
+/*!
+    \internal
+
+    Removes the directory at \a path recursively.
+    @param path The directory to remove
+    @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown
+        if removing fails.
+
+    @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
+*/
 void QInstaller::removeDirectory(const QString &path, bool ignoreErrors)
 {
     if (path.isEmpty()) // QDir("") points to the working directory! We never want to remove that one.
@@ -272,6 +303,9 @@ private:
     const bool ignore;
 };
 
+/*!
+    \internal
+*/
 void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
 {
     RemoveDirectoryThread thread(path, ignoreErrors);
@@ -283,6 +317,9 @@ void QInstaller::removeDirectoryThreaded(const QString &path, bool ignoreErrors)
         throw Error(thread.error());
 }
 
+/*!
+    Removes system generated files from \a path on Windows and macOS. Does nothing on Linux.
+*/
 void QInstaller::removeSystemGeneratedFiles(const QString &path)
 {
     if (path.isEmpty())
@@ -311,6 +348,8 @@ bool QInstaller::setDefaultFilePermissions(const QString &fileName, DefaultFileP
     based by the value of \a permissions. This is effective only on Unix platforms
     as \c setPermissions() does not manipulate ACLs. On Windows NTFS volumes this
     only unsets the legacy read-only flag regardless of the value of \a permissions.
+
+    Returns \c true on success, \c false otherwise.
 */
 bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions)
 {
@@ -329,6 +368,9 @@ bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions p
     return true;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
@@ -357,6 +399,9 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
@@ -388,6 +433,9 @@ void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::mkdir(const QString &path)
 {
     errno = 0;
@@ -397,6 +445,9 @@ void QInstaller::mkdir(const QString &path)
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::mkpath(const QString &path)
 {
     errno = 0;
@@ -406,6 +457,12 @@ void QInstaller::mkpath(const QString &path)
     }
 }
 
+/*!
+    \internal
+
+    Generates and returns a temporary file name. The name can start with
+    a template \a templ.
+*/
 QString QInstaller::generateTemporaryFileName(const QString &templ)
 {
     if (templ.isEmpty()) {
@@ -440,6 +497,9 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 
+/*!
+    \internal
+*/
 QString QInstaller::getShortPathName(const QString &name)
 {
     if (name.isEmpty())
@@ -456,6 +516,9 @@ QString QInstaller::getShortPathName(const QString &name)
     return rc;
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::getLongPathName(const QString &name)
 {
     if (name.isEmpty())
@@ -472,6 +535,11 @@ QString QInstaller::getLongPathName(const QString &name)
     return rc;
 }
 
+/*!
+    \internal
+
+    Makes sure that capitalization of directory specified by \a name is canonical.
+*/
 QString QInstaller::normalizePathName(const QString &name)
 {
     QString canonicalName = getShortPathName(name);
@@ -528,6 +596,11 @@ typedef struct {
 
 #pragma pack(pop)
 
+/*!
+    \internal
+
+    Sets the .ico file at \a icon as application icon for \a application.
+*/
 void QInstaller::setApplicationIcon(const QString &application, const QString &icon)
 {
     QFile iconFile(icon);
@@ -592,6 +665,9 @@ static quint64 symlinkSizeWin(const QString &path)
 
 #endif
 
+/*!
+    \internal
+*/
 quint64 QInstaller::fileSize(const QFileInfo &info)
 {
     if (!info.isSymLink())
@@ -607,6 +683,12 @@ quint64 QInstaller::fileSize(const QFileInfo &info)
 #endif
 }
 
+/*!
+    \internal
+
+    Returns \c true if a file specified by \a path points to a bundle. The
+    absolute path for the bundle can be retrieved with \a bundlePath. Works only on macOS.
+*/
 bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 {
 #ifdef Q_OS_MACOS

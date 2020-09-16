@@ -43,6 +43,13 @@
 
 using namespace QInstaller;
 
+/*!
+    \typedef QInstaller::RepoHash
+
+    Synonym for QHash<QString, QPair<Repository, Repository> >. Describes a repository
+    update with the supported key strings being \e{replace}, \e{remove}, and \e{add}.
+*/
+
 static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
 static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
 static const QLatin1String scLogo("Logo");

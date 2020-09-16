@@ -100,7 +100,7 @@ void ProgressCoordinator::registerPartProgress(QObject *sender, const char *sign
 
 
 /*!
-    This slot gets the progress changed signals from different tasks. The values 0 and 1 are handled as
+    This slot gets the progress changed signals from different tasks. The \a fraction values 0 and 1 are handled as
     special values.
 
     0 - is just ignored, so you can use a timer which gives the progress, e.g. like a downloader does.

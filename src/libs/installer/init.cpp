@@ -151,6 +151,10 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
     }
 }
 
+/*!
+    Initializes the 7z library and installer resources. Registers
+    custom operations and installs a custom message handler.
+*/
 void QInstaller::init()
 {
     Lib7z::initSevenZ();

@@ -832,7 +832,7 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
 /*!
     \fn virtual Lib7z::ExtractCallback::setCompleted(quint64 completed, quint64 total)
 
-    Returns completed. Always returns true. \a completed and \a total are unused.
+    Always returns \c true. \c completed and \c total are unused.
 */
 
 
@@ -951,9 +951,9 @@ static QString createTmp7z()
 }
 
 /*!
-    Creates an archive using the given file device \a archive. \a sourcePaths can contain one or
-    more files, one or more directories or a combination of files and folders. The \c * wildcard
-    is supported also. The value of \a level specifies the compression ratio, the default is set
+    Creates an archive using the given file device \a archive. \a sources can contain one or
+    more files, one or more directories or a combination of files and folders. Also, \c * wildcard
+    is supported. The value of \a level specifies the compression ratio, the default is set
     to \c 5 (Normal compression). The \a callback can be used to get information about the archive
     creation process. If no \a callback is given, an empty implementation is used.
 
@@ -979,8 +979,8 @@ void INSTALLER_EXPORT createArchive(QFileDevice *archive, const QStringList &sou
 }
 
 /*!
-    Creates an archive with the given filename \a archive. \a sourcePaths can contain one or more
-    files, one or more directories or a combination of files and folders. Also the \c * wildcard
+    Creates an archive with the given filename \a archive. \a sources can contain one or more
+    files, one or more directories or a combination of files and folders. Also, \c * wildcard
     is supported. To be able to use the function during an elevated installation, set \a mode to
     \c TmpFile::Yes. The value of \a level specifies the compression ratio, the default is set
     to \c 5 (Normal compression). The \a callback can be used to get information about the archive

@@ -37,6 +37,9 @@
 #include <QFileDevice>
 #include <QString>
 
+/*!
+    \internal
+*/
 qint64 QInstaller::retrieveInt64(QFileDevice *in)
 {
     qint64 n = 0;
@@ -44,11 +47,17 @@ qint64 QInstaller::retrieveInt64(QFileDevice *in)
     return n;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::appendInt64(QFileDevice *out, qint64 n)
 {
     QInstaller::blockingWrite(out, reinterpret_cast<const char*>(&n), sizeof(n));
 }
 
+/*!
+    \internal
+*/
 Range<qint64> QInstaller::retrieveInt64Range(QFileDevice *in)
 {
     const quint64 start = QInstaller::retrieveInt64(in);
@@ -56,22 +65,34 @@ Range<qint64> QInstaller::retrieveInt64Range(QFileDevice *in)
     return Range<qint64>::fromStartAndLength(start, length);
 }
 
+/*!
+    \internal
+*/
 void QInstaller::appendInt64Range(QFileDevice *out, const Range<qint64> &r)
 {
     QInstaller::appendInt64(out, r.start());
     QInstaller::appendInt64(out, r.length());
 }
 
+/*!
+    \internal
+*/
 QString QInstaller::retrieveString(QFileDevice *in)
 {
     return QString::fromUtf8(QInstaller::retrieveByteArray(in));
 }
 
+/*!
+    \internal
+*/
 void QInstaller::appendString(QFileDevice *out, const QString &str)
 {
     QInstaller::appendByteArray(out, str.toUtf8());
 }
 
+/*!
+    \internal
+*/
 QByteArray QInstaller::retrieveByteArray(QFileDevice *in)
 {
     QByteArray ba(QInstaller::retrieveInt64(in), '\0');
@@ -79,12 +100,18 @@ QByteArray QInstaller::retrieveByteArray(QFileDevice *in)
     return ba;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::appendByteArray(QFileDevice *out, const QByteArray &ba)
 {
     QInstaller::appendInt64(out, ba.size());
     QInstaller::blockingWrite(out, ba.constData(), ba.size());
 }
 
+/*!
+    \internal
+*/
 QByteArray QInstaller::retrieveData(QFileDevice *in, qint64 size)
 {
     QByteArray ba(size, '\0');
@@ -92,12 +119,18 @@ QByteArray QInstaller::retrieveData(QFileDevice *in, qint64 size)
     return ba;
 }
 
+/*!
+    \internal
+*/
 void QInstaller::appendData(QFileDevice *out, QFileDevice *in, qint64 size)
 {
     Q_ASSERT(!in->isSequential());
     QInstaller::blockingCopy(in, out, size);
 }
 
+/*!
+    \internal
+*/
 void QInstaller::openForRead(QFileDevice *dev)
 {
     Q_ASSERT(dev);
@@ -108,6 +141,9 @@ void QInstaller::openForRead(QFileDevice *dev)
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::openForWrite(QFileDevice *dev)
 {
     Q_ASSERT(dev);
@@ -118,6 +154,9 @@ void QInstaller::openForWrite(QFileDevice *dev)
     }
 }
 
+/*!
+    \internal
+*/
 void QInstaller::openForAppend(QFileDevice *dev)
 {
     Q_ASSERT(dev);
@@ -128,6 +167,9 @@ void QInstaller::openForAppend(QFileDevice *dev)
     }
 }
 
+/*!
+    \internal
+*/
 qint64 QInstaller::blockingRead(QFileDevice *in, char *buffer, qint64 size)
 {
     if (in->atEnd())
@@ -146,6 +188,9 @@ qint64 QInstaller::blockingRead(QFileDevice *in, char *buffer, qint64 size)
     return size;
 }
 
+/*!
+    \internal
+*/
 qint64 QInstaller::blockingCopy(QFileDevice *in, QFileDevice *out, qint64 size)
 {
     static const qint64 blockSize = 4096;
@@ -165,11 +210,17 @@ qint64 QInstaller::blockingCopy(QFileDevice *in, QFileDevice *out, qint64 size)
     return size;
 }
 
+/*!
+    \internal
+*/
 qint64 QInstaller::blockingWrite(QFileDevice *out, const QByteArray &data)
 {
     return QInstaller::blockingWrite(out, data.constData(), data.size());
 }
 
+/*!
+    \internal
+*/
 qint64 QInstaller::blockingWrite(QFileDevice *out, const char *data, qint64 size)
 {
     qint64 left = size;

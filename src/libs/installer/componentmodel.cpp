@@ -58,14 +58,14 @@ namespace QInstaller {
 */
 
 /*!
-    \fn void ComponentModel::checkStateChanged(const QModelIndex &index)
+    \fn void QInstaller::ComponentModel::checkStateChanged(const QModelIndex &index)
 
     This signal is emitted whenever the checked state of a component is changed. The \a index value
     indicates the QModelIndex representation of the component as seen from the model.
 */
 
 /*!
-    \fn void ComponentModel::checkStateChanged(QInstaller::ComponentModel::ModelState state)
+    \fn void QInstaller::ComponentModel::checkStateChanged(QInstaller::ComponentModel::ModelState state)
 
     This signal is emitted whenever the checked state of a model is changed after all state
     calculations have taken place. The \a state is a combination of \c ModelStateFlag values

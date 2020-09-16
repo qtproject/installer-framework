@@ -74,14 +74,6 @@ private:
 
     QString INSTALLER_EXPORT humanReadableSize(const qint64 &size, int precision = 2);
 
-    /*!
-        Removes the directory at \a path recursively.
-        @param path The directory to remove
-        @param ignoreErrors if @p true, errors will be silently ignored. Otherwise an exception will be thrown
-            if removing fails.
-
-        @throws QInstaller::Error if the directory cannot be removed and ignoreErrors is @p false
-    */
     void INSTALLER_EXPORT removeFiles(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectory(const QString &path, bool ignoreErrors = false);
     void INSTALLER_EXPORT removeDirectoryThreaded(const QString &path, bool ignoreErrors = false);
@@ -110,14 +102,8 @@ private:
     QString INSTALLER_EXPORT getLongPathName(const QString &name);
     QString INSTALLER_EXPORT getShortPathName(const QString &name);
 
-    /*!
-        Makes sure that capitalization of directories is canonical.
-    */
     QString INSTALLER_EXPORT normalizePathName(const QString &name);
 
-    /*!
-        Sets the .ico file at \a icon as application icon for \a application.
-    */
     void INSTALLER_EXPORT setApplicationIcon(const QString &application, const QString &icon);
 #endif
 }

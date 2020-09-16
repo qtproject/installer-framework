@@ -44,6 +44,14 @@ const QStringList metaElements = {QLatin1String("Script"), QLatin1String("Licens
 
 namespace QInstaller {
 
+/*!
+    \enum QInstaller::DownloadType
+
+    \value All
+    \value CompressedPackage
+    \value UpdatesXML
+*/
+
 static QUrl resolveUrl(const FileTaskResult &result, const QString &url)
 {
     QUrl u(url);

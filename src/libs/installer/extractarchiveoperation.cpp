@@ -38,6 +38,19 @@
 
 namespace QInstaller {
 
+/*!
+    \typedef QInstaller::Backup
+
+    Synonym for QPair<QString, QString>. Contains a pair
+    of an original and a generated backup filename for a file.
+*/
+
+/*!
+    \typedef QInstaller::BackupFiles
+
+    Synonym for QVector<Backup>.
+*/
+
 ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

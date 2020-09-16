@@ -32,6 +32,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \namespace Ui
+    \brief Groups user interface forms generated with Qt Designer.
+*/
+
 ProxyCredentialsDialog::ProxyCredentialsDialog(const QNetworkProxy &proxy, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ProxyCredentialsDialog)

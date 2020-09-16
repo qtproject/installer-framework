@@ -168,11 +168,17 @@ bool RepositoryCategory::operator!=(const RepositoryCategory &other) const
     return !(*this == other);
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator>>(QDataStream &istream, RepositoryCategory &repository)
 {
     return istream;
 }
 
+/*!
+    \internal
+*/
 QDataStream &operator<<(QDataStream &ostream, const RepositoryCategory &repository)
 {
     return ostream << repository.m_displayname.toUtf8().toBase64() << repository.m_data;

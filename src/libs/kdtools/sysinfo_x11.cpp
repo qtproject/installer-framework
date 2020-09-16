@@ -44,6 +44,9 @@
 
 namespace KDUpdater {
 
+/*!
+    Returns the amount of memory installed on a system.
+*/
 quint64 installedMemory()
 {
 #ifdef Q_OS_LINUX
@@ -74,6 +77,9 @@ quint64 installedMemory()
     return 0;
 }
 
+/*!
+    Returns currently mounted volumes as list of the \c VolumeInfo objects.
+*/
 QList<VolumeInfo> mountedVolumes()
 {
     QList<VolumeInfo> result;
@@ -110,6 +116,9 @@ QList<VolumeInfo> mountedVolumes()
     return result;
 }
 
+/*!
+    Returns a list of currently running processes.
+*/
 QList<ProcessInfo> runningProcesses()
 {
     QList<ProcessInfo> processes;
@@ -131,6 +140,9 @@ QList<ProcessInfo> runningProcesses()
     return processes;
 }
 
+/*!
+    \internal
+*/
 bool pathIsOnLocalDevice(const QString &path)
 {
     Q_UNUSED(path);
@@ -138,6 +150,9 @@ bool pathIsOnLocalDevice(const QString &path)
     return true;
 }
 
+/*!
+    \internal
+*/
 bool killProcess(const ProcessInfo &process, int msecs)
 {
     Q_UNUSED(process);

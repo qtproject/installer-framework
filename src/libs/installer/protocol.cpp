@@ -34,6 +34,26 @@ namespace QInstaller {
 typedef qint32 PackageSize;
 
 /*!
+    \inmodule QtInstallerFramework
+    \namespace Protocol
+    \brief Contains values related to the internal client-server connection protocol.
+*/
+
+/*!
+    \enum Protocol::Mode
+
+    \value Debug
+    \value Production
+*/
+
+/*!
+    \enum Protocol::StartAs
+
+    \value User
+    \value SuperUser
+*/
+
+/*!
     Write a packet containing \a command and \a data to \a device.
 
     \note Both client and server need to have the same endianness.

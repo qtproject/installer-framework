@@ -54,16 +54,16 @@ namespace QInstaller {
 */
 
 /*!
-    \fn PackageSource::PackageSource()
+    \fn QInstaller::PackageSource::PackageSource()
 
     Constructs an empty package source info object. The object's priority is set to -1. The url is
     initialized using a \l{default-constructed value}.
 */
 
 /*!
-    \fn PackageSource::PackageSource(const QUrl &u, int p)
+    \fn QInstaller::PackageSource::PackageSource(const QUrl &u, int p)
 
-    Constructs an package source info object. The object's url is set to \a u, while the priority
+    Constructs a package source info object. The object's url is set to \a u, while the priority
     is set to \a p.
 */
 

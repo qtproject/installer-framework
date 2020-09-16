@@ -92,8 +92,8 @@ int ComponentModelHelper::childCount() const
 }
 
 /*!
-    Returns the component at index position in the list. Index must be a valid position in
-    the list (i.e., index >= 0 && index < childCount()). Otherwise it returns 0.
+    Returns the component at \a index position in the list. Index must be a valid position in
+    the list, for example \c{index >= 0 && index < childCount()}. Otherwise it returns 0.
 */
 Component *ComponentModelHelper::childAt(int index) const
 {
@@ -123,7 +123,7 @@ QList<Component*> ComponentModelHelper::childItems() const
 }
 
 /*!
-    Determines if the installation status of the component can be changed. The default value is true.
+    Determines if the installation status of the component can be changed. The default return value is \c true.
 */
 bool ComponentModelHelper::isEnabled() const
 {
@@ -131,7 +131,7 @@ bool ComponentModelHelper::isEnabled() const
 }
 
 /*!
-    Enables or disables the ability to change the installation status of the components.
+    Enables or disables the ability to change the installation status of the components based on \a enabled.
 */
 void ComponentModelHelper::setEnabled(bool enabled)
 {
@@ -140,7 +140,7 @@ void ComponentModelHelper::setEnabled(bool enabled)
 
 /*!
     Returns whether the component is tri-state; that is, if it's checkable with three separate states.
-    The default value is false.
+    The default value is \c false.
 */
 bool ComponentModelHelper::isTristate() const
 {
@@ -148,7 +148,7 @@ bool ComponentModelHelper::isTristate() const
 }
 
 /*!
-    Sets whether the component is tri-state. If tri-state is true, the component is checkable with three
+    Sets whether the component is tri-state based on \a tristate . If tri-state is \c true, the component is checkable with three
     separate states; otherwise, the component is checkable with two states.
 
     Note: this also requires that the component is checkable. \sa isCheckable()
@@ -159,7 +159,7 @@ void ComponentModelHelper::setTristate(bool tristate)
 }
 
 /*!
-    Returns whether the component is user-checkable. The default value is true.
+    Returns whether the component is user-checkable. The default value is \c true.
 */
 bool ComponentModelHelper::isCheckable() const
 {
@@ -167,7 +167,7 @@ bool ComponentModelHelper::isCheckable() const
 }
 
 /*!
-    Sets whether the component is user-checkable. If checkable is true, the component can be checked by the
+    Sets whether the component is user-checkable. If \a checkable is \c true, the component can be checked by the
     user; otherwise, the user cannot check the component. The delegate will render a checkable component
     with a check box next to the component's text.
 */
@@ -182,7 +182,7 @@ void ComponentModelHelper::setCheckable(bool checkable)
 }
 
 /*!
-    Returns whether the component is selectable by the user. The default value is true.
+    Returns whether the component is selectable by the user. The default value is \c true.
 */
 bool ComponentModelHelper::isSelectable() const
 {
@@ -190,7 +190,7 @@ bool ComponentModelHelper::isSelectable() const
 }
 
 /*!
-    Sets whether the component is selectable. If selectable is true, the component can be selected by the
+    Sets whether the component is selectable. If \a selectable is \c true, the component can be selected by the
     user; otherwise, the user cannot select the component.
 */
 void ComponentModelHelper::setSelectable(bool selectable)
@@ -207,7 +207,7 @@ bool ComponentModelHelper::isExpandedByDefault() const
 }
 
 /*!
-    Sets whether the component is expanded by default. The default value is \c false.
+    Sets whether the component is expanded by default based on \a expandedByDefault. The default value is \c false.
 */
 void ComponentModelHelper::setExpandedByDefault(bool expandedByDefault)
 {
@@ -237,7 +237,7 @@ Qt::ItemFlags ComponentModelHelper::flags() const
 }
 
 /*!
-    Sets the item flags for the component to flags. The item flags determine how the user can interact with
+    Sets the item flags for the component to \a flags. The item flags determine how the user can interact with
     the component. This is often used to disable an component.
 */
 void ComponentModelHelper::setFlags(Qt::ItemFlags flags)
@@ -254,7 +254,7 @@ Qt::CheckState ComponentModelHelper::checkState() const
 }
 
 /*!
-    Sets the check state of the component to be state.
+    Sets the check state of the component to be \a state.
 */
 void ComponentModelHelper::setCheckState(Qt::CheckState state)
 {
@@ -262,7 +262,7 @@ void ComponentModelHelper::setCheckState(Qt::CheckState state)
 }
 
 /*!
-    Returns the component's data for the given role, or an invalid QVariant if there is no data for role.
+    Returns the component's data for the given \a role, or an invalid QVariant if there is no data for role.
 */
 QVariant ComponentModelHelper::data(int role) const
 {
@@ -270,7 +270,7 @@ QVariant ComponentModelHelper::data(int role) const
 }
 
 /*!
-    Sets the component's data for the given role to the specified value.
+    Sets the component's data for the given \a role to the specified \a value.
 */
 void ComponentModelHelper::setData(const QVariant &value, int role)
 {

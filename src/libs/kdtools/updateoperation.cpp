@@ -182,6 +182,11 @@ QStringList UpdateOperation::arguments() const
     return m_arguments;
 }
 
+/*!
+    Returns \c true if the argument count is within limits of \a minArgCount
+    and \a maxArgCount. \a argDescription contains information about the
+    expected form.
+*/
 bool UpdateOperation::checkArgumentCount(int minArgCount, int maxArgCount,
                                          const QString &argDescription)
 {
@@ -213,6 +218,9 @@ bool UpdateOperation::checkArgumentCount(int minArgCount, int maxArgCount,
     return true;
 }
 
+/*!
+    Returns \c true if the argument count is exactly \a argCount.
+*/
 bool UpdateOperation::checkArgumentCount(int argCount)
 {
     return checkArgumentCount(argCount, argCount);

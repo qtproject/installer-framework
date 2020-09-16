@@ -44,7 +44,7 @@ using namespace KDUpdater;
 
 
 /*!
-    Creates a new DownloadArchivesJob with \a parent.
+    Creates a new DownloadArchivesJob with parent \a core.
 */
 DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     : Job(core)
@@ -69,7 +69,7 @@ DownloadArchivesJob::~DownloadArchivesJob()
 }
 
 /*!
-    Sets the archives to download. The first value of each pair contains the file name to register
+    Sets the \a archives to download. The first value of each pair contains the file name to register
     the file in the installer's internal file system, the second one the source url.
 */
 void DownloadArchivesJob::setArchivesToDownload(const QList<QPair<QString, QString> > &archives)
@@ -175,7 +175,7 @@ void DownloadArchivesJob::fetchNextArchive()
 }
 
 /*!
-    Emits the global download progress during a single download in a lazy way (uses a timer to reduce to
+    Emits the global download \a progress during a single download in a lazy way (uses a timer to reduce to
     much processChanged).
 */
 void DownloadArchivesJob::emitDownloadProgress(double progress)
@@ -186,7 +186,7 @@ void DownloadArchivesJob::emitDownloadProgress(double progress)
 }
 
 /*!
-    This is used to reduce the progressChanged signals.
+    This is used to reduce the \c progressChanged signals for \a event.
 */
 void DownloadArchivesJob::timerEvent(QTimerEvent *event)
 {
