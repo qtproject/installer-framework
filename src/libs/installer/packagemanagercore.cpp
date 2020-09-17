@@ -2398,11 +2398,21 @@ bool PackageManagerCore::removeInstallationSilently()
 */
 bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
 {
-    // Check if there are processes running in the install if maintenancetool is in used.
     if (!isInstaller()) {
+        // Check if there are processes running in the install if maintenancetool is used.
         if (d->runningProcessesFound())
             throw Error(tr("Running processes found."));
         setPackageManager();
+
+        //Check that packages are not already installed
+        const LocalPackagesHash installedPackages = this->localInstalledPackages();
+        QStringList helperStrList;
+        helperStrList << components << installedPackages.keys();
+        helperStrList.removeDuplicates();
+        if (helperStrList.count() == installedPackages.count()) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components already installed.";
+            return true;
+        }
     }
 
     ComponentModel *model = defaultComponentModel();
