@@ -36,6 +36,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::TestRepository
+    \internal
+*/
+
 TestRepository::TestRepository(PackageManagerCore *parent)
     : Job(parent)
     , m_core(parent)

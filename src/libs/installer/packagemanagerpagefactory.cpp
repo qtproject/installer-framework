@@ -30,6 +30,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PackageManagerPageFactory
+    \internal
+*/
+
 PackageManagerPageFactory &PackageManagerPageFactory::instance()
 {
     static PackageManagerPageFactory factory;

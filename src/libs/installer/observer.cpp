@@ -31,6 +31,18 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FileTaskObserver
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Observer
+    \internal
+*/
+
 FileTaskObserver::FileTaskObserver(QCryptographicHash::Algorithm algorithm)
     : m_hash(algorithm)
 {

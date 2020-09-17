@@ -95,6 +95,12 @@ static QString backupFileName(const QString &templateName)
 // KDUpdater::CopyOperation
 ////////////////////////////////////////////////////////////////////////////
 
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::CopyOperation
+    \internal
+*/
+
 CopyOperation::CopyOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -237,6 +243,12 @@ bool CopyOperation::testOperation()
 // KDUpdater::MoveOperation
 ////////////////////////////////////////////////////////////////////////////
 
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::MoveOperation
+    \internal
+*/
+
 MoveOperation::MoveOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -340,6 +352,12 @@ bool MoveOperation::testOperation()
 // KDUpdater::DeleteOperation
 ////////////////////////////////////////////////////////////////////////////
 
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::DeleteOperation
+    \internal
+*/
+
 DeleteOperation::DeleteOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -412,6 +430,12 @@ QDomDocument DeleteOperation::toXml() const
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::MkdirOperation
 ////////////////////////////////////////////////////////////////////////////
+
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::MkdirOperation
+    \internal
+*/
 
 MkdirOperation::MkdirOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
@@ -511,6 +535,12 @@ bool KDUpdater::MkdirOperation::testOperation()
 // KDUpdater::RmdirOperation
 ////////////////////////////////////////////////////////////////////////////
 
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::RmdirOperation
+    \internal
+*/
+
 RmdirOperation::RmdirOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
 {
@@ -574,6 +604,12 @@ bool RmdirOperation::testOperation()
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::AppendFileOperation
 ////////////////////////////////////////////////////////////////////////////
+
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::AppendFileOperation
+    \internal
+*/
 
 AppendFileOperation::AppendFileOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)
@@ -681,6 +717,12 @@ bool AppendFileOperation::testOperation()
 ////////////////////////////////////////////////////////////////////////////
 // KDUpdater::PrependFileOperation
 ////////////////////////////////////////////////////////////////////////////
+
+/*!
+    \inmodule KDUpdater
+    \class KDUpdater::PrependFileOperation
+    \internal
+*/
 
 PrependFileOperation::PrependFileOperation(QInstaller::PackageManagerCore *core)
     : UpdateOperation(core)

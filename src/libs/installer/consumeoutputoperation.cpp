@@ -38,6 +38,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ConsumeOutputOperation
+    \internal
+*/
+
 ConsumeOutputOperation::ConsumeOutputOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

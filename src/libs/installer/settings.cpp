@@ -44,6 +44,12 @@
 using namespace QInstaller;
 
 /*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Settings
+    \internal
+*/
+
+/*!
     \typedef QInstaller::RepoHash
 
     Synonym for QHash<QString, QPair<Repository, Repository> >. Describes a repository

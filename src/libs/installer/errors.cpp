@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,46 +25,11 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "serverauthenticationdialog.h"
 
-#include "downloadfiletask.h"
-#include "ui_serverauthenticationdialog.h"
-
-#include <QAuthenticator>
-
-namespace QInstaller {
+#include "errors.h"
 
 /*!
     \inmodule QtInstallerFramework
-    \class QInstaller::ServerAuthenticationDialog
+    \class QInstaller::Error
     \internal
 */
-
-ServerAuthenticationDialog::ServerAuthenticationDialog(const QString &m, const FileTaskItem &item)
-    : ui(new Ui::ServerAuthenticationDialog)
-{
-    ui->setupUi(this);
-    ui->siteDescription->setText(m);
-    setWindowFlags(windowFlags() &~Qt::WindowContextHelpButtonHint);
-
-    const QAuthenticator auth = item.value(TaskRole::Authenticator).value<QAuthenticator>();
-    ui->userEdit->setText(auth.user());
-    ui->passwordEdit->setText(auth.password());
-}
-
-ServerAuthenticationDialog::~ServerAuthenticationDialog()
-{
-    delete ui;
-}
-
-QString ServerAuthenticationDialog::user() const
-{
-    return ui->userEdit->text();
-}
-
-QString ServerAuthenticationDialog::password() const
-{
-    return ui->passwordEdit->text();
-}
-
-} // namespace QInstaller

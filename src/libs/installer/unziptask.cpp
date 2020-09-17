@@ -47,6 +47,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::UnzipTask
+    \internal
+*/
+
 class ArchiveExtractCallback : public IArchiveExtractCallback, public CMyUnknownImp
 {
 public:

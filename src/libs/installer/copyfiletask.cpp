@@ -34,6 +34,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CopyFileTask
+    \internal
+*/
+
 CopyFileTask::CopyFileTask(const FileTaskItem &item)
     : AbstractFileTask(item)
 {

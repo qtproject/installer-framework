@@ -30,6 +30,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::MinimumProgressOperation
+    \internal
+*/
+
 MinimumProgressOperation::MinimumProgressOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

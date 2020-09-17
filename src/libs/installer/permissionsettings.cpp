@@ -31,6 +31,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PermissionSettings
+    \internal
+*/
+
 PermissionSettings::~PermissionSettings()
 {
     if (!fileName().isEmpty()) {

@@ -37,6 +37,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::InstallIconsOperation
+    \internal
+*/
+
 QString InstallIconsOperation::targetDirectory()
 {
     // we're not searching for the first time, let's re-use the old value

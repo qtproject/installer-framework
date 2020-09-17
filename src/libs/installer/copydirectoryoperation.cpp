@@ -34,6 +34,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CopyDirectoryOperation
+    \internal
+*/
+
 class AutoPush
 {
 public:

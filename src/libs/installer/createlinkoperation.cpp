@@ -34,6 +34,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateLinkOperation
+    \internal
+*/
+
 CreateLinkOperation::CreateLinkOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

@@ -33,6 +33,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::SimpleMoveFileOperation
+    \internal
+*/
+
 SimpleMoveFileOperation::SimpleMoveFileOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

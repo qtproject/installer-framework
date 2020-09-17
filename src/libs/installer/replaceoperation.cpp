@@ -35,6 +35,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ReplaceOperation
+    \internal
+*/
+
 ReplaceOperation::ReplaceOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

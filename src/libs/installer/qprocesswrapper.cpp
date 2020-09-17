@@ -35,6 +35,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::QProcessWrapper
+    \internal
+*/
+
 QProcessWrapper::QProcessWrapper(QObject *parent)
     : RemoteObject(QLatin1String(Protocol::QProcess), parent)
 {

@@ -41,6 +41,30 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::DownloadFileTask
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Downloader
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::AuthenticationRequiredException
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::Data
+    \internal
+*/
+
 AuthenticationRequiredException::AuthenticationRequiredException(Type type, const QString &message)
     : TaskException(message)
     , m_type(type)

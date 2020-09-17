@@ -50,6 +50,11 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateLocalRepositoryOperation
+    \internal
+*/
 
 // -- AutoHelper
 

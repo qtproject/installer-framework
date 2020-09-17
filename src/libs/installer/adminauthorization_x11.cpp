@@ -66,6 +66,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::AdminAuthorization
+    \internal
+*/
+
 static QString getPassword(QWidget *parent)
 {
     if (qobject_cast<QApplication*> (qApp) != 0) {

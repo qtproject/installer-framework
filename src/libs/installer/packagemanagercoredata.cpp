@@ -44,6 +44,12 @@
 namespace QInstaller
 {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PackageManagerCoreData
+    \internal
+*/
+
 PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables)
 {
     setDynamicPredefinedVariables();

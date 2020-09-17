@@ -41,6 +41,18 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteServerConnection
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::QProcessSignalReceiver
+    \internal
+*/
+
 RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const QString &key,
                                                QObject *parent)
     : QThread(parent)

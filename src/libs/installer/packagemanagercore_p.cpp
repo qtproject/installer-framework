@@ -79,6 +79,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PackageManagerCorePrivate
+    \internal
+*/
+
 class OperationTracer
 {
 public:

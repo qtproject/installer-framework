@@ -41,6 +41,12 @@
 using namespace QInstaller;
 using namespace KDUpdater;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::EnvironmentVariableOperation
+    \internal
+*/
+
 EnvironmentVariableOperation::EnvironmentVariableOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

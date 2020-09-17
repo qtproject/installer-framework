@@ -35,6 +35,11 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ComponentPrivate
+    \internal
+*/
 
 // -- ComponentPrivate
 

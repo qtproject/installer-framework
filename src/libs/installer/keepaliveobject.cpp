@@ -34,6 +34,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::KeepAliveObject
+    \internal
+*/
+
 KeepAliveObject::KeepAliveObject()
     : m_timer(nullptr)
     , m_socket(nullptr)

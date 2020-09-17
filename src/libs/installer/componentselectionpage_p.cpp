@@ -52,6 +52,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ComponentSelectionPagePrivate
+    \internal
+*/
+
 ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core)
         : q(qq)
         , m_core(core)

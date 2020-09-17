@@ -59,6 +59,12 @@ using namespace QInstaller;
            Default permissions for an executable file.
 */
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::TempDirDeleter
+    \internal
+*/
+
 // -- TempDirDeleter
 
 TempDirDeleter::TempDirDeleter(const QString &path)

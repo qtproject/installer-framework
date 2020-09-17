@@ -38,6 +38,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateDesktopEntryOperation
+    \internal
+*/
+
 QString CreateDesktopEntryOperation::absoluteFileName()
 {
     const QString filename = arguments().first();

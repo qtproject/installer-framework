@@ -37,6 +37,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::LicenseOperation
+    \internal
+*/
+
 LicenseOperation::LicenseOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

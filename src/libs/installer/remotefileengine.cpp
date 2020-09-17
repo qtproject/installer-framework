@@ -35,6 +35,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteFileEngineHandler
+    \internal
+*/
+
 // -- RemoteFileEngineHandler
 
 QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) const
@@ -112,6 +118,7 @@ QString RemoteFileEngineIterator::currentFileName() const
 /*!
     \class QInstaller::RemoteFileEngine
     \inmodule QtInstallerFramework
+    \internal
 */
 RemoteFileEngine::RemoteFileEngine()
     : RemoteObject(QLatin1String(Protocol::QAbstractFileEngine))

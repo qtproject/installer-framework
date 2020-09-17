@@ -39,6 +39,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ElevatedExecuteOperation
+    \internal
+*/
+
 class ElevatedExecuteOperation::Private
 {
 public:

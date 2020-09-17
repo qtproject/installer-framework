@@ -34,6 +34,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RegisterFileTypeOperation
+    \internal
+*/
+
 #ifdef Q_OS_WIN
 #include <shlobj.h>
 

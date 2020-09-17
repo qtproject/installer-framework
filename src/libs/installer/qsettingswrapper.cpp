@@ -33,6 +33,11 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::QSettingsWrapper
+    \internal
+*/
 
 // -- QSettingsWrapper::Private
 

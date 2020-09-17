@@ -36,6 +36,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::UninstallerCalculator
+    \internal
+*/
+
 UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents)
     : m_installedComponents(installedComponents)
 {

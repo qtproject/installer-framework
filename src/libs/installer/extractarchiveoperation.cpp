@@ -39,6 +39,12 @@
 namespace QInstaller {
 
 /*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ExtractArchiveOperation
+    \internal
+*/
+
+/*!
     \typedef QInstaller::Backup
 
     Synonym for QPair<QString, QString>. Contains a pair
@@ -49,6 +55,12 @@ namespace QInstaller {
     \typedef QInstaller::BackupFiles
 
     Synonym for QVector<Backup>.
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::WorkerThread
+    \internal
 */
 
 ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)

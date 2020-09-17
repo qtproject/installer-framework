@@ -37,6 +37,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::InstallerCalculator
+    \internal
+*/
+
 InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents)
     : m_allComponents(allComponents)
 {

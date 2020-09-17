@@ -52,6 +52,24 @@
 #endif
 
 /*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PlainVerboseWriterOutput
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::VerboseWriterOutput
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::VerboseWriter
+    \internal
+*/
+
+/*!
     \internal
 */
 void QInstaller::uiDetachedWait(int ms)

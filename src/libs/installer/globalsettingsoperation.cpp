@@ -31,6 +31,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::GlobalSettingsOperation
+    \internal
+*/
+
 GlobalSettingsOperation::GlobalSettingsOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

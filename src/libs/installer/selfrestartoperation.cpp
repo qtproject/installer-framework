@@ -33,6 +33,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::SelfRestartOperation
+    \internal
+*/
+
 SelfRestartOperation::SelfRestartOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

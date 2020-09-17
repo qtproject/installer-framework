@@ -39,6 +39,12 @@
 
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::CreateShortcutOperation
+    \internal
+*/
+
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
 #include <shlobj.h>

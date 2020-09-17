@@ -35,6 +35,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ComponentChecker
+    \internal
+*/
+
 QStringList ComponentChecker::checkComponent(Component *component)
 {
     QStringList checkResult;

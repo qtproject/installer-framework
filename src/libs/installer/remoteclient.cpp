@@ -33,6 +33,18 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteClient
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteClientPrivate
+    \internal
+*/
+
 RemoteClient *RemoteClient::s_instance = nullptr;
 
 RemoteClient::RemoteClient()

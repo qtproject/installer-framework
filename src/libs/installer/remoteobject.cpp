@@ -37,6 +37,12 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteObject
+    \internal
+*/
+
 RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
     : QObject(parent)
     , dummy(nullptr)

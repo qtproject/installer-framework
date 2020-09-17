@@ -34,6 +34,12 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::FakeStopProcessForUpdateOperation
+    \internal
+*/
+
 FakeStopProcessForUpdateOperation::FakeStopProcessForUpdateOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {

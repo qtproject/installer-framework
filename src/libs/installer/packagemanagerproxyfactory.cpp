@@ -35,6 +35,18 @@
 
 namespace QInstaller {
 
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::PackageManagerProxyFactory
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::ProxyCredential
+    \internal
+*/
+
 PackageManagerProxyFactory::PackageManagerProxyFactory(const PackageManagerCore *const core)
     : m_core(core)
 {

@@ -34,6 +34,18 @@
 namespace QInstaller {
 
 /*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::LocalServer
+    \internal
+*/
+
+/*!
+    \inmodule QtInstallerFramework
+    \class QInstaller::RemoteServerPrivate
+    \internal
+*/
+
+/*!
     Constructs an remote server object with \a parent.
 */
 RemoteServer::RemoteServer(QObject *parent)
