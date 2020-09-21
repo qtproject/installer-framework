@@ -2345,6 +2345,11 @@ PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
 
+    if (components.isEmpty()) {
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No components selected for uninstallation.";
+        return PackageManagerCore::Success;
+    }
+
     ComponentModel *model = defaultComponentModel();
     fetchLocalPackagesTree();
 
