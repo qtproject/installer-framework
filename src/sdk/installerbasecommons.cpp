@@ -81,12 +81,11 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
         setPage(id, page);
     }
 
-    IntroductionPage *intro = new IntroductionPage(core);
-    connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
+    connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
             this, &MaintenanceGui::updateRestartPage);
 
     if (!core->isOfflineOnly() || validRepositoriesAvailable()) {
-        setPage(PackageManagerCore::Introduction, intro);
+        setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
         setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
         setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
     } else {
