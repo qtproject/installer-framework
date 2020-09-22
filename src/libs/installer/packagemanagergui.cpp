@@ -340,12 +340,10 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         m_pageListWidget->setFrameShape(QFrame::NoFrame);
         m_pageListWidget->setMinimumWidth(200);
         // The widget should be view-only but we do not want it to be grayed out,
-        // so instead of calling setEnabled(false), do not accept keyboard focus
-        // and disable delivery of mouse events.
+        // so instead of calling setEnabled(false), do not accept focus.
         m_pageListWidget->setFocusPolicy(Qt::NoFocus);
-        m_pageListWidget->setAttribute(Qt::WA_TransparentForMouseEvents);
         m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
-        m_pageListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        m_pageListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 
         QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
 
@@ -467,6 +465,8 @@ void PackageManagerGui::updatePageListWidget()
             QFont currentItemFont = item->font();
             currentItemFont.setBold(true);
             item->setFont(currentItemFont);
+            // Current item should be always visible on the list
+            m_pageListWidget->scrollToItem(item);
         } else if (!visitedPages().contains(id)) {
             item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
         }
