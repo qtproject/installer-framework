@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 #define QINSTALLER_UTILS_H
 
 #include "installer_global.h"
+#include "commandlineparser.h"
 
 #include <QtCore/QBuffer>
 #include <QtCore/QCryptographicHash>
@@ -65,6 +66,8 @@ namespace QInstaller {
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
     uint INSTALLER_EXPORT verboseLevel();
+
+    QStringList INSTALLER_EXPORT checkMutualOptions(CommandLineParser &parser, const QStringList &options);
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

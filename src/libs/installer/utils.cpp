@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -180,6 +180,23 @@ bool QInstaller::isVerbose()
 uint QInstaller::verboseLevel()
 {
     return verbLevel;
+}
+
+/*!
+    Returns a list of mutually exclusive options passed to the \a parser, if there is
+    at least one mutually exclusive pair of options set. Otherwise returns an empty
+    \c QStringList. The options considered mutual are provided with \a options.
+*/
+QStringList QInstaller::checkMutualOptions(CommandLineParser &parser, const QStringList &options)
+{
+    QStringList mutual;
+    foreach (const QString &option, options) {
+        if (parser.isSet(option))
+            mutual << option;
+    }
+    return mutual.count() > 1
+        ? mutual
+        : QStringList();
 }
 
 /*!
@@ -512,5 +529,3 @@ QString QInstaller::windowsErrorString(int errorCode)
 }
 
 #endif
-
-

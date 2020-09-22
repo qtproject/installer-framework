@@ -85,17 +85,29 @@ int main(int argc, char *argv[])
     QString sanityMessage;
 
     QStringList mutually;
-    if (parser.isSet(CommandLineOptions::scStartUpdaterLong))
-        mutually << CommandLineOptions::scStartUpdaterLong;
-    if (parser.isSet(CommandLineOptions::scStartPackageManagerLong))
-        mutually << CommandLineOptions::scStartPackageManagerLong;
-    if (parser.isSet(CommandLineOptions::scStartUninstallerLong))
-        mutually << CommandLineOptions::scStartUninstallerLong;
-    // IFW 3.x.x style --updater option support provided for backward compatibility
-    if (parser.isSet(CommandLineOptions::scDeprecatedUpdater))
-        mutually << CommandLineOptions::scDeprecatedUpdater;
+    mutually = QInstaller::checkMutualOptions(parser, QStringList()
+        << CommandLineOptions::scStartUpdaterLong
+        << CommandLineOptions::scStartPackageManagerLong
+        << CommandLineOptions::scStartUninstallerLong
+        << CommandLineOptions::scDeprecatedUpdater);
 
-    if (mutually.count() > 1) {
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scSystemProxyLong
+            << CommandLineOptions::scNoProxyLong);
+    }
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scAcceptMessageQuery
+            << CommandLineOptions::scRejectMessageQuery
+            << CommandLineOptions::scMessageDefaultAnswer);
+    }
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scStartServerLong
+            << CommandLineOptions::scStartClientLong);
+    }
+    if (!mutually.isEmpty()) {
         sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
             .arg(mutually.join(QLatin1String(", ")));
         sanityCheck = false;
