@@ -2314,10 +2314,12 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
         if (!d->calculateComponentsAndRun())
             return false;
 
-        if (essentialUpdatesFound)
-            qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully.";
-        else
+        if (essentialUpdatesFound) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully."
+                " Please restart maintenancetool to update other components.";
+        } else {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
+        }
     }
     return true;
 }
