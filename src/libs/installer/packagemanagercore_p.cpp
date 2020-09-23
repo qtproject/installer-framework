@@ -631,6 +631,12 @@ bool PackageManagerCorePrivate::isOfflineOnly() const
         return false;
 
     QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+
+    QVariant v = m_data.value(QLatin1String("offlineOnly"));
+    if (v.toString().toUpper() == QLatin1String("TRUE")) {
+      return true;
+    }
+
     return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
 }
 
