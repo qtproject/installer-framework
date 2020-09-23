@@ -127,7 +127,8 @@ private slots:
         core->commitSessionOperations();
         // We cannot check the file contents here as it will be deleted on
         // undo Extract, but at least check that the uninstallation succeeds.
-        QVERIFY(core->uninstallComponentsSilently(QStringList() << "A"));
+        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently
+                 (QStringList()<< "A"));
 
         QDir dir(installDir);
         QVERIFY(dir.removeRecursively());

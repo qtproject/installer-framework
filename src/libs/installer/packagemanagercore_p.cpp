@@ -1820,7 +1820,10 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
         if (adminRightsGained)
             m_core->dropAdminRights();
-        setStatus(PackageManagerCore::Success);
+        if (m_foundEssentialUpdate)
+            setStatus(PackageManagerCore::EssentialUpdated);
+        else
+            setStatus(PackageManagerCore::Success);
         emit installationFinished();
     } catch (const Error &err) {
         if (m_core->status() != PackageManagerCore::Canceled) {

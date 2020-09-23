@@ -302,7 +302,8 @@ private slots:
         const QRegularExpression re(warningMessage);
         QTest::ignoreMessage(QtWarningMsg, re);
         QTest::ignoreMessage(QtDebugMsg, "No updates available.");
-        core.updateComponentsSilently(QStringList());
+
+        QCOMPARE(PackageManagerCore::Failure, core.updateComponentsSilently(QStringList()));
         QVERIFY(QDir().rmdir(testDirectory));
     }
 

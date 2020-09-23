@@ -71,10 +71,11 @@ public:
     enum Status {
         Success = EXIT_SUCCESS,
         Failure = EXIT_FAILURE,
-        Running,
-        Canceled,
-        Unfinished,
-        ForceUpdate
+        Running = 2,
+        Canceled = 3,
+        Unfinished = 4,
+        ForceUpdate = 5,
+        EssentialUpdated = 6
     };
     Status status() const;
     QString error() const;
@@ -234,11 +235,11 @@ public:
     ComponentModel *updaterComponentModel() const;
     void listInstalledPackages();
     void listAvailablePackages(const QString &regexp);
-    bool updateComponentsSilently(const QStringList &componentsToUpdate);
-    bool installSelectedComponentsSilently(const QStringList& components);
-    bool installDefaultComponentsSilently();
-    bool uninstallComponentsSilently(const QStringList& components);
-    bool removeInstallationSilently();
+    PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
+    PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
+    PackageManagerCore::Status installDefaultComponentsSilently();
+    PackageManagerCore::Status uninstallComponentsSilently(const QStringList& components);
+    PackageManagerCore::Status removeInstallationSilently();
 
     // convenience
     Q_INVOKABLE void setInstaller();

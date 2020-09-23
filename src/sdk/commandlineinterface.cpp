@@ -159,8 +159,7 @@ int CommandLineInterface::updatePackages()
     if (!checkLicense())
         return EXIT_FAILURE;
     try {
-        return m_core->updateComponentsSilently(m_positionalArguments)
-            ? EXIT_SUCCESS : EXIT_FAILURE;
+        return m_core->updateComponentsSilently(m_positionalArguments);
     } catch (const QInstaller::Error &err) {
         qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
         return EXIT_FAILURE;
@@ -179,12 +178,10 @@ int CommandLineInterface::installPackages()
                 return EXIT_FAILURE;
             }
             // No packages provided, install default components
-            return m_core->installDefaultComponentsSilently()
-                ? EXIT_SUCCESS : EXIT_FAILURE;
+            return m_core->installDefaultComponentsSilently();
         }
         // Normal installation
-        return m_core->installSelectedComponentsSilently(m_positionalArguments)
-            ? EXIT_SUCCESS : EXIT_FAILURE;
+        return m_core->installSelectedComponentsSilently(m_positionalArguments);
     } catch (const QInstaller::Error &err) {
         qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
         return EXIT_FAILURE;
@@ -201,8 +198,7 @@ int CommandLineInterface::uninstallPackages()
     }
     m_core->setPackageManager();
     try {
-        return m_core->uninstallComponentsSilently(m_positionalArguments)
-            ? EXIT_SUCCESS : EXIT_FAILURE;
+        return m_core->uninstallComponentsSilently(m_positionalArguments);
     } catch (const QInstaller::Error &err) {
         qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
         return EXIT_FAILURE;
@@ -219,7 +215,7 @@ int CommandLineInterface::removeInstallation()
     }
     m_core->setUninstaller();
     try {
-        return m_core->removeInstallationSilently() ? EXIT_SUCCESS : EXIT_FAILURE;
+        return m_core->removeInstallationSilently();
     } catch (const QInstaller::Error &err) {
         qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
         return EXIT_FAILURE;

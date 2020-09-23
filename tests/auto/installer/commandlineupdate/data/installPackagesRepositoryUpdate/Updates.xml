@@ -12,6 +12,7 @@
   <UpdateFile CompressedSize="297" UncompressedSize="99" OS="Any"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
   <SHA1>43c8fcc544ea6d35fe5180a50d4764dcf9fd7473</SHA1>
+  <Essential>true</Essential>
  </PackageUpdate>
  <PackageUpdate>
   <Name>componentB</Name>

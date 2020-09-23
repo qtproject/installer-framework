@@ -135,6 +135,9 @@ using namespace QInstaller;
     \value  Unfinished
             Installation was not completed.
     \value  ForceUpdate
+            Installation has to be updated.
+    \value  EssentialUpdated
+            Installation essential components were updated.
 */
 
 /*!
@@ -2255,10 +2258,9 @@ void PackageManagerCore::listInstalledPackages()
 /*!
     Updates the selected components \a componentsToUpdate without GUI.
     If essential components are found, then only those will be updated.
-    Returns \c true if components are updated successfully or there are
-    no updates to perform, otherwise returns \c false.
+    Returns PackageManagerCore installation status.
 */
-bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsToUpdate)
+PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QStringList &componentsToUpdate)
 {
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
@@ -2303,7 +2305,7 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             if (userSelectedComponents && componentsToBeUpdated.isEmpty()) {
                 qCDebug(QInstaller::lcInstallerInstallLog)
                     << "No updates available for selected components.";
-                return true;
+                return PackageManagerCore::Success;
             }
             foreach (Component *componentToUpdate, componentsToBeUpdated) {
                 const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->name());
@@ -2312,7 +2314,7 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
         }
 
         if (!d->calculateComponentsAndRun())
-            return false;
+            return status();
 
         if (essentialUpdatesFound) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Essential components updated successfully."
@@ -2321,7 +2323,7 @@ bool PackageManagerCore::updateComponentsSilently(const QStringList &componentsT
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components updated successfully.";
         }
     }
-    return true;
+    return status();
 }
 
 /*!
@@ -2336,10 +2338,9 @@ void PackageManagerCore::commitSessionOperations()
 
 /*!
     Uninstalls the selected components \a components without GUI.
-    Returns \c true if components are uninstalled successfully or
-    there are no components to uninstall, otherwise returns \c false.
+    Returns PackageManagerCore installation status.
 */
-bool PackageManagerCore::uninstallComponentsSilently(const QStringList& components)
+PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const QStringList& components)
 {
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
@@ -2364,20 +2365,17 @@ bool PackageManagerCore::uninstallComponentsSilently(const QStringList& componen
     }
 
     if (uninstallComponentFound) {
-        if (!d->calculateComponentsAndRun())
-            return false;
-
-        qCDebug(QInstaller::lcInstallerInstallLog) << "Components uninstalled successfully";
+        if (d->calculateComponentsAndRun())
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components uninstalled successfully";
     }
-    return true;
+    return status();
 }
 
 /*!
     Uninstalls all installed components without GUI and removes
-    the program directory. Returns \c true if components are
-    uninstalled successfully, otherwise returns \c false.
+    the program directory. Returns PackageManagerCore installation status.
 */
-bool PackageManagerCore::removeInstallationSilently()
+PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
 {
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
@@ -2385,20 +2383,22 @@ bool PackageManagerCore::removeInstallationSilently()
     qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
     if (!(d->m_autoConfirmCommand || d->askUserConfirmCommand())) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "Uninstallation aborted.";
-        return false;
+        return status();
     }
     setCompleteUninstallation(true);
-    return run();
+    if (run())
+        return PackageManagerCore::Success;
+    else
+        return PackageManagerCore::Failure;
 }
 
 /*!
     Installs the selected components \a components without displaying a user
     interface. Virtual components cannot be installed unless made visible with
     --show-virtual-components. AutoDependOn nor non-checkable components cannot
-    be installed directly. Returns \c true if components are installed or there
-    is nothing to install, otherwise returns \c false.
+    be installed directly. Returns PackageManagerCore installation status.
 */
-bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
+PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
 {
     if (!isInstaller()) {
         // Check if there are processes running in the install if maintenancetool is used.
@@ -2413,12 +2413,13 @@ bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
         helperStrList.removeDuplicates();
         if (helperStrList.count() == installedPackages.count()) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components already installed.";
-            return true;
+            return PackageManagerCore::Success;
         }
     }
 
     ComponentModel *model = defaultComponentModel();
-    fetchRemotePackagesTree();
+    if (!fetchRemotePackagesTree())
+        return status();
 
     bool installComponentsFound = false;
     foreach (const QString &name, components){
@@ -2447,22 +2448,19 @@ bool PackageManagerCore::installSelectedComponentsSilently(const QStringList& co
         }
     }
     if (installComponentsFound) {
-        if (!d->calculateComponentsAndRun())
-            return false;
-
-        qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
+        if (d->calculateComponentsAndRun())
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
     }
-    return true;
+    return status();
 }
 
 /*!
     Installs components that are checked by default, i.e. those that are set
     with <Default> or <ForcedInstallation> and their respective dependencies
     without GUI.
-    Returns \c true if default components are found and the maintenance tool
-    needs to be written, otherwise returns \c false.
+    Returns PackageManagerCore installation status.
 */
-bool PackageManagerCore::installDefaultComponentsSilently()
+PackageManagerCore::Status PackageManagerCore::installDefaultComponentsSilently()
 {
     d->m_defaultInstall = true;
     ComponentModel *model = defaultComponentModel();
@@ -2472,12 +2470,11 @@ bool PackageManagerCore::installDefaultComponentsSilently()
         // There are components that are checked by default, we should install them
         if (d->calculateComponentsAndRun()) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully.";
-            return true;
         }
     } else {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No components available for default installation.";
     }
-    return false;
+    return status();
 }
 
 /*!

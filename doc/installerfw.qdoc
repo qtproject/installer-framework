@@ -159,6 +159,10 @@
     separated by space. The \c <key=value> list is used to set internal key-value
     pairs by the framework.
 
+    Installer will return an exit code after it is executed. Exit code can be used
+    to determine whether the installation was successful, if the installation has
+    an mandatory update etc. See \c PackagemanagerCore::Status.
+
     \section1 Summary of Options
 
     Options marked with \c CLI are only available when running in headless mode,
