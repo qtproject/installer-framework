@@ -182,7 +182,8 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
     if (restart) {
         //Restart with same command line arguments as first executable
         QStringList commandLineArguments = QCoreApplication::arguments();
-        batch <<  QString::fromLatin1("tmp.exec \"%1 --updater").arg(arguments[2]);
+        batch <<  QString::fromLatin1("tmp.exec \"%1 --%2")
+                  .arg(arguments[2]).arg(CommandLineOptions::scStartUpdaterLong);
         //Skip the first argument as that is executable itself
         for (int i = 1; i < commandLineArguments.count(); i++) {
             batch << QString::fromLatin1(" %1").arg(commandLineArguments.at(i));
