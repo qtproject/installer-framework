@@ -942,6 +942,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
     if (processList.isEmpty())
         return;
 
+    uint retryCount = 5;
     while (true) {
         const QStringList processes = checkRunningProcessesFromList(processList);
         if (processes.isEmpty())
@@ -959,6 +960,12 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
             m_core->setCanceled();
             throw Error(tr("Installation canceled by user"));
         }
+        if (!m_core->isCommandLineInstance())
+            continue;
+
+        // Do not allow infinite retries with cli instance
+        if (--retryCount == 0)
+            throw Error(tr("Retry count exceeded"));
     }
 }
 
