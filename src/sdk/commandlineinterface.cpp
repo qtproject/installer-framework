@@ -113,6 +113,7 @@ int CommandLineInterface::checkUpdates()
         update.setAttribute(QLatin1String("name"), component->value(QInstaller::scDisplayName));
         update.setAttribute(QLatin1String("version"), component->value(QInstaller::scVersion));
         update.setAttribute(QLatin1String("size"), component->value(QInstaller::scUncompressedSize));
+        update.setAttribute(QLatin1String("id"), component->value(QInstaller::scName));
         root.appendChild(update);
     }
 
