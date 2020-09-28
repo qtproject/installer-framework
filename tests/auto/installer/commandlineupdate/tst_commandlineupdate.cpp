@@ -86,11 +86,24 @@ private slots:
         QCOMPARE(PackageManagerCore::EssentialUpdated, core->updateComponentsSilently(QStringList()));
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        //Because of bug QTIFW-1970 componentD got installed too
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                           << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                           << "installcontentD_update.txt");
+                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentA", "1.0.0content.txt");
+        //As we are using the same core in tests, clean the essentalupdate value
+        core->setFoundEssentialUpdate(false);
+    }
+
+    void testUpdateEssentialWithAutodependOnSilently()
+    {
+        setRepository(":///data/repositoryWithDependencyToEssential");
+        QCOMPARE(PackageManagerCore::EssentialUpdated, core->updateComponentsSilently(QStringList()));
+
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
+                << "installContentAutoDependOnA.txt");
+
         //As we are using the same core in tests, clean the essentalupdate value
         core->setFoundEssentialUpdate(false);
     }
@@ -101,13 +114,15 @@ private slots:
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << "componentB"));
         QCOMPARE(PackageManagerCore::Success, core->status());
-        //Because of bug QTIFW-1970 componentD got uninstalled. It should be installed now
-        //as its dependencies are installed.
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "2.0.0content.txt");
+
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
                            << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                           << "installcontentB.txt");
+                           << "installcontentB.txt" << "installcontentD.txt"
+                           << "installContentAutoDependOnA.txt");
         core->commitSessionOperations();
 
         setRepository(":///data/installPackagesRepositoryUpdate");
@@ -115,16 +130,18 @@ private slots:
                 << "componentB"));
         // componentD is autodependent and cannot be deselected
         // componentE is a forced component and thus will be updated
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "2.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "2.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
 
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentD", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentE", "1.0.0content.txt");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentA_update.txt"
                            << "installcontentE_update.txt" << "installcontentG.txt"
-                           << "installcontentB_update.txt" << "installcontentD_update.txt");
+                           << "installcontentB_update.txt" << "installcontentD_update.txt"
+                           << "installContentAutoDependOnA.txt");
     }
 
     void testUpdateNoUpdatesForSelectedPackage()

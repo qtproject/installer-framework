@@ -1295,12 +1295,15 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     // will be installed
     if (packageManagerCore()->foundEssentialUpdate()) {
         const QSet<QString> autoDependOnSet = autoDependOnList.toSet();
-        if (autoDependOnSet.intersects(componentsToInstall)) {
-            return true;
+        if (componentsToInstall.contains(autoDependOnSet)) {
+            foreach (const QString &autoDep, autoDependOnSet) {
+                Component *component = packageManagerCore()->componentByName(autoDep);
+                if (component->value(scEssential, scFalse).toLower() == scTrue)
+                    return true;
+            }
         }
         return false;
     }
-
     QSet<QString> components = componentsToInstall;
     const QStringList installedPackages = d->m_core->localInstalledPackages().keys();
     foreach (const QString &name, installedPackages)

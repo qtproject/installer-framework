@@ -1,0 +1,26 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>3.0.0</Version>
+  <ReleaseDate>2015-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <Essential>true</Essential>
+  <UpdateFile UncompressedSize="99" OS="Any" CompressedSize="297"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentAutoDependOnA</Name>
+  <DisplayName>Component, autodepends on A</DisplayName>
+  <Description>Component, autodepends on A</Description>
+  <Version>1.0</Version>
+  <ReleaseDate>2018-03-14</ReleaseDate>
+  <AutoDependOn>componentA</AutoDependOn>
+  <UpdateFile UncompressedSize="99" OS="Any" CompressedSize="305"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+</Updates>

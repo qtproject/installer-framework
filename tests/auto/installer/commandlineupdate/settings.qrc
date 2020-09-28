@@ -31,5 +31,8 @@
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/repositoryWithDependencyToEssential/Updates.xml</file>
+        <file>data/repositoryWithDependencyToEssential/componentAutoDependOnA/1.0content.7z</file>
+        <file>data/repositoryWithDependencyToEssential/componentA/3.0.0content.7z</file>
     </qresource>
 </RCC>
