@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     }
 #endif
     // increase maximum numbers of file descriptors
-#if defined (Q_OS_MACOS)
+#if defined(Q_OS_MACOS)
     QCoreApplication::setSetuidAllowed(true);
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
