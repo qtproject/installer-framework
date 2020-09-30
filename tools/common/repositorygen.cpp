@@ -682,13 +682,10 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata)
 {
     QDomDocument doc;
-    QDomElement root;
     // use existing Updates.xml, if any
     QFile existingUpdatesXml(QFileInfo(QDir(repoDir), QLatin1String("Updates.xml")).absoluteFilePath());
     if (!existingUpdatesXml.open(QIODevice::ReadOnly) || !doc.setContent(&existingUpdatesXml)) {
         qDebug() << "Cannot find Updates.xml";
-    } else {
-        root = doc.documentElement();
     }
     existingUpdatesXml.close();
 
@@ -726,7 +723,6 @@ QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const Q
     // Compress all metadata from repository to one single 7z
     const QString metadataFilename = QDateTime::currentDateTime().
             toString(QLatin1String("yyyy-MM-dd-hhmm")) + QLatin1String("_meta.7z");
-    QDateTime dateTime = QDateTime::currentDateTime();
     const QString tmpTarget = repoDir + QDir::separator() + metadataFilename;
     Lib7z::createArchive(tmpTarget, absPaths, Lib7z::TmpFile::No);
 

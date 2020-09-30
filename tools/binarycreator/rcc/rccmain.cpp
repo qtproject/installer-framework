@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -76,11 +76,6 @@ void dumpRecursive(const QDir &dir, QTextStream &out)
 
 int createProject(const QString &outFileName)
 {
-    QDir currentDir = QDir::current();
-    QString currentDirName = currentDir.dirName();
-    if (currentDirName.isEmpty())
-        currentDirName = QLatin1String("root");
-
     QFile file;
     bool isOk = false;
     if (outFileName.isEmpty()) {

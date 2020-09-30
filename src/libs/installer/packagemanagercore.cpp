@@ -1195,7 +1195,7 @@ class VerboseWriterAdminOutput : public VerboseWriterOutput
 public:
     VerboseWriterAdminOutput(PackageManagerCore *core) : m_core(core) {}
 
-    virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data)
+    virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data) Q_DECL_OVERRIDE
     {
         bool gainedAdminRights = false;
 

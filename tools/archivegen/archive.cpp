@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,15 +41,15 @@ using namespace QInstaller;
 
 class FailOnErrorCallback : public Lib7z::UpdateCallback
 {
-    HRESULT OpenFileError(const wchar_t*, DWORD) {
+    HRESULT OpenFileError(const wchar_t*, DWORD) Q_DECL_OVERRIDE {
         return S_FALSE;
     }
 
-    HRESULT CanNotFindError(const wchar_t*, DWORD) {
+    HRESULT CanNotFindError(const wchar_t*, DWORD) Q_DECL_OVERRIDE {
         return S_FALSE;
     }
 
-    HRESULT OpenResult(const wchar_t*, HRESULT result, const wchar_t*) {
+    HRESULT OpenResult(const wchar_t*, HRESULT result, const wchar_t*) Q_DECL_OVERRIDE {
         return result;
     }
 };
@@ -62,12 +62,12 @@ public:
     }
 
 private:
-    HRESULT SetTotal(UInt64 size) {
+    HRESULT SetTotal(UInt64 size) Q_DECL_OVERRIDE {
         m_PercentPrinter.SetTotal(size);
         return S_OK;
     }
 
-    HRESULT SetCompleted(const UInt64 *size) {
+    HRESULT SetCompleted(const UInt64 *size) Q_DECL_OVERRIDE {
         if (size) {
             m_PercentPrinter.SetRatio(*size);
             m_PercentPrinter.PrintRatio();
@@ -75,7 +75,7 @@ private:
         return S_OK;
     }
 
-    HRESULT OpenResult(const wchar_t *file, HRESULT result, const wchar_t*) {
+    HRESULT OpenResult(const wchar_t *file, HRESULT result, const wchar_t*) Q_DECL_OVERRIDE {
         if (result != S_OK) {
             printBlock(QCoreApplication::translate("archivegen", "Cannot update file \"%1\". "
                 "Unsupported archive.").arg(QDir::toNativeSeparators(QString::fromWCharArray(file))), Q_NULLPTR);
@@ -83,17 +83,17 @@ private:
         return result;
     }
 
-    HRESULT OpenFileError(const wchar_t *file, DWORD) {
+    HRESULT OpenFileError(const wchar_t *file, DWORD) Q_DECL_OVERRIDE {
         printBlock(QCoreApplication::translate("archivegen", "Cannot open file "), file);
         return S_FALSE;
     }
 
-    HRESULT CanNotFindError(const wchar_t *file, DWORD) {
+    HRESULT CanNotFindError(const wchar_t *file, DWORD) Q_DECL_OVERRIDE {
         printBlock(QCoreApplication::translate("archivegen", "Cannot find file "), file);
         return S_FALSE;
     }
 
-    HRESULT StartArchive(const wchar_t *name, bool) {
+    HRESULT StartArchive(const wchar_t *name, bool) Q_DECL_OVERRIDE {
         printLine(QCoreApplication::translate("archivegen", "Create archive."));
         if (name) {
             m_PercentPrinter.PrintNewLine();
@@ -102,7 +102,7 @@ private:
         return S_OK;
     }
 
-    HRESULT FinishArchive() {
+    HRESULT FinishArchive() Q_DECL_OVERRIDE {
         m_PercentPrinter.PrintNewLine();
         printLine(QCoreApplication::translate("archivegen", "Finished archive."));
         return S_OK;

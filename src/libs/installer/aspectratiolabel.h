@@ -44,12 +44,12 @@ class INSTALLER_EXPORT AspectRatioLabel : public QLabel
 public:
     explicit AspectRatioLabel(QWidget *parent = nullptr);
 
-    int heightForWidth(int w) const;
-    QSize sizeHint() const;
+    int heightForWidth(int w) const Q_DECL_OVERRIDE;
+    QSize sizeHint() const Q_DECL_OVERRIDE;
 
 public slots:
     void setPixmap (const QPixmap &pixmap);
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
 
 private:
     QPixmap scaledPixmap() const;

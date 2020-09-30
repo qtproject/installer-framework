@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -58,11 +58,6 @@ public:
 
     void add(const QString &path);
     void add(const QStringList &paths);
-
-    void releaseAll();
-    void release(const QString &path);
-    void passAndReleaseAll(TempDirDeleter &tdd);
-    void passAndRelease(TempDirDeleter &tdd, const QString &path);
 
     void releaseAndDeleteAll();
     void releaseAndDelete(const QString &path);

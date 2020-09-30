@@ -74,7 +74,6 @@ public slots:
     void currentSelectedChanged(const QModelIndex &current);
     void selectAll();
     void deselectAll();
-    void checkboxStateChanged();
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();

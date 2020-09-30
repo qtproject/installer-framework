@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -95,28 +95,6 @@ void TempDirDeleter::add(const QString &path)
 void TempDirDeleter::add(const QStringList &paths)
 {
     m_paths += paths.toSet();
-}
-
-void TempDirDeleter::releaseAll()
-{
-    m_paths.clear();
-}
-
-void TempDirDeleter::release(const QString &path)
-{
-    m_paths.remove(path);
-}
-
-void TempDirDeleter::passAndReleaseAll(TempDirDeleter &tdd)
-{
-    tdd.m_paths = m_paths;
-    releaseAll();
-}
-
-void TempDirDeleter::passAndRelease(TempDirDeleter &tdd, const QString &path)
-{
-    tdd.add(path);
-    release(path);
 }
 
 void TempDirDeleter::releaseAndDeleteAll()

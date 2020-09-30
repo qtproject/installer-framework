@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -231,8 +231,6 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setObjectName(repository.displayname());
         checkBox->setChecked(repository.isEnabled());
-        connect(checkBox, &QCheckBox::stateChanged, this,
-                &ComponentSelectionPagePrivate::checkboxStateChanged);
         checkBox->setText(repository.displayname());
         checkBox->setToolTip(repository.tooltip());
         categoryLayout->addWidget(checkBox);
@@ -348,18 +346,6 @@ void ComponentSelectionPagePrivate::selectAll()
 void ComponentSelectionPagePrivate::deselectAll()
 {
     m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
-}
-
-void ComponentSelectionPagePrivate::checkboxStateChanged()
-{
-    QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
-    bool enableFetchButton = false;
-    foreach (QCheckBox *checkbox, checkboxes) {
-        if (checkbox->isChecked()) {
-            enableFetchButton = true;
-            break;
-        }
-    }
 }
 
 void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repositoryName, bool enable)

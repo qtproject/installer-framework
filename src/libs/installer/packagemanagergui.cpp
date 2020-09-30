@@ -123,7 +123,7 @@ public:
         return m_widget;
     }
 
-    bool isComplete() const
+    bool isComplete() const Q_DECL_OVERRIDE
     {
         return m_widget->property("complete").toBool();
     }

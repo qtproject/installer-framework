@@ -291,8 +291,6 @@ void MetadataJob::unzipRepositoryTaskFinished()
                     m_unzipRepositoryitems.append(item);
                 } else {
                     //Repository is not valid, remove it
-                    Repository repository;
-                    repository.setUrl(QUrl(task->archive()));
                     Settings &s = m_core->settings();
                     QSet<Repository> temporaries = s.temporaryRepositories();
                     foreach (Repository repository, temporaries) {
