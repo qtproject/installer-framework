@@ -93,7 +93,7 @@ private slots:
     void progressChanged(int progress);
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
-    void startXMLTask(const QList<FileTaskItem> items);
+    void startXMLTask(const QList<FileTaskItem> &items);
 
 private:
     bool fetchMetaDataPackages();

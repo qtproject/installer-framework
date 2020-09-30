@@ -1346,7 +1346,7 @@ bool Component::isDefault() const
     return d->m_vars.value(scDefault).compare(scTrue, Qt::CaseInsensitive) == 0;
 }
 
-bool Component::isInstalled(const QString version) const
+bool Component::isInstalled(const QString &version) const
 {
     if (version.isEmpty()) {
         return scInstalled == d->m_vars.value(scCurrentState);

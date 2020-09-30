@@ -225,7 +225,7 @@ void MetadataJob::doStart()
     }
 }
 
-void MetadataJob::startXMLTask(const QList<FileTaskItem> items)
+void MetadataJob::startXMLTask(const QList<FileTaskItem> &items)
 {
     DownloadFileTask *const xmlTask = new DownloadFileTask(items);
     xmlTask->setProxyFactory(m_core->proxyFactory());

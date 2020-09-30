@@ -55,7 +55,7 @@ public:
 
     QSet<Repository> repositories() const;
     void setRepositories(const QSet<Repository> repositories, const bool replace = false);
-    void addRepository(const Repository repository);
+    void addRepository(const Repository &repository);
 
     bool isEnabled() const;
     void setEnabled(bool enabled);

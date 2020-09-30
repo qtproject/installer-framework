@@ -129,7 +129,7 @@ bool InstallIconsOperation::performOperation()
         if (status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
 
-        const QString source = it.next();
+        const QString &source = it.next();
         QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
 
         emit outputTextChanged(target);

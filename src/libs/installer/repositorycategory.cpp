@@ -128,7 +128,7 @@ void RepositoryCategory::setRepositories(const QSet<Repository> repositories, co
 /*!
     Inserts \a repository to the category.
 */
-void RepositoryCategory::addRepository(const Repository repository)
+void RepositoryCategory::addRepository(const Repository &repository)
 {
     m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
 }

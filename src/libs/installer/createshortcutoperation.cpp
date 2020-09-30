@@ -87,7 +87,7 @@ static QString parentDirectory(const QString &current)
     return current.mid(0, current.lastIndexOf(QLatin1Char('/')));
 }
 
-static QString takeArgument(const QString argument, QStringList *arguments)
+static QString takeArgument(const QString &argument, QStringList *arguments)
 {
     // if the arguments contain an option in the form "argument=...", find it and consume it
     QStringList::iterator it = std::find_if(arguments->begin(), arguments->end(), StartsWith(argument));
@@ -99,7 +99,7 @@ static QString takeArgument(const QString argument, QStringList *arguments)
     return value;
 }
 
-static bool createLink(const QString &fileName, const QString &linkName, QString workingDir,
+static bool createLink(const QString &fileName, const QString &linkName, QString &workingDir,
     const QString &arguments = QString(), const QString &iconPath = QString(),
     const QString &iconId = QString(), const QString &description = QString())
 {

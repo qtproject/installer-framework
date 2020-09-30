@@ -144,7 +144,7 @@ bool VolumeInfo::operator==(const VolumeInfo &other) const
     return m_volumeDescriptor == other.m_volumeDescriptor;
 }
 
-QDebug operator<<(QDebug dbg, VolumeInfo volume)
+QDebug operator<<(QDebug dbg, const VolumeInfo &volume)
 {
     return dbg << "KDUpdater::Volume(" << volume.mountPath() << ")";
 }
