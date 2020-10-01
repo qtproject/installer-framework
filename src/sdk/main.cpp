@@ -74,8 +74,6 @@ int main(int argc, char *argv[])
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
 
-    qsrand(QDateTime::currentDateTime().toTime_t());
-
     // We need to start either a command line application or a GUI application. Since we
     // fail doing so at least on Linux while parsing the argument using a core application
     // object and later starting the GUI application, we now parse the arguments first.

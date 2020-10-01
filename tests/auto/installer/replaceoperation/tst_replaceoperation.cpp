@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QFile>
 #include <QTest>
+#include <QRandomGenerator>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -46,7 +47,7 @@ private slots:
     void initTestCase()
     {
         m_testDirectory = QInstaller::generateTemporaryFileName();
-        m_testFilePath = m_testDirectory + "/test." + QString::number(qrand() % 1000);
+        m_testFilePath = m_testDirectory + "/test." + QString::number(QRandomGenerator::global()->generate() % 1000);
     }
 
     void testWrongArguments()

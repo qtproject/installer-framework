@@ -39,6 +39,7 @@
 
 #include <QTemporaryDir>
 #include <QtMath>
+#include <QRandomGenerator>
 
 const QStringList metaElements = {QLatin1String("Script"), QLatin1String("Licenses"), QLatin1String("UserInterfaces"), QLatin1String("Translations")};
 
@@ -174,7 +175,7 @@ void MetadataJob::doStart()
                             url += m_core->value(scUrlQueryString) + QLatin1Char('&');
 
                         // also append a random string to avoid proxy caches
-                        FileTaskItem item(url.append(QString::number(qrand() * qrand())));
+                        FileTaskItem item(url.append(QString::number(QRandomGenerator::global()->generate())));
                         item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                         item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                         items.append(item);

@@ -37,6 +37,7 @@
 #include <QTextStream>
 #include <QSettings>
 #include <QtGlobal>
+#include <QRandomGenerator>
 
 #include "qsettingswrapper.h"
 
@@ -73,7 +74,7 @@ private slots:
         const QString possible = "abcdefghijklmnopqrstuvwxyz0123456789";
         qsrand(QTime::currentTime().msec());
         for (int i = 0; i < 5; i++) {
-            int index = qrand() % possible.length();
+            int index = QRandomGenerator::global()->generate() % possible.length();
             QChar nextChar = possible.at(index);
             randomString.append(nextChar);
 

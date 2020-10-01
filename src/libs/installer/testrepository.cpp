@@ -33,6 +33,7 @@
 #include "serverauthenticationdialog.h"
 
 #include <QFile>
+#include <QRandomGenerator>
 
 namespace QInstaller {
 
@@ -88,7 +89,7 @@ void TestRepository::doStart()
     auth.setPassword(m_repository.password());
 
     FileTaskItem item(m_repository.url().toString() + QLatin1String("/Updates.xml?") +
-        QString::number(qrand() * qrand()));
+        QString::number(QRandomGenerator::global()->generate()));
     item.insert(TaskRole::Authenticator, QVariant::fromValue(auth));
 
     m_timer.start(10000);

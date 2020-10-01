@@ -39,6 +39,7 @@
 #include <QtCore/QUrl>
 #include <QtCore/QCoreApplication>
 #include <QImageReader>
+#include <QRandomGenerator>
 
 #include <errno.h>
 
@@ -460,9 +461,8 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
 
     static const QString characters = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
     QString suffix;
-    qsrand(qrand() * QDateTime::currentDateTime().toTime_t());
     for (int i = 0; i < 5; ++i)
-        suffix += characters[qrand() % characters.length()];
+        suffix += characters[QRandomGenerator::global()->generate() % characters.length()];
 
     const QString tmp = QLatin1String("%1.tmp.%2.%3");
     int count = 1;
