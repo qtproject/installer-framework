@@ -170,7 +170,8 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswerShort
          << CommandLineOptions::scMessageDefaultAnswerLong,
          QLatin1String("[CLI] Automatically answers to message queries with their default values.")));
-    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicenses,
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicensesShort
+         << CommandLineOptions::scAcceptLicensesLong,
          QLatin1String("[CLI] Accepts all licenses without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scFileDialogAutomaticAnswer,
          QLatin1String("[CLI] Automatically sets the QFileDialog values getExistingDirectory() or getOpenFileName() "

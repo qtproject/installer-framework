@@ -289,7 +289,7 @@ public:
             .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());
 
-        if (m_parser.isSet(CommandLineOptions::scAcceptLicenses))
+        if (m_parser.isSet(CommandLineOptions::scAcceptLicensesLong))
             m_core->setAutoAcceptLicenses();
 
         if (m_parser.isSet(CommandLineOptions::scConfirmCommandLong))
