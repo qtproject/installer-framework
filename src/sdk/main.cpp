@@ -98,9 +98,9 @@ int main(int argc, char *argv[])
     }
     if (mutually.isEmpty()) {
         mutually = QInstaller::checkMutualOptions(parser, QStringList()
-            << CommandLineOptions::scAcceptMessageQuery
-            << CommandLineOptions::scRejectMessageQuery
-            << CommandLineOptions::scMessageDefaultAnswer);
+            << CommandLineOptions::scAcceptMessageQueryLong
+            << CommandLineOptions::scRejectMessageQueryLong
+            << CommandLineOptions::scMessageDefaultAnswerLong);
     }
     if (mutually.isEmpty()) {
         mutually = QInstaller::checkMutualOptions(parser, QStringList()

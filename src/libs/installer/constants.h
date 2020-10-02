@@ -155,10 +155,14 @@ static const QLatin1String scStartUninstallerShort("sr");
 static const QLatin1String scStartUninstallerLong("start-uninstaller");
 
 // Message acceptance options
-static const QLatin1String scAcceptMessageQuery("accept-messages");
-static const QLatin1String scRejectMessageQuery("reject-messages");
-static const QLatin1String scMessageAutomaticAnswer("auto-answer");
-static const QLatin1String scMessageDefaultAnswer("default-answer");
+static const QLatin1String scAcceptMessageQueryShort("am");
+static const QLatin1String scAcceptMessageQueryLong("accept-messages");
+static const QLatin1String scRejectMessageQueryShort("rm");
+static const QLatin1String scRejectMessageQueryLong("reject-messages");
+static const QLatin1String scMessageAutomaticAnswerShort("aa");
+static const QLatin1String scMessageAutomaticAnswerLong("auto-answer");
+static const QLatin1String scMessageDefaultAnswerShort("da");
+static const QLatin1String scMessageDefaultAnswerLong("default-answer");
 static const QLatin1String scAcceptLicenses("accept-licenses");
 static const QLatin1String scFileDialogAutomaticAnswer("file-query");
 static const QLatin1String scConfirmCommand("confirm-command");

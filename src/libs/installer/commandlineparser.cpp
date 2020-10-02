@@ -155,17 +155,21 @@ CommandLineParser::CommandLineParser()
                       "has no effect on online installers.")));
 
     // Message query options
-    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQuery,
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQueryShort
+         << CommandLineOptions::scAcceptMessageQueryLong,
          QLatin1String("[CLI] Accepts all message queries without user input.")));
-    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scRejectMessageQuery,
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scRejectMessageQueryShort
+         << CommandLineOptions::scRejectMessageQueryLong,
          QLatin1String("[CLI] Rejects all message queries without user input.")));
-    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageAutomaticAnswer,
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageAutomaticAnswerShort
+         << CommandLineOptions::scMessageAutomaticAnswerLong,
          QLatin1String("[CLI] Automatically answers the message queries with the message identifier and button value. "
                        "Several identifier=value pairs can be given separated with comma, "
                        "for example --auto-answer message.id=Ok,message.id2=Cancel."),
          QLatin1String("identifier=value")));
-     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswer,
-        QLatin1String("[CLI] Automatically answers to message queries with their default values.")));
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scMessageDefaultAnswerShort
+         << CommandLineOptions::scMessageDefaultAnswerLong,
+         QLatin1String("[CLI] Automatically answers to message queries with their default values.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptLicenses,
          QLatin1String("[CLI] Accepts all licenses without user input.")));
     m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scFileDialogAutomaticAnswer,

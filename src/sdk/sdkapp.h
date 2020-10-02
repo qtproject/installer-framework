@@ -297,24 +297,25 @@ public:
 
         // Ignore message acceptance options when running the installer with GUI
         if (m_core->isCommandLineInstance()) {
-            if (m_parser.isSet(CommandLineOptions::scAcceptMessageQuery))
+            if (m_parser.isSet(CommandLineOptions::scAcceptMessageQueryLong))
                 m_core->autoAcceptMessageBoxes();
 
-            if (m_parser.isSet(CommandLineOptions::scRejectMessageQuery))
+            if (m_parser.isSet(CommandLineOptions::scRejectMessageQueryLong))
                 m_core->autoRejectMessageBoxes();
 
-            if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswer))
+            if (m_parser.isSet(CommandLineOptions::scMessageDefaultAnswerLong))
                 m_core->acceptMessageBoxDefaultButton();
 
-            if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswer)) {
-                const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswer);
+            if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswerLong)) {
+                const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswerLong);
                 const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
                 if (items.count() > 0) {
                     errorMessage = setMessageBoxAutomaticAnswers(items);
                     if (!errorMessage.isEmpty())
                         return false;
                 } else {
-                    errorMessage = QObject::tr("Arguments missing for option %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
+                    errorMessage = QObject::tr("Arguments missing for option %1")
+                            .arg(CommandLineOptions::scMessageAutomaticAnswerLong);
                     return false;
                 }
             }
@@ -465,7 +466,8 @@ public:
                         return QObject::tr("Invalid button value %1 ").arg(value);
                 }
             } else {
-                return QObject::tr("Incorrect arguments for %1").arg(CommandLineOptions::scMessageAutomaticAnswer);
+                return QObject::tr("Incorrect arguments for %1")
+                        .arg(CommandLineOptions::scMessageAutomaticAnswerLong);
             }
         }
         return QString();
