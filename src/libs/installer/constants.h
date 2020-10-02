@@ -165,7 +165,8 @@ static const QLatin1String scMessageDefaultAnswerShort("da");
 static const QLatin1String scMessageDefaultAnswerLong("default-answer");
 static const QLatin1String scAcceptLicenses("accept-licenses");
 static const QLatin1String scFileDialogAutomaticAnswer("file-query");
-static const QLatin1String scConfirmCommand("confirm-command");
+static const QLatin1String scConfirmCommandShort("c");
+static const QLatin1String scConfirmCommandLong("confirm-command");
 
 // Misc installation options
 static const QLatin1String scRootShort("t");
@@ -180,7 +181,7 @@ static const QLatin1String scShowVirtualComponentsShort("sv");
 static const QLatin1String scShowVirtualComponentsLong("show-virtual-components");
 static const QLatin1String scInstallCompressedRepositoryShort("i");
 static const QLatin1String scInstallCompressedRepositoryLong("install-compressed-repository");
-static const QLatin1String scCreateLocalRepositoryShort("c");
+static const QLatin1String scCreateLocalRepositoryShort("cl");
 static const QLatin1String scCreateLocalRepositoryLong("create-local-repository");
 static const QLatin1String scNoDefaultInstallationLong("no-default-installations");
 

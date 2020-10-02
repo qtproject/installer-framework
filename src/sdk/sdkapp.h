@@ -292,7 +292,7 @@ public:
         if (m_parser.isSet(CommandLineOptions::scAcceptLicenses))
             m_core->setAutoAcceptLicenses();
 
-        if (m_parser.isSet(CommandLineOptions::scConfirmCommand))
+        if (m_parser.isSet(CommandLineOptions::scConfirmCommandLong))
             m_core->setAutoConfirmCommand();
 
         // Ignore message acceptance options when running the installer with GUI
