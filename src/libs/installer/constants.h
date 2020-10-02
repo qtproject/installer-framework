@@ -183,6 +183,7 @@ static const QLatin1String scInstallCompressedRepositoryShort("i");
 static const QLatin1String scInstallCompressedRepositoryLong("install-compressed-repository");
 static const QLatin1String scCreateLocalRepositoryShort("cl");
 static const QLatin1String scCreateLocalRepositoryLong("create-local-repository");
+static const QLatin1String scNoDefaultInstallationShort("nd");
 static const QLatin1String scNoDefaultInstallationLong("no-default-installations");
 
 // Developer options

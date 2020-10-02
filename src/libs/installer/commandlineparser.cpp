@@ -134,7 +134,7 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scNoForceInstallationShort << CommandLineOptions::scNoForceInstallationLong,
         QLatin1String("Allow deselecting components that are marked as forced.")));
-    m_parser.addOption(QCommandLineOption(QStringList()
+    m_parser.addOption(QCommandLineOption(QStringList() << CommandLineOptions::scNoDefaultInstallationShort
         << CommandLineOptions::scNoDefaultInstallationLong,
         QLatin1String("Deselects components that are marked as default.")));
     m_parser.addOption(QCommandLineOption(QStringList()
