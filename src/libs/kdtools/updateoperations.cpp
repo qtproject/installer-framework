@@ -54,7 +54,7 @@ static QString errnoToQString(int error)
 #endif
 }
 
-static bool removeDirectory(const QString &path, QString *errorString, bool force)
+static bool removeDirectory(const QString &path, QString *errorString, bool force, const QStringList &ignoreFiles = QStringList())
 {
     Q_ASSERT(errorString);
 
@@ -62,7 +62,9 @@ static bool removeDirectory(const QString &path, QString *errorString, bool forc
     const QFileInfoList entries = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden);
     foreach (const QFileInfo &entry, entries) {
         if (entry.isDir() && (!entry.isSymLink()))
-            removeDirectory(entry.filePath(), errorString, force);
+            removeDirectory(entry.filePath(), errorString, force, ignoreFiles);
+        else if (ignoreFiles.contains(entry.absoluteFilePath()))
+            continue;
         else if (force && (!QFile(entry.filePath()).remove()))
             return false;
     }
@@ -72,6 +74,12 @@ static bool removeDirectory(const QString &path, QString *errorString, bool forc
 
     errno = 0;
     const bool success = dir.rmdir(path);
+
+    if (!success && (dir.entryList(QDir::NoDotAndDotDot | QDir::AllEntries | QDir::Hidden).count()
+                     == ignoreFiles.count())){
+        return true;
+    }
+
     if (errno)
         *errorString = errnoToQString(errno);
     return success;
@@ -500,8 +508,16 @@ bool MkdirOperation::undoOperation()
 
     // Since refactoring we know the mkdir operation which is creating the target path. If we do a full
     // uninstall prevent removing the full path including target, instead remove the target only. (QTIFW-46)
-    if (hasValue(QLatin1String("uninstall-only")) && value(QLatin1String("uninstall-only")).toBool())
+    QStringList excludeFiles;
+    if (hasValue(QLatin1String("uninstall-only")) && value(QLatin1String("uninstall-only")).toBool()) {
         createdDir = QDir(arguments().first());
+        // Do not try to remove maintenancetool in Windows as it will fail as it is running.
+        // In Windows we use deferred delete for maintenancetool.
+    #ifdef Q_OS_WIN
+        if (packageManager())
+            excludeFiles << packageManager()->maintenanceToolName();
+    #endif
+    }
 
     if (createdDir == QDir::root())
         return true;
@@ -511,7 +527,7 @@ bool MkdirOperation::undoOperation()
 
     QString errorString;
 
-    const bool result = removeDirectory(createdDir.path(), &errorString, forceremoval);
+    const bool result = removeDirectory(createdDir.path(), &errorString, forceremoval, excludeFiles);
 
     if (!result) {
         if (errorString.isEmpty())

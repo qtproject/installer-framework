@@ -1891,12 +1891,14 @@ bool PackageManagerCorePrivate::runUninstaller()
         deleteMaintenanceTool();    // this will also delete the TargetDir on Windows
 
         // If not on Windows, we need to remove TargetDir manually.
+#ifndef Q_OS_WIN
         if (QVariant(m_core->value(scRemoveTargetDir)).toBool() && !targetDir().isEmpty()) {
             if (updateAdminRights && !adminRightsGained)
                 adminRightsGained = m_core->gainAdminRights();
             removeDirectoryThreaded(targetDir(), true);
             qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
         }
+#endif
 
         unregisterMaintenanceTool();
         m_needToWriteMaintenanceTool = false;
