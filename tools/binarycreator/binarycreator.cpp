@@ -986,7 +986,7 @@ int main(int argc, char **argv)
 
         // 3; copy the meta data of the available packages, generate Updates.xml
         QInstallerTools::copyMetaData(tmpMetaDir, tmpRepoDir, packages, settings
-            .applicationName(), settings.version());
+            .applicationName(), settings.version(), QStringList());
 
         // 4; copy the configuration file and and icons etc.
         copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));

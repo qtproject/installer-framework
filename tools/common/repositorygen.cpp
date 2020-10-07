@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -93,7 +93,7 @@ void QInstallerTools::copyWithException(const QString &source, const QString &ta
             (targetFileInfo.exists() ? QLatin1String("Target already exist.") : sourceFile.errorString())));
     }
 
-    qDebug() << "done.\n";
+    qDebug() << "done.";
 }
 
 static QStringList copyFilesFromNode(const QString &parentNode, const QString &childNode, const QString &attr,
@@ -125,12 +125,14 @@ static QStringList copyFilesFromNode(const QString &parentNode, const QString &c
 }
 
 void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &metaDataDir,
-    const PackageInfoVector &packages, const QString &appName, const QString &appVersion)
+    const PackageInfoVector &packages, const QString &appName, const QString &appVersion,
+    const QStringList &uniteMetadatas)
 {
     const QString targetDir = makePathAbsolute(_targetDir);
     if (!QFile::exists(targetDir))
         QInstaller::mkpath(targetDir);
 
+    bool componentMetaExtracted = false;
     QDomDocument doc;
     QDomElement root;
     QFile existingUpdatesXml(QFileInfo(metaDataDir, QLatin1String("Updates.xml")).absoluteFilePath());
@@ -377,9 +379,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             }
         } else {
             // Extract metadata from archive
-            QFile metaFile(info.metaFile);
-            QInstaller::openForRead(&metaFile);
-            Lib7z::extractArchive(&metaFile, targetDir);
+            if (!info.metaFile.isEmpty()){
+                QFile metaFile(info.metaFile);
+                QInstaller::openForRead(&metaFile);
+                Lib7z::extractArchive(&metaFile, targetDir);
+                componentMetaExtracted = true;
+            }
 
             // Restore "PackageUpdate" node;
             QDomDocument update;
@@ -388,6 +393,14 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             }
 
             root.appendChild(update.documentElement());
+        }
+    }
+
+    if (!componentMetaExtracted) {
+        foreach (const QString uniteMetadata, uniteMetadatas) {
+            QFile metaFile(QFileInfo(metaDataDir, uniteMetadata).absoluteFilePath());
+            QInstaller::openForRead(&metaFile);
+            Lib7z::extractArchive(&metaFile, targetDir);
         }
     }
 
@@ -401,7 +414,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packagesDirectories,
     QStringList *packagesToFilter, FilterType filterType)
 {
-    qDebug() << "\nCollecting information about available packages...";
+    qDebug() << "Collecting information about available packages...";
 
     bool ignoreInvalidPackages = qApp->arguments().contains(QString::fromLatin1("--ignore-invalid-packages"));
 
@@ -583,16 +596,20 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                     continue;
 
                 info.directory = QString::fromLatin1("%1/%2").arg(it->filePath(), info.name);
-                info.metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
-                    QString::fromLatin1("meta.7z"), info.version);
+                const QDomElement sha1 = el.firstChildElement(QInstaller::scSHA1);
+                if (!sha1.isNull()) {
+                    info.metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
+                        QString::fromLatin1("meta.7z"), info.version);
+                }
 
                 const QDomNodeList c2 = el.childNodes();
                 for (int j = 0; j < c2.count(); ++j) {
-                    if (c2.at(j).toElement().tagName() == QInstaller::scDependencies)
-                        info.dependencies = c2.at(j).toElement().text()
+                    const QDomElement c2Element = c2.at(j).toElement();
+                    if (c2Element.tagName() == QInstaller::scDependencies)
+                        info.dependencies = c2Element.text()
                             .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
-                    else if (c2.at(j).toElement().tagName() == QInstaller::scDownloadableArchives) {
-                        QStringList names = c2.at(j).toElement().text()
+                    else if (c2Element.tagName() == QInstaller::scDownloadableArchives) {
+                        QStringList names = c2Element.text()
                             .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
                         foreach (const QString &name, names) {
                             info.copiedFiles.append(QString::fromLatin1("%1/%3%2").arg(info.directory,
@@ -626,18 +643,21 @@ QHash<QString, QString> QInstallerTools::buildPathToVersionMapping(const Package
 }
 
 static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const QByteArray &sha1sum,
-    const QString &nodename = QString(), const QString &metadataName = QString())
+    const QString &nodename = QString())
 {
     if (nodename.isEmpty())
-        qDebug() << "Searching sha1sum node.";
+        qDebug() << "Writing sha1sum node.";
     else
-        qDebug() << "Searching sha1sum node for " << nodename;
+        qDebug() << "Searching sha1sum node for" << nodename;
     QString sha1Value = QString::fromLatin1(sha1sum.toHex().constData());
     for (int i = 0; i < list.size(); ++i) {
         QDomNode curNode = list.at(i);
         QDomNode nameTag = curNode.firstChildElement(scName);
         if ((!nameTag.isNull() && nameTag.toElement().text() == nodename) || nodename.isEmpty()) {
             QDomNode sha1Node = curNode.firstChildElement(scSHA1);
+            QDomNode newSha1Node = doc.createElement(scSHA1);
+            newSha1Node.appendChild(doc.createTextNode(sha1Value));
+
             if (!sha1Node.isNull() && sha1Node.hasChildNodes()) {
                 QDomNode sha1NodeChild = sha1Node.firstChild();
                 QString sha1OldValue = sha1NodeChild.nodeValue();
@@ -648,19 +668,12 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
                     qDebug() << "- clearing the old sha1sum" << sha1OldValue;
                     sha1Node.removeChild(sha1NodeChild);
                 }
-            } else {
-                sha1Node = doc.createElement(scSHA1);
-                //Create also unique metadata name
-                if (!metadataName.isEmpty()) {
-                    qDebug() << "Writing the metadata node with name " << metadataName;
-                    QDomNode metaName = doc.createElement(QLatin1String("MetadataName"));
-                    metaName.appendChild(doc.createTextNode(metadataName));
-                    curNode.appendChild(metaName);
-                }
             }
+            if (sha1Node.isNull())
+                curNode.appendChild(newSha1Node);
+            else
+                curNode.replaceChild(newSha1Node, sha1Node);
             qDebug() << "- writing the sha1sum" << sha1Value;
-            sha1Node.appendChild(doc.createTextNode(sha1Value));
-            curNode.appendChild(sha1Node);
         }
     }
 }
@@ -721,7 +734,21 @@ QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const Q
     tmp.open(QFile::ReadOnly);
     const QByteArray sha1Sum = QInstaller::calculateHash(&tmp, QCryptographicHash::Sha1);
     QDomNodeList elements =  doc.elementsByTagName(QLatin1String("Updates"));
-    writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString(), metadataFilename);
+    writeSHA1ToNodeWithName(doc, elements, sha1Sum, QString());
+
+    qDebug() << "Updating the metadata node with name " << metadataFilename;
+    if (elements.count() > 0) {
+        QDomNode node = elements.at(0);
+        QDomNode nameTag = node.firstChildElement(QLatin1String("MetadataName"));
+
+        QDomNode newNodeTag = doc.createElement(QLatin1String("MetadataName"));
+        newNodeTag.appendChild(doc.createTextNode(metadataFilename));
+
+        if (nameTag.isNull())
+            node.appendChild(newNodeTag);
+        else
+            node.replaceChild(newNodeTag, nameTag);
+    }
     return absPaths;
 }
 
@@ -849,6 +876,51 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                         .arg(QDir::toNativeSeparators(from.fileName()), QDir::toNativeSeparators(target), from.errorString()));
                 }
             }
+        }
+    }
+}
+
+void QInstallerTools::filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages)
+{
+    QDomDocument doc;
+    QFile file(repositoryDir + QLatin1String("/Updates.xml"));
+    if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
+        const QDomElement root = doc.documentElement();
+        if (root.tagName() != QLatin1String("Updates")) {
+            throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
+        }
+        file.close(); // close the file, we read the content already
+
+        // read the already existing updates xml content
+        const QDomNodeList children = root.childNodes();
+        QHash <QString, QInstallerTools::PackageInfo> hash;
+        for (int i = 0; i < children.count(); ++i) {
+            const QDomElement el = children.at(i).toElement();
+            if ((!el.isNull()) && (el.tagName() == QLatin1String("PackageUpdate"))) {
+                QInstallerTools::PackageInfo info;
+                const QDomNodeList c2 = el.childNodes();
+                for (int j = 0; j < c2.count(); ++j) {
+                    const QDomElement c2Element = c2.at(j).toElement();
+                    if (c2Element.tagName() == scName)
+                        info.name = c2Element.text();
+                    else if (c2Element.tagName() == scVersion)
+                        info.version = c2Element.text();
+                }
+                hash.insert(info.name, info);
+            }
+        }
+
+        // remove all components that have no update (decision based on the version tag)
+        for (int i = packages.count() - 1; i >= 0; --i) {
+            const QInstallerTools::PackageInfo info = packages.at(i);
+
+            // check if component already exists & version did not change
+            if (hash.contains(info.name) && KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1) {
+                packages.remove(i); // the version did not change, no need to update the component
+                continue;
+            }
+            qDebug() << "Update component" << info.name << "in"<< repositoryDir << ".";
         }
     }
 }

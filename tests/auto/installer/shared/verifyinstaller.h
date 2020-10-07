@@ -33,6 +33,8 @@
 #include <QStringList>
 #include <QCryptographicHash>
 #include <QFile>
+#include <QDir>
+#include <QtTest/QTest>
 
 struct VerifyInstaller
 {
@@ -66,6 +68,26 @@ struct VerifyInstaller
 
         QDir dir(installDir);
         QCOMPARE(dir.entryList(QStringList() << "*.*", QDir::Files).count(), fileList.count());
+    }
+
+    static QString fileContent(const QString &fileName)
+    {
+        QFile file(fileName);
+        QTextStream stream(&file);
+        file.open(QIODevice::ReadOnly);
+        QString str = stream.readAll();
+        file.close();
+        return str;
+    }
+
+    static void verifyFileContent(const QString &fileName, const QString &content)
+    {
+        QVERIFY(fileContent(fileName).contains(content));
+    }
+
+    static void verifyFileHasNoContent(const QString &fileName, const QString &content)
+    {
+        QVERIFY(!fileContent(fileName).contains(content));
     }
 
     static void addToFileMap(const QDir &baseDir, const QFileInfo &fileInfo, QMap<QString, QByteArray> &map)

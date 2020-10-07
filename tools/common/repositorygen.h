@@ -75,8 +75,10 @@ void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDoc
                    const QHash<QString, QString> &versionMapping);
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
-    const QString &appName, const QString& appVersion);
+    const QString &appName, const QString& appVersion, const QStringList &uniteMetadatas);
 void copyComponentData(const QStringList &packageDir, const QString &repoDir, PackageInfoVector *const infos);
+
+void filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
 
 } // namespace QInstallerTools

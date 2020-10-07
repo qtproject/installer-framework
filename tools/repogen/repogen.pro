@@ -1,7 +1,8 @@
 TEMPLATE = app
 TARGET = repogen
-INCLUDEPATH += . .. ../common
 
+INCLUDEPATH += . ..
+include(repogen.pri)
 include(../../installerfw.pri)
 
 QT -= gui

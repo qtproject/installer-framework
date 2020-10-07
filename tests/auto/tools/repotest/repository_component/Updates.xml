@@ -1,0 +1,28 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2020-01-01</ReleaseDate>
+  <Default>true</Default>
+  <Script>script2.0.0.qs</Script>
+  <UpdateFile UncompressedSize="40" CompressedSize="72" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>da6dae55a8cc3fb9f012e33fa7b9c187a823aa9a</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B</Name>
+  <DisplayName>B</DisplayName>
+  <Description>Example component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2020-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile UncompressedSize="40" CompressedSize="72" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>d88b373458b4bbec38132692061bf1e7aa68e7f7</SHA1>
+ </PackageUpdate>
+</Updates>

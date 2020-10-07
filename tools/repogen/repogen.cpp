@@ -150,6 +150,7 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--update-new-components")) {
                 args.removeFirst();
                 updateExistingRepositoryWithNewComponents = true;
+                createUnifiedMetadata = false;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
@@ -215,6 +216,17 @@ int main(int argc, char** argv)
         if (remove)
             QInstaller::removeDirectory(repositoryDir);
 
+        if (updateExistingRepositoryWithNewComponents) {
+            QStringList meta7z = QDir(repositoryDir).entryList(QStringList()
+                << QLatin1String("*_meta.7z"), QDir::Files);
+            if (!meta7z.isEmpty()) {
+                throw QInstaller::Error(QCoreApplication::translate("QInstaller",
+                    "Cannot update \"%1\" with --update-new-components. Use --update instead. "
+                    "Currently it is not possible to update partial components inside one 7z.")
+                    .arg(meta7z.join(QLatin1Char(','))));
+            }
+        }
+
         if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
@@ -233,53 +245,12 @@ int main(int argc, char** argv)
         packages.append(preparedPackages);
 
         if (updateExistingRepositoryWithNewComponents) {
-            QDomDocument doc;
-            QFile file(repositoryDir + QLatin1String("/Updates.xml"));
-            if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
-                const QDomElement root = doc.documentElement();
-                if (root.tagName() != QLatin1String("Updates")) {
-                    throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                        "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
-                }
-                file.close(); // close the file, we read the content already
-
-                // read the already existing updates xml content
-                const QDomNodeList children = root.childNodes();
-                QHash <QString, QInstallerTools::PackageInfo> hash;
-                for (int i = 0; i < children.count(); ++i) {
-                    const QDomElement el = children.at(i).toElement();
-                    if ((!el.isNull()) && (el.tagName() == QLatin1String("PackageUpdate"))) {
-                        QInstallerTools::PackageInfo info;
-                        const QDomNodeList c2 = el.childNodes();
-                        for (int j = 0; j < c2.count(); ++j) {
-                            if (c2.at(j).toElement().tagName() == scName)
-                                info.name = c2.at(j).toElement().text();
-                            else if (c2.at(j).toElement().tagName() == scVersion)
-                                info.version = c2.at(j).toElement().text();
-                        }
-                        hash.insert(info.name, info);
-                    }
-                }
-
-                // remove all components that have no update (decision based on the version tag)
-                for (int i = packages.count() - 1; i >= 0; --i) {
-                    const QInstallerTools::PackageInfo info = packages.at(i);
-
-                    // check if component already exists & version did not change
-                    if (hash.contains(info.name) && KDUpdater::compareVersion(info.version, hash.value(info.name).version) < 1) {
-                        packages.remove(i); // the version did not change, no need to update the component
-                        continue;
-                    }
-                    std::cout << QString::fromLatin1("Update component \"%1\" in \"%2\".")
-                        .arg(info.name, repositoryDir) << std::endl;
-                }
-
-                if (packages.isEmpty()) {
-                    std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
-                        .arg(repositoryDir) << std::endl;
-                    return EXIT_SUCCESS;
-                }
-            }
+             QInstallerTools::filterNewComponents(repositoryDir, packages);
+             if (packages.isEmpty()) {
+                 std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
+                     .arg(repositoryDir) << std::endl;
+                 return EXIT_SUCCESS;
+             }
         }
 
         QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
@@ -296,13 +267,23 @@ int main(int argc, char** argv)
         QStringList directories;
         directories.append(packagesDirectories);
         directories.append(repositoryDirectories);
+        QStringList unite7zFiles;
+        foreach (const QString &repositoryDirectory, repositoryDirectories) {
+            QDirIterator it(repositoryDirectory, QStringList(QLatin1String("*_meta.7z"))
+                            , QDir::Files | QDir::CaseSensitive);
+            while (it.hasNext()) {
+                it.next();
+                unite7zFiles.append(it.fileInfo().absoluteFilePath());
+            }
+        }
         QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
-            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
         QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping,
                                                  createComponentMetadata, createUnifiedMetadata);
 
-        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml")), QDir::Files | QDir::CaseSensitive);
+        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml"))
+                        << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
         while (it.hasNext()) {
             it.next();
             QFile::remove(it.fileInfo().absoluteFilePath());

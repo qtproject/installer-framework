@@ -1,0 +1,35 @@
+<RCC>
+    <qresource prefix="/">
+        <file>packages/A/data/A.txt</file>
+        <file>packages/A/meta/package.xml</file>
+        <file>packages/A/meta/script1.0.0.qs</file>
+        <file>packages/B/data/B.txt</file>
+        <file>packages/B/meta/package.xml</file>
+        <file>packages_update/A/data/A_update.txt</file>
+        <file>packages_update/A/meta/package.xml</file>
+        <file>packages_update/A/meta/script2.0.0.qs</file>
+        <file>packages_update/B/data/B_update.txt</file>
+        <file>packages_update/B/meta/package.xml</file>
+        <file>repository_component/A/2.0.0content.7z</file>
+        <file>repository_component/A/2.0.0content.7z.sha1</file>
+        <file>repository_component/A/2.0.0meta.7z</file>
+        <file>repository_component/B/1.0.0content.7z</file>
+        <file>repository_component/B/1.0.0content.7z.sha1</file>
+        <file>repository_component/B/1.0.0meta.7z</file>
+        <file>repository_component/Updates.xml</file>
+        <file>repository_componentAndUnite/A/2.0.0content.7z</file>
+        <file>repository_componentAndUnite/A/2.0.0content.7z.sha1</file>
+        <file>repository_componentAndUnite/A/2.0.0meta.7z</file>
+        <file>repository_componentAndUnite/B/1.0.0content.7z</file>
+        <file>repository_componentAndUnite/B/1.0.0content.7z.sha1</file>
+        <file>repository_componentAndUnite/B/1.0.0meta.7z</file>
+        <file>repository_componentAndUnite/2020-10-13-0958_meta.7z</file>
+        <file>repository_componentAndUnite/Updates.xml</file>
+        <file>repository_unite/A/2.0.0content.7z</file>
+        <file>repository_unite/A/2.0.0content.7z.sha1</file>
+        <file>repository_unite/B/1.0.0content.7z</file>
+        <file>repository_unite/B/1.0.0content.7z.sha1</file>
+        <file>repository_unite/2020-10-13-0958_meta.7z</file>
+        <file>repository_unite/Updates.xml</file>
+    </qresource>
+</RCC>
