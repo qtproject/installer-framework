@@ -307,7 +307,7 @@
             \li rm, remove <pkg ...>
             \li Uninstall selected packages and their child components.
         \row
-            \li li, list
+            \li li, list <regexp>
             \li List information about currently installed packages.
         \row
             \li se, search <regexp>

@@ -441,7 +441,8 @@
     \section1 Listing Installed Components
 
     To get a list and print additional information about currently installed components, run the
-    \c list command with the maintenance tool:
+    \c list command with the maintenance tool. The command also accepts an optional regular
+    expression argument to filter the shown component list.
 
     \code
     maintenancetool.exe list

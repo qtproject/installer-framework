@@ -130,7 +130,10 @@ int CommandLineInterface::listInstalledPackages()
         return EXIT_FAILURE;
     }
     m_core->setPackageManager();
-    m_core->listInstalledPackages();
+    QString regexp;
+    if (!m_positionalArguments.isEmpty())
+        regexp = m_positionalArguments.first();
+    m_core->listInstalledPackages(regexp);
     return EXIT_SUCCESS;
 }
 

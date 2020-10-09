@@ -2242,16 +2242,23 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
 }
 
 /*!
-    Lists installed packages without GUI.
+    Lists installed packages without GUI. List of packages can be filtered with \a regexp.
 */
-void PackageManagerCore::listInstalledPackages()
+void PackageManagerCore::listInstalledPackages(const QString &regexp)
 {
     LocalPackagesHash installedPackages = this->localInstalledPackages();
+
+    if (!regexp.isEmpty()) {
+        qCDebug(QInstaller::lcInstallerInstallLog)
+            << "Searching packages with regular expression:" << regexp;
+    }
+    const QRegularExpression re(regexp);
 
     const QStringList &keys = installedPackages.keys();
     foreach (const QString &key, keys) {
         KDUpdater::LocalPackage package = installedPackages.value(key);
-        d->printLocalPackageInformation(package);
+        if (re.match(package.name).hasMatch())
+            d->printLocalPackageInformation(package);
     }
 }
 

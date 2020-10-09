@@ -166,6 +166,10 @@ private slots:
         QTest::ignoreMessage(QtDebugMsg, "Id: A");
         QTest::ignoreMessage(QtDebugMsg, "Id: B");
         core.listInstalledPackages();
+
+        QTest::ignoreMessage(QtDebugMsg, "Id: A");
+        core.listInstalledPackages(QLatin1String("A"));
+
         QDir dir(testDirectory);
         QVERIFY(dir.removeRecursively());
     }

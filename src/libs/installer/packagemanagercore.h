@@ -233,7 +233,7 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
-    void listInstalledPackages();
+    void listInstalledPackages(const QString &regexp = QString());
     void listAvailablePackages(const QString &regexp);
     PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
     PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
