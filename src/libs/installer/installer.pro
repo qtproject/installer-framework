@@ -69,6 +69,8 @@ HEADERS += packagemanagercore.h \
     installiconsoperation.h \
     selfrestartoperation.h \
     postoperation.h \
+    httpthreadcontroller.h \
+    httpthreadworker.h \
     settings.h \
     permissionsettings.h \
     downloadarchivesjob.h \
@@ -163,6 +165,8 @@ SOURCES += packagemanagercore.cpp \
     installiconsoperation.cpp \
     selfrestartoperation.cpp \
     postoperation.cpp \
+    httpthreadcontroller.cpp \
+    httpthreadworker.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
