@@ -45,6 +45,15 @@ class QIODevice;
 QT_END_NAMESPACE
 
 namespace QInstaller {
+
+    enum INSTALLER_EXPORT VerbosityLevel {
+        Silent = 0,
+        Normal = 1,
+        Detailed = 2,
+        Minimum = Silent,
+        Maximum = Detailed
+    };
+
     void INSTALLER_EXPORT uiDetachedWait(int ms);
     bool INSTALLER_EXPORT startDetached(const QString &program, const QStringList &arguments,
         const QString &workingDirectory, qint64 *pid = 0);
@@ -65,7 +74,7 @@ namespace QInstaller {
 
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
-    uint INSTALLER_EXPORT verboseLevel();
+    VerbosityLevel INSTALLER_EXPORT verboseLevel();
 
     QStringList INSTALLER_EXPORT checkMutualOptions(CommandLineParser &parser, const QStringList &options);
 
@@ -106,6 +115,8 @@ namespace QInstaller {
         QString currentDateTimeAsString;
     };
 
+    VerbosityLevel &operator++(VerbosityLevel &level, int);
+    VerbosityLevel &operator--(VerbosityLevel &level, int);
 }
 
 #endif // QINSTALLER_UTILS_H

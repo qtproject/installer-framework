@@ -32,6 +32,7 @@
 #include "protocol.h"
 #include "repository.h"
 #include "qinstallerglobal.h"
+#include "utils.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -267,7 +268,7 @@ public:
     bool isVerbose() const;
     void setVerbose(bool on);
 
-    uint verboseLevel() const;
+    VerbosityLevel verboseLevel() const;
 
     Q_INVOKABLE bool gainAdminRights();
     Q_INVOKABLE void dropAdminRights();

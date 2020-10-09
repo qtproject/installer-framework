@@ -447,7 +447,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
-        if (m_core->verboseLevel() > 1) {
+        if (m_core->verboseLevel() == VerbosityLevel::Detailed) {
             foreach (QInstaller::Component *component, components) {
                 const QStringList warnings = ComponentChecker::checkComponent(component);
                 foreach (const QString &warning, warnings)

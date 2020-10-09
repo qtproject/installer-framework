@@ -70,6 +70,19 @@
 */
 
 /*!
+    \enum QInstaller::VerbosityLevel
+    \brief This enum holds the possible levels of output verbosity.
+
+    \value Silent
+    \value Normal
+    \value Detailed
+    \value Minimum
+           Minimum possible verbosity level. Synonym for \c VerbosityLevel::Silent.
+    \value Maximum
+           Maximum possible verbosity level. Synonym for \c VerbosityLevel::Detailed.
+*/
+
+/*!
     \internal
 */
 void QInstaller::uiDetachedWait(int ms)
@@ -152,7 +165,7 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
 }
 
 
-static uint verbLevel = 0;
+static QInstaller::VerbosityLevel verbLevel = QInstaller::VerbosityLevel::Silent;
 
 /*!
     Sets to verbose output if \a v is set to \c true. Calling this multiple
@@ -162,7 +175,7 @@ void QInstaller::setVerbose(bool v)
 {
     if (v)
         verbLevel++;
-    else if (verbLevel > 0)
+    else
         verbLevel--;
 }
 
@@ -171,13 +184,13 @@ void QInstaller::setVerbose(bool v)
 */
 bool QInstaller::isVerbose()
 {
-    return verbLevel > 0 ? true : false;
+    return verbLevel != VerbosityLevel::Silent;
 }
 
 /*!
     Returns the current verbosity level.
 */
-uint QInstaller::verboseLevel()
+QInstaller::VerbosityLevel QInstaller::verboseLevel()
 {
     return verbLevel;
 }
@@ -529,3 +542,33 @@ QString QInstaller::windowsErrorString(int errorCode)
 }
 
 #endif
+
+/*!
+    \internal
+
+    Increments verbosity \a level.
+*/
+QInstaller::VerbosityLevel &QInstaller::operator++(QInstaller::VerbosityLevel &level, int)
+{
+    const int i = static_cast<int>(level) + 1;
+    level = (i > VerbosityLevel::Maximum)
+        ? VerbosityLevel::Maximum
+        : static_cast<VerbosityLevel>(i);
+
+    return level;
+}
+
+/*!
+    \internal
+
+    Decrements verbosity \a level.
+*/
+QInstaller::VerbosityLevel &QInstaller::operator--(QInstaller::VerbosityLevel &level, int)
+{
+    const int i = static_cast<int>(level) - 1;
+    level = (i < VerbosityLevel::Minimum)
+        ? VerbosityLevel::Minimum
+        : static_cast<VerbosityLevel>(i);
+
+    return level;
+}

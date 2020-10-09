@@ -169,7 +169,7 @@ public:
                                         "ifw.package.displayname = true\n");
         }
 
-        if (QInstaller::verboseLevel() > 1) {
+        if (QInstaller::verboseLevel() == QInstaller::VerbosityLevel::Detailed) {
             loggingRules += QLatin1String("\nifw.developer.build = true\n"
                                           "ifw.package.* = true\n");
         }

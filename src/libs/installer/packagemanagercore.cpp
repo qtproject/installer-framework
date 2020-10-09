@@ -43,7 +43,6 @@
 #include "remoteclient.h"
 #include "remotefileengine.h"
 #include "settings.h"
-#include "utils.h"
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
 
@@ -3057,7 +3056,7 @@ bool PackageManagerCore::isVerbose() const
 /*!
     Returns verbose level.
 */
-uint PackageManagerCore::verboseLevel() const
+VerbosityLevel PackageManagerCore::verboseLevel() const
 {
     return QInstaller::verboseLevel();
 }
@@ -3389,7 +3388,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         component->setUninstalled();
         const QString localPath = component->localTempPath();
-        if (verboseLevel() > 1) {
+        if (verboseLevel() == VerbosityLevel::Detailed) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
                 qCDebug(QInstaller::lcDeveloperBuild()) << "Url is:" << localPath;

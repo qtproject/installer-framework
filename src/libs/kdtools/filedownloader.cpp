@@ -31,6 +31,7 @@
 #include "ui_authenticationdialog.h"
 
 #include "fileutils.h"
+#include "utils.h"
 
 #include <QDialog>
 #include <QDir>
@@ -1398,7 +1399,9 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         if (d->http == 0)
             return;
         const QUrl url = d->http->url();
-        if (url.isValid() && QInstaller::lcServer().isDebugEnabled()){
+        // Only print host information when the logging category is enabled
+        // and output verbosity is set above standard level.
+        if (url.isValid() && QInstaller::lcServer().isDebugEnabled() && verboseLevel() == VerbosityLevel::Detailed) {
             const QFileInfo fi(d->http->url().toString());
             if (fi.suffix() != QLatin1String("sha1")){
                 const QString hostName = url.host();
