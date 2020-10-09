@@ -43,6 +43,7 @@ win32:QT += winextras
 HEADERS += eventlogger.h \
     httpthreadcontroller.h \
     httpthreadworker.h \
+    installereventoperation.h \
     postoperation.h \
     eve_launcher/application.pb.h \
     eve_launcher/installer.pb.h \
@@ -145,6 +146,7 @@ HEADERS += eventlogger.h \
 SOURCES += eventlogger.cpp \
     httpthreadcontroller.cpp \
     httpthreadworker.cpp \
+    installereventoperation.cpp \
     postoperation.cpp \
     eve_launcher/application.pb.cc \
     eve_launcher/installer.pb.cc \
