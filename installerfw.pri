@@ -140,3 +140,12 @@ equals(TEMPLATE, app) {
     win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }
+
+# Protobuf
+LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
+INCLUDEPATH += $$PWD/src/libs/protobuf/include
+
+# Platform detection module
+LIBS += -L$$PWD/src/libs/pdm/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
+INCLUDEPATH += $$PWD/src/libs/pdm/include
+INCLUDEPATH += $$PWD/src/libs/pdm/include/generated
