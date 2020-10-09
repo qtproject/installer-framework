@@ -40,7 +40,14 @@ QT += \
     qml-private
 win32:QT += winextras
 
-HEADERS += packagemanagercore.h \
+HEADERS += eventlogger.h \
+    httpthreadcontroller.h \
+    httpthreadworker.h \
+    postoperation.h \
+    eve_launcher/application.pb.h \
+    eve_launcher/installer.pb.h \
+    eve_launcher/uninstaller.pb.h \
+    packagemanagercore.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -68,9 +75,6 @@ HEADERS += packagemanagercore.h \
     environmentvariablesoperation.h \
     installiconsoperation.h \
     selfrestartoperation.h \
-    postoperation.h \
-    httpthreadcontroller.h \
-    httpthreadworker.h \
     settings.h \
     permissionsettings.h \
     downloadarchivesjob.h \
@@ -138,7 +142,14 @@ HEADERS += packagemanagercore.h \
     repositorycategory.h \
     componentselectionpage_p.h
 
-SOURCES += packagemanagercore.cpp \
+SOURCES += eventlogger.cpp \
+    httpthreadcontroller.cpp \
+    httpthreadworker.cpp \
+    postoperation.cpp \
+    eve_launcher/application.pb.cc \
+    eve_launcher/installer.pb.cc \
+    eve_launcher/uninstaller.pb.cc \
+    packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
@@ -164,9 +175,6 @@ SOURCES += packagemanagercore.cpp \
     environmentvariablesoperation.cpp \
     installiconsoperation.cpp \
     selfrestartoperation.cpp \
-    postoperation.cpp \
-    httpthreadcontroller.cpp \
-    httpthreadworker.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
