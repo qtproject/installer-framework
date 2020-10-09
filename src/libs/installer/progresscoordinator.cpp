@@ -329,5 +329,5 @@ void ProgressCoordinator::printProgressPercentage(int progress)
 
 void ProgressCoordinator::printProgressMessage(const QString &message)
 {
-    qCDebug(QInstaller::lcInstallerInstallLog) << message;
+    qCDebug(QInstaller::lcInstallerInstallLog).nospace().noquote() << message;
 }
