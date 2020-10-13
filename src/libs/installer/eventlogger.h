@@ -84,7 +84,9 @@ protected:
     eve_launcher::application::EventMetadata* getEventMetadata();
 
     void sendAllocatedEvent(google::protobuf::Message* payload);
-    std::string toJSON(::google::protobuf::Message* event);
+    QString EventLogger::getGatewayUrl();
+    QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message);
+    std::string toJson(::google::protobuf::Message* event);
     bool replace(std::string& str, const std::string& from, const std::string& to);
 
     eve_launcher::application::Application_Region s_region;

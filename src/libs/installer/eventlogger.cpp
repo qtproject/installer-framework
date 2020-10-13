@@ -89,15 +89,28 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     // todo: Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
     // bytes journey = 7;
 
-    std::string jsonEvent = toJSON(&event);
-    QByteArray byteEvent = QByteArray::fromStdString(jsonEvent);
-
-    // todo: choose url based on region
+    // QString url = getGatewayUrl();
     QString url = QString::fromLatin1("https://localhost:5001/weatherforecast");
+    QByteArray byteEvent = toJsonByteArray(&event);
     m_httpThreadController->postTelemetry(byteEvent, url);
 }
 
-std::string EventLogger::toJSON(google::protobuf::Message* message)
+QString EventLogger::getGatewayUrl()
+{
+    bool dev = s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
+    bool china = s_region == eve_launcher::application::Application_Region_REGION_CHINA;
+    QString subDomain = dev ? QString::fromLatin1("dev") : QString::fromLatin1("live");
+    QString domain = china ? QString::fromLatin1("evepc.163.com") : QString::fromLatin1("evetech.net");
+    return QString(QLatin1String("https://%1.%2/v1/event/publish")).arg(subDomain).arg(domain);
+}
+
+QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message)
+{
+    std::string json = toJson(message);
+    return QByteArray::fromStdString(json);
+}
+
+std::string EventLogger::toJson(google::protobuf::Message* message)
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
