@@ -89,8 +89,7 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     // todo: Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
     // bytes journey = 7;
 
-    // QString url = getGatewayUrl();
-    QString url = QString::fromLatin1("https://localhost:5001/weatherforecast");
+    QString url = getGatewayUrl();
     QByteArray byteEvent = toJsonByteArray(&event);
     m_httpThreadController->postTelemetry(byteEvent, url);
 }
@@ -101,7 +100,7 @@ QString EventLogger::getGatewayUrl()
     bool china = s_region == eve_launcher::application::Application_Region_REGION_CHINA;
     QString subDomain = dev ? QString::fromLatin1("dev") : QString::fromLatin1("live");
     QString domain = china ? QString::fromLatin1("evepc.163.com") : QString::fromLatin1("evetech.net");
-    return QString(QLatin1String("https://%1.%2/v1/event/publish")).arg(subDomain).arg(domain);
+    return QString(QLatin1String("https://%1.%2:8081/v1/event/publish")).arg(subDomain).arg(domain);
 }
 
 QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message)
