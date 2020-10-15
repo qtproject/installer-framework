@@ -290,6 +290,9 @@ private slots:
 
     void testAllowRunningProcess()
     {
+        #ifdef Q_OS_MACOS
+            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
+        #endif
         PackageManagerCore core;
         core.setPackageManager();
         const QString testDirectory = QInstaller::generateTemporaryFileName();
@@ -309,6 +312,9 @@ private slots:
 
     void testDisallowRunningProcess()
     {
+        #ifdef Q_OS_MACOS
+            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
+        #endif
         PackageManagerCore core;
         core.setPackageManager();
         const QString testDirectory = QInstaller::generateTemporaryFileName();
