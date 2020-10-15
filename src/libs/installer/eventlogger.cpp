@@ -64,14 +64,9 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     // Set the timestamp
     event.set_allocated_occurred(getTimestamp());
 
-    // Populated by the gateway so we skip it
-    // google.protobuf.Timestamp received = 2;
+    // When we move over to eve_public domain, we will need to provide a uuid
 
-    // todo: Create a uuid
-    // bytes uuid = 3; 
-
-    // Populated by the gateway so we skip it
-    // IPAddress ip_address = 4;
+    // Set the tenant
     if (s_region == eve_launcher::application::Application_Region_REGION_CHINA)
     {
         event.set_tenant("Serenity");
@@ -86,8 +81,7 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     any->PackFrom(*payload);
     event.set_allocated_payload(any);
 
-    // todo: Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
-    // bytes journey = 7;
+    // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
 
     QString url = getGatewayUrl();
     QByteArray byteEvent = toJsonByteArray(&event);

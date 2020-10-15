@@ -20,8 +20,6 @@ void InstallerEventOperation::backup()
 
 bool InstallerEventOperation::performOperation()
 {
-    // todo: Make sure we have the correct number of arguments
-
     const QStringList args = arguments();
     const QString action = args.at(0);
 
@@ -48,9 +46,6 @@ bool InstallerEventOperation::performOperation()
 //   4. provider: "none" | "A" | "B" | ...
 bool InstallerEventOperation::sendInit(QStringList args)
 {
-    // if (!checkArgumentCount(5, 5, tr(" ([\"init\"|message type], [\"china\"|\"world\"] (init only), version (init only), [\"release\"|\"dev\"] (init only), [\"none\"|\"A\"|...] (init only))")))
-    //     return false;
-
     // Get region
     eve_launcher::application::Application_Region region = eve_launcher::application::Application_Region_REGION_WORLD;
     if (args.at(1) == QString::fromLatin1("china"))

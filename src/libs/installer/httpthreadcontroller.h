@@ -19,7 +19,6 @@ public:
 
 signals:
     void postTelemetry(const QByteArray&, const QString&);
-public slots:
 };
 
 #endif // HTTPTHREADCONTROLLER_H

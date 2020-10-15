@@ -17,7 +17,8 @@ public slots:
     void process(const QByteArray& data, const QString& url);
 private:
     QSharedPointer<QNetworkAccessManager> m_network;
-    int m_started, m_finished;
+    int m_started;
+    int m_finished;
 };
 
 #endif // HTTPTHREADCONTEXT_H
