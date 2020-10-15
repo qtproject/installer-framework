@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
             && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     }
+    QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
 #endif
     // increase maximum numbers of file descriptors
 #if defined(Q_OS_MACOS)
