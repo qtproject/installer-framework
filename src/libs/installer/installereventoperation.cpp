@@ -21,7 +21,7 @@ void InstallerEventOperation::backup()
 bool InstallerEventOperation::performOperation()
 {
     // todo: Make sure we have the correct number of arguments
-    
+
     const QStringList args = arguments();
     const QString action = args.at(0);
 
@@ -52,39 +52,26 @@ bool InstallerEventOperation::sendInit(QStringList args)
     //     return false;
 
     // Get region
-    eve_launcher::application::Application_Region region;
+    eve_launcher::application::Application_Region region = eve_launcher::application::Application_Region_REGION_WORLD;
     if (args.at(1) == QString::fromLatin1("china"))
     {
         region = eve_launcher::application::Application_Region_REGION_CHINA;
-    }
-    else
-    {
-        region = eve_launcher::application::Application_Region_REGION_WORLD;
     }
 
     // Get version
     QString version = args.at(2);
 
     // Get build type
-    eve_launcher::application::Application_BuildType buildType;
+    eve_launcher::application::Application_BuildType buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
     if (args.at(3) == QString::fromLatin1("release"))
     {
         buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE;
     }
-    else
-    {
-        buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
-    }
 
     // Get provider
-    bool provider;
-    QString providerName;
-    if (args.at(4) == QString::fromLatin1("none"))
-    {
-        provider = false;
-        providerName = QString::fromLatin1("");
-    }
-    else
+    bool provider = false;
+    QString providerName = QString::fromLatin1("");
+    if (args.at(4) != QString::fromLatin1("none"))
     {
         provider = true;
         providerName = args.at(4);
