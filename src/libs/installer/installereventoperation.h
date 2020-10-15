@@ -22,6 +22,7 @@ private:
     bool sendInit(QStringList args);
     bool sendInstallerEvent(QStringList args);
     bool sendUninstallerEvent(QStringList args);
+    bool m_initSuccessful;
 };
 
 } // namespace
