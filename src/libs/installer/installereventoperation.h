@@ -2,6 +2,7 @@
 #define INSTALLEREVENTOPERATION_H
 
 #include "qinstallerglobal.h"
+#include "eventlogger.h"
 
 #include <QtCore/QObject>
 
@@ -23,8 +24,11 @@ private:
     bool sendInstallerEvent(QStringList args);
     bool sendUninstallerEvent(QStringList args);
     bool m_initSuccessful;
+    eve_launcher::uninstaller::Page toUninstallerPage(bool *ok, QString value);
+    eve_launcher::installer::Page toInstallerPage(bool *ok, QString value);
+    eve_launcher::installer::Component toInstallerComponent(bool *ok, QString value);
+    eve_launcher::installer::RedistVersion toInstallerRedistVersion(bool *ok, QString value);
 };
-
 } // namespace
 
 #endif
