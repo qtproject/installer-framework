@@ -153,44 +153,42 @@ private slots:
         const QByteArray message(10905, '0');
 
         QLocalServer server;
-        { // server
-            QLocalSocket *rcv = 0;
-            auto srvDataArrived = [&]() {
-                QByteArray command, message;
-                if (!receivePacket(rcv, &command, &message))
-                    return;
-                sendPacket(rcv, command, message);
-            };
+        // server
+        QLocalSocket *rcv = 0;
+        auto srvDataArrived = [&]() {
+            QByteArray command, message;
+            if (!receivePacket(rcv, &command, &message))
+                return;
+            sendPacket(rcv, command, message);
+        };
 
-            connect(&server, &QLocalServer::newConnection, [&,srvDataArrived]() {
-                rcv = server.nextPendingConnection();
-                connect(rcv, &QLocalSocket::readyRead, srvDataArrived);
-            });
+        connect(&server, &QLocalServer::newConnection, [&,srvDataArrived]() {
+            rcv = server.nextPendingConnection();
+            connect(rcv, &QLocalSocket::readyRead, srvDataArrived);
+        });
 
-            server.listen(socketName);
-        }
+        server.listen(socketName);
 
 
         QLocalSocket snd;
-        { // client
-            auto clientDataArrived = [&]() {
-                QByteArray cmd, msg;
-                if (!receivePacket(&snd, &cmd, &msg))
-                    return;
-                QCOMPARE(cmd, command);
-                QCOMPARE(msg, message);
-                loop.exit();
-            };
+        // client
+        auto clientDataArrived = [&]() {
+            QByteArray cmd, msg;
+            if (!receivePacket(&snd, &cmd, &msg))
+                return;
+            QCOMPARE(cmd, command);
+            QCOMPARE(msg, message);
+            loop.exit();
+        };
 
-            connect(&snd, &QLocalSocket::readyRead, clientDataArrived);
+        connect(&snd, &QLocalSocket::readyRead, clientDataArrived);
 
-            QTimer::singleShot(0, [&]() {
-                snd.connect(&snd, &QLocalSocket::connected, [&](){
-                    sendPacket(&snd,  command, message);
-                });
-                snd.connectToServer(socketName);
+        QTimer::singleShot(0, [&]() {
+            snd.connect(&snd, &QLocalSocket::connected, [&](){
+                sendPacket(&snd,  command, message);
             });
-        }
+            snd.connectToServer(socketName);
+        });
 
         loop.exec();
     }
