@@ -88,7 +88,7 @@ bool InstallerEventOperation::sendInit(QStringList args)
     return true;
 }
 
-eve_launcher::uninstaller::Page toUninstallerPage(bool *ok, QString value)
+eve_launcher::uninstaller::Page InstallerEventOperation::toUninstallerPage(bool *ok, QString value)
 {
     int id = value.toInt(ok);
     if (!*ok) return eve_launcher::uninstaller::PAGE_UNSPECIFIED;
@@ -97,7 +97,7 @@ eve_launcher::uninstaller::Page toUninstallerPage(bool *ok, QString value)
     return static_cast<eve_launcher::uninstaller::Page>(id);
 }
 
-eve_launcher::installer::Page toInstallerPage(bool *ok, QString value)
+eve_launcher::installer::Page InstallerEventOperation::toInstallerPage(bool *ok, QString value)
 {
     int id = value.toInt(ok);
     if (!*ok) return eve_launcher::installer::PAGE_UNSPECIFIED;
@@ -106,7 +106,7 @@ eve_launcher::installer::Page toInstallerPage(bool *ok, QString value)
     return static_cast<eve_launcher::installer::Page>(id);
 }
 
-eve_launcher::installer::Component toInstallerComponent(bool *ok, QString value)
+eve_launcher::installer::Component InstallerEventOperation::toInstallerComponent(bool *ok, QString value)
 {
     int id = value.toInt(ok);
     if (!*ok) return eve_launcher::installer::COMPONENT_UNSPECIFIED;
@@ -115,7 +115,7 @@ eve_launcher::installer::Component toInstallerComponent(bool *ok, QString value)
     return static_cast<eve_launcher::installer::Component>(id);
 }
 
-eve_launcher::installer::RedistVersion toInstallerRedistVersion(bool *ok, QString value)
+eve_launcher::installer::RedistVersion InstallerEventOperation::toInstallerRedistVersion(bool *ok, QString value)
 {
     int id = value.toInt(ok);
     if (!*ok) return eve_launcher::installer::REDISTVERSION_UNSPECIFIED;
