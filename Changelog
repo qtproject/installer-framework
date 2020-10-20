@@ -1,4 +1,9 @@
 4.0.0
+- Fix essential update (QTIFW-1970)
+- Print package id when running checkupdates (QTIFW-1972)
+- Update documentation to support clang
+- Allow setting BackgroundPixmap shown on MacStyle regardless of platform (QTIFW-1175)
+- Hide detailed verbose with lowest verbose level
 - Add support for vendor set image decoration (QTIFW-1900)
 - Add verbose levels (QTIFW-1914)
 - CLI: Ask user confirmation before performing installer actions (QTIFW-1834)
