@@ -47,6 +47,9 @@
 #include "licenseoperation.h"
 #include "settingsoperation.h"
 #include "consumeoutputoperation.h"
+
+// Our custom operations
+#include "installereventoperation.h"
 #include "postoperation.h"
 
 #include "lib7z_facade.h"
@@ -166,6 +169,9 @@ void QInstaller::init()
     factory.registerUpdateOperation<LicenseOperation>(QLatin1String("License"));
     factory.registerUpdateOperation<ConsumeOutputOperation>(QLatin1String("ConsumeOutput"));
     factory.registerUpdateOperation<SettingsOperation>(QLatin1String("Settings"));
+
+    // Our custom operations
+    factory.registerUpdateOperation<InstallerEventOperation>(QLatin1String("InstallerEvent"));
     factory.registerUpdateOperation<PostOperation>(QLatin1String("Post"));
 
     FileDownloaderFactory::setFollowRedirects(true);
