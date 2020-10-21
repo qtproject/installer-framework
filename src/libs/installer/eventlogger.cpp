@@ -26,7 +26,7 @@ EventLogger::EventLogger()
 
     m_sessionId = hasher.result();
 
-    std::string osUuidString = PDM::GetMachineUuid();
+    std::string osUuidString = PDM::GetMachineUuidString();
     QUuid osUuid = QUuid::fromString(QString::fromStdString(osUuidString));
     m_operatingSystemUuid = osUuid.toRfc4122();
 
