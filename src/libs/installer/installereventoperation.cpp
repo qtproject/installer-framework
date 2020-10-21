@@ -154,18 +154,6 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
 
         EventLogger::instance()->uninstallerPageDisplayed(previousPage, currentPage, flow);
     }
-    else if (event == QString::fromLatin1("UserCancelled") && args.size() == 4)
-    {
-        auto page = toUninstallerPage(&ok, args.at(2));
-        if (!ok) return false;
-
-        id = args.at(3).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::uninstaller::UserCancelled_Progress_IsValid(id)) return false;
-        auto progress = static_cast<eve_launcher::uninstaller::UserCancelled_Progress>(id);
-
-        EventLogger::instance()->uninstallerUserCancelled(page, progress);
-    }
     else if (event == QString::fromLatin1("ShutDown") && args.size() == 5)
     {
         auto page = toUninstallerPage(&ok, args.at(2));
@@ -268,18 +256,6 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         auto flow = static_cast<eve_launcher::installer::PageDisplayed_FlowDirection>(id);
 
         EventLogger::instance()->installerPageDisplayed(previousPage, currentPage, flow);
-    }
-    else if (event == QString::fromLatin1("UserCancelled") && args.size() == 4)
-    {
-        auto page = toInstallerPage(&ok, args.at(2));
-        if (!ok) return false;
-
-        id = args.at(3).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::installer::UserCancelled_Progress_IsValid(id)) return false;
-        auto progress = static_cast<eve_launcher::installer::UserCancelled_Progress>(id);
-
-        EventLogger::instance()->installerUserCancelled(page, progress);
     }
     else if (event == QString::fromLatin1("ShutDown") && args.size() == 5)
     {

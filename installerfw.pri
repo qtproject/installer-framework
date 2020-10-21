@@ -144,7 +144,7 @@ equals(TEMPLATE, app) {
 # Protobuf
 # LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
 # INCLUDEPATH += $$PWD/src/libs/protobuf/include
-PROTOBUF_PATH = /eve_installer/protobuf/v3.6.0
+PROTOBUF_PATH = c:/eve_installer/protobuf/v3.6.0
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
 INCLUDEPATH += $$PROTOBUF_PATH/include
 
@@ -152,7 +152,7 @@ INCLUDEPATH += $$PROTOBUF_PATH/include
 # LIBS += -L$$PWD/src/libs/pdm/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
 # INCLUDEPATH += $$PWD/src/libs/pdm/include
 # INCLUDEPATH += $$PWD/src/libs/pdm/include/generated
-PDM_PATH = /eve_installer/pdm-proto
+PDM_PATH = c:/eve_installer/pdm-proto
 LIBS += -L$$PDM_PATH/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
 INCLUDEPATH += $$PDM_PATH/include
 INCLUDEPATH += $$PDM_PATH/include/generated

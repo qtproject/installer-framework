@@ -20,7 +20,6 @@ public:
     // uninstaller
     void uninstallerStarted(int duration);
     void uninstallerPageDisplayed(eve_launcher::uninstaller::Page previousPage, eve_launcher::uninstaller::Page currentPage, eve_launcher::uninstaller::PageDisplayed_FlowDirection flow);
-    void uninstallerUserCancelled(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::UserCancelled_Progress progress);
     void uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::ShutDown_State state, bool finishButton);
     void uninstallerDetailsDisplayed();
     void uninstallerDetailsHidden();
@@ -34,7 +33,6 @@ public:
     // installer
     void installerStarted(int duration);
     void installerPageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow);
-    void installerUserCancelled(eve_launcher::installer::Page page, eve_launcher::installer::UserCancelled_Progress progress);
     void installerShutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton);
     void installerPreparationStarted();
     void installerPreparationFinished(int duration);
@@ -84,8 +82,8 @@ protected:
     eve_launcher::application::EventMetadata* getEventMetadata();
 
     void sendAllocatedEvent(google::protobuf::Message* payload);
-    QString EventLogger::getGatewayUrl();
-    QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message);
+    QString getGatewayUrl();
+    QByteArray toJsonByteArray(google::protobuf::Message* message);
     std::string toJson(::google::protobuf::Message* event);
     bool replace(std::string& str, const std::string& from, const std::string& to);
 
