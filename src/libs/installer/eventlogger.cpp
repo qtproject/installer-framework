@@ -199,9 +199,9 @@ void EventLogger::uninstallerPageDisplayed(eve_launcher::uninstaller::Page previ
 {
     auto evt = new eve_launcher::uninstaller::PageDisplayed;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_previous_page(static_cast<eve_launcher::uninstaller::Page>(previousPage));
-    evt->set_current_page(static_cast<eve_launcher::uninstaller::Page>(currentPage));
-    evt->set_flow(static_cast<eve_launcher::uninstaller::PageDisplayed_FlowDirection>(flow));
+    evt->set_previous_page(previousPage);
+    evt->set_current_page(currentPage);
+    evt->set_flow(flow);
     sendAllocatedEvent(evt);
 }
 
@@ -209,8 +209,8 @@ void EventLogger::uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_
 {
     auto evt = new eve_launcher::uninstaller::ShutDown;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_page(static_cast<eve_launcher::uninstaller::Page>(page));
-    evt->set_state(static_cast<eve_launcher::uninstaller::ShutDown_State>(state));
+    evt->set_page(page);
+    evt->set_state(state);
     evt->set_finish_button(finishButton);
     sendAllocatedEvent(evt);
     m_httpThreadController->lastChanceToFinish();
@@ -265,8 +265,8 @@ void EventLogger::uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEn
 {
     auto evt = new eve_launcher::uninstaller::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_code(static_cast<eve_launcher::uninstaller::ErrorEncountered_ErrorCode>(code));
-    evt->set_page(static_cast<eve_launcher::uninstaller::Page>(page));
+    evt->set_code(code);
+    evt->set_page(page);
     sendAllocatedEvent(evt);
 }
 
@@ -293,9 +293,9 @@ void EventLogger::installerPageDisplayed(eve_launcher::installer::Page previousP
 {
     auto evt = new eve_launcher::installer::PageDisplayed;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_previous_page(static_cast<eve_launcher::installer::Page>(previousPage));
-    evt->set_current_page(static_cast<eve_launcher::installer::Page>(currentPage));
-    evt->set_flow(static_cast<eve_launcher::installer::PageDisplayed_FlowDirection>(flow));
+    evt->set_previous_page(previousPage);
+    evt->set_current_page(currentPage);
+    evt->set_flow(flow);
     sendAllocatedEvent(evt);
 }
 
@@ -303,8 +303,8 @@ void EventLogger::installerShutDown(eve_launcher::installer::Page page, eve_laun
 {
     auto evt = new eve_launcher::installer::ShutDown;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_page(static_cast<eve_launcher::installer::Page>(page));
-    evt->set_state(static_cast<eve_launcher::installer::ShutDown_State>(state));
+    evt->set_page(page);
+    evt->set_state(state);
     evt->set_finish_button(finishButton);
     sendAllocatedEvent(evt);
     m_httpThreadController->lastChanceToFinish();
@@ -329,8 +329,8 @@ void EventLogger::installerLocationChanged(eve_launcher::installer::LocationChan
 {
     auto evt = new eve_launcher::installer::LocationChanged;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_source(static_cast<eve_launcher::installer::LocationChanged_Source>(source));
-    evt->set_provider(static_cast<eve_launcher::installer::LocationChanged_Provider>(provider));
+    evt->set_source(source);
+    evt->set_provider(provider);
     evt->set_path(path.toStdString());
     sendAllocatedEvent(evt);
 }
@@ -381,8 +381,8 @@ void EventLogger::installerRedistSearchConcluded(eve_launcher::installer::Redist
 {
     auto evt = new eve_launcher::installer::RedistSearchConcluded;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_version(static_cast<eve_launcher::installer::RedistVersion>(version));
-    evt->set_reason(static_cast<eve_launcher::installer::RedistSearchConcluded_RedistReason>(reason));
+    evt->set_version(version);
+    evt->set_reason(reason);
     sendAllocatedEvent(evt);
 }
 
@@ -404,7 +404,7 @@ void EventLogger::installerSharedCacheMessageClosed(eve_launcher::installer::Mes
 {
     auto evt = new eve_launcher::installer::SharedCacheMessageClosed;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_message_box_button(static_cast<eve_launcher::installer::MessageBoxButton>(messageBoxButton));
+    evt->set_message_box_button(messageBoxButton);
     evt->set_time_displayed(timeDisplayed);
     sendAllocatedEvent(evt);
 }
@@ -459,8 +459,8 @@ void EventLogger::installerComponentInitializationStarted(eve_launcher::installe
 {
     auto evt = new eve_launcher::installer::ComponentInitializationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(static_cast<eve_launcher::installer::Component>(component));
-    evt->set_redist_version(static_cast<eve_launcher::installer::RedistVersion>(redistVersion));
+    evt->set_component(component);
+    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
@@ -468,8 +468,8 @@ void EventLogger::installerComponentInitializationFinished(eve_launcher::install
 {
     auto evt = new eve_launcher::installer::ComponentInitializationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(static_cast<eve_launcher::installer::Component>(component));
-    evt->set_redist_version(static_cast<eve_launcher::installer::RedistVersion>(redistVersion));
+    evt->set_component(component);
+    evt->set_redist_version(redistVersion);
     evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
@@ -478,8 +478,8 @@ void EventLogger::installerComponentInstallationStarted(eve_launcher::installer:
 {
     auto evt = new eve_launcher::installer::ComponentInstallationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(static_cast<eve_launcher::installer::Component>(component));
-    evt->set_redist_version(static_cast<eve_launcher::installer::RedistVersion>(redistVersion));
+    evt->set_component(component);
+    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
@@ -487,8 +487,8 @@ void EventLogger::installerComponentInstallationFinished(eve_launcher::installer
 {
     auto evt = new eve_launcher::installer::ComponentInstallationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(static_cast<eve_launcher::installer::Component>(component));
-    evt->set_redist_version(static_cast<eve_launcher::installer::RedistVersion>(redistVersion));
+    evt->set_component(component);
+    evt->set_redist_version(redistVersion);
     evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
@@ -527,10 +527,10 @@ void EventLogger::installerErrorEncountered(eve_launcher::installer::ErrorEncoun
 {
     auto evt = new eve_launcher::installer::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_code(static_cast<eve_launcher::installer::ErrorEncountered_ErrorCode>(code));
-    evt->set_page(static_cast<eve_launcher::installer::Page>(page));
-    evt->set_component(static_cast<eve_launcher::installer::Component>(component));
-    evt->set_redist_version(static_cast<eve_launcher::installer::RedistVersion>(redistVersion));
+    evt->set_code(code);
+    evt->set_page(page);
+    evt->set_component(component);
+    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
