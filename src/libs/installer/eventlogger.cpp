@@ -205,15 +205,6 @@ void EventLogger::uninstallerPageDisplayed(eve_launcher::uninstaller::Page previ
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::uninstallerUserCancelled(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::UserCancelled_Progress progress)
-{
-    auto evt = new eve_launcher::uninstaller::UserCancelled;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_page(static_cast<eve_launcher::uninstaller::Page>(page));
-    evt->set_progress(static_cast<eve_launcher::uninstaller::UserCancelled_Progress>(progress));
-    sendAllocatedEvent(evt);
-}
-
 void EventLogger::uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::ShutDown_State state, bool finishButton)
 {
     auto evt = new eve_launcher::uninstaller::ShutDown;
@@ -305,15 +296,6 @@ void EventLogger::installerPageDisplayed(eve_launcher::installer::Page previousP
     evt->set_previous_page(static_cast<eve_launcher::installer::Page>(previousPage));
     evt->set_current_page(static_cast<eve_launcher::installer::Page>(currentPage));
     evt->set_flow(static_cast<eve_launcher::installer::PageDisplayed_FlowDirection>(flow));
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerUserCancelled(eve_launcher::installer::Page page, eve_launcher::installer::UserCancelled_Progress progress)
-{
-    auto evt = new eve_launcher::installer::UserCancelled;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_page(static_cast<eve_launcher::installer::Page>(page));
-    evt->set_progress(static_cast<eve_launcher::installer::UserCancelled_Progress>(progress));
     sendAllocatedEvent(evt);
 }
 
