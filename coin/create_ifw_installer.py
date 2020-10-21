@@ -53,15 +53,7 @@ def cd(path: str) -> Generator:
         os.chdir(oldwd)
 
 
-def get_architecture() -> str:
-    temp = platform.architecture()
-    if temp[0] and '32' in temp[0]:
-        return 'x86'
-    else:
-        return 'x86_64'
-
-
-def create_installer_package(src_dir: str, bld_dir: str, target_dir: str):
+def create_installer_package(src_dir: str, bld_dir: str, target_dir: str, target_name: str):
     print('Creating installer for Qt Installer Framework')
 
     # Temporary dir for creating installer containing the Qt Installer Framework itself
@@ -99,14 +91,9 @@ def create_installer_package(src_dir: str, bld_dir: str, target_dir: str):
     binary_creator = os.path.join(bld_dir, 'bin', 'binarycreator')
     config_file = os.path.join(src_dir, 'dist', 'config', 'config.xml')
     package_dir = os.path.join(src_dir, 'dist', 'packages')
-    target = os.path.join(target_dir, 'QtInstallerFramework' + '-' + platform.system().lower() + '-' + get_architecture())
+    target = os.path.join(target_dir, target_name)
     with cd(package_dir):
         check_call([binary_creator, '--offline-only', '-c', config_file, '-p', package_dir, target])
-
-    if sys.platform == 'linux':
-        old_target = target
-        target += '.run'
-        shutil.move(old_target, target)
 
     print('Installer package is at: {0}'.format(target))
 
@@ -116,6 +103,7 @@ if __name__ == "__main__":
     parser.add_argument("--src-dir", dest="src_dir", type=str, required=True, help="Absolute path to the installer framework source directory")
     parser.add_argument("--bld-dir", dest="bld_dir", type=str, required=True, help="Absolute path to the installer framework build directory")
     parser.add_argument("--target-dir", dest="target_dir", type=str, required=True, help="Absolute path to the generated installer target directory")
+    parser.add_argument("--target-name", dest="target_name", type=str, required=True, help="Filename for the generated installer")
 
     args = parser.parse_args(sys.argv[1:])
-    create_installer_package(args.src_dir, args.bld_dir, args.target_dir)
+    create_installer_package(args.src_dir, args.bld_dir, args.target_dir, args.target_name)
