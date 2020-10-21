@@ -2030,10 +2030,15 @@ bool PackageManagerCorePrivate::runningProcessesFound()
     //Check if there are processes running in the install
     QStringList excludeFiles = m_allowedRunningProcesses;
     excludeFiles.append(maintenanceToolName());
+
+    const QString performModeWarning = m_completeUninstall
+        ? QLatin1String("Unable to remove components.")
+        : QLatin1String("Unable to update components.");
+
     QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
     if (!runningProcesses.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerInstallLog).noquote() << "Unable to update components. Please stop these processes: "
-                 << runningProcesses << " and try again.";
+        qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << performModeWarning
+                 << " Please stop these processes: " << runningProcesses << " and try again.";
         return true;
     }
     return false;
