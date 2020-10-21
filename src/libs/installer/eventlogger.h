@@ -82,8 +82,8 @@ protected:
     eve_launcher::application::EventMetadata* getEventMetadata();
 
     void sendAllocatedEvent(google::protobuf::Message* payload);
-    QString EventLogger::getGatewayUrl();
-    QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message);
+    QString getGatewayUrl();
+    QByteArray toJsonByteArray(google::protobuf::Message* message);
     std::string toJson(::google::protobuf::Message* event);
     bool replace(std::string& str, const std::string& from, const std::string& to);
 
