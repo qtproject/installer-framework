@@ -144,7 +144,7 @@ equals(TEMPLATE, app) {
 # Protobuf
 # LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
 # INCLUDEPATH += $$PWD/src/libs/protobuf/include
-PROTOBUF_PATH = c:/eve_installer/protobuf/v3.6.0
+PROTOBUF_PATH = c:/eve_installer/protobuf
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
 INCLUDEPATH += $$PROTOBUF_PATH/include
 
