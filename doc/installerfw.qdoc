@@ -229,7 +229,7 @@
             \li --nf, --no-force-installations
             \li Allow deselecting components that are marked as forced.
         \row
-            \li --no-default-installations
+            \li --nd, --no-default-installations
             \li Deselects components that are marked as default.
         \row
             \li --ns, --no-size-checking
@@ -246,27 +246,30 @@
             \li Create a local repository inside the installation directory. This option has no
                 effect on online installers.
         \row
-            \li --accept-messages
+            \li --am, --accept-messages
             \li [CLI] Accepts all message queries without user input.
         \row
-            \li --reject-messages
+            \li --rm, --reject-messages
             \li [CLI] Rejects all message queries without user input.
         \row
-            \li --auto-answer <identifier=value>
+            \li --aa, --auto-answer <identifier=value>
             \li [CLI] Automatically answers the message queries with the message identifier and a button
                 value. Several \c{identifier=value} pairs can be given separated with a comma, for example
                 \c{--auto-answer message.id=Ok,message.id2=Cancel}.
         \row
-            \li --default-answer
+            \li --da, --default-answer
             \li [CLI] Automatically answers to message queries with their default values.
         \row
-            \li --accept-licenses
+            \li --al, --accept-licenses
             \li [CLI] Accepts all licenses without user input.
         \row
             \li --file-query <identifier=value>
             \li [CLI] Automatically sets the QFileDialog values getExistingDirectory() or
                 getOpenFileName() requested by the install script. Several \c{identifier=value} pairs can be
                 given separated with a comma, for example \c{--file-query filedialog.id=C:Temp,filedialog.id2=C:Temp2}.
+        \row
+            \li -c, --confirm-command
+            \li [CLI] Confirms starting of installation, update or removal of components without user input.
         \row
             \li -s, --script <file>
             \li Execute the script given as an argument.
