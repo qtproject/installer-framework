@@ -92,6 +92,8 @@ protected:
     eve_launcher::application::Application_BuildType s_buildType;
     bool s_provider;
     QString s_providerName;
+    bool s_initSuccessful;
+    QString s_gatewayUrl;
 };
 
 #endif // EVENTLOGGER_H

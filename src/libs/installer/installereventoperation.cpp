@@ -30,9 +30,6 @@ bool InstallerEventOperation::performOperation()
         return sendInit(args);
     }
 
-    // If we couldn't initialize the required settings, send no messages at all
-    if (!m_initSuccessful) return false;
-
     if (action == QString::fromLatin1("uninstaller"))
     {
         return sendUninstallerEvent(args);
@@ -82,8 +79,6 @@ bool InstallerEventOperation::sendInit(QStringList args)
     }
 
     EventLogger::instance()->initialize(region, version, buildType, provider, providerName);
-
-    m_initSuccessful = true;
 
     return true;
 }
