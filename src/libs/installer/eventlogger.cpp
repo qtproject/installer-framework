@@ -54,10 +54,18 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_buildType = buildType;
     s_provider = provider;
     s_providerName = providerName;
+    s_initSuccessful = true;
+    s_gatewayUrl = getGatewayUrl();
 }
 
 void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 {
+    // If we haven't managed to initialize our gateway connection, then we can't send anything
+    if (!s_initSuccessful)
+    {
+        return;
+    }
+
     // Create the event
     eve_launcher::installer::Event event;
 
@@ -82,10 +90,9 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     event.set_allocated_payload(any);
 
     // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
-
-    QString url = getGatewayUrl();
+    
     QByteArray byteEvent = toJsonByteArray(&event);
-    m_httpThreadController->postTelemetry(byteEvent, url);
+    m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
 }
 
 QString EventLogger::getGatewayUrl()
