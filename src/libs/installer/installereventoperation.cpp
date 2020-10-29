@@ -10,6 +10,7 @@ using namespace QInstaller;
 InstallerEventOperation::InstallerEventOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
+    qDebug() << "framework | InstallerEventOperation::InstallerEventOperation";
     setName(QLatin1String("InstallerEvent"));
 }
 
@@ -20,6 +21,8 @@ void InstallerEventOperation::backup()
 bool InstallerEventOperation::performOperation()
 {
     const QStringList args = arguments();
+
+    qDebug() << "framework | InstallerEventOperation::performOperation |" << args;
 
     if (args.isEmpty()) return false;
 
@@ -50,6 +53,7 @@ bool InstallerEventOperation::performOperation()
 //   4. provider: "none" | "A" | "B" | ...
 bool InstallerEventOperation::sendInit(QStringList args)
 {
+    qDebug() << "framework | InstallerEventOperation::sendInit | args =" << args;
     if (args.size() != 5) return false;
 
     // Get region
@@ -59,8 +63,12 @@ bool InstallerEventOperation::sendInit(QStringList args)
         region = eve_launcher::application::Application_Region_REGION_CHINA;
     }
 
+    qDebug() << "framework | InstallerEventOperation::sendInit | region =" << region;
+
     // Get version
     QString version = args.at(2);
+
+    qDebug() << "framework | InstallerEventOperation::sendInit | version =" << version;
 
     // Get build type
     eve_launcher::application::Application_BuildType buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
@@ -68,6 +76,8 @@ bool InstallerEventOperation::sendInit(QStringList args)
     {
         buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE;
     }
+
+    qDebug() << "framework | InstallerEventOperation::sendInit | buildType =" << buildType;
 
     // Get provider
     bool provider = false;
@@ -77,6 +87,8 @@ bool InstallerEventOperation::sendInit(QStringList args)
         provider = true;
         providerName = args.at(4);
     }
+
+    qDebug() << "framework | InstallerEventOperation::sendInit | provider = " << provider << "| providerName =" << providerName;
 
     EventLogger::instance()->initialize(region, version, buildType, provider, providerName);
 
@@ -224,6 +236,7 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
 
 bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 {
+    qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | args =" << args;
     if (args.size() < 2) return false;
 
     const QString event = args.at(1);
@@ -232,6 +245,7 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 
     if (event == QString::fromLatin1("Started") && args.size() == 3)
     {
+        qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | Started | args =" << args;
         int duration = args.at(2).toInt(&ok);
         if (!ok) return false;
 
@@ -239,6 +253,7 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
     }
     else if (event == QString::fromLatin1("PageDisplayed") && args.size() == 5)
     {
+        qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | PageDisplayed | args =" << args;
         auto previousPage = toInstallerPage(&ok, args.at(2));
         if (!ok) return false;
 
@@ -254,6 +269,7 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
     }
     else if (event == QString::fromLatin1("ShutDown") && args.size() == 5)
     {
+        qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | ShutDown | args =" << args;
         auto page = toInstallerPage(&ok, args.at(2));
         if (!ok) return false;
 

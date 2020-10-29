@@ -191,6 +191,27 @@ int main(int argc, char *argv[])
                 QInstaller::setVerbose(true);
         }
 
+        if (parser.isSet(QLatin1String(CommandLineOptions::LogFileShort))
+            || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong))) {    
+                QInstaller::enableLogFile();
+                QInstaller::setLogFileName(QString::fromLatin1("install.log"));
+        }
+
+        if (parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging))) {
+            QInstaller::disableAutoLog();
+        } else {
+            QInstaller::enableAutoLog();
+        }
+
+        if (QInstaller::isAutoLogEnabled()) {
+            QString fileName = QInstaller::getNewAutoLogFileName();
+            if (fileName.isEmpty()) {
+                QInstaller::disableAutoLog();
+            } else {
+                QInstaller::setAutoLogFileName(fileName);
+            }
+        }
+
         // On Windows we need the console window from above, we are a GUI application.
         const QStringList unknownOptionNames = parser.unknownOptionNames();
         if (!unknownOptionNames.isEmpty()) {

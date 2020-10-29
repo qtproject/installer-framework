@@ -50,6 +50,14 @@ CommandLineParser::CommandLineParser()
         << QLatin1String(CommandLineOptions::VerboseLong),
         QLatin1String("Verbose mode. Prints out more information.")));
 
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << QLatin1String(CommandLineOptions::LogFileShort)
+        << QLatin1String(CommandLineOptions::LogFileLong),
+        QLatin1String("Logs everything to a file named install.log in the same directory as the installer exe file.")));
+
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoAutomaticLogging),
+        QLatin1String("Turn off automatic logging.")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS.")));
 

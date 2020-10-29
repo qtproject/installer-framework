@@ -50,6 +50,9 @@ public:
 
 public slots :
         void log(const QString &log) { qDebug().noquote() << log; }
+        void info(const QString &info) { qInfo().noquote() << info; }
+        void warning(const QString &warning) { qWarning().noquote() << warning; }
+        void critical(const QString &critical) { qCritical().noquote() << critical; }
 };
 
 class InstallerProxy : public QObject

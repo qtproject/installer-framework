@@ -8,6 +8,7 @@
 #include <QNetworkInterface>
 #include <QRandomGenerator>
 #include <QUuid>
+#include <QDebug>
 
 EventLogger::EventLogger()
 {
@@ -27,6 +28,7 @@ EventLogger::EventLogger()
     m_sessionId = hasher.result();
 
     std::string osUuidString = PDM::GetMachineUuidString();
+    qDebug() << "framework | EventLogger::EventLogger | os uuid =" << QString::fromStdString(osUuidString);
     QUuid osUuid = QUuid::fromString(QString::fromStdString(osUuidString));
     m_operatingSystemUuid = osUuid.toRfc4122();
 
@@ -49,6 +51,7 @@ EventLogger *EventLogger::instance()
 
 void EventLogger::initialize(eve_launcher::application::Application_Region region, const QString& version, eve_launcher::application::Application_BuildType buildType, bool provider, const QString& providerName)
 {
+    qDebug() << "framework | EventLogger::initialize | starting |" << region << version << buildType << provider << providerName;
     s_region = region;
     s_version = version;
     s_buildType = buildType;
@@ -56,13 +59,17 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_providerName = providerName;
     s_initSuccessful = true;
     s_gatewayUrl = getGatewayUrl();
+    qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
 void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 {
+    qDebug() << "framework | EventLogger::sendAllocatedEvent";
+
     // If we haven't managed to initialize our gateway connection, then we can't send anything
     if (!s_initSuccessful)
     {
+        qWarning() << "framework | EventLogger::sendAllocatedEvent | not initialized";
         return;
     }
 
@@ -91,6 +98,7 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 
     // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
     
+    qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
     QByteArray byteEvent = toJsonByteArray(&event);
     m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
 }
@@ -194,6 +202,7 @@ google::protobuf::Timestamp* EventLogger::getTimestamp(qint64 millisecondsSinceE
 // uninstaller
 void EventLogger::uninstallerStarted(int duration)
 {
+    qDebug() << "framework | EventLogger::uninstallerStarted |" << duration << "ms";
     auto evt = new eve_launcher::uninstaller::Started;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_duration(duration);
@@ -288,6 +297,7 @@ void EventLogger::uninstallerAnalyticsMessageSent(const QString& message)
 // installer
 void EventLogger::installerStarted(int duration)
 {
+    qDebug() << "framework | EventLogger::installerStarted |" << duration << "ms";
     auto evt = new eve_launcher::installer::Started;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_duration(duration);
@@ -298,6 +308,7 @@ void EventLogger::installerStarted(int duration)
 
 void EventLogger::installerPageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow)
 {
+    qDebug() << "framework | EventLogger::installerPageDisplayed |" << previousPage << "|" << currentPage << "|" << flow;
     auto evt = new eve_launcher::installer::PageDisplayed;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_previous_page(previousPage);
@@ -308,6 +319,7 @@ void EventLogger::installerPageDisplayed(eve_launcher::installer::Page previousP
 
 void EventLogger::installerShutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton)
 {
+    qDebug() << "framework | EventLogger::installerShutDown |" << page << "|" << state << "|" << finishButton;
     auto evt = new eve_launcher::installer::ShutDown;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_page(page);

@@ -11,6 +11,7 @@ HttpThreadWorker::HttpThreadWorker()
 
 void HttpThreadWorker::process(const QByteArray& data, const QString& url)
 {
+    qDebug() << "framework | HttpThreadWorker::process |" << data;
     m_started++;
 
     QNetworkRequest* request = new QNetworkRequest();
@@ -27,11 +28,20 @@ void HttpThreadWorker::process(const QByteArray& data, const QString& url)
 
     QNetworkReply* reply = m_network->post(*request, data);
 
-    connect(reply, &QNetworkReply::finished, [this, reply]() { m_finished++; reply->deleteLater();} );
+    connect(reply, &QNetworkReply::finished, [this, reply]() {
+        QVariant status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+        QString status = status_code.toString();
+        qDebug() << "framework | HttpThreadWorker::process | status =" << status;
+        m_finished++; reply->deleteLater();
+    } );
     void (QNetworkReply::*errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
-    connect(reply, errorSignal, [this, reply]() { m_finished++; reply->deleteLater();} );
+    connect(reply, errorSignal, [this, reply]() {
+        QString status = QString::fromLatin1("ERROR");
+        qWarning() << "framework | HttpThreadWorker::process | Failed to send POST";
+        m_finished++; reply->deleteLater();
+    } );
 
-    qDebug() << "POST from worker thread " << thread();
+    qDebug() << "framework | HttpThreadWorker::process | POST from worker thread " << thread();
 }
 
 bool HttpThreadWorker::isRunning()
