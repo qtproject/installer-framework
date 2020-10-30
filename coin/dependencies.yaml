@@ -1,0 +1,13 @@
+
+product_dependency:
+  ../../qt/qt5:
+    ref: "ifw-5.12.10"
+dependency_source: supermodule
+dependencies: [
+      "../../qt/qtbase",
+      "../../qt/qtsvg",
+      "../../qt/qtdeclarative",
+      "../../qt/qttools",
+      "../../qt/qttranslations",
+      "../../qt/qtwinextras"
+      ]
