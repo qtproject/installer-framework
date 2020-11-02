@@ -32,12 +32,14 @@ void HttpThreadWorker::process(const QByteArray& data, const QString& url)
         QVariant status_code = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
         QString status = status_code.toString();
         qDebug() << "framework | HttpThreadWorker::process | status =" << status;
+
         m_finished++; reply->deleteLater();
     } );
     void (QNetworkReply::*errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
     connect(reply, errorSignal, [this, reply]() {
         QString status = QString::fromLatin1("ERROR");
         qWarning() << "framework | HttpThreadWorker::process | Failed to send POST";
+
         m_finished++; reply->deleteLater();
     } );
 
