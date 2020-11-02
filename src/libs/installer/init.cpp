@@ -189,6 +189,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
         
         QTextStream textStream(&outFile);
+        textStream.setCodec("UTF-8");
         textStream << logMessage << endl;
         outFile.close();
     }
@@ -201,6 +202,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
         
         QTextStream textStream(&outFile);
+        textStream.setCodec("UTF-8");
         textStream << logMessage << endl;
         outFile.close();
     }
