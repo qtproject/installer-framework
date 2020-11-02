@@ -137,7 +137,7 @@ int InstallerBase::run()
     parser.parse(arguments());
 
     QString loggingRules(QLatin1String("ifw.* = false")); // disable all by default
-    if (QInstaller::isVerbose()) {
+    if (QInstaller::isVerbose() || QInstaller::isAutoLogEnabled()) {
         loggingRules = QString(); // enable all in verbose mode
         if (parser.isSet(QLatin1String(CommandLineOptions::LoggingRules))) {
             loggingRules = parser.value(QLatin1String(CommandLineOptions::LoggingRules))

@@ -65,6 +65,21 @@ namespace QInstaller {
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
 
+    // Log to file
+    void INSTALLER_EXPORT enableLogFile();
+    bool INSTALLER_EXPORT isLogFileEnabled();
+    void INSTALLER_EXPORT setLogFileName(const QString& fileName);
+    QString INSTALLER_EXPORT getLogFileName();
+
+    // Automatic logging
+    void INSTALLER_EXPORT enableAutoLog();
+    void INSTALLER_EXPORT disableAutoLog();
+    bool INSTALLER_EXPORT isAutoLogEnabled();
+    void INSTALLER_EXPORT setAutoLogFileName(const QString& fileName);
+    QString INSTALLER_EXPORT getAutoLogFileName();
+    QString INSTALLER_EXPORT getNewAutoLogFileName();
+    QString INSTALLER_EXPORT environmentVariable(const QString& name);
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

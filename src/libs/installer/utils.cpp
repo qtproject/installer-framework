@@ -36,6 +36,7 @@
 #include <QProcessEnvironment>
 #include <QThread>
 #include <QVector>
+#include <QtCore/QSettings>
 
 #if defined(Q_OS_WIN) || defined(Q_OS_WINCE)
 #   include "qt_windows.h"
@@ -137,6 +138,124 @@ void QInstaller::setVerbose(bool v)
 bool QInstaller::isVerbose()
 {
     return verb;
+}
+
+static bool logFileEnabled = false;
+
+void QInstaller::enableLogFile()
+{
+    logFileEnabled = true;
+}
+
+bool QInstaller::isLogFileEnabled()
+{
+    return logFileEnabled;
+}
+
+static QString logFileName;
+
+void QInstaller::setLogFileName(const QString& fileName)
+{
+    logFileName = fileName;
+}
+
+QString QInstaller::getLogFileName()
+{
+    return logFileName;
+}
+
+static bool autoLogEnabled = false;
+
+void QInstaller::enableAutoLog()
+{
+    autoLogEnabled = true;
+}
+
+void QInstaller::disableAutoLog()
+{
+    autoLogEnabled = false;
+}
+
+bool QInstaller::isAutoLogEnabled()
+{
+    return autoLogEnabled;
+}
+
+static QString autoLogFileName;
+
+void QInstaller::setAutoLogFileName(const QString& fileName)
+{
+    autoLogFileName = fileName;
+}
+
+QString QInstaller::getAutoLogFileName()
+{
+    return autoLogFileName;
+}
+
+/*!
+    Returns new filename for a logfile.
+    It also creates eve-installer under %temp% if %temp% is found.
+    This is where the logfile will be stored. If %temp% is not found, we return an empty string.
+    The logfile name will be in this format:
+    yyyy.MM.dd-hh.mm.ss.zzz.txt
+    The time is in UTC.
+    Example: 2020.10.28-13.27.01.083
+*/
+QString QInstaller::getNewAutoLogFileName()
+{
+    QDateTime local(QDateTime::currentDateTime());
+    QDateTime utcTime(local.toUTC());
+    QString currentTime = utcTime.toString(QLatin1String("yyyy.MM.dd-hh.mm.ss.zzz"));
+
+    QString localAppDataPath = environmentVariable(QLatin1String("localappdata"));
+
+    // Couldn't get location of %localappdata% return an empty string
+    if (localAppDataPath.isEmpty())
+        return QString();
+    
+    // We want to store the file under installer, in the same folder as launcher logs
+    QString dirPath = QString::fromLatin1("%1/CCP/EVE/installer").arg(localAppDataPath);
+    QDir dir(dirPath);
+
+    // Create the directory if it doesn't exist
+    if (!dir.exists()) {
+        dir.mkpath(QLatin1String("."));
+    }
+
+    // Return the final name
+    return QString::fromLatin1("%1/installerlog-%2.txt").arg(dirPath).arg(currentTime);
+}
+
+/*!
+    NOTE! THIS IS A COPY OF PackageManagerCore::environmentVariable SINCE THIS IS HAPPENING
+    BEFORE WE INITIALIZE THE PackageManagerCore!!!
+    Returns the content of the environment variable \a name. An empty string is returned if the
+    environment variable is not set.
+*/
+QString QInstaller::environmentVariable(const QString &name)
+{
+    if (name.isEmpty())
+        return QString();
+
+#ifdef Q_OS_WIN
+    static TCHAR buffer[32767];
+    DWORD size = GetEnvironmentVariable(LPCWSTR(name.utf16()), buffer, 32767);
+    QString value = QString::fromUtf16((const unsigned short *) buffer, size);
+
+    if (value.isEmpty()) {
+        static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
+        value = QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+        if (value.isEmpty()) {
+            static QLatin1String systemEnvironmentRegistryPath("HKEY_LOCAL_MACHINE\\SYSTEM\\"
+                "CurrentControlSet\\Control\\Session Manager\\Environment");
+            value = QSettings(systemEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+        }
+    }
+    return value;
+#else
+    return QString::fromUtf8(qgetenv(name.toLatin1()));
+#endif
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
@@ -444,5 +563,3 @@ QString QInstaller::windowsErrorString(int errorCode)
 }
 
 #endif
-
-

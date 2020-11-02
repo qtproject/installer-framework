@@ -953,7 +953,8 @@ private:
 */
 PackageManagerCore::~PackageManagerCore()
 {
-    if (!isUninstaller() && !(isInstaller() && status() == PackageManagerCore::Canceled)) {
+    // Disable the InstallationLog for now
+    if (false && !isUninstaller() && !(isInstaller() && status() == PackageManagerCore::Canceled)) {
         QDir targetDir(value(scTargetDir));
         QString logFileName = targetDir.absoluteFilePath(value(QLatin1String("LogFileName"),
             QLatin1String("InstallationLog.txt")));

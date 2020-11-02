@@ -60,6 +60,7 @@
 
 #include <QtPlugin>
 #include <QElapsedTimer>
+#include <QFile>
 
 #include <iostream>
 
@@ -104,6 +105,47 @@ static QString trimAndPrepend(QtMsgType type, const QString &msg)
     return ba;
 }
 
+static QString logFiletrimAndPrepend(QtMsgType type, const QString &msg)
+{
+    QString ba(msg);
+    // last character is a space from qDebug
+    if (ba.endsWith(QLatin1Char(' ')))
+        ba.chop(1);
+
+    // remove quotes if the whole message is surrounded with them
+    if (ba.startsWith(QLatin1Char('"')) && ba.endsWith(QLatin1Char('"')))
+        ba = ba.mid(1, ba.length() - 2);
+
+    // prepend time in ms since epch (UTC)
+    QDateTime local(QDateTime::currentDateTime());
+    QDateTime utcTime(local.toUTC());
+    QString ms = QString::fromLatin1("%1 | ").arg(utcTime.currentMSecsSinceEpoch());
+    ba.prepend(ms);
+
+    // prepend the message type, skip QtDebugMsg
+    switch (type) {
+        case QtInfoMsg:
+            ba.prepend(QStringLiteral("info | "));
+        break;
+
+        case QtWarningMsg:
+            ba.prepend(QStringLiteral("warning | "));
+        break;
+
+        case QtCriticalMsg:
+            ba.prepend(QStringLiteral("critical | "));
+        break;
+
+        case QtFatalMsg:
+            ba.prepend(QStringLiteral("fatal | "));
+        break;
+
+        default:
+            ba.prepend(QStringLiteral("debug | "));
+    }
+    return ba;
+}
+
 // start timer on construction (so we can use it as static member)
 class Uptime : public QElapsedTimer {
 public:
@@ -118,8 +160,8 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
     static Uptime uptime;
 
-    QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ")
-            + trimAndPrepend(type, msg);
+    QString logTime = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ");
+    QString ba = logTime + trimAndPrepend(type, msg);
 
     if (type != QtDebugMsg && context.file) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(
@@ -137,6 +179,32 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
         QtMessageHandler oldMsgHandler = qInstallMessageHandler(nullptr);
         qt_message_output(type, context, msg);
         qInstallMessageHandler(oldMsgHandler);
+    }
+
+    if (isLogFileEnabled() && (type != QtDebugMsg || isVerbose()))
+    {
+        QString logMessage = logTime + logFiletrimAndPrepend(type, msg);
+
+        QFile outFile(getLogFileName());
+        outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+        
+        QTextStream textStream(&outFile);
+        textStream.setCodec("UTF-8");
+        textStream << logMessage << endl;
+        outFile.close();
+    }
+
+    if (isAutoLogEnabled())
+    {
+        QString logMessage = logTime + logFiletrimAndPrepend(type, msg);
+
+        QFile outFile(getAutoLogFileName());
+        outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+        
+        QTextStream textStream(&outFile);
+        textStream.setCodec("UTF-8");
+        textStream << logMessage << endl;
+        outFile.close();
     }
 }
 
