@@ -39,6 +39,9 @@
 #include <QTemporaryDir>
 #include <QtMath>
 
+#include <QCoreApplication>	
+#include<QGuiApplication>
+
 const QStringList metaElements = {QLatin1String("Script"), QLatin1String("Licenses"), QLatin1String("UserInterfaces"), QLatin1String("Translations")};
 
 namespace QInstaller {
@@ -280,6 +283,10 @@ void MetadataJob::unzipRepositoryTaskFinished()
     }
 }
 
+static bool isConsole(){
+    return  dynamic_cast<QGuiApplication*>(QCoreApplication::instance()) == nullptr;
+}
+
 void MetadataJob::xmlTaskFinished()
 {
     Status status = XmlDownloadFailure;
@@ -288,21 +295,26 @@ void MetadataJob::xmlTaskFinished()
         status = parseUpdatesXml(m_xmlTask.future().results());
     } catch (const AuthenticationRequiredException &e) {
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
-            const QNetworkProxy proxy = e.proxy();
-            ProxyCredentialsDialog proxyCredentials(proxy);
-            qDebug().noquote() << e.message();
-
-            if (proxyCredentials.exec() == QDialog::Accepted) {
-                qDebug() << "Retrying with new credentials ...";
-                PackageManagerProxyFactory *factory = m_core->proxyFactory();
-
-                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
-                                             proxyCredentials.password());
-                m_core->setProxyFactory(factory);
-                status = XmlDownloadRetry;
-            } else {
+            if(isConsole()){
                 reset();
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
+            }else{
+                const QNetworkProxy proxy = e.proxy();
+                ProxyCredentialsDialog proxyCredentials(proxy);
+                qDebug().noquote() << e.message();
+
+                if (proxyCredentials.exec() == QDialog::Accepted) {
+                    qDebug() << "Retrying with new credentials ...";
+                    PackageManagerProxyFactory *factory = m_core->proxyFactory();
+
+                    factory->setProxyCredentials(proxy, proxyCredentials.userName(),
+                                                proxyCredentials.password());
+                    m_core->setProxyFactory(factory);
+                    status = XmlDownloadRetry;
+                } else {
+                    reset();
+                    emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
+                }
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
             qDebug().noquote() << e.message();
