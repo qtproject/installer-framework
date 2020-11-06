@@ -80,6 +80,10 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getNewAutoLogFileName();
     QString INSTALLER_EXPORT environmentVariable(const QString& name);
 
+    // Use local endpoint (debug only)
+    void INSTALLER_EXPORT enableLocalEndpoint();
+    bool INSTALLER_EXPORT isLocalEndpointEnabled();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

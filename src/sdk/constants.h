@@ -40,6 +40,7 @@ const char VerboseLong[] = "verbose";
 const char LogFileShort[] = "f";
 const char LogFileLong[] = "log-to-file";
 const char NoAutomaticLogging[] = "no-automatic-logging";
+const char UseLocalEnpoint[] = "local-endpoint";
 const char Proxy[] = "proxy";
 const char NoProxy[] = "no-proxy";
 const char Script[] = "script";

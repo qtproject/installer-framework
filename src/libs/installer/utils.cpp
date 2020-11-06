@@ -258,6 +258,18 @@ QString QInstaller::environmentVariable(const QString &name)
 #endif
 }
 
+static bool localEndpoint = false;
+
+void QInstaller::enableLocalEndpoint()
+{
+    localEndpoint = true;
+}
+
+bool QInstaller::isLocalEndpointEnabled()
+{
+    return localEndpoint;
+}
+
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);

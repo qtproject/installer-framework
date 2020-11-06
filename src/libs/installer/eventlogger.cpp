@@ -58,7 +58,16 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_provider = provider;
     s_providerName = providerName;
     s_initSuccessful = true;
-    s_gatewayUrl = getGatewayUrl();
+
+    if (QInstaller::isLocalEndpointEnabled())
+    {
+        s_gatewayUrl = QString::fromLatin1("https://localhost:5001/weatherforecast");
+    }
+    else
+    {
+        s_gatewayUrl = getGatewayUrl();
+    }
+    
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
@@ -122,10 +131,15 @@ std::string EventLogger::toJson(google::protobuf::Message* message)
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
-    // Following options are good for testing
-    // options.add_whitespace = true;
-    // options.always_print_primitive_fields = true;
-    // options.preserve_proto_field_names = true;
+    
+    if (QInstaller::isLocalEndpointEnabled() && QInstaller::isVerbose())
+    {
+        // Following options are good for testing
+        options.add_whitespace = true;
+        options.always_print_primitive_fields = true;
+        // options.preserve_proto_field_names = true;
+    }
+    
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;

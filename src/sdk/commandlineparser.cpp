@@ -58,6 +58,9 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoAutomaticLogging),
         QLatin1String("Turn off automatic logging.")));
 
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::UseLocalEnpoint),
+        QLatin1String("Instead of sending data to elg, send it to a local endpoint")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS.")));
 

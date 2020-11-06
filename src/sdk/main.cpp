@@ -212,6 +212,10 @@ int main(int argc, char *argv[])
             }
         }
 
+        if (parser.isSet(QLatin1String(CommandLineOptions::UseLocalEnpoint))) {
+            QInstaller::enableLocalEndpoint();
+        }
+
         // On Windows we need the console window from above, we are a GUI application.
         const QStringList unknownOptionNames = parser.unknownOptionNames();
         if (!unknownOptionNames.isEmpty()) {
