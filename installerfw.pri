@@ -141,18 +141,14 @@ equals(TEMPLATE, app) {
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }
 
+PROTOBUF_PATH = $$PWD/vendors/protobuf/v3.6.0
+PDM_PATH = $$PWD/vendors/pdm-proto/1.1.5
+
 # Protobuf
-# LIBS += -L$$PWD/src/libs/protobuf/lib/ -llibprotobuf
-# INCLUDEPATH += $$PWD/src/libs/protobuf/include
-PROTOBUF_PATH = c:/eve_installer/protobuf/v3.6.0
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
 INCLUDEPATH += $$PROTOBUF_PATH/include
 
 # Platform detection module (and wrapper)
-# LIBS += -L$$PWD/src/libs/pdm/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
-# INCLUDEPATH += $$PWD/src/libs/pdm/include
-# INCLUDEPATH += $$PWD/src/libs/pdm/include/generated
-PDM_PATH = c:/eve_installer/pdm-proto/1.1.5
 LIBS += -L$$PDM_PATH/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
 INCLUDEPATH += $$PDM_PATH/include
 INCLUDEPATH += $$PDM_PATH/include/generated
