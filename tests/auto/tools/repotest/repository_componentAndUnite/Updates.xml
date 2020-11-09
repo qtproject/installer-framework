@@ -1,9 +1,7 @@
 <Updates>
  <ApplicationName>{AnyApplication}</ApplicationName>
  <ApplicationVersion>1.0.0</ApplicationVersion>
- <Checksum>true</Checksum>
- <SHA1>815dc9afb48774335e468956fa2e1208a239dc06</SHA1>
- <MetadataName>2020-10-13-0958_meta.7z</MetadataName>
+ <Checksum>false</Checksum>
  <PackageUpdate>
   <Name>A</Name>
   <DisplayName>A</DisplayName>
@@ -12,19 +10,21 @@
   <ReleaseDate>2020-01-01</ReleaseDate>
   <Default>true</Default>
   <Script>script2.0.0.qs</Script>
-  <UpdateFile UncompressedSize="40" CompressedSize="72" OS="Any"/>
+  <UpdateFile OS="Any" CompressedSize="240" UncompressedSize="74"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
-  <SHA1>f02d025098d76673f3a848e5d5f0421ffa5ee82d</SHA1>
+  <SHA1>11f74e8fbc7d6c155dd6503c460c2c1955340cc1</SHA1>
  </PackageUpdate>
  <PackageUpdate>
-  <Name>B</Name>
-  <DisplayName>B</DisplayName>
-  <Description>Example component B</Description>
+  <Name>C</Name>
+  <DisplayName>C</DisplayName>
+  <Description>Example component C</Description>
   <Version>1.0.0</Version>
-  <ReleaseDate>2020-01-01</ReleaseDate>
+  <ReleaseDate>2015-01-01</ReleaseDate>
   <Default>true</Default>
-  <UpdateFile UncompressedSize="40" CompressedSize="72" OS="Any"/>
+  <UpdateFile OS="Any" CompressedSize="239" UncompressedSize="89"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
-  <SHA1>c520ba1bbde7eb1adf4b274c869a8df0a5efa5b8</SHA1>
+  <SHA1>4558f31428ef88eb23521b4f119465967945e2f7</SHA1>
  </PackageUpdate>
+ <SHA1>d674e6574895c02d3a02fb97a46b159d35f17c68</SHA1>
+ <MetadataName>2020-11-10-0816_meta.7z</MetadataName>
 </Updates>

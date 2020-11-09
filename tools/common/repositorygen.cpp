@@ -47,6 +47,7 @@
 #include <QtCore/QRegExp>
 
 #include <QtXml/QDomDocument>
+#include <QTemporaryDir>
 
 #include <iostream>
 
@@ -678,7 +679,7 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
     }
 }
 
-void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &baseDir,
+void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata)
 {
     QDomDocument doc;
@@ -697,10 +698,11 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
 
     QStringList absPaths;
     if (createUnifiedMetadata) {
-        absPaths = unifyMetadata(entryList, repoDir, doc);
+        absPaths = unifyMetadata(repoDir, existingUnite7zUrl, doc);
     }
+
     if (createSplitMetadata) {
-        splitMetadata(entryList, repoDir, doc, baseDir, versionMapping);
+        splitMetadata(entryList, repoDir, doc, versionMapping);
     } else {
         // remove the files that got compressed
         foreach (const QString path, absPaths)
@@ -712,15 +714,37 @@ void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QStr
     existingUpdatesXml.close();
 }
 
-QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc)
+QStringList QInstallerTools::unifyMetadata(const QString &repoDir, const QString &existingRepoDir, QDomDocument doc)
 {
     QStringList absPaths;
     QDir dir(repoDir);
+    const QStringList entryList = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
     foreach (const QString &i, entryList) {
         dir.cd(i);
         const QString absPath = dir.absolutePath();
         absPaths.append(absPath);
         dir.cdUp();
+    }
+
+    QTemporaryDir existingRepoTempDir;
+    QString existingRepoTemp = existingRepoTempDir.path();
+    if (!existingRepoDir.isEmpty()) {
+        existingRepoTempDir.setAutoRemove(false);
+        QFile archiveFile(existingRepoDir);
+        QInstaller::openForRead(&archiveFile);
+        Lib7z::extractArchive(&archiveFile, existingRepoTemp);
+        QDir dir(existingRepoTemp);
+        QStringList existingRepoEntries = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+        foreach (const QString existingRepoEntry, existingRepoEntries) {
+            if (entryList.contains(existingRepoEntry)) {
+                continue;
+            } else {
+                dir.cd(existingRepoEntry);
+                const QString absPath = dir.absolutePath();
+                absPaths.append(absPath);
+            }
+        }
     }
 
     // Compress all metadata from repository to one single 7z
@@ -749,12 +773,12 @@ QStringList QInstallerTools::unifyMetadata(const QStringList &entryList, const Q
         else
             node.replaceChild(newNodeTag, nameTag);
     }
+    QInstaller::removeDirectory(existingRepoTemp, true);
     return absPaths;
 }
 
 void QInstallerTools::splitMetadata(const QStringList &entryList, const QString &repoDir,
-                                    QDomDocument doc, const QString &baseDir,
-                                    const QHash<QString, QString> &versionMapping)
+                                    QDomDocument doc, const QHash<QString, QString> &versionMapping)
 {
     QStringList absPaths;
     QDomNodeList elements =  doc.elementsByTagName(QLatin1String("PackageUpdate"));
@@ -762,7 +786,7 @@ void QInstallerTools::splitMetadata(const QStringList &entryList, const QString 
     foreach (const QString &i, entryList) {
         dir.cd(i);
         const QString absPath = dir.absolutePath();
-        const QString path = QString(i).remove(baseDir);
+        const QString path = QString(i).remove(repoDir);
         if (path.isNull())
             continue;
         const QString versionPrefix = versionMapping[path];
@@ -923,4 +947,23 @@ void QInstallerTools::filterNewComponents(const QString &repositoryDir, QInstall
             qDebug() << "Update component" << info.name << "in"<< repositoryDir << ".";
         }
     }
+}
+
+QString QInstallerTools::existingUniteMeta7z(const QString &repositoryDir)
+{
+    QString uniteMeta7z = QString();
+    QFile file(repositoryDir + QLatin1String("/Updates.xml"));
+    QDomDocument doc;
+    if (file.open(QFile::ReadOnly) && doc.setContent(&file)) {
+        QDomNodeList elements =  doc.elementsByTagName(QLatin1String("MetadataName"));
+        if (elements.count() > 0 && elements.at(0).isElement()) {
+            uniteMeta7z = elements.at(0).toElement().text();
+            QFile metaFile(repositoryDir + QDir::separator() + uniteMeta7z);
+            if (!metaFile.exists()) {
+                throw QInstaller::Error(QString::fromLatin1("Unite meta7z \"%1\" does not exist in repository \"%2\"")
+                    .arg(QDir::toNativeSeparators(metaFile.fileName()), repositoryDir));
+            }
+        }
+    }
+    return uniteMeta7z;
 }

@@ -65,8 +65,13 @@ private:
         }
 
         if (updateNewComponents) { //Verify that component B exists as that is not updated
-            VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", QStringList() << "1.0.0content.7z"
-                                                << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
+            if (createSplitMetadata) {
+                VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", QStringList() << "1.0.0content.7z"
+                                                    << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
+            } else {
+                VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", QStringList() << "1.0.0content.7z"
+                                                    << "1.0.0content.7z.sha1");
+            }
         } else {
             QDir dir(m_repositoryDir + "/B");
             QVERIFY(!dir.exists());
@@ -88,7 +93,10 @@ private:
         QInstallerTools::copyComponentData(directories, m_repositoryDir, &m_packages);
         QInstallerTools::copyMetaData(m_tmpMetaDir, m_repositoryDir, m_packages, QLatin1String("{AnyApplication}"),
             QLatin1String("1.0.0"), unite7zFiles);
-        QInstallerTools::compressMetaDirectories(m_tmpMetaDir, m_tmpMetaDir, pathToVersionMapping,
+        QString existing7z = QInstallerTools::existingUniteMeta7z(m_repositoryDir);
+        if (!existing7z.isEmpty())
+             existing7z = m_repositoryDir + QDir::separator() + existing7z;
+        QInstallerTools::compressMetaDirectories(m_tmpMetaDir, existing7z, pathToVersionMapping,
                                                  createSplitMetadata, createUnifiedMetadata);
         QDirIterator it(m_repositoryDir, QStringList(QLatin1String("Updates*.xml"))
                         << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
@@ -135,7 +143,9 @@ private:
                                             + "Updates.xml");
         QRegularExpression re("<MetadataName>(.*)<.MetadataName>");
         QStringList matches = re.match(fileContent).capturedTexts();
+        QString existingUniteMeta7z = QInstallerTools::existingUniteMeta7z(m_repositoryDir);
         QCOMPARE(2, matches.count());
+        QCOMPARE(existingUniteMeta7z, matches.at(1));
         QFile file(m_repositoryDir + QDir::separator() + matches.at(1));
         QVERIFY(file.open(QIODevice::ReadOnly));
 
@@ -217,7 +227,6 @@ private:
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(repository)));
         QTest::ignoreMessage(QtDebugMsg, "Collecting information about available packages...");
         QTest::ignoreMessage(QtDebugMsg, "No available packages found at the specified location.");
-        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"B\"  -  \"1.0.0\"");
         QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
     }
 
@@ -289,6 +298,14 @@ private:
         ignoreMessagesForComponentHash(QStringList() << "A" << "B", true);
         ignoreMessagesForCopyMetadata("A", true, true);
         ignoreMessagesForCopyMetadata("B", false, true);
+    }
+
+    void ignoreMessageForUpdateComponent()
+    {
+        QString message = "Update component \"A\" in \"%1\" .";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repositoryDir)));
+        message = "Update component \"C\" in \"%1\" .";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repositoryDir)));
     }
 
 private slots:
@@ -413,6 +430,8 @@ private slots:
 
         initRepoUpdateFromRepository(":///repository_component");
         ignoreMessageForCollectingRepository("repository_component");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"B\"  -  \"1.0.0\"");
+
         ignoreMessagesForCopyRepository("B", "1.0.0", "repository_component");
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_component");
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", true);
@@ -430,12 +449,16 @@ private slots:
 
         initRepoUpdateFromRepository(":///repository_componentAndUnite");
         ignoreMessageForCollectingRepository("repository_componentAndUnite");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"C\"  -  \"1.0.0\"");
+        ignoreMessageForUpdateComponent();
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_componentAndUnite");
-        ignoreMessagesForCopyRepository("B", "1.0.0", "repository_componentAndUnite");
+        ignoreMessagesForCopyRepository("C", "1.0.0", "repository_componentAndUnite");
         ignoreMessagesForUniteMeta(true);
-        ignoreMessagesForComponentSha(QStringList() << "A" << "B", true);
-        generateRepo(true, true, false);
+        ignoreMessagesForComponentSha(QStringList() << "A" << "C", true);
+
+        generateRepo(true, true, true);
         verifyComponentRepository("2.0.0", true);
+        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
         verifyUniteMetadata("2.0.0");
     }
 
@@ -447,11 +470,15 @@ private slots:
 
         initRepoUpdateFromRepository(":///repository_unite");
         ignoreMessageForCollectingRepository("repository_unite");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"C\"  -  \"1.0.0\"");
+        ignoreMessageForUpdateComponent();
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_unite");
-        ignoreMessagesForCopyRepository("B", "1.0.0", "repository_unite");
+        ignoreMessagesForCopyRepository("C", "1.0.0", "repository_unite");
         ignoreMessagesForUniteMeta(true);
-        generateRepo(false, true, false);
+
+        generateRepo(false, true, true);
         verifyComponentRepository("2.0.0", false);
+        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1");
         verifyUniteMetadata("2.0.0");
     }
 

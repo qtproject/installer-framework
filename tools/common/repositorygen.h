@@ -67,11 +67,11 @@ PackageInfoVector createListOfRepositoryPackages(const QStringList &repositoryDi
 
 QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
 
-void compressMetaDirectories(const QString &repoDir, const QString &baseDir,
+void compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata);
 
-QStringList unifyMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc);
-void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc, const QString &baseDir,
+QStringList unifyMetadata(const QString &repoDir, const QString &existingRepoDir, QDomDocument doc);
+void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc,
                    const QHash<QString, QString> &versionMapping);
 
 void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
@@ -80,6 +80,7 @@ void copyComponentData(const QStringList &packageDir, const QString &repoDir, Pa
 
 void filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
+QString existingUniteMeta7z(const QString &repositoryDir);
 
 } // namespace QInstallerTools
 
