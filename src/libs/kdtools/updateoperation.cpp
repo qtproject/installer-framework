@@ -505,6 +505,10 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
                 }
                 var = QVariant::fromValue(list);
             }
+        } else if (t == QVariant::String) {
+              const QString str = QInstaller::replacePath(value,
+                        QLatin1String(QInstaller::scRelocatable), target);
+              var = QVariant::fromValue(str);
         }
 
         m_values[name] = var;
