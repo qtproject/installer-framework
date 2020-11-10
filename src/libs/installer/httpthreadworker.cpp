@@ -22,7 +22,7 @@ void HttpThreadWorker::process(const QByteArray& data, const QString& url)
     }
 
     request->setUrl(url);
-    request->setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("application/json"));
+    request->setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("application/x-protobuf"));
 
     QByteArray empty;
 

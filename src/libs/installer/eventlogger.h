@@ -83,6 +83,8 @@ protected:
 
     void sendAllocatedEvent(google::protobuf::Message* payload);
     QString getGatewayUrl();
+    void sendProtoMessage(google::protobuf::Message* message);
+    void sendJsonMessage(google::protobuf::Message* message);
     QByteArray toJsonByteArray(google::protobuf::Message* message);
     std::string toJson(::google::protobuf::Message* event);
     bool replace(std::string& str, const std::string& from, const std::string& to);

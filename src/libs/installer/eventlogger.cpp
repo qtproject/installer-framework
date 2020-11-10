@@ -4,6 +4,7 @@
 #include <protobuf.h>
 
 #include <google/protobuf/util/json_util.h>
+#include <google/protobuf/message_lite.h>
 
 #include <QNetworkInterface>
 #include <QRandomGenerator>
@@ -93,14 +94,14 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 
     // Set the payload
     auto any = new google::protobuf::Any;
-    any->PackFrom(*payload);
+    any->PackFrom(*payload, "type.evetech.net");
     event.set_allocated_payload(any);
 
     // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
     
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
-    QByteArray byteEvent = toJsonByteArray(&event);
-    m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
+    // sendJsonMessage(&event);
+    sendProtoMessage(&event);
 }
 
 QString EventLogger::getGatewayUrl()
@@ -110,6 +111,21 @@ QString EventLogger::getGatewayUrl()
     QString subDomain = dev ? QString::fromLatin1("dev") : QString::fromLatin1("live");
     QString domain = china ? QString::fromLatin1("evepc.163.com") : QString::fromLatin1("evetech.net");
     return QString(QLatin1String("https://elg-%1.%2:8081/v1/event/publish")).arg(subDomain).arg(domain);
+}
+
+void EventLogger::sendProtoMessage(google::protobuf::Message* message)
+{
+    std::string serializedEvent;
+    if (message->SerializeToString(&serializedEvent)) {
+        QByteArray byteEvent = QByteArray::fromStdString(serializedEvent);
+        m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
+    }
+}
+
+void EventLogger::sendJsonMessage(google::protobuf::Message* message)
+{
+    QByteArray byteEvent = toJsonByteArray(message);
+    m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
 }
 
 QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message)
