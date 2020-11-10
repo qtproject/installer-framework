@@ -215,7 +215,7 @@ QString QInstaller::getNewAutoLogFileName()
         return QString();
     
     // We want to store the file under installer, in the same folder as launcher logs
-    QString dirPath = QString::fromLatin1("%1/CCP/EVE/installer").arg(localAppDataPath);
+    QString dirPath = QString::fromLatin1("%1/CCP/EVE/Installer").arg(localAppDataPath);
     QDir dir(dirPath);
 
     // Create the directory if it doesn't exist
