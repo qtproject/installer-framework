@@ -121,4 +121,10 @@ void PackageManagerProxyFactory::setProxyCredentials(const QNetworkProxy &proxy,
     }
 }
 
+bool PackageManagerProxyFactory::proxyCredentialsExists(const QNetworkProxy &proxy, const QString &user, const QString &password){
+    auto p = std::find_if(m_proxyCredentials.begin(), m_proxyCredentials.end(),
+                          FindProxyCredential(proxy.hostName(), proxy.port()));
+    return p != m_proxyCredentials.end();
+}
+
 }   // QInstaller

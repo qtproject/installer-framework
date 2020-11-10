@@ -52,6 +52,8 @@ public:
 
     void setProxyCredentials(const QNetworkProxy &proxy, const QString &user, const QString &password);
 
+    bool proxyCredentialsExists(const QNetworkProxy &proxy, const QString &user, const QString &password);
+
 private:
 
     QList<ProxyCredential> m_proxyCredentials;
