@@ -61,13 +61,13 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QStringList()
         << QLatin1String(CommandLineOptions::TelemetryEndpointShort)
         << QLatin1String(CommandLineOptions::TelemetryEndpointLong),
-        QLatin1String("Specify endpoint for telemetry. Use any of the following: "
-        "'local' => https://localhost:5001/weatherforecast"
-        "'dev' => elg-dev world"
-        "'live' => elg-live world"
-        "'cdev' => elg-dev china"
-        "'clive' => elg-live china"
-        "url of your choice"),
+        QLatin1String("Specify endpoint for telemetry. Provide your own or"
+        " use any of the following predefined values:\n"
+        "local => https://localhost:5001/weatherforecast\n"
+        "dev => elg-dev world\n"
+        "live => elg-live world\n"
+        "cdev => elg-dev china\n"
+        "clive => elg-live china\n"),
         QLatin1String("url")));
 
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
