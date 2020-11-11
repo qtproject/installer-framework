@@ -94,9 +94,12 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 
     // Set the payload
     auto any = new google::protobuf::Any;
-    if (QInstaller::useProtoMessages()) {
+    if (QInstaller::useProtoMessages())
+    {
         any->PackFrom(*payload, "type.evetech.net");
-    } else {
+    }
+    else
+    {
         any->PackFrom(*payload);
     }
     
@@ -105,9 +108,12 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
     
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
-    if (QInstaller::useProtoMessages()) {
+    if (QInstaller::useProtoMessages())
+    {
         sendProtoMessage(&event);
-    } else {
+    }
+    else
+    {
         sendJsonMessage(&event);
     }
 }
@@ -125,10 +131,13 @@ void EventLogger::sendProtoMessage(google::protobuf::Message* message)
 {
     qDebug() << "framework | EventLogger::sendProtoMessage | Sending messages as proto";
     std::string serializedEvent;
-    if (message->SerializeToString(&serializedEvent)) {
+    if (message->SerializeToString(&serializedEvent))
+    {
         QByteArray byteEvent = QByteArray::fromStdString(serializedEvent);
         m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl, QLatin1String("application/x-protobuf"));
-    } else {
+    }
+    else
+    {
         qWarning() << "framework | EventLogger::sendProtoMessage | Couldn't serialize proto, no event sent!";
     }
 }

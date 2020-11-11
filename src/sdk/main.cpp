@@ -212,7 +212,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessages))) {    
+        if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessages)))
+        {    
                 QInstaller::enableProtoMessages();
         }
 
