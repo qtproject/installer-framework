@@ -80,9 +80,10 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getNewAutoLogFileName();
     QString INSTALLER_EXPORT environmentVariable(const QString& name);
 
-    // Use local endpoint (debug only)
-    void INSTALLER_EXPORT enableLocalEndpoint();
-    bool INSTALLER_EXPORT isLocalEndpointEnabled();
+    // Use provided endpoint
+    bool INSTALLER_EXPORT useProvidedTelemetryEndpoint();
+    void INSTALLER_EXPORT setProvidedTelemetryEndpoint(const QString& url);
+    QString INSTALLER_EXPORT getProvidedTelemetryEndpoint();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

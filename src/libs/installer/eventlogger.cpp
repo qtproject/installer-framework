@@ -58,16 +58,7 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_provider = provider;
     s_providerName = providerName;
     s_initSuccessful = true;
-
-    if (QInstaller::isLocalEndpointEnabled())
-    {
-        s_gatewayUrl = QString::fromLatin1("https://localhost:5001/weatherforecast");
-    }
-    else
-    {
-        s_gatewayUrl = getGatewayUrl();
-    }
-    
+    s_gatewayUrl = getGatewayUrl();
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
@@ -114,6 +105,11 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 
 QString EventLogger::getGatewayUrl()
 {
+    if (QInstaller::useProvidedTelemetryEndpoint())
+    {
+        return QInstaller::getProvidedTelemetryEndpoint();
+    }
+
     bool dev = s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
     bool china = s_region == eve_launcher::application::Application_Region_REGION_CHINA;
     QString subDomain = dev ? QString::fromLatin1("dev") : QString::fromLatin1("live");
@@ -132,7 +128,7 @@ std::string EventLogger::toJson(google::protobuf::Message* message)
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
     
-    if (QInstaller::isLocalEndpointEnabled() && QInstaller::isVerbose())
+    if (QInstaller::useProvidedTelemetryEndpoint() && QInstaller::isVerbose())
     {
         // Following options are good for testing
         options.add_whitespace = true;

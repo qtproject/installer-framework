@@ -258,16 +258,21 @@ QString QInstaller::environmentVariable(const QString &name)
 #endif
 }
 
-static bool localEndpoint = false;
+static QString telemetryUrl;
 
-void QInstaller::enableLocalEndpoint()
+bool QInstaller::useProvidedTelemetryEndpoint()
 {
-    localEndpoint = true;
+    return !telemetryUrl.isEmpty();
 }
 
-bool QInstaller::isLocalEndpointEnabled()
+void QInstaller::setProvidedTelemetryEndpoint(const QString& url)
 {
-    return localEndpoint;
+    telemetryUrl = url;
+}
+
+QString QInstaller::getProvidedTelemetryEndpoint()
+{
+    return telemetryUrl;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
