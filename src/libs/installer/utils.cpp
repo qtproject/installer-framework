@@ -258,6 +258,18 @@ QString QInstaller::environmentVariable(const QString &name)
 #endif
 }
 
+static bool useProto = false;
+
+void QInstaller::enableProtoMessages()
+{
+    useProto = true;
+}
+
+bool QInstaller::useProtoMessages()
+{
+    return useProto;
+}
+
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);

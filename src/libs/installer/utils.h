@@ -80,6 +80,10 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getNewAutoLogFileName();
     QString INSTALLER_EXPORT environmentVariable(const QString& name);
 
+    // Proto messages
+    void INSTALLER_EXPORT enableProtoMessages();
+    bool INSTALLER_EXPORT useProtoMessages();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

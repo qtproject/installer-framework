@@ -2,6 +2,7 @@
 #define EVENTLOGGER_H
 
 #include "httpthreadcontroller.h"
+#include "utils.h"
 
 #include "eve_launcher/application.pb.h"
 #include "eve_launcher/installer.pb.h"

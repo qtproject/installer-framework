@@ -58,6 +58,9 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoAutomaticLogging),
         QLatin1String("Turn off automatic logging.")));
 
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::ProtoMessages),
+        QLatin1String("Send messages as proto instead of json.")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS.")));
 

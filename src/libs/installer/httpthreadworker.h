@@ -14,7 +14,7 @@ public:
     bool isRunning();
 
 public slots:
-    void process(const QByteArray& data, const QString& url);
+    void process(const QByteArray& data, const QString& url, const QString& contentType);
 private:
     QSharedPointer<QNetworkAccessManager> m_network;
     int m_started;
