@@ -86,8 +86,8 @@ protected:
     QString getGatewayUrl();
     void sendProtoMessage(google::protobuf::Message* message);
     void sendJsonMessage(google::protobuf::Message* message);
-    QByteArray toJsonByteArray(google::protobuf::Message* message);
-    std::string toJson(::google::protobuf::Message* event);
+    QByteArray toJsonByteArray(google::protobuf::Message* message, bool verbose = false);
+    std::string toJson(::google::protobuf::Message* event, bool verbose = false);
     bool replace(std::string& str, const std::string& from, const std::string& to);
 
     eve_launcher::application::Application_Region s_region;

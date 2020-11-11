@@ -66,14 +66,11 @@ namespace QInstaller {
     bool INSTALLER_EXPORT isVerbose();
 
     // Log to file
-    void INSTALLER_EXPORT enableLogFile();
     bool INSTALLER_EXPORT isLogFileEnabled();
     void INSTALLER_EXPORT setLogFileName(const QString& fileName);
     QString INSTALLER_EXPORT getLogFileName();
 
     // Automatic logging
-    void INSTALLER_EXPORT enableAutoLog();
-    void INSTALLER_EXPORT disableAutoLog();
     bool INSTALLER_EXPORT isAutoLogEnabled();
     void INSTALLER_EXPORT setAutoLogFileName(const QString& fileName);
     QString INSTALLER_EXPORT getAutoLogFileName();
@@ -84,6 +81,11 @@ namespace QInstaller {
     bool INSTALLER_EXPORT sendProtoMessages();
     void INSTALLER_EXPORT setProtoMessageEndpoint(const QString& url);
     QString INSTALLER_EXPORT getProtoMessageEndpoint();
+
+    // Telemetry endpoint
+    bool INSTALLER_EXPORT useProvidedTelemetryEndpoint();
+    void INSTALLER_EXPORT setProvidedTelemetryEndpoint(const QString& url);
+    QString INSTALLER_EXPORT getProvidedTelemetryEndpoint();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

@@ -139,22 +139,44 @@ void EventLogger::sendJsonMessage(google::protobuf::Message* message)
     qDebug() << "framework | EventLogger::sendJsonMessage | Sending messages as json";
     QByteArray byteEvent = toJsonByteArray(message);
     m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl, QLatin1String("application/json"));
+
+    // Also send the telemetry to our provided endpoint
+    if (QInstaller::useProvidedTelemetryEndpoint())
+    {
+        QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
+        qDebug() << "framework | EventLogger::sendJsonMessage | Telemetry endpoint provided =" << customEndpoint;
+        if (customEndpoint == s_gatewayUrl)
+        {
+            qDebug() << "framework | EventLogger::sendJsonMessage | Telemetry endpoint same as real endpoint, no need to send twice";
+        }
+        else
+        {
+            qDebug() << "framework | EventLogger::sendJsonMessage | Also sending to user provided telemetry endpoint =" << customEndpoint;
+            QByteArray byteEvent = toJsonByteArray(message, QInstaller::isVerbose());
+            m_httpThreadController->postTelemetry(byteEvent, customEndpoint, QLatin1String("application/json"));
+        }
+    }
 }
 
-QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message)
+QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message, bool verbose)
 {
-    std::string json = toJson(message);
+    std::string json = toJson(message, verbose);
     return QByteArray::fromStdString(json);
 }
 
-std::string EventLogger::toJson(google::protobuf::Message* message)
+std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose)
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
-    // Following options are good for testing
-    // options.add_whitespace = true;
-    // options.always_print_primitive_fields = true;
-    // options.preserve_proto_field_names = true;
+    
+    if (verbose)
+    {
+        // Following options are good for testing
+        options.add_whitespace = true;
+        options.always_print_primitive_fields = true;
+        // options.preserve_proto_field_names = true;
+    }
+    
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;
