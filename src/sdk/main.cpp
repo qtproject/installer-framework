@@ -193,23 +193,12 @@ int main(int argc, char *argv[])
 
         if (parser.isSet(QLatin1String(CommandLineOptions::LogFileShort))
             || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong))) {    
-                QInstaller::enableLogFile();
                 QInstaller::setLogFileName(QString::fromLatin1("install.log"));
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging))) {
-            QInstaller::disableAutoLog();
-        } else {
-            QInstaller::enableAutoLog();
-        }
-
-        if (QInstaller::isAutoLogEnabled()) {
+        if (!parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging))) {
             QString fileName = QInstaller::getNewAutoLogFileName();
-            if (fileName.isEmpty()) {
-                QInstaller::disableAutoLog();
-            } else {
-                QInstaller::setAutoLogFileName(fileName);
-            }
+            QInstaller::setAutoLogFileName(fileName);
         }
         
         if (parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointShort))

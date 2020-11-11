@@ -140,19 +140,12 @@ bool QInstaller::isVerbose()
     return verb;
 }
 
-static bool logFileEnabled = false;
-
-void QInstaller::enableLogFile()
-{
-    logFileEnabled = true;
-}
+static QString logFileName;
 
 bool QInstaller::isLogFileEnabled()
 {
-    return logFileEnabled;
+    return !logFileName.isEmpty();
 }
-
-static QString logFileName;
 
 void QInstaller::setLogFileName(const QString& fileName)
 {
@@ -164,24 +157,12 @@ QString QInstaller::getLogFileName()
     return logFileName;
 }
 
-static bool autoLogEnabled = false;
-
-void QInstaller::enableAutoLog()
-{
-    autoLogEnabled = true;
-}
-
-void QInstaller::disableAutoLog()
-{
-    autoLogEnabled = false;
-}
+static QString autoLogFileName;
 
 bool QInstaller::isAutoLogEnabled()
 {
-    return autoLogEnabled;
+    return !autoLogFileName.isEmpty();
 }
-
-static QString autoLogFileName;
 
 void QInstaller::setAutoLogFileName(const QString& fileName)
 {
