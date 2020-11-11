@@ -74,7 +74,7 @@ static void initResources()
 }
 #endif
 
-static QString trimAndPrepend(QtMsgType type, const QString &msg)
+static QString trim(const QString &msg)
 {
     QString ba(msg);
     // last character is a space from qDebug
@@ -84,6 +84,13 @@ static QString trimAndPrepend(QtMsgType type, const QString &msg)
     // remove quotes if the whole message is surrounded with them
     if (ba.startsWith(QLatin1Char('"')) && ba.endsWith(QLatin1Char('"')))
         ba = ba.mid(1, ba.length() - 2);
+
+    return ba;
+}
+
+static QString trimAndPrepend(QtMsgType type, const QString &msg)
+{
+    QString ba = trim(msg);
 
     // prepend the message type, skip QtDebugMsg
     switch (type) {
@@ -105,16 +112,9 @@ static QString trimAndPrepend(QtMsgType type, const QString &msg)
     return ba;
 }
 
-static QString logFiletrimAndPrepend(QtMsgType type, const QString &msg)
+static QString logFileTrimAndPrepend(QtMsgType type, const QString &msg)
 {
-    QString ba(msg);
-    // last character is a space from qDebug
-    if (ba.endsWith(QLatin1Char(' ')))
-        ba.chop(1);
-
-    // remove quotes if the whole message is surrounded with them
-    if (ba.startsWith(QLatin1Char('"')) && ba.endsWith(QLatin1Char('"')))
-        ba = ba.mid(1, ba.length() - 2);
+    QString ba = trim(msg);
 
     // prepend time in ms since epch (UTC)
     QDateTime local(QDateTime::currentDateTime());
@@ -183,7 +183,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
     if (isLogFileEnabled() && (type != QtDebugMsg || isVerbose()))
     {
-        QString logMessage = logTime + logFiletrimAndPrepend(type, msg);
+        QString logMessage = logTime + logFileTrimAndPrepend(type, msg);
 
         QFile outFile(getLogFileName());
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
@@ -196,7 +196,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
     if (isAutoLogEnabled())
     {
-        QString logMessage = logTime + logFiletrimAndPrepend(type, msg);
+        QString logMessage = logTime + logFileTrimAndPrepend(type, msg);
 
         QFile outFile(getAutoLogFileName());
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);

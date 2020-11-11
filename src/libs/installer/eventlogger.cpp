@@ -101,6 +101,21 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
     QByteArray byteEvent = toJsonByteArray(&event);
     m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
+
+    // Also send the telemetry to our provided endpoint
+    if (QInstaller::useProvidedTelemetryEndpoint())
+    {
+        QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
+        qDebug() << "framework | EventLogger::sendAllocatedEvent | Also sending to user provided endpoint =" << customEndpoint;
+        if (customEndpoint == s_gatewayUrl)
+        {
+            qDebug() << "framework | EventLogger::sendAllocatedEvent | Custom endpoint same as real endpoint, no need to send twice";
+        }
+        else
+        {
+            m_httpThreadController->postTelemetry(byteEvent, customEndpoint);
+        }
+    }
 }
 
 QString EventLogger::getGatewayUrl()
@@ -122,10 +137,15 @@ std::string EventLogger::toJson(google::protobuf::Message* message)
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
-    // Following options are good for testing
-    // options.add_whitespace = true;
-    // options.always_print_primitive_fields = true;
-    // options.preserve_proto_field_names = true;
+    
+    if (QInstaller::useProvidedTelemetryEndpoint() && QInstaller::isVerbose())
+    {
+        // Following options are good for testing
+        options.add_whitespace = true;
+        options.always_print_primitive_fields = true;
+        // options.preserve_proto_field_names = true;
+    }
+    
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;
