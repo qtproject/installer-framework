@@ -192,28 +192,40 @@ int main(int argc, char *argv[])
         }
 
         if (parser.isSet(QLatin1String(CommandLineOptions::LogFileShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong))) {    
+            || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong)))
+        {
                 QInstaller::setLogFileName(QString::fromLatin1("install.log"));
         }
 
-        if (!parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging))) {
+        if (!parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging)))
+        {
             QString fileName = QInstaller::getNewAutoLogFileName();
             QInstaller::setAutoLogFileName(fileName);
         }
         
         if (parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointLong))) {
+            || parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointLong)))
+        {
             QString url = parser.value(QLatin1String(CommandLineOptions::TelemetryEndpointShort));
             
-            if (url == QString::fromLatin1("local")) {
+            if (url == QString::fromLatin1("local"))
+            {
                 url = QString::fromLatin1("https://localhost:5001/weatherforecast");
-            } else if (url == QString::fromLatin1("dev")) {
+            }
+            else if (url == QString::fromLatin1("dev"))
+            {
                 url = QString::fromLatin1("https://elg-dev.evetech.net:8081/v1/event/publish");
-            } else if (url == QString::fromLatin1("live")) {
+            }
+            else if (url == QString::fromLatin1("live"))
+            {
                 url = QString::fromLatin1("https://elg-live.evetech.net:8081/v1/event/publish");
-            } else if (url == QString::fromLatin1("cdev")) {
+            }
+            else if (url == QString::fromLatin1("cdev"))
+            {
                 url = QString::fromLatin1("https://elg-dev.evepc.163.com:8081/v1/event/publish");
-            } else if (url == QString::fromLatin1("clive")) {
+            }
+            else if (url == QString::fromLatin1("clive"))
+            {
                 url = QString::fromLatin1("https://elg-live.evepc.163.com:8081/v1/event/publish");
             }
 

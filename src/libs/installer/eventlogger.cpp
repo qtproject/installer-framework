@@ -107,9 +107,12 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     {
         QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
         qDebug() << "framework | EventLogger::sendAllocatedEvent | Also sending to user provided endpoint =" << customEndpoint;
-        if (customEndpoint == s_gatewayUrl) {
+        if (customEndpoint == s_gatewayUrl)
+        {
             qDebug() << "framework | EventLogger::sendAllocatedEvent | Custom endpoint same as real endpoint, no need to send twice";
-        } else {
+        }
+        else
+        {
             m_httpThreadController->postTelemetry(byteEvent, customEndpoint);
         }
     }
