@@ -1266,6 +1266,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
+    , m_localPackagesTreeFetched(false)
     , m_label(nullptr)
     , m_msgLabel(nullptr)
     , m_errorLabel(nullptr)
@@ -1426,16 +1427,15 @@ bool IntroductionPage::validatePage()
 
     // fetch common packages
     if (core->isInstaller() || core->isPackageManager()) {
-        bool localPackagesTreeFetched = false;
-        if (!m_allPackagesFetched) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
             // first try to fetch the server side packages tree
             m_allPackagesFetched = core->fetchRemotePackagesTree();
             if (!m_allPackagesFetched) {
                 QString error = core->error();
                 if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
                     // if that fails and we're in maintenance mode, try to fetch local installed tree
-                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
-                    if (localPackagesTreeFetched) {
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
                         // if that succeeded, adjust error message
                         error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
                             "management available.") + QLatin1String("</font>");
@@ -1445,7 +1445,7 @@ bool IntroductionPage::validatePage()
             }
         }
 
-        if (m_allPackagesFetched || localPackagesTreeFetched)
+        if (m_allPackagesFetched || m_localPackagesTreeFetched)
             setComplete(true);
     }
 
@@ -1621,6 +1621,7 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 {
     m_updatesFetched = false;
     m_allPackagesFetched = false;
+    m_localPackagesTreeFetched = false;
 }
 
 // -- private
@@ -1644,6 +1645,38 @@ void IntroductionPage::entering()
         setMaintenanceToolsEnabled(true);
     }
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+            // first try to fetch the server side packages tree
+            qDebug() << "IntroductionPage::entering | fetchRemotePackagesTree 2";
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    qDebug() << "IntroductionPage::entering | localPackagesTreeFetched";
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+    }
 }
 
 /*!

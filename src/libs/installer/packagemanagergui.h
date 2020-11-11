@@ -246,6 +246,7 @@ private:
 private:
     bool m_updatesFetched;
     bool m_allPackagesFetched;
+    bool m_localPackagesTreeFetched;
 
     QLabel *m_label;
     QLabel *m_msgLabel;
