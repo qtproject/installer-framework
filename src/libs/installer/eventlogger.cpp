@@ -103,9 +103,11 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     // Send again now to a proto endpoint
     if (QInstaller::sendProtoMessages())
     {
-        auto any2 = new google::protobuf::Any;
-        any2->PackFrom(*payload, "type.evetech.net");
-        event.set_allocated_payload(any2);
+        // We need to re-unpack the payload, to get the type namespace into the proto.
+        // There is a bug in the json formatter that breaks the formatter if we provide our own namespace.
+        auto anyWithType = new google::protobuf::Any;
+        anyWithType->PackFrom(*payload, "type.evetech.net");
+        event.set_allocated_payload(anyWithType);
         sendProtoMessage(&event);
     }
 }
