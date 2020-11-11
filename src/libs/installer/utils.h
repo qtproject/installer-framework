@@ -81,8 +81,9 @@ namespace QInstaller {
     QString INSTALLER_EXPORT environmentVariable(const QString& name);
 
     // Proto messages
-    void INSTALLER_EXPORT enableProtoMessages();
-    bool INSTALLER_EXPORT useProtoMessages();
+    bool INSTALLER_EXPORT sendProtoMessages();
+    void INSTALLER_EXPORT setProtoMessageEndpoint(const QString& url);
+    QString INSTALLER_EXPORT getProtoMessageEndpoint();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

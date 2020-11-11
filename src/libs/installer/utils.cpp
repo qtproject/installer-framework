@@ -258,16 +258,21 @@ QString QInstaller::environmentVariable(const QString &name)
 #endif
 }
 
-static bool useProto = false;
+static QString protoUrl;
 
-void QInstaller::enableProtoMessages()
+bool QInstaller::sendProtoMessages()
 {
-    useProto = true;
+    return !protoUrl.isEmpty();
 }
 
-bool QInstaller::useProtoMessages()
+void QInstaller::setProtoMessageEndpoint(const QString& url)
 {
-    return useProto;
+    protoUrl = url;
+}
+
+QString QInstaller::getProtoMessageEndpoint()
+{
+    return protoUrl;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

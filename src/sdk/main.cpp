@@ -213,8 +213,30 @@ int main(int argc, char *argv[])
         }
 
         if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessages)))
-        {    
-                QInstaller::enableProtoMessages();
+        {
+            QString url = parser.value(QLatin1String(CommandLineOptions::ProtoMessages));
+            
+            if (url == QString::fromLatin1("local"))
+            {
+                url = QString::fromLatin1("https://localhost:5001/weatherforecast");
+            }
+            else if (url == QString::fromLatin1("dev"))
+            {
+                url = QString::fromLatin1("https://elg-dev.evetech.net:8081/v1/event/publish");
+            }
+            else if (url == QString::fromLatin1("live"))
+            {
+                url = QString::fromLatin1("https://elg-live.evetech.net:8081/v1/event/publish");
+            }
+            else if (url == QString::fromLatin1("cdev"))
+            {
+                url = QString::fromLatin1("https://elg-dev.evepc.163.com:8081/v1/event/publish");
+            }
+            else if (url == QString::fromLatin1("clive"))
+            {
+                url = QString::fromLatin1("https://elg-live.evepc.163.com:8081/v1/event/publish");
+            }
+            QInstaller::setProtoMessageEndpoint(url);
         }
 
         // On Windows we need the console window from above, we are a GUI application.

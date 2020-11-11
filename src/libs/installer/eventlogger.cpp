@@ -94,27 +94,19 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
 
     // Set the payload
     auto any = new google::protobuf::Any;
-    if (QInstaller::useProtoMessages())
-    {
-        any->PackFrom(*payload, "type.evetech.net");
-    }
-    else
-    {
-        any->PackFrom(*payload);
-    }
-    
+    any->PackFrom(*payload);
     event.set_allocated_payload(any);
 
-    // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
-    
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
-    if (QInstaller::useProtoMessages())
+    sendJsonMessage(&event);
+
+    // Send again now to a proto endpoint
+    if (QInstaller::sendProtoMessages())
     {
+        auto any2 = new google::protobuf::Any;
+        any2->PackFrom(*payload, "type.evetech.net");
+        event.set_allocated_payload(any2);
         sendProtoMessage(&event);
-    }
-    else
-    {
-        sendJsonMessage(&event);
     }
 }
 
@@ -134,7 +126,7 @@ void EventLogger::sendProtoMessage(google::protobuf::Message* message)
     if (message->SerializeToString(&serializedEvent))
     {
         QByteArray byteEvent = QByteArray::fromStdString(serializedEvent);
-        m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl, QLatin1String("application/x-protobuf"));
+        m_httpThreadController->postTelemetry(byteEvent, QInstaller::getProtoMessageEndpoint(), QLatin1String("application/x-protobuf"));
     }
     else
     {
