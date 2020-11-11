@@ -101,15 +101,22 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
     QByteArray byteEvent = toJsonByteArray(&event);
     m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
+
+    // Also send the telemetry to our provided endpoint
+    if (QInstaller::useProvidedTelemetryEndpoint())
+    {
+        QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
+        qDebug() << "framework | EventLogger::sendAllocatedEvent | Also sending to user provided endpoint =" << customEndpoint;
+        if (customEndpoint == s_gatewayUrl) {
+            qDebug() << "framework | EventLogger::sendAllocatedEvent | Custom endpoint same as real endpoint, no need to send twice";
+        } else {
+            m_httpThreadController->postTelemetry(byteEvent, customEndpoint);
+        }
+    }
 }
 
 QString EventLogger::getGatewayUrl()
 {
-    if (QInstaller::useProvidedTelemetryEndpoint())
-    {
-        return QInstaller::getProvidedTelemetryEndpoint();
-    }
-
     bool dev = s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
     bool china = s_region == eve_launcher::application::Application_Region_REGION_CHINA;
     QString subDomain = dev ? QString::fromLatin1("dev") : QString::fromLatin1("live");
