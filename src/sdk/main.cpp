@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
         if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesShort))
             || parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesLong)))
         {
-            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::ProtoMessages)));
+            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::ProtoMessagesShort)));
             QInstaller::setProtoMessageEndpoint(url);
         }
 
