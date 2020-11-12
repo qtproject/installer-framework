@@ -239,6 +239,23 @@ QString QInstaller::environmentVariable(const QString &name)
 #endif
 }
 
+static QString protoUrl;
+
+bool QInstaller::sendProtoMessages()
+{
+    return !protoUrl.isEmpty();
+}
+
+void QInstaller::setProtoMessageEndpoint(const QString& url)
+{
+    protoUrl = url;
+}
+
+QString QInstaller::getProtoMessageEndpoint()
+{
+    return protoUrl;
+}
+
 static QString telemetryUrl;
 
 bool QInstaller::useProvidedTelemetryEndpoint()

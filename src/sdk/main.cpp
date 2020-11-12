@@ -56,6 +56,36 @@
 #define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
+QString processUrl(const QString& url)
+{
+    if (url == QString::fromLatin1("local"))
+    {
+        return QString::fromLatin1("https://localhost:5001/weatherforecast");
+    }
+    
+    if (url == QString::fromLatin1("dev"))
+    {
+        return QString::fromLatin1("https://elg-dev.evetech.net:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("live"))
+    {
+        return QString::fromLatin1("https://elg-live.evetech.net:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("cdev"))
+    {
+        return QString::fromLatin1("https://elg-dev.evepc.163.com:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("clive"))
+    {
+        return QString::fromLatin1("https://elg-live.evepc.163.com:8081/v1/event/publish");
+    }
+
+    return url;
+}
+
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN)
@@ -206,30 +236,15 @@ int main(int argc, char *argv[])
         if (parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointShort))
             || parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointLong)))
         {
-            QString url = parser.value(QLatin1String(CommandLineOptions::TelemetryEndpointShort));
-            
-            if (url == QString::fromLatin1("local"))
-            {
-                url = QString::fromLatin1("https://localhost:5001/weatherforecast");
-            }
-            else if (url == QString::fromLatin1("dev"))
-            {
-                url = QString::fromLatin1("https://elg-dev.evetech.net:8081/v1/event/publish");
-            }
-            else if (url == QString::fromLatin1("live"))
-            {
-                url = QString::fromLatin1("https://elg-live.evetech.net:8081/v1/event/publish");
-            }
-            else if (url == QString::fromLatin1("cdev"))
-            {
-                url = QString::fromLatin1("https://elg-dev.evepc.163.com:8081/v1/event/publish");
-            }
-            else if (url == QString::fromLatin1("clive"))
-            {
-                url = QString::fromLatin1("https://elg-live.evepc.163.com:8081/v1/event/publish");
-            }
-
+            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::TelemetryEndpointShort)));
             QInstaller::setProvidedTelemetryEndpoint(url);
+        }
+
+        if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesShort))
+            || parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesLong)))
+        {
+            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::ProtoMessages)));
+            QInstaller::setProtoMessageEndpoint(url);
         }
 
         // On Windows we need the console window from above, we are a GUI application.

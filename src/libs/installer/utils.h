@@ -77,7 +77,12 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getNewAutoLogFileName();
     QString INSTALLER_EXPORT environmentVariable(const QString& name);
 
-    // Use provided endpoint
+    // Proto messages
+    bool INSTALLER_EXPORT sendProtoMessages();
+    void INSTALLER_EXPORT setProtoMessageEndpoint(const QString& url);
+    QString INSTALLER_EXPORT getProtoMessageEndpoint();
+
+    // Telemetry endpoint
     bool INSTALLER_EXPORT useProvidedTelemetryEndpoint();
     void INSTALLER_EXPORT setProvidedTelemetryEndpoint(const QString& url);
     QString INSTALLER_EXPORT getProvidedTelemetryEndpoint();

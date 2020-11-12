@@ -4,6 +4,7 @@
 #include <protobuf.h>
 
 #include <google/protobuf/util/json_util.h>
+#include <google/protobuf/message_lite.h>
 
 #include <QNetworkInterface>
 #include <QRandomGenerator>
@@ -96,25 +97,18 @@ void EventLogger::sendAllocatedEvent(google::protobuf::Message* payload)
     any->PackFrom(*payload);
     event.set_allocated_payload(any);
 
-    // Set the Journey ID https://wiki.ccpgames.com/x/cRwuC
-    
     qDebug() << "framework | EventLogger::sendAllocatedEvent | gateway url =" << s_gatewayUrl;
-    QByteArray byteEvent = toJsonByteArray(&event);
-    m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl);
+    sendJsonMessage(&event);
 
-    // Also send the telemetry to our provided endpoint
-    if (QInstaller::useProvidedTelemetryEndpoint())
+    // Send again now to a proto endpoint
+    if (QInstaller::sendProtoMessages())
     {
-        QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
-        qDebug() << "framework | EventLogger::sendAllocatedEvent | Also sending to user provided endpoint =" << customEndpoint;
-        if (customEndpoint == s_gatewayUrl)
-        {
-            qDebug() << "framework | EventLogger::sendAllocatedEvent | Custom endpoint same as real endpoint, no need to send twice";
-        }
-        else
-        {
-            m_httpThreadController->postTelemetry(byteEvent, customEndpoint);
-        }
+        // We need to re-unpack the payload, to get the type namespace into the proto.
+        // There is a bug in the json formatter that breaks the formatter if we provide our own namespace.
+        auto anyWithType = new google::protobuf::Any;
+        anyWithType->PackFrom(*payload, "type.evetech.net");
+        event.set_allocated_payload(anyWithType);
+        sendProtoMessage(&event);
     }
 }
 
@@ -127,18 +121,57 @@ QString EventLogger::getGatewayUrl()
     return QString(QLatin1String("https://elg-%1.%2:8081/v1/event/publish")).arg(subDomain).arg(domain);
 }
 
-QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message)
+void EventLogger::sendProtoMessage(google::protobuf::Message* message)
 {
-    std::string json = toJson(message);
+    qDebug() << "framework | EventLogger::sendProtoMessage | Sending messages as proto";
+    std::string serializedEvent;
+    if (message->SerializeToString(&serializedEvent))
+    {
+        QByteArray byteEvent = QByteArray::fromStdString(serializedEvent);
+        m_httpThreadController->postTelemetry(byteEvent, QInstaller::getProtoMessageEndpoint(), QLatin1String("application/x-protobuf"));
+    }
+    else
+    {
+        qWarning() << "framework | EventLogger::sendProtoMessage | Couldn't serialize proto, no event sent!";
+    }
+}
+
+void EventLogger::sendJsonMessage(google::protobuf::Message* message)
+{
+    qDebug() << "framework | EventLogger::sendJsonMessage | Sending messages as json";
+    QByteArray byteEvent = toJsonByteArray(message);
+    m_httpThreadController->postTelemetry(byteEvent, s_gatewayUrl, QLatin1String("application/json"));
+
+    // Also send the telemetry to our provided endpoint
+    if (QInstaller::useProvidedTelemetryEndpoint())
+    {
+        QString customEndpoint = QInstaller::getProvidedTelemetryEndpoint();
+        qDebug() << "framework | EventLogger::sendJsonMessage | Telemetry endpoint provided =" << customEndpoint;
+        if (customEndpoint == s_gatewayUrl)
+        {
+            qDebug() << "framework | EventLogger::sendJsonMessage | Telemetry endpoint same as real endpoint, no need to send twice";
+        }
+        else
+        {
+            qDebug() << "framework | EventLogger::sendJsonMessage | Also sending to user provided telemetry endpoint =" << customEndpoint;
+            QByteArray byteEvent = toJsonByteArray(message, QInstaller::isVerbose());
+            m_httpThreadController->postTelemetry(byteEvent, customEndpoint, QLatin1String("application/json"));
+        }
+    }
+}
+
+QByteArray EventLogger::toJsonByteArray(google::protobuf::Message* message, bool verbose)
+{
+    std::string json = toJson(message, verbose);
     return QByteArray::fromStdString(json);
 }
 
-std::string EventLogger::toJson(google::protobuf::Message* message)
+std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose)
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
     
-    if (QInstaller::useProvidedTelemetryEndpoint() && QInstaller::isVerbose())
+    if (verbose)
     {
         // Following options are good for testing
         options.add_whitespace = true;

@@ -9,7 +9,7 @@ HttpThreadWorker::HttpThreadWorker()
     m_finished = 0;
 }
 
-void HttpThreadWorker::process(const QByteArray& data, const QString& url)
+void HttpThreadWorker::process(const QByteArray& data, const QString& url, const QString& contentType)
 {
     qDebug() << "framework | HttpThreadWorker::process |" << data;
     m_started++;
@@ -22,7 +22,7 @@ void HttpThreadWorker::process(const QByteArray& data, const QString& url)
     }
 
     request->setUrl(url);
-    request->setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("application/json"));
+    request->setHeader(QNetworkRequest::ContentTypeHeader, contentType);
 
     QByteArray empty;
 
