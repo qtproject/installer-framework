@@ -140,19 +140,12 @@ bool QInstaller::isVerbose()
     return verb;
 }
 
-static bool logFileEnabled = false;
-
-void QInstaller::enableLogFile()
-{
-    logFileEnabled = true;
-}
+static QString logFileName;
 
 bool QInstaller::isLogFileEnabled()
 {
-    return logFileEnabled;
+    return !logFileName.isEmpty();
 }
-
-static QString logFileName;
 
 void QInstaller::setLogFileName(const QString& fileName)
 {
@@ -164,24 +157,12 @@ QString QInstaller::getLogFileName()
     return logFileName;
 }
 
-static bool autoLogEnabled = false;
-
-void QInstaller::enableAutoLog()
-{
-    autoLogEnabled = true;
-}
-
-void QInstaller::disableAutoLog()
-{
-    autoLogEnabled = false;
-}
+static QString autoLogFileName;
 
 bool QInstaller::isAutoLogEnabled()
 {
-    return autoLogEnabled;
+    return !autoLogFileName.isEmpty();
 }
-
-static QString autoLogFileName;
 
 void QInstaller::setAutoLogFileName(const QString& fileName)
 {
@@ -256,6 +237,40 @@ QString QInstaller::environmentVariable(const QString &name)
 #else
     return QString::fromUtf8(qgetenv(name.toLatin1()));
 #endif
+}
+
+static QString protoUrl;
+
+bool QInstaller::sendProtoMessages()
+{
+    return !protoUrl.isEmpty();
+}
+
+void QInstaller::setProtoMessageEndpoint(const QString& url)
+{
+    protoUrl = url;
+}
+
+QString QInstaller::getProtoMessageEndpoint()
+{
+    return protoUrl;
+}
+
+static QString telemetryUrl;
+
+bool QInstaller::useProvidedTelemetryEndpoint()
+{
+    return !telemetryUrl.isEmpty();
+}
+
+void QInstaller::setProvidedTelemetryEndpoint(const QString& url)
+{
+    telemetryUrl = url;
+}
+
+QString QInstaller::getProvidedTelemetryEndpoint()
+{
+    return telemetryUrl;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

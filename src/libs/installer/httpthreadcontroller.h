@@ -18,7 +18,7 @@ public:
     ~HttpThreadController();
 
 signals:
-    void postTelemetry(const QByteArray&, const QString&);
+    void postTelemetry(const QByteArray&, const QString&, const QString&);
 };
 
 #endif // HTTPTHREADCONTROLLER_H

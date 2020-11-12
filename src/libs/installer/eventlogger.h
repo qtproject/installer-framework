@@ -2,6 +2,7 @@
 #define EVENTLOGGER_H
 
 #include "httpthreadcontroller.h"
+#include "utils.h"
 
 #include "eve_launcher/application.pb.h"
 #include "eve_launcher/installer.pb.h"
@@ -83,8 +84,10 @@ protected:
 
     void sendAllocatedEvent(google::protobuf::Message* payload);
     QString getGatewayUrl();
-    QByteArray toJsonByteArray(google::protobuf::Message* message);
-    std::string toJson(::google::protobuf::Message* event);
+    void sendProtoMessage(google::protobuf::Message* message);
+    void sendJsonMessage(google::protobuf::Message* message);
+    QByteArray toJsonByteArray(google::protobuf::Message* message, bool verbose = false);
+    std::string toJson(::google::protobuf::Message* event, bool verbose = false);
     bool replace(std::string& str, const std::string& from, const std::string& to);
 
     eve_launcher::application::Application_Region s_region;

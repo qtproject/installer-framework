@@ -56,6 +56,36 @@
 #define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
 
+QString processUrl(const QString& url)
+{
+    if (url == QString::fromLatin1("local"))
+    {
+        return QString::fromLatin1("https://localhost:5001/weatherforecast");
+    }
+    
+    if (url == QString::fromLatin1("dev"))
+    {
+        return QString::fromLatin1("https://elg-dev.evetech.net:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("live"))
+    {
+        return QString::fromLatin1("https://elg-live.evetech.net:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("cdev"))
+    {
+        return QString::fromLatin1("https://elg-dev.evepc.163.com:8081/v1/event/publish");
+    }
+    
+    if (url == QString::fromLatin1("clive"))
+    {
+        return QString::fromLatin1("https://elg-live.evepc.163.com:8081/v1/event/publish");
+    }
+
+    return url;
+}
+
 int main(int argc, char *argv[])
 {
 #if defined(Q_OS_WIN)
@@ -192,24 +222,29 @@ int main(int argc, char *argv[])
         }
 
         if (parser.isSet(QLatin1String(CommandLineOptions::LogFileShort))
-            || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong))) {    
-                QInstaller::enableLogFile();
+            || parser.isSet(QLatin1String(CommandLineOptions::LogFileLong)))
+        {
                 QInstaller::setLogFileName(QString::fromLatin1("install.log"));
         }
 
-        if (parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging))) {
-            QInstaller::disableAutoLog();
-        } else {
-            QInstaller::enableAutoLog();
+        if (!parser.isSet(QLatin1String(CommandLineOptions::NoAutomaticLogging)))
+        {
+            QString fileName = QInstaller::getNewAutoLogFileName();
+            QInstaller::setAutoLogFileName(fileName);
+        }
+        
+        if (parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointShort))
+            || parser.isSet(QLatin1String(CommandLineOptions::TelemetryEndpointLong)))
+        {
+            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::TelemetryEndpointShort)));
+            QInstaller::setProvidedTelemetryEndpoint(url);
         }
 
-        if (QInstaller::isAutoLogEnabled()) {
-            QString fileName = QInstaller::getNewAutoLogFileName();
-            if (fileName.isEmpty()) {
-                QInstaller::disableAutoLog();
-            } else {
-                QInstaller::setAutoLogFileName(fileName);
-            }
+        if (parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesShort))
+            || parser.isSet(QLatin1String(CommandLineOptions::ProtoMessagesLong)))
+        {
+            QString url = processUrl(parser.value(QLatin1String(CommandLineOptions::ProtoMessages)));
+            QInstaller::setProtoMessageEndpoint(url);
         }
 
         // On Windows we need the console window from above, we are a GUI application.

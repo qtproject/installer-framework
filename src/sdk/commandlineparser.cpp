@@ -58,6 +58,30 @@ CommandLineParser::CommandLineParser()
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::NoAutomaticLogging),
         QLatin1String("Turn off automatic logging.")));
 
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << QLatin1String(CommandLineOptions::ProtoMessagesShort)
+        << QLatin1String(CommandLineOptions::ProtoMessagesLong),
+        QLatin1String("Additionally send messages as proto to any endpoint of your choice. "
+        "Or choose from one of the predefined values:\n"
+        "local => https://localhost:5001/weatherforecast\n"
+        "dev => elg-dev world\n"
+        "live => elg-live world\n"
+        "cdev => elg-dev china\n"
+        "clive => elg-live china"),
+        QLatin1String("url")));
+
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << QLatin1String(CommandLineOptions::TelemetryEndpointShort)
+        << QLatin1String(CommandLineOptions::TelemetryEndpointLong),
+        QLatin1String("Specify endpoint for telemetry. Provide your own or "
+        "use any of the following predefined values:\n"
+        "local => https://localhost:5001/weatherforecast\n"
+        "dev => elg-dev world\n"
+        "live => elg-live world\n"
+        "cdev => elg-dev china\n"
+        "clive => elg-live china"),
+        QLatin1String("url")));
+
     m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::Proxy),
         QLatin1String("Use system proxy on Windows and Linux. This option has no effect on macOS.")));
 
