@@ -74,11 +74,22 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(scTitle, m_settings.title());
     m_variables.insert(scPublisher, m_settings.publisher());
     m_variables.insert(QLatin1String("Url"), m_settings.url());
-    m_variables.insert(scStartMenuDir, m_settings.startMenuDir());
     m_variables.insert(scTargetConfigurationFile, m_settings.configurationFileName());
     m_variables.insert(QLatin1String("LogoPixmap"), m_settings.logo());
     m_variables.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
     m_variables.insert(QLatin1String("BannerPixmap"), m_settings.banner());
+
+    // fill in start menu location
+    QString startMenuPath;
+    if (m_variables.value(scAllUsers, scFalse) == scTrue)
+    {
+        startMenuPath = m_variables.value(QLatin1String("AllUserStartMenuProgramsPath"));
+    }
+    else
+    {
+        startMenuPath = m_variables.value(QLatin1String("UserStartMenuProgramsPath"));
+    }
+    m_variables.insert(scStartMenuDir, startMenuPath + QDir::separator() + m_settings.startMenuDir());
 
     const QString description = m_settings.runProgramDescription();
     if (!description.isEmpty())
@@ -150,7 +161,7 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
         .toString();
 
     QString desktop;
-    if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
+    if (m_variables.value(scAllUsers) == scTrue) {
         desktop = system.value(QLatin1String("Desktop")).toString();
     } else {
         desktop = user.value(QLatin1String("Desktop")).toString();
