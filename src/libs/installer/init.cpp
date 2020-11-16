@@ -129,8 +129,11 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 
     static Uptime uptime;
 
-    QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ")
-            + trimAndPrepend(type, msg);
+    QString ba;
+    if (context.category != lcPackageInfo().categoryName()) {
+        ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ");
+    }
+    ba += trimAndPrepend(type, msg);
 
     if (type != QtDebugMsg && context.file) {
         ba += QString(QStringLiteral(" (%1:%2, %3)")).arg(

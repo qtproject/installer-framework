@@ -45,6 +45,7 @@
 #include "settings.h"
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
+#include "printoutput.h"
 
 #include <productkeycheck.h>
 
@@ -2195,17 +2196,18 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
     QRegularExpression re(regexp);
     const PackagesList &packages = d->remotePackages();
 
-    bool foundMatch = false;
-    foreach (const Package *update, packages) {
-        const QString name = update->data(scName).toString();
+    PackagesList matchedPackages;
+    foreach (Package *package, packages) {
+        const QString name = package->data(scName).toString();
         if (re.match(name).hasMatch() &&
-                (virtualComponentsVisible() ? true : !update->data(scVirtual, false).toBool())) {
-            d->printPackageInformation(name, update);
-            foundMatch = true;
+                (virtualComponentsVisible() ? true : !package->data(scVirtual, false).toBool())) {
+            matchedPackages.append(package);
         }
     }
-    if (!foundMatch)
+    if (matchedPackages.count() == 0)
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
+    else
+        QInstaller::printPackageInformation(matchedPackages, localInstalledPackages());
 }
 
 bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
@@ -2254,11 +2256,13 @@ void PackageManagerCore::listInstalledPackages(const QString &regexp)
     const QRegularExpression re(regexp);
 
     const QStringList &keys = installedPackages.keys();
+    QList<LocalPackage> packages;
     foreach (const QString &key, keys) {
         KDUpdater::LocalPackage package = installedPackages.value(key);
         if (re.match(package.name).hasMatch())
-            d->printLocalPackageInformation(package);
+            packages.append(package);
     }
+    QInstaller::printLocalPackageInformation(packages);
 }
 
 /*!

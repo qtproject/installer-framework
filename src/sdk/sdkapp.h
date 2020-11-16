@@ -159,17 +159,12 @@ public:
                                         "ifw.installer.* = true\n"
                                         "ifw.server = true\n"
                                         "ifw.progress.indicator = true\n"
-                                        "ifw.package.name = true\n"
-                                        "ifw.package.version = true\n"
-                                        "ifw.package.displayname = true\n");
+                                        "ifw.package.* = true\n");
         } else {
             // enable all except detailed package information and developer specific logging
             loggingRules = QLatin1String("ifw.* = true\n"
                                         "ifw.developer.build = false\n"
-                                        "ifw.package.* = false\n"
-                                        "ifw.package.name = true\n"
-                                        "ifw.package.version = true\n"
-                                        "ifw.package.displayname = true\n");
+                                        "ifw.package.* = true\n");
         }
 
         if (QInstaller::verboseLevel() == QInstaller::VerbosityLevel::Detailed) {

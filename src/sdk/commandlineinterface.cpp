@@ -34,11 +34,9 @@
 #include <globals.h>
 #include <productkeycheck.h>
 #include <errors.h>
+#include <printoutput.h>
 
 #include <QDir>
-#include <QDomDocument>
-
-#include <iostream>
 
 CommandLineInterface::CommandLineInterface(int &argc, char *argv[])
     : SDKApp<QCoreApplication>(argc, argv)
@@ -103,21 +101,7 @@ int CommandLineInterface::checkUpdates()
         qCWarning(QInstaller::lcInstallerInstallLog) << "There are currently no updates available.";
         return EXIT_SUCCESS;
     }
-
-    QDomDocument doc;
-    QDomElement root = doc.createElement(QLatin1String("updates"));
-    doc.appendChild(root);
-
-    foreach (QInstaller::Component *component, components) {
-        QDomElement update = doc.createElement(QLatin1String("update"));
-        update.setAttribute(QLatin1String("name"), component->value(QInstaller::scDisplayName));
-        update.setAttribute(QLatin1String("version"), component->value(QInstaller::scVersion));
-        update.setAttribute(QLatin1String("size"), component->value(QInstaller::scUncompressedSize));
-        update.setAttribute(QLatin1String("id"), component->value(QInstaller::scName));
-        root.appendChild(update);
-    }
-
-    std::cout << qPrintable(doc.toString(4)) << std::endl;
+    QInstaller::printComponentInfo(components);
     return EXIT_SUCCESS;
 }
 
@@ -230,7 +214,7 @@ bool CommandLineInterface::checkLicense()
 {
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
     if (!productKeyCheck->hasValidLicense()) {
-        qCWarning(QInstaller::lcPackageLicenses) << "No valid license found.";
+        qCWarning(QInstaller::lcInstallerInstallLog) << "No valid license found.";
         return false;
     }
     return true;

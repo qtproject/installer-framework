@@ -25,30 +25,18 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef GLOBALS_H
-#define GLOBALS_H
 
-#include "installer_global.h"
+#ifndef PRINTOUTPUT_H
+#define PRINTOUTPUT_H
 
-#include <QRegExp>
-#include <QLoggingCategory>
+#include "component.h"
+
+#include <QObject>
 
 namespace QInstaller {
+    void INSTALLER_EXPORT printComponentInfo(const QList<Component *> components);
+    void INSTALLER_EXPORT printLocalPackageInformation(const QList<KDUpdater::LocalPackage> &packages);
+    void INSTALLER_EXPORT printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesHash &installedPackages);
+}
 
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcServer)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcInstallerInstallLog)
-
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcProgressIndicator)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcDeveloperBuild)
-INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcPackageInfo)
-
-QStringList INSTALLER_EXPORT loggingCategories();
-
-QRegExp INSTALLER_EXPORT commaRegExp();
-
-QString htmlToString(const QString &html);
-QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);
-
-}   // QInstaller
-
-#endif  // GLOBALS_H
+#endif // PRINTOUTPUT_H

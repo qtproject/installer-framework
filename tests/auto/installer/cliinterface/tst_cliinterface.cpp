@@ -40,20 +40,11 @@ class tst_CLIInterface : public QObject
 {
     Q_OBJECT
 
-private:
-    void setIgnoreMessage()
-    {
-        QTest::ignoreMessage(QtDebugMsg, "Id: A");
-        QTest::ignoreMessage(QtDebugMsg, "Id: B");
-        QTest::ignoreMessage(QtDebugMsg, "Id: C");
-        QTest::ignoreMessage(QtDebugMsg, "Id: AB");
-    }
-
 private slots:
     void testListAvailablePackages()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"
-                                "ifw.package.name = true\n"));
+                                "ifw.package.* = true\n"));
 
         QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
 
@@ -62,25 +53,41 @@ private slots:
 
         QLoggingCategory::setFilterRules(loggingRules);
 
-        setIgnoreMessage();
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+                             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("."));
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: A");
-        QTest::ignoreMessage(QtDebugMsg, "Id: AB");
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("A"));
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: A");
-        QTest::ignoreMessage(QtDebugMsg, "Id: AB");
+
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("A.*"));
 
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: B");
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("^B"));
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: B");
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("^B.*"));
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: C");
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
+                             "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("^C"));
     }
 
@@ -152,7 +159,7 @@ private slots:
     void testListInstalledPackages()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"
-                                              "ifw.package.name = true\n"));
+                                              "ifw.package.* = true\n"));
         PackageManagerCore core;
         core.setPackageManager();
         QLoggingCategory::setFilterRules(loggingRules);
@@ -163,11 +170,15 @@ private slots:
 
         core.setValue(scTargetDir, testDirectory);
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: A");
-        QTest::ignoreMessage(QtDebugMsg, "Id: B");
+        QTest::ignoreMessage(QtDebugMsg, "<localpackages>\n"
+                             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"B\" displayname=\"B Title\" version=\"1.0.0-1\"/>\n"
+                             "</localpackages>\n");
         core.listInstalledPackages();
 
-        QTest::ignoreMessage(QtDebugMsg, "Id: A");
+        QTest::ignoreMessage(QtDebugMsg, "<localpackages>\n"
+                             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
+                             "</localpackages>\n");
         core.listInstalledPackages(QLatin1String("A"));
 
         QDir dir(testDirectory);
@@ -476,6 +487,11 @@ private slots:
     {
         m_installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(m_installDir));
+    }
+
+    void initTestCase()
+    {
+        qSetGlobalQHashSeed(0); //Ensures the dom document deterministic behavior
     }
 
     void cleanup()

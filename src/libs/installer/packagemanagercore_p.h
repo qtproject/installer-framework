@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -251,8 +251,6 @@ private:
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
     bool askUserConfirmCommand() const;
-    void printPackageInformation(const QString &name, const Package *update);
-    void printLocalPackageInformation(const KDUpdater::LocalPackage package) const;
 
 private:
     PackageManagerCore *m_core;
