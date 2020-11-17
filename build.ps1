@@ -59,38 +59,8 @@ if ($Verbose) {
     $null = New-Item -Path $buildDir -ItemType "directory"
 }
 
-# # Invokes a Cmd.exe shell script and updates the environment.
-# function Invoke-CmdScript {
-#   param(
-#     [String] $ScriptName
-#   )
-#   $cmdLine = """$ScriptName"" $args & set"
-#   & $Env:SystemRoot\system32\cmd.exe /c $cmdLine |
-#   Select-String '^([^=]*)=(.*)$' | Foreach-Object {
-#     $varName = $_.Matches[0].Groups[1].Value
-#     $varValue = $_.Matches[0].Groups[2].Value
-#     Set-Item Env:$varName $varValue
-#   }
-# }
-
-# $location = Get-Location
-
-# We need to run this from this folder
-# Set-Location $PSScriptRoot
-
-# # Store the environment vars from vcvarsall.bat
-# Invoke-CmdScript "$varsall" "x86" "$WinSdk"
-
-# # Create the makefiles
-# & "$qmake" "-r"
-
-# # Build the makefiels
-# & "$jom" "release"
-
-# $params = """$varsall"" $WinSdk ""$qmake"" ""$jom"""
-# Write-Output $params
+# Build the framework (this is done via bat because of vcvarsall)
 $buildHelper = """$PSScriptRoot\build_helper.bat"" ""$varsall"" $WinSdk ""$qmake"" ""$jom"""
-
 if ($Verbose) {
     Write-Output "Start creating the framework: " $buildHelper
     cmd.exe /c $buildHelper
@@ -98,7 +68,6 @@ if ($Verbose) {
 } else {
     $null = cmd.exe /c $buildHelper
 }
-# Set-Location $location
 
 # Copy the output to the build folder
 Copy-Item "$PSScriptRoot\bin\binarycreator.exe" $buildDir
