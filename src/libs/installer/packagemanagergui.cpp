@@ -794,7 +794,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 void PackageManagerGui::cancelButtonClicked()
 {
     const int id = currentId();
-    if (id == PackageManagerCore::Introduction || id == PackageManagerCore::InstallationFinished) {
+    if (id == PackageManagerCore::Introduction || id == PackageManagerCore::CustomIntroduction || id == PackageManagerCore::InstallationFinished) {
         m_core->setNeedsHardRestart(false);
         QDialog::reject(); return;
     }
@@ -1706,6 +1706,473 @@ void IntroductionPage::showWidgets(bool show)
     Displays the text \a text on the page.
 */
 void IntroductionPage::setText(const QString &text)
+{
+    m_msgLabel->setText(text);
+}
+
+
+// -- CustomIntroductionPage
+
+/*!
+    \class QInstaller::CustomIntroductionPage
+    \inmodule QtInstallerFramework
+    \brief The CustomIntroductionPage class displays information about the product to
+    install. Along with where it will be installed, and if redists are also included
+*/
+
+/*!
+    \fn CustomIntroductionPage::packageManagerCoreTypeChanged()
+
+    This signal is emitted when the package manager core type changes.
+*/
+
+/*!
+    Constructs an introduction page with \a core as parent.
+*/
+CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
+    : PackageManagerPage(core)
+    , m_updatesFetched(false)
+    , m_allPackagesFetched(false)
+    , m_localPackagesTreeFetched(false)
+    , m_label(nullptr)
+    , m_msgLabel(nullptr)
+    , m_errorLabel(nullptr)
+    , m_progressBar(nullptr)
+    , m_packageManager(nullptr)
+    , m_updateComponents(nullptr)
+    , m_removeAllComponents(nullptr)
+{
+    setObjectName(QLatin1String("CustomIntroductionPage"));
+    setColoredTitle(tr("Setup - %1").arg(productName()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    setLayout(layout);
+
+    m_msgLabel = new QLabel(this);
+    m_msgLabel->setWordWrap(true);
+    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    m_msgLabel->setText(tr("Welcome to the custom %1 Setup Wizard.").arg(productName()));
+
+    QWidget *widget = new QWidget(this);
+    QVBoxLayout *boxLayout = new QVBoxLayout(widget);
+
+    m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
+    m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
+    boxLayout->addWidget(m_packageManager);
+    m_packageManager->setChecked(core->isPackageManager());
+    connect(m_packageManager, &QAbstractButton::toggled, this, &CustomIntroductionPage::setPackageManager);
+
+    m_updateComponents = new QRadioButton(tr("&Update components"), this);
+    m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
+    boxLayout->addWidget(m_updateComponents);
+    m_updateComponents->setChecked(core->isUpdater());
+    connect(m_updateComponents, &QAbstractButton::toggled, this, &CustomIntroductionPage::setUpdater);
+
+    m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
+    m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
+    boxLayout->addWidget(m_removeAllComponents);
+    m_removeAllComponents->setChecked(core->isUninstaller());
+    connect(m_removeAllComponents, &QAbstractButton::toggled,
+            this, &CustomIntroductionPage::setUninstaller);
+    connect(m_removeAllComponents, &QAbstractButton::toggled,
+            core, &PackageManagerCore::setCompleteUninstallation);
+
+    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_label = new QLabel(this);
+    m_label->setWordWrap(true);
+    m_label->setObjectName(QLatin1String("InformationLabel"));
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    boxLayout->addWidget(m_label);
+
+    m_progressBar = new QProgressBar(this);
+    m_progressBar->setRange(0, 0);
+    boxLayout->addWidget(m_progressBar);
+    m_progressBar->setObjectName(QLatin1String("InformationProgressBar"));
+
+    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_errorLabel = new QLabel(this);
+    m_errorLabel->setWordWrap(true);
+    boxLayout->addWidget(m_errorLabel);
+    m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
+
+    layout->addWidget(m_msgLabel);
+    layout->addWidget(widget);
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    core->setCompleteUninstallation(core->isUninstaller());
+
+    connect(core, &PackageManagerCore::metaJobProgress, this, &CustomIntroductionPage::onProgressChanged);
+    connect(core, &PackageManagerCore::metaJobTotalProgress, this, &CustomIntroductionPage::setTotalProgress);
+    connect(core, &PackageManagerCore::metaJobInfoMessage, this, &CustomIntroductionPage::setMessage);
+    connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
+            this, &CustomIntroductionPage::onCoreNetworkSettingsChanged);
+
+    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
+
+#ifdef Q_OS_WIN
+    if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
+        m_taskButton = new QWinTaskbarButton(this);
+        connect(core, &PackageManagerCore::metaJobProgress,
+                m_taskButton->progress(), &QWinTaskbarProgress::setValue);
+    } else {
+        m_taskButton = nullptr;
+    }
+#endif
+}
+
+/*!
+    Determines which page should be shown next depending on whether the
+    application is being installed, updated, or uninstalled.
+*/
+int CustomIntroductionPage::nextId() const
+{
+    if (packageManagerCore()->isUninstaller())
+        return PackageManagerCore::ReadyForInstallation;
+
+    if (packageManagerCore()->isMaintainer())
+        return PackageManagerCore::ComponentSelection;
+
+    return PackageManagerPage::nextId();
+}
+
+/*!
+    For an uninstaller, always returns \c true. For the package manager and updater, at least
+    one valid repository is required. For the online installer, package manager, and updater, valid
+    meta data has to be fetched successfully to return \c true.
+*/
+bool CustomIntroductionPage::validatePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller())
+        return true;
+
+    setComplete(false);
+    if (!validRepositoriesAvailable()) {
+        setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
+            "repository required for this action to succeed.") + QLatin1String("</font>"));
+        return isComplete();
+    }
+
+    gui()->setSettingsButtonEnabled(false);
+    if (core->isMaintainer()) {
+        showAll();
+        setMaintenanceToolsEnabled(false);
+    } else {
+        showMetaInfoUpdate();
+    }
+
+#ifdef Q_OS_WIN
+    if (m_taskButton) {
+        if (!m_taskButton->window()) {
+            if (QWidget *widget = QApplication::activeWindow())
+                m_taskButton->setWindow(widget->windowHandle());
+        }
+
+        m_taskButton->progress()->reset();
+        m_taskButton->progress()->resume();
+        m_taskButton->progress()->setVisible(true);
+    }
+#endif
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+
+        if (m_updatesFetched) {
+            if (core->components(QInstaller::PackageManagerCore::ComponentType::Root).count() <= 0)
+                setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
+            else
+                setComplete(true);
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+            // first try to fetch the server side packages tree
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+
+        if (m_allPackagesFetched || m_localPackagesTreeFetched)
+            setComplete(true);
+    }
+
+    if (core->isMaintainer()) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    } else {
+        hideAll();
+    }
+    gui()->setSettingsButtonEnabled(true);
+
+#ifdef Q_OS_WIN
+    if (m_taskButton)
+        m_taskButton->progress()->setVisible(!isComplete());
+#endif
+    return isComplete();
+}
+
+/*!
+    Shows all widgets on the page.
+*/
+void CustomIntroductionPage::showAll()
+{
+    showWidgets(true);
+}
+
+/*!
+    Hides all widgets on the page.
+*/
+void CustomIntroductionPage::hideAll()
+{
+    showWidgets(false);
+}
+
+/*!
+    Hides the widgets on the page except a text label and progress bar.
+*/
+void CustomIntroductionPage::showMetaInfoUpdate()
+{
+    showWidgets(false);
+    m_label->setVisible(true);
+    m_progressBar->setVisible(true);
+}
+
+/*!
+    Shows the options to install, add, and unistall components on the page.
+*/
+void CustomIntroductionPage::showMaintenanceTools()
+{
+    showWidgets(true);
+    m_label->setVisible(false);
+    m_progressBar->setVisible(false);
+}
+
+/*!
+    Sets \a enable to \c true to enable the options to install, add, and
+    uninstall components on the page.
+*/
+void CustomIntroductionPage::setMaintenanceToolsEnabled(bool enable)
+{
+    m_packageManager->setEnabled(enable);
+    m_updateComponents->setEnabled(enable && ProductKeyCheck::instance()->hasValidKey());
+    m_removeAllComponents->setEnabled(enable);
+}
+
+// -- public slots
+
+/*!
+    Displays the message \a msg on the page.
+*/
+void CustomIntroductionPage::setMessage(const QString &msg)
+{
+    m_label->setText(msg);
+}
+
+/*!
+    Updates the value of \a progress on the progress bar.
+*/
+void CustomIntroductionPage::onProgressChanged(int progress)
+{
+    m_progressBar->setValue(progress);
+}
+
+/*!
+    Sets total \a totalProgress value to progress bar.
+*/
+void CustomIntroductionPage::setTotalProgress(int totalProgress)
+{
+    if (m_progressBar)
+        m_progressBar->setRange(0, totalProgress);
+}
+
+/*!
+    Displays the error message \a error on the page.
+*/
+void CustomIntroductionPage::setErrorMessage(const QString &error)
+{
+    QPalette palette;
+    const PackageManagerCore::Status s = packageManagerCore()->status();
+    if (s == PackageManagerCore::Failure) {
+        palette.setColor(QPalette::WindowText, Qt::red);
+    } else {
+        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+    }
+
+    m_errorLabel->setText(error);
+    m_errorLabel->setPalette(palette);
+
+#ifdef Q_OS_WIN
+    if (m_taskButton) {
+        m_taskButton->progress()->stop();
+        m_taskButton->progress()->setValue(100);
+    }
+#endif
+}
+
+/*!
+    Returns \c true if at least one valid and enabled repository is available.
+*/
+bool CustomIntroductionPage::validRepositoriesAvailable() const
+{
+    const PackageManagerCore *const core = packageManagerCore();
+    bool valid = (core->isInstaller() && core->isOfflineOnly()) || core->isUninstaller();
+
+    if (!valid) {
+        foreach (const Repository &repo, core->settings().repositories()) {
+            if (repo.isEnabled() && repo.isValid()) {
+                valid = true;
+                break;
+            }
+        }
+    }
+    return valid;
+}
+
+// -- private slots
+
+void CustomIntroductionPage::setUpdater(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(true);
+        packageManagerCore()->setUpdater();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+void CustomIntroductionPage::setUninstaller(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(false);
+        packageManagerCore()->setUninstaller();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+void CustomIntroductionPage::setPackageManager(bool value)
+{
+    if (value) {
+        entering();
+        gui()->showSettingsButton(true);
+        packageManagerCore()->setPackageManager();
+        emit packageManagerCoreTypeChanged();
+    }
+}
+
+/*!
+    Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
+    fetched again.
+*/
+void CustomIntroductionPage::onCoreNetworkSettingsChanged()
+{
+    m_updatesFetched = false;
+    m_allPackagesFetched = false;
+    m_localPackagesTreeFetched = false;
+}
+
+// -- private
+
+/*!
+    Initializes the page's fields.
+*/
+void CustomIntroductionPage::entering()
+{
+    setComplete(true);
+    showWidgets(false);
+    setMessage(QString());
+    setErrorMessage(QString());
+    setButtonText(QWizard::CancelButton, tr("&Quit"));
+
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller() || core->isMaintainer()) {
+        showMaintenanceTools();
+        setMaintenanceToolsEnabled(true);
+    }
+    setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+            // first try to fetch the server side packages tree
+            qDebug() << "IntroductionPage::entering | fetchRemotePackagesTree 2";
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    qDebug() << "IntroductionPage::entering | localPackagesTreeFetched";
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+    }
+}
+
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+*/
+void CustomIntroductionPage::leaving()
+{
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+}
+
+/*!
+    Displays widgets on the page.
+*/
+void CustomIntroductionPage::showWidgets(bool show)
+{
+    m_label->setVisible(show);
+    m_progressBar->setVisible(show);
+    m_packageManager->setVisible(show);
+    m_updateComponents->setVisible(show);
+    m_removeAllComponents->setVisible(show);
+}
+
+/*!
+    Displays the text \a text on the page.
+*/
+void CustomIntroductionPage::setText(const QString &text)
 {
     m_msgLabel->setText(text);
 }
@@ -2959,7 +3426,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
 */
 int RestartPage::nextId() const
 {
-    return PackageManagerCore::Introduction;
+    return PackageManagerCore::CustomIntroduction;
 }
 
 /*!

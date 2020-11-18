@@ -79,6 +79,7 @@ public:
 
     enum WizardPage {
         Introduction = 0x1000,
+        CustomIntroduction = 0x1001,
         TargetDirectory = 0x2000,
         ComponentSelection = 0x3000,
         LicenseCheck = 0x4000,

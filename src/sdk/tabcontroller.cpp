@@ -119,8 +119,10 @@ int TabController::init()
                 this, &TabController::onSettingsButtonClicked);
     }
 
-    IntroductionPage *page =
-        qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+    // IntroductionPage *page =
+    //     qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+    CustomIntroductionPage *page =
+        qobject_cast<CustomIntroductionPage*> (d->m_gui->page(PackageManagerCore::CustomIntroduction));
     if (page) {
         page->setMessage(QString());
         page->setErrorMessage(QString());
@@ -171,8 +173,10 @@ void TabController::onSettingsButtonClicked()
 
     if (d->m_networkSettingsChanged) {
         d->m_core->setCanceled();
-        IntroductionPage *page =
-            qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+        // IntroductionPage *page =
+        //     qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+        CustomIntroductionPage *page =
+            qobject_cast<CustomIntroductionPage*> (d->m_gui->page(PackageManagerCore::CustomIntroduction));
         if (page) {
             page->setMessage(QString());
             page->setErrorMessage(QString());

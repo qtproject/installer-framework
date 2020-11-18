@@ -261,6 +261,66 @@ private:
 #endif
 };
 
+// -- CustomIntroductionPage
+
+class INSTALLER_EXPORT CustomIntroductionPage : public PackageManagerPage
+{
+    Q_OBJECT
+
+public:
+    explicit CustomIntroductionPage(PackageManagerCore *core);
+
+    void setText(const QString &text);
+
+    int nextId() const;
+    bool validatePage();
+
+    void showAll();
+    void hideAll();
+    void showMetaInfoUpdate();
+    void showMaintenanceTools();
+    void setMaintenanceToolsEnabled(bool enable);
+
+public Q_SLOTS:
+    void onCoreNetworkSettingsChanged();
+    void setMessage(const QString &msg);
+    void onProgressChanged(int progress);
+    void setTotalProgress(int totalProgress);
+    void setErrorMessage(const QString &error);
+
+Q_SIGNALS:
+    void packageManagerCoreTypeChanged();
+
+private Q_SLOTS:
+    void setUpdater(bool value);
+    void setUninstaller(bool value);
+    void setPackageManager(bool value);
+
+private:
+    void entering();
+    void leaving();
+
+    void showWidgets(bool show);
+    bool validRepositoriesAvailable() const;
+
+private:
+    bool m_updatesFetched;
+    bool m_allPackagesFetched;
+    bool m_localPackagesTreeFetched;
+
+    QLabel *m_label;
+    QLabel *m_msgLabel;
+    QLabel *m_errorLabel;
+    QProgressBar *m_progressBar;
+    QRadioButton *m_packageManager;
+    QRadioButton *m_updateComponents;
+    QRadioButton *m_removeAllComponents;
+
+#ifdef Q_OS_WIN
+    QWinTaskbarButton *m_taskButton;
+#endif
+};
+
 
 // -- LicenseAgreementPage
 

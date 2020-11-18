@@ -2040,7 +2040,7 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("DisplayIcon"), maintenanceTool);
     settings.setValue(scPublisher, m_data.value(scPublisher));
     settings.setValue(QLatin1String("UrlInfoAbout"), m_data.value(QLatin1String("Url")));
-    settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
+    // settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
     settings.setValue(QLatin1String("UninstallString"), maintenanceTool);

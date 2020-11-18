@@ -100,6 +100,8 @@ using namespace QInstaller;
 
     \value  Introduction
             \l{Introduction Page}
+    \value  CustomIntroduction
+            \l{Custom Introduction Page}
     \value  TargetDirectory
             \l{Target Directory Page}
     \value  ComponentSelection
