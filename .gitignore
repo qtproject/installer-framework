@@ -108,5 +108,6 @@ tools/repogen/mocinclude.opt
 # Only include the libs we care about
 vendors/pdm-proto/*/libs/Windows/x64
 vendors/pdm-proto/*/libs/Windows/x32/MD
+vendors/pdm-proto/*/libs/Windows/x32/MT/libprotobuf.lib
 vendors/protobuf/*/lib/*
 !vendors/protobuf/*/lib/libprotobuf.lib
