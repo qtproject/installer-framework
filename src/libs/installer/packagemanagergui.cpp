@@ -1717,7 +1717,23 @@ void IntroductionPage::setText(const QString &text)
     \class QInstaller::CustomIntroductionPage
     \inmodule QtInstallerFramework
     \brief The CustomIntroductionPage class displays information about the product to
-    install. Along with where it will be installed, and if redists are also included
+    install. Along with where it will be installed, and if redists are also included.
+
+    End users can leave the page to continue the installation only if certain criteria are
+    fulfilled. Some of them are checked in the validatePage() function, some in the
+    targetDirWarning() function:
+
+    \list
+        \li No empty path given as target.
+        \li No relative path given as target.
+        \li Only ASCII characters are allowed in the path if the <AllowNonAsciiCharacters> element
+            in the configuration file is set to \c false.
+        \li The following ambiguous characters are not allowed in the path: [\"~<>|?*!@#$%^&:,;]
+        \li No root or home directory given as target.
+        \li On Windows, path names must be less than 260 characters long.
+        \li No spaces in the path if the <AllowSpaceInPath> element in the configuration file is set
+            to \c false.
+    \endlist
 */
 
 /*!
@@ -1755,6 +1771,18 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
+
+    QPushButton *browseButton = new QPushButton(this);
+    browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
+    connect(browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
+    browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    browseButton->setText(tr("B&rowse..."));
+    boxLayout->addWidget(browseButton);
+
+    m_dirLabel = new QLabel(this);
+    m_dirLabel->setWordWrap(true);
+    m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
+    boxLayout->addWidget(m_dirLabel);
 
     m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
@@ -1823,6 +1851,125 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
 }
 
 /*!
+    Returns the target directory for the installation.
+*/
+QString CustomIntroductionPage::targetDir() const
+{
+    return m_dirLabel->text().trimmed();
+}
+
+/*!
+    Sets the directory specified by \a dirName as the target directory for the
+    installation.
+*/
+void CustomIntroductionPage::setTargetDir(const QString &dirName)
+{
+    QString finalName = dirName;
+    if(!dirName.toUpper().endsWith(QLatin1String("\\EVE")))
+    {
+        QString postfix = QLatin1String("\\EVE");
+        if(dirName.endsWith(QLatin1String("\\")))
+        {
+            postfix = QLatin1String("EVE");
+        }
+        finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix);
+    }
+
+    m_dirLabel->setText(finalName);
+}
+
+/*!
+    Requests a warning message to be shown to end users upon invalid input. If the input is valid,
+    the \uicontrol Next button is enabled.
+
+    Returns \c true if a valid path to the target directory is set; otherwise returns \c false.
+*/
+bool CustomIntroductionPage::isComplete() const
+{
+    m_errorLabel->setText(targetDirWarning());
+    return m_errorLabel->text().isEmpty() && PackageManagerPage::isComplete();
+}
+
+/*!
+    Initializes the page.
+*/
+void CustomIntroductionPage::initializePage()
+{
+    QString targetDir = packageManagerCore()->value(scTargetDir);
+    if (targetDir.isEmpty()) {
+        targetDir = QDir::homePath() + QDir::separator();
+        if (!packageManagerCore()->settings().allowSpaceInPath()) {
+            // prevent spaces in the default target directory
+            if (targetDir.contains(QLatin1Char(' ')))
+                targetDir = QDir::rootPath();
+            targetDir += productName().remove(QLatin1Char(' '));
+        } else {
+            targetDir += productName();
+        }
+    }
+    // m_dirLabel->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
+    setTargetDir(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
+
+    PackageManagerPage::initializePage();
+}
+
+/*!
+    Checks whether the target directory exists and has contents:
+
+    \list
+        \li Returns \c true if the directory exists and is empty.
+        \li Returns \c false if the directory already exists and contains an installation.
+        \li Returns \c false if the target is a file or a symbolic link.
+        \li Returns \c true or \c false if the directory exists but is not empty, depending on the
+            choice that the end users make in the displayed message box.
+    \endlist
+*/
+bool CustomIntroductionPage::validateDirectory()
+{
+    if (!isComplete())
+        return false;
+
+    if (!isVisible())
+        return true;
+
+    const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
+    if (!QVariant(remove).toBool())
+        return true;
+
+    const QString targetDir = this->targetDir();
+    const QDir dir(targetDir);
+    // the directory exists and is empty...
+    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
+        return true;
+
+    const QFileInfo fi(targetDir);
+    if (fi.isDir()) {
+        QString fileName = packageManagerCore()->settings().maintenanceToolName();
+#if defined(Q_OS_MACOS)
+        if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
+            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
+#elif defined(Q_OS_WIN)
+        fileName += QLatin1String(".exe");
+#endif
+
+        QFileInfo fi2(targetDir + QDir::separator() + fileName);
+        if (fi2.exists()) {
+            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The directory you selected already "
+                "exists and contains an installation. Choose a different target for installation."));
+        }
+
+        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
+            tr("You have selected an existing, non-empty directory for installation.\nNote that it will be "
+            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
+            "this directory as installation might fail.\nDo you want to continue?"));
+    } else if (fi.isFile() || fi.isSymLink()) {
+        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
+            "or symlink, please choose a different target for installation."));
+    }
+    return true;
+}
+
+/*!
     Determines which page should be shown next depending on whether the
     application is being installed, updated, or uninstalled.
 */
@@ -1852,7 +1999,7 @@ bool CustomIntroductionPage::validatePage()
     if (!validRepositoriesAvailable()) {
         setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
             "repository required for this action to succeed.") + QLatin1String("</font>"));
-        return isComplete();
+        return isComplete() && validateDirectory();
     }
 
     gui()->setSettingsButtonEnabled(false);
@@ -1928,7 +2075,7 @@ bool CustomIntroductionPage::validatePage()
     if (m_taskButton)
         m_taskButton->progress()->setVisible(!isComplete());
 #endif
-    return isComplete();
+    return isComplete() && validateDirectory();
 }
 
 /*!
@@ -2155,6 +2302,16 @@ void CustomIntroductionPage::leaving()
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+    packageManagerCore()->setValue(scTargetDir, targetDir());
+}
+
+void CustomIntroductionPage::dirRequested()
+{
+    const QString newDirName = QFileDialog::getExistingDirectory(this,
+        tr("Select Installation Folder"), targetDir());
+    if (newDirName.isEmpty() || newDirName == targetDir())
+        return;
+    setTargetDir(QDir::toNativeSeparators(newDirName));
 }
 
 /*!
@@ -2175,6 +2332,117 @@ void CustomIntroductionPage::showWidgets(bool show)
 void CustomIntroductionPage::setText(const QString &text)
 {
     m_msgLabel->setText(text);
+}
+
+/*!
+    Returns a warning if the path to the target directory is not set or if it
+    is invalid. Installation can continue only after a valid target path is given.
+*/
+QString CustomIntroductionPage::targetDirWarning() const
+{
+    if (targetDir().isEmpty())
+        return tr("The installation path cannot be empty, please specify a valid directory.");
+
+    QDir target(targetDir());
+    if (target.isRelative())
+        return tr("The installation path cannot be relative, please specify an absolute path.");
+
+    QString nativeTargetDir = QDir::toNativeSeparators(target.absolutePath());
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < nativeTargetDir.length(); ++i) {
+            if (nativeTargetDir.at(i).unicode() & 0xff80) {
+                return tr("The path or installation directory contains non ASCII characters. This "
+                    "is currently not supported! Please choose a different path or installation "
+                    "directory.");
+            }
+        }
+    }
+
+    target = target.canonicalPath();
+    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
+        return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
+            .arg(QDir::toNativeSeparators(target.path()));
+    }
+
+#ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((nativeTargetDir.length()
+        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
+        return tr("The path you have entered is too long, please make sure to "
+            "specify a valid path.");
+    }
+
+    static QRegularExpression reg(QLatin1String(
+        "^(?<drive>[a-zA-Z]:\\\\)|"
+        "^(\\\\\\\\(?<path>\\w+)\\\\)|"
+        "^(\\\\\\\\(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\\\)"));
+    const QRegularExpressionMatch regMatch = reg.match(nativeTargetDir);
+
+    const QString ipMatch = regMatch.captured(QLatin1String("ip"));
+    const QString pathMatch = regMatch.captured(QLatin1String("path"));
+    const QString driveMatch = regMatch.captured(QLatin1String("drive"));
+
+    if (ipMatch.isEmpty() && pathMatch.isEmpty() && driveMatch.isEmpty()) {
+        return tr("The path you have entered is not valid, please make sure to "
+            "specify a valid target.");
+    }
+
+    if (!driveMatch.isEmpty()) {
+        bool validDrive = false;
+        const QFileInfo drive(driveMatch);
+        foreach (const QFileInfo &driveInfo, QDir::drives()) {
+            if (drive == driveInfo) {
+                validDrive = true;
+                break;
+            }
+        }
+        if (!validDrive) {  // right now we can only verify local drives
+            return tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+        }
+        nativeTargetDir = nativeTargetDir.mid(2);
+    }
+
+    if (nativeTargetDir.endsWith(QLatin1Char('.')))
+        return tr("The installation path must not end with '.', please specify a valid directory.");
+
+    QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
+        "|(\\\\CON)(\\\\|$)|(\\\\PRN)(\\\\|$)|(\\\\AUX)(\\\\|$)|(\\\\NUL)(\\\\|$)|(\\\\COM\\d)(\\\\|$)|(\\\\LPT\\d)(\\\\|$)");
+#else // Q_OS_WIN
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
+#endif // Q_OS_WIN
+
+    if (packageManagerCore()->settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
+    static QRegularExpression ambCharRegEx(ambiguousChars, QRegularExpression::CaseInsensitiveOption);
+    // check if there are not allowed characters in the target path
+    QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
+    if (match.hasMatch()) {
+        return tr("The installation path must not contain \"%1\", "
+            "please specify a valid directory.").arg(match.captured(0));
+    }
+
+    return QString();
+}
+
+/*!
+    Returns \c true if a warning message specified by \a message with the
+    identifier \a identifier is presented to end users for acknowledgment.
+*/
+bool CustomIntroductionPage::askQuestion(const QString &identifier, const QString &message)
+{
+    QMessageBox::StandardButton bt =
+        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+    return bt == QMessageBox::Yes;
+}
+
+bool CustomIntroductionPage::failWithError(const QString &identifier, const QString &message)
+{
+    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Error"), message);
+    return false;
 }
 
 

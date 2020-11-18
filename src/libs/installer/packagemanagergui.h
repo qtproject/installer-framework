@@ -271,7 +271,12 @@ public:
     explicit CustomIntroductionPage(PackageManagerCore *core);
 
     void setText(const QString &text);
+    QString targetDir() const;
+    void setTargetDir(const QString &dirName);
 
+    void initializePage();
+    bool validateDirectory();
+    bool isComplete() const;
     int nextId() const;
     bool validatePage();
 
@@ -295,6 +300,7 @@ private Q_SLOTS:
     void setUpdater(bool value);
     void setUninstaller(bool value);
     void setPackageManager(bool value);
+    void dirRequested();
 
 private:
     void entering();
@@ -303,6 +309,10 @@ private:
     void showWidgets(bool show);
     bool validRepositoriesAvailable() const;
 
+    QString targetDirWarning() const;
+    bool askQuestion(const QString &identifier, const QString &message);
+    bool failWithError(const QString &identifier, const QString &message);
+
 private:
     bool m_updatesFetched;
     bool m_allPackagesFetched;
@@ -310,6 +320,7 @@ private:
 
     QLabel *m_label;
     QLabel *m_msgLabel;
+    QLabel *m_dirLabel;
     QLabel *m_errorLabel;
     QProgressBar *m_progressBar;
     QRadioButton *m_packageManager;
