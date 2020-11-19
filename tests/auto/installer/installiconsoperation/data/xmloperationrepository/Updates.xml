@@ -1,0 +1,18 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Operations>
+   <Operation name="InstallIcons">
+    <Argument>@TargetDir@/icons</Argument>
+   </Operation>
+  </Operations>
+ </PackageUpdate>
+</Updates>

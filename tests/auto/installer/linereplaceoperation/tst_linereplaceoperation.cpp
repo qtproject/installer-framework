@@ -40,6 +40,25 @@ class tst_linereplaceoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        QFile file(installDir + QDir::separator() + "A.txt");
+        QVERIFY(file.open(QIODevice::ReadOnly) | QIODevice::Text);
+        QTextStream stream(&file);
+        QCOMPARE(stream.readLine(), QLatin1String("This line was replaced."));
+        QCOMPARE(stream.readLine(), QLatin1String("Another line."));
+        file.close();
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+    }
+
 private slots:
     void initTestCase()
     {
@@ -115,23 +134,14 @@ private slots:
         QVERIFY(file.remove());
     }
 
-    void testPerformingFromCLI()
+    void testLineReplaceFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
-        core->installDefaultComponentsSilently();
+        installFromCLI(":///data/repository");
+    }
 
-        QFile file(installDir + QDir::separator() + "A.txt");
-        QVERIFY(file.open(QIODevice::ReadOnly) | QIODevice::Text);
-        QTextStream stream(&file);
-        QCOMPARE(stream.readLine(), QLatin1String("This line was replaced."));
-        QCOMPARE(stream.readLine(), QLatin1String("Another line."));
-        file.close();
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testLineReplaceFromXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
 private:

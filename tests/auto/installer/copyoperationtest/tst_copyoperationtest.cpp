@@ -40,6 +40,33 @@ class tst_copyoperationtest : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        QFile copiedFile(installDir + QDir::separator() + "AnotherFolder/A.txt");
+        QVERIFY(copiedFile.exists());
+        QFile originalFile(installDir + QDir::separator() + "A.txt");
+        QVERIFY(originalFile.exists());
+
+        QByteArray destinationFileHash = QInstaller::calculateHash(copiedFile.fileName(), QCryptographicHash::Sha1);
+        QByteArray testFileHash = QInstaller::calculateHash(originalFile.fileName(), QCryptographicHash::Sha1);
+        QVERIFY(testFileHash == destinationFileHash);
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!copiedFile.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
 private slots:
     void initTestCase()
     {
@@ -132,30 +159,13 @@ private slots:
         QVERIFY(testFileHash == currentFileHash);
     }
 
-    void testPerformingFromCLI()
+    void testCopyFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, ":///data/repository");
-        core->installDefaultComponentsSilently();
-
-        QFile copiedFile(installDir + QDir::separator() + "AnotherFolder/A.txt");
-        QVERIFY(copiedFile.exists());
-        QFile originalFile(installDir + QDir::separator() + "A.txt");
-        QVERIFY(originalFile.exists());
-
-        QByteArray destinationFileHash = QInstaller::calculateHash(copiedFile.fileName(), QCryptographicHash::Sha1);
-        QByteArray testFileHash = QInstaller::calculateHash(originalFile.fileName(), QCryptographicHash::Sha1);
-        QVERIFY(testFileHash == destinationFileHash);
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY(!copiedFile.exists());
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+        installFromCLI(":///data/repository");
+    }
+    void testCopyFromComponentXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
     void init()

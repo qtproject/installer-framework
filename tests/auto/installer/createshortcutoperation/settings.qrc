@@ -3,6 +3,8 @@
         <file>data/repository/Updates.xml</file>
         <file>data/repository/A/1.0.2-1content.7z</file>
         <file>data/repository/A/1.0.2-1meta.7z</file>
+        <file>data/xmloperationrepository/Updates.xml</file>
+        <file>data/xmloperationrepository/A/1.0.2-1content.7z</file>
     </qresource>
     <qresource prefix="/metadata">
         <file>installer-config/config.xml</file>

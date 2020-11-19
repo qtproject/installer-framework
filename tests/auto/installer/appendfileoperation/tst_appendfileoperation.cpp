@@ -40,6 +40,33 @@ class tst_appendfileoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        QFile file(installDir + QDir::separator() + "A.txt");
+        QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+        QTextStream stream(&file);
+        QCOMPARE(stream.readAll(), QLatin1String("Appended text: lorem ipsum"));
+        file.close();
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        // We cannot check the file contents here as it will be deleted on
+        // undo Extract, but at least check that the uninstallation succeeds.
+        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently
+                 (QStringList()<< "A"));
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
 private slots:
     void initTestCase()
     {
@@ -109,30 +136,14 @@ private slots:
         QVERIFY(file.remove());
     }
 
-    void testPerformingFromCLI()
+    void testApppendFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
-        core->installDefaultComponentsSilently();
+        installFromCLI(":///data/repository");
+    }
 
-        QFile file(installDir + QDir::separator() + "A.txt");
-        QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
-        QTextStream stream(&file);
-        QCOMPARE(stream.readAll(), QLatin1String("Appended text: lorem ipsum"));
-        file.close();
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        // We cannot check the file contents here as it will be deleted on
-        // undo Extract, but at least check that the uninstallation succeeds.
-        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently
-                 (QStringList()<< "A"));
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testAppendFromComponentXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
 private:

@@ -1,0 +1,26 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <DownloadableArchives>content.7z,anothercontent.7z,default.7z</DownloadableArchives>
+  <Operations>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForContent</Argument>
+      <Argument>content.7z</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForAnotherContent</Argument>
+      <Argument>anothercontent.7z</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForDefault</Argument>
+    </Operation>
+  </Operations>
+ </PackageUpdate>
+</Updates>

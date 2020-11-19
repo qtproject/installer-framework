@@ -918,6 +918,16 @@
             \li ExpandedByDefault
             \li Set to \c true if you want this item to be expanded by default. Optional.
 
+        \row
+            \li Operations
+            \li List of operations that are performed when component is installed. To add
+                several operations, specify several \c <Operation> child elements that each
+                specify the operation \c name. \c Operation can have several \c <Argument>
+                child elements depending on the operation to be run. Adding \c <Operations>
+                is an alternative way of defining operations to defining them in scripts.
+                For more information, see \l{Adding Operations}. For a
+                summary of available operations, see \l {Operations}.
+
     \endtable
 
     \section2 Component Dependencies

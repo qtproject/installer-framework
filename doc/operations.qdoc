@@ -33,8 +33,8 @@
 
     \title Operations
 
-    The operations are prepared by component and controller scripts and performed by the
-    installer.
+    The operations are prepared by component and controller scripts or component.xml
+    and performed by the installer.
     \note Operations are performed threaded.
 
     Internally, each operation has a \e DO step that contains instructions for
@@ -43,7 +43,19 @@
 
     \section1 Summary of Operations
 
-    The following table summarizes the available operations and their syntax.
+    The following table summarizes the available operations and their syntax in component
+    and controller scripts. Syntax for operations in component.xml is:
+    \code
+    <Operations>
+      <Operation name="operation">
+        <Argument>argument1</Argument>
+        <Argument>argument2</Argument>
+      </Operation>
+    </Operations>
+    \endcode
+    \note The argument order in component.xml is the same as in scripting, except for
+    \c Extract operation where the argument \c archive is optional, and must be defined
+    as the last argument.
 
     \table
         \header
@@ -163,6 +175,8 @@
             \li Extract
             \li "Extract" \c archive \c targetdirectory
             \li Extracts \c archive to \c targetdirectory.
+                Extract operations are called before other operations. Note that in component.xml
+                argument \c archive is optional and thus must be defined as the last parameter.
 
         \row
             \li GlobalConfig

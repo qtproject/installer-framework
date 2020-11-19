@@ -26,6 +26,8 @@
 **
 **************************************************************************/
 
+#include "../shared/packagemanager.h"
+
 #include "init.h"
 #include "extractarchiveoperation.h"
 
@@ -39,6 +41,8 @@ using namespace QInstaller;
 class tst_extractarchiveoperationtest : public QObject
 {
     Q_OBJECT
+
+private:
 
 private slots:
     void initTestCase()
@@ -83,6 +87,36 @@ private slots:
         QCOMPARE(op.errorString(), QString("Error while extracting archive \":///data/invalid.7z\": "
                                            "Cannot open archive \":///data/invalid.7z\"."));
     }
+
+    void testExtractArchiveFromXML()
+    {
+        m_testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(m_testDirectory));
+        QVERIFY(QDir(m_testDirectory).exists());
+
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_testDirectory, ":///data/xmloperationrepository");
+        core->installDefaultComponentsSilently();
+
+        QFile extractedFile(m_testDirectory + QDir::separator() + "FolderForContent/content.txt");
+        QVERIFY(extractedFile.exists());
+
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForAnotherContent/anothercontent.txt");
+        QVERIFY(extractedFile.exists());
+
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForDefault/default.txt");
+        QVERIFY(extractedFile.exists());
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QDir dir(m_testDirectory);
+        QVERIFY(dir.removeRecursively());
+    }
+
+private:
+    QString m_testDirectory;
 };
 
 QTEST_MAIN(tst_extractarchiveoperationtest)

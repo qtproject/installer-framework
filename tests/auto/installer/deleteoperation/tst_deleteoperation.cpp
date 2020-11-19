@@ -41,6 +41,30 @@ using namespace QInstaller;
 class tst_deleteoperation : public QObject
 {
     Q_OBJECT
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, repository);
+
+        // Matches filename in component install script
+        QFile file(installDir + QDir::toNativeSeparators("/test"));
+        QVERIFY(file.open(QIODevice::ReadWrite));
+        file.close();
+
+        core->installDefaultComponentsSilently();
+        QVERIFY(!file.exists());
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(file.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
 
 private slots:
     void testMissingArguments()
@@ -102,28 +126,14 @@ private slots:
         QVERIFY(QFile(path).remove());
     }
 
-    void testPerformingFromCLI()
+    void testDeleteFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, ":///data/repository");
+        installFromCLI(":///data/repository");
+    }
 
-        // Matches filename in component install script
-        QFile file(installDir + QDir::toNativeSeparators("/test"));
-        QVERIFY(file.open(QIODevice::ReadWrite));
-        file.close();
-
-        core->installDefaultComponentsSilently();
-        QVERIFY(!file.exists());
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY(file.exists());
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testDeleteFromXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 };
 

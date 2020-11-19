@@ -1,0 +1,25 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <Operations>
+   <Operation name="EnvironmentVariable">
+    <Argument>IFW_UNIT_TEST_LOCAL</Argument>
+    <Argument>IFW_UNIT_TEST_VALUE</Argument>
+    <Argument>false</Argument>
+   </Operation>
+   <Operation name="EnvironmentVariable">
+    <Argument>IFW_UNIT_TEST_PERSISTENT</Argument>
+    <Argument>IFW_UNIT_TEST_PERSISTENT_VALUE</Argument>
+    <Argument>true</Argument>
+   </Operation>
+  </Operations>
+ </PackageUpdate>
+</Updates>

@@ -48,6 +48,53 @@ class tst_createdesktopentryoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+
+        core->installDefaultComponentsSilently();
+
+        CreateDesktopEntryOperation *createDesktopEntryOp = nullptr;
+        OperationList operations = core->componentByName("A")->operations();
+        foreach (Operation *op, operations) {
+            if (op->name() == QLatin1String("CreateDesktopEntry"))
+                createDesktopEntryOp = dynamic_cast<CreateDesktopEntryOperation *>(op);
+        }
+        QVERIFY(createDesktopEntryOp);
+
+        QString entryFileName = createDesktopEntryOp->absoluteFileName();
+        QVERIFY(QFileInfo(entryFileName).exists());
+        if (QFileInfo(createDesktopEntryOp->arguments().first()).isRelative()) {
+            QStringList directories = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
+                .split(QLatin1Char(':'), QString::SkipEmptyParts);
+            // Default path if XDG_DATA_HOME is not set
+            directories.append(QDir::home().absoluteFilePath(QLatin1String(".local/share")));
+            bool validPath = false;
+            foreach (const QString &dir, directories) {
+                // Desktop entry should be in one of the expected locations
+                if (QFileInfo(entryFileName).absolutePath() == QDir(dir).absoluteFilePath("applications")) {
+                    validPath = true;
+                    break;
+                }
+            }
+            QVERIFY(validPath);
+        }
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY2(!QFileInfo(entryFileName).exists(), "Please make sure there "
+            "does not exist a desktop entry with the same name.");
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+
+    }
+
 private slots:
     void initTestCase()
     {
@@ -111,49 +158,14 @@ private slots:
         QVERIFY(QFile(filename).remove());
     }
 
-    void testPerformingFromCLI()
+    void testDesktopEntryFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
+        installFromCLI(":///data/repository");
+    }
 
-        core->installDefaultComponentsSilently();
-
-        CreateDesktopEntryOperation *createDesktopEntryOp = nullptr;
-        OperationList operations = core->componentByName("A")->operations();
-        foreach (Operation *op, operations) {
-            if (op->name() == QLatin1String("CreateDesktopEntry"))
-                createDesktopEntryOp = dynamic_cast<CreateDesktopEntryOperation *>(op);
-        }
-        QVERIFY(createDesktopEntryOp);
-
-        QString entryFileName = createDesktopEntryOp->absoluteFileName();
-        QVERIFY(QFileInfo(entryFileName).exists());
-        if (QFileInfo(createDesktopEntryOp->arguments().first()).isRelative()) {
-            QStringList directories = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
-                .split(QLatin1Char(':'), QString::SkipEmptyParts);
-            // Default path if XDG_DATA_HOME is not set
-            directories.append(QDir::home().absoluteFilePath(QLatin1String(".local/share")));
-            bool validPath = false;
-            foreach (const QString &dir, directories) {
-                // Desktop entry should be in one of the expected locations
-                if (QFileInfo(entryFileName).absolutePath() == QDir(dir).absoluteFilePath("applications")) {
-                    validPath = true;
-                    break;
-                }
-            }
-            QVERIFY(validPath);
-        }
-        core->setPackageManager();
-        core->commitSessionOperations();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY2(!QFileInfo(entryFileName).exists(), "Please make sure there "
-            "does not exist a desktop entry with the same name.");
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testDesktopEntryFromXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
 private:

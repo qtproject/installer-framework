@@ -43,6 +43,38 @@ class tst_copydirectoryoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+
+        core->setValue(scTargetDir, installDir);
+        core->installDefaultComponentsSilently();
+
+        // Matches path in component install script
+        QFileInfo targetInfo(installDir + QDir::toNativeSeparators("/directory"));
+        QMap<QString, QByteArray> targetMap;
+        VerifyInstaller::addToFileMap(QDir(targetInfo.absoluteFilePath()), targetInfo, targetMap);
+
+        QFileInfo destinationInfo(installDir + QDir::toNativeSeparators("/destination/directory"));
+        QMap<QString, QByteArray> destinationMap;
+        VerifyInstaller::addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
+
+        QVERIFY(targetMap == destinationMap);
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!destinationInfo.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
 private slots:
     void initTestCase()
     {
@@ -140,35 +172,14 @@ private slots:
         QVERIFY2(op.performOperation(), op.errorString().toLatin1());
     }
 
-    void testPerformingFromCLI()
+    void testCopyDirectoryFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
+        installFromCLI(":///data/repository");
+    }
 
-        core->setValue(scTargetDir, installDir);
-        core->installDefaultComponentsSilently();
-
-        // Matches path in component install script
-        QFileInfo targetInfo(installDir + QDir::toNativeSeparators("/directory"));
-        QMap<QString, QByteArray> targetMap;
-        VerifyInstaller::addToFileMap(QDir(targetInfo.absoluteFilePath()), targetInfo, targetMap);
-
-        QFileInfo destinationInfo(installDir + QDir::toNativeSeparators("/destination/directory"));
-        QMap<QString, QByteArray> destinationMap;
-        VerifyInstaller::addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
-
-        QVERIFY(targetMap == destinationMap);
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY(!destinationInfo.exists());
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testCopyDirectoryFromComponentXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
 private:

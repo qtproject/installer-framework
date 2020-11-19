@@ -42,6 +42,32 @@ class tst_environmentvariableoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        QVERIFY(m_settings->value("IFW_UNIT_TEST_LOCAL").toString().isEmpty());
+
+        // Persistent is in settings in Windows platform only, otherwise it is written to local env.
+#ifdef Q_OS_WIN
+        QCOMPARE(m_settings->value("IFW_UNIT_TEST_PERSISTENT").toString(), QLatin1String("IFW_UNIT_TEST_PERSISTENT_VALUE"));
+#else
+        QCOMPARE(Environment::instance().value("IFW_UNIT_TEST_PERSISTENT"), QLatin1String("IFW_UNIT_TEST_PERSISTENT_VALUE"));
+#endif
+        QCOMPARE(Environment::instance().value("IFW_UNIT_TEST_LOCAL"), QLatin1String("IFW_UNIT_TEST_VALUE"));
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(m_settings->value("IFW_UNIT_TEST_PERSISTENT").toString().isEmpty());
+        QVERIFY(Environment::instance().value("IFW_UNIT_TEST_LOCAL").isEmpty());
+    }
+
 private slots:
     void initTestCase()
     {
@@ -135,30 +161,14 @@ private slots:
         QCOMPARE(m_oldValue, Environment::instance().value(m_key));
     }
 
-    void testPerformingFromCLI()
+    void testEnvVariableFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
-        core->installDefaultComponentsSilently();
+        installFromCLI(":///data/repository");
+    }
 
-        QVERIFY(m_settings->value("IFW_UNIT_TEST_LOCAL").toString().isEmpty());
-
-        // Persistent is in settings in Windows platform only, otherwise it is written to local env.
-#ifdef Q_OS_WIN
-        QCOMPARE(QLatin1String("IFW_UNIT_TEST_PERSISTENT_VALUE"), m_settings->value("IFW_UNIT_TEST_PERSISTENT").toString());
-#else
-        QCOMPARE(QLatin1String("IFW_UNIT_TEST_PERSISTENT_VALUE"), Environment::instance().value("IFW_UNIT_TEST_PERSISTENT"));
-#endif
-        QCOMPARE(QLatin1String("IFW_UNIT_TEST_VALUE"), Environment::instance().value("IFW_UNIT_TEST_LOCAL"));
-
-        core->commitSessionOperations();
-        core->setPackageManager();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY(m_settings->value("IFW_UNIT_TEST_PERSISTENT").toString().isEmpty());
-        QVERIFY(Environment::instance().value("IFW_UNIT_TEST_LOCAL").isEmpty());
-        core->deleteLater();
+    void testEnvVariableFromSXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
 private:

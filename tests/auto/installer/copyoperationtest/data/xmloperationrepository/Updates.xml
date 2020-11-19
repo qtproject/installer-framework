@@ -1,0 +1,25 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="225" UncompressedSize="75" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>6d7a3e15d11a4d94b81452fc2aa18e705a01c922</SHA1>
+  <Operations>
+    <Operation name="Mkdir">
+        <Argument>@TargetDir@/AnotherFolder</Argument>
+    </Operation>
+    <Operation name="Copy">
+        <Argument>@TargetDir@/A.txt</Argument>
+        <Argument>@TargetDir@/AnotherFolder/A.txt</Argument>
+    </Operation>
+  </Operations>
+ </PackageUpdate>
+</Updates>

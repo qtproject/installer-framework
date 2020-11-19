@@ -48,22 +48,8 @@ class tst_createshortcutoperation : public QObject
 {
     Q_OBJECT
 
-private slots:
-    void testMissingArguments()
-    {
-        CreateShortcutOperation op;
-
-        QVERIFY(op.testOperation());
-        QVERIFY(!op.performOperation());
-
-        QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in CreateShortcut: 0 arguments given,"
-                                           " 2 or 3 arguments expected in the form: <target> <link location> "
-                                           "[target arguments] [\"workingDirectory=...\"] [\"iconPath=...\"] "
-                                           "[\"iconId=...\"] [\"description=...\"]."));
-    }
-
-    void testCreateShortcutForCurrentUserFromCLI()
+private:
+    void installFromCLI(const QString &repository)
     {
         QInstaller::init();
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
@@ -73,7 +59,7 @@ private slots:
         core->disableWriteMaintenanceTool();
         core->setAutoConfirmCommand();
         QSet<Repository> repoList;
-        Repository repo = Repository::fromUserInput(":///data/repository");
+        Repository repo = Repository::fromUserInput(repository);
         repoList.insert(repo);
         core->settings().setDefaultRepositories(repoList);
 
@@ -98,7 +84,31 @@ private slots:
         core->commitSessionOperations();
         core->uninstallComponentsSilently(QStringList() << "A");
         QVERIFY(!QFile::exists(linkLocation));
-        core->deleteLater();
+    }
+
+private slots:
+    void testMissingArguments()
+    {
+        CreateShortcutOperation op;
+
+        QVERIFY(op.testOperation());
+        QVERIFY(!op.performOperation());
+
+        QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
+        QCOMPARE(op.errorString(), QString("Invalid arguments in CreateShortcut: 0 arguments given,"
+                                           " 2 or 3 arguments expected in the form: <target> <link location> "
+                                           "[target arguments] [\"workingDirectory=...\"] [\"iconPath=...\"] "
+                                           "[\"iconId=...\"] [\"description=...\"]."));
+    }
+
+    void testCreateShortcutFromScript()
+    {
+        installFromCLI(":///data/repository");
+    }
+
+    void testCreateShortcutFromXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 };
 

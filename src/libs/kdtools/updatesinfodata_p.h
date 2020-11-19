@@ -33,6 +33,7 @@
 #include <QSharedData>
 
 QT_FORWARD_DECLARE_CLASS(QDomElement)
+QT_FORWARD_DECLARE_CLASS(QDomNodeList)
 
 namespace KDUpdater {
 
@@ -60,6 +61,7 @@ public:
 
 private:
     void processLocalizedTag(const QDomElement &childE, QHash<QString, QVariant> &info) const;
+    QVariant parseOperations(const QDomNodeList &operationNodes);
 };
 
 } // namespace KDUpdater

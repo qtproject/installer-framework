@@ -28,4 +28,17 @@
     <ForcedInstallation>false</ForcedInstallation>
     <Essential>false</Essential>
     <Replaces>com.vendor.root.component2old</Replaces>
+    <Operations>
+        <Operation name="AppendFile">
+            <Argument>@TargetDir@/A.txt</Argument>
+            <Argument>lorem ipsum</Argument>
+        </Operation>
+        <Operation name="Extract">
+            <Argument>@TargetDir@/Folder1</Argument>
+            <Argument>content.7z</Argument>
+        </Operation>
+        <Operation name="Extract">
+            <Argument>@TargetDir@/Folder2</Argument>
+        </Operation>
+    </Operations>
 </Package>

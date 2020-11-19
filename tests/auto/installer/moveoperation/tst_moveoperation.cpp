@@ -39,6 +39,27 @@ class tst_moveoperation : public QObject
 {
     Q_OBJECT
 
+private:
+    void installFromCLI(const QString &repository)
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_testDirectory, repository);
+        core->installDefaultComponentsSilently();
+
+        QFile movedFile(m_testDirectory + QDir::separator() + "DestinationFolder/testFile.txt");
+        QVERIFY(movedFile.exists());
+        QFile originalFile(m_sourceFile);
+        QVERIFY(!originalFile.exists());
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+
+        core->uninstallComponentsSilently(QStringList() << "A");
+
+        QVERIFY(!movedFile.exists());
+        QVERIFY(originalFile.exists());
+    }
+
 private slots:
     void initTestCase()
     {
@@ -101,26 +122,14 @@ private slots:
         QVERIFY(QFile::exists(m_destinationFile));
     }
 
-    void testPerformingFromCLI()
+    void testMoveOperationFromScript()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_testDirectory, ":///data/repository");
-        core->installDefaultComponentsSilently();
+        installFromCLI(":///data/repository");
+    }
 
-        QFile movedFile(m_testDirectory + QDir::separator() + "DestinationFolder/testFile.txt");
-        QVERIFY(movedFile.exists());
-        QFile originalFile(m_sourceFile);
-        QVERIFY(!originalFile.exists());
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-
-        core->uninstallComponentsSilently(QStringList() << "A");
-
-        QVERIFY(!movedFile.exists());
-        QVERIFY(originalFile.exists());
-
-        core->deleteLater();
+    void testMoveOperationFromXML()
+    {
+        installFromCLI(":///data/xmloperationrepository");
     }
 
     void cleanupTestCase()

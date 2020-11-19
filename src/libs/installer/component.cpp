@@ -237,6 +237,7 @@ static const QLatin1String scUnstable("Unstable");
 */
 Component::Component(PackageManagerCore *core)
     : d(new ComponentPrivate(core, this))
+    , m_defaultArchivePath(QLatin1String("@TargetDir@"))
 {
     setPrivate(d);
 
@@ -342,6 +343,9 @@ void Component::loadDataFromPackage(const Package &package)
     QHash<QString, QVariant> licenseHash = package.data(QLatin1String("Licenses")).toHash();
     if (!licenseHash.isEmpty())
         loadLicenses(QString::fromLatin1("%1/%2/").arg(localTempPath(), name()), licenseHash);
+    QVariant operationsVariant = package.data(QLatin1String("Operations"));
+    if (operationsVariant.canConvert<QList<QPair<QString, QVariant>>>())
+        m_operationsList = operationsVariant.value<QList<QPair<QString, QVariant>>>();
 }
 
 /*!
@@ -688,6 +692,39 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
     }
 }
 
+/*!
+  Loads all operations defined in the component.xml except Extract operation.
+  Operations are added to the list of operations needed to install this component.
+*/
+void Component::loadXMLOperations()
+{
+    for (auto operation: m_operationsList) {
+        if (operation.first != QLatin1String("Extract"))
+           addOperation(operation.first, operation.second.toStringList());
+    }
+}
+
+/*!
+  Loads all Extract operations defined in the component.xml.
+  Operations are overwriting the default implementation of Extract operation.
+*/
+void Component::loadXMLExtractOperations()
+{
+    for (auto operation: m_operationsList) {
+        if (operation.first == QLatin1String("Extract")) {
+            // Create hash for Extract operations. Operation has a mandatory extract folder as
+            // first argument and optional archive name as second argument.
+            const QStringList &operationArgs = operation.second.toStringList();
+            if (operationArgs.count() == 2) {
+                const QString archiveName = value(scVersion) + operationArgs.at(1);
+                const QString archivePath = QString::fromLatin1("installer://%1/%2").arg(name()).arg(archiveName);
+                m_archivesHash.insert(archivePath, operationArgs.at(0));
+            } else if (operationArgs.count() == 1) {
+                m_defaultArchivePath = operationArgs.at(0);
+            }
+        }
+    }
+}
 
 /*!
     \property QInstaller::Component::userInterfaces
@@ -796,8 +833,11 @@ void Component::createOperationsForArchive(const QString &archive)
     const bool isZip = Lib7z::isSupportedArchive(archive);
 
     if (isZip) {
-        // archives get completely extracted per default (if the script isn't doing other stuff)
-        addOperation(QLatin1String("Extract"), QStringList() << archive << QLatin1String("@TargetDir@"));
+        // component.xml can override this value
+        if (m_archivesHash.contains(archive))
+            addOperation(QLatin1String("Extract"), QStringList() << archive << m_archivesHash.value(archive));
+        else
+            addOperation(QLatin1String("Extract"), QStringList() << archive << m_defaultArchivePath);
     } else {
         createOperationsForPath(archive);
     }
@@ -824,10 +864,11 @@ void Component::createOperations()
             d->m_operationsCreated = true;
             return;
     }
-
+    loadXMLExtractOperations();
     foreach (const QString &archive, archives())
         createOperationsForArchive(archive);
 
+    loadXMLOperations();
     d->m_operationsCreated = true;
 }
 

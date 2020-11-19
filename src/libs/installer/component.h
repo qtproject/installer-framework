@@ -121,6 +121,8 @@ public:
     void loadTranslations(const QDir &directory, const QStringList &qms);
     void loadUserInterfaces(const QDir &directory, const QStringList &uis);
     void loadLicenses(const QString &directory, const QHash<QString, QVariant> &hash);
+    void loadXMLOperations();
+    void loadXMLExtractOperations();
     void markAsPerformedInstallation();
 
     QStringList userInterfaces() const;
@@ -227,6 +229,9 @@ private:
 private:
     QString validatorCallbackName;
     ComponentPrivate *d;
+    QList<QPair<QString, QVariant>> m_operationsList;
+    QHash<QString, QString> m_archivesHash;
+    QString m_defaultArchivePath;
 };
 
 QDebug operator<<(QDebug dbg, Component *component);

@@ -42,6 +42,43 @@ using namespace QInstaller;
 class tst_installiconsoperation : public QObject
 {
     Q_OBJECT
+private:
+    void installFromCLI(const QString &repository)
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (installDir, repository);
+        core->installDefaultComponentsSilently();
+
+        InstallIconsOperation *installIconsOp = nullptr;
+        OperationList operations = core->componentByName("A")->operations();
+        foreach (Operation *op, operations) {
+            if (op->name() == QLatin1String("InstallIcons"))
+                installIconsOp = dynamic_cast<InstallIconsOperation *>(op);
+        }
+        QVERIFY(installIconsOp);
+
+        // As the original directory containing icons will be deleted by the operation,
+        // we will use a copy with the exact same contents.
+        QFileInfo fakeSourceInfo(installDir + "/icons_copy/test");
+        QMap<QString, QByteArray> fakeSourceMap;
+        VerifyInstaller::addToFileMap(QDir(fakeSourceInfo.absoluteFilePath()), fakeSourceInfo, fakeSourceMap);
+
+        QFileInfo destinationInfo(installIconsOp->value("directory").toString() + "/test");
+        QMap<QString, QByteArray> destinationMap;
+        VerifyInstaller::addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
+
+        QVERIFY(fakeSourceMap == destinationMap);
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        core->uninstallComponentsSilently(QStringList() << "A");
+        QVERIFY(!destinationInfo.exists());
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+    }
 
 private slots:
     void initTestCase()
@@ -77,42 +114,14 @@ private slots:
         QCOMPARE(op.errorString(), QString("Invalid Argument: source directory must not be empty."));
     }
 
-    void testPerformingFromCLI()
+    void testInstallIconsFromScript()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, ":///data/repository");
-        core->installDefaultComponentsSilently();
+       installFromCLI(":///data/repository");
+    }
 
-        InstallIconsOperation *installIconsOp = nullptr;
-        OperationList operations = core->componentByName("A")->operations();
-        foreach (Operation *op, operations) {
-            if (op->name() == QLatin1String("InstallIcons"))
-                installIconsOp = dynamic_cast<InstallIconsOperation *>(op);
-        }
-        QVERIFY(installIconsOp);
-
-        // As the original directory containing icons will be deleted by the operation,
-        // we will use a copy with the exact same contents.
-        QFileInfo fakeSourceInfo(installDir + "/icons_copy/test");
-        QMap<QString, QByteArray> fakeSourceMap;
-        VerifyInstaller::addToFileMap(QDir(fakeSourceInfo.absoluteFilePath()), fakeSourceInfo, fakeSourceMap);
-
-        QFileInfo destinationInfo(installIconsOp->value("directory").toString() + "/test");
-        QMap<QString, QByteArray> destinationMap;
-        VerifyInstaller::addToFileMap(QDir(destinationInfo.absoluteFilePath()), destinationInfo, destinationMap);
-
-        QVERIFY(fakeSourceMap == destinationMap);
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        core->uninstallComponentsSilently(QStringList() << "A");
-        QVERIFY(!destinationInfo.exists());
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
+    void testInstallIconsFromXML()
+    {
+       installFromCLI(":///data/xmloperationrepository");
     }
 
     void testInstallIconsWithUndo()

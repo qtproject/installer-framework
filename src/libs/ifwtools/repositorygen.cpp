@@ -190,7 +190,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             // list of current unused or later transformed tags
             QStringList blackList;
             blackList << QLatin1String("UserInterfaces") << QLatin1String("Translations") <<
-                         QLatin1String("Licenses") << QLatin1String("Name");
+                         QLatin1String("Licenses") << QLatin1String("Name") << QLatin1String("Operations");
 
             bool foundDefault = false;
             bool foundVirtual = false;
@@ -379,6 +379,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 }
                 update.appendChild(package.firstChildElement(QLatin1String("Licenses")).cloneNode());
             }
+            // operations
+            update.appendChild(package.firstChildElement(QLatin1String("Operations")).cloneNode());
         } else {
             // Extract metadata from archive
             if (!info.metaFile.isEmpty()){

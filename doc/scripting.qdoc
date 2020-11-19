@@ -120,6 +120,8 @@
     update operations to the installation from within a script using
     component::addOperation(). If you need to run an operation that requires
     administrative rights, use component::addElevatedOperation() instead.
+    Alternative way of adding custom operations is to use \c component.xml, see
+    \l{Package Directory}
 
     Operations need to be added before the actual installation step. Override
     \l component::createOperations() to register custom operations for a

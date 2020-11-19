@@ -122,9 +122,15 @@ bool ExtractArchiveOperation::performOperation()
 
     QStringList files = callback.extractedFiles();
 
-    const QString resourcesPath = targetDir + QLatin1Char('/') + QLatin1String("installerResources");
-    QString fileDirectory = resourcesPath + QLatin1Char('/') +
-            archivePath.section(QLatin1Char('/'), 1, 1, QString::SectionSkipEmpty) + QLatin1Char('/');
+    QString installDir = targetDir;
+    // If we have package manager in use (normal installer run) then use
+    // TargetDir for saving filenames, otherwise those would be saved to
+    // extracted folder.
+    if (packageManager())
+        installDir = packageManager()->value(QLatin1String("TargetDir"));
+    const QString resourcesPath = installDir + QLatin1Char('/') + QLatin1String("installerResources");
+    QString fileDirectory = resourcesPath + QLatin1Char('/') + archivePath.section(QLatin1Char('/'), 1, 1,
+                            QString::SectionSkipEmpty) + QLatin1Char('/');
     QString archiveFileName = archivePath.section(QLatin1Char('/'), 2, 2, QString::SectionSkipEmpty);
     QFileInfo fileInfo2(archiveFileName);
     QString suffix = fileInfo2.suffix();
@@ -145,7 +151,7 @@ bool ExtractArchiveOperation::performOperation()
         setDefaultFilePermissions(file.fileName(), DefaultFilePermissions::NonExecutable);
         QDataStream out (&file);
         for (int i = 0; i < files.count(); ++i) {
-            files[i] = replacePath(files.at(i), targetDir, QLatin1String(scRelocatable));
+            files[i] = replacePath(files.at(i), installDir, QLatin1String(scRelocatable));
         }
         out << files;
         setValue(QLatin1String("files"), file.fileName());
@@ -176,6 +182,8 @@ bool ExtractArchiveOperation::undoOperation()
     // If yes, files are listed in .dat instead of in a separate file.
     bool useStringListType(value(QLatin1String("files")).type() == QVariant::StringList);
     QString targetDir = arguments().at(1);
+    if (packageManager())
+        targetDir = packageManager()->value(QLatin1String("TargetDir"));
     QStringList files;
     if (useStringListType) {
         files = value(QLatin1String("files")).toStringList();
