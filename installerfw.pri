@@ -92,6 +92,7 @@ macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 INCLUDEPATH += \
     $$IFW_SOURCE_TREE/src/libs/7zip \
     $$IFW_SOURCE_TREE/src/libs/kdtools \
+    $$IFW_SOURCE_TREE/src/libs/ifwtools \
     $$IFW_SOURCE_TREE/src/libs/installer
 win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/win/CPP
 unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP

@@ -1,5 +1,4 @@
 include(../../qttest.pri)
-include(../../../../tools/repogen/repogen.pri)
 
 QT -= gui
 

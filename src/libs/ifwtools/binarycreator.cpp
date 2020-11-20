@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,19 +25,18 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#include "common/repositorygen.h"
 
-#include <qtpatch.h>
+#include "binarycreator.h"
 
-#include <binarycontent.h>
-#include <binaryformat.h>
-#include <errors.h>
-#include <fileio.h>
-#include <fileutils.h>
-#include <init.h>
-#include <repository.h>
-#include <settings.h>
-#include <utils.h>
+#include "qtpatch.h"
+#include "repositorygen.h"
+#include "binarycontent.h"
+#include "errors.h"
+#include "fileio.h"
+#include "init.h"
+#include "repository.h"
+#include "settings.h"
+#include "utils.h"
 
 #include <QDateTime>
 #include <QDirIterator>
@@ -60,45 +59,7 @@
 #endif
 
 using namespace QInstaller;
-
-struct Input {
-    QString outputPath;
-    QString installerExePath;
-    QInstallerTools::PackageInfoVector packages;
-    QInstaller::ResourceCollectionManager manager;
-};
-
-class BundleBackup
-{
-public:
-    explicit BundleBackup(const QString &bundle = QString())
-        : bundle(bundle)
-    {
-        if (!bundle.isEmpty() && QFileInfo(bundle).exists()) {
-            backup = generateTemporaryFileName(bundle);
-            QFile::rename(bundle, backup);
-        }
-    }
-
-    ~BundleBackup()
-    {
-        if (!backup.isEmpty()) {
-            removeDirectory(bundle);
-            QFile::rename(backup, bundle);
-        }
-    }
-
-    void release() const
-    {
-        if (!backup.isEmpty())
-            removeDirectory(backup);
-        backup.clear();
-    }
-
-private:
-    const QString bundle;
-    mutable QString backup;
-};
+using namespace QInstallerTools;
 
 #ifndef Q_OS_WIN
 static void chmod755(const QString &absolutFilePath)
@@ -563,24 +524,6 @@ static int runRcc(const QStringList &args)
     return result;
 }
 
-class WorkingDirectoryChange
-{
-public:
-    explicit WorkingDirectoryChange(const QString &path)
-        : oldPath(QDir::currentPath())
-    {
-        QDir::setCurrent(path);
-    }
-
-    virtual ~WorkingDirectoryChange()
-    {
-        QDir::setCurrent(oldPath);
-    }
-
-private:
-    const QString oldPath;
-};
-
 static QSharedPointer<QInstaller::Resource> createDefaultResourceFile(const QString &directory,
     const QString &binaryName)
 {
@@ -629,63 +572,7 @@ QList<QSharedPointer<QInstaller::Resource> > createBinaryResourceFiles(const QSt
     return result;
 }
 
-static void printUsage()
-{
-    QString suffix;
-#ifdef Q_OS_WIN
-    suffix = QLatin1String(".exe");
-#endif
-    const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-    std::cout << "Usage: " << appName << " [options] target" << std::endl;
-    std::cout << std::endl;
-    std::cout << "Options:" << std::endl;
-
-    std::cout << "  -t|--template file        Use file as installer template binary" << std::endl;
-    std::cout << "                            If this parameter is not given, the template used" << std::endl;
-    std::cout << "                            defaults to installerbase." << std::endl;
-
-    QInstallerTools::printRepositoryGenOptions();
-
-    std::cout << "  -c|--config file          The file containing the installer configuration" << std::endl;
-
-    std::cout << "  -n|--online-only          Do not add any package into the installer" << std::endl;
-    std::cout << "                             (for online only installers)" << std::endl;
-
-    std::cout << "  -f|--offline-only         Forces the installer to act as an offline installer, " << std::endl;
-    std::cout << "                             i.e. never access online repositories" << std::endl;
-
-    std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
-
-    std::cout << "  -v|--verbose              Verbose output" << std::endl;
-    std::cout << "  -rcc|--compile-resource   Compiles the default resource and outputs the result into"
-        << std::endl;
-    std::cout << "                            'update.rcc' in the current path." << std::endl;
-#ifdef Q_OS_MACOS
-    std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
-    std::cout << "                            signing identity" << std::endl;
-#endif
-    std::cout << std::endl;
-    std::cout << "Packages are to be found in the current working directory and get listed as "
-        "their names" << std::endl << std::endl;
-    std::cout << "Example (offline installer):" << std::endl;
-    char sep = QDir::separator().toLatin1();
-    std::cout << "  " << appName << " --offline-only -c installer-config" << sep << "config.xml -p "
-        "packages-directory -t installerbase" << suffix << " SDKInstaller" << suffix << std::endl;
-    std::cout << "Creates an offline installer for the SDK, containing all dependencies." << std::endl;
-    std::cout << std::endl;
-    std::cout << "Example (online installer):" << std::endl;
-    std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
-        "-e org.qt-project.sdk.qt,org.qt-project.qtcreator -t installerbase" << suffix << " SDKInstaller"
-        << suffix << std::endl;
-    std::cout << std::endl;
-    std::cout << "Creates an installer for the SDK without qt and qt creator." << std::endl;
-    std::cout << std::endl;
-    std::cout << "Example update.rcc:" << std::endl;
-    std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
-        "-rcc" << std::endl;
-}
-
-void copyConfigData(const QString &configFile, const QString &targetDir)
+void QInstallerTools::copyConfigData(const QString &configFile, const QString &targetDir)
 {
     qDebug() << "Begin to copy configuration file and data.";
 
@@ -763,187 +650,87 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
     qDebug() << "done.\n";
 }
 
-static int printErrorAndUsageAndExit(const QString &err)
+int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError)
 {
-    std::cerr << qPrintable(err) << std::endl << std::endl;
-    printUsage();
-    return EXIT_FAILURE;
-}
-
-int main(int argc, char **argv)
-{
-// increase maximum numbers of file descriptors
+    // increase maximum numbers of file descriptors
 #if defined (Q_OS_MACOS)
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
     rl.rlim_cur = qMin(static_cast<rlim_t>(OPEN_MAX), rl.rlim_max);
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
-    QCoreApplication app(argc, argv);
-
-    QInstaller::init();
-
-    QString templateBinary = QLatin1String("installerbase");
     QString suffix;
 #ifdef Q_OS_WIN
     suffix = QLatin1String(".exe");
-    templateBinary = templateBinary + suffix;
+    if (!args.target.endsWith(suffix))
+        args.target = args.target + suffix;
 #endif
-    if (!QFileInfo(templateBinary).exists())
-        templateBinary = QString::fromLatin1("%1/%2").arg(qApp->applicationDirPath(), templateBinary);
 
-    QString target;
-    QString configFile;
-    QStringList packagesDirectories;
-    QStringList repositoryDirectories;
-    bool onlineOnly = false;
-    bool offlineOnly = false;
-    QStringList resources;
-    QStringList filteredPackages;
-    QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
-    bool compileResource = false;
-    QString signingIdentity;
-
-    const QStringList args = app.arguments().mid(1);
-    for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
-        if (*it == QLatin1String("-h") || *it == QLatin1String("--help")) {
-            printUsage();
-            return 0;
-        } else if (*it == QLatin1String("-p") || *it == QLatin1String("--packages")) {
-            ++it;
-            if (it == args.end()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Packages parameter missing argument."));
-            }
-            if (!QFileInfo(*it).exists()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package directory not found at the "
-                    "specified location."));
-            }
-            packagesDirectories.append(*it);
-        } else if (*it == QLatin1String("--repository")) {
-            ++it;
-            if (it == args.end()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Repository parameter missing argument."));
-            }
-            if (QFileInfo(*it).exists()) {
-                repositoryDirectories.append(*it);
-            } else {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Only local filesystem repositories now supported."));
-            }
-        } else if (*it == QLatin1String("-e") || *it == QLatin1String("--exclude")) {
-            ++it;
-            if (!filteredPackages.isEmpty())
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --include and --exclude are mutually "
-                                                             "exclusive. Use either one or the other."));
-            if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package to exclude missing."));
-            filteredPackages = it->split(QLatin1Char(','));
-        } else if (*it == QLatin1String("-i") || *it == QLatin1String("--include")) {
-            ++it;
-            if (!filteredPackages.isEmpty())
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --include and --exclude are mutually "
-                                                             "exclusive. Use either one or the other."));
-            if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Package to include missing."));
-            filteredPackages = it->split(QLatin1Char(','));
-            ftype = QInstallerTools::Include;
-        }
-        else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
-            QInstaller::setVerbose(true);
-        } else if (*it == QLatin1String("-n") || *it == QLatin1String("--online-only")) {
-            if (!filteredPackages.isEmpty()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: 'online-only' option cannot be used "
-                    "in conjunction with the 'include' or 'exclude' option. An 'online-only' installer will never "
-                    "contain any components apart from the root component."));
-            }
-            onlineOnly = true;
-        } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {
-            offlineOnly = true;
-        } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
-            ++it;
-            if (it == args.end()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Template parameter missing argument."));
-            }
-            templateBinary = *it;
-#ifdef Q_OS_WIN
-            if (!templateBinary.endsWith(suffix))
-                templateBinary = templateBinary + suffix;
-#endif
-            if (!QFileInfo(templateBinary).exists()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Template not found at the specified "
-                    "location."));
-            }
-        } else if (*it == QLatin1String("-c") || *it == QLatin1String("--config")) {
-            ++it;
-            if (it == args.end())
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config parameter missing argument."));
-            const QFileInfo fi(*it);
-            if (!fi.exists()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config file %1 not found at the "
-                    "specified location.").arg(*it));
-            }
-            if (!fi.isFile()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Configuration %1 is not a file.")
-                    .arg(*it));
-            }
-            if (!fi.isReadable()) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Config file %1 is not readable.")
-                    .arg(*it));
-            }
-            configFile = *it;
-        } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
-            ++it;
-            if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Resource files to include are missing."));
-            resources = it->split(QLatin1Char(','));
-        } else if (*it == QLatin1String("--ignore-translations")
-            || *it == QLatin1String("--ignore-invalid-packages")) {
-                continue;
-        } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
-            compileResource = true;
-#ifdef Q_OS_MACOS
-        } else if (*it == QLatin1String("-s") || *it == QLatin1String("--sign")) {
-            ++it;
-            if (it == args.end() || it->startsWith(QLatin1String("-")))
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: No code signing identity specified."));
-            signingIdentity = *it;
-#endif
-        } else {
-            if (it->startsWith(QLatin1String("-"))) {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Unknown option \"%1\" used. Maybe you "
-                    "are using an old syntax.").arg(*it));
-            } else if (target.isEmpty()) {
-                target = *it;
-#ifdef Q_OS_WIN
-                if (!target.endsWith(suffix))
-                    target = target + suffix;
-#endif
-            } else {
-                return printErrorAndUsageAndExit(QString::fromLatin1("Error: You are using an old syntax please add the "
-                    "component name with the include option")
-                    .arg(*it));
-            }
+    // Begin check arguments
+    foreach (const QString &packageDir, args.packagesDirectories) {
+        if (!QFileInfo(packageDir).exists()) {
+            argumentError = QString::fromLatin1("Error: Package directory not found at the specified location.");
+            return EXIT_FAILURE;
         }
     }
-
-    if (onlineOnly && offlineOnly) {
-        return printErrorAndUsageAndExit(QString::fromLatin1("You cannot use --online-only and "
-            "--offline-only at the same time."));
+    foreach (const QString &repositoryDir, args.repositoryDirectories) {
+        if (!QFileInfo(repositoryDir).exists()) {
+            argumentError = QString::fromLatin1("Error: Only local filesystem repositories now supported.");
+            return EXIT_FAILURE;
+        }
     }
-
-    if (onlineOnly) {
-        filteredPackages.append(QLatin1String("X_fake_filter_component_for_online_only_installer_X"));
-        ftype = QInstallerTools::Include;
+    if (!args.filteredPackages.isEmpty() && args.onlineOnly) {
+        argumentError = QString::fromLatin1("Error: 'online-only' option cannot be used "
+            "in conjunction with the 'include' or 'exclude' option. An 'online-only' installer will never "
+            "contain any components apart from the root component.");
+        return EXIT_FAILURE;
     }
-
-    if (target.isEmpty() && !compileResource)
-        return printErrorAndUsageAndExit(QString::fromLatin1("Error: Target parameter missing."));
-
-    if (configFile.isEmpty())
-        return printErrorAndUsageAndExit(QString::fromLatin1("Error: No configuration file selected."));
-
-    if (packagesDirectories.isEmpty() && repositoryDirectories.isEmpty())
-        return printErrorAndUsageAndExit(QString::fromLatin1("Error: Both Package directory and Repository parameters missing."));
-
+#ifdef Q_OS_WIN
+    if (!args.templateBinary.endsWith(suffix))
+        args.templateBinary = args.templateBinary + suffix;
+#endif
+    if (!QFileInfo(args.templateBinary).exists()) {
+        argumentError = QString::fromLatin1("Error: Template not found at the specified location.");
+        return EXIT_FAILURE;
+    }
+    const QFileInfo fi(args.configFile);
+    if (!fi.exists()) {
+        argumentError = QString::fromLatin1("Error: Config file %1 not found at the "
+            "specified location.").arg(fi.absoluteFilePath());
+        return EXIT_FAILURE;
+    }
+    if (!fi.isFile()) {
+        argumentError = QString::fromLatin1("Error: Configuration %1 is not a file.")
+            .arg(fi.absoluteFilePath());
+        return EXIT_FAILURE;
+    }
+    if (!fi.isReadable()) {
+        argumentError = QString::fromLatin1("Error: Config file %1 is not readable.")
+            .arg(fi.absoluteFilePath());
+        return EXIT_FAILURE;
+    }
+    if (args.onlineOnly && args.offlineOnly) {
+        argumentError = QString::fromLatin1("You cannot use --online-only and "
+            "--offline-only at the same time.");
+        return EXIT_FAILURE;
+    }
+    if (args.target.isEmpty() && !args.compileResource) {
+        argumentError = QString::fromLatin1("Error: Target parameter missing.");
+        return EXIT_FAILURE;
+    }
+    if (args.configFile.isEmpty()) {
+        argumentError = QString::fromLatin1("Error: No configuration file selected.");
+        return EXIT_FAILURE;
+    }
+    if (args.packagesDirectories.isEmpty() && args.repositoryDirectories.isEmpty()) {
+        argumentError = QString::fromLatin1("Error: Both Package directory and Repository parameters missing.");
+        return EXIT_FAILURE;
+    }
+    if (args.onlineOnly) {
+        args.filteredPackages.append(QLatin1String("X_fake_filter_component_for_online_only_installer_X"));
+        args.ftype = QInstallerTools::Include;
+    }
+    // End check arguments
     qDebug() << "Parsed arguments, ok.";
 
     Input input;
@@ -955,71 +742,71 @@ int main(int argc, char **argv)
     tmp2.setAutoRemove(false);
     const QString tmpRepoDir = tmp2.path();
     try {
-        const Settings settings = Settings::fromFileAndPrefix(configFile, QFileInfo(configFile)
+        const Settings settings = Settings::fromFileAndPrefix(args.configFile, QFileInfo(args.configFile)
             .absolutePath());
 
         // Note: the order here is important
 
-        QInstallerTools::PackageInfoVector packages;
+        PackageInfoVector packages;
 
         // 1; update the list of available compressed packages
-        if (!repositoryDirectories.isEmpty()) {
+        if (!args.repositoryDirectories.isEmpty()) {
             // 1.1; search packages
-            QInstallerTools::PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages(repositoryDirectories,
-                &filteredPackages, ftype);
+            PackageInfoVector precompressedPackages = createListOfRepositoryPackages(args.repositoryDirectories,
+                &args.filteredPackages, args.ftype);
             // 1.2; add to common vector
             packages.append(precompressedPackages);
         }
 
         // 2; update the list of available prepared packages
-        if (!packagesDirectories.isEmpty()) {
+        if (!args.packagesDirectories.isEmpty()) {
             // 2.1; search packages
-            QInstallerTools::PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(packagesDirectories,
-                &filteredPackages, ftype);
+            PackageInfoVector preparedPackages = createListOfPackages(args.packagesDirectories,
+                &args.filteredPackages, args.ftype);
             // 2.2; copy the packages data and setup the packages vector with the files we copied,
             //    must happen before copying meta data because files will be compressed if
             //    needed and meta data generation relies on this
-            QInstallerTools::copyComponentData(packagesDirectories, tmpRepoDir, &preparedPackages);
+            copyComponentData(args.packagesDirectories, tmpRepoDir, &preparedPackages);
             // 2.3; add to common vector
             packages.append(preparedPackages);
         }
 
         // 3; copy the meta data of the available packages, generate Updates.xml
-        QInstallerTools::copyMetaData(tmpMetaDir, tmpRepoDir, packages, settings
+        copyMetaData(tmpMetaDir, tmpRepoDir, packages, settings
             .applicationName(), settings.version(), QStringList());
 
         // 4; copy the configuration file and and icons etc.
-        copyConfigData(configFile, tmpMetaDir + QLatin1String("/installer-config"));
+        copyConfigData(args.configFile, tmpMetaDir + QLatin1String("/installer-config"));
         {
             QSettings confInternal(tmpMetaDir + QLatin1String("/config/config-internal.ini")
                 , QSettings::IniFormat);
             // assume offline installer if there are no repositories and no
             //--online-only not set
-            offlineOnly = offlineOnly | settings.repositories().isEmpty();
-            if (onlineOnly)
-                offlineOnly = !onlineOnly;
-            confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
+            args.offlineOnly = args.offlineOnly | settings.repositories().isEmpty();
+            if (args.onlineOnly)
+                args.offlineOnly = !args.onlineOnly;
+            confInternal.setValue(QLatin1String("offlineOnly"), args.offlineOnly);
         }
 
 #ifdef Q_OS_MACOS
         // on mac, we enforce building a bundle
-        if (!target.endsWith(QLatin1String(".app")) && !target.endsWith(QLatin1String(".dmg")))
-            target += QLatin1String(".app");
+        if (!args.target.endsWith(QLatin1String(".app")) && !args.target.endsWith(QLatin1String(".dmg")))
+            args.target += QLatin1String(".app");
 #endif
-        if (!compileResource) {
+        if (!args.compileResource) {
             // 5; put the copied resources into a resource file
-            QInstaller::ResourceCollection metaCollection("QResources");
+            ResourceCollection metaCollection("QResources");
             metaCollection.appendResource(createDefaultResourceFile(tmpMetaDir,
                 generateTemporaryFileName()));
-            metaCollection.appendResources(createBinaryResourceFiles(resources));
+            metaCollection.appendResources(createBinaryResourceFiles(args.resources));
             input.manager.insertCollection(metaCollection);
 
             input.packages = packages;
-            input.outputPath = target;
-            input.installerExePath = templateBinary;
+            input.outputPath = args.target;
+            input.installerExePath = args.templateBinary;
 
             qDebug() << "Creating the binary";
-            exitCode = assemble(input, settings, signingIdentity);
+            exitCode = assemble(input, settings, args.signingIdentity);
         } else {
             createDefaultResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
             exitCode = EXIT_SUCCESS;
@@ -1033,7 +820,7 @@ int main(int argc, char **argv)
     }
 
     qDebug() << "Cleaning up...";
-    const QInstaller::ResourceCollection collection = input.manager.collectionByName("QResources");
+    const ResourceCollection collection = input.manager.collectionByName("QResources");
     foreach (const QSharedPointer<QInstaller::Resource> &resource, collection.resources())
         QFile::remove(QString::fromUtf8(resource->name()));
     QInstaller::removeDirectory(tmpMetaDir, true);

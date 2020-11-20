@@ -1,0 +1,7 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>default_icon_mac.icns</file>
+    <file>copylibsintobundle.sh</file>
+    <file alias="resources/installerbase.ico">../../../sdk/installerbase.ico</file>
+</qresource>
+</RCC>

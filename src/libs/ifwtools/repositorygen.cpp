@@ -25,23 +25,24 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+
 #include "repositorygen.h"
 
-#include <constants.h>
-#include <fileio.h>
-#include <fileutils.h>
-#include <errors.h>
-#include <globals.h>
-#include <lib7z_create.h>
-#include <lib7z_extract.h>
-#include <lib7z_facade.h>
-#include <lib7z_list.h>
-#include <settings.h>
-#include <qinstallerglobal.h>
-#include <utils.h>
-#include <scriptengine.h>
+#include "constants.h"
+#include "fileio.h"
+#include "fileutils.h"
+#include "errors.h"
+#include "globals.h"
+#include "lib7z_create.h"
+#include "lib7z_extract.h"
+#include "lib7z_facade.h"
+#include "lib7z_list.h"
+#include "settings.h"
+#include "qinstallerglobal.h"
+#include "utils.h"
+#include "scriptengine.h"
 
-#include <updater.h>
+#include "updater.h"
 
 #include <QtCore/QDirIterator>
 #include <QtCore/QRegExp>

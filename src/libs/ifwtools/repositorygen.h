@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,8 +26,10 @@
 **
 **************************************************************************/
 
-#ifndef QINSTALLER_REPOSITORYGEN_H
-#define QINSTALLER_REPOSITORYGEN_H
+#ifndef REPOSITORYGEN_H
+#define REPOSITORYGEN_H
+
+#include "ifwtools_global.h"
 
 #include <QHash>
 #include <QString>
@@ -37,8 +39,7 @@
 
 namespace QInstallerTools {
 
-
-struct PackageInfo
+struct IFWTOOLS_EXPORT PackageInfo
 {
     QString name;
     QString version;
@@ -50,38 +51,38 @@ struct PackageInfo
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 
-enum FilterType {
+enum IFWTOOLS_EXPORT FilterType {
     Include,
     Exclude
 };
 
-void printRepositoryGenOptions();
-QString makePathAbsolute(const QString &path);
-void copyWithException(const QString &source, const QString &target, const QString &kind = QString());
+void IFWTOOLS_EXPORT printRepositoryGenOptions();
+QString IFWTOOLS_EXPORT makePathAbsolute(const QString &path);
+void IFWTOOLS_EXPORT copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 
-PackageInfoVector createListOfPackages(const QStringList &packagesDirectories, QStringList *packagesToFilter,
+PackageInfoVector IFWTOOLS_EXPORT createListOfPackages(const QStringList &packagesDirectories, QStringList *packagesToFilter,
     FilterType ftype);
 
-PackageInfoVector createListOfRepositoryPackages(const QStringList &repositoryDirectories, QStringList *packagesToFilter,
+PackageInfoVector IFWTOOLS_EXPORT createListOfRepositoryPackages(const QStringList &repositoryDirectories, QStringList *packagesToFilter,
     FilterType filterType);
 
-QHash<QString, QString> buildPathToVersionMapping(const PackageInfoVector &info);
+QHash<QString, QString> IFWTOOLS_EXPORT buildPathToVersionMapping(const PackageInfoVector &info);
 
-void compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
+void IFWTOOLS_EXPORT compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata);
 
 QStringList unifyMetadata(const QString &repoDir, const QString &existingRepoDir, QDomDocument doc);
 void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc,
                    const QHash<QString, QString> &versionMapping);
 
-void copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
+void IFWTOOLS_EXPORT copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
     const QString &appName, const QString& appVersion, const QStringList &uniteMetadatas);
-void copyComponentData(const QStringList &packageDir, const QString &repoDir, PackageInfoVector *const infos);
+void IFWTOOLS_EXPORT copyComponentData(const QStringList &packageDir, const QString &repoDir, PackageInfoVector *const infos);
 
-void filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
+void IFWTOOLS_EXPORT filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
-QString existingUniteMeta7z(const QString &repositoryDir);
+QString IFWTOOLS_EXPORT existingUniteMeta7z(const QString &repositoryDir);
 
 } // namespace QInstallerTools
 
-#endif // QINSTALLER_REPOSITORYGEN_H
+#endif // REPOSITORYGEN_H

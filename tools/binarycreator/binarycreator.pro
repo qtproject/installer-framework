@@ -1,6 +1,6 @@
 TEMPLATE = app
 TARGET = binarycreator
-INCLUDEPATH += . .. rcc ../common
+INCLUDEPATH += . ..
 
 include(../../installerfw.pri)
 
@@ -9,12 +9,7 @@ QT += qml xml
 
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
-SOURCES = binarycreator.cpp \
-          rcc/rcc.cpp \
-          rcc/rccmain.cpp \
-          ../common/repositorygen.cpp
-HEADERS = rcc/rcc.h
-RESOURCES += binarycreator.qrc
+SOURCES = main.cpp
 
 macx:include(../../no_app_bundle.pri)
 

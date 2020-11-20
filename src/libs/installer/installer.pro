@@ -6,6 +6,7 @@ CONFIG += staticlib
 
 include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
+include(../ifwtools/ifwtools.pri)
 include(../../../installerfw.pri)
 
 # productkeycheck API

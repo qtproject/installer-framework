@@ -26,7 +26,7 @@
 **
 **************************************************************************/
 
-#include <rcc.h>
+#include "rcc.h"
 #include "qcorecmdlineargs_p.h"
 
 #include <QDebug>
