@@ -270,11 +270,11 @@ class INSTALLER_EXPORT CustomIntroductionPage : public PackageManagerPage
 public:
     explicit CustomIntroductionPage(PackageManagerCore *core);
 
-    void setText(const QString &text);
+    void initializePage();
+
     QString targetDir() const;
     void setTargetDir(const QString &dirName);
 
-    void initializePage();
     bool validateDirectory();
     bool isComplete() const;
     int nextId() const;
@@ -283,8 +283,7 @@ public:
     void showAll();
     void hideAll();
     void showMetaInfoUpdate();
-    void showMaintenanceTools();
-    void setMaintenanceToolsEnabled(bool enable);
+    void showInstallerInformation();
 
 public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
@@ -297,9 +296,6 @@ Q_SIGNALS:
     void packageManagerCoreTypeChanged();
 
 private Q_SLOTS:
-    void setUpdater(bool value);
-    void setUninstaller(bool value);
-    void setPackageManager(bool value);
     void dirRequested();
 
 private:
@@ -319,13 +315,13 @@ private:
     bool m_localPackagesTreeFetched;
 
     QLabel *m_label;
+    QLabel *m_redistLabel;
     QLabel *m_msgLabel;
     QLabel *m_dirLabel;
+    QLabel *m_spaceLabel;
     QLabel *m_errorLabel;
     QProgressBar *m_progressBar;
-    QRadioButton *m_packageManager;
-    QRadioButton *m_updateComponents;
-    QRadioButton *m_removeAllComponents;
+    QPushButton *m_browseButton;
 
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;

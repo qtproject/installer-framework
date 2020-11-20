@@ -1752,11 +1752,12 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     , m_localPackagesTreeFetched(false)
     , m_label(nullptr)
     , m_msgLabel(nullptr)
+    , m_dirLabel(nullptr)
+    , m_spaceLabel(nullptr)
     , m_errorLabel(nullptr)
     , m_progressBar(nullptr)
-    , m_packageManager(nullptr)
-    , m_updateComponents(nullptr)
-    , m_removeAllComponents(nullptr)
+    , m_browseButton(nullptr)
+    , m_redistLabel(nullptr)
 {
     setObjectName(QLatin1String("CustomIntroductionPage"));
     setColoredTitle(tr("Setup - %1").arg(productName()));
@@ -1772,38 +1773,32 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
 
-    QPushButton *browseButton = new QPushButton(this);
-    browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
-    connect(browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
-    browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
-    browseButton->setText(tr("B&rowse..."));
-    boxLayout->addWidget(browseButton);
+    // Install redists...?
+    m_redistLabel = new QLabel(this);
+    m_redistLabel->setWordWrap(true);
+    m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
+    boxLayout->addWidget(m_redistLabel);
 
+    // Target dir: Browse button
+    m_browseButton = new QPushButton(this);
+    m_browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
+    connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
+    m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    m_browseButton->setText(tr("B&rowse..."));
+    boxLayout->addWidget(m_browseButton);
+
+    // Target dir: Install path label
     m_dirLabel = new QLabel(this);
     m_dirLabel->setWordWrap(true);
     m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
     boxLayout->addWidget(m_dirLabel);
 
-    m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
-    m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
-    boxLayout->addWidget(m_packageManager);
-    m_packageManager->setChecked(core->isPackageManager());
-    connect(m_packageManager, &QAbstractButton::toggled, this, &CustomIntroductionPage::setPackageManager);
-
-    m_updateComponents = new QRadioButton(tr("&Update components"), this);
-    m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
-    boxLayout->addWidget(m_updateComponents);
-    m_updateComponents->setChecked(core->isUpdater());
-    connect(m_updateComponents, &QAbstractButton::toggled, this, &CustomIntroductionPage::setUpdater);
-
-    m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
-    m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
-    boxLayout->addWidget(m_removeAllComponents);
-    m_removeAllComponents->setChecked(core->isUninstaller());
-    connect(m_removeAllComponents, &QAbstractButton::toggled,
-            this, &CustomIntroductionPage::setUninstaller);
-    connect(m_removeAllComponents, &QAbstractButton::toggled,
-            core, &PackageManagerCore::setCompleteUninstallation);
+    // Space requirements: labelm_msgLabel->setWordWrap(true);
+    m_spaceLabel = new QLabel(this);
+    m_spaceLabel->setWordWrap(true);
+    m_spaceLabel->setObjectName(QLatin1String("SpaceLabel"));
+    m_spaceLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    boxLayout->addWidget(m_spaceLabel);
 
     boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
@@ -1837,8 +1832,6 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
             this, &CustomIntroductionPage::onCoreNetworkSettingsChanged);
 
-    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
-
 #ifdef Q_OS_WIN
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
         m_taskButton = new QWinTaskbarButton(this);
@@ -1851,50 +1844,45 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
 }
 
 /*!
-    Returns the target directory for the installation.
-*/
-QString CustomIntroductionPage::targetDir() const
-{
-    return m_dirLabel->text().trimmed();
-}
-
-/*!
-    Sets the directory specified by \a dirName as the target directory for the
-    installation.
-*/
-void CustomIntroductionPage::setTargetDir(const QString &dirName)
-{
-    QString finalName = dirName;
-    if(!dirName.toUpper().endsWith(QLatin1String("\\EVE")))
-    {
-        QString postfix = QLatin1String("\\EVE");
-        if(dirName.endsWith(QLatin1String("\\")))
-        {
-            postfix = QLatin1String("EVE");
-        }
-        finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix);
-    }
-
-    m_dirLabel->setText(finalName);
-}
-
-/*!
-    Requests a warning message to be shown to end users upon invalid input. If the input is valid,
-    the \uicontrol Next button is enabled.
-
-    Returns \c true if a valid path to the target directory is set; otherwise returns \c false.
-*/
-bool CustomIntroductionPage::isComplete() const
-{
-    m_errorLabel->setText(targetDirWarning());
-    return m_errorLabel->text().isEmpty() && PackageManagerPage::isComplete();
-}
-
-/*!
     Initializes the page.
 */
 void CustomIntroductionPage::initializePage()
 {
+    PackageManagerCore *core = packageManagerCore();
+
+    // // fetch updater packages
+    // if (core->isUpdater()) {
+    //     if (!m_updatesFetched) {
+    //         m_updatesFetched = core->fetchRemotePackagesTree();
+    //         if (!m_updatesFetched)
+    //             setErrorMessage(core->error());
+    //     }
+    // }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+            // first try to fetch the server side packages tree
+            qDebug() << "IntroductionPage::initializePage | calling fetchRemotePackagesTree";
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    qDebug() << "IntroductionPage::initializePage | localPackagesTreeFetched";
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+    }
+
+    // Set the install directory
     QString targetDir = packageManagerCore()->value(scTargetDir);
     if (targetDir.isEmpty()) {
         targetDir = QDir::homePath() + QDir::separator();
@@ -1907,10 +1895,58 @@ void CustomIntroductionPage::initializePage()
             targetDir += productName();
         }
     }
-    // m_dirLabel->setText(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
     setTargetDir(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
 
     PackageManagerPage::initializePage();
+}
+
+/*!
+    Returns the target directory for the installation.
+
+    THIS IS BASED ON TargetDirectoryPage::targetDir
+*/
+QString CustomIntroductionPage::targetDir() const
+{
+    return m_dirLabel->text().trimmed();
+}
+
+/*!
+    Sets the directory specified by \a dirName as the target directory for the
+    installation.
+
+    THIS IS BASED ON TargetDirectoryPage::setTargetDir
+*/
+void CustomIntroductionPage::setTargetDir(const QString &dirName)
+{
+    QString finalName = dirName.trimmed();
+
+    // We always want to install into an \EVE folder
+    // So if the dir doesn't end with \EVE, we postfix it
+    if(!dirName.toUpper().endsWith(QLatin1String("\\EVE")))
+    {
+        QString postfix = QLatin1String("\\EVE");
+        if(dirName.endsWith(QLatin1String("\\")))
+        {
+            postfix = QLatin1String("EVE");
+        }
+        finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix).trimmed();
+    }
+
+    m_dirLabel->setText(finalName);
+}
+
+/*!
+    Requests a warning message to be shown to end users upon invalid input. If the input is valid,
+    the \uicontrol Next button is enabled.
+
+    Returns \c true if a valid path to the target directory is set; otherwise returns \c false.
+
+    THIS IS BASED ON TargetDirectoryPage::isComplete
+*/
+bool CustomIntroductionPage::isComplete() const
+{
+    m_errorLabel->setText(targetDirWarning());
+    return m_errorLabel->text().isEmpty() && PackageManagerPage::isComplete();
 }
 
 /*!
@@ -1923,6 +1959,8 @@ void CustomIntroductionPage::initializePage()
         \li Returns \c true or \c false if the directory exists but is not empty, depending on the
             choice that the end users make in the displayed message box.
     \endlist
+
+    THIS IS BASED ON TargetDirectoryPage::validatePage
 */
 bool CustomIntroductionPage::validateDirectory()
 {
@@ -1972,11 +2010,14 @@ bool CustomIntroductionPage::validateDirectory()
 /*!
     Determines which page should be shown next depending on whether the
     application is being installed, updated, or uninstalled.
+
+    THIS IS BASED ON IntroductionPage::nextId
 */
 int CustomIntroductionPage::nextId() const
 {
+    // We don't want to show a pointless Ready page, so we go directly to performing uninstallation
     if (packageManagerCore()->isUninstaller())
-        return PackageManagerCore::ReadyForInstallation;
+        return PackageManagerCore::PerformInstallation;
 
     if (packageManagerCore()->isMaintainer())
         return PackageManagerCore::ComponentSelection;
@@ -1988,6 +2029,8 @@ int CustomIntroductionPage::nextId() const
     For an uninstaller, always returns \c true. For the package manager and updater, at least
     one valid repository is required. For the online installer, package manager, and updater, valid
     meta data has to be fetched successfully to return \c true.
+
+    THIS IS BASED ON IntroductionPage::validatePage
 */
 bool CustomIntroductionPage::validatePage()
 {
@@ -1999,13 +2042,12 @@ bool CustomIntroductionPage::validatePage()
     if (!validRepositoriesAvailable()) {
         setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
             "repository required for this action to succeed.") + QLatin1String("</font>"));
-        return isComplete() && validateDirectory();
+        return validateDirectory();
     }
 
     gui()->setSettingsButtonEnabled(false);
     if (core->isMaintainer()) {
         showAll();
-        setMaintenanceToolsEnabled(false);
     } else {
         showMetaInfoUpdate();
     }
@@ -2064,8 +2106,8 @@ bool CustomIntroductionPage::validatePage()
     }
 
     if (core->isMaintainer()) {
-        showMaintenanceTools();
-        setMaintenanceToolsEnabled(true);
+    } else if (core->isInstaller()) {
+        showInstallerInformation();
     } else {
         hideAll();
     }
@@ -2080,6 +2122,8 @@ bool CustomIntroductionPage::validatePage()
 
 /*!
     Shows all widgets on the page.
+
+    COPY OF IntroductionPage::showAll
 */
 void CustomIntroductionPage::showAll()
 {
@@ -2088,6 +2132,8 @@ void CustomIntroductionPage::showAll()
 
 /*!
     Hides all widgets on the page.
+
+    COPY OF IntroductionPage::hideAll
 */
 void CustomIntroductionPage::hideAll()
 {
@@ -2096,6 +2142,8 @@ void CustomIntroductionPage::hideAll()
 
 /*!
     Hides the widgets on the page except a text label and progress bar.
+
+    COPY OF IntroductionPage::showMetaInfoUpdate
 */
 void CustomIntroductionPage::showMetaInfoUpdate()
 {
@@ -2105,30 +2153,23 @@ void CustomIntroductionPage::showMetaInfoUpdate()
 }
 
 /*!
-    Shows the options to install, add, and unistall components on the page.
+    Shows the browse button, install location and space required by the installation
 */
-void CustomIntroductionPage::showMaintenanceTools()
+void CustomIntroductionPage::showInstallerInformation()
 {
-    showWidgets(true);
-    m_label->setVisible(false);
-    m_progressBar->setVisible(false);
-}
-
-/*!
-    Sets \a enable to \c true to enable the options to install, add, and
-    uninstall components on the page.
-*/
-void CustomIntroductionPage::setMaintenanceToolsEnabled(bool enable)
-{
-    m_packageManager->setEnabled(enable);
-    m_updateComponents->setEnabled(enable && ProductKeyCheck::instance()->hasValidKey());
-    m_removeAllComponents->setEnabled(enable);
+    showWidgets(false);
+    m_dirLabel->setVisible(true);
+    m_spaceLabel->setVisible(true);
+    m_browseButton->setVisible(true);
+    m_redistLabel->setVisible(true);
 }
 
 // -- public slots
 
 /*!
     Displays the message \a msg on the page.
+
+    COPY OF IntroductionPage::setMessage
 */
 void CustomIntroductionPage::setMessage(const QString &msg)
 {
@@ -2137,6 +2178,8 @@ void CustomIntroductionPage::setMessage(const QString &msg)
 
 /*!
     Updates the value of \a progress on the progress bar.
+
+    COPY OF IntroductionPage::onProgressChanged
 */
 void CustomIntroductionPage::onProgressChanged(int progress)
 {
@@ -2145,6 +2188,8 @@ void CustomIntroductionPage::onProgressChanged(int progress)
 
 /*!
     Sets total \a totalProgress value to progress bar.
+
+    COPY OF IntroductionPage::setTotalProgress
 */
 void CustomIntroductionPage::setTotalProgress(int totalProgress)
 {
@@ -2154,6 +2199,8 @@ void CustomIntroductionPage::setTotalProgress(int totalProgress)
 
 /*!
     Displays the error message \a error on the page.
+
+    COPY OF IntroductionPage::setErrorMessage
 */
 void CustomIntroductionPage::setErrorMessage(const QString &error)
 {
@@ -2178,6 +2225,8 @@ void CustomIntroductionPage::setErrorMessage(const QString &error)
 
 /*!
     Returns \c true if at least one valid and enabled repository is available.
+
+    COPY OF IntroductionPage::validRepositoriesAvailable
 */
 bool CustomIntroductionPage::validRepositoriesAvailable() const
 {
@@ -2197,39 +2246,11 @@ bool CustomIntroductionPage::validRepositoriesAvailable() const
 
 // -- private slots
 
-void CustomIntroductionPage::setUpdater(bool value)
-{
-    if (value) {
-        entering();
-        gui()->showSettingsButton(true);
-        packageManagerCore()->setUpdater();
-        emit packageManagerCoreTypeChanged();
-    }
-}
-
-void CustomIntroductionPage::setUninstaller(bool value)
-{
-    if (value) {
-        entering();
-        gui()->showSettingsButton(false);
-        packageManagerCore()->setUninstaller();
-        emit packageManagerCoreTypeChanged();
-    }
-}
-
-void CustomIntroductionPage::setPackageManager(bool value)
-{
-    if (value) {
-        entering();
-        gui()->showSettingsButton(true);
-        packageManagerCore()->setPackageManager();
-        emit packageManagerCoreTypeChanged();
-    }
-}
-
 /*!
     Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
     fetched again.
+
+    COPY OF IntroductionPage::onCoreNetworkSettingsChanged 
 */
 void CustomIntroductionPage::onCoreNetworkSettingsChanged()
 {
@@ -2242,10 +2263,12 @@ void CustomIntroductionPage::onCoreNetworkSettingsChanged()
 
 /*!
     Initializes the page's fields.
+
+    BASED ON IntroductionPage::entering and TargetDirectoryPage::entering
 */
 void CustomIntroductionPage::entering()
 {
-    setComplete(true);
+    // setComplete(false);
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
@@ -2254,57 +2277,82 @@ void CustomIntroductionPage::entering()
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     PackageManagerCore *core = packageManagerCore();
-    if (core->isUninstaller() || core->isMaintainer()) {
-        showMaintenanceTools();
-        setMaintenanceToolsEnabled(true);
-    }
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
 
-    // fetch updater packages
-    if (core->isUpdater()) {
-        if (!m_updatesFetched) {
-            m_updatesFetched = core->fetchRemotePackagesTree();
-            if (!m_updatesFetched)
-                setErrorMessage(core->error());
+    // Ready for installation text
+    if (core->isUninstaller()) {
+        // m_taskDetailsBrowser->setVisible(false);
+        setButtonText(QWizard::NextButton, tr("U&ninstall"));
+        setColoredTitle(tr("Ready to Uninstall %1").arg(productName()));
+        m_spaceLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
+            "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
+            "including all content in that directory!")
+            .arg(productName(),
+                QDir::toNativeSeparators(QDir(core->value(scTargetDir))
+            .absolutePath())));
+        // setComplete(true);
+        // return;
+    } else if (core->isMaintainer()) {
+        setButtonText(QWizard::NextButton, tr("U&pdate"));
+        // setColoredTitle(tr("Ready to Update Packages"));
+        m_spaceLabel->setText(tr("Setup is now ready to begin updating your installation."));
+    } else {
+        Q_ASSERT(core->isInstaller());
+        core->calculateComponentsToInstall();
+        showInstallerInformation();
+        setButtonText(QWizard::NextButton, tr("&Install"));
+        // setColoredTitle(tr("Ready to Install"));
+        m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
+            .arg(productName()));
+    }
+
+    // QString htmlOutput;
+    // bool componentsOk = core->calculateComponents(&htmlOutput);
+    // m_taskDetailsBrowser->setHtml(htmlOutput);
+    // m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
+    // setComplete(componentsOk);
+
+    if (!core->isUninstaller()) {
+        QString spaceInfo;
+        if (core->checkAvailableSpace(spaceInfo)) {
+            m_spaceLabel->setText(QString::fromLatin1("%1 %2").arg(m_spaceLabel->text(), spaceInfo));
+        } else {
+            m_spaceLabel->setText(spaceInfo);
         }
     }
 
-    // fetch common packages
-    if (core->isInstaller() || core->isPackageManager()) {
-        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
-            // first try to fetch the server side packages tree
-            qDebug() << "IntroductionPage::entering | fetchRemotePackagesTree 2";
-            m_allPackagesFetched = core->fetchRemotePackagesTree();
-            if (!m_allPackagesFetched) {
-                QString error = core->error();
-                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
-                    // if that fails and we're in maintenance mode, try to fetch local installed tree
-                    qDebug() << "IntroductionPage::entering | localPackagesTreeFetched";
-                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
-                    if (m_localPackagesTreeFetched) {
-                        // if that succeeded, adjust error message
-                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
-                            "management available.") + QLatin1String("</font>");
-                    }
-                }
-                setErrorMessage(error);
-            }
-        }
+    QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
+    if (installRedistText == QLatin1String("true")) {
+        m_redistLabel->setText(tr("Installing redists."));
+    } else {
+        m_redistLabel->setVisible(false);
     }
 }
 
 /*!
     Called when end users leave the page and the PackageManagerGui:currentPageChanged()
     signal is triggered.
+
+    BASED ON IntroductionPage::leaving and TargetDirectoryPage::leaving
 */
 void CustomIntroductionPage::leaving()
 {
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
+
+    // Resetting the cancel button text from Quit to Cancel
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+
+    // Resetting button text (after changing it to Install/Uninstall/Update)
+    setButtonText(QWizard::NextButton, gui()->defaultButtonText(QWizard::NextButton));
+
+    // Store the install location
     packageManagerCore()->setValue(scTargetDir, targetDir());
 }
 
+/*!
+    BASED ON TargetDirectoryPage::isComplete
+*/
 void CustomIntroductionPage::dirRequested()
 {
     const QString newDirName = QFileDialog::getExistingDirectory(this,
@@ -2316,27 +2364,24 @@ void CustomIntroductionPage::dirRequested()
 
 /*!
     Displays widgets on the page.
+
+    BASED ON IntroductionPage::showWidgets
 */
 void CustomIntroductionPage::showWidgets(bool show)
 {
     m_label->setVisible(show);
     m_progressBar->setVisible(show);
-    m_packageManager->setVisible(show);
-    m_updateComponents->setVisible(show);
-    m_removeAllComponents->setVisible(show);
-}
-
-/*!
-    Displays the text \a text on the page.
-*/
-void CustomIntroductionPage::setText(const QString &text)
-{
-    m_msgLabel->setText(text);
+    m_browseButton->setVisible(show);
+    m_dirLabel->setVisible(show);
+    m_msgLabel->setVisible(show);
+    m_redistLabel->setVisible(show);
 }
 
 /*!
     Returns a warning if the path to the target directory is not set or if it
     is invalid. Installation can continue only after a valid target path is given.
+
+    COPY OF TargetDirectoryPage::targetDirWarning
 */
 QString CustomIntroductionPage::targetDirWarning() const
 {
@@ -2429,6 +2474,8 @@ QString CustomIntroductionPage::targetDirWarning() const
 /*!
     Returns \c true if a warning message specified by \a message with the
     identifier \a identifier is presented to end users for acknowledgment.
+
+    COPY OF TargetDirectoryPage::askQuestion
 */
 bool CustomIntroductionPage::askQuestion(const QString &identifier, const QString &message)
 {
@@ -2438,6 +2485,9 @@ bool CustomIntroductionPage::askQuestion(const QString &identifier, const QStrin
     return bt == QMessageBox::Yes;
 }
 
+/*!
+    COPY OF TargetDirectoryPage::failWithError
+*/
 bool CustomIntroductionPage::failWithError(const QString &identifier, const QString &message)
 {
     MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
