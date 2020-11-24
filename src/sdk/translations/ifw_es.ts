@@ -2444,4 +2444,80 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
         <translation>Error al cambiar el nombre de archivo de &quot;%1&quot; a &quot;%2&quot;: %3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>La instalación usará %1 de espacio de disco.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCorePrivate | ========================================
+  ==============================================================================================
+  Here we are providing translations for the text that is shown on the perform installation
+  page of the installer, both below the progress bar, and inside the details view.
+  NOTE that the enter here is intentional as it is a part of the text that is matched
+  and we want to keep it in the translated text as well.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCorePrivate</name>
+    <message>
+        <source>
+Installing component %1...</source>
+        <translation>
+Instalando componente %1...</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Hecho</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
 </TS>

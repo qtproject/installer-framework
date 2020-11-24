@@ -2444,4 +2444,116 @@ as a user with the appropriate rights and then clicking OK.</source>
         <translation>将文件“%1”重命名为“%2”失败：%3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>安装程序将使用 %1 的磁盘空间。</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation>正在解压缩 “%1”</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCorePrivate | ========================================
+  ==============================================================================================
+  Here we are providing translations for the text that is shown on the perform installation
+  page of the installer, both below the progress bar, and inside the details view.
+  NOTE that the enter here is intentional as it is a part of the text that is matched
+  and we want to keep it in the translated text as well.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCorePrivate</name>
+    <message>
+        <source>
+Installing component %1...</source>
+        <translation>
+正在安装组件 %1...</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>完成</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QPlatformTheme | ===============================================================
+  ==============================================================================================
+  QPlatformTheme is a part of QT, and is usually included in the qtbase_<LOCALE> files.
+  That file is however missing for Chinese. So here are the four that are
+  used in our installer.
+  The translations here are actually copied from QDialogButtonBox found in qt_zh_CN.ts
+  ==============================================================================================
+-->
+<context>
+    <name>QPlatformTheme</name>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;是</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;否</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QPlatformTheme | =================================================================
+  ==============================================================================================
+-->
+
+
 </TS>
