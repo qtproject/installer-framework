@@ -10,6 +10,10 @@ param
     [switch]$SkipPostClean
 )
 
+if ($Verbose) {
+    $DebugPreference = 'Continue'
+}
+
 $DeepCleanSwitch = ""
 if ($DeepClean) { $DeepCleanSwitch = "-DeepClean" }
 $VerboseSwitch = ""
@@ -26,26 +30,26 @@ if (!(Test-Path $jom)) {
     Write-Output "Jom was not found at '$jom'! Exiting..."
     Return
 } else {
-    if ($Verbose) { Write-Output "Jom was found at '$jom'." }
+    Write-Debug "Jom was found at '$jom'."
 }
 if (!(Test-Path $qmake)) {
     Write-Output "Qmake was not found at '$qmake'! Exiting..."
 } else {
-    if ($Verbose) { Write-Output "Qmake was found at '$qmake'." }
+    Write-Debug "Qmake was found at '$qmake'."
 }
 if (!(Test-Path $varsall)) {
     Write-Output "vcvarsall not found at '$varsall'! Exiting..."
 } else {
-    if ($Verbose) { Write-Output "vcvarsall was found at '$varsall'." }
+    Write-Debug "vcvarsall was found at '$varsall'."
 }
 
 $buildDir = "$PSScriptRoot\build"
 
 if ($SkipCleaning -Or $SkipPreClean) {
-    if ($Verbose) { Write-Output "Skipping pre cleaning" }
+    Write-Debug "Skipping pre cleaning"
     if (Test-Path $buildDir) {
         Remove-Item $buildDir -Force -Recurse
-        if ($Verbose) { Write-Output "Build dir removed" }
+        Write-Debug "Build dir removed"
     }
 } else {
     Invoke-Expression -Command "$PSScriptRoot\clean.ps1 $DeepCleanSwitch $VerboseSwitch"
@@ -54,32 +58,34 @@ if ($SkipCleaning -Or $SkipPreClean) {
 # Create the build folder
 if ($Verbose) {
     New-Item -Path $buildDir -ItemType "directory"
-    Write-Output "Build dir created"
 } else {
     $null = New-Item -Path $buildDir -ItemType "directory"
 }
+Write-Debug "Build dir created"
 
 # Build the framework (this is done via bat because of vcvarsall)
 $buildHelper = """$PSScriptRoot\build_helper.bat"" ""$varsall"" $WinSdk ""$qmake"" ""$jom"""
+Write-Debug "Start creating the framework: $buildHelper"
 if ($Verbose) {
-    Write-Output "Start creating the framework: " $buildHelper
     cmd.exe /c $buildHelper
-    Write-Output "Framework created"
 } else {
     $null = cmd.exe /c $buildHelper
 }
+Write-Debug "Framework created"
 
 # Copy the output to the build folder
 Copy-Item "$PSScriptRoot\bin\binarycreator.exe" $buildDir
 Copy-Item "$PSScriptRoot\bin\installerbase.exe" $buildDir
 
-if ($Verbose) { Write-Output "Framework output to build" }
+Write-Debug "Framework output to build"
 
 if ($SkipCleaning -Or $SkipPostClean) {
-    if ($Verbose) { Write-Output "Skipping post cleaning" }
+    Write-Debug "Skipping post cleaning"
 } else {
     Invoke-Expression -Command "$PSScriptRoot\clean.ps1 $DeepCleanSwitch $VerboseSwitch -SkipBuildDir"
 }
 
 Write-Output "---"
 Write-Output "Framework built successfully. You'll find it under \build"
+
+$DebugPreference = 'SilentlyContinue'

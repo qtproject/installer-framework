@@ -5,22 +5,26 @@ param
     [switch]$Verbose
 )
 
+if ($Verbose) {
+    $DebugPreference = 'Continue'
+}
+
 function RemoveDir ($dir) {
     if (Test-Path "$PSScriptRoot\$dir") {
         Remove-Item "$PSScriptRoot\$dir" -Force -Recurse
-        if ($Verbose) { Write-Output " -> d: $dir" }
+        Write-Debug " -> d: $dir"
     }
 }
 
 function RemoveFile ($file) {
     if (Test-Path "$PSScriptRoot\$file") {
         Remove-Item "$PSScriptRoot\$file" -Force
-        if ($Verbose) { Write-Output " -> f: $file" }
+        Write-Debug " -> f: $file"
     }
 }
 
-if ($Verbose) { Write-Output "Cleanup starting" }
-if ($Verbose) { Write-Output "Removing the following (f)iles and (d)irectories:" }
+Write-Debug "Cleanup starting"
+Write-Debug "Removing the following (f)iles and (d)irectories:"
 
 if (!$SkipBuildDir) { RemoveDir "build" }
 
@@ -42,11 +46,12 @@ foreach ($file in $baseFiles) {
     RemoveFile $file
 }
 
+# Remove the built translation files
+Get-ChildItem -Path "$PSScriptRoot\src\sdk\translations" *.qm | ForEach-Object { Remove-Item -Path $_.FullName -Force }
+
 if ($DeepClean) {
-    if ($Verbose) {
-        Write-Output "---"
-        Write-Output "Removing additional (f)iles and (d)irectories since -DeepClean was provided:"
-    }
+    Write-Debug "---"
+    Write-Debug "Removing additional (f)iles and (d)irectories since -DeepClean was provided:"
 
     $sources = "libs\7zip", "libs\installer", "sdk", "sdk\translations"
     $tools = "archivegen", "binarycreator", "devtool", "repocompare", "repogen"
@@ -86,5 +91,7 @@ if ($DeepClean) {
     }
 }
 
-if ($Verbose) { Write-Output "---" }
-if ($Verbose) { Write-Output "Cleanup completed" }
+Write-Debug "---"
+Write-Debug "Cleanup completed"
+
+$DebugPreference = 'SilentlyContinue'
