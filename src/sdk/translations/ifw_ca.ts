@@ -2507,4 +2507,38 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
         <translation>Ha fallat en canviar el nom del fitxer «%1» a «%2»: %3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN THE RIGHT PLACE FOR CA -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN CA -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
 </TS>

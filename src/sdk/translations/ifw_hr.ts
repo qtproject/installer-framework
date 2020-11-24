@@ -2465,4 +2465,44 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
         <translation>Već je pokrenuta jedna instanca za %1. Pričekaj da završi, zatvori je ili ponovo pokreni sustav.</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Instalacija će zauzeti otprilike %1 na tvom tvrdom disku.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN HR -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
 </TS>

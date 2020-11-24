@@ -2444,4 +2444,50 @@ come utente con i diritti appropriati, quindi fare clic su OK.</translation>
         <translation>Impossibile rinominare il file &quot;%1&quot; &quot;%2&quot;: %3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>L&apos;installazione utilizzerà %1 di spazio su disco.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
 </TS>
