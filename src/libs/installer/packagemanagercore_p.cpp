@@ -208,10 +208,18 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(nullptr)
     , m_compressedFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
+    , m_status(PackageManagerCore::Unfinished)
+    , m_needsHardRestart(false)
+    , m_testChecksum(false)
+    , m_launchedAsRoot(AdminAuthorization::hasAdminRights())
+    , m_completeUninstall(false)
+    , m_needToWriteMaintenanceTool(false)
+    , m_dependsOnLocalInstallerBinary(false)
     , m_core(core)
     , m_updates(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
+    , m_magicBinaryMarker(0) // initialize with pseudo marker
     , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(nullptr)
     , m_controlScriptEngine(nullptr)
@@ -2030,10 +2038,15 @@ bool PackageManagerCorePrivate::runningProcessesFound()
     //Check if there are processes running in the install
     QStringList excludeFiles = m_allowedRunningProcesses;
     excludeFiles.append(maintenanceToolName());
+
+    const QString performModeWarning = m_completeUninstall
+        ? QLatin1String("Unable to remove components.")
+        : QLatin1String("Unable to update components.");
+
     QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
     if (!runningProcesses.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerInstallLog).noquote() << "Unable to update components. Please stop these processes: "
-                 << runningProcesses << " and try again.";
+        qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << performModeWarning
+                 << " Please stop these processes: " << runningProcesses << " and try again.";
         return true;
     }
     return false;

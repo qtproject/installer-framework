@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 
 #include "packagemanagercore.h"
 #include "settings.h"
+#include "fileutils.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -74,6 +75,7 @@ bool LicenseOperation::performOperation()
 
     QDir dir;
     dir.mkpath(targetDir);
+    setDefaultFilePermissions(targetDir, DefaultFilePermissions::Executable);
     setArguments(QStringList(targetDir));
 
     for (QVariantMap::const_iterator it = licenses.constBegin(); it != licenses.constEnd(); ++it) {

@@ -169,7 +169,7 @@
 /*!
     \qmlmethod void gui::showFinishedPage()
 
-    Shows the next page.
+    Shows the InstallationFinished page.
 */
 
 /*!

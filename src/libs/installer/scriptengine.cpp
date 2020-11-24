@@ -511,7 +511,7 @@ QJSValue ScriptEngine::loadInContext(const QString &context, const QString &file
     // replacements of %1, %2 or %3 inside the javascript code.
     const QString scriptContent = QLatin1String("(function() {")
         + scriptInjection + QString::fromUtf8(file.readAll())
-        + QString::fromLatin1(";"
+        + QString::fromLatin1("\n"
         "    if (typeof %1 != \"undefined\")"
         "        return new %1;"
         "    else"

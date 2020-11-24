@@ -2424,6 +2424,7 @@ PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const
 */
 PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
 {
+    setCompleteUninstallation(true);
     if (d->runningProcessesFound())
         throw Error(tr("Running processes found."));
 
@@ -2432,7 +2433,6 @@ PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Uninstallation aborted.";
         return status();
     }
-    setCompleteUninstallation(true);
     if (run())
         return PackageManagerCore::Success;
     else

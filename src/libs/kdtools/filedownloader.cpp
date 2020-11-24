@@ -813,9 +813,9 @@ void KDUpdater::LocalFileDownloader::doDownload()
     QString localFile = this->url().toLocalFile();
     d->source = new QFile(localFile, this);
     if (!d->source->open(QFile::ReadOnly)) {
-        onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for reading: %2").arg(QFileInfo(localFile)
-            .fileName(), d->source ? d->source->errorString() : tr("File not found")));
+            .fileName(), d->source->errorString()));
+        onError();
         return;
     }
 
@@ -829,9 +829,9 @@ void KDUpdater::LocalFileDownloader::doDownload()
     }
 
     if (!d->destination->isOpen()) {
-        onError();
         setDownloadAborted(tr("Cannot open file \"%1\" for writing: %2")
             .arg(QFileInfo(d->destination->fileName()).fileName(), d->destination->errorString()));
+        onError();
         return;
     }
 
@@ -902,10 +902,10 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
             if (numWritten < 0) {
                 killTimer(d->timerId);
                 d->timerId = -1;
-                onError();
                 setDownloadAborted(tr("Writing to file \"%1\" failed: %2").arg(
                                        QDir::toNativeSeparators(d->destination->fileName()),
                                        d->destination->errorString()));
+                onError();
                 return;
             }
             toWrite -= numWritten;
@@ -1090,11 +1090,11 @@ void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() == d->timerId) {
         if (!d->destFile.isOpen()) {
-            onError();
             killTimer(d->timerId);
             emit downloadProgress(1);
             setDownloadAborted(tr("Cannot read resource file \"%1\": %2").arg(downloadedFileName(),
                 d->destFile.errorString()));
+            onError();
             return;
         }
 

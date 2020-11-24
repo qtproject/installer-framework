@@ -94,22 +94,22 @@ private slots:
 
         QLoggingCategory::setFilterRules(loggingRules);
 
-        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
+        QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("A")));
 
-        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
+        QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("AB")));
 
-        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
+        QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B")));
 
-        QTest::ignoreMessage(QtDebugMsg, "\"Preparing meta information download...\"");
+        QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("MissingComponent")));

@@ -1,3 +1,14 @@
+4.0.1
+- Enable HighDPI support in X11
+- Fix AppendFile undo (QTIFW-2020)
+- Repogen: Fix unite metadata when --repository switch used ( QTIFW-2018)
+- Docs: Fix doc on gui::showFinishedPage() (QTIFW-798)
+- Fix loading controller script with comment on last line (QTIFW-1062)
+- Fix segfault on file download error properly
+- Doc: Update command line interface reference
+- Obey stylesheet in SettingsDialog (QTIFW-1507)
+- CLI: Fix wrong warning text in command 'purge' for running processes (QTIFW-1996)
+
 4.0.0
 - Fix essential update (QTIFW-1970)
 - Print package id when running checkupdates (QTIFW-1972)

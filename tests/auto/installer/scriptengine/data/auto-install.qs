@@ -50,3 +50,5 @@ Controller.prototype.FinishedPageCallback = function()
 {
     print("FinishedPageCallback - OK")
 }
+
+// Trailing comment to exercise QTIFW-1062

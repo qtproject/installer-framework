@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2020 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -122,7 +122,8 @@ bool ExtractArchiveOperation::performOperation()
 
     QStringList files = callback.extractedFiles();
 
-    QString fileDirectory = targetDir + QLatin1String("/installerResources/") +
+    const QString resourcesPath = targetDir + QLatin1Char('/') + QLatin1String("installerResources");
+    QString fileDirectory = resourcesPath + QLatin1Char('/') +
             archivePath.section(QLatin1Char('/'), 1, 1, QString::SectionSkipEmpty) + QLatin1Char('/');
     QString archiveFileName = archivePath.section(QLatin1Char('/'), 2, 2, QString::SectionSkipEmpty);
     QFileInfo fileInfo2(archiveFileName);
@@ -136,6 +137,9 @@ bool ExtractArchiveOperation::performOperation()
     if (!dir.exists()) {
         dir.mkpath(targetDirectoryInfo.absolutePath());
     }
+    setDefaultFilePermissions(resourcesPath, DefaultFilePermissions::Executable);
+    setDefaultFilePermissions(targetDirectoryInfo.absolutePath(), DefaultFilePermissions::Executable);
+
     QFile file(targetDirectoryInfo.absolutePath() + QLatin1Char('/') + fileName);
     if (file.open(QIODevice::WriteOnly)) {
         setDefaultFilePermissions(file.fileName(), DefaultFilePermissions::NonExecutable);

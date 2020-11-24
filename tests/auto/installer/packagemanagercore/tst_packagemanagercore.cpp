@@ -321,10 +321,15 @@ private slots:
         QVERIFY(QDir().mkpath(testDirectory));
         core.setValue(scTargetDir, testDirectory);
 
-        const QString warningMessage =  QString("Unable to update components. Please stop these processes: ");
-        const QRegularExpression re(warningMessage);
-        QTest::ignoreMessage(QtWarningMsg, re);
+        const QString warningMessageUp =  QString("Unable to update components. Please stop these processes: ");
+        const QRegularExpression reUp(warningMessageUp);
+        QTest::ignoreMessage(QtWarningMsg, reUp);
         QVERIFY_EXCEPTION_THROWN(core.updateComponentsSilently(QStringList()), Error);
+
+        const QString warningMessageRm =  QString("Unable to remove components. Please stop these processes: ");
+        const QRegularExpression reRm(warningMessageRm);
+        QTest::ignoreMessage(QtWarningMsg, reRm);
+        QVERIFY_EXCEPTION_THROWN(core.removeInstallationSilently(), Error);
 
         QVERIFY(QDir().rmdir(testDirectory));
     }

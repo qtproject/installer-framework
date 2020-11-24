@@ -166,6 +166,23 @@ void TabController::restartWizard()
 void TabController::onSettingsButtonClicked()
 {
     SettingsDialog dialog(d->m_core);
+    // set custom stylesheet
+    const QString styleSheetFile = d->m_core->settings().styleSheet();
+    if (!styleSheetFile.isEmpty()) {
+        QFile sheet(styleSheetFile);
+        if (sheet.exists()) {
+            if (sheet.open(QIODevice::ReadOnly)) {
+                dialog.setStyleSheet(QString::fromLatin1(sheet.readAll()));
+            } else {
+                qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
+                    "can not be opened.";
+            }
+        } else {
+            qCWarning(QInstaller::lcDeveloperBuild) << "A style sheet file is specified, "
+                "but it does not exist.";
+        }
+    }
+
     connect(&dialog, &SettingsDialog::networkSettingsChanged,
             this, &TabController::onNetworkSettingsChanged);
     dialog.exec();

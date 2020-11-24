@@ -279,7 +279,11 @@ int main(int argc, char** argv)
         QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
         QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
             QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
-        QInstallerTools::compressMetaDirectories(tmpMetaDir, tmpMetaDir, pathToVersionMapping,
+
+        QString existing7z = QInstallerTools::existingUniteMeta7z(repositoryDir);
+        if (!existing7z.isEmpty())
+            existing7z = repositoryDir + QDir::separator() + existing7z;
+        QInstallerTools::compressMetaDirectories(tmpMetaDir, existing7z, pathToVersionMapping,
                                                  createComponentMetadata, createUnifiedMetadata);
 
         QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml"))

@@ -42,23 +42,24 @@ static const QLatin1String scInstallerValue("InstallerValue");
 CommandLineParser::CommandLineParser()
     : d(new CommandLineParserPrivate())
 {
+    static const QLatin1String indent("  ");
     static const QString preformatted = QLatin1String("\nQt Installer Framework supports both GUI and "
         "headless mode. The installation operations can be invoked with the following commands and "
         "options. Note that the options marked with \"CLI\" are available in the headless mode only.\n")
         + QLatin1String("\nCommands:\n")
-        + QString::fromLatin1("\t%1, %2 - install default or selected packages - <pkg1 pkg2 pkg3...>\n")
+        + indent + QString::fromLatin1("%1, %2 - install default or selected packages - <pkg ...>\n")
             .arg(CommandLineOptions::scInstallShort, CommandLineOptions::scInstallLong)
-        + QString::fromLatin1("\t%1, %2 - show available updates information on maintenance tool\n")
+        + indent + QString::fromLatin1("%1, %2 - show available updates information on maintenance tool\n")
             .arg(CommandLineOptions::scCheckUpdatesShort, CommandLineOptions::scCheckUpdatesLong)
-        + QString::fromLatin1("\t%1, %2 - update all or selected packages - <pkg1 pkg2 pkg3...>\n")
+        + indent + QString::fromLatin1("%1, %2 - update all or selected packages - <pkg ...>\n")
             .arg(CommandLineOptions::scUpdateShort, CommandLineOptions::scUpdateLong)
-        + QString::fromLatin1("\t%1, %2 - uninstall packages and their child components - <pkg1 pkg2 pkg3...>\n")
+        + indent + QString::fromLatin1("%1, %2 - uninstall packages and their child components - <pkg ...>\n")
             .arg(CommandLineOptions::scRemoveShort, CommandLineOptions::scRemoveLong)
-        + QString::fromLatin1("\t%1, %2 - list currently installed packages - <regexp>\n")
+        + indent + QString::fromLatin1("%1, %2 - list currently installed packages - <regexp>\n")
             .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
-        + QString::fromLatin1("\t%1, %2 - search available packages - <regexp>\n")
+        + indent + QString::fromLatin1("%1, %2 - search available packages - <regexp>\n")
             .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong)
-        + QString::fromLatin1("\t%1, %2 - uninstall all packages and remove entire program directory")
+        + indent + QString::fromLatin1("%1, %2 - uninstall all packages and remove entire program directory")
             .arg(CommandLineOptions::scPurgeShort, CommandLineOptions::scPurgeLong);
 
     m_parser.setApplicationDescription(preformatted);
