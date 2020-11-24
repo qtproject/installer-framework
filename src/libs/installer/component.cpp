@@ -587,10 +587,15 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
     QDirIterator it(directory.path(), qms, QDir::Files);
     const QStringList translations = d->m_core->settings().translations();
     const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en"));
+    const bool isChinaInstaller = d->m_core->settings().isChinaInstaller();
+    const QString chineese = QLatin1String("zh");
     while (it.hasNext()) {
         const QString filename = it.next();
         const QString basename = QFileInfo(filename).baseName();
-        if (!uiLanguage.startsWith(QFileInfo(filename).baseName(), Qt::CaseInsensitive))
+        if (isChinaInstaller && !chineese.startsWith(basename, Qt::CaseInsensitive))
+            continue; // do not load the file if it does not match Chineese
+
+        if (!isChinaInstaller && !uiLanguage.startsWith(basename, Qt::CaseInsensitive))
             continue; // do not load the file if it does not match the UI language
 
         if (!translations.isEmpty()) {

@@ -160,6 +160,7 @@ public:
     QString controlScript() const;
 
     bool supportsModify() const;
+    bool isChinaInstaller() const;
 
     bool allowUnstableComponents() const;
     void setAllowUnstableComponents(bool allow);
