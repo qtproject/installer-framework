@@ -2492,71 +2492,30 @@ as a user with the appropriate rights and then clicking OK.</source>
 
 <!--
   ==============================================================================================
-  === | START | qt_zh_CN.ts | 2019.08.23 | 50 lines | ==========================================
+  === | START | QInstaller::PackageManagerCorePrivate | ========================================
   ==============================================================================================
-  These should have come from QT. The Chinese translations came from qt_zh_CN while the
-  German translations are in qtbase_de. No idea why there is no qtbase_zh_CN.
-  https://code.qt.io/cgit/qt/qttranslations.git/tree/translations/qt_zh_CN.ts
+  Here we are providing translations for the text that is shown on the perform installation
+  page of the installer, both below the progress bar, and inside the details view.
+  NOTE that the enter here is intentional as it is a part of the text that is matched
+  and we want to keep it in the translated text as well.
   ==============================================================================================
-- ->
+-->
 <context>
-    <name>QWizard</name>
+    <name>QInstaller::PackageManagerCorePrivate</name>
     <message>
-        <source>Go Back</source>
-        <translation>返回</translation>
-    </message>
-    <message>
-        <source>Continue</source>
-        <translation>继续</translation>
-    </message>
-    <message>
-        <source>Commit</source>
-        <translation>提交</translation>
+        <source>
+Installing component %1...</source>
+        <translation>
+正在安装组件 %1...</translation>
     </message>
     <message>
         <source>Done</source>
         <translation>完成</translation>
     </message>
-    <message>
-        <source>Quit</source>
-        <translation type="obsolete">退出</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation>帮助</translation>
-    </message>
-    <message>
-        <source>&lt; &amp;Back</source>
-        <translation>&lt; 上一步(&amp;B)</translation>
-    </message>
-    <message>
-        <source>&amp;Finish</source>
-        <translation>完成(&amp;F)</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>取消</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation>帮助(&amp;H)</translation>
-    </message>
-    <message>
-        <source>&amp;Next</source>
-        <translation>下一步(&amp;N)</translation>
-    </message>
-    <message>
-        <source>&amp;Next &gt;</source>
-        <translation>下一步(&amp;N) &gt;</translation>
-    </message>
 </context>
-<!- -
+<!--
   ==============================================================================================
-  === | END | qt_zh_CN.ts | 2019.08.23 | 50 lines | ============================================
+  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
   ==============================================================================================
 -->
 
@@ -2593,63 +2552,6 @@ as a user with the appropriate rights and then clicking OK.</source>
 <!--
   ==============================================================================================
   === | END | QPlatformTheme | =================================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
-  === | START | SettingsDialog | ===============================================================
-  ==============================================================================================
-  The SettingsDialog is a part of the QT IFW, and is included in the QT IFW code here above,
-  however it is missing translations for the following two buttons.
-  There translations are copied from QInstaller::ComponentSelectionPage here above.
-  ==============================================================================================
-- ->
-<context>
-    <name>SettingsDialog</name>
-    <message>
-        <source>Select All</source>
-        <translation>全选(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>取消全选(&amp;D)</translation>
-    </message>
-</context>
-<!- -
-  ==============================================================================================
-  === | END | SettingsDialog | =================================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
-  === | START | QInstaller::PackageManagerCorePrivate | ========================================
-  ==============================================================================================
-  Here we are providing translations for the text that is shown on the perform installation
-  page of the installer, both below the progress bar, and inside the details view.
-  NOTE that the enter here is intentional as it is a part of the text that is matched
-  and we want to keep it in the translated text as well.
-  ==============================================================================================
-- ->
-<context>
-    <name>QInstaller::PackageManagerCorePrivate</name>
-    <message>
-        <source>
-Installing component %1...</source>
-        <translation>
-正在安装组件 %1...</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation>完成</translation>
-    </message>
-</context>
-<!- -
-  ==============================================================================================
-  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
   ==============================================================================================
 -->
 

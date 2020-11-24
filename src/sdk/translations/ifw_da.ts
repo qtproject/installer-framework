@@ -2509,4 +2509,34 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
 -->
 
 
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCorePrivate | ========================================
+  ==============================================================================================
+  Here we are providing translations for the text that is shown on the perform installation
+  page of the installer, both below the progress bar, and inside the details view.
+  NOTE that the enter here is intentional as it is a part of the text that is matched
+  and we want to keep it in the translated text as well.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCorePrivate</name>
+    <message>
+        <source>
+Installing component %1...</source>
+        <translation>
+Installerer komponenten %1...</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Færdig</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
 </TS>
