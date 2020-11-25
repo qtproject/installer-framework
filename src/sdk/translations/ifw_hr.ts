@@ -2465,4 +2465,211 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
         <translation>Već je pokrenuta jedna instanca za %1. Pričekaj da završi, zatvori je ili ponovo pokreni sustav.</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Postavljanje – %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Dobrodošli u čarobnjak postavaka za %1.</translation>
+    </message>
+    <message>
+        <source>Add or remove components</source>
+        <translation>Dodaj ili ukloni komponente</translation>
+    </message>
+    <message>
+        <source>Update components</source>
+        <translation>Aktualiziraj komponente</translation>
+    </message>
+    <message>
+        <source>Remove all components</source>
+        <translation>Ukloni sve komponente</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>Dohvaćanje podataka s udaljenih izvornih instalacija …</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Za uspjeh ove radnje, potrebno je barem jedno valjano i aktivirano spremište.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>Nema dostupnih nadogradnja.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Dostupno je samo lokalno upravljanje paketima.</translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Zatvori</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>Dei&amp;nstaliraj</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Spremno za deinstaliranje</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>Postavljanje je sad spremno za uklanjanje %1 s računala.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Mapa programa %2 će se potpuno izbrisati&lt;/font&gt;, uključujući sav sadržaj mape!</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>&amp;Aktualiziraj</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Spremno za aktualiziranje paketa</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>Postavljanje je sad spremno za aktualiziranje tvoje instalacije.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Instaliraj</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Spremno za instaliranje</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>Postavljanje je sad spremno za instaliranje %1 na tvoje računalo.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>Nedovoljno mjesta na disku za spremanje privremenih datoteka i instalacije. Dostupno %1, barem potrebno %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>Nedovoljno mjesta na disku za spremanje odabranih komponenata. Dostupno %1, barem potrebno %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>Nedovoljno mjesta na disku za spremanje privremenih datoteka! Dostupno %1, barem potrebno %2.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>Instalacija je moguća na odabranom mjestu, ali preostat će ti manje od 1 % memorije na disku. %1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>Instalacija je moguća na odabranom mjestu, ali preostat će ti manje od 100 MB memorije na disku. %1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Instalacija će zauzeti otprilike %1 na tvom tvrdom disku.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Mapa za instaliranje</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Odredi mapu, gdje će se %1 instalirati.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>P&amp;retraži …</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Odabrana mapa već postoji i sadrži instalaciju. Odaberi drugo odredište za instalaciju.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Odabran je postojeća, neprazna mapa za instalaciju.
+Imaj na umu da će biti potpuno izbrisana prilikom deinstaliranja ove aplikacije.
+Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
+Želiš li nastaviti?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Odabrana je postojeća datoteka ili symlink, za instaliranje odaberi neko drugo odredište.</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Odaberi mapu za instaliranje</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Staza instalacije ne smije biti prazna. Odredi valjanu mapu.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Staza instalacije ne smije biti relativna. Odredi apsolutnu stazu.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>Staza ili mapa instalacije sadrži ASCII znakove. Ovo trenutno nije podržano! Odaberi neku drugu stazu ili mapu.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Budući da je mapa instalacije potpuno izbrisana, instaliranje u %1 je zabranjeno.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Unešena staza je predugačka. Unesi valjanu stazu.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Unešena staza nije valjana. Unesi valjanu stazu.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Unešena staza nije valjana. Unesi valjani disk.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Staza instalacije ne smije završiti s točkom. Odredi valjanu mapu.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Staza instalacije ne smije sadržavati &quot;%1&quot;. Odredi valjanu mapu.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Upozorenje</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Greška</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
+  ==============================================================================================
+-->
+
+
 </TS>

@@ -2444,4 +2444,211 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
         <translation>Error al cambiar el nombre de archivo de &quot;%1&quot; a &quot;%2&quot;: %3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Programa de instalación - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Bienvenido al Asistente de instalación de %1.</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>Agregar o quitar componentes</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>Actualizar componentes</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>Quitar todos los componentes</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>Recuperando información de fuentes de instalación remotas...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Se requiere al menos un repositorio válido y habilitado para que esta acción se realice correctamente.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>No hay actualizaciones disponibles.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Solo está disponible la administración de paquetes locales.</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>Salir</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>Desi&amp;nstalar</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Preparado para desinstalar</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>El programa de instalación está preparado para empezar a eliminar %1 del equipo.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directorio del programa %2 se eliminará completamente&lt;/font&gt;, incluido todo el contenido del directorio.</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>Actu&amp;alizar</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Preparado para actualizar paquetes</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>El programa de instalación está preparado para empezar a actualizar la instalación.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Instalar</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Preparado para instalar</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>El programa de instalación está preparado para empezar a instalar %1 en su equipo.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>No hay suficiente espacio en disco para almacenar los archivos temporales y la instalación. Se dispone de %1 y se requiere al menos un espacio de %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>No hay suficiente espacio en disco para almacenar todos los componentes seleccionados. Se dispone de %1 y se requiere al menos un espacio de %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>No hay suficiente espacio en disco para almacenar los archivos temporales. Se dispone de %1 y se requiere al menos un espacio de %2.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>El volumen que ha seleccionado para la instalación parece tener suficiente espacio para la instalación, pero después quedará menos del 1% del espacio disponible. %1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>El volumen que ha seleccionado para la instalación parece tener suficiente espacio para la instalación, pero después quedarán menos de 100 MB disponibles. %1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>La instalación usará %1 de espacio de disco.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Carpeta de instalación</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Especifique el directorio en el que se instalará %1.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>Examina&amp;r...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>El directorio que ha seleccionado ya existe y contiene una instalación. Elija otro destino para la instalación.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Ha seleccionado un directorio existente y no vacío para la instalación.
+Tenga en cuenta que se eliminará por completo al desinstalar esta aplicación.
+No es recomendable instalar en este directorio, ya que la instalación podría generar un error.
+¿Desea continuar?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Ha seleccionado un archivo o un symlink existente. Elija un destino diferente para la instalación.</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Seleccionar carpeta de instalación</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>La ruta de instalación no puede estar vacía. Especifique un directorio válido.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>La ruta de instalación no puede ser relativa. Especifique una ruta absoluta.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>La ruta o el directorio de instalación contiene caracteres que no son ASCII. Esto no es compatible actualmente. Elija una ruta o un directorio de instalación diferente.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Puesto que el directorio de instalación se ha eliminado por completo, está prohibido instalar en %1.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>La ruta que ha introducido es demasiado larga. Debe especificar una ruta válida.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>La ruta que ha introducido no es válida. Debe especificar un destino válido.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>La ruta que ha introducido no es válida. Debe especificar una unidad válida.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>La ruta de instalación no debe terminar con &apos;.&apos;. Especifique un directorio válido.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>La ruta de instalación no debe contener &quot;%1&quot;. Especifique un directorio válido.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Advertencia</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
+  ==============================================================================================
+-->
+
+
 </TS>

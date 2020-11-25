@@ -2507,4 +2507,187 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
         <translation>Ha fallat en canviar el nom del fitxer «%1» a «%2»: %3</translation>
     </message>
 </context>
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Programa d&apos;instal·lació: %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Us donem la benvinguda a l&apos;Assistent de configuració de %1.</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>&amp;Afegeix o elimina els components</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>Act&amp;ualitza els components</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>E&amp;limina tots els components</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>S&apos;està recuperant la informació des de les fonts d&apos;instal·lació remotes...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Es requereix almenys un repositori vàlid i habilitat per a que aquesta acció es realitzi correctament.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>No hi ha disponible cap actualització.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Només està disponible la gestió dels paquets locals.</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>Su&amp;rt</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>Desi&amp;nstal·la</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Llest per a desinstal·lar</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>El programa d&apos;instal·lació està preparat per a començar a eliminar %1 de l&apos;ordinador.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directori del programa %2 se suprimirà completament&lt;/font&gt;, incloent tot el contingut d&apos;aquest directori.</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>A&amp;ctualitza</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Llest per a actualitzar els paquets</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>El programa d&apos;instal·lació està preparat per a començar a actualitzar la vostra instal·lació.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Instal·la</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Llest per a instal·lar</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>El programa d&apos;instal·lació està preparat per a començar a instal·lar %1 en el vostre ordinador.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Carpeta d&apos;instal·lació</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Especifiqueu el directori en el que s&apos;instal·larà %1.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+X</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>E&amp;xplora...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>El directori que heu seleccionat ja existeix i conté una instal·lació. Trieu una altra destinació per a la instal·lació.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Heu seleccionat un directori existent i no buit per a la instal·lació.
+Tingueu en compte que s&apos;esborrarà del tot en desinstal·lar aquesta aplicació.
+No és recomanable instal·lar en aquest directori, ja que la instal·lació podria generar un error.
+Voleu continuar?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Heu seleccionat un fitxer o un enllaç simbòlic existent. Trieu una destinació diferent per a la instal·lació.</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Selecciona la carpeta d&apos;instal·lació</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>El camí d&apos;instal·lació no pot estar buit, especifiqueu un directori vàlid.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>El camí d&apos;instal·lació no pot ser relatiu, especifiqueu un camí absolut.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>El camí o el directori d&apos;instal·lació conté caràcters que no són ASCII. Això no està admès actualment! Trieu un camí o un directori d&apos;instal·lació diferent.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Ja que el directori d&apos;instal·lació s&apos;ha suprimit per complet, està prohibit instal·lar a %1.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>El camí que heu introduït és massa llarg. Haureu d&apos;especificar un camí vàlid.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>El camí que heu introduït no és vàlid. Haureu d&apos;especificar una destinació vàlida.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>El camí que heu introduït no és vàlid. Haureu d&apos;especificar una unitat vàlida.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>El camí d&apos;instal·lació no haurà de finalitzar amb «.». Especifiqueu un directori vàlid.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>El camí d&apos;instal·lació no haurà de contenir «%1». Especifiqueu un directori vàlid.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Avís</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
+  ==============================================================================================
+-->
+
+
 </TS>
