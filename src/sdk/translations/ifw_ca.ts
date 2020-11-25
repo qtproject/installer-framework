@@ -2511,6 +2511,64 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN THE RIGHT PLACE FOR CA -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN CA -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCorePrivate | ========================================
+  ==============================================================================================
+  Here we are providing translations for the text that is shown on the perform installation
+  page of the installer, both below the progress bar, and inside the details view.
+  NOTE that the enter here is intentional as it is a part of the text that is matched
+  and we want to keep it in the translated text as well.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCorePrivate</name>
+    <message>
+        <source>
+Installing component %1...</source>
+        <translation>
+S&apos;instal·la el component %1...</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the

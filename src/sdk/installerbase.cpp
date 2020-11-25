@@ -276,37 +276,59 @@ int InstallerBase::run()
     // to easily provide corrected translations to Qt/IFW for their installers
     const QString newDirectory = QLatin1String(":/translations_new");
     const QStringList translations = m_core->settings().translations();
+    const bool isChinaInstaller = m_core->settings().isChinaInstaller();
 
-    if (translations.isEmpty()) {
-        foreach (const QLocale locale, QLocale().uiLanguages()) {
-            QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
-            bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
-                                              QLatin1String("_"), newDirectory);
-            if (!qtLoaded)
-                qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
-                                              QLatin1String("_"), directory);
+    if (isChinaInstaller) {
+        QLocale locale = QLocale::Chinese;
+        QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
+        bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                        QLatin1String("_"), newDirectory);
+        if (!qtLoaded)
+            qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                        QLatin1String("_"), directory);
 
-            if (qtLoaded || locale.language() == QLocale::English) {
-                if (qtLoaded)
-                    QCoreApplication::instance()->installTranslator(qtTranslator.take());
-
-                QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
-                bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
-                if (!ifwLoaded)
-                    ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
-                if (ifwLoaded)
-                    QCoreApplication::instance()->installTranslator(ifwTranslator.take());
-
-                // To stop loading other translations it's sufficient that
-                // qt was loaded successfully or we hit English as system language
-                break;
-            }
+        if (qtLoaded) {
+            QCoreApplication::instance()->installTranslator(qtTranslator.take());
         }
+
+        QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
+        bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
+        if (!ifwLoaded)
+            ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
+        if (ifwLoaded)
+            QCoreApplication::instance()->installTranslator(ifwTranslator.take());
     } else {
-        foreach (const QString &translation, translations) {
-            QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
-            if (translator->load(translation, QLatin1String(":/translations")))
-                QCoreApplication::instance()->installTranslator(translator.take());
+        if (translations.isEmpty()) {
+            foreach (const QLocale locale, QLocale().uiLanguages()) {
+                QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
+                bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                                QLatin1String("_"), newDirectory);
+                if (!qtLoaded)
+                    qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                                QLatin1String("_"), directory);
+
+                if (qtLoaded || locale.language() == QLocale::English) {
+                    if (qtLoaded)
+                        QCoreApplication::instance()->installTranslator(qtTranslator.take());
+
+                    QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
+                    bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
+                    if (!ifwLoaded)
+                        ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
+                    if (ifwLoaded)
+                        QCoreApplication::instance()->installTranslator(ifwTranslator.take());
+
+                    // To stop loading other translations it's sufficient that
+                    // qt was loaded successfully or we hit English as system language
+                    break;
+                }
+            }
+        } else {
+            foreach (const QString &translation, translations) {
+                QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
+                if (translator->load(translation, QLatin1String(":/translations")))
+                    QCoreApplication::instance()->installTranslator(translator.take());
+            }
         }
     }
 
