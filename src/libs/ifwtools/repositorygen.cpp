@@ -134,7 +134,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
     if (!QFile::exists(targetDir))
         QInstaller::mkpath(targetDir);
 
-    bool componentMetaExtracted = false;
     QDomDocument doc;
     QDomElement root;
     QFile existingUpdatesXml(QFileInfo(metaDataDir, QLatin1String("Updates.xml")).absoluteFilePath());
@@ -387,7 +386,6 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                 QFile metaFile(info.metaFile);
                 QInstaller::openForRead(&metaFile);
                 Lib7z::extractArchive(&metaFile, targetDir);
-                componentMetaExtracted = true;
             }
 
             // Restore "PackageUpdate" node;
@@ -400,12 +398,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         }
     }
 
-    if (!componentMetaExtracted) {
-        foreach (const QString uniteMetadata, uniteMetadatas) {
-            QFile metaFile(QFileInfo(metaDataDir, uniteMetadata).absoluteFilePath());
-            QInstaller::openForRead(&metaFile);
-            Lib7z::extractArchive(&metaFile, targetDir);
-        }
+    // Packages can be in repositories using different meta formats,
+    // always extract unified meta if given as argument.
+    foreach (const QString uniteMetadata, uniteMetadatas) {
+        QFile metaFile(QFileInfo(metaDataDir, uniteMetadata).absoluteFilePath());
+        QInstaller::openForRead(&metaFile);
+        Lib7z::extractArchive(&metaFile, targetDir);
     }
 
     doc.appendChild(root);
@@ -572,6 +570,14 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                 "Invalid content in \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
         }
 
+        bool hasUnifiedMetaFile = false;
+        const QDomElement unifiedSha1 = root.firstChildElement(scSHA1);
+        const QDomElement unifiedMetaName = root.firstChildElement(QLatin1String("MetadataName"));
+
+        // Unified metadata takes priority over component metadata
+        if (!unifiedSha1.isNull() && !unifiedMetaName.isNull())
+            hasUnifiedMetaFile = true;
+
         const QDomNodeList children = root.childNodes();
         for (int i = 0; i < children.count(); ++i) {
             const QDomElement el = children.at(i).toElement();
@@ -600,10 +606,18 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                     continue;
 
                 info.directory = QString::fromLatin1("%1/%2").arg(it->filePath(), info.name);
-                const QDomElement sha1 = el.firstChildElement(QInstaller::scSHA1);
-                if (!sha1.isNull()) {
-                    info.metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
-                        QString::fromLatin1("meta.7z"), info.version);
+                if (!hasUnifiedMetaFile) {
+                    const QDomElement sha1 = el.firstChildElement(QInstaller::scSHA1);
+                    if (!sha1.isNull()) {
+                        QString metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
+                            QString::fromLatin1("meta.7z"), info.version);
+
+                        if (!QFileInfo(metaFile).exists()) {
+                            throw QInstaller::Error(QString::fromLatin1("Could not find meta archive for component "
+                                "%1 %2 in repository %3.").arg(info.name, info.version, it->filePath()));
+                        }
+                        info.metaFile = metaFile;
+                    }
                 }
 
                 const QDomNodeList c2 = el.childNodes();

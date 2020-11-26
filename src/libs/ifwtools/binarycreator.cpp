@@ -748,6 +748,7 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
         // Note: the order here is important
 
         PackageInfoVector packages;
+        QStringList unite7zFiles;
 
         // 1; update the list of available compressed packages
         if (!args.repositoryDirectories.isEmpty()) {
@@ -756,6 +757,14 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
                 &args.filteredPackages, args.ftype);
             // 1.2; add to common vector
             packages.append(precompressedPackages);
+            // 1.3; create list of unified metadata archives
+            foreach (const QString &dir, args.repositoryDirectories) {
+                QDirIterator it(dir, QStringList(QLatin1String("*_meta.7z")), QDir::Files | QDir::CaseSensitive);
+                while (it.hasNext()) {
+                    it.next();
+                    unite7zFiles.append(it.fileInfo().absoluteFilePath());
+                }
+            }
         }
 
         // 2; update the list of available prepared packages
@@ -773,7 +782,7 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
 
         // 3; copy the meta data of the available packages, generate Updates.xml
         copyMetaData(tmpMetaDir, tmpRepoDir, packages, settings
-            .applicationName(), settings.version(), QStringList());
+            .applicationName(), settings.version(), unite7zFiles);
 
         // 4; copy the configuration file and and icons etc.
         copyConfigData(args.configFile, tmpMetaDir + QLatin1String("/installer-config"));
