@@ -1751,13 +1751,13 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     , m_allPackagesFetched(false)
     , m_localPackagesTreeFetched(false)
     , m_label(nullptr)
+    , m_redistLabel(nullptr)
     , m_msgLabel(nullptr)
     , m_dirLabel(nullptr)
     , m_spaceLabel(nullptr)
     , m_errorLabel(nullptr)
     , m_progressBar(nullptr)
     , m_browseButton(nullptr)
-    , m_redistLabel(nullptr)
 {
     setObjectName(QLatin1String("CustomIntroductionPage"));
     setColoredTitle(tr("Setup - %1").arg(productName()));
@@ -1816,6 +1816,7 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_errorLabel = new QLabel(this);
+    m_errorLabel->setStyleSheet(QLatin1String("QLabel { color : red; }"));
     m_errorLabel->setWordWrap(true);
     boxLayout->addWidget(m_errorLabel);
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
