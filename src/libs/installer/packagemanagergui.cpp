@@ -1933,6 +1933,7 @@ void CustomIntroductionPage::setTargetDir(const QString &dirName)
     }
 
     m_dirLabel->setText(finalName);
+    validatePage();
 }
 
 /*!
