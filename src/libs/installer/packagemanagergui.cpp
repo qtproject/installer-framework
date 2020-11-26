@@ -1768,61 +1768,64 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    m_msgLabel->setText(tr("Welcome to the custom %1 Setup Wizard.").arg(productName()));
+    // m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("Please specify the directory where %1 will be installed.").arg(productName()));
+    layout->addWidget(m_msgLabel);
 
-    QWidget *widget = new QWidget(this);
-    QVBoxLayout *boxLayout = new QVBoxLayout(widget);
-
-    // Install redists...?
-    m_redistLabel = new QLabel(this);
-    m_redistLabel->setWordWrap(true);
-    m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
-    boxLayout->addWidget(m_redistLabel);
-
-    // Target dir: Browse button
-    m_browseButton = new QPushButton(this);
-    m_browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
-    connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
-    m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
-    m_browseButton->setText(tr("B&rowse..."));
-    boxLayout->addWidget(m_browseButton);
+    QHBoxLayout *hlayout = new QHBoxLayout;
 
     // Target dir: Install path label
     m_dirLabel = new QLabel(this);
     m_dirLabel->setWordWrap(true);
     m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
-    boxLayout->addWidget(m_dirLabel);
+    hlayout->addWidget(m_dirLabel);
 
-    // Space requirements: labelm_msgLabel->setWordWrap(true);
+    // Target dir: Browse button
+    m_browseButton = new QPushButton(this);
+    m_browseButton->setMaximumWidth(100);
+    m_browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
+    connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
+    m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    m_browseButton->setText(tr("B&rowse..."));
+    hlayout->addWidget(m_browseButton);
+
+    layout->addLayout(hlayout);
+
+
+    // Install redists
+    m_redistLabel = new QLabel(this);
+    m_redistLabel->setWordWrap(true);
+    m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
+    layout->addWidget(m_redistLabel);
+
+    // Space requirements
     m_spaceLabel = new QLabel(this);
     m_spaceLabel->setWordWrap(true);
     m_spaceLabel->setObjectName(QLatin1String("SpaceLabel"));
     m_spaceLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    boxLayout->addWidget(m_spaceLabel);
+    layout->addWidget(m_spaceLabel);
 
-    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_label = new QLabel(this);
     m_label->setWordWrap(true);
     m_label->setObjectName(QLatin1String("InformationLabel"));
     m_label->setText(tr("Retrieving information from remote installation sources..."));
-    boxLayout->addWidget(m_label);
+    layout->addWidget(m_label);
 
     m_progressBar = new QProgressBar(this);
     m_progressBar->setRange(0, 0);
-    boxLayout->addWidget(m_progressBar);
     m_progressBar->setObjectName(QLatin1String("InformationProgressBar"));
+    layout->addWidget(m_progressBar);
 
-    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_errorLabel = new QLabel(this);
     m_errorLabel->setStyleSheet(QLatin1String("QLabel { color : red; }"));
     m_errorLabel->setWordWrap(true);
-    boxLayout->addWidget(m_errorLabel);
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
+    layout->addWidget(m_errorLabel);
 
-    layout->addWidget(m_msgLabel);
-    layout->addWidget(widget);
     layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     core->setCompleteUninstallation(core->isUninstaller());
@@ -2160,6 +2163,7 @@ void CustomIntroductionPage::showMetaInfoUpdate()
 void CustomIntroductionPage::showInstallerInformation()
 {
     showWidgets(false);
+    m_msgLabel->setVisible(true);
     m_dirLabel->setVisible(true);
     m_spaceLabel->setVisible(true);
     m_browseButton->setVisible(true);
@@ -2325,7 +2329,8 @@ void CustomIntroductionPage::entering()
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
     if (installRedistText == QLatin1String("true")) {
-        m_redistLabel->setText(tr("Installing redists."));
+        m_redistLabel->setText(tr("Your system is missing C++ runtime that is needed to run the EVE Launcher, "
+        "so the missing runtime will be installed on your computer as part of the installation."));
     } else {
         m_redistLabel->setVisible(false);
     }
