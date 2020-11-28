@@ -2601,6 +2601,16 @@ bool PackageManagerCore::useCustomIntroductionPage() const
 }
 
 /*!
+    Returns \c true if loading packages before showing introduction page.
+
+    \sa {installer::preloadPackages}{installer.preloadPackages}
+*/
+bool PackageManagerCore::preloadPackages() const
+{
+    return d->preloadPackages();
+}
+
+/*!
     \sa {installer::setUninstaller}{installer.setUninstaller}
     \sa isUninstaller(), setUpdater(), setPackageManager()
 */

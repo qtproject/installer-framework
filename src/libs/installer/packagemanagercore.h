@@ -224,6 +224,7 @@ public:
     Q_INVOKABLE bool isInstaller() const;
     Q_INVOKABLE bool isOfflineOnly() const;
     Q_INVOKABLE bool useCustomIntroductionPage() const;
+    Q_INVOKABLE bool preloadPackages() const;
 
     Q_INVOKABLE void setUninstaller();
     Q_INVOKABLE bool isUninstaller() const;

@@ -635,6 +635,12 @@ bool PackageManagerCorePrivate::useCustomIntroductionPage() const
     return confInternal.value(QLatin1String("customIntroductionPage"), false).toBool();
 }
 
+bool PackageManagerCorePrivate::preloadPackages() const
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(QLatin1String("preloadPackages"), false).toBool();
+}
+
 QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();

@@ -657,6 +657,8 @@ static void printUsage()
     std::cout << "  -xi|--custom-intro        Forces the installer to use the custom introduction page" << std::endl;
     std::cout << "                            If this parameter is not given, the standard page is used" << std::endl;
 
+    std::cout << "  -xp|--preload-packages    Preload all packages before displaying anything " << std::endl;
+
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
@@ -787,6 +789,7 @@ int main(int argc, char **argv)
     bool onlineOnly = false;
     bool offlineOnly = false;
     bool customIntroductionPage = false;
+    bool preloadPackages = false;
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
@@ -849,6 +852,8 @@ int main(int argc, char **argv)
             offlineOnly = true;
         } else if (*it == QLatin1String("-xi") || *it == QLatin1String("--custom-intro")) {
             customIntroductionPage = true;
+        } else if (*it == QLatin1String("-xp") || *it == QLatin1String("--preload-packages")) {
+            preloadPackages = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
@@ -992,6 +997,8 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
             // assume standard introduction page if --custom-intro not set
             confInternal.setValue(QLatin1String("customIntroductionPage"), customIntroductionPage);
+            // assume no preloading if --preload-packages not set
+            confInternal.setValue(QLatin1String("preloadPackages"), preloadPackages);
         }
 
 #ifdef Q_OS_MACOS

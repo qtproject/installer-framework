@@ -87,6 +87,7 @@ public:
     bool isOfflineOnly() const;
 
     bool useCustomIntroductionPage() const;
+    bool preloadPackages() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());
