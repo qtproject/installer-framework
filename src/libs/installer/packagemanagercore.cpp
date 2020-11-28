@@ -2591,6 +2591,16 @@ bool PackageManagerCore::isOfflineOnly() const
 }
 
 /*!
+    Returns \c true if using the custom introduction page.
+
+    \sa {installer::useCustomIntroductionPage}{installer.useCustomIntroductionPage}
+*/
+bool PackageManagerCore::useCustomIntroductionPage() const
+{
+    return d->useCustomIntroductionPage();
+}
+
+/*!
     \sa {installer::setUninstaller}{installer.setUninstaller}
     \sa isUninstaller(), setUpdater(), setPackageManager()
 */

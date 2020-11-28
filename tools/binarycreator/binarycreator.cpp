@@ -654,6 +654,9 @@ static void printUsage()
     std::cout << "  -f|--offline-only         Forces the installer to act as an offline installer, " << std::endl;
     std::cout << "                             i.e. never access online repositories" << std::endl;
 
+    std::cout << "  -xi|--custom-intro        Forces the installer to use the custom introduction page" << std::endl;
+    std::cout << "                            If this parameter is not given, the standard page is used" << std::endl;
+
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
@@ -783,6 +786,7 @@ int main(int argc, char **argv)
     QStringList repositoryDirectories;
     bool onlineOnly = false;
     bool offlineOnly = false;
+    bool customIntroductionPage = false;
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
@@ -843,6 +847,8 @@ int main(int argc, char **argv)
             onlineOnly = true;
         } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {
             offlineOnly = true;
+        } else if (*it == QLatin1String("-xi") || *it == QLatin1String("--custom-intro")) {
+            customIntroductionPage = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
@@ -984,6 +990,8 @@ int main(int argc, char **argv)
             if (onlineOnly)
                 offlineOnly = !onlineOnly;
             confInternal.setValue(QLatin1String("offlineOnly"), offlineOnly);
+            // assume standard introduction page if --custom-intro not set
+            confInternal.setValue(QLatin1String("customIntroductionPage"), customIntroductionPage);
         }
 
 #ifdef Q_OS_MACOS

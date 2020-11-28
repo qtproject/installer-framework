@@ -629,6 +629,12 @@ bool PackageManagerCorePrivate::isOfflineOnly() const
     return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
 }
 
+bool PackageManagerCorePrivate::useCustomIntroductionPage() const
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(QLatin1String("customIntroductionPage"), false).toBool();
+}
+
 QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();
