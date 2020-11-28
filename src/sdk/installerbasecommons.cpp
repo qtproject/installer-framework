@@ -49,8 +49,15 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
         setPage(id, page);
     }
 
-    // setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
-    setPage(PackageManagerCore::CustomIntroduction, new CustomIntroductionPage(core));
+    if (core->useCustomIntroductionPage())
+    {
+        setPage(PackageManagerCore::CustomIntroduction, new CustomIntroductionPage(core));
+    }
+    else
+    {
+       setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
+    }
+
     setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
     setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
     setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
@@ -82,16 +89,28 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
         setPage(id, page);
     }
 
-    // IntroductionPage *intro = new IntroductionPage(core);
-    // connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
-    //         this, &MaintenanceGui::updateRestartPage);
-    CustomIntroductionPage *customIntro = new CustomIntroductionPage(core);
-    connect(customIntro, &CustomIntroductionPage::packageManagerCoreTypeChanged,
-            this, &MaintenanceGui::updateRestartPage);
+    if (core->useCustomIntroductionPage())
+    {
+        CustomIntroductionPage *customIntro = new CustomIntroductionPage(core);
+        connect(customIntro, &CustomIntroductionPage::packageManagerCoreTypeChanged,
+                this, &MaintenanceGui::updateRestartPage);
+        if (!core->isOfflineOnly() || validRepositoriesAvailable())
+        {
+            setPage(PackageManagerCore::CustomIntroduction, customIntro);
+        }
+    }
+    else
+    {
+        IntroductionPage *intro = new IntroductionPage(core);
+        connect(intro, &IntroductionPage::packageManagerCoreTypeChanged,
+                this, &MaintenanceGui::updateRestartPage);
+        if (!core->isOfflineOnly() || validRepositoriesAvailable())
+        {
+            setPage(PackageManagerCore::Introduction, intro);
+        }
+    }
 
     if (!core->isOfflineOnly() || validRepositoriesAvailable()) {
-        // setPage(PackageManagerCore::Introduction, intro);
-        setPage(PackageManagerCore::CustomIntroduction, customIntro);
         setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
         setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
     } else {

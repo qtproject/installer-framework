@@ -3751,7 +3751,12 @@ RestartPage::RestartPage(PackageManagerCore *core)
 */
 int RestartPage::nextId() const
 {
-    return PackageManagerCore::CustomIntroduction;
+    if (packageManagerCore()->useCustomIntroductionPage())
+    {
+        return PackageManagerCore::CustomIntroduction;
+    }
+
+    return PackageManagerCore::Introduction;
 }
 
 /*!
