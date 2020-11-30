@@ -161,6 +161,7 @@ public:
 
     bool supportsModify() const;
     bool isChinaInstaller() const;
+    QString uninstallerComments() const;
 
     bool allowUnstableComponents() const;
     void setAllowUnstableComponents(bool allow);
