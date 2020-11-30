@@ -2306,7 +2306,7 @@ as a user with the appropriate rights and then clicking OK.</source>
         <translation>Невозможно открыть файл настроек %1 на чтение: %2</translation>
     </message>
     <message>
-        <source>Select Package Categories</source>
+        <source>Select Categories</source>
         <translation>Выберите категории пакетов</translation>
     </message>
 </context>

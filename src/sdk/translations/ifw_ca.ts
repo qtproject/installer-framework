@@ -2319,7 +2319,7 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
         <translation>No s&apos;ha pogut obrir el fitxer d&apos;ajustaments %1 per a lectura: %2</translation>
     </message>
     <message>
-        <source>Select Package Categories</source>
+        <source>Select Categories</source>
         <translation>Selecciona les categories dels paquets</translation>
     </message>
 </context>
