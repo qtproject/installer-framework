@@ -794,7 +794,7 @@ QWidget *PackageManagerGui::pageWidgetByObjectName(const QString &name) const
 void PackageManagerGui::cancelButtonClicked()
 {
     const int id = currentId();
-    if (id == PackageManagerCore::Introduction || id == PackageManagerCore::InstallationFinished) {
+    if (id == PackageManagerCore::Introduction || id == PackageManagerCore::CustomIntroduction || id == PackageManagerCore::InstallationFinished) {
         m_core->setNeedsHardRestart(false);
         QDialog::reject(); return;
     }
@@ -1266,6 +1266,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
+    , m_localPackagesTreeFetched(false)
     , m_label(nullptr)
     , m_msgLabel(nullptr)
     , m_errorLabel(nullptr)
@@ -1426,16 +1427,15 @@ bool IntroductionPage::validatePage()
 
     // fetch common packages
     if (core->isInstaller() || core->isPackageManager()) {
-        bool localPackagesTreeFetched = false;
-        if (!m_allPackagesFetched) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
             // first try to fetch the server side packages tree
             m_allPackagesFetched = core->fetchRemotePackagesTree();
             if (!m_allPackagesFetched) {
                 QString error = core->error();
                 if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
                     // if that fails and we're in maintenance mode, try to fetch local installed tree
-                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
-                    if (localPackagesTreeFetched) {
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
                         // if that succeeded, adjust error message
                         error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
                             "management available.") + QLatin1String("</font>");
@@ -1445,7 +1445,7 @@ bool IntroductionPage::validatePage()
             }
         }
 
-        if (m_allPackagesFetched || localPackagesTreeFetched)
+        if (m_allPackagesFetched || m_localPackagesTreeFetched)
             setComplete(true);
     }
 
@@ -1621,6 +1621,7 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 {
     m_updatesFetched = false;
     m_allPackagesFetched = false;
+    m_localPackagesTreeFetched = false;
 }
 
 // -- private
@@ -1644,6 +1645,41 @@ void IntroductionPage::entering()
         setMaintenanceToolsEnabled(true);
     }
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+
+    if (core->preloadPackages())
+    {
+        // fetch updater packages
+        if (core->isUpdater()) {
+            if (!m_updatesFetched) {
+                m_updatesFetched = core->fetchRemotePackagesTree();
+                if (!m_updatesFetched)
+                    setErrorMessage(core->error());
+            }
+        }
+
+        // fetch common packages
+        if (core->isInstaller() || core->isPackageManager()) {
+            if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+                // first try to fetch the server side packages tree
+                qDebug() << "IntroductionPage::entering | fetchRemotePackagesTree 2";
+                m_allPackagesFetched = core->fetchRemotePackagesTree();
+                if (!m_allPackagesFetched) {
+                    QString error = core->error();
+                    if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                        // if that fails and we're in maintenance mode, try to fetch local installed tree
+                        qDebug() << "IntroductionPage::entering | localPackagesTreeFetched";
+                        m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                        if (m_localPackagesTreeFetched) {
+                            // if that succeeded, adjust error message
+                            error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                                "management available.") + QLatin1String("</font>");
+                        }
+                    }
+                    setErrorMessage(error);
+                }
+            }
+        }
+    }
 }
 
 /*!
@@ -1675,6 +1711,801 @@ void IntroductionPage::showWidgets(bool show)
 void IntroductionPage::setText(const QString &text)
 {
     m_msgLabel->setText(text);
+}
+
+
+// -- CustomIntroductionPage
+
+/*!
+    \class QInstaller::CustomIntroductionPage
+    \inmodule QtInstallerFramework
+    \brief The CustomIntroductionPage class displays information about the product to
+    install. Along with where it will be installed, and if redists are also included.
+
+    End users can leave the page to continue the installation only if certain criteria are
+    fulfilled. Some of them are checked in the validatePage() function, some in the
+    targetDirWarning() function:
+
+    \list
+        \li No empty path given as target.
+        \li No relative path given as target.
+        \li Only ASCII characters are allowed in the path if the <AllowNonAsciiCharacters> element
+            in the configuration file is set to \c false.
+        \li The following ambiguous characters are not allowed in the path: [\"~<>|?*!@#$%^&:,;]
+        \li No root or home directory given as target.
+        \li On Windows, path names must be less than 260 characters long.
+        \li No spaces in the path if the <AllowSpaceInPath> element in the configuration file is set
+            to \c false.
+    \endlist
+*/
+
+/*!
+    \fn CustomIntroductionPage::packageManagerCoreTypeChanged()
+
+    This signal is emitted when the package manager core type changes.
+*/
+
+/*!
+    Constructs an introduction page with \a core as parent.
+*/
+CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
+    : PackageManagerPage(core)
+    , m_updatesFetched(false)
+    , m_allPackagesFetched(false)
+    , m_localPackagesTreeFetched(false)
+    , m_label(nullptr)
+    , m_redistLabel(nullptr)
+    , m_msgLabel(nullptr)
+    , m_dirLabel(nullptr)
+    , m_spaceLabel(nullptr)
+    , m_errorLabel(nullptr)
+    , m_progressBar(nullptr)
+    , m_browseButton(nullptr)
+{
+    setObjectName(QLatin1String("CustomIntroductionPage"));
+    setColoredTitle(tr("Setup - %1").arg(productName()));
+
+    QVBoxLayout *layout = new QVBoxLayout(this);
+    setLayout(layout);
+
+    m_msgLabel = new QLabel(this);
+    m_msgLabel->setWordWrap(true);
+    m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    // m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("Please specify the directory where %1 will be installed.").arg(productName()));
+    layout->addWidget(m_msgLabel);
+
+    QHBoxLayout *hlayout = new QHBoxLayout;
+
+    // Target dir: Install path label
+    m_dirLabel = new QLabel(this);
+    m_dirLabel->setWordWrap(true);
+    m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
+    hlayout->addWidget(m_dirLabel);
+
+    // Target dir: Browse button
+    m_browseButton = new QPushButton(this);
+    m_browseButton->setMaximumWidth(100);
+    m_browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
+    connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
+    m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    m_browseButton->setText(tr("B&rowse..."));
+    hlayout->addWidget(m_browseButton);
+
+    layout->addLayout(hlayout);
+
+
+    // Install redists
+    m_redistLabel = new QLabel(this);
+    m_redistLabel->setWordWrap(true);
+    m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
+    layout->addWidget(m_redistLabel);
+
+    // Space requirements
+    m_spaceLabel = new QLabel(this);
+    m_spaceLabel->setWordWrap(true);
+    m_spaceLabel->setObjectName(QLatin1String("SpaceLabel"));
+    m_spaceLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    layout->addWidget(m_spaceLabel);
+
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_label = new QLabel(this);
+    m_label->setWordWrap(true);
+    m_label->setObjectName(QLatin1String("InformationLabel"));
+    m_label->setText(tr("Retrieving information from remote installation sources..."));
+    layout->addWidget(m_label);
+
+    m_progressBar = new QProgressBar(this);
+    m_progressBar->setRange(0, 0);
+    m_progressBar->setObjectName(QLatin1String("InformationProgressBar"));
+    layout->addWidget(m_progressBar);
+
+    layout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    m_errorLabel = new QLabel(this);
+    m_errorLabel->setStyleSheet(QLatin1String("QLabel { color : red; }"));
+    m_errorLabel->setWordWrap(true);
+    m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
+    layout->addWidget(m_errorLabel);
+
+    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+
+    core->setCompleteUninstallation(core->isUninstaller());
+
+    connect(core, &PackageManagerCore::metaJobProgress, this, &CustomIntroductionPage::onProgressChanged);
+    connect(core, &PackageManagerCore::metaJobTotalProgress, this, &CustomIntroductionPage::setTotalProgress);
+    connect(core, &PackageManagerCore::metaJobInfoMessage, this, &CustomIntroductionPage::setMessage);
+    connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
+            this, &CustomIntroductionPage::onCoreNetworkSettingsChanged);
+
+#ifdef Q_OS_WIN
+    if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
+        m_taskButton = new QWinTaskbarButton(this);
+        connect(core, &PackageManagerCore::metaJobProgress,
+                m_taskButton->progress(), &QWinTaskbarProgress::setValue);
+    } else {
+        m_taskButton = nullptr;
+    }
+#endif
+}
+
+/*!
+    Initializes the page.
+*/
+void CustomIntroductionPage::initializePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+
+    if (core->preloadPackages())
+    {
+        // // fetch updater packages
+        // if (core->isUpdater()) {
+        //     if (!m_updatesFetched) {
+        //         m_updatesFetched = core->fetchRemotePackagesTree();
+        //         if (!m_updatesFetched)
+        //             setErrorMessage(core->error());
+        //     }
+        // }
+
+        // fetch common packages
+        if (core->isInstaller() || core->isPackageManager()) {
+            if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+                // first try to fetch the server side packages tree
+                qDebug() << "IntroductionPage::initializePage | calling fetchRemotePackagesTree";
+                m_allPackagesFetched = core->fetchRemotePackagesTree();
+                if (!m_allPackagesFetched) {
+                    QString error = core->error();
+                    if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                        // if that fails and we're in maintenance mode, try to fetch local installed tree
+                        qDebug() << "IntroductionPage::initializePage | localPackagesTreeFetched";
+                        m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                        if (m_localPackagesTreeFetched) {
+                            // if that succeeded, adjust error message
+                            error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                                "management available.") + QLatin1String("</font>");
+                        }
+                    }
+                    setErrorMessage(error);
+                }
+            }
+        }
+    }
+
+    // Set the install directory
+    QString targetDir = packageManagerCore()->value(scTargetDir);
+    if (targetDir.isEmpty()) {
+        targetDir = QDir::homePath() + QDir::separator();
+        if (!packageManagerCore()->settings().allowSpaceInPath()) {
+            // prevent spaces in the default target directory
+            if (targetDir.contains(QLatin1Char(' ')))
+                targetDir = QDir::rootPath();
+            targetDir += productName().remove(QLatin1Char(' '));
+        } else {
+            targetDir += productName();
+        }
+    }
+    setTargetDir(QDir::toNativeSeparators(QDir(targetDir).absolutePath()));
+
+    PackageManagerPage::initializePage();
+}
+
+/*!
+    Returns the target directory for the installation.
+
+    THIS IS BASED ON TargetDirectoryPage::targetDir
+*/
+QString CustomIntroductionPage::targetDir() const
+{
+    return m_dirLabel->text().trimmed();
+}
+
+/*!
+    Sets the directory specified by \a dirName as the target directory for the
+    installation.
+
+    THIS IS BASED ON TargetDirectoryPage::setTargetDir
+*/
+void CustomIntroductionPage::setTargetDir(const QString &dirName)
+{
+    QString finalName = dirName.trimmed();
+
+    // We always want to install into an \EVE folder
+    // So if the dir doesn't end with \EVE, we postfix it
+    if(!dirName.toUpper().endsWith(QLatin1String("\\EVE")))
+    {
+        QString postfix = QLatin1String("\\EVE");
+        if(dirName.endsWith(QLatin1String("\\")))
+        {
+            postfix = QLatin1String("EVE");
+        }
+        finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix).trimmed();
+    }
+
+    m_dirLabel->setText(finalName);
+    validatePage();
+}
+
+/*!
+    Requests a warning message to be shown to end users upon invalid input. If the input is valid,
+    the \uicontrol Next button is enabled.
+
+    Returns \c true if a valid path to the target directory is set; otherwise returns \c false.
+
+    THIS IS BASED ON TargetDirectoryPage::isComplete
+*/
+bool CustomIntroductionPage::isComplete() const
+{
+    m_errorLabel->setText(targetDirWarning());
+    return m_errorLabel->text().isEmpty() && PackageManagerPage::isComplete();
+}
+
+/*!
+    Checks whether the target directory exists and has contents:
+
+    \list
+        \li Returns \c true if the directory exists and is empty.
+        \li Returns \c false if the directory already exists and contains an installation.
+        \li Returns \c false if the target is a file or a symbolic link.
+        \li Returns \c true or \c false if the directory exists but is not empty, depending on the
+            choice that the end users make in the displayed message box.
+    \endlist
+
+    THIS IS BASED ON TargetDirectoryPage::validatePage
+*/
+bool CustomIntroductionPage::validateDirectory()
+{
+    if (!isComplete())
+        return false;
+
+    if (!isVisible())
+        return true;
+
+    const QString remove = packageManagerCore()->value(QLatin1String("RemoveTargetDir"));
+    if (!QVariant(remove).toBool())
+        return true;
+
+    const QString targetDir = this->targetDir();
+    const QDir dir(targetDir);
+    // the directory exists and is empty...
+    if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
+        return true;
+
+    const QFileInfo fi(targetDir);
+    if (fi.isDir()) {
+        QString fileName = packageManagerCore()->settings().maintenanceToolName();
+#if defined(Q_OS_MACOS)
+        if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
+            fileName += QLatin1String(".app/Contents/MacOS/") + fileName;
+#elif defined(Q_OS_WIN)
+        fileName += QLatin1String(".exe");
+#endif
+
+        QFileInfo fi2(targetDir + QDir::separator() + fileName);
+        if (fi2.exists()) {
+            return failWithError(QLatin1String("TargetDirectoryInUse"), tr("The directory you selected already "
+                "exists and contains an installation. Choose a different target for installation."));
+        }
+
+        return askQuestion(QLatin1String("OverwriteTargetDirectory"),
+            tr("You have selected an existing, non-empty directory for installation.\nNote that it will be "
+            "completely wiped on uninstallation of this application.\nIt is not advisable to install into "
+            "this directory as installation might fail.\nDo you want to continue?"));
+    } else if (fi.isFile() || fi.isSymLink()) {
+        return failWithError(QLatin1String("WrongTargetDirectory"), tr("You have selected an existing file "
+            "or symlink, please choose a different target for installation."));
+    }
+    return true;
+}
+
+/*!
+    Determines which page should be shown next depending on whether the
+    application is being installed, updated, or uninstalled.
+
+    THIS IS BASED ON IntroductionPage::nextId
+*/
+int CustomIntroductionPage::nextId() const
+{
+    // We don't want to show a pointless Ready page, so we go directly to performing uninstallation
+    if (packageManagerCore()->isUninstaller())
+        return PackageManagerCore::PerformInstallation;
+
+    if (packageManagerCore()->isMaintainer())
+        return PackageManagerCore::ComponentSelection;
+
+    return PackageManagerPage::nextId();
+}
+
+/*!
+    For an uninstaller, always returns \c true. For the package manager and updater, at least
+    one valid repository is required. For the online installer, package manager, and updater, valid
+    meta data has to be fetched successfully to return \c true.
+
+    THIS IS BASED ON IntroductionPage::validatePage
+*/
+bool CustomIntroductionPage::validatePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller())
+        return true;
+
+    setComplete(false);
+    if (!validRepositoriesAvailable()) {
+        setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
+            "repository required for this action to succeed.") + QLatin1String("</font>"));
+        return validateDirectory();
+    }
+
+    gui()->setSettingsButtonEnabled(false);
+    if (core->isMaintainer()) {
+        showAll();
+    } else {
+        showMetaInfoUpdate();
+    }
+
+#ifdef Q_OS_WIN
+    if (m_taskButton) {
+        if (!m_taskButton->window()) {
+            if (QWidget *widget = QApplication::activeWindow())
+                m_taskButton->setWindow(widget->windowHandle());
+        }
+
+        m_taskButton->progress()->reset();
+        m_taskButton->progress()->resume();
+        m_taskButton->progress()->setVisible(true);
+    }
+#endif
+
+    // fetch updater packages
+    if (core->isUpdater()) {
+        if (!m_updatesFetched) {
+            m_updatesFetched = core->fetchRemotePackagesTree();
+            if (!m_updatesFetched)
+                setErrorMessage(core->error());
+        }
+
+        if (m_updatesFetched) {
+            if (core->components(QInstaller::PackageManagerCore::ComponentType::Root).count() <= 0)
+                setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
+            else
+                setComplete(true);
+        }
+    }
+
+    // fetch common packages
+    if (core->isInstaller() || core->isPackageManager()) {
+        if (!m_allPackagesFetched && !m_localPackagesTreeFetched) {
+            // first try to fetch the server side packages tree
+            m_allPackagesFetched = core->fetchRemotePackagesTree();
+            if (!m_allPackagesFetched) {
+                QString error = core->error();
+                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
+                    // if that fails and we're in maintenance mode, try to fetch local installed tree
+                    m_localPackagesTreeFetched = core->fetchLocalPackagesTree();
+                    if (m_localPackagesTreeFetched) {
+                        // if that succeeded, adjust error message
+                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
+                            "management available.") + QLatin1String("</font>");
+                    }
+                }
+                setErrorMessage(error);
+            }
+        }
+
+        if (m_allPackagesFetched || m_localPackagesTreeFetched)
+            setComplete(true);
+    }
+
+    if (core->isMaintainer()) {
+    } else if (core->isInstaller()) {
+        showInstallerInformation();
+    } else {
+        hideAll();
+    }
+    gui()->setSettingsButtonEnabled(true);
+
+#ifdef Q_OS_WIN
+    if (m_taskButton)
+        m_taskButton->progress()->setVisible(!isComplete());
+#endif
+    return isComplete() && validateDirectory();
+}
+
+/*!
+    Shows all widgets on the page.
+
+    COPY OF IntroductionPage::showAll
+*/
+void CustomIntroductionPage::showAll()
+{
+    showWidgets(true);
+}
+
+/*!
+    Hides all widgets on the page.
+
+    COPY OF IntroductionPage::hideAll
+*/
+void CustomIntroductionPage::hideAll()
+{
+    showWidgets(false);
+}
+
+/*!
+    Hides the widgets on the page except a text label and progress bar.
+
+    COPY OF IntroductionPage::showMetaInfoUpdate
+*/
+void CustomIntroductionPage::showMetaInfoUpdate()
+{
+    showWidgets(false);
+    m_label->setVisible(true);
+    m_progressBar->setVisible(true);
+}
+
+/*!
+    Shows the browse button, install location and space required by the installation
+*/
+void CustomIntroductionPage::showInstallerInformation()
+{
+    showWidgets(false);
+    m_msgLabel->setVisible(true);
+    m_dirLabel->setVisible(true);
+    m_spaceLabel->setVisible(true);
+    m_browseButton->setVisible(true);
+    m_redistLabel->setVisible(true);
+}
+
+// -- public slots
+
+/*!
+    Displays the message \a msg on the page.
+
+    COPY OF IntroductionPage::setMessage
+*/
+void CustomIntroductionPage::setMessage(const QString &msg)
+{
+    m_label->setText(msg);
+}
+
+/*!
+    Updates the value of \a progress on the progress bar.
+
+    COPY OF IntroductionPage::onProgressChanged
+*/
+void CustomIntroductionPage::onProgressChanged(int progress)
+{
+    m_progressBar->setValue(progress);
+}
+
+/*!
+    Sets total \a totalProgress value to progress bar.
+
+    COPY OF IntroductionPage::setTotalProgress
+*/
+void CustomIntroductionPage::setTotalProgress(int totalProgress)
+{
+    if (m_progressBar)
+        m_progressBar->setRange(0, totalProgress);
+}
+
+/*!
+    Displays the error message \a error on the page.
+
+    COPY OF IntroductionPage::setErrorMessage
+*/
+void CustomIntroductionPage::setErrorMessage(const QString &error)
+{
+    QPalette palette;
+    const PackageManagerCore::Status s = packageManagerCore()->status();
+    if (s == PackageManagerCore::Failure) {
+        palette.setColor(QPalette::WindowText, Qt::red);
+    } else {
+        palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
+    }
+
+    m_errorLabel->setText(error);
+    m_errorLabel->setPalette(palette);
+
+#ifdef Q_OS_WIN
+    if (m_taskButton) {
+        m_taskButton->progress()->stop();
+        m_taskButton->progress()->setValue(100);
+    }
+#endif
+}
+
+/*!
+    Returns \c true if at least one valid and enabled repository is available.
+
+    COPY OF IntroductionPage::validRepositoriesAvailable
+*/
+bool CustomIntroductionPage::validRepositoriesAvailable() const
+{
+    const PackageManagerCore *const core = packageManagerCore();
+    bool valid = (core->isInstaller() && core->isOfflineOnly()) || core->isUninstaller();
+
+    if (!valid) {
+        foreach (const Repository &repo, core->settings().repositories()) {
+            if (repo.isEnabled() && repo.isValid()) {
+                valid = true;
+                break;
+            }
+        }
+    }
+    return valid;
+}
+
+// -- private slots
+
+/*!
+    Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
+    fetched again.
+
+    COPY OF IntroductionPage::onCoreNetworkSettingsChanged 
+*/
+void CustomIntroductionPage::onCoreNetworkSettingsChanged()
+{
+    m_updatesFetched = false;
+    m_allPackagesFetched = false;
+    m_localPackagesTreeFetched = false;
+}
+
+// -- private
+
+/*!
+    Initializes the page's fields.
+
+    BASED ON IntroductionPage::entering and TargetDirectoryPage::entering
+*/
+void CustomIntroductionPage::entering()
+{
+    // setComplete(false);
+    showWidgets(false);
+    setMessage(QString());
+    setErrorMessage(QString());
+    setButtonText(QWizard::CancelButton, tr("&Quit"));
+
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+    PackageManagerCore *core = packageManagerCore();
+    setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+
+    // Ready for installation text
+    if (core->isUninstaller()) {
+        // m_taskDetailsBrowser->setVisible(false);
+        setButtonText(QWizard::NextButton, tr("U&ninstall"));
+        setColoredTitle(tr("Ready to Uninstall %1").arg(productName()));
+        m_spaceLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
+            "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
+            "including all content in that directory!")
+            .arg(productName(),
+                QDir::toNativeSeparators(QDir(core->value(scTargetDir))
+            .absolutePath())));
+        // setComplete(true);
+        // return;
+    } else if (core->isMaintainer()) {
+        setButtonText(QWizard::NextButton, tr("U&pdate"));
+        // setColoredTitle(tr("Ready to Update Packages"));
+        m_spaceLabel->setText(tr("Setup is now ready to begin updating your installation."));
+    } else {
+        Q_ASSERT(core->isInstaller());
+        core->calculateComponentsToInstall();
+        showInstallerInformation();
+        setButtonText(QWizard::NextButton, tr("&Install"));
+        // setColoredTitle(tr("Ready to Install"));
+        m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
+            .arg(productName()));
+    }
+
+    // QString htmlOutput;
+    // bool componentsOk = core->calculateComponents(&htmlOutput);
+    // m_taskDetailsBrowser->setHtml(htmlOutput);
+    // m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
+    // setComplete(componentsOk);
+
+    if (!core->isUninstaller()) {
+        QString spaceInfo;
+        if (core->checkAvailableSpace(spaceInfo)) {
+            m_spaceLabel->setText(QString::fromLatin1("%1 %2").arg(m_spaceLabel->text(), spaceInfo));
+        } else {
+            m_spaceLabel->setText(spaceInfo);
+        }
+    }
+
+    QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
+    if (installRedistText == QLatin1String("true")) {
+        m_redistLabel->setText(tr("Your system is missing C++ runtime that is needed to run the EVE Launcher, "
+        "so the missing runtime will be installed on your computer as part of the installation."));
+    } else {
+        m_redistLabel->setVisible(false);
+    }
+}
+
+/*!
+    Called when end users leave the page and the PackageManagerGui:currentPageChanged()
+    signal is triggered.
+
+    BASED ON IntroductionPage::leaving and TargetDirectoryPage::leaving
+*/
+void CustomIntroductionPage::leaving()
+{
+    m_progressBar->setValue(0);
+    m_progressBar->setRange(0, 0);
+
+    // Resetting the cancel button text from Quit to Cancel
+    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+
+    // Resetting button text (after changing it to Install/Uninstall/Update)
+    setButtonText(QWizard::NextButton, gui()->defaultButtonText(QWizard::NextButton));
+
+    // Store the install location
+    packageManagerCore()->setValue(scTargetDir, targetDir());
+}
+
+/*!
+    BASED ON TargetDirectoryPage::isComplete
+*/
+void CustomIntroductionPage::dirRequested()
+{
+    const QString newDirName = QFileDialog::getExistingDirectory(this,
+        tr("Select Installation Folder"), targetDir());
+    if (newDirName.isEmpty() || newDirName == targetDir())
+        return;
+    setTargetDir(QDir::toNativeSeparators(newDirName));
+}
+
+/*!
+    Displays widgets on the page.
+
+    BASED ON IntroductionPage::showWidgets
+*/
+void CustomIntroductionPage::showWidgets(bool show)
+{
+    m_label->setVisible(show);
+    m_progressBar->setVisible(show);
+    m_browseButton->setVisible(show);
+    m_dirLabel->setVisible(show);
+    m_msgLabel->setVisible(show);
+    m_redistLabel->setVisible(show);
+}
+
+/*!
+    Returns a warning if the path to the target directory is not set or if it
+    is invalid. Installation can continue only after a valid target path is given.
+
+    COPY OF TargetDirectoryPage::targetDirWarning
+*/
+QString CustomIntroductionPage::targetDirWarning() const
+{
+    if (targetDir().isEmpty())
+        return tr("The installation path cannot be empty, please specify a valid directory.");
+
+    QDir target(targetDir());
+    if (target.isRelative())
+        return tr("The installation path cannot be relative, please specify an absolute path.");
+
+    QString nativeTargetDir = QDir::toNativeSeparators(target.absolutePath());
+    if (!packageManagerCore()->settings().allowNonAsciiCharacters()) {
+        for (int i = 0; i < nativeTargetDir.length(); ++i) {
+            if (nativeTargetDir.at(i).unicode() & 0xff80) {
+                return tr("The path or installation directory contains non ASCII characters. This "
+                    "is currently not supported! Please choose a different path or installation "
+                    "directory.");
+            }
+        }
+    }
+
+    target = target.canonicalPath();
+    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
+        return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
+            .arg(QDir::toNativeSeparators(target.path()));
+    }
+
+#ifdef Q_OS_WIN
+    // folder length (set by user) + maintenance tool name length (no extension) + extra padding
+    if ((nativeTargetDir.length()
+        + packageManagerCore()->settings().maintenanceToolName().length() + 20) >= MAX_PATH) {
+        return tr("The path you have entered is too long, please make sure to "
+            "specify a valid path.");
+    }
+
+    static QRegularExpression reg(QLatin1String(
+        "^(?<drive>[a-zA-Z]:\\\\)|"
+        "^(\\\\\\\\(?<path>\\w+)\\\\)|"
+        "^(\\\\\\\\(?<ip>\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})\\\\)"));
+    const QRegularExpressionMatch regMatch = reg.match(nativeTargetDir);
+
+    const QString ipMatch = regMatch.captured(QLatin1String("ip"));
+    const QString pathMatch = regMatch.captured(QLatin1String("path"));
+    const QString driveMatch = regMatch.captured(QLatin1String("drive"));
+
+    if (ipMatch.isEmpty() && pathMatch.isEmpty() && driveMatch.isEmpty()) {
+        return tr("The path you have entered is not valid, please make sure to "
+            "specify a valid target.");
+    }
+
+    if (!driveMatch.isEmpty()) {
+        bool validDrive = false;
+        const QFileInfo drive(driveMatch);
+        foreach (const QFileInfo &driveInfo, QDir::drives()) {
+            if (drive == driveInfo) {
+                validDrive = true;
+                break;
+            }
+        }
+        if (!validDrive) {  // right now we can only verify local drives
+            return tr("The path you have entered is not valid, please make sure to "
+                "specify a valid drive.");
+        }
+        nativeTargetDir = nativeTargetDir.mid(2);
+    }
+
+    if (nativeTargetDir.endsWith(QLatin1Char('.')))
+        return tr("The installation path must not end with '.', please specify a valid directory.");
+
+    QString ambiguousChars = QLatin1String("[\"~<>|?*!@#$%^&:,; ]"
+        "|(\\\\CON)(\\\\|$)|(\\\\PRN)(\\\\|$)|(\\\\AUX)(\\\\|$)|(\\\\NUL)(\\\\|$)|(\\\\COM\\d)(\\\\|$)|(\\\\LPT\\d)(\\\\|$)");
+#else // Q_OS_WIN
+    QString ambiguousChars = QStringLiteral("[~<>|?*!@#$%^&:,; \\\\]");
+#endif // Q_OS_WIN
+
+    if (packageManagerCore()->settings().allowSpaceInPath())
+        ambiguousChars.remove(QLatin1Char(' '));
+
+    static QRegularExpression ambCharRegEx(ambiguousChars, QRegularExpression::CaseInsensitiveOption);
+    // check if there are not allowed characters in the target path
+    QRegularExpressionMatch match = ambCharRegEx.match(nativeTargetDir);
+    if (match.hasMatch()) {
+        return tr("The installation path must not contain \"%1\", "
+            "please specify a valid directory.").arg(match.captured(0));
+    }
+
+    return QString();
+}
+
+/*!
+    Returns \c true if a warning message specified by \a message with the
+    identifier \a identifier is presented to end users for acknowledgment.
+
+    COPY OF TargetDirectoryPage::askQuestion
+*/
+bool CustomIntroductionPage::askQuestion(const QString &identifier, const QString &message)
+{
+    QMessageBox::StandardButton bt =
+        MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Warning"), message, QMessageBox::Yes | QMessageBox::No);
+    return bt == QMessageBox::Yes;
+}
+
+/*!
+    COPY OF TargetDirectoryPage::failWithError
+*/
+bool CustomIntroductionPage::failWithError(const QString &identifier, const QString &message)
+{
+    MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), identifier,
+        tr("Error"), message);
+    return false;
 }
 
 
@@ -2926,6 +3757,11 @@ RestartPage::RestartPage(PackageManagerCore *core)
 */
 int RestartPage::nextId() const
 {
+    if (packageManagerCore()->useCustomIntroductionPage())
+    {
+        return PackageManagerCore::CustomIntroduction;
+    }
+
     return PackageManagerCore::Introduction;
 }
 

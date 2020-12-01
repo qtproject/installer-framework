@@ -2500,6 +2500,22 @@ as a user with the appropriate rights and then clicking OK.</source>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::ExtractArchiveOperation | ==========================================
+  ==============================================================================================
+  This information is shown on the perform installation page of the installer. For some reason
+  this translation is missing in most of the languages.
+  ==============================================================================================
+-->
+<!-- THIS IS ALREADY INCLUDED IN RU -->
+<!--
+  ==============================================================================================
+  === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | QInstaller::PackageManagerCore | ===============================================
   ==============================================================================================
   The 'Installation will use' text seems to have belonged to another class before and thus
@@ -2516,22 +2532,6 @@ as a user with the appropriate rights and then clicking OK.</source>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCore | =================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
-  === | START | QInstaller::ExtractArchiveOperation | ==========================================
-  ==============================================================================================
-  This information is shown on the perform installation page of the installer. For some reason
-  this translation is missing in most of the languages.
-  ==============================================================================================
--->
-<!-- THIS IS ALREADY INCLUDED IN RU -->
-<!--
-  ==============================================================================================
-  === | END | QInstaller::ExtractArchiveOperation | ============================================
   ==============================================================================================
 -->
 
@@ -2558,6 +2558,212 @@ Installing component %1...</source>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Установка - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Добро пожаловать в мастер установки %1.</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>&amp;Добавление или удаление компонентов</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>&amp;Обновление компонентов</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>&amp;Удаление всех компонентов</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>Получение информации из удалённых источников...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Для выполнения этого действия нужно хотя бы одно включённое и действующее хранилище.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>Нет доступных обновлений.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Доступно только локальное управление пакетами.</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>&amp;Выйти</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>У&amp;далить</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Всё готово к удалению</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>Программа установки готова начать удаление %1 с вашего компьютера. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Директория с программой %2 будет полностью удалена&lt;/font&gt;, включая содержимое этой директории!</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>О&amp;бновить</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Готов к обновлению пакетов</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>Программа установки готова к обновлению файлов.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Установить</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Всё готово к установке</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>Программа установки готова начать установку %1 на ваш компьютер.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>На выбранном Вами диске достаточно места для установки. Тем не менее, после завершения установки на диске останется меньше 1% свободного места. %1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>На выбранном Вами диске достаточно места для установки. Тем не менее, после завершения установки на диске останется меньше 100 МБ свободного места. %1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Для установки потребуется %1 дискового пространства.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для временных файлов и файлов установки. Доступно %1, а требуется минимум %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для сохранения всех выбранных компонентов. Доступно %1, а требуется минимум: %2.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>Недостаточно места на диске для временных файлов. Доступно %1, а требуется минимум %2.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Каталог установки</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translatorcomment>открывает окно выбора файла</translatorcomment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>О&amp;бзор...</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Выбранный файл или символьная ссылка уже существует. Выберите другой каталог установки.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Путь к каталогу установки не может быть относительным. Задайте абсолютный путь.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>В строке пути или в имени каталога установки содержится символ, не относящийся к ASCII. В настоящее время такие символы не поддерживаются. Выберите другой путь или каталог установки.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Установка в %1 запрещена, так как каталог установки полностью удалён.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Введённый путь слишком длинный, введите корректный путь.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Введён неверный путь, проверьте правильность указания пути к каталогу.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Указан неверный путь, проверьте имя диска.</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Предупреждение</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Выберите каталог для установки</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Укажите каталог для установки %1.</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Выбранный каталог существует и содержит установленное приложение. Выберите другой каталог.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Каталог, выбранный для установки приложения, уже содержит файлы.
+Он будет стёрт вместе со всем содержимым при удалении приложения.
+Производить установку в этот каталог не рекомендуется, так как не исключён сбой.
+Продолжить?</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Необходимо задать путь к каталогу установки. Выберите подходящий каталог.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Путь к каталогу установки не может оканчиваться точкой. Выберите другой каталог.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Путь к каталогу установки не может содержать «%1». Выберите другой каталог.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
   ==============================================================================================
 -->
 

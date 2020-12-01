@@ -119,12 +119,25 @@ int TabController::init()
                 this, &TabController::onSettingsButtonClicked);
     }
 
-    IntroductionPage *page =
-        qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
-    if (page) {
-        page->setMessage(QString());
-        page->setErrorMessage(QString());
-        page->onCoreNetworkSettingsChanged();
+    if (d->m_core->useCustomIntroductionPage())
+    {
+        CustomIntroductionPage *page =
+            qobject_cast<CustomIntroductionPage*> (d->m_gui->page(PackageManagerCore::CustomIntroduction));
+        if (page) {
+            page->setMessage(QString());
+            page->setErrorMessage(QString());
+            page->onCoreNetworkSettingsChanged();
+        }
+    }
+    else
+    {
+        IntroductionPage *page =
+            qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+        if (page) {
+            page->setMessage(QString());
+            page->setErrorMessage(QString());
+            page->onCoreNetworkSettingsChanged();
+        }
     }
 
     d->m_gui->restart();
@@ -171,12 +184,26 @@ void TabController::onSettingsButtonClicked()
 
     if (d->m_networkSettingsChanged) {
         d->m_core->setCanceled();
-        IntroductionPage *page =
-            qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
-        if (page) {
-            page->setMessage(QString());
-            page->setErrorMessage(QString());
+
+        if (d->m_core->useCustomIntroductionPage())
+        {
+            CustomIntroductionPage *page =
+                qobject_cast<CustomIntroductionPage*> (d->m_gui->page(PackageManagerCore::CustomIntroduction));
+            if (page) {
+                page->setMessage(QString());
+                page->setErrorMessage(QString());
+            }
         }
+        else
+        {
+            IntroductionPage *page =
+                qobject_cast<IntroductionPage*> (d->m_gui->page(PackageManagerCore::Introduction));
+            if (page) {
+                page->setMessage(QString());
+                page->setErrorMessage(QString());
+            }
+        }
+
         restartWizard();
     }
 }

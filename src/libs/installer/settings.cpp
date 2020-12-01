@@ -290,7 +290,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
-                << scRemoteRepositories << scTranslations << scChinaInstaller << scUrlQueryString << QLatin1String(scControlScript)
+                << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
+                << scChinaInstaller << scUninstallerComments
                 << scCreateLocalRepository << scInstallActionColumnVisible << scSupportsModify << scAllowUnstableComponents
                 << scSaveDefaultRepositories << scRepositoryCategories;
 
@@ -841,6 +842,11 @@ QString Settings::controlScript() const
 bool Settings::isChinaInstaller() const
 {
     return d->m_data.value(scChinaInstaller, false).toBool();
+}
+
+QString Settings::uninstallerComments() const
+{
+    return d->m_data.value(scUninstallerComments).toString();
 }
 
 bool Settings::supportsModify() const

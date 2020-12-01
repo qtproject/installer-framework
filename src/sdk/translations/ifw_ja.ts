@@ -2448,28 +2448,6 @@ as a user with the appropriate rights and then clicking OK.</source>
 
 <!--
   ==============================================================================================
-  === | START | QInstaller::PackageManagerCore | ===============================================
-  ==============================================================================================
-  The 'Installation will use' text seems to have belonged to another class before and thus
-  stopped working. It now lives in the PackageManagerCore class.
-  ==============================================================================================
--->
-<context>
-    <name>QInstaller::PackageManagerCore</name>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
-    </message>
-</context>
-<!--
-  ==============================================================================================
-  === | END | QInstaller::PackageManagerCore | =================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
   === | START | QInstaller::ExtractArchiveOperation | ==========================================
   ==============================================================================================
   This information is shown on the perform installation page of the installer. For some reason
@@ -2486,6 +2464,28 @@ as a user with the appropriate rights and then clicking OK.</source>
 <!--
   ==============================================================================================
   === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
   ==============================================================================================
 -->
 
@@ -2516,6 +2516,211 @@ Installing component %1...</source>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>設定 - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>%1 設定ウィザードへようこそ。</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>コンポーネントの追加または削除</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>コンポーネントの更新</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>すべてのコンポーネントを削除</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>リモート インストール ソースから情報を取得しています...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>この操作を正常に実行するには、有効なリポジトリが 1 つ以上必要です。</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>利用できる更新はありません。</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> ローカル パッケージ管理のみ利用可能です。</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>中止</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>アンインストール (&amp;N)</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>アンインストールの準備ができました</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>更新 (&amp;P)</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>パッケージを更新する準備ができました</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>インストールを更新する準備が整っています。</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>インストール(&amp;I)</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>インストールの準備ができました</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>コンピューターに %1 をインストールする準備が整っています。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、一時ファイルとインストール内容を格納できません。%2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、選択された一部のコンポーネントを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、一時ファイルを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>インストール用に選択したボリュームには、インストールできるだけの容量はありますが、インストール後にそのボリュームの空き容量は 1 % 未満になります。%1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>インストール用に選択したボリュームには、インストールできるだけの容量はありますが、インストール後の空き容量は 100 MB 未満になります。%1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>インストール フォルダー</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>%1 をインストールするディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt + R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>参照(&amp;R)...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>選択したディレクトリはすでに存在し、インストール内容が含まれています。 別のターゲットをインストール用に選択してください。</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>空でない既存のディレクトリをインストール用に選択しました。
+選択したディレクトリは、このアプリケーションのアンインストール時に完全に消去されるので注意してください。
+インストールに失敗することもあるため、このディレクトリへのインストールはお勧めしません。
+続行しますか？</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>既存のファイルまたはシンボリック リンクを選択しました。別のターゲットをインストール用に選択してください。</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>インストール フォルダーの選択</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>インストール パスを空にすることはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>インストール パスを相対パスにすることはできません。絶対パスを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>パスまたはインストール ディレクトリに ASCII 以外の文字が含まれています。 この文字は現在サポートされていません。 別のパスまたはインストール ディレクトリを選択してください。</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>インストール ディレクトリ全体が削除されるので、%1 へのインストールはできません。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>入力したパスは長すぎます。有効なパスを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>入力したパスは無効です。有効なターゲットを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>入力したパスは無効です。有効なドライブを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>インストール パスを &apos;.&apos; で終了することはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>インストール パスに &quot;%1&quot; を含めることはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
   ==============================================================================================
 -->
 

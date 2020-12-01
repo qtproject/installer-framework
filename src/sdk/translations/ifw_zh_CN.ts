@@ -2448,28 +2448,6 @@ as a user with the appropriate rights and then clicking OK.</source>
 
 <!--
   ==============================================================================================
-  === | START | QInstaller::PackageManagerCore | ===============================================
-  ==============================================================================================
-  The 'Installation will use' text seems to have belonged to another class before and thus
-  stopped working. It now lives in the PackageManagerCore class.
-  ==============================================================================================
--->
-<context>
-    <name>QInstaller::PackageManagerCore</name>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>安装程序将使用 %1 的磁盘空间。</translation>
-    </message>
-</context>
-<!--
-  ==============================================================================================
-  === | END | QInstaller::PackageManagerCore | =================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
   === | START | QInstaller::ExtractArchiveOperation | ==========================================
   ==============================================================================================
   This information is shown on the perform installation page of the installer. For some reason
@@ -2486,6 +2464,28 @@ as a user with the appropriate rights and then clicking OK.</source>
 <!--
   ==============================================================================================
   === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>安装程序将使用 %1 的磁盘空间。</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
   ==============================================================================================
 -->
 
@@ -2552,6 +2552,211 @@ Installing component %1...</source>
 <!--
   ==============================================================================================
   === | END | QPlatformTheme | =================================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>安装程序 - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>欢迎使用 %1 安装向导。</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>添加或移除组件</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>更新组件</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>移除所有组件</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>正在从远程安装源检索信息…</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>此操作至少需要一个处于启用状态的有效资料档案库。</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>无可用更新。</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> 仅本地软件包管理可用。</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>退出</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>卸载(&amp;N)</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>准备卸载</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>安装程序现已准备好从您的计算机中移除 %1。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;将彻底删除程序目录 %2&lt;/font&gt;，目录内所有内容也将被删除!</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>更新(%P)</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>准备更新包</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>安装程序现已准备好安装您的更新。</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>安装(&amp;I)</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>准备安装</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>安装程序现已准备好在您的计算器中安装 %1。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>没有足够的磁盘空间来存储临时文件和安装。%1 可用，但至少需要 %2。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>没有足够的磁盘空间来存储所有选定的组件! %1 可用，但至少需要 %2。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>没有足够的磁盘空间来存储临时文件! %1 可用，但至少需要 %2。</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>有足够的空间可以安装您所选择的安装程序，但是安装完成后，可用空间将少于 1%。%1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>有足够的空间可以安装您所选择的安装程序，但是安装完成后，可用空间将少于 100 MB。%1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>安装程序将使用 %1 的磁盘空间。</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>安装文件夹</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>请指定将安装 %1 的目录。</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>浏览(&amp;R)...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>您选择的目录已存在且包含安装程序。 选择其他目标进行安装。</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>您已选择现有非空目录进行安装。
+请注意，在卸载此应用程序时将完全删除该目录。
+不建议安装到此目录中，因为安装可能会失败。
+是否要继续?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>您选择的是现有文件或符号连接，请选择其他目标进行安装。</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>选择安装文件夹</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>安装路径不得为空，请指定有效目录。</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>安装路径不得为相对路径，请指定一个绝对路径。</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>路径或安装目录包含非 ASCII 字符。 目前尚不支持此内容! 请选择不同的路径或安装目录。</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>由于安装路径已被完全删除，因此无法在 %1 中安装。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>输入的路径过长，请确保指定的路径有效。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>输入的路径无效，请确保指定的目标有效。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>输入的路径无效，请确保指定的驱动器有效。</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>安装路径不得以“.”结尾，请指定一个有效的目录。</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>安装路径不得包含“%1”，请指定一个有效的目录。</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
   ==============================================================================================
 -->
 

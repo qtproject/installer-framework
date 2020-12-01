@@ -246,6 +246,7 @@ private:
 private:
     bool m_updatesFetched;
     bool m_allPackagesFetched;
+    bool m_localPackagesTreeFetched;
 
     QLabel *m_label;
     QLabel *m_msgLabel;
@@ -254,6 +255,73 @@ private:
     QRadioButton *m_packageManager;
     QRadioButton *m_updateComponents;
     QRadioButton *m_removeAllComponents;
+
+#ifdef Q_OS_WIN
+    QWinTaskbarButton *m_taskButton;
+#endif
+};
+
+// -- CustomIntroductionPage
+
+class INSTALLER_EXPORT CustomIntroductionPage : public PackageManagerPage
+{
+    Q_OBJECT
+
+public:
+    explicit CustomIntroductionPage(PackageManagerCore *core);
+
+    void initializePage();
+
+    QString targetDir() const;
+    void setTargetDir(const QString &dirName);
+
+    bool validateDirectory();
+    bool isComplete() const;
+    int nextId() const;
+    bool validatePage();
+
+    void showAll();
+    void hideAll();
+    void showMetaInfoUpdate();
+    void showInstallerInformation();
+
+public Q_SLOTS:
+    void onCoreNetworkSettingsChanged();
+    void setMessage(const QString &msg);
+    void onProgressChanged(int progress);
+    void setTotalProgress(int totalProgress);
+    void setErrorMessage(const QString &error);
+
+Q_SIGNALS:
+    void packageManagerCoreTypeChanged();
+
+private Q_SLOTS:
+    void dirRequested();
+
+private:
+    void entering();
+    void leaving();
+
+    void showWidgets(bool show);
+    bool validRepositoriesAvailable() const;
+
+    QString targetDirWarning() const;
+    bool askQuestion(const QString &identifier, const QString &message);
+    bool failWithError(const QString &identifier, const QString &message);
+
+private:
+    bool m_updatesFetched;
+    bool m_allPackagesFetched;
+    bool m_localPackagesTreeFetched;
+
+    QLabel *m_label;
+    QLabel *m_redistLabel;
+    QLabel *m_msgLabel;
+    QLabel *m_dirLabel;
+    QLabel *m_spaceLabel;
+    QLabel *m_errorLabel;
+    QProgressBar *m_progressBar;
+    QPushButton *m_browseButton;
 
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;

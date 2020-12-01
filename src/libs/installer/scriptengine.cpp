@@ -567,6 +567,7 @@ QJSValue ScriptEngine::generateQInstallerObject()
     // register ::WizardPage enum in the script connection
     QJSValue qinstaller = m_engine.newArray();
     SETPROPERTY(qinstaller, Introduction, PackageManagerCore)
+    SETPROPERTY(qinstaller, CustomIntroduction, PackageManagerCore)
     SETPROPERTY(qinstaller, LicenseCheck, PackageManagerCore)
     SETPROPERTY(qinstaller, TargetDirectory, PackageManagerCore)
     SETPROPERTY(qinstaller, ComponentSelection, PackageManagerCore)

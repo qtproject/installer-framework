@@ -2467,28 +2467,6 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
 
 <!--
   ==============================================================================================
-  === | START | QInstaller::PackageManagerCore | ===============================================
-  ==============================================================================================
-  The 'Installation will use' text seems to have belonged to another class before and thus
-  stopped working. It now lives in the PackageManagerCore class.
-  ==============================================================================================
--->
-<context>
-    <name>QInstaller::PackageManagerCore</name>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>Installationen vil bruge %1 diskplads.</translation>
-    </message>
-</context>
-<!--
-  ==============================================================================================
-  === | END | QInstaller::PackageManagerCore | =================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
   === | START | QInstaller::ExtractArchiveOperation | ==========================================
   ==============================================================================================
   This information is shown on the perform installation page of the installer. For some reason
@@ -2505,6 +2483,28 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
 <!--
   ==============================================================================================
   === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Installationen vil bruge %1 diskplads.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
   ==============================================================================================
 -->
 
@@ -2535,6 +2535,211 @@ Installerer komponenten %1...</translation>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Opsætning - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Velkommen til opsætningsassistenten for %1.</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>Henter information fra fjern-installationskilder...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Mindst ét gyldigt og aktiveret repository krævet for at handlingen skal lykkedes.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>Ingen tilgængelige opdateringer.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Kun lokal pakkehåndtering tilgængeligt.</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>&amp;Tilføj eller fjern komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>&amp;Opdater komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>&amp;Fjern alle komponenter</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>&amp;Afslut</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>&amp;Afinstaller</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Klar til afinstallation</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>&amp;Opdater</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Klar til opdateringspakker</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>Opsætningen er nu klar til at begynde opdateringen af din installation.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Installer</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Klar til installation</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>Opsætningen er nu klar til at begynde installationen af %1 på din computer.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre midlertidige filer og installationen. %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre alle valgte komponenter! %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre midlertidige filer! %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>Det bind du har valg til installation ser ud til at have tilstrækkelig plads til installationen, men der vil efterfølgende være mindre end 1% af bindets plads tilgængeligt. %1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>Det bind du har valg til installation ser ud til at have tilstrækkelig plads til installationen, men der vil efterfølgende være mindre end 100 MB tilgængeligt. %1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Installationen vil bruge %1 diskplads.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Installationsmappe</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Angiv venligst mappen hvor %1 skal installeres.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+G</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>&amp;Gennemse...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Mappen du har valgt findes allerede og indeholder en installation. Vælg et andet mål til installationen.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Du har valgt en eksisterende mappe til installation som ikke er tom.
+Bemærk at den vil blive fuldstændigt ryddet ved afinstallation af programmet.
+Det anbefales ikke at installere i mappen eftersom installationen kan mislykkes.
+Vil du fortsætte?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Du har valgt en eksisterende fil eller symlink, vælg venligst et andet mål for installationen.</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Vælg installationsmappe</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke være tom, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Installationsstien må ikke være relativ, angiv venligst en absolut sti.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>Stien eller installationsmappen indeholder ikke-ASCII-tegn. Det understøttes ikke i øjeblikket! Vælg venligst en anden sti eller installationsmappe.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Da installationsmappen er fuldstændigt slettet, er installation i %1 forbudt.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Stien du har indtastet er for lang, sørg venligst for at angive en gyldig sti.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt mål.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt drev.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke slutte med &apos;.&apos;, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke indholde &quot;%1&quot;, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Advarsel</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fejl</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
   ==============================================================================================
 -->
 

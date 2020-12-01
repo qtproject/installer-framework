@@ -629,6 +629,18 @@ bool PackageManagerCorePrivate::isOfflineOnly() const
     return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
 }
 
+bool PackageManagerCorePrivate::useCustomIntroductionPage() const
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(QLatin1String("customIntroductionPage"), false).toBool();
+}
+
+bool PackageManagerCorePrivate::preloadPackages() const
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(QLatin1String("preloadPackages"), false).toBool();
+}
+
 QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();
@@ -2040,7 +2052,11 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("DisplayIcon"), maintenanceTool);
     settings.setValue(scPublisher, m_data.value(scPublisher));
     settings.setValue(QLatin1String("UrlInfoAbout"), m_data.value(QLatin1String("Url")));
-    settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
+    QString comments = m_data.value(scUninstallerComments).toString();
+    if (!comments.isEmpty())
+    {
+        settings.setValue(QLatin1String("Comments"), comments);
+    }
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
     settings.setValue(QLatin1String("UninstallString"), maintenanceTool);

@@ -100,6 +100,8 @@ using namespace QInstaller;
 
     \value  Introduction
             \l{Introduction Page}
+    \value  CustomIntroduction
+            \l{Custom Introduction Page}
     \value  TargetDirectory
             \l{Target Directory Page}
     \value  ComponentSelection
@@ -2586,6 +2588,26 @@ bool PackageManagerCore::isInstaller() const
 bool PackageManagerCore::isOfflineOnly() const
 {
     return d->isOfflineOnly();
+}
+
+/*!
+    Returns \c true if using the custom introduction page.
+
+    \sa {installer::useCustomIntroductionPage}{installer.useCustomIntroductionPage}
+*/
+bool PackageManagerCore::useCustomIntroductionPage() const
+{
+    return d->useCustomIntroductionPage();
+}
+
+/*!
+    Returns \c true if loading packages before showing introduction page.
+
+    \sa {installer::preloadPackages}{installer.preloadPackages}
+*/
+bool PackageManagerCore::preloadPackages() const
+{
+    return d->preloadPackages();
 }
 
 /*!

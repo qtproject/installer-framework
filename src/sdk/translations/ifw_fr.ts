@@ -2448,28 +2448,6 @@ en tant qu’utilisateur doté des droits appropriés, puis cliquez sur OK.</tra
 
 <!--
   ==============================================================================================
-  === | START | QInstaller::PackageManagerCore | ===============================================
-  ==============================================================================================
-  The 'Installation will use' text seems to have belonged to another class before and thus
-  stopped working. It now lives in the PackageManagerCore class.
-  ==============================================================================================
--->
-<context>
-    <name>QInstaller::PackageManagerCore</name>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>L’installation va utiliser %1 de l’espace disque.</translation>
-    </message>
-</context>
-<!--
-  ==============================================================================================
-  === | END | QInstaller::PackageManagerCore | =================================================
-  ==============================================================================================
--->
-
-
-<!--
-  ==============================================================================================
   === | START | QInstaller::ExtractArchiveOperation | ==========================================
   ==============================================================================================
   This information is shown on the perform installation page of the installer. For some reason
@@ -2486,6 +2464,28 @@ en tant qu’utilisateur doté des droits appropriés, puis cliquez sur OK.</tra
 <!--
   ==============================================================================================
   === | END | QInstaller::ExtractArchiveOperation | ============================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::PackageManagerCore | ===============================================
+  ==============================================================================================
+  The 'Installation will use' text seems to have belonged to another class before and thus
+  stopped working. It now lives in the PackageManagerCore class.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>L’installation va utiliser %1 de l’espace disque.</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerCore | =================================================
   ==============================================================================================
 -->
 
@@ -2516,6 +2516,211 @@ Installation du composant %1...</translation>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCorePrivate | ==========================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | CustomIntroductionPage | =======================================================
+  ==============================================================================================
+  We have added our own CustomIntroductionPage, and since we want to make use of the
+  translations that already exist, we simply copied these from above from the following
+  contexts:
+    - QInstaller::IntroductionPage
+    - QInstaller::ReadyForInstallationPage
+    - QInstaller::TargetDirectoryPage
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::CustomIntroductionPage</name>
+    <message>
+        <source>Setup - %1</source>
+        <translation>Installation - %1</translation>
+    </message>
+    <message>
+        <source>Welcome to the %1 Setup Wizard.</source>
+        <translation>Bienvenue dans l’assistant d’installation de %1</translation>
+    </message>
+    <message>
+        <source>&amp;Add or remove components</source>
+        <translation>Ajouter ou supprimer des composants</translation>
+    </message>
+    <message>
+        <source>&amp;Update components</source>
+        <translation>Mettre à jour des composants</translation>
+    </message>
+    <message>
+        <source>&amp;Remove all components</source>
+        <translation>Supprimer tous les composants</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote installation sources...</source>
+        <translation>Extraction d’informations à partir des sources d’installation distantes...</translation>
+    </message>
+    <message>
+        <source>At least one valid and enabled repository required for this action to succeed.</source>
+        <translation>Au moins un référentiel valide et activé est requis pour que cette action réussisse.</translation>
+    </message>
+    <message>
+        <source>No updates available.</source>
+        <translation>Aucune mise à jour disponible.</translation>
+    </message>
+    <message>
+        <source> Only local package management available.</source>
+        <translation> Seule la gestion des paquetages locaux est disponible.</translation>
+    </message>
+    <message>
+        <source>&amp;Quit</source>
+        <translation>Quitter</translation>
+    </message>
+    <message>
+        <source>U&amp;ninstall</source>
+        <translation>Dés&amp;installer</translation>
+    </message>
+    <message>
+        <source>Ready to Uninstall</source>
+        <translation>Prêt pour la désinstallation</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation>Le programme d’installation est maintenant prêt à supprimer %1 de votre ordinateur.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Le répertoire du programme %2 va être entièrement supprimé&lt;/font&gt;, y compris tout son contenu !</translation>
+    </message>
+    <message>
+        <source>U&amp;pdate</source>
+        <translation>M&amp;ettre à jour</translation>
+    </message>
+    <message>
+        <source>Ready to Update Packages</source>
+        <translation>Prêt à mettre à jour les paquetages</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin updating your installation.</source>
+        <translation>Le programme d’installation est maintenant prêt à mettre à jour votre installation.</translation>
+    </message>
+    <message>
+        <source>&amp;Install</source>
+        <translation>&amp;Installer</translation>
+    </message>
+    <message>
+        <source>Ready to Install</source>
+        <translation>Prêt pour l’installation</translation>
+    </message>
+    <message>
+        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <translation>Le programme d’installation est maintenant prêt à installer %1 sur votre ordinateur.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires et l’installation. %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker tous les composants sélectionnés ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
+        <translation>Le volume sélectionné pour l’installation semble avoir un espace suffisant, mais il restera ensuite moins de 1% de l’espace du volume. %1</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
+        <translation>Le volume sélectionné pour l’installation semble avoir un espace suffisant, mais il restera ensuite moins de 100 Mo. %1</translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>L’installation va utiliser %1 de l’espace disque.</translation>
+    </message>
+    <message>
+        <source>Installation Folder</source>
+        <translation>Dossier d’installation</translation>
+    </message>
+    <message>
+        <source>Please specify the directory where %1 will be installed.</source>
+        <translation>Spécifiez le répertoire dans lequel %1 va être installé.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>browse file system to choose a file</comment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
+        <source>B&amp;rowse...</source>
+        <translation>P&amp;arcourir...</translation>
+    </message>
+    <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Le répertoire sélectionné existe déjà et contient une installation. Choisissez une autre cible pour l’installation.</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Vous avez sélectionné un répertoire existant et non vide pour l’installation.
+Notez qu’il va être entièrement effacé lors de la désinstallation de l’application.
+Il n’est pas conseillé d’effectuer l’installation dans ce répertoire car elle risque d’échouer.
+Souhaitez-vous continuer ?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Vous avez sélectionné un fichier ou lien symbolique existant. Choisissez une autre cible pour l’installation.</translation>
+    </message>
+    <message>
+        <source>Select Installation Folder</source>
+        <translation>Sélectionner le dossier d’installation</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne peut pas être vide. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Le chemin d’installation ne peut pas être relatif. Spécifiez un chemin absolu.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>Le chemin d’accès ou le répertoire d’installation contient des caractères autres qu’ASCII. Cette opération n’est actuellement pas prise en charge ! Choisissez un autre chemin d’accès ou répertoire d’installation.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Comme le répertoire d’installation est entièrement supprimé, l’installation de %1 est interdite.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Le chemin d’accès que vous avez saisi est trop long. Spécifiez un chemin valide.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez une cible valide.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez un disque valide.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne doit pas se terminer par &apos;.&apos;. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne doit pas contenir &quot;%1&quot;. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Avertissement</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erreur</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | CustomIntroductionPage | =========================================================
   ==============================================================================================
 -->
 
