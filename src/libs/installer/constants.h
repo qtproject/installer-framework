@@ -64,6 +64,7 @@ static const QLatin1String scInstalledVersion("InstalledVersion");
 static const QLatin1String scUncompressedSize("UncompressedSize");
 static const QLatin1String scUncompressedSizeSum("UncompressedSizeSum");
 static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
+static const QLatin1String scOfflineBinaryName("OfflineBinaryName");
 static const QLatin1String scSHA1("SHA1");
 
 // constants used throughout the components class
@@ -83,6 +84,8 @@ static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");
 static const QLatin1String scDisableAuthorizationFallback("DisableAuthorizationFallback");
 static const QLatin1String scDisableCommandLineInterface("DisableCommandLineInterface");
+static const QLatin1String scRemoteRepositories("RemoteRepositories");
+static const QLatin1String scRepositoryCategories("RepositoryCategories");
 static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPageVisible");
 static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
 static const QLatin1String scWizardStyle("WizardStyle");
@@ -135,6 +138,8 @@ static const QLatin1String scListShort("li");
 static const QLatin1String scListLong("list");
 static const QLatin1String scSearchShort("se");
 static const QLatin1String scSearchLong("search");
+static const QLatin1String scCreateOfflineShort("co");
+static const QLatin1String scCreateOfflineLong("create-offline");
 static const QLatin1String scPurgeShort("pr");
 static const QLatin1String scPurgeLong("purge");
 
@@ -178,6 +183,8 @@ static const QLatin1String scConfirmCommandLong("confirm-command");
 // Misc installation options
 static const QLatin1String scRootShort("t");
 static const QLatin1String scRootLong("root");
+static const QLatin1String scOfflineInstallerNameShort("oi");
+static const QLatin1String scOfflineInstallerNameLong("offline-installer-name");
 static const QLatin1String scPlatformShort("p");
 static const QLatin1String scPlatformLong("platform");
 static const QLatin1String scNoForceInstallationShort("nf");
@@ -221,6 +228,8 @@ static const QStringList scCommandLineInterfaceOptions = {
     scListLong,
     scSearchShort,
     scSearchLong,
+    scCreateOfflineShort,
+    scCreateOfflineLong,
     scPurgeShort,
     scPurgeLong
 };

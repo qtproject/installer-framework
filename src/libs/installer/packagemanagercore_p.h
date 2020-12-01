@@ -96,11 +96,13 @@ public:
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
+    QString offlineBinaryName() const;
 
     void writeMaintenanceConfigFiles();
     void readMaintenanceConfigFiles(const QString &targetDir);
 
     void writeMaintenanceTool(OperationList performedOperations);
+    void writeOfflineBaseBinary();
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -132,6 +134,9 @@ public:
 
     bool runPackageUpdater();
     bool isPackageManager() const;
+
+    bool runOfflineGenerator();
+    bool isOfflineGenerator() const;
 
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
@@ -171,6 +176,8 @@ signals:
     void installationFinished();
     void uninstallationStarted();
     void uninstallationFinished();
+    void offlineGenerationStarted();
+    void offlineGenerationFinished();
 
 public:
     UpdateFinder *m_updateFinder;
@@ -194,6 +201,8 @@ public:
     bool m_needToWriteMaintenanceTool;
     PackageManagerCoreData m_data;
     QString m_installerBaseBinaryUnreplaced;
+    QString m_offlineBaseBinaryUnreplaced;
+    QStringList m_offlineGeneratorResourceCollections;
 
     QList<QInstaller::Component*> m_rootComponents;
     QList<QInstaller::Component*> m_rootDependencyReplacements;
@@ -263,6 +272,7 @@ private:
     qint64 m_magicBinaryMarker;
     bool m_componentsToInstallCalculated;
     bool m_foundEssentialUpdate;
+    bool m_offlineGenerator;
 
     mutable ScriptEngine *m_componentScriptEngine;
     mutable ScriptEngine *m_controlScriptEngine;

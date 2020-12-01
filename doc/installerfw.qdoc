@@ -223,6 +223,10 @@
             \li -t, --root <directory>
             \li [CLI] Set the installation root directory.
         \row
+            \li --oi, --offline-installer-name <filename>
+            \li [CLI] Set custom filename for the generated offline installer. Without this
+                the original filename is used with an added "_offline-yyyy-MM-dd" suffix.
+        \row
             \li -p, --platform <plugin>
             \li Use the specified platform plugin.
         \row
@@ -315,6 +319,9 @@
         \row
             \li se, search <regexp>
             \li Search available packages. If no search pattern is given, show all available packages.
+        \row
+            \li co, create-offline <pkg ...>
+            \li Create offline installer from selected packages.
         \row
             \li pr, purge
             \li Uninstall all packages and remove the program directory.

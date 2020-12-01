@@ -48,6 +48,7 @@ public:
     int installPackages();
     int uninstallPackages();
     int removeInstallation();
+    int createOfflineInstaller();
 
 private:
     bool initialize();

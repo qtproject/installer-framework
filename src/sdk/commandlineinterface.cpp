@@ -210,6 +210,37 @@ int CommandLineInterface::removeInstallation()
     }
 }
 
+int CommandLineInterface::createOfflineInstaller()
+{
+    if (!initialize())
+        return EXIT_FAILURE;
+    if (!m_core->isInstaller() || m_core->isOfflineOnly()) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+            << "Offline installer can only be created with an online installer.";
+        return EXIT_FAILURE;
+    }
+    if (m_positionalArguments.isEmpty()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Missing components argument.";
+        return EXIT_FAILURE;
+    }
+    if (!(setTargetDir() && checkLicense()))
+        return EXIT_FAILURE;
+
+    if (m_parser.isSet(CommandLineOptions::scOfflineInstallerNameLong)) {
+        m_core->setOfflineBinaryName(m_parser.value(CommandLineOptions::scOfflineInstallerNameLong));
+    } else {
+        const QString offlineName = m_core->offlineBinaryName();
+        qCDebug(QInstaller::lcInstallerInstallLog) << "No filename specified for "
+            "the generated installer, using default name:" << offlineName;
+    }
+    try {
+        return m_core->createOfflineInstaller(m_positionalArguments);
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
+        return EXIT_FAILURE;
+    }
+}
+
 bool CommandLineInterface::checkLicense()
 {
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();

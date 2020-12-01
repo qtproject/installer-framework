@@ -33,6 +33,8 @@
 #include <QtCore/QSet>
 #include <QtCore/QString>
 #include <QtCore/QStringList>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomNodeList>
 
 QT_BEGIN_NAMESPACE
 class QFileInfo;
@@ -93,6 +95,9 @@ private:
 
     QString replacePath(const QString &path, const QString &pathBefore, const QString &pathAfter);
     void replaceHighDpiImage(QString &imagePath);
+
+    void INSTALLER_EXPORT trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags);
+    void copyConfigChildElements(QDomDocument &dom, const QDomNodeList &objects, const QString &sourceDir, const QString &targetDir);
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);

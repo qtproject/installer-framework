@@ -609,12 +609,19 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                 if (!hasUnifiedMetaFile) {
                     const QDomElement sha1 = el.firstChildElement(QInstaller::scSHA1);
                     if (!sha1.isNull()) {
+                        // 1. First, try with normal repository structure
                         QString metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
                             QString::fromLatin1("meta.7z"), info.version);
 
                         if (!QFileInfo(metaFile).exists()) {
-                            throw QInstaller::Error(QString::fromLatin1("Could not find meta archive for component "
-                                "%1 %2 in repository %3.").arg(info.name, info.version, it->filePath()));
+                            // 2. If that does not work, check for fetched temporary repository structure
+                            metaFile = QString::fromLatin1("%1/%2-%3-%4").arg(it->filePath(),
+                                info.name, info.version, QString::fromLatin1("meta.7z"));
+
+                            if (!QFileInfo(metaFile).exists()) {
+                                throw QInstaller::Error(QString::fromLatin1("Could not find meta archive for component "
+                                    "%1 %2 in repository %3.").arg(info.name, info.version, it->filePath()));
+                            }
                         }
                         info.metaFile = metaFile;
                     }

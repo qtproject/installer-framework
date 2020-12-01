@@ -102,22 +102,22 @@ private slots:
         QLoggingCategory::setFilterRules(loggingRules);
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.\n");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("A")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.\n");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("AB")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.\n");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.\n");
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("MissingComponent")));
         QCOMPARE(PackageManagerCore::Success, core->status());

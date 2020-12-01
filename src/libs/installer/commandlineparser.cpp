@@ -59,6 +59,8 @@ CommandLineParser::CommandLineParser()
             .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
         + indent + QString::fromLatin1("%1, %2 - search available packages - <regexp>\n")
             .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong)
+        + indent + QString::fromLatin1("%1, %2 - create offline installer from selected packages - <pkg ...>\n")
+            .arg(CommandLineOptions::scCreateOfflineShort, CommandLineOptions::scCreateOfflineLong)
         + indent + QString::fromLatin1("%1, %2 - uninstall all packages and remove entire program directory")
             .arg(CommandLineOptions::scPurgeShort, CommandLineOptions::scPurgeLong);
 
@@ -128,6 +130,11 @@ CommandLineParser::CommandLineParser()
         << CommandLineOptions::scRootShort << CommandLineOptions::scRootLong,
         QLatin1String("[CLI] Set installation root directory."),
         QLatin1String("directory")));
+    m_parser.addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scOfflineInstallerNameShort << CommandLineOptions::scOfflineInstallerNameLong,
+        QLatin1String("[CLI] Set custom filename for the generated offline installer. Without this "
+                      "the original filename is used with an added \"_offline-yyyy-MM-dd\" suffix."),
+        QLatin1String("filename")));
     m_parser.addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scPlatformShort << CommandLineOptions::scPlatformLong,
         QLatin1String("Use the specified platform plugin."),

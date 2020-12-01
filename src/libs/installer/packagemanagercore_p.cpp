@@ -48,6 +48,7 @@
 #include "uninstallercalculator.h"
 #include "componentchecker.h"
 #include "globals.h"
+#include "binarycreator.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -238,6 +239,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
+    , m_offlineGenerator(false)
 {
 }
 
@@ -276,6 +278,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
+    , m_offlineGenerator(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -302,6 +305,10 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
             m_core, &PackageManagerCore::uninstallationStarted);
     connect(this, &PackageManagerCorePrivate::uninstallationFinished,
             m_core, &PackageManagerCore::uninstallationFinished);
+    connect(this, &PackageManagerCorePrivate::offlineGenerationStarted,
+            m_core, &PackageManagerCore::offlineGenerationStarted);
+    connect(this, &PackageManagerCorePrivate::offlineGenerationFinished,
+            m_core, &PackageManagerCore::offlineGenerationFinished);
 }
 
 PackageManagerCorePrivate::~PackageManagerCorePrivate()
@@ -638,6 +645,10 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
                ProgressCoordinator::instance(), &ProgressCoordinator::reset);
     connect(this, &PackageManagerCorePrivate::uninstallationStarted,
             ProgressCoordinator::instance(), &ProgressCoordinator::reset);
+    disconnect(this, &PackageManagerCorePrivate::offlineGenerationStarted,
+               ProgressCoordinator::instance(), &ProgressCoordinator::reset);
+    connect(this, &PackageManagerCorePrivate::offlineGenerationStarted,
+            ProgressCoordinator::instance(), &ProgressCoordinator::reset);
 
     if (!isInstaller())
         m_localPackageHub->setFileName(componentsXmlPath());
@@ -694,6 +705,11 @@ bool PackageManagerCorePrivate::isUpdater() const
 bool PackageManagerCorePrivate::isPackageManager() const
 {
     return m_magicBinaryMarker == BinaryContent::MagicPackageManagerMarker;
+}
+
+bool PackageManagerCorePrivate::isOfflineGenerator() const
+{
+    return m_offlineGenerator;
 }
 
 bool PackageManagerCorePrivate::statusCanceledOrFailed() const
@@ -754,6 +770,18 @@ QString PackageManagerCorePrivate::maintenanceToolName() const
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
 #elif defined(Q_OS_WIN)
     filename += QLatin1String(".exe");
+#endif
+    return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
+}
+
+QString PackageManagerCorePrivate::offlineBinaryName() const
+{
+    QString filename = m_core->value(scOfflineBinaryName, qApp->applicationName()
+        + QLatin1String("_offline-") + QDate::currentDate().toString(Qt::ISODate));
+#if defined(Q_OS_WIN)
+    const QString suffix = QLatin1String(".exe");
+    if (!filename.endsWith(suffix))
+        filename += suffix;
 #endif
     return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
 }
@@ -1477,6 +1505,58 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
     m_needToWriteMaintenanceTool = false;
 }
 
+void PackageManagerCorePrivate::writeOfflineBaseBinary()
+{
+    qint64 size;
+    QFile input(installerBinaryPath());
+
+    QInstaller::openForRead(&input);
+#ifndef Q_OS_MACOS
+    BinaryLayout layout = BinaryContent::binaryLayout(&input, BinaryContent::MagicCookie);
+    size = layout.endOfExectuable;
+#else
+    // On macOS the data is on a separate file so we can just get the size
+    size = input.size();
+#endif
+
+    const QString offlineBinaryTempName = offlineBinaryName() + QLatin1String(".new");
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Writing offline base binary:" << offlineBinaryTempName;
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Writing offline base binary."));
+
+    QFile out(generateTemporaryFileName());
+    QInstaller::openForWrite(&out); // throws an exception in case of error
+
+    if (!input.seek(0))
+        throw Error(tr("Failed to seek in file %1: %2").arg(input.fileName(), input.errorString()));
+
+    QInstaller::appendData(&out, &input, size);
+
+    {
+        // Check if we have an existing binary, for any reason
+        QFile dummy(offlineBinaryTempName);
+        if (dummy.exists() && !dummy.remove()) {
+            throw Error(tr("Cannot remove file \"%1\": %2").arg(dummy.fileName(),
+                dummy.errorString()));
+        }
+        // Offline binary name might contain non-existing leading directories
+        const QString offlineBinaryAbsolutePath = QFileInfo(offlineBinaryTempName).absolutePath();
+        QDir dummyDir(offlineBinaryAbsolutePath);
+        if (!dummyDir.exists() && !dummyDir.mkpath(offlineBinaryAbsolutePath)) {
+            throw Error(tr("Cannot create directory \"%1\".").arg(dummyDir.absolutePath()));
+        }
+    }
+
+    if (!out.copy(offlineBinaryTempName)) {
+        throw Error(tr("Cannot write offline binary to \"%1\": %2").arg(offlineBinaryTempName,
+            out.errorString()));
+    }
+
+    if (out.exists() && !out.remove()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << tr("Cannot remove temporary file \"%1\": %2")
+            .arg(out.fileName(), out.errorString());
+    }
+}
+
 QString PackageManagerCorePrivate::registerPath()
 {
 #ifdef Q_OS_WIN
@@ -1927,6 +2007,138 @@ bool PackageManagerCorePrivate::runUninstaller()
         success ? tr("Uninstallation completed successfully.") : tr("Uninstallation aborted.")));
 
     emit uninstallationFinished();
+    return success;
+}
+
+bool PackageManagerCorePrivate::runOfflineGenerator()
+{
+    const QString offlineBinaryTempName = offlineBinaryName() + QLatin1String(".new");
+    const QString tempSettingsFilePath = generateTemporaryFileName()
+        + QDir::separator() + QLatin1String("config.xml");
+
+    bool adminRightsGained = false;
+    try {
+        setStatus(PackageManagerCore::Running);
+        emit offlineGenerationStarted(); // Resets also the ProgressCoordninator
+
+        // Never write the maintenance tool when generating offline installer
+        m_needToWriteMaintenanceTool = false;
+
+        // Reserve some progress for the final writing, it should take
+        // only a fraction of time spent in the download part
+        ProgressCoordinator::instance()->addReservePercentagePoints(1);
+
+        const QString target = QDir::cleanPath(targetDir().replace(QLatin1Char('\\'), QLatin1Char('/')));
+        if (target.isEmpty())
+            throw Error(tr("Variable 'TargetDir' not set."));
+
+        // Create target directory for installer to be generated
+        if (!QDir(target).exists()) {
+            if (!QDir().mkpath(target)) {
+                adminRightsGained = m_core->gainAdminRights();
+                // Try again with admin privileges
+                if (!QDir().mkpath(target))
+                    throw Error(tr("Cannot create target directory for installer."));
+            }
+        } else if (QDir(target).exists()) {
+            if (!directoryWritable(targetDir()))
+                adminRightsGained = m_core->gainAdminRights();
+        }
+        setDefaultFilePermissions(target, DefaultFilePermissions::Executable);
+
+        // Show that there was some work
+        ProgressCoordinator::instance()->addManualPercentagePoints(1);
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing offline generation..."));
+
+        const QList<Component*> componentsToInclude = m_core->orderedComponentsToInstall();
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Included components:" << componentsToInclude.size();
+
+        // Give full part progress size as this is the most time consuming step
+        m_core->downloadNeededArchives(double(1));
+
+        const QString installerBaseReplacement = replaceVariables(m_offlineBaseBinaryUnreplaced);
+        if (!installerBaseReplacement.isEmpty() && QFileInfo(installerBaseReplacement).exists()) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
+                << offlineBinaryTempName;
+
+            if (!QFile::copy(installerBaseReplacement, offlineBinaryTempName)) {
+                qCWarning(QInstaller::lcInstallerInstallLog) << QString::fromLatin1("Cannot copy "
+                    "replacemement binary to temporary location \"%1\" from \"%2\".")
+                    .arg(offlineBinaryTempName, installerBaseReplacement);
+            }
+        } else {
+            writeOfflineBaseBinary();
+        }
+
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Preparing installer configuration..."));
+
+        // Create copy of internal config file and data, remove repository related elements
+        QInstaller::trimmedCopyConfigData(m_data.settingsFilePath(), tempSettingsFilePath,
+            QStringList() << scRemoteRepositories << scRepositoryCategories);
+
+        // Assemble final installer binary
+        QInstallerTools::BinaryCreatorArgs args;
+        args.target = offlineBinaryName();
+#ifdef Q_OS_MACOS
+        // Target is a disk image on macOS
+        args.target.append(QLatin1String(".dmg"));
+#endif
+        args.templateBinary = offlineBinaryTempName;
+        args.offlineOnly = true;
+        args.configFile = tempSettingsFilePath;
+        args.ftype = QInstallerTools::Include;
+        // Add possible custom resources
+        if (!m_offlineGeneratorResourceCollections.isEmpty())
+            args.resources = m_offlineGeneratorResourceCollections;
+
+        foreach (auto component, componentsToInclude) {
+            args.filteredPackages.append(component->name());
+            args.repositoryDirectories.append(component->localTempPath());
+        }
+        args.repositoryDirectories.removeDuplicates();
+
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Creating the installer..."));
+
+        QString errorMessage;
+        if (QInstallerTools::createBinary(args, errorMessage) == EXIT_FAILURE) {
+            throw Error(tr("Failed to create offline installer. %1").arg(errorMessage));
+        } else {
+            setStatus(PackageManagerCore::Success);
+        }
+
+        // Fake a possible wrong value to show a full progress
+        const int progress = ProgressCoordinator::instance()->progressInPercentage();
+        // This should be only the reserved one (1) from the beginning
+        if (progress < 100)
+            ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
+
+    } catch (const Error &err) {
+        if (m_core->status() != PackageManagerCore::Canceled) {
+            setStatus(PackageManagerCore::Failure);
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("installationError"), tr("Error"), err.message());
+        }
+    }
+    QFile tempBinary(offlineBinaryTempName);
+    if (tempBinary.exists() && !tempBinary.remove()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << tr("Cannot remove temporary file \"%1\": %2")
+            .arg(tempBinary.fileName(), tempBinary.errorString());
+    }
+
+    QDir tempSettingsDir(QFileInfo(tempSettingsFilePath).absolutePath());
+    if (tempSettingsDir.exists() && !tempSettingsDir.removeRecursively()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << tr("Cannot remove temporary directory \"%1\".")
+            .arg(tempSettingsDir.path());
+    }
+
+    const bool success = m_core->status() == PackageManagerCore::Success;
+    if (adminRightsGained)
+        m_core->dropAdminRights();
+
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QString::fromLatin1("\n%1").arg(
+        success ? tr("Offline generation completed successfully.") : tr("Offline generation aborted!")));
+
+    emit offlineGenerationFinished();
     return success;
 }
 

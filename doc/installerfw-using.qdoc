@@ -470,6 +470,20 @@
     maintenancetool.exe purge
     \endcode
 
+    \section1 Creating Custom Offline Installers
+
+    To create a personal offline installer containing a selected set of components from online repositories,
+    use the \c create-offline command. This is a useful feature for scenarios where the same installation
+    content will be deployed multiple times or on several machines, as it saves time spent on downloading
+    component archives and enables easily reproducible installations. The \c --offline-installer-name
+    option can be used to set a desired name for the generated offline installer.
+
+    Note that you can create offline installers only from online installers with valid repositories enabled.
+
+    \code
+    installer.exe --root "C:\TargetFolder" --offline-installer-name "MyInstaller" create-offline componentA componentB
+    \endcode
+
     \section1 Unattended Usage
 
     By default, the generated installers may ask for additional information during installation,

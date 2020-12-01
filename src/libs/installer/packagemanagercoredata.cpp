@@ -70,8 +70,9 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     // TODO: add more platforms as needed...
 #endif
 
-    m_settings = Settings::fromFileAndPrefix(QLatin1String(":/metadata/installer-config/config.xml"),
-        QLatin1String(":/metadata/installer-config/"), Settings::RelaxedParseMode);
+    m_settingsFilePath = QLatin1String(":/metadata/installer-config/config.xml");
+    m_settings = Settings::fromFileAndPrefix(m_settingsFilePath,
+        QFileInfo(m_settingsFilePath).absolutePath(), Settings::RelaxedParseMode);
 
     // fill the variables defined in the settings
     m_variables.insert(QLatin1String("ProductName"), m_settings.applicationName());

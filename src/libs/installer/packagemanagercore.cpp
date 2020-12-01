@@ -317,6 +317,18 @@ using namespace QInstaller;
 */
 
 /*!
+    \fn QInstaller::PackageManagerCore::offlineGenerationStarted()
+
+    \sa {installer::offlineGenerationStarted()}{installer.offlineGenerationStarted()}
+*/
+
+/*!
+    \fn QInstaller::PackageManagerCore::offlineGenerationFinished()
+
+    \sa {installer::offlineGenerationFinished()}{installer.offlineGenerationFinished()}
+*/
+
+/*!
     \fn QInstaller::PackageManagerCore::titleMessageChanged(const QString &title)
 
     Emitted when the text of the installer status (on the PerformInstallation page) changes to
@@ -2249,6 +2261,47 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
 }
 
 /*!
+    \internal
+
+    Tries to set \c Qt::CheckStateRole to \c Qt::Checked for given \a components in the
+    default component model. Returns \c true if \a components contains at least one component
+    eligible for installation, otherwise returns \c false. An error message can be retrieved
+    with \a errorMessage.
+*/
+bool PackageManagerCore::checkComponentsForInstallation(const QStringList &components, QString &errorMessage)
+{
+    bool installComponentsFound = false;
+
+    ComponentModel *model = defaultComponentModel();
+    foreach (const QString &name, components) {
+        const QModelIndex &idx = model->indexFromComponentName(name);
+        Component *component = componentByName(name);
+        if (component && idx.isValid()) {
+            if ((model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) && !component->forcedInstallation()) {
+                // User cannot select the component, check why
+                if (component->autoDependencies().count() > 0) {
+                    errorMessage.append(tr("Cannot install component %1. Component is installed only as automatic "
+                        "dependency to %2.\n").arg(name, component->autoDependencies().join(QLatin1Char(','))));
+                } else if (!component->isCheckable()) {
+                    errorMessage.append(tr("Cannot install component %1. Component is not checkable meaning you "
+                        "have to select one of the subcomponents.\n").arg(name));
+                }
+            } else if (component->isInstalled()) {
+                errorMessage.append(tr("Component %1 already installed\n").arg(name));
+            } else {
+                model->setData(idx, Qt::Checked, Qt::CheckStateRole);
+                installComponentsFound = true;
+            }
+        } else { // idx is invalid and component valid when we have invisible virtual component
+            component && component->isVirtual()
+                ? errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name))
+                : errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+        }
+    }
+    return installComponentsFound;
+}
+
+/*!
     Lists installed packages without GUI. List of packages can be filtered with \a regexp.
 */
 void PackageManagerCore::listInstalledPackages(const QString &regexp)
@@ -2451,6 +2504,33 @@ PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
 }
 
 /*!
+    Creates an offline installer from selected \a componentsToAdd without displaying
+    a user interface. Virtual components cannot be selected unless made visible with
+    --show-virtual-components as in installation. AutoDependOn nor non-checkable components
+    cannot be selected directly. Returns \c PackageManagerCore::Status.
+*/
+PackageManagerCore::Status PackageManagerCore::createOfflineInstaller(const QStringList &componentsToAdd)
+{
+    setOfflineGenerator();
+    // init default model before fetching remote packages tree
+    ComponentModel *model = defaultComponentModel();
+    Q_UNUSED(model);
+    if (!fetchRemotePackagesTree())
+        return status();
+
+    QString errorMessage;
+    if (checkComponentsForInstallation(componentsToAdd, errorMessage)) {
+        if (d->calculateComponentsAndRun()) {
+            qCDebug(QInstaller::lcInstallerInstallLog)
+                << "Created installer to:" << offlineBinaryName();
+        }
+    } else {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
+    }
+    return status();
+}
+
+/*!
     Installs the selected components \a components without displaying a user
     interface. Virtual components cannot be installed unless made visible with
     --show-virtual-components. AutoDependOn nor non-checkable components cannot
@@ -2475,39 +2555,18 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
         }
     }
 
+    // init default model before fetching remote packages tree
     ComponentModel *model = defaultComponentModel();
+    Q_UNUSED(model);
     if (!fetchRemotePackagesTree())
         return status();
 
-    bool installComponentsFound = false;
-    foreach (const QString &name, components){
-        const QModelIndex &idx = model->indexFromComponentName(name);
-        Component *component = componentByName(name);
-        if (idx.isValid()) {
-            if ((model->data(idx, Qt::CheckStateRole) ==  QVariant::Invalid) &&
-                    !component->forcedInstallation()) { // User cannot select the component, check why
-                if (component && component->autoDependencies().count() > 0)
-                    qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install component "<< name
-                        << ". Component is installed only as automatic dependency to "<< component->autoDependencies().join(QLatin1Char(',')) << ".";
-                if (component && !component->isCheckable())
-                    qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install component "<< name
-                        <<". Component is not checkable meaning you have to select one of the subcomponents.";
-            } else if (component->isInstalled()) {
-                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Component " << name <<" already installed";
-            } else {
-                model->setData(idx, Qt::Checked, Qt::CheckStateRole);
-                installComponentsFound = true;
-            }
-        } else { // idx is invalid and component valid when we have invisible virtual component
-            if (component && component->isVirtual())
-                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << name <<". Component is virtual.";
-            else
-                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << name <<". Component not found.";
-        }
-    }
-    if (installComponentsFound) {
+    QString errorMessage;
+    if (checkComponentsForInstallation(components, errorMessage)) {
         if (d->calculateComponentsAndRun())
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
+    } else {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
     }
     return status();
 }
@@ -3045,6 +3104,27 @@ void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 }
 
 /*!
+    Sets the \c installerbase binary located at \a path to use when writing the
+    offline installer. Setting this makes it possible to run the offline generator
+    in cases where we are not running a real installer, i.e. when executing autotests.
+
+    For normal runs, the executable segment of the running installer will be used.
+*/
+void PackageManagerCore::setOfflineBaseBinary(const QString &path)
+{
+    d->m_offlineBaseBinaryUnreplaced = path;
+}
+
+/*!
+    Adds the resource collection in \a rcPath to the list of resource files
+    to be included into the generated offline installer binary.
+*/
+void PackageManagerCore::addResourcesForOfflineGeneration(const QString &rcPath)
+{
+    d->m_offlineGeneratorResourceCollections.append(rcPath);
+}
+
+/*!
     Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
     returned. Additionally, on Windows, \a key can be a registry key.
 
@@ -3199,6 +3279,22 @@ QString PackageManagerCore::installerBinaryPath() const
 }
 
 /*!
+    Sets the \a name for the generated offline binary.
+*/
+void PackageManagerCore::setOfflineBinaryName(const QString &name)
+{
+    setValue(scOfflineBinaryName, name);
+}
+
+/*!
+    Returns the path set for the generated offline binary.
+*/
+QString PackageManagerCore::offlineBinaryName() const
+{
+    return d->offlineBinaryName();
+}
+
+/*!
     \sa {installer::setInstaller}{installer.setInstaller}
     \sa isInstaller(), setUpdater(), setPackageManager()
 */
@@ -3293,6 +3389,24 @@ bool PackageManagerCore::isPackageManager() const
 }
 
 /*!
+    Sets current installer to be offline generator based on \a offlineGenerator.
+*/
+void PackageManagerCore::setOfflineGenerator(bool offlineGenerator)
+{
+    d->m_offlineGenerator = offlineGenerator;
+}
+
+/*!
+    Returns \c true if current installer is executed as offline generator.
+
+    \sa {installer::isOfflineGenerator}{installer.isOfflineGenerator}
+*/
+bool PackageManagerCore::isOfflineGenerator() const
+{
+    return d->isOfflineGenerator();
+}
+
+/*!
     Sets the installer magic binary marker based on \a magicMarker and
     userSetBinaryMarker to \c true.
 */
@@ -3380,6 +3494,16 @@ bool PackageManagerCore::runPackageUpdater()
 }
 
 /*!
+    Runs the offline generator. Returns \c true on success, \c false otherwise.
+
+    \sa {installer::runOfflineGenerator}{installer.runOfflineGenerator}
+*/
+bool PackageManagerCore::runOfflineGenerator()
+{
+    return d->runOfflineGenerator();
+}
+
+/*!
     \sa {installer::languageChanged}{installer.languageChanged}
 */
 void PackageManagerCore::languageChanged()
@@ -3389,17 +3513,20 @@ void PackageManagerCore::languageChanged()
 }
 
 /*!
-    Runs the installer, uninstaller, updater, or package manager, depending on
+    Runs the installer, uninstaller, updater, package manager, or offline generator depending on
     the type of this binary. Returns \c true on success, otherwise \c false.
 */
 bool PackageManagerCore::run()
 {
-    if (isInstaller())
+    if (isOfflineGenerator())
+        return d->runOfflineGenerator();
+    else if (isInstaller())
         return d->runInstaller();
     else if (isUninstaller())
         return d->runUninstaller();
     else if (isMaintainer())
         return d->runPackageUpdater();
+
     return false;
 }
 

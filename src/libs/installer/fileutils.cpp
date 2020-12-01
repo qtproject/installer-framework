@@ -29,6 +29,7 @@
 
 #include "globals.h"
 #include "constants.h"
+#include "fileio.h"
 #include <errors.h>
 
 #include <QtCore/QDateTime>
@@ -722,5 +723,99 @@ void QInstaller::replaceHighDpiImage(QString &imagePath)
         QString highdpiPixmap = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + scHighDpi + fi.suffix();
         if (QFileInfo::exists(highdpiPixmap))
             imagePath = highdpiPixmap;
+    }
+}
+
+/*!
+    Copies an internal configuration file from \a source to \a target. The XML elements,
+    and their children, specified by \a elementsToRemoveTags will be removed from the \a target
+    file. All relative filenames referenced in the \a source configuration file will be
+    also copied to the location of the \a target file.
+
+    Throws \c QInstaller::Error in case of failure.
+*/
+void QInstaller::trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags)
+{
+    qCDebug(QInstaller::lcDeveloperBuild) << "Copying configuration file and associated data.";
+
+    const QString targetPath = QFileInfo(target).absolutePath();
+    if (!QDir(targetPath).exists() && !QDir().mkpath(targetPath)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Cannot create directory \"%1\".").arg(targetPath));
+    }
+
+    QFile xmlFile(source);
+    if (!xmlFile.copy(target)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Cannot copy file \"%1\" to \"%2\": %3").arg(source, target, xmlFile.errorString()));
+    }
+    setDefaultFilePermissions(target, DefaultFilePermissions::NonExecutable);
+
+    xmlFile.setFileName(target);
+    QInstaller::openForRead(&xmlFile); // throws in case of error
+
+    QDomDocument dom;
+    dom.setContent(&xmlFile);
+    xmlFile.close();
+
+    foreach (auto elementTag, elementsToRemoveTags) {
+        QDomNodeList elementsToRemove = dom.elementsByTagName(elementTag);
+        for (int i = 0; i < elementsToRemove.length(); i++) {
+            QDomNode elementToRemove = elementsToRemove.item(i);
+            elementToRemove.parentNode().removeChild(elementToRemove);
+
+            qCDebug(QInstaller::lcDeveloperBuild) << "Removed dom element from target file:"
+                << elementToRemove.toElement().text();
+        }
+    }
+
+    const QDomNodeList children = dom.documentElement().childNodes();
+    copyConfigChildElements(dom, children, QFileInfo(source).absolutePath(), QFileInfo(target).absolutePath());
+
+    QInstaller::openForWrite(&xmlFile); // throws in case of error
+    QTextStream stream(&xmlFile);
+    dom.save(stream, 4); // use 4 as the amount of space for indentation
+
+    qCDebug(QInstaller::lcDeveloperBuild) << "Finished copying configuration data.";
+}
+
+/*!
+    \internal
+
+    Recursively iterates over a list of QDomNode \a objects belonging to \a dom and their
+    children accordingly, searching for relative file names. Found files are copied from
+    \a sourceDir to \a targetDir.
+
+    Throws \c QInstaller::Error in case of failure.
+*/
+void QInstaller::copyConfigChildElements(QDomDocument &dom, const QDomNodeList &objects,
+    const QString &sourceDir, const QString &targetDir)
+{
+    for (int i = 0; i < objects.length(); i++) {
+        QDomElement domElement = objects.at(i).toElement();
+        if (domElement.isNull())
+            continue;
+
+        // Iterate recursively over all child nodes
+        const QDomNodeList elementChildren = domElement.childNodes();
+        QInstaller::copyConfigChildElements(dom, elementChildren, sourceDir, targetDir);
+
+        // Filename may also contain a path relative to source directory but we
+        // copy it strictly into target directory without extra paths
+        const QString newName = domElement.text()
+            .replace(QRegExp(QLatin1String("\\\\|/|\\.|:")), QLatin1String("_"));
+
+        const QString targetFile = targetDir + QDir::separator() + newName;
+        const QFileInfo elementFileInfo = QFileInfo(sourceDir, domElement.text());
+
+        if (!elementFileInfo.exists() || elementFileInfo.isDir())
+            continue;
+
+        domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
+
+        if (!QFile::copy(elementFileInfo.absoluteFilePath(), targetFile)) {
+            throw Error(QCoreApplication::translate("QInstaller",
+                "Cannot copy file \"%1\" to \"%2\".").arg(elementFileInfo.absoluteFilePath(), targetFile));
+        }
     }
 }

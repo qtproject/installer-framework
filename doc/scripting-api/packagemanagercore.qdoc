@@ -211,6 +211,22 @@
 */
 
 /*!
+    \qmlsignal installer::offlineGenerationStarted()
+
+    Triggered when offline installer generation has started.
+
+    \sa offlineGenerationFinished()
+*/
+
+/*!
+    \qmlsignal installer::offlineGenerationFinished
+
+    Triggered when offline installer generation has finished.
+
+    \sa offlineGenerationStarted()
+*/
+
+/*!
     \qmlsignal installer::titleMessageChanged(string title)
 
     Emitted when the text of the installer status (on the PerformInstallation page) changes to
@@ -832,6 +848,12 @@
 */
 
 /*!
+    \qmlmethod boolean installer::isOfflineGenerator()
+
+    Returns \c true if the application is executed in offline generation mode.
+*/
+
+/*!
     \qmlmethod boolean installer::isUserSetBinaryMarker()
 
     Returns \c true if the magic binary marker has been set by user.
@@ -865,6 +887,12 @@
     \qmlmethod boolean installer::runPackageUpdater()
 
     Runs the package updater. Returns \c true on success, \c false otherwise.
+*/
+
+/*!
+    \qmlmethod boolean installer::runOfflineGenerator()
+
+    Runs the offline generator. Returns \c true on success, \c false otherwise.
 */
 
 /*!

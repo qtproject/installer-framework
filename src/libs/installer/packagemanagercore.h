@@ -160,6 +160,9 @@ public:
     Q_INVOKABLE static QString findPath(const QString &name, const QStringList &paths = QStringList());
 
     Q_INVOKABLE void setInstallerBaseBinary(const QString &path);
+    void setOfflineBaseBinary(const QString &path);
+
+    void addResourcesForOfflineGeneration(const QString &rcPath);
 
     // parameter handling
     Q_INVOKABLE bool containsValue(const QString &key) const;
@@ -178,6 +181,9 @@ public:
 
     QString maintenanceToolName() const;
     QString installerBinaryPath() const;
+
+    void setOfflineBinaryName(const QString &name);
+    QString offlineBinaryName() const;
 
     bool testChecksum() const;
     void setTestChecksum(bool test);
@@ -241,6 +247,7 @@ public:
     PackageManagerCore::Status installDefaultComponentsSilently();
     PackageManagerCore::Status uninstallComponentsSilently(const QStringList& components);
     PackageManagerCore::Status removeInstallationSilently();
+    PackageManagerCore::Status createOfflineInstaller(const QStringList &componentsToAdd);
 
     // convenience
     Q_INVOKABLE void setInstaller();
@@ -255,6 +262,9 @@ public:
 
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
+
+    void setOfflineGenerator(bool offlineGenerator = true);
+    Q_INVOKABLE bool isOfflineGenerator() const;
 
     void setUserSetBinaryMarker(qint64 magicMarker);
     Q_INVOKABLE bool isUserSetBinaryMarker() const;
@@ -323,6 +333,7 @@ public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();
     bool runPackageUpdater();
+    bool runOfflineGenerator();
     void interrupt();
     void setCanceled();
     void languageChanged();
@@ -360,6 +371,8 @@ Q_SIGNALS:
     void updateFinished();
     void uninstallationStarted();
     void uninstallationFinished();
+    void offlineGenerationStarted();
+    void offlineGenerationFinished();
     void titleMessageChanged(const QString &title);
 
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
@@ -399,6 +412,7 @@ private:
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
     bool componentUninstallableFromCommandLine(const QString &componentName);
+    bool checkComponentsForInstallation(const QStringList &components, QString &errorMessage);
 
 private:
     PackageManagerCorePrivate *const d;

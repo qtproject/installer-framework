@@ -45,6 +45,10 @@ public:
     Settings &settings() const;
     QStringList keys() const;
 
+    inline QString settingsFilePath() {
+        return m_settingsFilePath;
+    }
+
     bool contains(const QString &key) const;
     bool setValue(const QString &key, const QString &normalizedValue);
     QVariant value(const QString &key, const QVariant &_default = QVariant()) const;
@@ -54,6 +58,7 @@ public:
 
 private:
     mutable Settings m_settings;
+    QString m_settingsFilePath;
     QHash<QString, QString> m_variables;
 };
 

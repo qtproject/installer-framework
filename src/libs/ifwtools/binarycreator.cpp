@@ -37,6 +37,7 @@
 #include "repository.h"
 #include "settings.h"
 #include "utils.h"
+#include "fileutils.h"
 
 #include <QDateTime>
 #include <QDirIterator>
@@ -433,8 +434,13 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         return EXIT_FAILURE;
     }
 
+#ifdef Q_OS_MACOS
+    // installer executable
+    chmod755(input.outputPath);
+#endif
 #ifndef Q_OS_WIN
-    chmod755(out.fileName());
+    // installer executable on linux, installer.dat on macOS
+    chmod755(targetName);
 #endif
     QFile::remove(tempFile);
 
@@ -580,6 +586,9 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
     const QString targetConfigFile = targetDir + QLatin1String("/config.xml");
     QInstallerTools::copyWithException(sourceConfigFile, targetConfigFile, QLatin1String("configuration"));
 
+    // Permissions might be set to bogus values
+    QInstaller::setDefaultFilePermissions(targetConfigFile, DefaultFilePermissions::NonExecutable);
+
     QFile configXml(targetConfigFile);
     QInstaller::openForRead(&configXml);
 
@@ -699,13 +708,19 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             "contain any components apart from the root component.");
         return EXIT_FAILURE;
     }
-#ifdef Q_OS_WIN
-    if (!args.templateBinary.endsWith(suffix))
-        args.templateBinary = args.templateBinary + suffix;
-#endif
     if (!QFileInfo(args.templateBinary).exists()) {
+#ifdef Q_OS_WIN
+        if (!args.templateBinary.endsWith(suffix))
+            args.templateBinary = args.templateBinary + suffix;
+        // Try again with added executable suffix
+        if (!QFileInfo(args.templateBinary).exists()) {
+            argumentError = QString::fromLatin1("Error: Template base binary not found at the specified location.");
+            return EXIT_FAILURE;
+        }
+#else
         argumentError = QString::fromLatin1("Error: Template not found at the specified location.");
         return EXIT_FAILURE;
+#endif
     }
     const QFileInfo fi(args.configFile);
     if (!fi.exists()) {
