@@ -85,6 +85,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::application::EventMetadata, md5_session_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::application::EventMetadata, application_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::application::EventMetadata, operating_system_uuid_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::application::EventMetadata, journey_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::application::Application, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -99,7 +100,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::application::EventMetadata)},
-  { 8, -1, sizeof(::eve_launcher::application::Application)},
+  { 9, -1, sizeof(::eve_launcher::application::Application)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -129,26 +130,26 @@ void AddDescriptorsImpl() {
   InitDefaults();
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
       "\n\036eve_launcher/application.proto\022\030eve_la"
-      "uncher.application\"\177\n\rEventMetadata\022\023\n\013m"
-      "d5_session\030\001 \001(\014\022:\n\013application\030\002 \001(\0132%."
-      "eve_launcher.application.Application\022\035\n\025"
-      "operating_system_uuid\030\003 \001(\014\"\230\003\n\013Applicat"
-      "ion\022\017\n\007version\030\001 \001(\t\022C\n\nbuild_type\030\002 \001(\016"
-      "2/.eve_launcher.application.Application."
-      "BuildType\022<\n\006region\030\003 \001(\0162,.eve_launcher"
-      ".application.Application.Region\022\037\n\025no_in"
-      "staller_provider\030\004 \001(\010H\000\022\034\n\022installer_pr"
-      "ovider\030\005 \001(\tH\000\"d\n\tBuildType\022\031\n\025BUILDTYPE"
-      "_UNSPECIFIED\020\000\022\025\n\021BUILDTYPE_RELEASE\020\001\022\022\n"
-      "\016BUILDTYPE_BETA\020\002\022\021\n\rBUILDTYPE_DEV\020\003\"D\n\006"
-      "Region\022\026\n\022REGION_UNSPECIFIED\020\000\022\020\n\014REGION"
-      "_WORLD\020\001\022\020\n\014REGION_CHINA\020\002B\n\n\010providerBW"
-      "ZCgithub.com/ccpgames/eve-proto-go/gener"
-      "ated/eve_launcher/application\252\002\017EveLaunc"
-      "her.Appb\006proto3"
+      "uncher.application\"\220\001\n\rEventMetadata\022\023\n\013"
+      "md5_session\030\001 \001(\014\022:\n\013application\030\002 \001(\0132%"
+      ".eve_launcher.application.Application\022\035\n"
+      "\025operating_system_uuid\030\003 \001(\014\022\017\n\007journey\030"
+      "\004 \001(\014\"\230\003\n\013Application\022\017\n\007version\030\001 \001(\t\022C"
+      "\n\nbuild_type\030\002 \001(\0162/.eve_launcher.applic"
+      "ation.Application.BuildType\022<\n\006region\030\003 "
+      "\001(\0162,.eve_launcher.application.Applicati"
+      "on.Region\022\037\n\025no_installer_provider\030\004 \001(\010"
+      "H\000\022\034\n\022installer_provider\030\005 \001(\tH\000\"d\n\tBuil"
+      "dType\022\031\n\025BUILDTYPE_UNSPECIFIED\020\000\022\025\n\021BUIL"
+      "DTYPE_RELEASE\020\001\022\022\n\016BUILDTYPE_BETA\020\002\022\021\n\rB"
+      "UILDTYPE_DEV\020\003\"D\n\006Region\022\026\n\022REGION_UNSPE"
+      "CIFIED\020\000\022\020\n\014REGION_WORLD\020\001\022\020\n\014REGION_CHI"
+      "NA\020\002B\n\n\010providerBWZCgithub.com/ccpgames/"
+      "eve-proto-go/generated/eve_launcher/appl"
+      "ication\252\002\017EveLauncher.Appb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 695);
+      descriptor, 713);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "eve_launcher/application.proto", &protobuf_RegisterTypes);
 }
@@ -225,6 +226,7 @@ void EventMetadata::InitAsDefaultInstance() {
 const int EventMetadata::kMd5SessionFieldNumber;
 const int EventMetadata::kApplicationFieldNumber;
 const int EventMetadata::kOperatingSystemUuidFieldNumber;
+const int EventMetadata::kJourneyFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 EventMetadata::EventMetadata()
@@ -246,6 +248,10 @@ EventMetadata::EventMetadata(const EventMetadata& from)
   if (from.operating_system_uuid().size() > 0) {
     operating_system_uuid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.operating_system_uuid_);
   }
+  journey_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.journey().size() > 0) {
+    journey_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.journey_);
+  }
   if (from.has_application()) {
     application_ = new ::eve_launcher::application::Application(*from.application_);
   } else {
@@ -257,6 +263,7 @@ EventMetadata::EventMetadata(const EventMetadata& from)
 void EventMetadata::SharedCtor() {
   md5_session_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   operating_system_uuid_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  journey_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   application_ = NULL;
 }
 
@@ -268,6 +275,7 @@ EventMetadata::~EventMetadata() {
 void EventMetadata::SharedDtor() {
   md5_session_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   operating_system_uuid_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  journey_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete application_;
 }
 
@@ -293,6 +301,7 @@ void EventMetadata::Clear() {
 
   md5_session_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   operating_system_uuid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  journey_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && application_ != NULL) {
     delete application_;
   }
@@ -346,6 +355,18 @@ bool EventMetadata::MergePartialFromCodedStream(
         break;
       }
 
+      // bytes journey = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_journey()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -390,6 +411,12 @@ void EventMetadata::SerializeWithCachedSizes(
       3, this->operating_system_uuid(), output);
   }
 
+  // bytes journey = 4;
+  if (this->journey().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      4, this->journey(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -425,6 +452,13 @@ void EventMetadata::SerializeWithCachedSizes(
         3, this->operating_system_uuid(), target);
   }
 
+  // bytes journey = 4;
+  if (this->journey().size() > 0) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        4, this->journey(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -454,6 +488,13 @@ size_t EventMetadata::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::BytesSize(
         this->operating_system_uuid());
+  }
+
+  // bytes journey = 4;
+  if (this->journey().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->journey());
   }
 
   // .eve_launcher.application.Application application = 2;
@@ -498,6 +539,10 @@ void EventMetadata::MergeFrom(const EventMetadata& from) {
 
     operating_system_uuid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.operating_system_uuid_);
   }
+  if (from.journey().size() > 0) {
+
+    journey_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.journey_);
+  }
   if (from.has_application()) {
     mutable_application()->::eve_launcher::application::Application::MergeFrom(from.application());
   }
@@ -530,6 +575,8 @@ void EventMetadata::InternalSwap(EventMetadata* other) {
   md5_session_.Swap(&other->md5_session_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   operating_system_uuid_.Swap(&other->operating_system_uuid_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  journey_.Swap(&other->journey_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(application_, other->application_);
   _internal_metadata_.Swap(&other->_internal_metadata_);

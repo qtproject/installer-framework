@@ -10,6 +10,7 @@
 #include <QRandomGenerator>
 #include <QUuid>
 #include <QDebug>
+#include <QRegularExpression>
 
 EventLogger::EventLogger()
 {
@@ -37,6 +38,32 @@ EventLogger::EventLogger()
     m_session = QString(QLatin1String("ls")) + QString(QLatin1String(hasher.result().toHex()));
 
     m_httpThreadController = new HttpThreadController();
+
+    // Get the journeyId from the installer filename
+    QUuid journeyId;
+    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
+    if (appName.length() > 35)
+    {
+        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
+        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(appName);
+        if (match.hasMatch()) {
+           qDebug() << "framework | EventLogger::EventLogger | JourneyId found in filename:" << match.captured(0);
+           journeyId = QUuid::fromString(match.captured(0));
+           qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+        }
+    }
+
+    // If journey Id was found, or we weren't able to create a QUuid from it, we create a new one instead
+    if (journeyId.isNull())
+    {
+        qDebug() << "framework | EventLogger::EventLogger | No JourneyId provided, one will be created instead";
+        journeyId = QUuid::createUuid();
+        qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+    }
+
+    m_journeyId = journeyId.toRfc4122();
+    QInstaller::setJourneyId(m_journeyId);
 }
 
 EventLogger::~EventLogger()
@@ -234,6 +261,9 @@ eve_launcher::application::EventMetadata* EventLogger::getEventMetadata()
     {
         data->set_allocated_operating_system_uuid(new std::string(m_operatingSystemUuid.data(), size_t(m_operatingSystemUuid.size())));
     }
+
+    // Set the journey
+    data->set_allocated_journey(new std::string(m_journeyId.data(), size_t(m_journeyId.size())));
 
     return data;
 }

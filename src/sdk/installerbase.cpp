@@ -133,6 +133,9 @@ int InstallerBase::run()
     if (magicMarker != QInstaller::BinaryContent::MagicInstallerMarker)
         binary.close();
 
+    // Store the name of the executable for future use
+    QInstaller::setInstallerFileName(fileName);
+
     CommandLineParser parser;
     parser.parse(arguments());
 
