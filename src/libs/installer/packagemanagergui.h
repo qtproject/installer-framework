@@ -304,10 +304,7 @@ private:
     QListWidget *m_licenseListWidget;
 
     QRadioButton *m_acceptRadioButton;
-    QRadioButton *m_rejectRadioButton;
-
     QLabel *m_acceptLabel;
-    QLabel *m_rejectLabel;
 };
 
 

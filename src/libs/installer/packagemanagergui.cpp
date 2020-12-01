@@ -1955,29 +1955,13 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_acceptLabel->setObjectName(QLatin1String("AcceptLicenseLabel"));
     m_acceptLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 
-    m_rejectRadioButton = new QRadioButton(this);
-    ClickForwarder *rejectClickForwarder = new ClickForwarder(m_rejectRadioButton);
-    m_rejectRadioButton->setObjectName(QString::fromUtf8("RejectLicenseRadioButton"));
-    m_rejectRadioButton->setShortcut(QKeySequence(tr("Alt+D", "do not agree license")));
-
-    m_rejectLabel = new QLabel;
-    m_rejectLabel->setWordWrap(true);
-    m_rejectLabel->installEventFilter(rejectClickForwarder);
-    m_rejectLabel->setObjectName(QLatin1String("RejectLicenseLabel"));
-    m_rejectLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(1, 1);
     gridLayout->addWidget(m_acceptRadioButton, 0, 0);
     gridLayout->addWidget(m_acceptLabel, 0, 1);
-    gridLayout->addWidget(m_rejectRadioButton, 1, 0);
-    gridLayout->addWidget(m_rejectLabel, 1, 1);
     layout->addLayout(gridLayout);
 
     connect(m_acceptRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
-    connect(m_rejectRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
-
-    m_rejectRadioButton->setChecked(true);
 }
 
 /*!
@@ -2050,23 +2034,19 @@ void LicenseAgreementPage::updateUi()
 {
     QString subTitleText;
     QString acceptButtonText;
-    QString rejectButtonText;
     if (m_licenseListWidget->count() == 1) {
         subTitleText = tr("Please read the following license agreement. You must accept the terms "
                           "contained in this agreement before continuing with the installation.");
         acceptButtonText = tr("I accept the license.");
-        rejectButtonText = tr("I do not accept the license.");
     } else {
         subTitleText = tr("Please read the following license agreements. You must accept the terms "
                           "contained in these agreements before continuing with the installation.");
         acceptButtonText = tr("I accept the licenses.");
-        rejectButtonText = tr("I do not accept the licenses.");
     }
     m_licenseListWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
     setColoredSubTitle(subTitleText);
 
     m_acceptLabel->setText(acceptButtonText);
-    m_rejectLabel->setText(rejectButtonText);
 
 }
 
