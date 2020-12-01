@@ -35,6 +35,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QRegExp>
+#include <QSettings>
 
 #ifdef Q_OS_WIN
 # include <windows.h>
@@ -79,17 +80,27 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
     m_variables.insert(QLatin1String("BannerPixmap"), m_settings.banner());
 
-    // fill in start menu location
-    QString startMenuPath;
-    if (m_variables.value(scAllUsers, scFalse) == scTrue)
+    // When showing the custom introduction page, we need to have the start menu path complete
+    // from the start. When showing the regular intro, we don't want the entire path at the start
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    if (confInternal.value(QLatin1String("customIntroductionPage"), false).toBool())
     {
-        startMenuPath = m_variables.value(QLatin1String("AllUserStartMenuProgramsPath"));
+        // fill in start menu location
+        QString startMenuPath;
+        if (m_variables.value(scAllUsers, scFalse) == scTrue)
+        {
+            startMenuPath = m_variables.value(QLatin1String("AllUserStartMenuProgramsPath"));
+        }
+        else
+        {
+            startMenuPath = m_variables.value(QLatin1String("UserStartMenuProgramsPath"));
+        }
+        m_variables.insert(scStartMenuDir, startMenuPath + QDir::separator() + m_settings.startMenuDir());
     }
     else
     {
-        startMenuPath = m_variables.value(QLatin1String("UserStartMenuProgramsPath"));
+        m_variables.insert(scStartMenuDir, m_settings.startMenuDir());
     }
-    m_variables.insert(scStartMenuDir, startMenuPath + QDir::separator() + m_settings.startMenuDir());
 
     const QString description = m_settings.runProgramDescription();
     if (!description.isEmpty())
