@@ -415,6 +415,7 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
             QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());
     }
     updateWidgetVisibility(false);
+    updateTreeView();
 }
 
 void ComponentSelectionPagePrivate::customButtonClicked(int which)
