@@ -87,6 +87,12 @@ namespace QInstaller {
     void INSTALLER_EXPORT setProvidedTelemetryEndpoint(const QString& url);
     QString INSTALLER_EXPORT getProvidedTelemetryEndpoint();
 
+    void INSTALLER_EXPORT setInstallerFileName(const QString& fileName);
+    QString INSTALLER_EXPORT getInstallerFileName();
+
+    void INSTALLER_EXPORT setJourneyId(const QByteArray& journeyId);
+    QByteArray INSTALLER_EXPORT getJourneyId();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

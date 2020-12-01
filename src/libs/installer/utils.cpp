@@ -273,6 +273,30 @@ QString QInstaller::getProvidedTelemetryEndpoint()
     return telemetryUrl;
 }
 
+static QString installerFileName;
+
+void QInstaller::setInstallerFileName(const QString& fileName)
+{
+    installerFileName = fileName;
+}
+
+QString QInstaller::getInstallerFileName()
+{
+    return installerFileName;
+}
+
+static QByteArray journeyId;
+
+void QInstaller::setJourneyId(const QByteArray& id)
+{
+    journeyId = id;
+}
+
+QByteArray QInstaller::getJourneyId()
+{
+    return journeyId;
+}
+
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);

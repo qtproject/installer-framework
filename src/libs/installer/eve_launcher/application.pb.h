@@ -227,6 +227,20 @@ class EventMetadata : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::std::string* release_operating_system_uuid();
   void set_allocated_operating_system_uuid(::std::string* operating_system_uuid);
 
+  // bytes journey = 4;
+  void clear_journey();
+  static const int kJourneyFieldNumber = 4;
+  const ::std::string& journey() const;
+  void set_journey(const ::std::string& value);
+  #if LANG_CXX11
+  void set_journey(::std::string&& value);
+  #endif
+  void set_journey(const char* value);
+  void set_journey(const void* value, size_t size);
+  ::std::string* mutable_journey();
+  ::std::string* release_journey();
+  void set_allocated_journey(::std::string* journey);
+
   // .eve_launcher.application.Application application = 2;
   bool has_application() const;
   void clear_application();
@@ -245,6 +259,7 @@ class EventMetadata : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr md5_session_;
   ::google::protobuf::internal::ArenaStringPtr operating_system_uuid_;
+  ::google::protobuf::internal::ArenaStringPtr journey_;
   ::eve_launcher::application::Application* application_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_eve_5flauncher_2fapplication_2eproto::TableStruct;
@@ -647,6 +662,59 @@ inline void EventMetadata::set_allocated_operating_system_uuid(::std::string* op
   }
   operating_system_uuid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), operating_system_uuid);
   // @@protoc_insertion_point(field_set_allocated:eve_launcher.application.EventMetadata.operating_system_uuid)
+}
+
+// bytes journey = 4;
+inline void EventMetadata::clear_journey() {
+  journey_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& EventMetadata::journey() const {
+  // @@protoc_insertion_point(field_get:eve_launcher.application.EventMetadata.journey)
+  return journey_.GetNoArena();
+}
+inline void EventMetadata::set_journey(const ::std::string& value) {
+  
+  journey_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:eve_launcher.application.EventMetadata.journey)
+}
+#if LANG_CXX11
+inline void EventMetadata::set_journey(::std::string&& value) {
+  
+  journey_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:eve_launcher.application.EventMetadata.journey)
+}
+#endif
+inline void EventMetadata::set_journey(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  journey_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:eve_launcher.application.EventMetadata.journey)
+}
+inline void EventMetadata::set_journey(const void* value, size_t size) {
+  
+  journey_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:eve_launcher.application.EventMetadata.journey)
+}
+inline ::std::string* EventMetadata::mutable_journey() {
+  
+  // @@protoc_insertion_point(field_mutable:eve_launcher.application.EventMetadata.journey)
+  return journey_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* EventMetadata::release_journey() {
+  // @@protoc_insertion_point(field_release:eve_launcher.application.EventMetadata.journey)
+  
+  return journey_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void EventMetadata::set_allocated_journey(::std::string* journey) {
+  if (journey != NULL) {
+    
+  } else {
+    
+  }
+  journey_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), journey);
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.application.EventMetadata.journey)
 }
 
 // -------------------------------------------------------------------
