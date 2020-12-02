@@ -171,20 +171,13 @@ private slots:
     void testUpdateNoUpdatesForSelectedPackage()
     {
         setRepository(":///data/installPackagesRepositoryUpdate");
-        // Succeeds as no updates available for component so nothing to do
-        QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList()
+        // No updates available for component so nothing to do
+        QCOMPARE(PackageManagerCore::Canceled, core->updateComponentsSilently(QStringList()
                 << "componentInvalid"));
     }
 
     void testUpdateTwoPackageSilently()
     {
-        setRepository(":///data/installPackagesRepository");
-        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
-                << "componentA" << "componentB" << "componentG"));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt");
-        core->commitSessionOperations();
-
         setRepository(":///data/installPackagesRepositoryUpdate");
         QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList()
                 << "componentB" << "componentG"));

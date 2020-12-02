@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/repository-bothmeta-license/2020-12-01-1511_meta.7z</file>
+        <file>data/repository-bothmeta-license/Updates.xml</file>
+        <file>data/repository-bothmeta-license/org.qtproject.ifw.example.licenseagreement/1.0.0-1content.7z</file>
+        <file>data/repository-bothmeta-license/org.qtproject.ifw.example.licenseagreement/1.0.0-1content.7z.sha1</file>
+        <file>data/repository-bothmeta-license/org.qtproject.ifw.example.licenseagreement/1.0.0-1meta.7z</file>
+
+        <file>data/repository-bothmeta-userinteface/2020-12-01-1524_meta.7z</file>
+        <file>data/repository-bothmeta-userinteface/Updates.xml</file>
+        <file>data/repository-bothmeta-userinteface/or.qtproject.ifw.example.openreadme/1.0.0-1content.7z</file>
+        <file>data/repository-bothmeta-userinteface/or.qtproject.ifw.example.openreadme/1.0.0-1content.7z.sha1</file>
+        <file>data/repository-bothmeta-userinteface/or.qtproject.ifw.example.openreadme/1.0.0-1meta.7z</file>
+
+        <file>data/repository-componentmeta-script/Updates.xml</file>
+        <file>data/repository-componentmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z</file>
+        <file>data/repository-componentmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z.sha1</file>
+        <file>data/repository-componentmeta-script/org.qtproject.ifw.example/1.0.0-1meta.7z</file>
+
+        <file>data/repository-missingdependency/Updates.xml</file>
+
+        <file>data/repository-unifiedmeta-script/2020-12-01-1519_meta.7z</file>
+        <file>data/repository-unifiedmeta-script/Updates.xml</file>
+        <file>data/repository-unifiedmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z</file>
+        <file>data/repository-unifiedmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z.sha1</file>
+    </qresource>
+</RCC>

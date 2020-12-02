@@ -1,0 +1,18 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>org.qtproject.ifw.example</Name>
+  <DisplayName>README.txt</DisplayName>
+  <Description>A README.txt, accessible through a start menu entry.</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <Default>true</Default>
+  <Script>installscript.qs</Script>
+  <UpdateFile OS="Any" CompressedSize="297" UncompressedSize="131"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+ <SHA1>70ff1e1062ada01ea698a908f7549fcb826f17e1</SHA1>
+ <MetadataName>2020-12-01-1519_meta.7z</MetadataName>
+</Updates>

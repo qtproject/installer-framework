@@ -1,0 +1,22 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>org.qtproject.ifw.example.licenseagreement</Name>
+  <DisplayName>README (requires license agreement)</DisplayName>
+  <Description>README can only be installed if the user agrees to the licenses.</Description>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <Version>1.0.0-1</Version>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="282" OS="Any" UncompressedSize="116"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Licenses>
+   <License name="Creative Commons (CC0 1.0)" file="cc0.txt"/>
+   <License name="GNU GENERAL PUBLIC LICENSE Version 3" file="gpl3.txt"/>
+  </Licenses>
+  <SHA1>6d6a4cead84562b7034fcf1b9975779f1f030151</SHA1>
+ </PackageUpdate>
+ <SHA1>6d6a4cead84562b7034fcf1b9975779f1f030151</SHA1>
+ <MetadataName>2020-12-01-1511_meta.7z</MetadataName>
+</Updates>

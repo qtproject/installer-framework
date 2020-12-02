@@ -459,6 +459,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         clearInstallerCalculator();
         if (installerCalculator()->appendComponentsToInstall(components.values()) == false) {
+            setStatus(PackageManagerCore::Failure, installerCalculator()->componentsToInstallError());
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
                 tr("Unresolved dependencies"), installerCalculator()->componentsToInstallError());
             return false;

@@ -2274,6 +2274,9 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 : errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
         }
     }
+    if (!installComponentsFound)
+        setCanceled();
+
     return installComponentsFound;
 }
 
@@ -2351,7 +2354,7 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
             if (userSelectedComponents && componentsToBeUpdated.isEmpty()) {
                 qCDebug(QInstaller::lcInstallerInstallLog)
                     << "No updates available for selected components.";
-                return PackageManagerCore::Success;
+                return PackageManagerCore::Canceled;
             }
             foreach (Component *componentToUpdate, componentsToBeUpdated) {
                 const QModelIndex &idx = model->indexFromComponentName(componentToUpdate->treeName());
@@ -2429,7 +2432,7 @@ PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const
 
     if (components.isEmpty()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No components selected for uninstallation.";
-        return PackageManagerCore::Success;
+        return PackageManagerCore::Canceled;
     }
 
     ComponentModel *model = defaultComponentModel();
@@ -2527,7 +2530,7 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
         helperStrList.removeDuplicates();
         if (helperStrList.count() == installedPackages.count()) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components already installed.";
-            return PackageManagerCore::Success;
+            return PackageManagerCore::Canceled;
         }
     }
 
@@ -2566,6 +2569,7 @@ PackageManagerCore::Status PackageManagerCore::installDefaultComponentsSilently(
         }
     } else {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No components available for default installation.";
+        setCanceled();
     }
     return status();
 }

@@ -429,5 +429,6 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(PackageManagerCore::ComponentTypes)
 }
 
 Q_DECLARE_METATYPE(QInstaller::PackageManagerCore*)
+Q_DECLARE_METATYPE(QInstaller::PackageManagerCore::Status)
 
 #endif  // PACKAGEMANAGERCORE_H

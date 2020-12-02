@@ -39,6 +39,8 @@
 
 using namespace QInstaller;
 
+void silentTestMessageHandler(QtMsgType, const QMessageLogContext &, const QString &) {}
+
 struct PackageManager
 {
     static PackageManagerCore *getPackageManager(const QString &targetDir, const QString &repository = QString())

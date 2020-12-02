@@ -38,7 +38,8 @@ SUBDIRS += \
     licenseagreement \
     globalsettingsoperation \
     elevatedexecuteoperation \
-    treename
+    treename \
+    createoffline
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

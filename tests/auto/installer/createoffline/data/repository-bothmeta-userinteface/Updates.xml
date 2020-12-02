@@ -1,0 +1,20 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>or.qtproject.ifw.example.openreadme</Name>
+  <DisplayName>Open readme</DisplayName>
+  <Description>Show checkbox asking whether to open Readme at the end</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <Default>true</Default>
+  <Script>installscript.qs</Script>
+  <UpdateFile UncompressedSize="49" OS="Any" CompressedSize="215"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <UserInterfaces>readmecheckboxform.ui</UserInterfaces>
+  <SHA1>9b8977a50cb49a77a6ff037d776b73c341412a25</SHA1>
+ </PackageUpdate>
+ <SHA1>9b8977a50cb49a77a6ff037d776b73c341412a25</SHA1>
+ <MetadataName>2020-12-01-1524_meta.7z</MetadataName>
+</Updates>
