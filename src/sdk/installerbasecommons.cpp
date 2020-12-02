@@ -55,16 +55,23 @@ InstallerGui::InstallerGui(PackageManagerCore *core)
     }
     else
     {
-       setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
+        setPage(PackageManagerCore::Introduction, new IntroductionPage(core));
+        // We don't want the target directory and component selection pages if using the custom introduction page
+        setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
+        setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
+    }
+    
+    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
+
+    // We also don't want the start menu and ready pages if using the custom introduction page
+    if (!core->useCustomIntroductionPage())
+    {
+#ifdef Q_OS_WIN
+        setPage(PackageManagerCore::StartMenuSelection, new StartMenuDirectoryPage(core));
+#endif
+        setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     }
 
-    setPage(PackageManagerCore::TargetDirectory, new TargetDirectoryPage(core));
-    setPage(PackageManagerCore::ComponentSelection, new ComponentSelectionPage(core));
-    setPage(PackageManagerCore::LicenseCheck, new LicenseAgreementPage(core));
-#ifdef Q_OS_WIN
-    setPage(PackageManagerCore::StartMenuSelection, new StartMenuDirectoryPage(core));
-#endif
-    setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
@@ -118,7 +125,12 @@ MaintenanceGui::MaintenanceGui(PackageManagerCore *core)
         core->setCompleteUninstallation(true);
     }
 
-    setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
+    // We don't want the ready page if using the custom introduction page
+    if (!core->useCustomIntroductionPage())
+    {
+        setPage(PackageManagerCore::ReadyForInstallation, new ReadyForInstallationPage(core));
+    }
+    
     setPage(PackageManagerCore::PerformInstallation, new PerformInstallationPage(core));
     setPage(PackageManagerCore::InstallationFinished, new FinishedPage(core));
 
