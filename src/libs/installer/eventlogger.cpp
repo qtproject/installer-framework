@@ -294,13 +294,31 @@ void EventLogger::uninstallerStarted(int duration)
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::uninstallerPageDisplayed(eve_launcher::uninstaller::Page previousPage, eve_launcher::uninstaller::Page currentPage, eve_launcher::uninstaller::PageDisplayed_FlowDirection flow)
+void EventLogger::uninstallerIntroductionPageDisplayed()
 {
-    auto evt = new eve_launcher::uninstaller::PageDisplayed;
+    auto evt = new eve_launcher::uninstaller::IntroductionPageDisplayed;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_previous_page(previousPage);
-    evt->set_current_page(currentPage);
-    evt->set_flow(flow);
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::uninstallerExecutionPageDisplayed()
+{
+    auto evt = new eve_launcher::uninstaller::ExecutionPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::uninstallerFinishedPageDisplayed()
+{
+    auto evt = new eve_launcher::uninstaller::FinishedPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::uninstallerFailedPageDisplayed()
+{
+    auto evt = new eve_launcher::uninstaller::FailedPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
     sendAllocatedEvent(evt);
 }
 
@@ -378,25 +396,53 @@ void EventLogger::uninstallerAnalyticsMessageSent(const QString& message)
 }
 
 // installer
-void EventLogger::installerStarted(int duration)
+void EventLogger::installerStarted(const QString& startMenuItemPath, int duration)
 {
-    qDebug() << "framework | EventLogger::installerStarted |" << duration << "ms";
+    qDebug() << "framework | EventLogger::installerStarted |" << startMenuItemPath << ", " << duration << "ms";
     auto evt = new eve_launcher::installer::Started;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_duration(duration);
     auto inf = pdm_proto::GetData();
     evt->set_allocated_system_information(&inf);
+    QString fileName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
+    qDebug() << "framework | EventLogger::installerStarted | " << fileName;
+    evt->set_filename(fileName.toStdString());
+    evt->set_start_menu_item_path(startMenuItemPath.toStdString());
+    evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerPageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow)
+void EventLogger::installerIntroductionPageDisplayed()
 {
-    qDebug() << "framework | EventLogger::installerPageDisplayed |" << previousPage << "|" << currentPage << "|" << flow;
-    auto evt = new eve_launcher::installer::PageDisplayed;
+    auto evt = new eve_launcher::installer::IntroductionPageDisplayed;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_previous_page(previousPage);
-    evt->set_current_page(currentPage);
-    evt->set_flow(flow);
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::installerEulaPageDisplayed()
+{
+    auto evt = new eve_launcher::installer::EulaPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::installerExecutionPageDisplayed()
+{
+    auto evt = new eve_launcher::installer::ExecutionPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::installerFinishedPageDisplayed()
+{
+    auto evt = new eve_launcher::installer::FinishedPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
+    sendAllocatedEvent(evt);
+}
+
+void EventLogger::installerFailedPageDisplayed()
+{
+    auto evt = new eve_launcher::installer::FailedPageDisplayed;
+    evt->set_allocated_event_metadata(getEventMetadata());
     sendAllocatedEvent(evt);
 }
 
@@ -424,16 +470,6 @@ void EventLogger::installerPreparationFinished(int duration)
     auto evt = new eve_launcher::installer::PreparationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_duration(duration);
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerLocationChanged(eve_launcher::installer::LocationChanged_Source source, eve_launcher::installer::LocationChanged_Provider provider, const QString& path)
-{
-    auto evt = new eve_launcher::installer::LocationChanged;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_source(source);
-    evt->set_provider(provider);
-    evt->set_path(path.toStdString());
     sendAllocatedEvent(evt);
 }
 
@@ -511,10 +547,13 @@ void EventLogger::installerSharedCacheMessageClosed(eve_launcher::installer::Mes
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerInstallationStarted()
+void EventLogger::installerInstallationStarted(const QString& installPath, eve_launcher::installer::RedistVersion redistVersion)
 {
+    qDebug() << "framework | EventLogger::installerInstallationStarted | " << installPath << ", " << redistVersion;
     auto evt = new eve_launcher::installer::InstallationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
+    evt->set_install_path(installPath.toStdString());
+    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
@@ -526,10 +565,12 @@ void EventLogger::installerInstallationInterrupted(int duration)
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerInstallationFinished(int duration)
+void EventLogger::installerInstallationFinished(const QString& sharedCachePath, int duration)
 {
+    qDebug() << "framework | EventLogger::installerInstallationFinished | " << sharedCachePath;
     auto evt = new eve_launcher::installer::InstallationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
+    evt->set_shared_cache_path(sharedCachePath.toStdString());
     evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
@@ -557,81 +598,42 @@ void EventLogger::installerUninstallerCreationFinished(int duration)
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerComponentInitializationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion)
+void EventLogger::installerComponentInitializationStarted()
 {
     auto evt = new eve_launcher::installer::ComponentInitializationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(component);
-    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerComponentInitializationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration)
+void EventLogger::installerComponentInitializationFinished(int duration)
 {
     auto evt = new eve_launcher::installer::ComponentInitializationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(component);
-    evt->set_redist_version(redistVersion);
     evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerComponentInstallationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion)
+void EventLogger::installerComponentInstallationStarted()
 {
     auto evt = new eve_launcher::installer::ComponentInstallationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(component);
-    evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerComponentInstallationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration)
+void EventLogger::installerComponentInstallationFinished(int duration)
 {
     auto evt = new eve_launcher::installer::ComponentInstallationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_component(component);
-    evt->set_redist_version(redistVersion);
     evt->set_duration(duration);
     sendAllocatedEvent(evt);
 }
 
-void EventLogger::installerComponentsInitializationStarted()
-{
-    auto evt = new eve_launcher::installer::ComponentsInitializationStarted;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerComponentsInitializationFinished(int duration)
-{
-    auto evt = new eve_launcher::installer::ComponentsInitializationFinished;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_duration(duration);
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerComponentsInstallationStarted()
-{
-    auto evt = new eve_launcher::installer::ComponentsInstallationStarted;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerComponentsInstallationFinished(int duration)
-{
-    auto evt = new eve_launcher::installer::ComponentsInstallationFinished;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    evt->set_duration(duration);
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion)
+void EventLogger::installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::RedistVersion redistVersion)
 {
     auto evt = new eve_launcher::installer::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_code(code);
     evt->set_page(page);
-    evt->set_component(component);
     evt->set_redist_version(redistVersion);
     sendAllocatedEvent(evt);
 }

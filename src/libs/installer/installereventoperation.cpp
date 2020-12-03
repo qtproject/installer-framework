@@ -113,15 +113,6 @@ eve_launcher::installer::Page InstallerEventOperation::toInstallerPage(bool *ok,
     return static_cast<eve_launcher::installer::Page>(id);
 }
 
-eve_launcher::installer::Component InstallerEventOperation::toInstallerComponent(bool *ok, QString value)
-{
-    int id = value.toInt(ok);
-    if (!*ok) return eve_launcher::installer::COMPONENT_UNSPECIFIED;
-    if (!eve_launcher::installer::Component_IsValid(id)) return eve_launcher::installer::COMPONENT_UNSPECIFIED;
-
-    return static_cast<eve_launcher::installer::Component>(id);
-}
-
 eve_launcher::installer::RedistVersion InstallerEventOperation::toInstallerRedistVersion(bool *ok, QString value)
 {
     int id = value.toInt(ok);
@@ -146,20 +137,21 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
 
         EventLogger::instance()->uninstallerStarted(duration);
     }
-    else if (event == QString::fromLatin1("PageDisplayed") && args.size() == 5)
+    else if (event == QString::fromLatin1("IntroductionPageDisplayed"))
     {
-        auto previousPage = toUninstallerPage(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto currentPage = toUninstallerPage(&ok, args.at(3));
-        if (!ok) return false;
-
-        id = args.at(4).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::uninstaller::PageDisplayed_FlowDirection_IsValid(id)) return false;
-        auto flow = static_cast<eve_launcher::uninstaller::PageDisplayed_FlowDirection>(id);
-
-        EventLogger::instance()->uninstallerPageDisplayed(previousPage, currentPage, flow);
+        EventLogger::instance()->uninstallerIntroductionPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("ExecutionPageDisplayed"))
+    {
+        EventLogger::instance()->uninstallerExecutionPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("FinishedPageDisplayed"))
+    {
+        EventLogger::instance()->uninstallerFinishedPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("FailedPageDisplayed"))
+    {
+        EventLogger::instance()->uninstallerFailedPageDisplayed();
     }
     else if (event == QString::fromLatin1("ShutDown") && args.size() == 5)
     {
@@ -243,29 +235,36 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
     bool ok;
     int id;
 
-    if (event == QString::fromLatin1("Started") && args.size() == 3)
+    if (event == QString::fromLatin1("Started") && args.size() == 4)
     {
         qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | Started | args =" << args;
-        int duration = args.at(2).toInt(&ok);
+
+        QString startMenuItemPath = args.at(2);
+
+        int duration = args.at(3).toInt(&ok);
         if (!ok) return false;
 
-        EventLogger::instance()->installerStarted(duration);
+        EventLogger::instance()->installerStarted(startMenuItemPath, duration);
     }
-    else if (event == QString::fromLatin1("PageDisplayed") && args.size() == 5)
+    else if (event == QString::fromLatin1("IntroductionPageDisplayed"))
     {
-        qDebug() << "framework | InstallerEventOperation::sendInstallerEvent | PageDisplayed | args =" << args;
-        auto previousPage = toInstallerPage(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto currentPage = toInstallerPage(&ok, args.at(3));
-        if (!ok) return false;
-
-        id = args.at(4).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::installer::PageDisplayed_FlowDirection_IsValid(id)) return false;
-        auto flow = static_cast<eve_launcher::installer::PageDisplayed_FlowDirection>(id);
-
-        EventLogger::instance()->installerPageDisplayed(previousPage, currentPage, flow);
+        EventLogger::instance()->installerIntroductionPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("EulaPageDisplayed"))
+    {
+        EventLogger::instance()->installerEulaPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("ExecutionPageDisplayed"))
+    {
+        EventLogger::instance()->installerExecutionPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("FinishedPageDisplayed"))
+    {
+        EventLogger::instance()->installerFinishedPageDisplayed();
+    }
+    else if (event == QString::fromLatin1("FailedPageDisplayed"))
+    {
+        EventLogger::instance()->installerFailedPageDisplayed();
     }
     else if (event == QString::fromLatin1("ShutDown") && args.size() == 5)
     {
@@ -292,22 +291,6 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         if (!ok) return false;
 
         EventLogger::instance()->installerPreparationFinished(duration);
-    }
-    else if (event == QString::fromLatin1("LocationChanged") && args.size() == 5)
-    {
-        id = args.at(2).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::installer::LocationChanged_Source_IsValid(id)) return false;
-        auto source = static_cast<eve_launcher::installer::LocationChanged_Source>(id);
-
-        id = args.at(3).toInt(&ok);
-        if (!ok) return false;
-        if (!eve_launcher::installer::LocationChanged_Provider_IsValid(id)) return false;
-        auto provider = static_cast<eve_launcher::installer::LocationChanged_Provider>(id);
-
-        QString path = args.at(4);
-
-        EventLogger::instance()->installerLocationChanged(source, provider, path);
     }
     else if (event == QString::fromLatin1("DetailsDisplayed"))
     {
@@ -365,9 +348,14 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         
         EventLogger::instance()->installerSharedCacheMessageClosed(messageBoxButton, timeDisplayed);
     }
-    else if (event == QString::fromLatin1("InstallationStarted"))
+    else if (event == QString::fromLatin1("InstallationStarted") && args.size() == 4)
     {
-        EventLogger::instance()->installerInstallationStarted();
+        QString installPath = args.at(2);
+
+        auto redistVersion = toInstallerRedistVersion(&ok, args.at(3));
+        if (!ok) return false;
+
+        EventLogger::instance()->installerInstallationStarted(installPath, redistVersion);
     }
     else if (event == QString::fromLatin1("InstallationInterrupted") && args.size() == 3)
     {
@@ -376,12 +364,14 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 
         EventLogger::instance()->installerInstallationInterrupted(duration);
     }
-    else if (event == QString::fromLatin1("InstallationFinished") && args.size() == 3)
+    else if (event == QString::fromLatin1("InstallationFinished") && args.size() == 4)
     {
-        int duration = args.at(2).toInt(&ok);
+        QString sharedCachePath = args.at(2);
+
+        int duration = args.at(3).toInt(&ok);
         if (!ok) return false;
 
-        EventLogger::instance()->installerInstallationFinished(duration);
+        EventLogger::instance()->installerInstallationFinished(sharedCachePath, duration);
     }
     else if (event == QString::fromLatin1("InstallationFailed") && args.size() == 3)
     {
@@ -401,75 +391,29 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 
         EventLogger::instance()->installerUninstallerCreationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ComponentInitializationStarted") && args.size() == 4)
+    else if (event == QString::fromLatin1("ComponentInitializationStarted"))
     {
-        auto component = toInstallerComponent(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(3));
-        if (!ok) return false;
-
-        EventLogger::instance()->installerComponentInitializationStarted(component, redistVersion);
+        EventLogger::instance()->installerComponentInitializationStarted();
     }
-    else if (event == QString::fromLatin1("ComponentInitializationFinished") && args.size() == 5)
-    {
-        auto component = toInstallerComponent(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(3));
-        if (!ok) return false;
-
-        int duration = args.at(4).toInt(&ok);
-        if (!ok) return false;
-
-        EventLogger::instance()->installerComponentInitializationFinished(component, redistVersion, duration);
-    }
-    else if (event == QString::fromLatin1("ComponentInstallationStarted") && args.size() == 4)
-    {
-        auto component = toInstallerComponent(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(3));
-        if (!ok) return false;
-
-        EventLogger::instance()->installerComponentInstallationStarted(component, redistVersion);
-    }
-    else if (event == QString::fromLatin1("ComponentInstallationFinished") && args.size() == 5)
-    {
-        auto component = toInstallerComponent(&ok, args.at(2));
-        if (!ok) return false;
-
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(3));
-        if (!ok) return false;
-
-        int duration = args.at(4).toInt(&ok);
-        if (!ok) return false;
-
-        EventLogger::instance()->installerComponentInstallationFinished(component, redistVersion, duration);
-    }
-    else if (event == QString::fromLatin1("ComponentsInitializationStarted"))
-    {
-        EventLogger::instance()->installerComponentsInitializationStarted();
-    }
-    else if (event == QString::fromLatin1("ComponentsInitializationFinished") && args.size() == 3)
+    else if (event == QString::fromLatin1("ComponentInitializationFinished") && args.size() == 3)
     {
         int duration = args.at(2).toInt(&ok);
         if (!ok) return false;
 
-        EventLogger::instance()->installerComponentsInitializationFinished(duration);
+        EventLogger::instance()->installerComponentInitializationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ComponentsInstallationStarted"))
+    else if (event == QString::fromLatin1("ComponentInstallationStarted"))
     {
-        EventLogger::instance()->installerComponentsInstallationStarted();
+        EventLogger::instance()->installerComponentInstallationStarted();
     }
-    else if (event == QString::fromLatin1("ComponentsInstallationFinished") && args.size() == 3)
+    else if (event == QString::fromLatin1("ComponentInstallationFinished") && args.size() == 3)
     {
         int duration = args.at(2).toInt(&ok);
         if (!ok) return false;
 
-        EventLogger::instance()->installerComponentsInstallationFinished(duration);
+        EventLogger::instance()->installerComponentInstallationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 6)
+    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 5)
     {
         id = args.at(2).toInt(&ok);
         if (!ok) return false;
@@ -479,13 +423,10 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         auto page = toInstallerPage(&ok, args.at(3));
         if (!ok) return false;
 
-        auto component = toInstallerComponent(&ok, args.at(4));
+        auto redistVersion = toInstallerRedistVersion(&ok, args.at(4));
         if (!ok) return false;
 
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(5));
-        if (!ok) return false;
-
-        EventLogger::instance()->installerErrorEncountered(code, page, component, redistVersion);
+        EventLogger::instance()->installerErrorEncountered(code, page, redistVersion);
     }
     else if (event == QString::fromLatin1("AnalyticsMessageSent") && args.size() == 3)
     {

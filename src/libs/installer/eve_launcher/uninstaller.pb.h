@@ -41,7 +41,7 @@ namespace protobuf_eve_5flauncher_2funinstaller_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[12];
+  static const ::google::protobuf::internal::ParseTable schema[15];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -62,9 +62,18 @@ extern DetailsHiddenDefaultTypeInternal _DetailsHidden_default_instance_;
 class ErrorEncountered;
 class ErrorEncounteredDefaultTypeInternal;
 extern ErrorEncounteredDefaultTypeInternal _ErrorEncountered_default_instance_;
-class PageDisplayed;
-class PageDisplayedDefaultTypeInternal;
-extern PageDisplayedDefaultTypeInternal _PageDisplayed_default_instance_;
+class ExecutionPageDisplayed;
+class ExecutionPageDisplayedDefaultTypeInternal;
+extern ExecutionPageDisplayedDefaultTypeInternal _ExecutionPageDisplayed_default_instance_;
+class FailedPageDisplayed;
+class FailedPageDisplayedDefaultTypeInternal;
+extern FailedPageDisplayedDefaultTypeInternal _FailedPageDisplayed_default_instance_;
+class FinishedPageDisplayed;
+class FinishedPageDisplayedDefaultTypeInternal;
+extern FinishedPageDisplayedDefaultTypeInternal _FinishedPageDisplayed_default_instance_;
+class IntroductionPageDisplayed;
+class IntroductionPageDisplayedDefaultTypeInternal;
+extern IntroductionPageDisplayedDefaultTypeInternal _IntroductionPageDisplayed_default_instance_;
 class ShutDown;
 class ShutDownDefaultTypeInternal;
 extern ShutDownDefaultTypeInternal _ShutDown_default_instance_;
@@ -94,7 +103,10 @@ template<> ::eve_launcher::uninstaller::AnalyticsMessageSent* Arena::CreateMaybe
 template<> ::eve_launcher::uninstaller::DetailsDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::DetailsDisplayed>(Arena*);
 template<> ::eve_launcher::uninstaller::DetailsHidden* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::DetailsHidden>(Arena*);
 template<> ::eve_launcher::uninstaller::ErrorEncountered* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::ErrorEncountered>(Arena*);
-template<> ::eve_launcher::uninstaller::PageDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::PageDisplayed>(Arena*);
+template<> ::eve_launcher::uninstaller::ExecutionPageDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::ExecutionPageDisplayed>(Arena*);
+template<> ::eve_launcher::uninstaller::FailedPageDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::FailedPageDisplayed>(Arena*);
+template<> ::eve_launcher::uninstaller::FinishedPageDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::FinishedPageDisplayed>(Arena*);
+template<> ::eve_launcher::uninstaller::IntroductionPageDisplayed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::IntroductionPageDisplayed>(Arena*);
 template<> ::eve_launcher::uninstaller::ShutDown* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::ShutDown>(Arena*);
 template<> ::eve_launcher::uninstaller::Started* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::Started>(Arena*);
 template<> ::eve_launcher::uninstaller::UninstallationFailed* Arena::CreateMaybeMessage<::eve_launcher::uninstaller::UninstallationFailed>(Arena*);
@@ -107,30 +119,6 @@ template<> ::eve_launcher::uninstaller::UserCancelled* Arena::CreateMaybeMessage
 namespace eve_launcher {
 namespace uninstaller {
 
-enum PageDisplayed_FlowDirection {
-  PageDisplayed_FlowDirection_FLOWDIRECTION_UNSPECIFIED = 0,
-  PageDisplayed_FlowDirection_FLOWDIRECTION_FIRST_VIEW = 1,
-  PageDisplayed_FlowDirection_FLOWDIRECTION_FORWARDS = 2,
-  PageDisplayed_FlowDirection_FLOWDIRECTION_BACKWARDS = 3,
-  PageDisplayed_FlowDirection_FLOWDIRECTION_RELOAD = 4,
-  PageDisplayed_FlowDirection_PageDisplayed_FlowDirection_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
-  PageDisplayed_FlowDirection_PageDisplayed_FlowDirection_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
-};
-bool PageDisplayed_FlowDirection_IsValid(int value);
-const PageDisplayed_FlowDirection PageDisplayed_FlowDirection_FlowDirection_MIN = PageDisplayed_FlowDirection_FLOWDIRECTION_UNSPECIFIED;
-const PageDisplayed_FlowDirection PageDisplayed_FlowDirection_FlowDirection_MAX = PageDisplayed_FlowDirection_FLOWDIRECTION_RELOAD;
-const int PageDisplayed_FlowDirection_FlowDirection_ARRAYSIZE = PageDisplayed_FlowDirection_FlowDirection_MAX + 1;
-
-const ::google::protobuf::EnumDescriptor* PageDisplayed_FlowDirection_descriptor();
-inline const ::std::string& PageDisplayed_FlowDirection_Name(PageDisplayed_FlowDirection value) {
-  return ::google::protobuf::internal::NameOfEnum(
-    PageDisplayed_FlowDirection_descriptor(), value);
-}
-inline bool PageDisplayed_FlowDirection_Parse(
-    const ::std::string& name, PageDisplayed_FlowDirection* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<PageDisplayed_FlowDirection>(
-    PageDisplayed_FlowDirection_descriptor(), name, value);
-}
 enum UserCancelled_Progress {
   UserCancelled_Progress_PROGRESS_UNSPECIFIED = 0,
   UserCancelled_Progress_PROGRESS_NOT_STARTED = 1,
@@ -204,10 +192,8 @@ inline bool ErrorEncountered_ErrorCode_Parse(
 enum Page {
   PAGE_UNSPECIFIED = 0,
   PAGE_NOT_FOUND = 1,
-  PAGE_NO_PAGE = 2,
   PAGE_INTRODUCTION = 3,
-  PAGE_READY = 4,
-  PAGE_UNINSTALLING = 5,
+  PAGE_EXECUTION = 5,
   PAGE_FINISHED = 6,
   PAGE_FAILED = 7,
   Page_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
@@ -359,24 +345,24 @@ class Started : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 };
 // -------------------------------------------------------------------
 
-class PageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_launcher.uninstaller.PageDisplayed) */ {
+class IntroductionPageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_launcher.uninstaller.IntroductionPageDisplayed) */ {
  public:
-  PageDisplayed();
-  virtual ~PageDisplayed();
+  IntroductionPageDisplayed();
+  virtual ~IntroductionPageDisplayed();
 
-  PageDisplayed(const PageDisplayed& from);
+  IntroductionPageDisplayed(const IntroductionPageDisplayed& from);
 
-  inline PageDisplayed& operator=(const PageDisplayed& from) {
+  inline IntroductionPageDisplayed& operator=(const IntroductionPageDisplayed& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  PageDisplayed(PageDisplayed&& from) noexcept
-    : PageDisplayed() {
+  IntroductionPageDisplayed(IntroductionPageDisplayed&& from) noexcept
+    : IntroductionPageDisplayed() {
     *this = ::std::move(from);
   }
 
-  inline PageDisplayed& operator=(PageDisplayed&& from) noexcept {
+  inline IntroductionPageDisplayed& operator=(IntroductionPageDisplayed&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -386,34 +372,34 @@ class PageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_p
   }
   #endif
   static const ::google::protobuf::Descriptor* descriptor();
-  static const PageDisplayed& default_instance();
+  static const IntroductionPageDisplayed& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const PageDisplayed* internal_default_instance() {
-    return reinterpret_cast<const PageDisplayed*>(
-               &_PageDisplayed_default_instance_);
+  static inline const IntroductionPageDisplayed* internal_default_instance() {
+    return reinterpret_cast<const IntroductionPageDisplayed*>(
+               &_IntroductionPageDisplayed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  void Swap(PageDisplayed* other);
-  friend void swap(PageDisplayed& a, PageDisplayed& b) {
+  void Swap(IntroductionPageDisplayed* other);
+  friend void swap(IntroductionPageDisplayed& a, IntroductionPageDisplayed& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline PageDisplayed* New() const final {
-    return CreateMaybeMessage<PageDisplayed>(NULL);
+  inline IntroductionPageDisplayed* New() const final {
+    return CreateMaybeMessage<IntroductionPageDisplayed>(NULL);
   }
 
-  PageDisplayed* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<PageDisplayed>(arena);
+  IntroductionPageDisplayed* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<IntroductionPageDisplayed>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const PageDisplayed& from);
-  void MergeFrom(const PageDisplayed& from);
+  void CopyFrom(const IntroductionPageDisplayed& from);
+  void MergeFrom(const IntroductionPageDisplayed& from);
   void Clear() final;
   bool IsInitialized() const final;
 
@@ -430,7 +416,7 @@ class PageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_p
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(PageDisplayed* other);
+  void InternalSwap(IntroductionPageDisplayed* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return NULL;
@@ -443,38 +429,6 @@ class PageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::google::protobuf::Metadata GetMetadata() const final;
 
   // nested types ----------------------------------------------------
-
-  typedef PageDisplayed_FlowDirection FlowDirection;
-  static const FlowDirection FLOWDIRECTION_UNSPECIFIED =
-    PageDisplayed_FlowDirection_FLOWDIRECTION_UNSPECIFIED;
-  static const FlowDirection FLOWDIRECTION_FIRST_VIEW =
-    PageDisplayed_FlowDirection_FLOWDIRECTION_FIRST_VIEW;
-  static const FlowDirection FLOWDIRECTION_FORWARDS =
-    PageDisplayed_FlowDirection_FLOWDIRECTION_FORWARDS;
-  static const FlowDirection FLOWDIRECTION_BACKWARDS =
-    PageDisplayed_FlowDirection_FLOWDIRECTION_BACKWARDS;
-  static const FlowDirection FLOWDIRECTION_RELOAD =
-    PageDisplayed_FlowDirection_FLOWDIRECTION_RELOAD;
-  static inline bool FlowDirection_IsValid(int value) {
-    return PageDisplayed_FlowDirection_IsValid(value);
-  }
-  static const FlowDirection FlowDirection_MIN =
-    PageDisplayed_FlowDirection_FlowDirection_MIN;
-  static const FlowDirection FlowDirection_MAX =
-    PageDisplayed_FlowDirection_FlowDirection_MAX;
-  static const int FlowDirection_ARRAYSIZE =
-    PageDisplayed_FlowDirection_FlowDirection_ARRAYSIZE;
-  static inline const ::google::protobuf::EnumDescriptor*
-  FlowDirection_descriptor() {
-    return PageDisplayed_FlowDirection_descriptor();
-  }
-  static inline const ::std::string& FlowDirection_Name(FlowDirection value) {
-    return PageDisplayed_FlowDirection_Name(value);
-  }
-  static inline bool FlowDirection_Parse(const ::std::string& name,
-      FlowDirection* value) {
-    return PageDisplayed_FlowDirection_Parse(name, value);
-  }
 
   // accessors -------------------------------------------------------
 
@@ -490,32 +444,338 @@ class PageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_p
   ::eve_launcher::application::EventMetadata* mutable_event_metadata();
   void set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata);
 
-  // .eve_launcher.uninstaller.Page previous_page = 2;
-  void clear_previous_page();
-  static const int kPreviousPageFieldNumber = 2;
-  ::eve_launcher::uninstaller::Page previous_page() const;
-  void set_previous_page(::eve_launcher::uninstaller::Page value);
-
-  // .eve_launcher.uninstaller.Page current_page = 3;
-  void clear_current_page();
-  static const int kCurrentPageFieldNumber = 3;
-  ::eve_launcher::uninstaller::Page current_page() const;
-  void set_current_page(::eve_launcher::uninstaller::Page value);
-
-  // .eve_launcher.uninstaller.PageDisplayed.FlowDirection flow = 4;
-  void clear_flow();
-  static const int kFlowFieldNumber = 4;
-  ::eve_launcher::uninstaller::PageDisplayed_FlowDirection flow() const;
-  void set_flow(::eve_launcher::uninstaller::PageDisplayed_FlowDirection value);
-
-  // @@protoc_insertion_point(class_scope:eve_launcher.uninstaller.PageDisplayed)
+  // @@protoc_insertion_point(class_scope:eve_launcher.uninstaller.IntroductionPageDisplayed)
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::eve_launcher::application::EventMetadata* event_metadata_;
-  int previous_page_;
-  int current_page_;
-  int flow_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_eve_5flauncher_2funinstaller_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class ExecutionPageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_launcher.uninstaller.ExecutionPageDisplayed) */ {
+ public:
+  ExecutionPageDisplayed();
+  virtual ~ExecutionPageDisplayed();
+
+  ExecutionPageDisplayed(const ExecutionPageDisplayed& from);
+
+  inline ExecutionPageDisplayed& operator=(const ExecutionPageDisplayed& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  ExecutionPageDisplayed(ExecutionPageDisplayed&& from) noexcept
+    : ExecutionPageDisplayed() {
+    *this = ::std::move(from);
+  }
+
+  inline ExecutionPageDisplayed& operator=(ExecutionPageDisplayed&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const ExecutionPageDisplayed& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const ExecutionPageDisplayed* internal_default_instance() {
+    return reinterpret_cast<const ExecutionPageDisplayed*>(
+               &_ExecutionPageDisplayed_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    2;
+
+  void Swap(ExecutionPageDisplayed* other);
+  friend void swap(ExecutionPageDisplayed& a, ExecutionPageDisplayed& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline ExecutionPageDisplayed* New() const final {
+    return CreateMaybeMessage<ExecutionPageDisplayed>(NULL);
+  }
+
+  ExecutionPageDisplayed* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<ExecutionPageDisplayed>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const ExecutionPageDisplayed& from);
+  void MergeFrom(const ExecutionPageDisplayed& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ExecutionPageDisplayed* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  bool has_event_metadata() const;
+  void clear_event_metadata();
+  static const int kEventMetadataFieldNumber = 1;
+  private:
+  const ::eve_launcher::application::EventMetadata& _internal_event_metadata() const;
+  public:
+  const ::eve_launcher::application::EventMetadata& event_metadata() const;
+  ::eve_launcher::application::EventMetadata* release_event_metadata();
+  ::eve_launcher::application::EventMetadata* mutable_event_metadata();
+  void set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata);
+
+  // @@protoc_insertion_point(class_scope:eve_launcher.uninstaller.ExecutionPageDisplayed)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::eve_launcher::application::EventMetadata* event_metadata_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_eve_5flauncher_2funinstaller_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class FinishedPageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_launcher.uninstaller.FinishedPageDisplayed) */ {
+ public:
+  FinishedPageDisplayed();
+  virtual ~FinishedPageDisplayed();
+
+  FinishedPageDisplayed(const FinishedPageDisplayed& from);
+
+  inline FinishedPageDisplayed& operator=(const FinishedPageDisplayed& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  FinishedPageDisplayed(FinishedPageDisplayed&& from) noexcept
+    : FinishedPageDisplayed() {
+    *this = ::std::move(from);
+  }
+
+  inline FinishedPageDisplayed& operator=(FinishedPageDisplayed&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FinishedPageDisplayed& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const FinishedPageDisplayed* internal_default_instance() {
+    return reinterpret_cast<const FinishedPageDisplayed*>(
+               &_FinishedPageDisplayed_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  void Swap(FinishedPageDisplayed* other);
+  friend void swap(FinishedPageDisplayed& a, FinishedPageDisplayed& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline FinishedPageDisplayed* New() const final {
+    return CreateMaybeMessage<FinishedPageDisplayed>(NULL);
+  }
+
+  FinishedPageDisplayed* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<FinishedPageDisplayed>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const FinishedPageDisplayed& from);
+  void MergeFrom(const FinishedPageDisplayed& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(FinishedPageDisplayed* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  bool has_event_metadata() const;
+  void clear_event_metadata();
+  static const int kEventMetadataFieldNumber = 1;
+  private:
+  const ::eve_launcher::application::EventMetadata& _internal_event_metadata() const;
+  public:
+  const ::eve_launcher::application::EventMetadata& event_metadata() const;
+  ::eve_launcher::application::EventMetadata* release_event_metadata();
+  ::eve_launcher::application::EventMetadata* mutable_event_metadata();
+  void set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata);
+
+  // @@protoc_insertion_point(class_scope:eve_launcher.uninstaller.FinishedPageDisplayed)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::eve_launcher::application::EventMetadata* event_metadata_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_eve_5flauncher_2funinstaller_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class FailedPageDisplayed : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_launcher.uninstaller.FailedPageDisplayed) */ {
+ public:
+  FailedPageDisplayed();
+  virtual ~FailedPageDisplayed();
+
+  FailedPageDisplayed(const FailedPageDisplayed& from);
+
+  inline FailedPageDisplayed& operator=(const FailedPageDisplayed& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  FailedPageDisplayed(FailedPageDisplayed&& from) noexcept
+    : FailedPageDisplayed() {
+    *this = ::std::move(from);
+  }
+
+  inline FailedPageDisplayed& operator=(FailedPageDisplayed&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const FailedPageDisplayed& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const FailedPageDisplayed* internal_default_instance() {
+    return reinterpret_cast<const FailedPageDisplayed*>(
+               &_FailedPageDisplayed_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  void Swap(FailedPageDisplayed* other);
+  friend void swap(FailedPageDisplayed& a, FailedPageDisplayed& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline FailedPageDisplayed* New() const final {
+    return CreateMaybeMessage<FailedPageDisplayed>(NULL);
+  }
+
+  FailedPageDisplayed* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<FailedPageDisplayed>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const FailedPageDisplayed& from);
+  void MergeFrom(const FailedPageDisplayed& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(FailedPageDisplayed* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  bool has_event_metadata() const;
+  void clear_event_metadata();
+  static const int kEventMetadataFieldNumber = 1;
+  private:
+  const ::eve_launcher::application::EventMetadata& _internal_event_metadata() const;
+  public:
+  const ::eve_launcher::application::EventMetadata& event_metadata() const;
+  ::eve_launcher::application::EventMetadata* release_event_metadata();
+  ::eve_launcher::application::EventMetadata* mutable_event_metadata();
+  void set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata);
+
+  // @@protoc_insertion_point(class_scope:eve_launcher.uninstaller.FailedPageDisplayed)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::eve_launcher::application::EventMetadata* event_metadata_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_eve_5flauncher_2funinstaller_2eproto::TableStruct;
 };
@@ -556,7 +816,7 @@ class UserCancelled : public ::google::protobuf::Message /* @@protoc_insertion_p
                &_UserCancelled_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    5;
 
   void Swap(UserCancelled* other);
   friend void swap(UserCancelled& a, UserCancelled& b) {
@@ -711,7 +971,7 @@ class ShutDown : public ::google::protobuf::Message /* @@protoc_insertion_point(
                &_ShutDown_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    6;
 
   void Swap(ShutDown* other);
   friend void swap(ShutDown& a, ShutDown& b) {
@@ -871,7 +1131,7 @@ class DetailsDisplayed : public ::google::protobuf::Message /* @@protoc_insertio
                &_DetailsDisplayed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    7;
 
   void Swap(DetailsDisplayed* other);
   friend void swap(DetailsDisplayed& a, DetailsDisplayed& b) {
@@ -980,7 +1240,7 @@ class DetailsHidden : public ::google::protobuf::Message /* @@protoc_insertion_p
                &_DetailsHidden_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    8;
 
   void Swap(DetailsHidden* other);
   friend void swap(DetailsHidden& a, DetailsHidden& b) {
@@ -1089,7 +1349,7 @@ class UninstallationStarted : public ::google::protobuf::Message /* @@protoc_ins
                &_UninstallationStarted_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    9;
 
   void Swap(UninstallationStarted* other);
   friend void swap(UninstallationStarted& a, UninstallationStarted& b) {
@@ -1198,7 +1458,7 @@ class UninstallationInterrupted : public ::google::protobuf::Message /* @@protoc
                &_UninstallationInterrupted_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    10;
 
   void Swap(UninstallationInterrupted* other);
   friend void swap(UninstallationInterrupted& a, UninstallationInterrupted& b) {
@@ -1314,7 +1574,7 @@ class UninstallationFinished : public ::google::protobuf::Message /* @@protoc_in
                &_UninstallationFinished_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    11;
 
   void Swap(UninstallationFinished* other);
   friend void swap(UninstallationFinished& a, UninstallationFinished& b) {
@@ -1430,7 +1690,7 @@ class UninstallationFailed : public ::google::protobuf::Message /* @@protoc_inse
                &_UninstallationFailed_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    12;
 
   void Swap(UninstallationFailed* other);
   friend void swap(UninstallationFailed& a, UninstallationFailed& b) {
@@ -1546,7 +1806,7 @@ class ErrorEncountered : public ::google::protobuf::Message /* @@protoc_insertio
                &_ErrorEncountered_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    13;
 
   void Swap(ErrorEncountered* other);
   friend void swap(ErrorEncountered& a, ErrorEncountered& b) {
@@ -1699,7 +1959,7 @@ class AnalyticsMessageSent : public ::google::protobuf::Message /* @@protoc_inse
                &_AnalyticsMessageSent_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    14;
 
   void Swap(AnalyticsMessageSent* other);
   friend void swap(AnalyticsMessageSent& a, AnalyticsMessageSent& b) {
@@ -1909,38 +2169,38 @@ inline void Started::set_allocated_system_information(::platform::Information* s
 
 // -------------------------------------------------------------------
 
-// PageDisplayed
+// IntroductionPageDisplayed
 
 // .eve_launcher.application.EventMetadata event_metadata = 1;
-inline bool PageDisplayed::has_event_metadata() const {
+inline bool IntroductionPageDisplayed::has_event_metadata() const {
   return this != internal_default_instance() && event_metadata_ != NULL;
 }
-inline const ::eve_launcher::application::EventMetadata& PageDisplayed::_internal_event_metadata() const {
+inline const ::eve_launcher::application::EventMetadata& IntroductionPageDisplayed::_internal_event_metadata() const {
   return *event_metadata_;
 }
-inline const ::eve_launcher::application::EventMetadata& PageDisplayed::event_metadata() const {
+inline const ::eve_launcher::application::EventMetadata& IntroductionPageDisplayed::event_metadata() const {
   const ::eve_launcher::application::EventMetadata* p = event_metadata_;
-  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.PageDisplayed.event_metadata)
+  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.IntroductionPageDisplayed.event_metadata)
   return p != NULL ? *p : *reinterpret_cast<const ::eve_launcher::application::EventMetadata*>(
       &::eve_launcher::application::_EventMetadata_default_instance_);
 }
-inline ::eve_launcher::application::EventMetadata* PageDisplayed::release_event_metadata() {
-  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.PageDisplayed.event_metadata)
+inline ::eve_launcher::application::EventMetadata* IntroductionPageDisplayed::release_event_metadata() {
+  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.IntroductionPageDisplayed.event_metadata)
   
   ::eve_launcher::application::EventMetadata* temp = event_metadata_;
   event_metadata_ = NULL;
   return temp;
 }
-inline ::eve_launcher::application::EventMetadata* PageDisplayed::mutable_event_metadata() {
+inline ::eve_launcher::application::EventMetadata* IntroductionPageDisplayed::mutable_event_metadata() {
   
   if (event_metadata_ == NULL) {
     auto* p = CreateMaybeMessage<::eve_launcher::application::EventMetadata>(GetArenaNoVirtual());
     event_metadata_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.PageDisplayed.event_metadata)
+  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.IntroductionPageDisplayed.event_metadata)
   return event_metadata_;
 }
-inline void PageDisplayed::set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata) {
+inline void IntroductionPageDisplayed::set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == NULL) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(event_metadata_);
@@ -1956,49 +2216,163 @@ inline void PageDisplayed::set_allocated_event_metadata(::eve_launcher::applicat
     
   }
   event_metadata_ = event_metadata;
-  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.PageDisplayed.event_metadata)
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.IntroductionPageDisplayed.event_metadata)
 }
 
-// .eve_launcher.uninstaller.Page previous_page = 2;
-inline void PageDisplayed::clear_previous_page() {
-  previous_page_ = 0;
+// -------------------------------------------------------------------
+
+// ExecutionPageDisplayed
+
+// .eve_launcher.application.EventMetadata event_metadata = 1;
+inline bool ExecutionPageDisplayed::has_event_metadata() const {
+  return this != internal_default_instance() && event_metadata_ != NULL;
 }
-inline ::eve_launcher::uninstaller::Page PageDisplayed::previous_page() const {
-  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.PageDisplayed.previous_page)
-  return static_cast< ::eve_launcher::uninstaller::Page >(previous_page_);
+inline const ::eve_launcher::application::EventMetadata& ExecutionPageDisplayed::_internal_event_metadata() const {
+  return *event_metadata_;
 }
-inline void PageDisplayed::set_previous_page(::eve_launcher::uninstaller::Page value) {
+inline const ::eve_launcher::application::EventMetadata& ExecutionPageDisplayed::event_metadata() const {
+  const ::eve_launcher::application::EventMetadata* p = event_metadata_;
+  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.ExecutionPageDisplayed.event_metadata)
+  return p != NULL ? *p : *reinterpret_cast<const ::eve_launcher::application::EventMetadata*>(
+      &::eve_launcher::application::_EventMetadata_default_instance_);
+}
+inline ::eve_launcher::application::EventMetadata* ExecutionPageDisplayed::release_event_metadata() {
+  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.ExecutionPageDisplayed.event_metadata)
   
-  previous_page_ = value;
-  // @@protoc_insertion_point(field_set:eve_launcher.uninstaller.PageDisplayed.previous_page)
+  ::eve_launcher::application::EventMetadata* temp = event_metadata_;
+  event_metadata_ = NULL;
+  return temp;
+}
+inline ::eve_launcher::application::EventMetadata* ExecutionPageDisplayed::mutable_event_metadata() {
+  
+  if (event_metadata_ == NULL) {
+    auto* p = CreateMaybeMessage<::eve_launcher::application::EventMetadata>(GetArenaNoVirtual());
+    event_metadata_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.ExecutionPageDisplayed.event_metadata)
+  return event_metadata_;
+}
+inline void ExecutionPageDisplayed::set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete reinterpret_cast< ::google::protobuf::MessageLite*>(event_metadata_);
+  }
+  if (event_metadata) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      event_metadata = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, event_metadata, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  event_metadata_ = event_metadata;
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.ExecutionPageDisplayed.event_metadata)
 }
 
-// .eve_launcher.uninstaller.Page current_page = 3;
-inline void PageDisplayed::clear_current_page() {
-  current_page_ = 0;
+// -------------------------------------------------------------------
+
+// FinishedPageDisplayed
+
+// .eve_launcher.application.EventMetadata event_metadata = 1;
+inline bool FinishedPageDisplayed::has_event_metadata() const {
+  return this != internal_default_instance() && event_metadata_ != NULL;
 }
-inline ::eve_launcher::uninstaller::Page PageDisplayed::current_page() const {
-  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.PageDisplayed.current_page)
-  return static_cast< ::eve_launcher::uninstaller::Page >(current_page_);
+inline const ::eve_launcher::application::EventMetadata& FinishedPageDisplayed::_internal_event_metadata() const {
+  return *event_metadata_;
 }
-inline void PageDisplayed::set_current_page(::eve_launcher::uninstaller::Page value) {
+inline const ::eve_launcher::application::EventMetadata& FinishedPageDisplayed::event_metadata() const {
+  const ::eve_launcher::application::EventMetadata* p = event_metadata_;
+  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.FinishedPageDisplayed.event_metadata)
+  return p != NULL ? *p : *reinterpret_cast<const ::eve_launcher::application::EventMetadata*>(
+      &::eve_launcher::application::_EventMetadata_default_instance_);
+}
+inline ::eve_launcher::application::EventMetadata* FinishedPageDisplayed::release_event_metadata() {
+  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.FinishedPageDisplayed.event_metadata)
   
-  current_page_ = value;
-  // @@protoc_insertion_point(field_set:eve_launcher.uninstaller.PageDisplayed.current_page)
+  ::eve_launcher::application::EventMetadata* temp = event_metadata_;
+  event_metadata_ = NULL;
+  return temp;
+}
+inline ::eve_launcher::application::EventMetadata* FinishedPageDisplayed::mutable_event_metadata() {
+  
+  if (event_metadata_ == NULL) {
+    auto* p = CreateMaybeMessage<::eve_launcher::application::EventMetadata>(GetArenaNoVirtual());
+    event_metadata_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.FinishedPageDisplayed.event_metadata)
+  return event_metadata_;
+}
+inline void FinishedPageDisplayed::set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete reinterpret_cast< ::google::protobuf::MessageLite*>(event_metadata_);
+  }
+  if (event_metadata) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      event_metadata = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, event_metadata, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  event_metadata_ = event_metadata;
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.FinishedPageDisplayed.event_metadata)
 }
 
-// .eve_launcher.uninstaller.PageDisplayed.FlowDirection flow = 4;
-inline void PageDisplayed::clear_flow() {
-  flow_ = 0;
+// -------------------------------------------------------------------
+
+// FailedPageDisplayed
+
+// .eve_launcher.application.EventMetadata event_metadata = 1;
+inline bool FailedPageDisplayed::has_event_metadata() const {
+  return this != internal_default_instance() && event_metadata_ != NULL;
 }
-inline ::eve_launcher::uninstaller::PageDisplayed_FlowDirection PageDisplayed::flow() const {
-  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.PageDisplayed.flow)
-  return static_cast< ::eve_launcher::uninstaller::PageDisplayed_FlowDirection >(flow_);
+inline const ::eve_launcher::application::EventMetadata& FailedPageDisplayed::_internal_event_metadata() const {
+  return *event_metadata_;
 }
-inline void PageDisplayed::set_flow(::eve_launcher::uninstaller::PageDisplayed_FlowDirection value) {
+inline const ::eve_launcher::application::EventMetadata& FailedPageDisplayed::event_metadata() const {
+  const ::eve_launcher::application::EventMetadata* p = event_metadata_;
+  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.FailedPageDisplayed.event_metadata)
+  return p != NULL ? *p : *reinterpret_cast<const ::eve_launcher::application::EventMetadata*>(
+      &::eve_launcher::application::_EventMetadata_default_instance_);
+}
+inline ::eve_launcher::application::EventMetadata* FailedPageDisplayed::release_event_metadata() {
+  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.FailedPageDisplayed.event_metadata)
   
-  flow_ = value;
-  // @@protoc_insertion_point(field_set:eve_launcher.uninstaller.PageDisplayed.flow)
+  ::eve_launcher::application::EventMetadata* temp = event_metadata_;
+  event_metadata_ = NULL;
+  return temp;
+}
+inline ::eve_launcher::application::EventMetadata* FailedPageDisplayed::mutable_event_metadata() {
+  
+  if (event_metadata_ == NULL) {
+    auto* p = CreateMaybeMessage<::eve_launcher::application::EventMetadata>(GetArenaNoVirtual());
+    event_metadata_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.FailedPageDisplayed.event_metadata)
+  return event_metadata_;
+}
+inline void FailedPageDisplayed::set_allocated_event_metadata(::eve_launcher::application::EventMetadata* event_metadata) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == NULL) {
+    delete reinterpret_cast< ::google::protobuf::MessageLite*>(event_metadata_);
+  }
+  if (event_metadata) {
+    ::google::protobuf::Arena* submessage_arena = NULL;
+    if (message_arena != submessage_arena) {
+      event_metadata = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, event_metadata, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  event_metadata_ = event_metadata;
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.FailedPageDisplayed.event_metadata)
 }
 
 // -------------------------------------------------------------------
@@ -2739,6 +3113,12 @@ inline void AnalyticsMessageSent::set_allocated_message(::std::string* message) 
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -2748,11 +3128,6 @@ inline void AnalyticsMessageSent::set_allocated_message(::std::string* message) 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::eve_launcher::uninstaller::PageDisplayed_FlowDirection> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::eve_launcher::uninstaller::PageDisplayed_FlowDirection>() {
-  return ::eve_launcher::uninstaller::PageDisplayed_FlowDirection_descriptor();
-}
 template <> struct is_proto_enum< ::eve_launcher::uninstaller::UserCancelled_Progress> : ::std::true_type {};
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::eve_launcher::uninstaller::UserCancelled_Progress>() {
