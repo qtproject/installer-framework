@@ -37,10 +37,7 @@ void HttpThreadWorker::process(const QByteArray& data, const QString& url, const
     } );
     void (QNetworkReply::*errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
     connect(reply, errorSignal, [this, reply]() {
-        QString status = QString::fromLatin1("ERROR");
         qWarning() << "framework | HttpThreadWorker::process | Failed to send POST";
-
-        m_finished++; reply->deleteLater();
     } );
 
     qDebug() << "framework | HttpThreadWorker::process | POST from worker thread " << thread();
