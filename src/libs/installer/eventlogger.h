@@ -20,7 +20,10 @@ public:
 
     // uninstaller
     void uninstallerStarted(int duration);
-    void uninstallerPageDisplayed(eve_launcher::uninstaller::Page previousPage, eve_launcher::uninstaller::Page currentPage, eve_launcher::uninstaller::PageDisplayed_FlowDirection flow);
+    void uninstallerIntroductionPageDisplayed();
+    void uninstallerExecutionPageDisplayed();
+    void uninstallerFinishedPageDisplayed();
+    void uninstallerFailedPageDisplayed();
     void uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::ShutDown_State state, bool finishButton);
     void uninstallerDetailsDisplayed();
     void uninstallerDetailsHidden();
@@ -32,12 +35,15 @@ public:
     void uninstallerAnalyticsMessageSent(const QString& message);
 
     // installer
-    void installerStarted(int duration);
-    void installerPageDisplayed(eve_launcher::installer::Page previousPage, eve_launcher::installer::Page currentPage, eve_launcher::installer::PageDisplayed_FlowDirection flow);
+    void installerStarted(const QString& startMenuItemPath, int duration);
+    void installerIntroductionPageDisplayed();
+    void installerEulaPageDisplayed();
+    void installerExecutionPageDisplayed();
+    void installerFinishedPageDisplayed();
+    void installerFailedPageDisplayed();
     void installerShutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton);
     void installerPreparationStarted();
     void installerPreparationFinished(int duration);
-    void installerLocationChanged(eve_launcher::installer::LocationChanged_Source source, eve_launcher::installer::LocationChanged_Provider provider, const QString& path);
     void installerDetailsDisplayed();
     void installerDetailsHidden();
     void installerAutoRunEnabled();
@@ -48,21 +54,17 @@ public:
     void installerProvidedClientFound();
     void installerSharedCacheMessageShown();
     void installerSharedCacheMessageClosed(eve_launcher::installer::MessageBoxButton messageBoxButton, int timeDisplayed);
-    void installerInstallationStarted();
+    void installerInstallationStarted(const QString& installPath, eve_launcher::installer::RedistVersion redistVersion);
     void installerInstallationInterrupted(int duration);
-    void installerInstallationFinished(int duration);
+    void installerInstallationFinished(const QString& sharedCachePath, int duration);
     void installerInstallationFailed(int duration);
     void installerUninstallerCreationStarted();
     void installerUninstallerCreationFinished(int duration);
-    void installerComponentInitializationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
-    void installerComponentInitializationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration);
-    void installerComponentInstallationStarted(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
-    void installerComponentInstallationFinished(eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion, int duration);
-    void installerComponentsInitializationStarted();
-    void installerComponentsInitializationFinished(int duration);
-    void installerComponentsInstallationStarted();
-    void installerComponentsInstallationFinished(int duration);
-    void installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::Component component, eve_launcher::installer::RedistVersion redistVersion);
+    void installerComponentInitializationStarted();
+    void installerComponentInitializationFinished(int duration);
+    void installerComponentInstallationStarted();
+    void installerComponentInstallationFinished(int duration);
+    void installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::RedistVersion redistVersion);
     void installerAnalyticsMessageSent(const QString& message);
 
     QString getSession();

@@ -25,7 +25,6 @@ private:
     bool sendUninstallerEvent(QStringList args);
     eve_launcher::uninstaller::Page toUninstallerPage(bool *ok, QString value);
     eve_launcher::installer::Page toInstallerPage(bool *ok, QString value);
-    eve_launcher::installer::Component toInstallerComponent(bool *ok, QString value);
     eve_launcher::installer::RedistVersion toInstallerRedistVersion(bool *ok, QString value);
 };
 } // namespace

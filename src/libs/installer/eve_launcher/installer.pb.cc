@@ -41,11 +41,31 @@ class StartedDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<Started>
       _instance;
 } _Started_default_instance_;
-class PageDisplayedDefaultTypeInternal {
+class IntroductionPageDisplayedDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<PageDisplayed>
+  ::google::protobuf::internal::ExplicitlyConstructed<IntroductionPageDisplayed>
       _instance;
-} _PageDisplayed_default_instance_;
+} _IntroductionPageDisplayed_default_instance_;
+class EulaPageDisplayedDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<EulaPageDisplayed>
+      _instance;
+} _EulaPageDisplayed_default_instance_;
+class ExecutionPageDisplayedDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<ExecutionPageDisplayed>
+      _instance;
+} _ExecutionPageDisplayed_default_instance_;
+class FinishedPageDisplayedDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<FinishedPageDisplayed>
+      _instance;
+} _FinishedPageDisplayed_default_instance_;
+class FailedPageDisplayedDefaultTypeInternal {
+ public:
+  ::google::protobuf::internal::ExplicitlyConstructed<FailedPageDisplayed>
+      _instance;
+} _FailedPageDisplayed_default_instance_;
 class UserCancelledDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<UserCancelled>
@@ -66,11 +86,6 @@ class PreparationFinishedDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<PreparationFinished>
       _instance;
 } _PreparationFinished_default_instance_;
-class LocationChangedDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<LocationChanged>
-      _instance;
-} _LocationChanged_default_instance_;
 class DetailsDisplayedDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<DetailsDisplayed>
@@ -171,26 +186,6 @@ class ComponentInstallationFinishedDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<ComponentInstallationFinished>
       _instance;
 } _ComponentInstallationFinished_default_instance_;
-class ComponentsInitializationStartedDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ComponentsInitializationStarted>
-      _instance;
-} _ComponentsInitializationStarted_default_instance_;
-class ComponentsInitializationFinishedDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ComponentsInitializationFinished>
-      _instance;
-} _ComponentsInitializationFinished_default_instance_;
-class ComponentsInstallationStartedDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ComponentsInstallationStarted>
-      _instance;
-} _ComponentsInstallationStarted_default_instance_;
-class ComponentsInstallationFinishedDefaultTypeInternal {
- public:
-  ::google::protobuf::internal::ExplicitlyConstructed<ComponentsInstallationFinished>
-      _instance;
-} _ComponentsInstallationFinished_default_instance_;
 class ErrorEncounteredDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<ErrorEncountered>
@@ -232,19 +227,79 @@ static void InitDefaultsStarted() {
       &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,
       &protobuf_eve_5flauncher_2fpdm_2eproto::scc_info_Information.base,}};
 
-static void InitDefaultsPageDisplayed() {
+static void InitDefaultsIntroductionPageDisplayed() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::eve_launcher::installer::_PageDisplayed_default_instance_;
-    new (ptr) ::eve_launcher::installer::PageDisplayed();
+    void* ptr = &::eve_launcher::installer::_IntroductionPageDisplayed_default_instance_;
+    new (ptr) ::eve_launcher::installer::IntroductionPageDisplayed();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::eve_launcher::installer::PageDisplayed::InitAsDefaultInstance();
+  ::eve_launcher::installer::IntroductionPageDisplayed::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<1> scc_info_PageDisplayed =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsPageDisplayed}, {
+::google::protobuf::internal::SCCInfo<1> scc_info_IntroductionPageDisplayed =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsIntroductionPageDisplayed}, {
+      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
+
+static void InitDefaultsEulaPageDisplayed() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::eve_launcher::installer::_EulaPageDisplayed_default_instance_;
+    new (ptr) ::eve_launcher::installer::EulaPageDisplayed();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::eve_launcher::installer::EulaPageDisplayed::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_EulaPageDisplayed =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsEulaPageDisplayed}, {
+      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
+
+static void InitDefaultsExecutionPageDisplayed() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::eve_launcher::installer::_ExecutionPageDisplayed_default_instance_;
+    new (ptr) ::eve_launcher::installer::ExecutionPageDisplayed();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::eve_launcher::installer::ExecutionPageDisplayed::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_ExecutionPageDisplayed =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsExecutionPageDisplayed}, {
+      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
+
+static void InitDefaultsFinishedPageDisplayed() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::eve_launcher::installer::_FinishedPageDisplayed_default_instance_;
+    new (ptr) ::eve_launcher::installer::FinishedPageDisplayed();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::eve_launcher::installer::FinishedPageDisplayed::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_FinishedPageDisplayed =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsFinishedPageDisplayed}, {
+      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
+
+static void InitDefaultsFailedPageDisplayed() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::eve_launcher::installer::_FailedPageDisplayed_default_instance_;
+    new (ptr) ::eve_launcher::installer::FailedPageDisplayed();
+    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::eve_launcher::installer::FailedPageDisplayed::InitAsDefaultInstance();
+}
+
+::google::protobuf::internal::SCCInfo<1> scc_info_FailedPageDisplayed =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsFailedPageDisplayed}, {
       &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
 
 static void InitDefaultsUserCancelled() {
@@ -305,21 +360,6 @@ static void InitDefaultsPreparationFinished() {
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_PreparationFinished =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsPreparationFinished}, {
-      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
-
-static void InitDefaultsLocationChanged() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::eve_launcher::installer::_LocationChanged_default_instance_;
-    new (ptr) ::eve_launcher::installer::LocationChanged();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::eve_launcher::installer::LocationChanged::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_LocationChanged =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsLocationChanged}, {
       &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
 
 static void InitDefaultsDetailsDisplayed() {
@@ -622,66 +662,6 @@ static void InitDefaultsComponentInstallationFinished() {
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsComponentInstallationFinished}, {
       &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
 
-static void InitDefaultsComponentsInitializationStarted() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::eve_launcher::installer::_ComponentsInitializationStarted_default_instance_;
-    new (ptr) ::eve_launcher::installer::ComponentsInitializationStarted();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::eve_launcher::installer::ComponentsInitializationStarted::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ComponentsInitializationStarted =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsComponentsInitializationStarted}, {
-      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
-
-static void InitDefaultsComponentsInitializationFinished() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::eve_launcher::installer::_ComponentsInitializationFinished_default_instance_;
-    new (ptr) ::eve_launcher::installer::ComponentsInitializationFinished();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::eve_launcher::installer::ComponentsInitializationFinished::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ComponentsInitializationFinished =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsComponentsInitializationFinished}, {
-      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
-
-static void InitDefaultsComponentsInstallationStarted() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::eve_launcher::installer::_ComponentsInstallationStarted_default_instance_;
-    new (ptr) ::eve_launcher::installer::ComponentsInstallationStarted();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::eve_launcher::installer::ComponentsInstallationStarted::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ComponentsInstallationStarted =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsComponentsInstallationStarted}, {
-      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
-
-static void InitDefaultsComponentsInstallationFinished() {
-  GOOGLE_PROTOBUF_VERIFY_VERSION;
-
-  {
-    void* ptr = &::eve_launcher::installer::_ComponentsInstallationFinished_default_instance_;
-    new (ptr) ::eve_launcher::installer::ComponentsInstallationFinished();
-    ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
-  }
-  ::eve_launcher::installer::ComponentsInstallationFinished::InitAsDefaultInstance();
-}
-
-::google::protobuf::internal::SCCInfo<1> scc_info_ComponentsInstallationFinished =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsComponentsInstallationFinished}, {
-      &protobuf_eve_5flauncher_2fapplication_2eproto::scc_info_EventMetadata.base,}};
-
 static void InitDefaultsErrorEncountered() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -745,12 +725,15 @@ static void InitDefaultsEvent() {
 
 void InitDefaults() {
   ::google::protobuf::internal::InitSCC(&scc_info_Started.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_PageDisplayed.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_IntroductionPageDisplayed.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_EulaPageDisplayed.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_ExecutionPageDisplayed.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_FinishedPageDisplayed.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_FailedPageDisplayed.base);
   ::google::protobuf::internal::InitSCC(&scc_info_UserCancelled.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ShutDown.base);
   ::google::protobuf::internal::InitSCC(&scc_info_PreparationStarted.base);
   ::google::protobuf::internal::InitSCC(&scc_info_PreparationFinished.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_LocationChanged.base);
   ::google::protobuf::internal::InitSCC(&scc_info_DetailsDisplayed.base);
   ::google::protobuf::internal::InitSCC(&scc_info_DetailsHidden.base);
   ::google::protobuf::internal::InitSCC(&scc_info_AutoRunEnabled.base);
@@ -771,18 +754,14 @@ void InitDefaults() {
   ::google::protobuf::internal::InitSCC(&scc_info_ComponentInitializationFinished.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ComponentInstallationStarted.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ComponentInstallationFinished.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ComponentsInitializationStarted.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ComponentsInitializationFinished.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ComponentsInstallationStarted.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_ComponentsInstallationFinished.base);
   ::google::protobuf::internal::InitSCC(&scc_info_ErrorEncountered.base);
   ::google::protobuf::internal::InitSCC(&scc_info_AnalyticsMessageSent.base);
   ::google::protobuf::internal::InitSCC(&scc_info_IPAddress.base);
   ::google::protobuf::internal::InitSCC(&scc_info_Event.base);
 }
 
-::google::protobuf::Metadata file_level_metadata[35];
-const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[11];
+::google::protobuf::Metadata file_level_metadata[34];
+const ::google::protobuf::EnumDescriptor* file_level_enum_descriptors[7];
 
 const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
@@ -793,15 +772,38 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, event_metadata_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, duration_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, system_information_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, filename_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, start_menu_item_path_),
   ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PageDisplayed, _internal_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::IntroductionPageDisplayed, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PageDisplayed, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PageDisplayed, previous_page_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PageDisplayed, current_page_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PageDisplayed, flow_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::IntroductionPageDisplayed, event_metadata_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::EulaPageDisplayed, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::EulaPageDisplayed, event_metadata_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ExecutionPageDisplayed, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ExecutionPageDisplayed, event_metadata_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::FinishedPageDisplayed, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::FinishedPageDisplayed, event_metadata_),
+  ~0u,  // no _has_bits_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::FailedPageDisplayed, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::FailedPageDisplayed, event_metadata_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::UserCancelled, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -832,15 +834,6 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PreparationFinished, event_metadata_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::PreparationFinished, duration_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::LocationChanged, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::LocationChanged, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::LocationChanged, source_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::LocationChanged, provider_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::LocationChanged, path_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::DetailsDisplayed, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -911,6 +904,8 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationStarted, event_metadata_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationStarted, install_path_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationStarted, redist_version_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationInterrupted, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -925,6 +920,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationFinished, event_metadata_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationFinished, duration_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationFinished, shared_cache_path_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::InstallationFailed, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -951,16 +947,12 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationStarted, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationStarted, component_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationStarted, redist_version_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationFinished, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationFinished, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationFinished, component_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationFinished, redist_version_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInitializationFinished, duration_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationStarted, _internal_metadata_),
@@ -968,43 +960,13 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationStarted, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationStarted, component_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationStarted, redist_version_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationFinished, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationFinished, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationFinished, component_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationFinished, redist_version_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentInstallationFinished, duration_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInitializationStarted, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInitializationStarted, event_metadata_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInitializationFinished, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInitializationFinished, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInitializationFinished, duration_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInstallationStarted, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInstallationStarted, event_metadata_),
-  ~0u,  // no _has_bits_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInstallationFinished, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInstallationFinished, event_metadata_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ComponentsInstallationFinished, duration_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1013,7 +975,6 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, event_metadata_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, code_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, page_),
-  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, component_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::ErrorEncountered, redist_version_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::AnalyticsMessageSent, _internal_metadata_),
@@ -1045,50 +1006,52 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::installer::Started)},
-  { 8, -1, sizeof(::eve_launcher::installer::PageDisplayed)},
-  { 17, -1, sizeof(::eve_launcher::installer::UserCancelled)},
-  { 25, -1, sizeof(::eve_launcher::installer::ShutDown)},
-  { 34, -1, sizeof(::eve_launcher::installer::PreparationStarted)},
-  { 40, -1, sizeof(::eve_launcher::installer::PreparationFinished)},
-  { 47, -1, sizeof(::eve_launcher::installer::LocationChanged)},
-  { 56, -1, sizeof(::eve_launcher::installer::DetailsDisplayed)},
-  { 62, -1, sizeof(::eve_launcher::installer::DetailsHidden)},
-  { 68, -1, sizeof(::eve_launcher::installer::AutoRunEnabled)},
-  { 74, -1, sizeof(::eve_launcher::installer::AutoRunDisabled)},
-  { 80, -1, sizeof(::eve_launcher::installer::EulaAccepted)},
-  { 86, -1, sizeof(::eve_launcher::installer::EulaDeclined)},
-  { 92, -1, sizeof(::eve_launcher::installer::RedistSearchConcluded)},
-  { 100, -1, sizeof(::eve_launcher::installer::ProvidedClientFound)},
-  { 106, -1, sizeof(::eve_launcher::installer::SharedCacheMessageShown)},
-  { 112, -1, sizeof(::eve_launcher::installer::SharedCacheMessageClosed)},
-  { 120, -1, sizeof(::eve_launcher::installer::InstallationStarted)},
-  { 126, -1, sizeof(::eve_launcher::installer::InstallationInterrupted)},
-  { 133, -1, sizeof(::eve_launcher::installer::InstallationFinished)},
-  { 140, -1, sizeof(::eve_launcher::installer::InstallationFailed)},
-  { 147, -1, sizeof(::eve_launcher::installer::UninstallerCreationStarted)},
-  { 153, -1, sizeof(::eve_launcher::installer::UninstallerCreationFinished)},
-  { 160, -1, sizeof(::eve_launcher::installer::ComponentInitializationStarted)},
-  { 168, -1, sizeof(::eve_launcher::installer::ComponentInitializationFinished)},
-  { 177, -1, sizeof(::eve_launcher::installer::ComponentInstallationStarted)},
-  { 185, -1, sizeof(::eve_launcher::installer::ComponentInstallationFinished)},
-  { 194, -1, sizeof(::eve_launcher::installer::ComponentsInitializationStarted)},
-  { 200, -1, sizeof(::eve_launcher::installer::ComponentsInitializationFinished)},
-  { 207, -1, sizeof(::eve_launcher::installer::ComponentsInstallationStarted)},
-  { 213, -1, sizeof(::eve_launcher::installer::ComponentsInstallationFinished)},
-  { 220, -1, sizeof(::eve_launcher::installer::ErrorEncountered)},
-  { 230, -1, sizeof(::eve_launcher::installer::AnalyticsMessageSent)},
-  { 237, -1, sizeof(::eve_launcher::installer::IPAddress)},
-  { 245, -1, sizeof(::eve_launcher::installer::Event)},
+  { 10, -1, sizeof(::eve_launcher::installer::IntroductionPageDisplayed)},
+  { 16, -1, sizeof(::eve_launcher::installer::EulaPageDisplayed)},
+  { 22, -1, sizeof(::eve_launcher::installer::ExecutionPageDisplayed)},
+  { 28, -1, sizeof(::eve_launcher::installer::FinishedPageDisplayed)},
+  { 34, -1, sizeof(::eve_launcher::installer::FailedPageDisplayed)},
+  { 40, -1, sizeof(::eve_launcher::installer::UserCancelled)},
+  { 48, -1, sizeof(::eve_launcher::installer::ShutDown)},
+  { 57, -1, sizeof(::eve_launcher::installer::PreparationStarted)},
+  { 63, -1, sizeof(::eve_launcher::installer::PreparationFinished)},
+  { 70, -1, sizeof(::eve_launcher::installer::DetailsDisplayed)},
+  { 76, -1, sizeof(::eve_launcher::installer::DetailsHidden)},
+  { 82, -1, sizeof(::eve_launcher::installer::AutoRunEnabled)},
+  { 88, -1, sizeof(::eve_launcher::installer::AutoRunDisabled)},
+  { 94, -1, sizeof(::eve_launcher::installer::EulaAccepted)},
+  { 100, -1, sizeof(::eve_launcher::installer::EulaDeclined)},
+  { 106, -1, sizeof(::eve_launcher::installer::RedistSearchConcluded)},
+  { 114, -1, sizeof(::eve_launcher::installer::ProvidedClientFound)},
+  { 120, -1, sizeof(::eve_launcher::installer::SharedCacheMessageShown)},
+  { 126, -1, sizeof(::eve_launcher::installer::SharedCacheMessageClosed)},
+  { 134, -1, sizeof(::eve_launcher::installer::InstallationStarted)},
+  { 142, -1, sizeof(::eve_launcher::installer::InstallationInterrupted)},
+  { 149, -1, sizeof(::eve_launcher::installer::InstallationFinished)},
+  { 157, -1, sizeof(::eve_launcher::installer::InstallationFailed)},
+  { 164, -1, sizeof(::eve_launcher::installer::UninstallerCreationStarted)},
+  { 170, -1, sizeof(::eve_launcher::installer::UninstallerCreationFinished)},
+  { 177, -1, sizeof(::eve_launcher::installer::ComponentInitializationStarted)},
+  { 183, -1, sizeof(::eve_launcher::installer::ComponentInitializationFinished)},
+  { 190, -1, sizeof(::eve_launcher::installer::ComponentInstallationStarted)},
+  { 196, -1, sizeof(::eve_launcher::installer::ComponentInstallationFinished)},
+  { 203, -1, sizeof(::eve_launcher::installer::ErrorEncountered)},
+  { 212, -1, sizeof(::eve_launcher::installer::AnalyticsMessageSent)},
+  { 219, -1, sizeof(::eve_launcher::installer::IPAddress)},
+  { 227, -1, sizeof(::eve_launcher::installer::Event)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_Started_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_PageDisplayed_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_IntroductionPageDisplayed_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_EulaPageDisplayed_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ExecutionPageDisplayed_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_FinishedPageDisplayed_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_FailedPageDisplayed_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_UserCancelled_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ShutDown_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_PreparationStarted_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_PreparationFinished_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_LocationChanged_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_DetailsDisplayed_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_DetailsHidden_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_AutoRunEnabled_default_instance_),
@@ -1109,10 +1072,6 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentInitializationFinished_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentInstallationStarted_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentInstallationFinished_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentsInitializationStarted_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentsInitializationFinished_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentsInstallationStarted_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ComponentsInstallationFinished_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_ErrorEncountered_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_AnalyticsMessageSent_default_instance_),
   reinterpret_cast<const ::google::protobuf::Message*>(&::eve_launcher::installer::_IPAddress_default_instance_),
@@ -1134,7 +1093,7 @@ void protobuf_AssignDescriptorsOnce() {
 void protobuf_RegisterTypes(const ::std::string&) GOOGLE_PROTOBUF_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
-  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 35);
+  ::google::protobuf::internal::RegisterAllTypes(file_level_metadata, 34);
 }
 
 void AddDescriptorsImpl() {
@@ -1145,21 +1104,23 @@ void AddDescriptorsImpl() {
       ".proto\032\026eve_launcher/pdm.proto\032\031google/p"
       "rotobuf/any.proto\032\033google/protobuf/empty"
       ".proto\032\037google/protobuf/timestamp.proto\""
-      "\217\001\n\007Started\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
+      "\277\001\n\007Started\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
       "e_launcher.application.EventMetadata\022\020\n\010"
       "duration\030\002 \001(\005\0221\n\022system_information\030\003 \001"
-      "(\0132\025.platform.Information\"\236\003\n\rPageDispla"
-      "yed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launch"
-      "er.application.EventMetadata\0223\n\rprevious"
-      "_page\030\002 \001(\0162\034.eve_launcher.installer.Pag"
-      "e\0222\n\014current_page\030\003 \001(\0162\034.eve_launcher.i"
-      "nstaller.Page\022A\n\004flow\030\004 \001(\01623.eve_launch"
-      "er.installer.PageDisplayed.FlowDirection"
-      "\"\237\001\n\rFlowDirection\022\035\n\031FLOWDIRECTION_UNSP"
-      "ECIFIED\020\000\022\034\n\030FLOWDIRECTION_FIRST_VIEW\020\001\022"
-      "\032\n\026FLOWDIRECTION_FORWARDS\020\002\022\033\n\027FLOWDIREC"
-      "TION_BACKWARDS\020\003\022\030\n\024FLOWDIRECTION_RELOAD"
-      "\020\004\"\304\002\n\rUserCancelled\022\?\n\016event_metadata\030\001"
+      "(\0132\025.platform.Information\022\020\n\010filename\030\004 "
+      "\001(\t\022\034\n\024start_menu_item_path\030\005 \001(\t\"\\\n\031Int"
+      "roductionPageDisplayed\022\?\n\016event_metadata"
+      "\030\001 \001(\0132\'.eve_launcher.application.EventM"
+      "etadata\"T\n\021EulaPageDisplayed\022\?\n\016event_me"
+      "tadata\030\001 \001(\0132\'.eve_launcher.application."
+      "EventMetadata\"Y\n\026ExecutionPageDisplayed\022"
+      "\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.a"
+      "pplication.EventMetadata\"X\n\025FinishedPage"
+      "Displayed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
+      "launcher.application.EventMetadata\"V\n\023Fa"
+      "iledPageDisplayed\022\?\n\016event_metadata\030\001 \001("
+      "\0132\'.eve_launcher.application.EventMetada"
+      "ta\"\304\002\n\rUserCancelled\022\?\n\016event_metadata\030\001"
       " \001(\0132\'.eve_launcher.application.EventMet"
       "adata\022*\n\004page\030\002 \001(\0162\034.eve_launcher.insta"
       "ller.Page\022@\n\010progress\030\003 \001(\0162..eve_launch"
@@ -1180,150 +1141,115 @@ void AddDescriptorsImpl() {
       "on.EventMetadata\"h\n\023PreparationFinished\022"
       "\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.a"
       "pplication.EventMetadata\022\020\n\010duration\030\002 \001"
-      "(\005\"\262\003\n\017LocationChanged\022\?\n\016event_metadata"
+      "(\005\"S\n\020DetailsDisplayed\022\?\n\016event_metadata"
       "\030\001 \001(\0132\'.eve_launcher.application.EventM"
-      "etadata\022>\n\006source\030\002 \001(\0162..eve_launcher.i"
-      "nstaller.LocationChanged.Source\022B\n\010provi"
-      "der\030\003 \001(\01620.eve_launcher.installer.Locat"
-      "ionChanged.Provider\022\014\n\004path\030\004 \001(\t\"~\n\006Sou"
-      "rce\022\026\n\022SOURCE_UNSPECIFIED\020\000\022\034\n\030SOURCE_IN"
-      "STALL_DIRECTORY\020\001\022\036\n\032SOURCE_START_MENU_L"
-      "OCATION\020\002\022\036\n\032SOURCE_SHARED_CACHE_FOLDER\020"
-      "\003\"L\n\010Provider\022\030\n\024PROVIDER_UNSPECIFIED\020\000\022"
-      "\021\n\rPROVIDER_USER\020\001\022\023\n\017PROVIDER_SYSTEM\020\002\""
-      "S\n\020DetailsDisplayed\022\?\n\016event_metadata\030\001 "
-      "\001(\0132\'.eve_launcher.application.EventMeta"
-      "data\"P\n\rDetailsHidden\022\?\n\016event_metadata\030"
-      "\001 \001(\0132\'.eve_launcher.application.EventMe"
-      "tadata\"Q\n\016AutoRunEnabled\022\?\n\016event_metada"
+      "etadata\"P\n\rDetailsHidden\022\?\n\016event_metada"
       "ta\030\001 \001(\0132\'.eve_launcher.application.Even"
-      "tMetadata\"R\n\017AutoRunDisabled\022\?\n\016event_me"
-      "tadata\030\001 \001(\0132\'.eve_launcher.application."
-      "EventMetadata\"O\n\014EulaAccepted\022\?\n\016event_m"
-      "etadata\030\001 \001(\0132\'.eve_launcher.application"
-      ".EventMetadata\"O\n\014EulaDeclined\022\?\n\016event_"
-      "metadata\030\001 \001(\0132\'.eve_launcher.applicatio"
-      "n.EventMetadata\"\345\003\n\025RedistSearchConclude"
-      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
-      ".application.EventMetadata\0226\n\007version\030\002 "
-      "\001(\0162%.eve_launcher.installer.RedistVersi"
-      "on\022J\n\006reason\030\003 \001(\0162:.eve_launcher.instal"
-      "ler.RedistSearchConcluded.RedistReason\"\206"
-      "\002\n\014RedistReason\022\034\n\030REDISTREASON_UNSPECIF"
-      "IED\020\000\022\034\n\030REDISTREASON_NOT_WINDOWS\020\001\022,\n(R"
-      "EDISTREASON_INCLUDED_IN_WINDOWS_VERSION\020"
-      "\002\022\033\n\027REDISTREASON_FOUND_DLLS\020\003\022%\n!REDIST"
-      "REASON_FOUND_WINDOWS_UPDATE\020\004\022\'\n#REDISTR"
-      "EASON_WINDOWS_UPDATE_MISSING\020\005\022\037\n\033REDIST"
-      "REASON_REDIST_MISSING\020\006\"V\n\023ProvidedClien"
-      "tFound\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_lau"
-      "ncher.application.EventMetadata\"Z\n\027Share"
-      "dCacheMessageShown\022\?\n\016event_metadata\030\001 \001"
-      "(\0132\'.eve_launcher.application.EventMetad"
-      "ata\"\271\001\n\030SharedCacheMessageClosed\022\?\n\016even"
-      "t_metadata\030\001 \001(\0132\'.eve_launcher.applicat"
-      "ion.EventMetadata\022D\n\022message_box_button\030"
-      "\002 \001(\0162(.eve_launcher.installer.MessageBo"
-      "xButton\022\026\n\016time_displayed\030\003 \001(\005\"V\n\023Insta"
-      "llationStarted\022\?\n\016event_metadata\030\001 \001(\0132\'"
-      ".eve_launcher.application.EventMetadata\""
-      "l\n\027InstallationInterrupted\022\?\n\016event_meta"
-      "data\030\001 \001(\0132\'.eve_launcher.application.Ev"
-      "entMetadata\022\020\n\010duration\030\002 \001(\005\"i\n\024Install"
-      "ationFinished\022\?\n\016event_metadata\030\001 \001(\0132\'."
-      "eve_launcher.application.EventMetadata\022\020"
-      "\n\010duration\030\002 \001(\005\"g\n\022InstallationFailed\022\?"
-      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
-      "plication.EventMetadata\022\020\n\010duration\030\002 \001("
-      "\005\"]\n\032UninstallerCreationStarted\022\?\n\016event"
-      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
-      "on.EventMetadata\"p\n\033UninstallerCreationF"
-      "inished\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_la"
-      "uncher.application.EventMetadata\022\020\n\010dura"
-      "tion\030\002 \001(\005\"\326\001\n\036ComponentInitializationSt"
-      "arted\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_laun"
-      "cher.application.EventMetadata\0224\n\tcompon"
-      "ent\030\002 \001(\0162!.eve_launcher.installer.Compo"
-      "nent\022=\n\016redist_version\030\003 \001(\0162%.eve_launc"
-      "her.installer.RedistVersion\"\351\001\n\037Componen"
-      "tInitializationFinished\022\?\n\016event_metadat"
-      "a\030\001 \001(\0132\'.eve_launcher.application.Event"
-      "Metadata\0224\n\tcomponent\030\002 \001(\0162!.eve_launch"
-      "er.installer.Component\022=\n\016redist_version"
-      "\030\003 \001(\0162%.eve_launcher.installer.RedistVe"
-      "rsion\022\020\n\010duration\030\004 \001(\005\"\324\001\n\034ComponentIns"
-      "tallationStarted\022\?\n\016event_metadata\030\001 \001(\013"
-      "2\'.eve_launcher.application.EventMetadat"
-      "a\0224\n\tcomponent\030\002 \001(\0162!.eve_launcher.inst"
-      "aller.Component\022=\n\016redist_version\030\003 \001(\0162"
-      "%.eve_launcher.installer.RedistVersion\"\347"
-      "\001\n\035ComponentInstallationFinished\022\?\n\016even"
-      "t_metadata\030\001 \001(\0132\'.eve_launcher.applicat"
-      "ion.EventMetadata\0224\n\tcomponent\030\002 \001(\0162!.e"
-      "ve_launcher.installer.Component\022=\n\016redis"
-      "t_version\030\003 \001(\0162%.eve_launcher.installer"
-      ".RedistVersion\022\020\n\010duration\030\004 \001(\005\"b\n\037Comp"
-      "onentsInitializationStarted\022\?\n\016event_met"
+      "tMetadata\"Q\n\016AutoRunEnabled\022\?\n\016event_met"
       "adata\030\001 \001(\0132\'.eve_launcher.application.E"
-      "ventMetadata\"u\n ComponentsInitialization"
-      "Finished\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_l"
-      "auncher.application.EventMetadata\022\020\n\010dur"
-      "ation\030\002 \001(\005\"`\n\035ComponentsInstallationSta"
-      "rted\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
-      "her.application.EventMetadata\"s\n\036Compone"
-      "ntsInstallationFinished\022\?\n\016event_metadat"
-      "a\030\001 \001(\0132\'.eve_launcher.application.Event"
-      "Metadata\022\020\n\010duration\030\002 \001(\005\"\353\004\n\020ErrorEnco"
-      "untered\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_la"
-      "uncher.application.EventMetadata\022@\n\004code"
-      "\030\002 \001(\01622.eve_launcher.installer.ErrorEnc"
-      "ountered.ErrorCode\022*\n\004page\030\003 \001(\0162\034.eve_l"
-      "auncher.installer.Page\0224\n\tcomponent\030\004 \001("
-      "\0162!.eve_launcher.installer.Component\022=\n\016"
-      "redist_version\030\005 \001(\0162%.eve_launcher.inst"
-      "aller.RedistVersion\"\262\002\n\tErrorCode\022\031\n\025ERR"
-      "ORCODE_UNSPECIFIED\020\000\022\037\n\033ERRORCODE_CREATE"
-      "_OPERATIONS\020\001\022\033\n\027ERRORCODE_ADD_OPERATION"
-      "\020\002\022\030\n\024ERRORCODE_SEARCH_DLL\020\003\022#\n\037ERRORCOD"
-      "E_SEARCH_WINDOWS_UPDATE\020\004\022\"\n\036ERRORCODE_M"
-      "ISSING_PREREQUISITE\020\005\022\037\n\033ERRORCODE_QT_ST"
-      "ATUS_FAILURE\020\006\022\"\n\036ERRORCODE_QT_STATUS_UN"
-      "FINISHED\020\007\022$\n ERRORCODE_QT_STATUS_FORCE_"
-      "UPDATE\020\010\"h\n\024AnalyticsMessageSent\022\?\n\016even"
+      "ventMetadata\"R\n\017AutoRunDisabled\022\?\n\016event"
+      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
+      "on.EventMetadata\"O\n\014EulaAccepted\022\?\n\016even"
       "t_metadata\030\001 \001(\0132\'.eve_launcher.applicat"
-      "ion.EventMetadata\022\017\n\007message\030\002 \001(\t\"2\n\tIP"
-      "Address\022\014\n\002v4\030\001 \001(\007H\000\022\014\n\002v6\030\002 \001(\014H\000B\t\n\007v"
-      "ersion\"\360\001\n\005Event\022,\n\010occurred\030\001 \001(\0132\032.goo"
-      "gle.protobuf.Timestamp\022,\n\010received\030\002 \001(\013"
-      "2\032.google.protobuf.Timestamp\022\014\n\004uuid\030\003 \001"
-      "(\014\0225\n\nip_address\030\004 \001(\0132!.eve_launcher.in"
-      "staller.IPAddress\022\016\n\006tenant\030\005 \001(\t\022%\n\007pay"
-      "load\030\006 \001(\0132\024.google.protobuf.Any\022\017\n\007jour"
-      "ney\030\007 \001(\014*\376\001\n\004Page\022\024\n\020PAGE_UNSPECIFIED\020\000"
-      "\022\022\n\016PAGE_NOT_FOUND\020\001\022\020\n\014PAGE_NO_PAGE\020\002\022\025"
-      "\n\021PAGE_INTRODUCTION\020\003\022\031\n\025PAGE_TARGET_DIR"
-      "ECTORY\020\004\022\034\n\030PAGE_COMPONENT_SELECTION\020\005\022\r"
-      "\n\tPAGE_EULA\020\006\022\023\n\017PAGE_START_MENU\020\007\022\016\n\nPA"
-      "GE_READY\020\010\022\022\n\016PAGE_EXECUTION\020\t\022\021\n\rPAGE_F"
-      "INISHED\020\n\022\017\n\013PAGE_FAILED\020\013*\344\001\n\rRedistVer"
-      "sion\022\035\n\031REDISTVERSION_UNSPECIFIED\020\000\022\026\n\022R"
-      "EDISTVERSION_NONE\020\001\022\032\n\026REDISTVERSION_7SP"
-      "1_X64\020\002\022\032\n\026REDISTVERSION_7SP1_X86\020\003\022\027\n\023R"
-      "EDISTVERSION_8_X64\020\004\022\027\n\023REDISTVERSION_8_"
-      "X86\020\005\022\030\n\024REDISTVERSION_81_X64\020\006\022\030\n\024REDIS"
-      "TVERSION_81_X86\020\007*g\n\020MessageBoxButton\022 \n"
-      "\034MESSAGEBOXBUTTON_UNSPECIFIED\020\000\022\030\n\024MESSA"
-      "GEBOXBUTTON_YES\020\001\022\027\n\023MESSAGEBOXBUTTON_NO"
-      "\020\002*h\n\tComponent\022\031\n\025COMPONENT_UNSPECIFIED"
-      "\020\000\022\022\n\016COMPONENT_NONE\020\001\022\026\n\022COMPONENT_LAUN"
-      "CHER\020\002\022\024\n\020COMPONENT_REDIST\020\0032P\n\007Gateway\022"
-      "E\n\014PublishEvent\022\035.eve_launcher.installer"
-      ".Event\032\026.google.protobuf.EmptyBCZAgithub"
-      ".com/ccpgames/eve-proto-go/generated/eve"
-      "_launcher/installerb\006proto3"
+      "ion.EventMetadata\"O\n\014EulaDeclined\022\?\n\016eve"
+      "nt_metadata\030\001 \001(\0132\'.eve_launcher.applica"
+      "tion.EventMetadata\"\345\003\n\025RedistSearchConcl"
+      "uded\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\0226\n\007version"
+      "\030\002 \001(\0162%.eve_launcher.installer.RedistVe"
+      "rsion\022J\n\006reason\030\003 \001(\0162:.eve_launcher.ins"
+      "taller.RedistSearchConcluded.RedistReaso"
+      "n\"\206\002\n\014RedistReason\022\034\n\030REDISTREASON_UNSPE"
+      "CIFIED\020\000\022\034\n\030REDISTREASON_NOT_WINDOWS\020\001\022,"
+      "\n(REDISTREASON_INCLUDED_IN_WINDOWS_VERSI"
+      "ON\020\002\022\033\n\027REDISTREASON_FOUND_DLLS\020\003\022%\n!RED"
+      "ISTREASON_FOUND_WINDOWS_UPDATE\020\004\022\'\n#REDI"
+      "STREASON_WINDOWS_UPDATE_MISSING\020\005\022\037\n\033RED"
+      "ISTREASON_REDIST_MISSING\020\006\"V\n\023ProvidedCl"
+      "ientFound\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
+      "launcher.application.EventMetadata\"Z\n\027Sh"
+      "aredCacheMessageShown\022\?\n\016event_metadata\030"
+      "\001 \001(\0132\'.eve_launcher.application.EventMe"
+      "tadata\"\271\001\n\030SharedCacheMessageClosed\022\?\n\016e"
+      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
+      "cation.EventMetadata\022D\n\022message_box_butt"
+      "on\030\002 \001(\0162(.eve_launcher.installer.Messag"
+      "eBoxButton\022\026\n\016time_displayed\030\003 \001(\005\"\253\001\n\023I"
+      "nstallationStarted\022\?\n\016event_metadata\030\001 \001"
+      "(\0132\'.eve_launcher.application.EventMetad"
+      "ata\022\024\n\014install_path\030\002 \001(\t\022=\n\016redist_vers"
+      "ion\030\003 \001(\0162%.eve_launcher.installer.Redis"
+      "tVersion\"l\n\027InstallationInterrupted\022\?\n\016e"
+      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
+      "cation.EventMetadata\022\020\n\010duration\030\002 \001(\005\"\204"
+      "\001\n\024InstallationFinished\022\?\n\016event_metadat"
+      "a\030\001 \001(\0132\'.eve_launcher.application.Event"
+      "Metadata\022\020\n\010duration\030\002 \001(\005\022\031\n\021shared_cac"
+      "he_path\030\003 \001(\t\"g\n\022InstallationFailed\022\?\n\016e"
+      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
+      "cation.EventMetadata\022\020\n\010duration\030\002 \001(\005\"]"
+      "\n\032UninstallerCreationStarted\022\?\n\016event_me"
+      "tadata\030\001 \001(\0132\'.eve_launcher.application."
+      "EventMetadata\"p\n\033UninstallerCreationFini"
+      "shed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\022\020\n\010duratio"
+      "n\030\002 \001(\005\"m\n\036ComponentInitializationStarte"
+      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
+      ".application.EventMetadataJ\004\010\002\020\003J\004\010\003\020\004\"\200"
+      "\001\n\037ComponentInitializationFinished\022\?\n\016ev"
+      "ent_metadata\030\001 \001(\0132\'.eve_launcher.applic"
+      "ation.EventMetadata\022\020\n\010duration\030\004 \001(\005J\004\010"
+      "\002\020\003J\004\010\003\020\004\"k\n\034ComponentInstallationStarte"
+      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
+      ".application.EventMetadataJ\004\010\002\020\003J\004\010\003\020\004\"~"
+      "\n\035ComponentInstallationFinished\022\?\n\016event"
+      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
+      "on.EventMetadata\022\020\n\010duration\030\004 \001(\005J\004\010\002\020\003"
+      "J\004\010\003\020\004\"\273\004\n\020ErrorEncountered\022\?\n\016event_met"
+      "adata\030\001 \001(\0132\'.eve_launcher.application.E"
+      "ventMetadata\022@\n\004code\030\002 \001(\01622.eve_launche"
+      "r.installer.ErrorEncountered.ErrorCode\022*"
+      "\n\004page\030\003 \001(\0162\034.eve_launcher.installer.Pa"
+      "ge\022=\n\016redist_version\030\005 \001(\0162%.eve_launche"
+      "r.installer.RedistVersion\"\262\002\n\tErrorCode\022"
+      "\031\n\025ERRORCODE_UNSPECIFIED\020\000\022\037\n\033ERRORCODE_"
+      "CREATE_OPERATIONS\020\001\022\033\n\027ERRORCODE_ADD_OPE"
+      "RATION\020\002\022\030\n\024ERRORCODE_SEARCH_DLL\020\003\022#\n\037ER"
+      "RORCODE_SEARCH_WINDOWS_UPDATE\020\004\022\"\n\036ERROR"
+      "CODE_MISSING_PREREQUISITE\020\005\022\037\n\033ERRORCODE"
+      "_QT_STATUS_FAILURE\020\006\022\"\n\036ERRORCODE_QT_STA"
+      "TUS_UNFINISHED\020\007\022$\n ERRORCODE_QT_STATUS_"
+      "FORCE_UPDATE\020\010J\004\010\004\020\005\"h\n\024AnalyticsMessage"
+      "Sent\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\022\017\n\007message"
+      "\030\002 \001(\t\"2\n\tIPAddress\022\014\n\002v4\030\001 \001(\007H\000\022\014\n\002v6\030"
+      "\002 \001(\014H\000B\t\n\007version\"\360\001\n\005Event\022,\n\010occurred"
+      "\030\001 \001(\0132\032.google.protobuf.Timestamp\022,\n\010re"
+      "ceived\030\002 \001(\0132\032.google.protobuf.Timestamp"
+      "\022\014\n\004uuid\030\003 \001(\014\0225\n\nip_address\030\004 \001(\0132!.eve"
+      "_launcher.installer.IPAddress\022\016\n\006tenant\030"
+      "\005 \001(\t\022%\n\007payload\030\006 \001(\0132\024.google.protobuf"
+      ".Any\022\017\n\007journey\030\007 \001(\014*\254\001\n\004Page\022\024\n\020PAGE_U"
+      "NSPECIFIED\020\000\022\022\n\016PAGE_NOT_FOUND\020\001\022\025\n\021PAGE"
+      "_INTRODUCTION\020\003\022\r\n\tPAGE_EULA\020\006\022\022\n\016PAGE_E"
+      "XECUTION\020\t\022\021\n\rPAGE_FINISHED\020\n\022\017\n\013PAGE_FA"
+      "ILED\020\013\"\004\010\002\020\002\"\004\010\004\020\004\"\004\010\005\020\005\"\004\010\007\020\007\"\004\010\010\020\010*\344\001\n"
+      "\rRedistVersion\022\035\n\031REDISTVERSION_UNSPECIF"
+      "IED\020\000\022\026\n\022REDISTVERSION_NONE\020\001\022\032\n\026REDISTV"
+      "ERSION_7SP1_X64\020\002\022\032\n\026REDISTVERSION_7SP1_"
+      "X86\020\003\022\027\n\023REDISTVERSION_8_X64\020\004\022\027\n\023REDIST"
+      "VERSION_8_X86\020\005\022\030\n\024REDISTVERSION_81_X64\020"
+      "\006\022\030\n\024REDISTVERSION_81_X86\020\007*g\n\020MessageBo"
+      "xButton\022 \n\034MESSAGEBOXBUTTON_UNSPECIFIED\020"
+      "\000\022\030\n\024MESSAGEBOXBUTTON_YES\020\001\022\027\n\023MESSAGEBO"
+      "XBUTTON_NO\020\0022P\n\007Gateway\022E\n\014PublishEvent\022"
+      "\035.eve_launcher.installer.Event\032\026.google."
+      "protobuf.EmptyBCZAgithub.com/ccpgames/ev"
+      "e-proto-go/generated/eve_launcher/instal"
+      "lerb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 7227);
+      descriptor, 5891);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "eve_launcher/installer.proto", &protobuf_RegisterTypes);
   ::protobuf_eve_5flauncher_2fapplication_2eproto::AddDescriptors();
@@ -1346,36 +1272,9 @@ struct StaticDescriptorInitializer {
 }  // namespace protobuf_eve_5flauncher_2finstaller_2eproto
 namespace eve_launcher {
 namespace installer {
-const ::google::protobuf::EnumDescriptor* PageDisplayed_FlowDirection_descriptor() {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[0];
-}
-bool PageDisplayed_FlowDirection_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-      return true;
-    default:
-      return false;
-  }
-}
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const PageDisplayed_FlowDirection PageDisplayed::FLOWDIRECTION_UNSPECIFIED;
-const PageDisplayed_FlowDirection PageDisplayed::FLOWDIRECTION_FIRST_VIEW;
-const PageDisplayed_FlowDirection PageDisplayed::FLOWDIRECTION_FORWARDS;
-const PageDisplayed_FlowDirection PageDisplayed::FLOWDIRECTION_BACKWARDS;
-const PageDisplayed_FlowDirection PageDisplayed::FLOWDIRECTION_RELOAD;
-const PageDisplayed_FlowDirection PageDisplayed::FlowDirection_MIN;
-const PageDisplayed_FlowDirection PageDisplayed::FlowDirection_MAX;
-const int PageDisplayed::FlowDirection_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* UserCancelled_Progress_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[1];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[0];
 }
 bool UserCancelled_Progress_IsValid(int value) {
   switch (value) {
@@ -1402,7 +1301,7 @@ const int UserCancelled::Progress_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* ShutDown_State_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[2];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[1];
 }
 bool ShutDown_State_IsValid(int value) {
   switch (value) {
@@ -1425,57 +1324,9 @@ const ShutDown_State ShutDown::State_MIN;
 const ShutDown_State ShutDown::State_MAX;
 const int ShutDown::State_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-const ::google::protobuf::EnumDescriptor* LocationChanged_Source_descriptor() {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[3];
-}
-bool LocationChanged_Source_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-      return true;
-    default:
-      return false;
-  }
-}
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const LocationChanged_Source LocationChanged::SOURCE_UNSPECIFIED;
-const LocationChanged_Source LocationChanged::SOURCE_INSTALL_DIRECTORY;
-const LocationChanged_Source LocationChanged::SOURCE_START_MENU_LOCATION;
-const LocationChanged_Source LocationChanged::SOURCE_SHARED_CACHE_FOLDER;
-const LocationChanged_Source LocationChanged::Source_MIN;
-const LocationChanged_Source LocationChanged::Source_MAX;
-const int LocationChanged::Source_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-const ::google::protobuf::EnumDescriptor* LocationChanged_Provider_descriptor() {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[4];
-}
-bool LocationChanged_Provider_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-      return true;
-    default:
-      return false;
-  }
-}
-
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const LocationChanged_Provider LocationChanged::PROVIDER_UNSPECIFIED;
-const LocationChanged_Provider LocationChanged::PROVIDER_USER;
-const LocationChanged_Provider LocationChanged::PROVIDER_SYSTEM;
-const LocationChanged_Provider LocationChanged::Provider_MIN;
-const LocationChanged_Provider LocationChanged::Provider_MAX;
-const int LocationChanged::Provider_ARRAYSIZE;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* RedistSearchConcluded_RedistReason_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[5];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[2];
 }
 bool RedistSearchConcluded_RedistReason_IsValid(int value) {
   switch (value) {
@@ -1506,7 +1357,7 @@ const int RedistSearchConcluded::RedistReason_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* ErrorEncountered_ErrorCode_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[6];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[3];
 }
 bool ErrorEncountered_ErrorCode_IsValid(int value) {
   switch (value) {
@@ -1541,19 +1392,14 @@ const int ErrorEncountered::ErrorCode_ARRAYSIZE;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 const ::google::protobuf::EnumDescriptor* Page_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[7];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[4];
 }
 bool Page_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
-    case 2:
     case 3:
-    case 4:
-    case 5:
     case 6:
-    case 7:
-    case 8:
     case 9:
     case 10:
     case 11:
@@ -1565,7 +1411,7 @@ bool Page_IsValid(int value) {
 
 const ::google::protobuf::EnumDescriptor* RedistVersion_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[8];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[5];
 }
 bool RedistVersion_IsValid(int value) {
   switch (value) {
@@ -1585,29 +1431,13 @@ bool RedistVersion_IsValid(int value) {
 
 const ::google::protobuf::EnumDescriptor* MessageBoxButton_descriptor() {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[9];
+  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[6];
 }
 bool MessageBoxButton_IsValid(int value) {
   switch (value) {
     case 0:
     case 1:
     case 2:
-      return true;
-    default:
-      return false;
-  }
-}
-
-const ::google::protobuf::EnumDescriptor* Component_descriptor() {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return protobuf_eve_5flauncher_2finstaller_2eproto::file_level_enum_descriptors[10];
-}
-bool Component_IsValid(int value) {
-  switch (value) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
       return true;
     default:
       return false;
@@ -1639,6 +1469,8 @@ void Started::clear_system_information() {
 const int Started::kEventMetadataFieldNumber;
 const int Started::kDurationFieldNumber;
 const int Started::kSystemInformationFieldNumber;
+const int Started::kFilenameFieldNumber;
+const int Started::kStartMenuItemPathFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Started::Started()
@@ -1652,6 +1484,14 @@ Started::Started(const Started& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  filename_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.filename().size() > 0) {
+    filename_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.filename_);
+  }
+  start_menu_item_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.start_menu_item_path().size() > 0) {
+    start_menu_item_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.start_menu_item_path_);
+  }
   if (from.has_event_metadata()) {
     event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
   } else {
@@ -1667,6 +1507,8 @@ Started::Started(const Started& from)
 }
 
 void Started::SharedCtor() {
+  filename_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  start_menu_item_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&event_metadata_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&duration_) -
       reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
@@ -1678,6 +1520,8 @@ Started::~Started() {
 }
 
 void Started::SharedDtor() {
+  filename_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  start_menu_item_path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete event_metadata_;
   if (this != internal_default_instance()) delete system_information_;
 }
@@ -1702,6 +1546,8 @@ void Started::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  filename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  start_menu_item_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
@@ -1762,6 +1608,38 @@ bool Started::MergePartialFromCodedStream(
         break;
       }
 
+      // string filename = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_filename()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->filename().data(), static_cast<int>(this->filename().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "eve_launcher.installer.Started.filename"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string start_menu_item_path = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(42u /* 42 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_start_menu_item_path()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->start_menu_item_path().data(), static_cast<int>(this->start_menu_item_path().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "eve_launcher.installer.Started.start_menu_item_path"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -1805,6 +1683,26 @@ void Started::SerializeWithCachedSizes(
       3, this->_internal_system_information(), output);
   }
 
+  // string filename = 4;
+  if (this->filename().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->filename().data(), static_cast<int>(this->filename().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.Started.filename");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      4, this->filename(), output);
+  }
+
+  // string start_menu_item_path = 5;
+  if (this->start_menu_item_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->start_menu_item_path().data(), static_cast<int>(this->start_menu_item_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.Started.start_menu_item_path");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->start_menu_item_path(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -1838,6 +1736,28 @@ void Started::SerializeWithCachedSizes(
         3, this->_internal_system_information(), deterministic, target);
   }
 
+  // string filename = 4;
+  if (this->filename().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->filename().data(), static_cast<int>(this->filename().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.Started.filename");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        4, this->filename(), target);
+  }
+
+  // string start_menu_item_path = 5;
+  if (this->start_menu_item_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->start_menu_item_path().data(), static_cast<int>(this->start_menu_item_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.Started.start_menu_item_path");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->start_menu_item_path(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -1855,6 +1775,20 @@ size_t Started::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
+  // string filename = 4;
+  if (this->filename().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->filename());
+  }
+
+  // string start_menu_item_path = 5;
+  if (this->start_menu_item_path().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->start_menu_item_path());
+  }
+
   // .eve_launcher.application.EventMetadata event_metadata = 1;
   if (this->has_event_metadata()) {
     total_size += 1 +
@@ -1903,6 +1837,14 @@ void Started::MergeFrom(const Started& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.filename().size() > 0) {
+
+    filename_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.filename_);
+  }
+  if (from.start_menu_item_path().size() > 0) {
+
+    start_menu_item_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.start_menu_item_path_);
+  }
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
@@ -1938,6 +1880,10 @@ void Started::Swap(Started* other) {
 }
 void Started::InternalSwap(Started* other) {
   using std::swap;
+  filename_.Swap(&other->filename_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  start_menu_item_path_.Swap(&other->start_menu_item_path_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(event_metadata_, other->event_metadata_);
   swap(system_information_, other->system_information_);
   swap(duration_, other->duration_);
@@ -1952,31 +1898,28 @@ void Started::InternalSwap(Started* other) {
 
 // ===================================================================
 
-void PageDisplayed::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_PageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
+void IntroductionPageDisplayed::InitAsDefaultInstance() {
+  ::eve_launcher::installer::_IntroductionPageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
       ::eve_launcher::application::EventMetadata::internal_default_instance());
 }
-void PageDisplayed::clear_event_metadata() {
+void IntroductionPageDisplayed::clear_event_metadata() {
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int PageDisplayed::kEventMetadataFieldNumber;
-const int PageDisplayed::kPreviousPageFieldNumber;
-const int PageDisplayed::kCurrentPageFieldNumber;
-const int PageDisplayed::kFlowFieldNumber;
+const int IntroductionPageDisplayed::kEventMetadataFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-PageDisplayed::PageDisplayed()
+IntroductionPageDisplayed::IntroductionPageDisplayed()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
   ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_PageDisplayed.base);
+      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_IntroductionPageDisplayed.base);
   SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(constructor:eve_launcher.installer.IntroductionPageDisplayed)
 }
-PageDisplayed::PageDisplayed(const PageDisplayed& from)
+IntroductionPageDisplayed::IntroductionPageDisplayed(const IntroductionPageDisplayed& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -1985,43 +1928,38 @@ PageDisplayed::PageDisplayed(const PageDisplayed& from)
   } else {
     event_metadata_ = NULL;
   }
-  ::memcpy(&previous_page_, &from.previous_page_,
-    static_cast<size_t>(reinterpret_cast<char*>(&flow_) -
-    reinterpret_cast<char*>(&previous_page_)) + sizeof(flow_));
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.IntroductionPageDisplayed)
 }
 
-void PageDisplayed::SharedCtor() {
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&flow_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(flow_));
+void IntroductionPageDisplayed::SharedCtor() {
+  event_metadata_ = NULL;
 }
 
-PageDisplayed::~PageDisplayed() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.PageDisplayed)
+IntroductionPageDisplayed::~IntroductionPageDisplayed() {
+  // @@protoc_insertion_point(destructor:eve_launcher.installer.IntroductionPageDisplayed)
   SharedDtor();
 }
 
-void PageDisplayed::SharedDtor() {
+void IntroductionPageDisplayed::SharedDtor() {
   if (this != internal_default_instance()) delete event_metadata_;
 }
 
-void PageDisplayed::SetCachedSize(int size) const {
+void IntroductionPageDisplayed::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const ::google::protobuf::Descriptor* PageDisplayed::descriptor() {
+const ::google::protobuf::Descriptor* IntroductionPageDisplayed::descriptor() {
   ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
 }
 
-const PageDisplayed& PageDisplayed::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_PageDisplayed.base);
+const IntroductionPageDisplayed& IntroductionPageDisplayed::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_IntroductionPageDisplayed.base);
   return *internal_default_instance();
 }
 
 
-void PageDisplayed::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.PageDisplayed)
+void IntroductionPageDisplayed::Clear() {
+// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.IntroductionPageDisplayed)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2030,17 +1968,14 @@ void PageDisplayed::Clear() {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
-  ::memset(&previous_page_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&flow_) -
-      reinterpret_cast<char*>(&previous_page_)) + sizeof(flow_));
   _internal_metadata_.Clear();
 }
 
-bool PageDisplayed::MergePartialFromCodedStream(
+bool IntroductionPageDisplayed::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(parse_start:eve_launcher.installer.IntroductionPageDisplayed)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -2052,51 +1987,6 @@ bool PageDisplayed::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Page previous_page = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_previous_page(static_cast< ::eve_launcher::installer::Page >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Page current_page = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_current_page(static_cast< ::eve_launcher::installer::Page >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.PageDisplayed.FlowDirection flow = 4;
-      case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_flow(static_cast< ::eve_launcher::installer::PageDisplayed_FlowDirection >(value));
         } else {
           goto handle_unusual;
         }
@@ -2115,17 +2005,17 @@ bool PageDisplayed::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(parse_success:eve_launcher.installer.IntroductionPageDisplayed)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.IntroductionPageDisplayed)
   return false;
 #undef DO_
 }
 
-void PageDisplayed::SerializeWithCachedSizes(
+void IntroductionPageDisplayed::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.IntroductionPageDisplayed)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2135,35 +2025,17 @@ void PageDisplayed::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
-  // .eve_launcher.installer.Page previous_page = 2;
-  if (this->previous_page() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->previous_page(), output);
-  }
-
-  // .eve_launcher.installer.Page current_page = 3;
-  if (this->current_page() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->current_page(), output);
-  }
-
-  // .eve_launcher.installer.PageDisplayed.FlowDirection flow = 4;
-  if (this->flow() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      4, this->flow(), output);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
   }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.IntroductionPageDisplayed)
 }
 
-::google::protobuf::uint8* PageDisplayed::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* IntroductionPageDisplayed::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
   (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.IntroductionPageDisplayed)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2174,34 +2046,16 @@ void PageDisplayed::SerializeWithCachedSizes(
         1, this->_internal_event_metadata(), deterministic, target);
   }
 
-  // .eve_launcher.installer.Page previous_page = 2;
-  if (this->previous_page() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->previous_page(), target);
-  }
-
-  // .eve_launcher.installer.Page current_page = 3;
-  if (this->current_page() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->current_page(), target);
-  }
-
-  // .eve_launcher.installer.PageDisplayed.FlowDirection flow = 4;
-  if (this->flow() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      4, this->flow(), target);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.IntroductionPageDisplayed)
   return target;
 }
 
-size_t PageDisplayed::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.PageDisplayed)
+size_t IntroductionPageDisplayed::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.IntroductionPageDisplayed)
   size_t total_size = 0;
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -2216,46 +2070,28 @@ size_t PageDisplayed::ByteSizeLong() const {
         *event_metadata_);
   }
 
-  // .eve_launcher.installer.Page previous_page = 2;
-  if (this->previous_page() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->previous_page());
-  }
-
-  // .eve_launcher.installer.Page current_page = 3;
-  if (this->current_page() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->current_page());
-  }
-
-  // .eve_launcher.installer.PageDisplayed.FlowDirection flow = 4;
-  if (this->flow() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->flow());
-  }
-
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   SetCachedSize(cached_size);
   return total_size;
 }
 
-void PageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.PageDisplayed)
+void IntroductionPageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.IntroductionPageDisplayed)
   GOOGLE_DCHECK_NE(&from, this);
-  const PageDisplayed* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const PageDisplayed>(
+  const IntroductionPageDisplayed* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const IntroductionPageDisplayed>(
           &from);
   if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.IntroductionPageDisplayed)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.PageDisplayed)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.IntroductionPageDisplayed)
     MergeFrom(*source);
   }
 }
 
-void PageDisplayed::MergeFrom(const PageDisplayed& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.PageDisplayed)
+void IntroductionPageDisplayed::MergeFrom(const IntroductionPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.IntroductionPageDisplayed)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -2264,49 +2100,997 @@ void PageDisplayed::MergeFrom(const PageDisplayed& from) {
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
-  if (from.previous_page() != 0) {
-    set_previous_page(from.previous_page());
-  }
-  if (from.current_page() != 0) {
-    set_current_page(from.current_page());
-  }
-  if (from.flow() != 0) {
-    set_flow(from.flow());
-  }
 }
 
-void PageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.PageDisplayed)
+void IntroductionPageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.IntroductionPageDisplayed)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void PageDisplayed::CopyFrom(const PageDisplayed& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.PageDisplayed)
+void IntroductionPageDisplayed::CopyFrom(const IntroductionPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.IntroductionPageDisplayed)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool PageDisplayed::IsInitialized() const {
+bool IntroductionPageDisplayed::IsInitialized() const {
   return true;
 }
 
-void PageDisplayed::Swap(PageDisplayed* other) {
+void IntroductionPageDisplayed::Swap(IntroductionPageDisplayed* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void PageDisplayed::InternalSwap(PageDisplayed* other) {
+void IntroductionPageDisplayed::InternalSwap(IntroductionPageDisplayed* other) {
   using std::swap;
   swap(event_metadata_, other->event_metadata_);
-  swap(previous_page_, other->previous_page_);
-  swap(current_page_, other->current_page_);
-  swap(flow_, other->flow_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
-::google::protobuf::Metadata PageDisplayed::GetMetadata() const {
+::google::protobuf::Metadata IntroductionPageDisplayed::GetMetadata() const {
+  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void EulaPageDisplayed::InitAsDefaultInstance() {
+  ::eve_launcher::installer::_EulaPageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
+      ::eve_launcher::application::EventMetadata::internal_default_instance());
+}
+void EulaPageDisplayed::clear_event_metadata() {
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int EulaPageDisplayed::kEventMetadataFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+EulaPageDisplayed::EulaPageDisplayed()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_EulaPageDisplayed.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:eve_launcher.installer.EulaPageDisplayed)
+}
+EulaPageDisplayed::EulaPageDisplayed(const EulaPageDisplayed& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_event_metadata()) {
+    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
+  } else {
+    event_metadata_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.EulaPageDisplayed)
+}
+
+void EulaPageDisplayed::SharedCtor() {
+  event_metadata_ = NULL;
+}
+
+EulaPageDisplayed::~EulaPageDisplayed() {
+  // @@protoc_insertion_point(destructor:eve_launcher.installer.EulaPageDisplayed)
+  SharedDtor();
+}
+
+void EulaPageDisplayed::SharedDtor() {
+  if (this != internal_default_instance()) delete event_metadata_;
+}
+
+void EulaPageDisplayed::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* EulaPageDisplayed::descriptor() {
+  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const EulaPageDisplayed& EulaPageDisplayed::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_EulaPageDisplayed.base);
+  return *internal_default_instance();
+}
+
+
+void EulaPageDisplayed::Clear() {
+// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.EulaPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+  _internal_metadata_.Clear();
+}
+
+bool EulaPageDisplayed::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:eve_launcher.installer.EulaPageDisplayed)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .eve_launcher.application.EventMetadata event_metadata = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_event_metadata()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:eve_launcher.installer.EulaPageDisplayed)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.EulaPageDisplayed)
+  return false;
+#undef DO_
+}
+
+void EulaPageDisplayed::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.EulaPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->_internal_event_metadata(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.EulaPageDisplayed)
+}
+
+::google::protobuf::uint8* EulaPageDisplayed::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.EulaPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->_internal_event_metadata(), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.EulaPageDisplayed)
+  return target;
+}
+
+size_t EulaPageDisplayed::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.EulaPageDisplayed)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *event_metadata_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void EulaPageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.EulaPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  const EulaPageDisplayed* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const EulaPageDisplayed>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.EulaPageDisplayed)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.EulaPageDisplayed)
+    MergeFrom(*source);
+  }
+}
+
+void EulaPageDisplayed::MergeFrom(const EulaPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.EulaPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_event_metadata()) {
+    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
+  }
+}
+
+void EulaPageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.EulaPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void EulaPageDisplayed::CopyFrom(const EulaPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.EulaPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool EulaPageDisplayed::IsInitialized() const {
+  return true;
+}
+
+void EulaPageDisplayed::Swap(EulaPageDisplayed* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void EulaPageDisplayed::InternalSwap(EulaPageDisplayed* other) {
+  using std::swap;
+  swap(event_metadata_, other->event_metadata_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata EulaPageDisplayed::GetMetadata() const {
+  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void ExecutionPageDisplayed::InitAsDefaultInstance() {
+  ::eve_launcher::installer::_ExecutionPageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
+      ::eve_launcher::application::EventMetadata::internal_default_instance());
+}
+void ExecutionPageDisplayed::clear_event_metadata() {
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int ExecutionPageDisplayed::kEventMetadataFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+ExecutionPageDisplayed::ExecutionPageDisplayed()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ExecutionPageDisplayed.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:eve_launcher.installer.ExecutionPageDisplayed)
+}
+ExecutionPageDisplayed::ExecutionPageDisplayed(const ExecutionPageDisplayed& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_event_metadata()) {
+    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
+  } else {
+    event_metadata_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ExecutionPageDisplayed)
+}
+
+void ExecutionPageDisplayed::SharedCtor() {
+  event_metadata_ = NULL;
+}
+
+ExecutionPageDisplayed::~ExecutionPageDisplayed() {
+  // @@protoc_insertion_point(destructor:eve_launcher.installer.ExecutionPageDisplayed)
+  SharedDtor();
+}
+
+void ExecutionPageDisplayed::SharedDtor() {
+  if (this != internal_default_instance()) delete event_metadata_;
+}
+
+void ExecutionPageDisplayed::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* ExecutionPageDisplayed::descriptor() {
+  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const ExecutionPageDisplayed& ExecutionPageDisplayed::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ExecutionPageDisplayed.base);
+  return *internal_default_instance();
+}
+
+
+void ExecutionPageDisplayed::Clear() {
+// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.ExecutionPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+  _internal_metadata_.Clear();
+}
+
+bool ExecutionPageDisplayed::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:eve_launcher.installer.ExecutionPageDisplayed)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .eve_launcher.application.EventMetadata event_metadata = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_event_metadata()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:eve_launcher.installer.ExecutionPageDisplayed)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.ExecutionPageDisplayed)
+  return false;
+#undef DO_
+}
+
+void ExecutionPageDisplayed::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.ExecutionPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->_internal_event_metadata(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.ExecutionPageDisplayed)
+}
+
+::google::protobuf::uint8* ExecutionPageDisplayed::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.ExecutionPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->_internal_event_metadata(), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.ExecutionPageDisplayed)
+  return target;
+}
+
+size_t ExecutionPageDisplayed::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.ExecutionPageDisplayed)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *event_metadata_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void ExecutionPageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.ExecutionPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  const ExecutionPageDisplayed* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const ExecutionPageDisplayed>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.ExecutionPageDisplayed)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.ExecutionPageDisplayed)
+    MergeFrom(*source);
+  }
+}
+
+void ExecutionPageDisplayed::MergeFrom(const ExecutionPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.ExecutionPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_event_metadata()) {
+    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
+  }
+}
+
+void ExecutionPageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.ExecutionPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void ExecutionPageDisplayed::CopyFrom(const ExecutionPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.ExecutionPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ExecutionPageDisplayed::IsInitialized() const {
+  return true;
+}
+
+void ExecutionPageDisplayed::Swap(ExecutionPageDisplayed* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void ExecutionPageDisplayed::InternalSwap(ExecutionPageDisplayed* other) {
+  using std::swap;
+  swap(event_metadata_, other->event_metadata_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata ExecutionPageDisplayed::GetMetadata() const {
+  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void FinishedPageDisplayed::InitAsDefaultInstance() {
+  ::eve_launcher::installer::_FinishedPageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
+      ::eve_launcher::application::EventMetadata::internal_default_instance());
+}
+void FinishedPageDisplayed::clear_event_metadata() {
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int FinishedPageDisplayed::kEventMetadataFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+FinishedPageDisplayed::FinishedPageDisplayed()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_FinishedPageDisplayed.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:eve_launcher.installer.FinishedPageDisplayed)
+}
+FinishedPageDisplayed::FinishedPageDisplayed(const FinishedPageDisplayed& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_event_metadata()) {
+    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
+  } else {
+    event_metadata_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.FinishedPageDisplayed)
+}
+
+void FinishedPageDisplayed::SharedCtor() {
+  event_metadata_ = NULL;
+}
+
+FinishedPageDisplayed::~FinishedPageDisplayed() {
+  // @@protoc_insertion_point(destructor:eve_launcher.installer.FinishedPageDisplayed)
+  SharedDtor();
+}
+
+void FinishedPageDisplayed::SharedDtor() {
+  if (this != internal_default_instance()) delete event_metadata_;
+}
+
+void FinishedPageDisplayed::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* FinishedPageDisplayed::descriptor() {
+  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const FinishedPageDisplayed& FinishedPageDisplayed::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_FinishedPageDisplayed.base);
+  return *internal_default_instance();
+}
+
+
+void FinishedPageDisplayed::Clear() {
+// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.FinishedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+  _internal_metadata_.Clear();
+}
+
+bool FinishedPageDisplayed::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:eve_launcher.installer.FinishedPageDisplayed)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .eve_launcher.application.EventMetadata event_metadata = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_event_metadata()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:eve_launcher.installer.FinishedPageDisplayed)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.FinishedPageDisplayed)
+  return false;
+#undef DO_
+}
+
+void FinishedPageDisplayed::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.FinishedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->_internal_event_metadata(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.FinishedPageDisplayed)
+}
+
+::google::protobuf::uint8* FinishedPageDisplayed::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.FinishedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->_internal_event_metadata(), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.FinishedPageDisplayed)
+  return target;
+}
+
+size_t FinishedPageDisplayed::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.FinishedPageDisplayed)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *event_metadata_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void FinishedPageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.FinishedPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  const FinishedPageDisplayed* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const FinishedPageDisplayed>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.FinishedPageDisplayed)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.FinishedPageDisplayed)
+    MergeFrom(*source);
+  }
+}
+
+void FinishedPageDisplayed::MergeFrom(const FinishedPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.FinishedPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_event_metadata()) {
+    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
+  }
+}
+
+void FinishedPageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.FinishedPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void FinishedPageDisplayed::CopyFrom(const FinishedPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.FinishedPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool FinishedPageDisplayed::IsInitialized() const {
+  return true;
+}
+
+void FinishedPageDisplayed::Swap(FinishedPageDisplayed* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void FinishedPageDisplayed::InternalSwap(FinishedPageDisplayed* other) {
+  using std::swap;
+  swap(event_metadata_, other->event_metadata_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata FinishedPageDisplayed::GetMetadata() const {
+  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
+}
+
+
+// ===================================================================
+
+void FailedPageDisplayed::InitAsDefaultInstance() {
+  ::eve_launcher::installer::_FailedPageDisplayed_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
+      ::eve_launcher::application::EventMetadata::internal_default_instance());
+}
+void FailedPageDisplayed::clear_event_metadata() {
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+}
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int FailedPageDisplayed::kEventMetadataFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+FailedPageDisplayed::FailedPageDisplayed()
+  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  ::google::protobuf::internal::InitSCC(
+      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_FailedPageDisplayed.base);
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:eve_launcher.installer.FailedPageDisplayed)
+}
+FailedPageDisplayed::FailedPageDisplayed(const FailedPageDisplayed& from)
+  : ::google::protobuf::Message(),
+      _internal_metadata_(NULL) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  if (from.has_event_metadata()) {
+    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
+  } else {
+    event_metadata_ = NULL;
+  }
+  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.FailedPageDisplayed)
+}
+
+void FailedPageDisplayed::SharedCtor() {
+  event_metadata_ = NULL;
+}
+
+FailedPageDisplayed::~FailedPageDisplayed() {
+  // @@protoc_insertion_point(destructor:eve_launcher.installer.FailedPageDisplayed)
+  SharedDtor();
+}
+
+void FailedPageDisplayed::SharedDtor() {
+  if (this != internal_default_instance()) delete event_metadata_;
+}
+
+void FailedPageDisplayed::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const ::google::protobuf::Descriptor* FailedPageDisplayed::descriptor() {
+  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
+  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
+}
+
+const FailedPageDisplayed& FailedPageDisplayed::default_instance() {
+  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_FailedPageDisplayed.base);
+  return *internal_default_instance();
+}
+
+
+void FailedPageDisplayed::Clear() {
+// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.FailedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
+    delete event_metadata_;
+  }
+  event_metadata_ = NULL;
+  _internal_metadata_.Clear();
+}
+
+bool FailedPageDisplayed::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:eve_launcher.installer.FailedPageDisplayed)
+  for (;;) {
+    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // .eve_launcher.application.EventMetadata event_metadata = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_event_metadata()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormat::SkipField(
+              input, tag, _internal_metadata_.mutable_unknown_fields()));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:eve_launcher.installer.FailedPageDisplayed)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.FailedPageDisplayed)
+  return false;
+#undef DO_
+}
+
+void FailedPageDisplayed::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.FailedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, this->_internal_event_metadata(), output);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
+  }
+  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.FailedPageDisplayed)
+}
+
+::google::protobuf::uint8* FailedPageDisplayed::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
+  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.FailedPageDisplayed)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, this->_internal_event_metadata(), deterministic, target);
+  }
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.FailedPageDisplayed)
+  return target;
+}
+
+size_t FailedPageDisplayed::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.FailedPageDisplayed)
+  size_t total_size = 0;
+
+  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
+    total_size +=
+      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
+        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
+  }
+  // .eve_launcher.application.EventMetadata event_metadata = 1;
+  if (this->has_event_metadata()) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *event_metadata_);
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void FailedPageDisplayed::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.FailedPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  const FailedPageDisplayed* source =
+      ::google::protobuf::internal::DynamicCastToGenerated<const FailedPageDisplayed>(
+          &from);
+  if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.FailedPageDisplayed)
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.FailedPageDisplayed)
+    MergeFrom(*source);
+  }
+}
+
+void FailedPageDisplayed::MergeFrom(const FailedPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.FailedPageDisplayed)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.has_event_metadata()) {
+    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
+  }
+}
+
+void FailedPageDisplayed::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.FailedPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void FailedPageDisplayed::CopyFrom(const FailedPageDisplayed& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.FailedPageDisplayed)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool FailedPageDisplayed::IsInitialized() const {
+  return true;
+}
+
+void FailedPageDisplayed::Swap(FailedPageDisplayed* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void FailedPageDisplayed::InternalSwap(FailedPageDisplayed* other) {
+  using std::swap;
+  swap(event_metadata_, other->event_metadata_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+}
+
+::google::protobuf::Metadata FailedPageDisplayed::GetMetadata() const {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -3509,388 +4293,6 @@ void PreparationFinished::InternalSwap(PreparationFinished* other) {
 }
 
 ::google::protobuf::Metadata PreparationFinished::GetMetadata() const {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void LocationChanged::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_LocationChanged_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
-      ::eve_launcher::application::EventMetadata::internal_default_instance());
-}
-void LocationChanged::clear_event_metadata() {
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int LocationChanged::kEventMetadataFieldNumber;
-const int LocationChanged::kSourceFieldNumber;
-const int LocationChanged::kProviderFieldNumber;
-const int LocationChanged::kPathFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-LocationChanged::LocationChanged()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_LocationChanged.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.LocationChanged)
-}
-LocationChanged::LocationChanged(const LocationChanged& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.path().size() > 0) {
-    path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.path_);
-  }
-  if (from.has_event_metadata()) {
-    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
-  } else {
-    event_metadata_ = NULL;
-  }
-  ::memcpy(&source_, &from.source_,
-    static_cast<size_t>(reinterpret_cast<char*>(&provider_) -
-    reinterpret_cast<char*>(&source_)) + sizeof(provider_));
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.LocationChanged)
-}
-
-void LocationChanged::SharedCtor() {
-  path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&provider_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(provider_));
-}
-
-LocationChanged::~LocationChanged() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.LocationChanged)
-  SharedDtor();
-}
-
-void LocationChanged::SharedDtor() {
-  path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != internal_default_instance()) delete event_metadata_;
-}
-
-void LocationChanged::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* LocationChanged::descriptor() {
-  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const LocationChanged& LocationChanged::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_LocationChanged.base);
-  return *internal_default_instance();
-}
-
-
-void LocationChanged::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.LocationChanged)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-  ::memset(&source_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&provider_) -
-      reinterpret_cast<char*>(&source_)) + sizeof(provider_));
-  _internal_metadata_.Clear();
-}
-
-bool LocationChanged::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.LocationChanged)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .eve_launcher.application.EventMetadata event_metadata = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.LocationChanged.Source source = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_source(static_cast< ::eve_launcher::installer::LocationChanged_Source >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.LocationChanged.Provider provider = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_provider(static_cast< ::eve_launcher::installer::LocationChanged_Provider >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string path = 4;
-      case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_path()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->path().data(), static_cast<int>(this->path().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "eve_launcher.installer.LocationChanged.path"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.LocationChanged)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.LocationChanged)
-  return false;
-#undef DO_
-}
-
-void LocationChanged::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.LocationChanged)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_event_metadata(), output);
-  }
-
-  // .eve_launcher.installer.LocationChanged.Source source = 2;
-  if (this->source() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->source(), output);
-  }
-
-  // .eve_launcher.installer.LocationChanged.Provider provider = 3;
-  if (this->provider() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->provider(), output);
-  }
-
-  // string path = 4;
-  if (this->path().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->path().data(), static_cast<int>(this->path().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "eve_launcher.installer.LocationChanged.path");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      4, this->path(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.LocationChanged)
-}
-
-::google::protobuf::uint8* LocationChanged::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.LocationChanged)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // .eve_launcher.installer.LocationChanged.Source source = 2;
-  if (this->source() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->source(), target);
-  }
-
-  // .eve_launcher.installer.LocationChanged.Provider provider = 3;
-  if (this->provider() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->provider(), target);
-  }
-
-  // string path = 4;
-  if (this->path().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->path().data(), static_cast<int>(this->path().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "eve_launcher.installer.LocationChanged.path");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        4, this->path(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.LocationChanged)
-  return target;
-}
-
-size_t LocationChanged::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.LocationChanged)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // string path = 4;
-  if (this->path().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->path());
-  }
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *event_metadata_);
-  }
-
-  // .eve_launcher.installer.LocationChanged.Source source = 2;
-  if (this->source() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->source());
-  }
-
-  // .eve_launcher.installer.LocationChanged.Provider provider = 3;
-  if (this->provider() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->provider());
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void LocationChanged::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.LocationChanged)
-  GOOGLE_DCHECK_NE(&from, this);
-  const LocationChanged* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const LocationChanged>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.LocationChanged)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.LocationChanged)
-    MergeFrom(*source);
-  }
-}
-
-void LocationChanged::MergeFrom(const LocationChanged& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.LocationChanged)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.path().size() > 0) {
-
-    path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.path_);
-  }
-  if (from.has_event_metadata()) {
-    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
-  }
-  if (from.source() != 0) {
-    set_source(from.source());
-  }
-  if (from.provider() != 0) {
-    set_provider(from.provider());
-  }
-}
-
-void LocationChanged::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.LocationChanged)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void LocationChanged::CopyFrom(const LocationChanged& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.LocationChanged)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool LocationChanged::IsInitialized() const {
-  return true;
-}
-
-void LocationChanged::Swap(LocationChanged* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void LocationChanged::InternalSwap(LocationChanged* other) {
-  using std::swap;
-  path_.Swap(&other->path_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
-  swap(event_metadata_, other->event_metadata_);
-  swap(source_, other->source_);
-  swap(provider_, other->provider_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata LocationChanged::GetMetadata() const {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -6476,6 +6878,8 @@ void InstallationStarted::clear_event_metadata() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int InstallationStarted::kEventMetadataFieldNumber;
+const int InstallationStarted::kInstallPathFieldNumber;
+const int InstallationStarted::kRedistVersionFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 InstallationStarted::InstallationStarted()
@@ -6489,16 +6893,24 @@ InstallationStarted::InstallationStarted(const InstallationStarted& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  install_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.install_path().size() > 0) {
+    install_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.install_path_);
+  }
   if (from.has_event_metadata()) {
     event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
   } else {
     event_metadata_ = NULL;
   }
+  redist_version_ = from.redist_version_;
   // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.InstallationStarted)
 }
 
 void InstallationStarted::SharedCtor() {
-  event_metadata_ = NULL;
+  install_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&event_metadata_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&redist_version_) -
+      reinterpret_cast<char*>(&event_metadata_)) + sizeof(redist_version_));
 }
 
 InstallationStarted::~InstallationStarted() {
@@ -6507,6 +6919,7 @@ InstallationStarted::~InstallationStarted() {
 }
 
 void InstallationStarted::SharedDtor() {
+  install_path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete event_metadata_;
 }
 
@@ -6530,10 +6943,12 @@ void InstallationStarted::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  install_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
+  redist_version_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -6553,6 +6968,37 @@ bool InstallationStarted::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string install_path = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u /* 18 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_install_path()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->install_path().data(), static_cast<int>(this->install_path().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "eve_launcher.installer.InstallationStarted.install_path"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // .eve_launcher.installer.RedistVersion redist_version = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
+          int value;
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
+                 input, &value)));
+          set_redist_version(static_cast< ::eve_launcher::installer::RedistVersion >(value));
         } else {
           goto handle_unusual;
         }
@@ -6591,6 +7037,22 @@ void InstallationStarted::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
+  // string install_path = 2;
+  if (this->install_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->install_path().data(), static_cast<int>(this->install_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.InstallationStarted.install_path");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      2, this->install_path(), output);
+  }
+
+  // .eve_launcher.installer.RedistVersion redist_version = 3;
+  if (this->redist_version() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteEnum(
+      3, this->redist_version(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -6612,6 +7074,23 @@ void InstallationStarted::SerializeWithCachedSizes(
         1, this->_internal_event_metadata(), deterministic, target);
   }
 
+  // string install_path = 2;
+  if (this->install_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->install_path().data(), static_cast<int>(this->install_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.InstallationStarted.install_path");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        2, this->install_path(), target);
+  }
+
+  // .eve_launcher.installer.RedistVersion redist_version = 3;
+  if (this->redist_version() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
+      3, this->redist_version(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -6629,11 +7108,24 @@ size_t InstallationStarted::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
+  // string install_path = 2;
+  if (this->install_path().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->install_path());
+  }
+
   // .eve_launcher.application.EventMetadata event_metadata = 1;
   if (this->has_event_metadata()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *event_metadata_);
+  }
+
+  // .eve_launcher.installer.RedistVersion redist_version = 3;
+  if (this->redist_version() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::EnumSize(this->redist_version());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -6663,8 +7155,15 @@ void InstallationStarted::MergeFrom(const InstallationStarted& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.install_path().size() > 0) {
+
+    install_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.install_path_);
+  }
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
+  }
+  if (from.redist_version() != 0) {
+    set_redist_version(from.redist_version());
   }
 }
 
@@ -6692,7 +7191,10 @@ void InstallationStarted::Swap(InstallationStarted* other) {
 }
 void InstallationStarted::InternalSwap(InstallationStarted* other) {
   using std::swap;
+  install_path_.Swap(&other->install_path_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(event_metadata_, other->event_metadata_);
+  swap(redist_version_, other->redist_version_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -6997,6 +7499,7 @@ void InstallationFinished::clear_event_metadata() {
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int InstallationFinished::kEventMetadataFieldNumber;
 const int InstallationFinished::kDurationFieldNumber;
+const int InstallationFinished::kSharedCachePathFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 InstallationFinished::InstallationFinished()
@@ -7010,6 +7513,10 @@ InstallationFinished::InstallationFinished(const InstallationFinished& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  shared_cache_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.shared_cache_path().size() > 0) {
+    shared_cache_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.shared_cache_path_);
+  }
   if (from.has_event_metadata()) {
     event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
   } else {
@@ -7020,6 +7527,7 @@ InstallationFinished::InstallationFinished(const InstallationFinished& from)
 }
 
 void InstallationFinished::SharedCtor() {
+  shared_cache_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&event_metadata_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&duration_) -
       reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
@@ -7031,6 +7539,7 @@ InstallationFinished::~InstallationFinished() {
 }
 
 void InstallationFinished::SharedDtor() {
+  shared_cache_path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete event_metadata_;
 }
 
@@ -7054,6 +7563,7 @@ void InstallationFinished::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  shared_cache_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
@@ -7098,6 +7608,22 @@ bool InstallationFinished::MergePartialFromCodedStream(
         break;
       }
 
+      // string shared_cache_path = 3;
+      case 3: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(26u /* 26 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_shared_cache_path()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->shared_cache_path().data(), static_cast<int>(this->shared_cache_path().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "eve_launcher.installer.InstallationFinished.shared_cache_path"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -7135,6 +7661,16 @@ void InstallationFinished::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->duration(), output);
   }
 
+  // string shared_cache_path = 3;
+  if (this->shared_cache_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->shared_cache_path().data(), static_cast<int>(this->shared_cache_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.InstallationFinished.shared_cache_path");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      3, this->shared_cache_path(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -7161,6 +7697,17 @@ void InstallationFinished::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->duration(), target);
   }
 
+  // string shared_cache_path = 3;
+  if (this->shared_cache_path().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->shared_cache_path().data(), static_cast<int>(this->shared_cache_path().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "eve_launcher.installer.InstallationFinished.shared_cache_path");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        3, this->shared_cache_path(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -7178,6 +7725,13 @@ size_t InstallationFinished::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
+  // string shared_cache_path = 3;
+  if (this->shared_cache_path().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->shared_cache_path());
+  }
+
   // .eve_launcher.application.EventMetadata event_metadata = 1;
   if (this->has_event_metadata()) {
     total_size += 1 +
@@ -7219,6 +7773,10 @@ void InstallationFinished::MergeFrom(const InstallationFinished& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.shared_cache_path().size() > 0) {
+
+    shared_cache_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.shared_cache_path_);
+  }
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
@@ -7251,6 +7809,8 @@ void InstallationFinished::Swap(InstallationFinished* other) {
 }
 void InstallationFinished::InternalSwap(InstallationFinished* other) {
   using std::swap;
+  shared_cache_path_.Swap(&other->shared_cache_path_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(event_metadata_, other->event_metadata_);
   swap(duration_, other->duration_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
@@ -8076,8 +8636,6 @@ void ComponentInitializationStarted::clear_event_metadata() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ComponentInitializationStarted::kEventMetadataFieldNumber;
-const int ComponentInitializationStarted::kComponentFieldNumber;
-const int ComponentInitializationStarted::kRedistVersionFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ComponentInitializationStarted::ComponentInitializationStarted()
@@ -8096,16 +8654,11 @@ ComponentInitializationStarted::ComponentInitializationStarted(const ComponentIn
   } else {
     event_metadata_ = NULL;
   }
-  ::memcpy(&component_, &from.component_,
-    static_cast<size_t>(reinterpret_cast<char*>(&redist_version_) -
-    reinterpret_cast<char*>(&component_)) + sizeof(redist_version_));
   // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentInitializationStarted)
 }
 
 void ComponentInitializationStarted::SharedCtor() {
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&redist_version_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(redist_version_));
+  event_metadata_ = NULL;
 }
 
 ComponentInitializationStarted::~ComponentInitializationStarted() {
@@ -8141,9 +8694,6 @@ void ComponentInitializationStarted::Clear() {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
-  ::memset(&component_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&redist_version_) -
-      reinterpret_cast<char*>(&component_)) + sizeof(redist_version_));
   _internal_metadata_.Clear();
 }
 
@@ -8163,36 +8713,6 @@ bool ComponentInitializationStarted::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Component component = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_component(static_cast< ::eve_launcher::installer::Component >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.RedistVersion redist_version = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_redist_version(static_cast< ::eve_launcher::installer::RedistVersion >(value));
         } else {
           goto handle_unusual;
         }
@@ -8231,18 +8751,6 @@ void ComponentInitializationStarted::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->component(), output);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->redist_version(), output);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -8262,18 +8770,6 @@ void ComponentInitializationStarted::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->component(), target);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->redist_version(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -8298,18 +8794,6 @@ size_t ComponentInitializationStarted::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *event_metadata_);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->component());
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->redist_version());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -8342,12 +8826,6 @@ void ComponentInitializationStarted::MergeFrom(const ComponentInitializationStar
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
-  if (from.component() != 0) {
-    set_component(from.component());
-  }
-  if (from.redist_version() != 0) {
-    set_redist_version(from.redist_version());
-  }
 }
 
 void ComponentInitializationStarted::CopyFrom(const ::google::protobuf::Message& from) {
@@ -8375,8 +8853,6 @@ void ComponentInitializationStarted::Swap(ComponentInitializationStarted* other)
 void ComponentInitializationStarted::InternalSwap(ComponentInitializationStarted* other) {
   using std::swap;
   swap(event_metadata_, other->event_metadata_);
-  swap(component_, other->component_);
-  swap(redist_version_, other->redist_version_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -8400,8 +8876,6 @@ void ComponentInitializationFinished::clear_event_metadata() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ComponentInitializationFinished::kEventMetadataFieldNumber;
-const int ComponentInitializationFinished::kComponentFieldNumber;
-const int ComponentInitializationFinished::kRedistVersionFieldNumber;
 const int ComponentInitializationFinished::kDurationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -8421,9 +8895,7 @@ ComponentInitializationFinished::ComponentInitializationFinished(const Component
   } else {
     event_metadata_ = NULL;
   }
-  ::memcpy(&component_, &from.component_,
-    static_cast<size_t>(reinterpret_cast<char*>(&duration_) -
-    reinterpret_cast<char*>(&component_)) + sizeof(duration_));
+  duration_ = from.duration_;
   // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentInitializationFinished)
 }
 
@@ -8466,9 +8938,7 @@ void ComponentInitializationFinished::Clear() {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
-  ::memset(&component_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&duration_) -
-      reinterpret_cast<char*>(&component_)) + sizeof(duration_));
+  duration_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -8488,36 +8958,6 @@ bool ComponentInitializationFinished::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Component component = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_component(static_cast< ::eve_launcher::installer::Component >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.RedistVersion redist_version = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_redist_version(static_cast< ::eve_launcher::installer::RedistVersion >(value));
         } else {
           goto handle_unusual;
         }
@@ -8570,18 +9010,6 @@ void ComponentInitializationFinished::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->component(), output);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->redist_version(), output);
-  }
-
   // int32 duration = 4;
   if (this->duration() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->duration(), output);
@@ -8606,18 +9034,6 @@ void ComponentInitializationFinished::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->component(), target);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->redist_version(), target);
   }
 
   // int32 duration = 4;
@@ -8647,18 +9063,6 @@ size_t ComponentInitializationFinished::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *event_metadata_);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->component());
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->redist_version());
   }
 
   // int32 duration = 4;
@@ -8698,12 +9102,6 @@ void ComponentInitializationFinished::MergeFrom(const ComponentInitializationFin
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
-  if (from.component() != 0) {
-    set_component(from.component());
-  }
-  if (from.redist_version() != 0) {
-    set_redist_version(from.redist_version());
-  }
   if (from.duration() != 0) {
     set_duration(from.duration());
   }
@@ -8734,8 +9132,6 @@ void ComponentInitializationFinished::Swap(ComponentInitializationFinished* othe
 void ComponentInitializationFinished::InternalSwap(ComponentInitializationFinished* other) {
   using std::swap;
   swap(event_metadata_, other->event_metadata_);
-  swap(component_, other->component_);
-  swap(redist_version_, other->redist_version_);
   swap(duration_, other->duration_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
@@ -8760,8 +9156,6 @@ void ComponentInstallationStarted::clear_event_metadata() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ComponentInstallationStarted::kEventMetadataFieldNumber;
-const int ComponentInstallationStarted::kComponentFieldNumber;
-const int ComponentInstallationStarted::kRedistVersionFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ComponentInstallationStarted::ComponentInstallationStarted()
@@ -8780,16 +9174,11 @@ ComponentInstallationStarted::ComponentInstallationStarted(const ComponentInstal
   } else {
     event_metadata_ = NULL;
   }
-  ::memcpy(&component_, &from.component_,
-    static_cast<size_t>(reinterpret_cast<char*>(&redist_version_) -
-    reinterpret_cast<char*>(&component_)) + sizeof(redist_version_));
   // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentInstallationStarted)
 }
 
 void ComponentInstallationStarted::SharedCtor() {
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&redist_version_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(redist_version_));
+  event_metadata_ = NULL;
 }
 
 ComponentInstallationStarted::~ComponentInstallationStarted() {
@@ -8825,9 +9214,6 @@ void ComponentInstallationStarted::Clear() {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
-  ::memset(&component_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&redist_version_) -
-      reinterpret_cast<char*>(&component_)) + sizeof(redist_version_));
   _internal_metadata_.Clear();
 }
 
@@ -8847,36 +9233,6 @@ bool ComponentInstallationStarted::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Component component = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_component(static_cast< ::eve_launcher::installer::Component >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.RedistVersion redist_version = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_redist_version(static_cast< ::eve_launcher::installer::RedistVersion >(value));
         } else {
           goto handle_unusual;
         }
@@ -8915,18 +9271,6 @@ void ComponentInstallationStarted::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->component(), output);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->redist_version(), output);
-  }
-
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -8946,18 +9290,6 @@ void ComponentInstallationStarted::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->component(), target);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->redist_version(), target);
   }
 
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
@@ -8982,18 +9314,6 @@ size_t ComponentInstallationStarted::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *event_metadata_);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->component());
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->redist_version());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -9026,12 +9346,6 @@ void ComponentInstallationStarted::MergeFrom(const ComponentInstallationStarted&
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
-  if (from.component() != 0) {
-    set_component(from.component());
-  }
-  if (from.redist_version() != 0) {
-    set_redist_version(from.redist_version());
-  }
 }
 
 void ComponentInstallationStarted::CopyFrom(const ::google::protobuf::Message& from) {
@@ -9059,8 +9373,6 @@ void ComponentInstallationStarted::Swap(ComponentInstallationStarted* other) {
 void ComponentInstallationStarted::InternalSwap(ComponentInstallationStarted* other) {
   using std::swap;
   swap(event_metadata_, other->event_metadata_);
-  swap(component_, other->component_);
-  swap(redist_version_, other->redist_version_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
@@ -9084,8 +9396,6 @@ void ComponentInstallationFinished::clear_event_metadata() {
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int ComponentInstallationFinished::kEventMetadataFieldNumber;
-const int ComponentInstallationFinished::kComponentFieldNumber;
-const int ComponentInstallationFinished::kRedistVersionFieldNumber;
 const int ComponentInstallationFinished::kDurationFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -9105,9 +9415,7 @@ ComponentInstallationFinished::ComponentInstallationFinished(const ComponentInst
   } else {
     event_metadata_ = NULL;
   }
-  ::memcpy(&component_, &from.component_,
-    static_cast<size_t>(reinterpret_cast<char*>(&duration_) -
-    reinterpret_cast<char*>(&component_)) + sizeof(duration_));
+  duration_ = from.duration_;
   // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentInstallationFinished)
 }
 
@@ -9150,9 +9458,7 @@ void ComponentInstallationFinished::Clear() {
     delete event_metadata_;
   }
   event_metadata_ = NULL;
-  ::memset(&component_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&duration_) -
-      reinterpret_cast<char*>(&component_)) + sizeof(duration_));
+  duration_ = 0;
   _internal_metadata_.Clear();
 }
 
@@ -9172,36 +9478,6 @@ bool ComponentInstallationFinished::MergePartialFromCodedStream(
             static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
                input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.Component component = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_component(static_cast< ::eve_launcher::installer::Component >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // .eve_launcher.installer.RedistVersion redist_version = 3;
-      case 3: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(24u /* 24 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_redist_version(static_cast< ::eve_launcher::installer::RedistVersion >(value));
         } else {
           goto handle_unusual;
         }
@@ -9254,18 +9530,6 @@ void ComponentInstallationFinished::SerializeWithCachedSizes(
       1, this->_internal_event_metadata(), output);
   }
 
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      2, this->component(), output);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      3, this->redist_version(), output);
-  }
-
   // int32 duration = 4;
   if (this->duration() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(4, this->duration(), output);
@@ -9290,18 +9554,6 @@ void ComponentInstallationFinished::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
         1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      2, this->component(), target);
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      3, this->redist_version(), target);
   }
 
   // int32 duration = 4;
@@ -9331,18 +9583,6 @@ size_t ComponentInstallationFinished::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
         *event_metadata_);
-  }
-
-  // .eve_launcher.installer.Component component = 2;
-  if (this->component() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->component());
-  }
-
-  // .eve_launcher.installer.RedistVersion redist_version = 3;
-  if (this->redist_version() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->redist_version());
   }
 
   // int32 duration = 4;
@@ -9382,12 +9622,6 @@ void ComponentInstallationFinished::MergeFrom(const ComponentInstallationFinishe
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
-  if (from.component() != 0) {
-    set_component(from.component());
-  }
-  if (from.redist_version() != 0) {
-    set_redist_version(from.redist_version());
-  }
   if (from.duration() != 0) {
     set_duration(from.duration());
   }
@@ -9418,1053 +9652,11 @@ void ComponentInstallationFinished::Swap(ComponentInstallationFinished* other) {
 void ComponentInstallationFinished::InternalSwap(ComponentInstallationFinished* other) {
   using std::swap;
   swap(event_metadata_, other->event_metadata_);
-  swap(component_, other->component_);
-  swap(redist_version_, other->redist_version_);
   swap(duration_, other->duration_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
 
 ::google::protobuf::Metadata ComponentInstallationFinished::GetMetadata() const {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void ComponentsInitializationStarted::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_ComponentsInitializationStarted_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
-      ::eve_launcher::application::EventMetadata::internal_default_instance());
-}
-void ComponentsInitializationStarted::clear_event_metadata() {
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ComponentsInitializationStarted::kEventMetadataFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ComponentsInitializationStarted::ComponentsInitializationStarted()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInitializationStarted.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.ComponentsInitializationStarted)
-}
-ComponentsInitializationStarted::ComponentsInitializationStarted(const ComponentsInitializationStarted& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_event_metadata()) {
-    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
-  } else {
-    event_metadata_ = NULL;
-  }
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentsInitializationStarted)
-}
-
-void ComponentsInitializationStarted::SharedCtor() {
-  event_metadata_ = NULL;
-}
-
-ComponentsInitializationStarted::~ComponentsInitializationStarted() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.ComponentsInitializationStarted)
-  SharedDtor();
-}
-
-void ComponentsInitializationStarted::SharedDtor() {
-  if (this != internal_default_instance()) delete event_metadata_;
-}
-
-void ComponentsInitializationStarted::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* ComponentsInitializationStarted::descriptor() {
-  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const ComponentsInitializationStarted& ComponentsInitializationStarted::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInitializationStarted.base);
-  return *internal_default_instance();
-}
-
-
-void ComponentsInitializationStarted::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.ComponentsInitializationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-  _internal_metadata_.Clear();
-}
-
-bool ComponentsInitializationStarted::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.ComponentsInitializationStarted)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .eve_launcher.application.EventMetadata event_metadata = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.ComponentsInitializationStarted)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.ComponentsInitializationStarted)
-  return false;
-#undef DO_
-}
-
-void ComponentsInitializationStarted::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.ComponentsInitializationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_event_metadata(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.ComponentsInitializationStarted)
-}
-
-::google::protobuf::uint8* ComponentsInitializationStarted::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.ComponentsInitializationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.ComponentsInitializationStarted)
-  return target;
-}
-
-size_t ComponentsInitializationStarted::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.ComponentsInitializationStarted)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *event_metadata_);
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void ComponentsInitializationStarted::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.ComponentsInitializationStarted)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ComponentsInitializationStarted* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ComponentsInitializationStarted>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.ComponentsInitializationStarted)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.ComponentsInitializationStarted)
-    MergeFrom(*source);
-  }
-}
-
-void ComponentsInitializationStarted::MergeFrom(const ComponentsInitializationStarted& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.ComponentsInitializationStarted)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.has_event_metadata()) {
-    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
-  }
-}
-
-void ComponentsInitializationStarted::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.ComponentsInitializationStarted)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void ComponentsInitializationStarted::CopyFrom(const ComponentsInitializationStarted& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.ComponentsInitializationStarted)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ComponentsInitializationStarted::IsInitialized() const {
-  return true;
-}
-
-void ComponentsInitializationStarted::Swap(ComponentsInitializationStarted* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void ComponentsInitializationStarted::InternalSwap(ComponentsInitializationStarted* other) {
-  using std::swap;
-  swap(event_metadata_, other->event_metadata_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata ComponentsInitializationStarted::GetMetadata() const {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void ComponentsInitializationFinished::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_ComponentsInitializationFinished_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
-      ::eve_launcher::application::EventMetadata::internal_default_instance());
-}
-void ComponentsInitializationFinished::clear_event_metadata() {
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ComponentsInitializationFinished::kEventMetadataFieldNumber;
-const int ComponentsInitializationFinished::kDurationFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ComponentsInitializationFinished::ComponentsInitializationFinished()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInitializationFinished.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.ComponentsInitializationFinished)
-}
-ComponentsInitializationFinished::ComponentsInitializationFinished(const ComponentsInitializationFinished& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_event_metadata()) {
-    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
-  } else {
-    event_metadata_ = NULL;
-  }
-  duration_ = from.duration_;
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentsInitializationFinished)
-}
-
-void ComponentsInitializationFinished::SharedCtor() {
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&duration_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
-}
-
-ComponentsInitializationFinished::~ComponentsInitializationFinished() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.ComponentsInitializationFinished)
-  SharedDtor();
-}
-
-void ComponentsInitializationFinished::SharedDtor() {
-  if (this != internal_default_instance()) delete event_metadata_;
-}
-
-void ComponentsInitializationFinished::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* ComponentsInitializationFinished::descriptor() {
-  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const ComponentsInitializationFinished& ComponentsInitializationFinished::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInitializationFinished.base);
-  return *internal_default_instance();
-}
-
-
-void ComponentsInitializationFinished::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.ComponentsInitializationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-  duration_ = 0;
-  _internal_metadata_.Clear();
-}
-
-bool ComponentsInitializationFinished::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.ComponentsInitializationFinished)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .eve_launcher.application.EventMetadata event_metadata = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // int32 duration = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &duration_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.ComponentsInitializationFinished)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.ComponentsInitializationFinished)
-  return false;
-#undef DO_
-}
-
-void ComponentsInitializationFinished::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.ComponentsInitializationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_event_metadata(), output);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->duration(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.ComponentsInitializationFinished)
-}
-
-::google::protobuf::uint8* ComponentsInitializationFinished::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.ComponentsInitializationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->duration(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.ComponentsInitializationFinished)
-  return target;
-}
-
-size_t ComponentsInitializationFinished::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.ComponentsInitializationFinished)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *event_metadata_);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->duration());
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void ComponentsInitializationFinished::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.ComponentsInitializationFinished)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ComponentsInitializationFinished* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ComponentsInitializationFinished>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.ComponentsInitializationFinished)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.ComponentsInitializationFinished)
-    MergeFrom(*source);
-  }
-}
-
-void ComponentsInitializationFinished::MergeFrom(const ComponentsInitializationFinished& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.ComponentsInitializationFinished)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.has_event_metadata()) {
-    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
-  }
-  if (from.duration() != 0) {
-    set_duration(from.duration());
-  }
-}
-
-void ComponentsInitializationFinished::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.ComponentsInitializationFinished)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void ComponentsInitializationFinished::CopyFrom(const ComponentsInitializationFinished& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.ComponentsInitializationFinished)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ComponentsInitializationFinished::IsInitialized() const {
-  return true;
-}
-
-void ComponentsInitializationFinished::Swap(ComponentsInitializationFinished* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void ComponentsInitializationFinished::InternalSwap(ComponentsInitializationFinished* other) {
-  using std::swap;
-  swap(event_metadata_, other->event_metadata_);
-  swap(duration_, other->duration_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata ComponentsInitializationFinished::GetMetadata() const {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void ComponentsInstallationStarted::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_ComponentsInstallationStarted_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
-      ::eve_launcher::application::EventMetadata::internal_default_instance());
-}
-void ComponentsInstallationStarted::clear_event_metadata() {
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ComponentsInstallationStarted::kEventMetadataFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ComponentsInstallationStarted::ComponentsInstallationStarted()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInstallationStarted.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.ComponentsInstallationStarted)
-}
-ComponentsInstallationStarted::ComponentsInstallationStarted(const ComponentsInstallationStarted& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_event_metadata()) {
-    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
-  } else {
-    event_metadata_ = NULL;
-  }
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentsInstallationStarted)
-}
-
-void ComponentsInstallationStarted::SharedCtor() {
-  event_metadata_ = NULL;
-}
-
-ComponentsInstallationStarted::~ComponentsInstallationStarted() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.ComponentsInstallationStarted)
-  SharedDtor();
-}
-
-void ComponentsInstallationStarted::SharedDtor() {
-  if (this != internal_default_instance()) delete event_metadata_;
-}
-
-void ComponentsInstallationStarted::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* ComponentsInstallationStarted::descriptor() {
-  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const ComponentsInstallationStarted& ComponentsInstallationStarted::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInstallationStarted.base);
-  return *internal_default_instance();
-}
-
-
-void ComponentsInstallationStarted::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.ComponentsInstallationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-  _internal_metadata_.Clear();
-}
-
-bool ComponentsInstallationStarted::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.ComponentsInstallationStarted)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .eve_launcher.application.EventMetadata event_metadata = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.ComponentsInstallationStarted)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.ComponentsInstallationStarted)
-  return false;
-#undef DO_
-}
-
-void ComponentsInstallationStarted::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.ComponentsInstallationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_event_metadata(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.ComponentsInstallationStarted)
-}
-
-::google::protobuf::uint8* ComponentsInstallationStarted::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.ComponentsInstallationStarted)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.ComponentsInstallationStarted)
-  return target;
-}
-
-size_t ComponentsInstallationStarted::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.ComponentsInstallationStarted)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *event_metadata_);
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void ComponentsInstallationStarted::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.ComponentsInstallationStarted)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ComponentsInstallationStarted* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ComponentsInstallationStarted>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.ComponentsInstallationStarted)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.ComponentsInstallationStarted)
-    MergeFrom(*source);
-  }
-}
-
-void ComponentsInstallationStarted::MergeFrom(const ComponentsInstallationStarted& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.ComponentsInstallationStarted)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.has_event_metadata()) {
-    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
-  }
-}
-
-void ComponentsInstallationStarted::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.ComponentsInstallationStarted)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void ComponentsInstallationStarted::CopyFrom(const ComponentsInstallationStarted& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.ComponentsInstallationStarted)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ComponentsInstallationStarted::IsInitialized() const {
-  return true;
-}
-
-void ComponentsInstallationStarted::Swap(ComponentsInstallationStarted* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void ComponentsInstallationStarted::InternalSwap(ComponentsInstallationStarted* other) {
-  using std::swap;
-  swap(event_metadata_, other->event_metadata_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata ComponentsInstallationStarted::GetMetadata() const {
-  protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
-}
-
-
-// ===================================================================
-
-void ComponentsInstallationFinished::InitAsDefaultInstance() {
-  ::eve_launcher::installer::_ComponentsInstallationFinished_default_instance_._instance.get_mutable()->event_metadata_ = const_cast< ::eve_launcher::application::EventMetadata*>(
-      ::eve_launcher::application::EventMetadata::internal_default_instance());
-}
-void ComponentsInstallationFinished::clear_event_metadata() {
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-}
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int ComponentsInstallationFinished::kEventMetadataFieldNumber;
-const int ComponentsInstallationFinished::kDurationFieldNumber;
-#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
-
-ComponentsInstallationFinished::ComponentsInstallationFinished()
-  : ::google::protobuf::Message(), _internal_metadata_(NULL) {
-  ::google::protobuf::internal::InitSCC(
-      &protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInstallationFinished.base);
-  SharedCtor();
-  // @@protoc_insertion_point(constructor:eve_launcher.installer.ComponentsInstallationFinished)
-}
-ComponentsInstallationFinished::ComponentsInstallationFinished(const ComponentsInstallationFinished& from)
-  : ::google::protobuf::Message(),
-      _internal_metadata_(NULL) {
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  if (from.has_event_metadata()) {
-    event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
-  } else {
-    event_metadata_ = NULL;
-  }
-  duration_ = from.duration_;
-  // @@protoc_insertion_point(copy_constructor:eve_launcher.installer.ComponentsInstallationFinished)
-}
-
-void ComponentsInstallationFinished::SharedCtor() {
-  ::memset(&event_metadata_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&duration_) -
-      reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
-}
-
-ComponentsInstallationFinished::~ComponentsInstallationFinished() {
-  // @@protoc_insertion_point(destructor:eve_launcher.installer.ComponentsInstallationFinished)
-  SharedDtor();
-}
-
-void ComponentsInstallationFinished::SharedDtor() {
-  if (this != internal_default_instance()) delete event_metadata_;
-}
-
-void ComponentsInstallationFinished::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-const ::google::protobuf::Descriptor* ComponentsInstallationFinished::descriptor() {
-  ::protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
-  return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages].descriptor;
-}
-
-const ComponentsInstallationFinished& ComponentsInstallationFinished::default_instance() {
-  ::google::protobuf::internal::InitSCC(&protobuf_eve_5flauncher_2finstaller_2eproto::scc_info_ComponentsInstallationFinished.base);
-  return *internal_default_instance();
-}
-
-
-void ComponentsInstallationFinished::Clear() {
-// @@protoc_insertion_point(message_clear_start:eve_launcher.installer.ComponentsInstallationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
-    delete event_metadata_;
-  }
-  event_metadata_ = NULL;
-  duration_ = 0;
-  _internal_metadata_.Clear();
-}
-
-bool ComponentsInstallationFinished::MergePartialFromCodedStream(
-    ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
-  ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:eve_launcher.installer.ComponentsInstallationFinished)
-  for (;;) {
-    ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
-    tag = p.first;
-    if (!p.second) goto handle_unusual;
-    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .eve_launcher.application.EventMetadata event_metadata = 1;
-      case 1: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(10u /* 10 & 0xFF */)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
-               input, mutable_event_metadata()));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // int32 duration = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(16u /* 16 & 0xFF */)) {
-
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
-                 input, &duration_)));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      default: {
-      handle_unusual:
-        if (tag == 0) {
-          goto success;
-        }
-        DO_(::google::protobuf::internal::WireFormat::SkipField(
-              input, tag, _internal_metadata_.mutable_unknown_fields()));
-        break;
-      }
-    }
-  }
-success:
-  // @@protoc_insertion_point(parse_success:eve_launcher.installer.ComponentsInstallationFinished)
-  return true;
-failure:
-  // @@protoc_insertion_point(parse_failure:eve_launcher.installer.ComponentsInstallationFinished)
-  return false;
-#undef DO_
-}
-
-void ComponentsInstallationFinished::SerializeWithCachedSizes(
-    ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:eve_launcher.installer.ComponentsInstallationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
-      1, this->_internal_event_metadata(), output);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteInt32(2, this->duration(), output);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
-  }
-  // @@protoc_insertion_point(serialize_end:eve_launcher.installer.ComponentsInstallationFinished)
-}
-
-::google::protobuf::uint8* ComponentsInstallationFinished::InternalSerializeWithCachedSizesToArray(
-    bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
-  // @@protoc_insertion_point(serialize_to_array_start:eve_launcher.installer.ComponentsInstallationFinished)
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    target = ::google::protobuf::internal::WireFormatLite::
-      InternalWriteMessageToArray(
-        1, this->_internal_event_metadata(), deterministic, target);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(2, this->duration(), target);
-  }
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:eve_launcher.installer.ComponentsInstallationFinished)
-  return target;
-}
-
-size_t ComponentsInstallationFinished::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:eve_launcher.installer.ComponentsInstallationFinished)
-  size_t total_size = 0;
-
-  if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
-    total_size +=
-      ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
-        (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
-  }
-  // .eve_launcher.application.EventMetadata event_metadata = 1;
-  if (this->has_event_metadata()) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::MessageSize(
-        *event_metadata_);
-  }
-
-  // int32 duration = 2;
-  if (this->duration() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::Int32Size(
-        this->duration());
-  }
-
-  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void ComponentsInstallationFinished::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:eve_launcher.installer.ComponentsInstallationFinished)
-  GOOGLE_DCHECK_NE(&from, this);
-  const ComponentsInstallationFinished* source =
-      ::google::protobuf::internal::DynamicCastToGenerated<const ComponentsInstallationFinished>(
-          &from);
-  if (source == NULL) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:eve_launcher.installer.ComponentsInstallationFinished)
-    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:eve_launcher.installer.ComponentsInstallationFinished)
-    MergeFrom(*source);
-  }
-}
-
-void ComponentsInstallationFinished::MergeFrom(const ComponentsInstallationFinished& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:eve_launcher.installer.ComponentsInstallationFinished)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom(from._internal_metadata_);
-  ::google::protobuf::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.has_event_metadata()) {
-    mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
-  }
-  if (from.duration() != 0) {
-    set_duration(from.duration());
-  }
-}
-
-void ComponentsInstallationFinished::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:eve_launcher.installer.ComponentsInstallationFinished)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void ComponentsInstallationFinished::CopyFrom(const ComponentsInstallationFinished& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:eve_launcher.installer.ComponentsInstallationFinished)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool ComponentsInstallationFinished::IsInitialized() const {
-  return true;
-}
-
-void ComponentsInstallationFinished::Swap(ComponentsInstallationFinished* other) {
-  if (other == this) return;
-  InternalSwap(other);
-}
-void ComponentsInstallationFinished::InternalSwap(ComponentsInstallationFinished* other) {
-  using std::swap;
-  swap(event_metadata_, other->event_metadata_);
-  swap(duration_, other->duration_);
-  _internal_metadata_.Swap(&other->_internal_metadata_);
-}
-
-::google::protobuf::Metadata ComponentsInstallationFinished::GetMetadata() const {
   protobuf_eve_5flauncher_2finstaller_2eproto::protobuf_AssignDescriptorsOnce();
   return ::protobuf_eve_5flauncher_2finstaller_2eproto::file_level_metadata[kIndexInFileMessages];
 }
@@ -10486,7 +9678,6 @@ void ErrorEncountered::clear_event_metadata() {
 const int ErrorEncountered::kEventMetadataFieldNumber;
 const int ErrorEncountered::kCodeFieldNumber;
 const int ErrorEncountered::kPageFieldNumber;
-const int ErrorEncountered::kComponentFieldNumber;
 const int ErrorEncountered::kRedistVersionFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
@@ -10609,21 +9800,6 @@ bool ErrorEncountered::MergePartialFromCodedStream(
         break;
       }
 
-      // .eve_launcher.installer.Component component = 4;
-      case 4: {
-        if (static_cast< ::google::protobuf::uint8>(tag) ==
-            static_cast< ::google::protobuf::uint8>(32u /* 32 & 0xFF */)) {
-          int value;
-          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
-                   int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
-                 input, &value)));
-          set_component(static_cast< ::eve_launcher::installer::Component >(value));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
       // .eve_launcher.installer.RedistVersion redist_version = 5;
       case 5: {
         if (static_cast< ::google::protobuf::uint8>(tag) ==
@@ -10683,12 +9859,6 @@ void ErrorEncountered::SerializeWithCachedSizes(
       3, this->page(), output);
   }
 
-  // .eve_launcher.installer.Component component = 4;
-  if (this->component() != 0) {
-    ::google::protobuf::internal::WireFormatLite::WriteEnum(
-      4, this->component(), output);
-  }
-
   // .eve_launcher.installer.RedistVersion redist_version = 5;
   if (this->redist_version() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
@@ -10726,12 +9896,6 @@ void ErrorEncountered::SerializeWithCachedSizes(
   if (this->page() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       3, this->page(), target);
-  }
-
-  // .eve_launcher.installer.Component component = 4;
-  if (this->component() != 0) {
-    target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
-      4, this->component(), target);
   }
 
   // .eve_launcher.installer.RedistVersion redist_version = 5;
@@ -10776,12 +9940,6 @@ size_t ErrorEncountered::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->page());
   }
 
-  // .eve_launcher.installer.Component component = 4;
-  if (this->component() != 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::EnumSize(this->component());
-  }
-
   // .eve_launcher.installer.RedistVersion redist_version = 5;
   if (this->redist_version() != 0) {
     total_size += 1 +
@@ -10824,9 +9982,6 @@ void ErrorEncountered::MergeFrom(const ErrorEncountered& from) {
   if (from.page() != 0) {
     set_page(from.page());
   }
-  if (from.component() != 0) {
-    set_component(from.component());
-  }
   if (from.redist_version() != 0) {
     set_redist_version(from.redist_version());
   }
@@ -10859,7 +10014,6 @@ void ErrorEncountered::InternalSwap(ErrorEncountered* other) {
   swap(event_metadata_, other->event_metadata_);
   swap(code_, other->code_);
   swap(page_, other->page_);
-  swap(component_, other->component_);
   swap(redist_version_, other->redist_version_);
   _internal_metadata_.Swap(&other->_internal_metadata_);
 }
@@ -12036,8 +11190,20 @@ namespace protobuf {
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::Started* Arena::CreateMaybeMessage< ::eve_launcher::installer::Started >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::Started >(arena);
 }
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::PageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::PageDisplayed >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::PageDisplayed >(arena);
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::IntroductionPageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::IntroductionPageDisplayed >(Arena* arena) {
+  return Arena::CreateInternal< ::eve_launcher::installer::IntroductionPageDisplayed >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::EulaPageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::EulaPageDisplayed >(Arena* arena) {
+  return Arena::CreateInternal< ::eve_launcher::installer::EulaPageDisplayed >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ExecutionPageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::ExecutionPageDisplayed >(Arena* arena) {
+  return Arena::CreateInternal< ::eve_launcher::installer::ExecutionPageDisplayed >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::FinishedPageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::FinishedPageDisplayed >(Arena* arena) {
+  return Arena::CreateInternal< ::eve_launcher::installer::FinishedPageDisplayed >(arena);
+}
+template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::FailedPageDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::FailedPageDisplayed >(Arena* arena) {
+  return Arena::CreateInternal< ::eve_launcher::installer::FailedPageDisplayed >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::UserCancelled* Arena::CreateMaybeMessage< ::eve_launcher::installer::UserCancelled >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::UserCancelled >(arena);
@@ -12050,9 +11216,6 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::Prepara
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::PreparationFinished* Arena::CreateMaybeMessage< ::eve_launcher::installer::PreparationFinished >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::PreparationFinished >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::LocationChanged* Arena::CreateMaybeMessage< ::eve_launcher::installer::LocationChanged >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::LocationChanged >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::DetailsDisplayed* Arena::CreateMaybeMessage< ::eve_launcher::installer::DetailsDisplayed >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::DetailsDisplayed >(arena);
@@ -12113,18 +11276,6 @@ template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::Compone
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ComponentInstallationFinished* Arena::CreateMaybeMessage< ::eve_launcher::installer::ComponentInstallationFinished >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::ComponentInstallationFinished >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ComponentsInitializationStarted* Arena::CreateMaybeMessage< ::eve_launcher::installer::ComponentsInitializationStarted >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::ComponentsInitializationStarted >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ComponentsInitializationFinished* Arena::CreateMaybeMessage< ::eve_launcher::installer::ComponentsInitializationFinished >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::ComponentsInitializationFinished >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ComponentsInstallationStarted* Arena::CreateMaybeMessage< ::eve_launcher::installer::ComponentsInstallationStarted >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::ComponentsInstallationStarted >(arena);
-}
-template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ComponentsInstallationFinished* Arena::CreateMaybeMessage< ::eve_launcher::installer::ComponentsInstallationFinished >(Arena* arena) {
-  return Arena::CreateInternal< ::eve_launcher::installer::ComponentsInstallationFinished >(arena);
 }
 template<> GOOGLE_PROTOBUF_ATTRIBUTE_NOINLINE ::eve_launcher::installer::ErrorEncountered* Arena::CreateMaybeMessage< ::eve_launcher::installer::ErrorEncountered >(Arena* arena) {
   return Arena::CreateInternal< ::eve_launcher::installer::ErrorEncountered >(arena);
