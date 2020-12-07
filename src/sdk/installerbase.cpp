@@ -280,15 +280,16 @@ int InstallerBase::run()
     const QString newDirectory = QLatin1String(":/translations_new");
     const QStringList translations = m_core->settings().translations();
     const bool isChinaInstaller = m_core->settings().isChinaInstaller();
+    const bool isCustomInstaller = m_core->isCustomInstaller();
+    QStringList uiLanguages = QLocale().uiLanguages();
+    int allowedLanguages [6] = { QLocale::English, QLocale::German, QLocale::French, QLocale::Russian, QLocale::Japanese, QLocale::Chinese };
 
     if (isChinaInstaller) {
         QLocale locale = QLocale::Chinese;
         QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
-        bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
-                                        QLatin1String("_"), newDirectory);
+        bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"), QLatin1String("_"), newDirectory);
         if (!qtLoaded)
-            qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
-                                        QLatin1String("_"), directory);
+            qtLoaded = qtTranslator->load(locale, QLatin1String("qt"), QLatin1String("_"), directory);
 
         if (qtLoaded) {
             QCoreApplication::instance()->installTranslator(qtTranslator.take());
@@ -303,6 +304,15 @@ int InstallerBase::run()
     } else {
         if (translations.isEmpty()) {
             foreach (const QLocale locale, QLocale().uiLanguages()) {
+                // Is this language listed in our allowed languages?
+                int *languageIndex = std::find(std::begin(allowedLanguages), std::end(allowedLanguages), locale.language());
+
+                // If we are using the custom installer and the language is not allowed, skip it
+                if (isCustomInstaller && languageIndex == std::end(allowedLanguages))
+                {
+                    continue;
+                }
+
                 QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
                 bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
                                                 QLatin1String("_"), newDirectory);
