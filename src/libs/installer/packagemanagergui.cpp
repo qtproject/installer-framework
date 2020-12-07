@@ -1855,6 +1855,9 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
         m_taskButton = nullptr;
     }
 #endif
+
+    // By setting this as a commit page, we make sure that the back button on the following page will be disabled
+    setCommitPage(true);
 }
 
 /*!
@@ -2305,7 +2308,7 @@ void CustomIntroductionPage::entering()
     // Ready for installation text
     if (core->isUninstaller()) {
         // m_taskDetailsBrowser->setVisible(false);
-        setButtonText(QWizard::NextButton, tr("U&ninstall"));
+        setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Ready to Uninstall %1").arg(productName()));
         m_spaceLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
             "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
@@ -2316,14 +2319,14 @@ void CustomIntroductionPage::entering()
         // setComplete(true);
         // return;
     } else if (core->isMaintainer()) {
-        setButtonText(QWizard::NextButton, tr("U&pdate"));
+        setButtonText(QWizard::CommitButton, tr("U&pdate"));
         // setColoredTitle(tr("Ready to Update Packages"));
         m_spaceLabel->setText(tr("Setup is now ready to begin updating your installation."));
     } else {
         Q_ASSERT(core->isInstaller());
         core->calculateComponentsToInstall();
         showInstallerInformation();
-        setButtonText(QWizard::NextButton, tr("&Install"));
+        setButtonText(QWizard::CommitButton, tr("&Install"));
         // setColoredTitle(tr("Ready to Install"));
         m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
@@ -2365,7 +2368,7 @@ void CustomIntroductionPage::leaving()
     }
 
     // Resetting button text (after changing it to Install/Uninstall/Update)
-    setButtonText(QWizard::NextButton, gui()->defaultButtonText(QWizard::NextButton));
+    setButtonText(QWizard::CommitButton, gui()->defaultButtonText(QWizard::CommitButton));
 
     // Store the install location
     packageManagerCore()->setValue(scTargetDir, targetDir());
