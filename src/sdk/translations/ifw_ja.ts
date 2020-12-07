@@ -2527,7 +2527,8 @@ Installing component %1...</source>
   Here we are providing translations for the new installer/uninstaller names.
   ==============================================================================================
 -->
-<name>QInstaller::PackageManagerGui</name>
+<context>
+    <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>EVE Online Launcher Setup</source>
         <translation>EVE Onlineランチャーのセットアップ</translation>
@@ -2607,8 +2608,8 @@ Installing component %1...</source>
         <translation>アンインストールの準備ができました</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>

@@ -302,13 +302,25 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 {
     if (m_core->isInstaller())
     {
-        // setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
-        setWindowTitle(tr("EVE Online Launcher Setup")); // todo use the custominstaller flag
+        if (m_core->isCustomInstaller())
+        {
+            setWindowTitle(tr("EVE Online Launcher Setup"));
+        }
+        else 
+        {
+            setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
+        }
     }
     else
     {
-        // setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
-        setWindowTitle(tr("EVE Online Uninstaller")); // todo use the custominstaller flag
+        if (m_core->isCustomInstaller())
+        {
+            setWindowTitle(tr("EVE Online Uninstaller"));
+        }
+        else 
+        {
+            setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
+        }
     }
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
@@ -2316,7 +2328,7 @@ void CustomIntroductionPage::entering()
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Ready to Uninstall %1").arg(productName()));
         m_spaceLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
-            "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
+            "<font color=\"red\">%2 will be deleted completely</font>, "
             "including all content in that directory!")
             .arg(productName(),
                 QDir::toNativeSeparators(QDir(core->value(scTargetDir))

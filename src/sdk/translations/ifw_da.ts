@@ -2546,7 +2546,8 @@ Installerer komponenten %1...</translation>
   Here we are providing translations for the new installer/uninstaller names.
   ==============================================================================================
 -->
-<name>QInstaller::PackageManagerGui</name>
+<context>
+    <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>EVE Online Launcher Setup</source>
         <translation type="unfinished"></translation>
@@ -2626,8 +2627,8 @@ Installerer komponenten %1...</translation>
         <translation>Klar til afinstallation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
