@@ -2591,6 +2591,16 @@ bool PackageManagerCore::isOfflineOnly() const
 }
 
 /*!
+    Returns \c true if this is our customized installer.
+
+    \sa {installer::isCustomInstaller}{installer.isCustomInstaller}
+*/
+bool PackageManagerCore::isCustomInstaller() const
+{
+    return d->isCustomInstaller();
+}
+
+/*!
     Returns \c true if using the custom introduction page.
 
     \sa {installer::useCustomIntroductionPage}{installer.useCustomIntroductionPage}
@@ -2608,6 +2618,26 @@ bool PackageManagerCore::useCustomIntroductionPage() const
 bool PackageManagerCore::preloadPackages() const
 {
     return d->preloadPackages();
+}
+
+/*!
+    Returns \c true if no cancel button should be present in the installer/uninstaller.
+
+    \sa {installer::noCancelButton}{installer.noCancelButton}
+*/
+bool PackageManagerCore::noCancelButton() const
+{
+    return d->noCancelButton();
+}
+
+/*!
+    Returns \c true if no details should be available in the installer/uninstaller.
+
+    \sa {installer::noDetails}{installer.noDetails}
+*/
+bool PackageManagerCore::noDetails() const
+{
+    return d->noDetails();
 }
 
 /*!

@@ -86,8 +86,12 @@ public:
     void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;
 
+    // Our additions
+    bool isCustomInstaller() const;
     bool useCustomIntroductionPage() const;
     bool preloadPackages() const;
+    bool noCancelButton() const;
+    bool noDetails() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());
