@@ -228,6 +228,7 @@ public:
     Q_INVOKABLE bool useCustomIntroductionPage() const;
     Q_INVOKABLE bool preloadPackages() const;
     Q_INVOKABLE bool noCancelButton() const;
+    Q_INVOKABLE bool noDetails() const;
 
     Q_INVOKABLE void setUninstaller();
     Q_INVOKABLE bool isUninstaller() const;

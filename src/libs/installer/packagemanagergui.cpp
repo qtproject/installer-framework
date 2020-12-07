@@ -3431,6 +3431,11 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
 
     m_performInstallationForm->setupUi(this);
 
+    if (core->noDetails())
+    {
+        m_performInstallationForm->noDetails();
+    }
+
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextChanged,
         m_performInstallationForm, &PerformInstallationForm::appendProgressDetails);
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::detailTextResetNeeded,
@@ -3453,7 +3458,10 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     connect(this, &PerformInstallationPage::setAutomatedPageSwitchEnabled,
             core, &PackageManagerCore::setAutomatedPageSwitchEnabled);
 
-    m_performInstallationForm->setDetailsWidgetVisible(true);
+    if (!core->noDetails())
+    {
+        m_performInstallationForm->setDetailsWidgetVisible(true);
+    }
     
     setCommitPage(true);
 }
@@ -3502,10 +3510,13 @@ void PerformInstallationPage::entering()
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
 
-    m_performInstallationForm->enableDetails();
+    if (!packageManagerCore()->noDetails())
+    {
+        m_performInstallationForm->enableDetails();
+    }
     emit setAutomatedPageSwitchEnabled(true);
 
-    if (isVerbose())
+    if (isVerbose() && !packageManagerCore()->noDetails())
         m_performInstallationForm->toggleDetails();
 }
 

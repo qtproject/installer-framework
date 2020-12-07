@@ -661,6 +661,8 @@ static void printUsage()
 
     std::cout << " -xc|--no-cancel            Remove all cancel buttons from the installer/uninstaller" << std::endl;
 
+    std::cout << " -xd|--no-details           Don't offer any details in installer/uninstaller " << std::endl;
+
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
@@ -793,6 +795,7 @@ int main(int argc, char **argv)
     bool customIntroductionPage = false;
     bool preloadPackages = false;
     bool noCancelButton = false;
+    bool noDetails = false;
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
@@ -859,6 +862,8 @@ int main(int argc, char **argv)
             preloadPackages = true;
         } else if (*it == QLatin1String("-xc") || *it == QLatin1String("--no-cancel")) {
             noCancelButton = true;
+        } else if (*it == QLatin1String("-xd") || *it == QLatin1String("--no-details")) {
+            noDetails = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
@@ -1006,6 +1011,8 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("preloadPackages"), preloadPackages);
             // assume cancel button if --no-cancel not set
             confInternal.setValue(QLatin1String("noCancelButton"), noCancelButton);
+            // assume details are available if --no-details not set
+            confInternal.setValue(QLatin1String("noDetails"), noDetails);
         }
 
 #ifdef Q_OS_MACOS

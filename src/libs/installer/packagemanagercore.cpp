@@ -2621,6 +2621,16 @@ bool PackageManagerCore::noCancelButton() const
 }
 
 /*!
+    Returns \c true if no details should be available in the installer/uninstaller.
+
+    \sa {installer::noDetails}{installer.noDetails}
+*/
+bool PackageManagerCore::noDetails() const
+{
+    return d->noDetails();
+}
+
+/*!
     \sa {installer::setUninstaller}{installer.setUninstaller}
     \sa isUninstaller(), setUpdater(), setPackageManager()
 */

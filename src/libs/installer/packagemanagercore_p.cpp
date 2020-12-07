@@ -649,6 +649,11 @@ bool PackageManagerCorePrivate::noCancelButton() const
     return getConfigValueAsBool(QLatin1String("noCancelButton"));
 }
 
+bool PackageManagerCorePrivate::noDetails() const
+{
+    return getConfigValueAsBool(QLatin1String("noDetails"));
+}
+
 QString PackageManagerCorePrivate::installerBinaryPath() const
 {
     return qApp->applicationFilePath();

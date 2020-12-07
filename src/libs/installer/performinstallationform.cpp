@@ -273,3 +273,12 @@ void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
     m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,
         m_downloadStatus->width()));
 }
+
+/*!
+    Removes the show/hide details button along with the details browser
+*/
+void PerformInstallationForm::noDetails() const
+{
+    m_detailsButton->setVisible(false);
+    m_detailsBrowser->setVisible(false);
+}
