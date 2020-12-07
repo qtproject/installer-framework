@@ -620,25 +620,33 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 }
 
+bool getConfigValueAsBool(const QString &key, bool defaultValue = false)
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(key, defaultValue).toBool();
+}
+
 bool PackageManagerCorePrivate::isOfflineOnly() const
 {
     if (!isInstaller())
         return false;
 
-    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
-    return confInternal.value(QLatin1String("offlineOnly"), false).toBool();
+    return getConfigValueAsBool(QLatin1String("offlineOnly"));
 }
 
 bool PackageManagerCorePrivate::useCustomIntroductionPage() const
 {
-    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
-    return confInternal.value(QLatin1String("customIntroductionPage"), false).toBool();
+    return getConfigValueAsBool(QLatin1String("customIntroductionPage"));
 }
 
 bool PackageManagerCorePrivate::preloadPackages() const
 {
-    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
-    return confInternal.value(QLatin1String("preloadPackages"), false).toBool();
+    return getConfigValueAsBool(QLatin1String("preloadPackages"));
+}
+
+bool PackageManagerCorePrivate::noCancelButton() const
+{
+    return getConfigValueAsBool(QLatin1String("noCancelButton"));
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const

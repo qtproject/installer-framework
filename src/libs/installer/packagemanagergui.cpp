@@ -336,6 +336,12 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
 
+    if (m_core->noCancelButton())
+    {
+        // Remove the cancel button from the installer/uninstaller
+        setOption(QWizard::NoCancelButton);
+    }
+
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
 
@@ -2285,12 +2291,16 @@ void CustomIntroductionPage::entering()
     showWidgets(false);
     setMessage(QString());
     setErrorMessage(QString());
-    setButtonText(QWizard::CancelButton, tr("&Quit"));
 
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     PackageManagerCore *core = packageManagerCore();
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+
+    if (!core->noCancelButton())
+    {
+        setButtonText(QWizard::CancelButton, tr("&Quit"));
+    }
 
     // Ready for installation text
     if (core->isUninstaller()) {
@@ -2318,12 +2328,6 @@ void CustomIntroductionPage::entering()
         m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
             .arg(productName()));
     }
-
-    // QString htmlOutput;
-    // bool componentsOk = core->calculateComponents(&htmlOutput);
-    // m_taskDetailsBrowser->setHtml(htmlOutput);
-    // m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
-    // setComplete(componentsOk);
 
     if (!core->isUninstaller()) {
         QString spaceInfo;
@@ -2354,8 +2358,11 @@ void CustomIntroductionPage::leaving()
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
 
-    // Resetting the cancel button text from Quit to Cancel
-    setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+    if (!packageManagerCore()->noCancelButton())
+    {
+        // Resetting the cancel button text from Quit to Cancel
+        setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+    }
 
     // Resetting button text (after changing it to Install/Uninstall/Update)
     setButtonText(QWizard::NextButton, gui()->defaultButtonText(QWizard::NextButton));
@@ -3447,7 +3454,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
             core, &PackageManagerCore::setAutomatedPageSwitchEnabled);
 
     m_performInstallationForm->setDetailsWidgetVisible(true);
-
+    
     setCommitPage(true);
 }
 

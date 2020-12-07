@@ -2611,6 +2611,16 @@ bool PackageManagerCore::preloadPackages() const
 }
 
 /*!
+    Returns \c true if no cancel button should be present in the installer/uninstaller.
+
+    \sa {installer::noCancelButton}{installer.noCancelButton}
+*/
+bool PackageManagerCore::noCancelButton() const
+{
+    return d->noCancelButton();
+}
+
+/*!
     \sa {installer::setUninstaller}{installer.setUninstaller}
     \sa isUninstaller(), setUpdater(), setPackageManager()
 */

@@ -654,10 +654,12 @@ static void printUsage()
     std::cout << "  -f|--offline-only         Forces the installer to act as an offline installer, " << std::endl;
     std::cout << "                             i.e. never access online repositories" << std::endl;
 
-    std::cout << "  -xi|--custom-intro        Forces the installer to use the custom introduction page" << std::endl;
-    std::cout << "                            If this parameter is not given, the standard page is used" << std::endl;
+    std::cout << " -xi|--custom-intro         Forces the installer to use the custom introduction page" << std::endl;
+    std::cout << "                             If this parameter is not given, the standard page is used" << std::endl;
 
-    std::cout << "  -xp|--preload-packages    Preload all packages before displaying anything " << std::endl;
+    std::cout << " -xp|--preload-packages     Preload all packages before displaying anything " << std::endl;
+
+    std::cout << " -xc|--no-cancel            Remove all cancel buttons from the installer/uninstaller" << std::endl;
 
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
@@ -790,6 +792,7 @@ int main(int argc, char **argv)
     bool offlineOnly = false;
     bool customIntroductionPage = false;
     bool preloadPackages = false;
+    bool noCancelButton = false;
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
@@ -854,6 +857,8 @@ int main(int argc, char **argv)
             customIntroductionPage = true;
         } else if (*it == QLatin1String("-xp") || *it == QLatin1String("--preload-packages")) {
             preloadPackages = true;
+        } else if (*it == QLatin1String("-xc") || *it == QLatin1String("--no-cancel")) {
+            noCancelButton = true;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
@@ -999,6 +1004,8 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("customIntroductionPage"), customIntroductionPage);
             // assume no preloading if --preload-packages not set
             confInternal.setValue(QLatin1String("preloadPackages"), preloadPackages);
+            // assume cancel button if --no-cancel not set
+            confInternal.setValue(QLatin1String("noCancelButton"), noCancelButton);
         }
 
 #ifdef Q_OS_MACOS
