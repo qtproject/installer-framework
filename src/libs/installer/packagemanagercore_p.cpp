@@ -634,6 +634,11 @@ bool PackageManagerCorePrivate::isOfflineOnly() const
     return getConfigValueAsBool(QLatin1String("offlineOnly"));
 }
 
+bool PackageManagerCorePrivate::isCustomInstaller() const
+{
+    return getConfigValueAsBool(QLatin1String("customInstaller"));
+}
+
 bool PackageManagerCorePrivate::useCustomIntroductionPage() const
 {
     return getConfigValueAsBool(QLatin1String("customIntroductionPage"));

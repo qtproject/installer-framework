@@ -87,6 +87,7 @@ public:
     bool isOfflineOnly() const;
 
     // Our additions
+    bool isCustomInstaller() const;
     bool useCustomIntroductionPage() const;
     bool preloadPackages() const;
     bool noCancelButton() const;

@@ -2591,6 +2591,16 @@ bool PackageManagerCore::isOfflineOnly() const
 }
 
 /*!
+    Returns \c true if this is our customized installer.
+
+    \sa {installer::isCustomInstaller}{installer.isCustomInstaller}
+*/
+bool PackageManagerCore::isCustomInstaller() const
+{
+    return d->isCustomInstaller();
+}
+
+/*!
     Returns \c true if using the custom introduction page.
 
     \sa {installer::useCustomIntroductionPage}{installer.useCustomIntroductionPage}
