@@ -467,7 +467,7 @@ void PackageManagerGui::updatePageListWidget()
             item->setFont(currentItemFont);
             // Current item should be always visible on the list
             m_pageListWidget->scrollToItem(item);
-        } else if (!visitedPages().contains(id)) {
+        } else if (id > d->m_currentId) {
             item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
         }
     }
