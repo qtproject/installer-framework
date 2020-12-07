@@ -2522,6 +2522,30 @@ Installing component %1...</source>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation>《星战前夜：晨曦》启动器设置</translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation>《星战前夜：晨曦》卸载器</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | QPlatformTheme | ===============================================================
   ==============================================================================================
   QPlatformTheme is a part of QT, and is usually included in the qtbase_<LOCALE> files.
@@ -2675,8 +2699,8 @@ Installing component %1...</source>
         <translation>安装文件夹</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>请指定将安装 %1 的目录。</translation>
+        <source>Install location:</source>
+        <translation>安装位置：</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2684,8 +2708,8 @@ Installing component %1...</source>
         <translation>Alt+R</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>浏览(&amp;R)...</translation>
+        <source>Change...</source>
+        <translation>更改...</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2752,6 +2776,14 @@ Do you want to continue?</source>
     <message>
         <source>Error</source>
         <translation>错误</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation>Universal C Runtime Windows更新将被安装。</translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>需要%1，可用空间%2。</translation>
     </message>
 </context>
 <!--

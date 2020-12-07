@@ -2522,6 +2522,30 @@ Installazione componente %1...</translation>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2639,8 +2663,8 @@ Installazione componente %1...</translation>
         <translation>Cartella di installazione</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Specificare la directory in cui %1 verrà installato.</translation>
+        <source>Install location:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2648,8 +2672,8 @@ Installazione componente %1...</translation>
         <translation>Alt+F</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>S&amp;foglia...</translation>
+        <source>Change...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2716,6 +2740,14 @@ Continuare?</translation>
     <message>
         <source>Error</source>
         <translation>Errore</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <!--

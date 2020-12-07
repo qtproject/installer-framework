@@ -301,9 +301,15 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     , m_core(core)
 {
     if (m_core->isInstaller())
-        setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
+    {
+        // setWindowTitle(tr("%1 Setup").arg(m_core->value(scTitle)));
+        setWindowTitle(tr("EVE Online Launcher Setup")); // todo use the custominstaller flag
+    }
     else
-        setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
+    {
+        // setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
+        setWindowTitle(tr("EVE Online Uninstaller")); // todo use the custominstaller flag
+    }
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
 #ifndef Q_OS_MACOS
@@ -1772,8 +1778,7 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    // m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
-    m_msgLabel->setText(tr("Please specify the directory where %1 will be installed.").arg(productName()));
+    m_msgLabel->setText(tr("Install location:"));
     layout->addWidget(m_msgLabel);
 
     QHBoxLayout *hlayout = new QHBoxLayout;
@@ -1790,7 +1795,7 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     m_browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
     connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
     m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
-    m_browseButton->setText(tr("B&rowse..."));
+    m_browseButton->setText(tr("Change..."));
     hlayout->addWidget(m_browseButton);
 
     layout->addLayout(hlayout);
@@ -2336,8 +2341,7 @@ void CustomIntroductionPage::entering()
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
     if (installRedistText == QLatin1String("true")) {
-        m_redistLabel->setText(tr("Your system is missing C++ runtime that is needed to run the EVE Launcher, "
-        "so the missing runtime will be installed on your computer as part of the installation."));
+        m_redistLabel->setText(tr("Update for Universal C Runtime in Windows will be installed."));
     } else {
         m_redistLabel->setVisible(false);
     }
