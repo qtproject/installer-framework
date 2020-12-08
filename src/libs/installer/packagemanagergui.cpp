@@ -2326,7 +2326,7 @@ void CustomIntroductionPage::entering()
     if (core->isUninstaller()) {
         // m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
-        setColoredTitle(tr("Ready to Uninstall %1").arg(productName()));
+        setColoredTitle(tr("Ready to Uninstall"));
         m_spaceLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
             "<font color=\"red\">%2 will be deleted completely</font>, "
             "including all content in that directory!")
