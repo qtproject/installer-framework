@@ -36,6 +36,7 @@
 #include <QProcessEnvironment>
 #include <QThread>
 #include <QVector>
+#include <QUuid>
 #include <QtCore/QSettings>
 
 #if defined(Q_OS_WIN) || defined(Q_OS_WINCE)
