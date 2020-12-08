@@ -51,6 +51,7 @@ EventLogger::EventLogger()
            qDebug() << "framework | EventLogger::EventLogger | JourneyId found in filename:" << match.captured(0);
            journeyId = QUuid::fromString(match.captured(0));
            qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+           qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QString(journeyId.toRfc4122().toBase64();
         }
     }
 
@@ -60,10 +61,11 @@ EventLogger::EventLogger()
         qDebug() << "framework | EventLogger::EventLogger | No JourneyId provided, one will be created instead";
         journeyId = QUuid::createUuid();
         qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QString(journeyId.toRfc4122().toBase64();
     }
 
+    QInstaller::setJourneyId(journeyId);
     m_journeyId = journeyId.toRfc4122();
-    QInstaller::setJourneyId(m_journeyId);
 }
 
 EventLogger::~EventLogger()

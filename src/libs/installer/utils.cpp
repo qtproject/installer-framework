@@ -285,14 +285,14 @@ QString QInstaller::getInstallerFileName()
     return installerFileName;
 }
 
-static QByteArray journeyId;
+static QUuid journeyId;
 
-void QInstaller::setJourneyId(const QByteArray& id)
+void QInstaller::setJourneyId(const QUuid& id)
 {
     journeyId = id;
 }
 
-QByteArray QInstaller::getJourneyId()
+QUuid QInstaller::getJourneyId()
 {
     return journeyId;
 }

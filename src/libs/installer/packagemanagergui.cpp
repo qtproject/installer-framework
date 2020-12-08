@@ -3571,10 +3571,10 @@ void PerformInstallationPage::installationFinished()
 
     // Store the journey Id in registry
     qDebug() << "framework | PerformInstallationPage::installationFinished | Storing JourneyId to registry";
-    QByteArray journeyId = QInstaller::getJourneyId();
+    QUuid journeyId = QInstaller::getJourneyId();
     QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\EVE\\");
     QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
-    settings.setValue(QLatin1String("InstallerJourneyId"), journeyId);
+    settings.setValue(QLatin1String("InstallerJourneyId"), journeyId.toString(QUuid::WithoutBraces));
     qDebug() << "framework | PerformInstallationPage::installationFinished | JourneyId stored to registry";
 
     if (!isAutoSwitching()) {
