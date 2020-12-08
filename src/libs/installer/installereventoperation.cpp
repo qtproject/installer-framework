@@ -167,14 +167,6 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
 
         EventLogger::instance()->uninstallerShutDown(page, state, finishButton);
     }
-    else if (event == QString::fromLatin1("DetailsDisplayed"))
-    {
-        EventLogger::instance()->uninstallerDetailsDisplayed();
-    }
-    else if (event == QString::fromLatin1("DetailsHidden"))
-    {
-        EventLogger::instance()->uninstallerDetailsHidden();
-    }
     else if (event == QString::fromLatin1("UninstallationStarted"))
     {
         EventLogger::instance()->uninstallerUninstallationStarted();
@@ -291,14 +283,6 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
         if (!ok) return false;
 
         EventLogger::instance()->installerPreparationFinished(duration);
-    }
-    else if (event == QString::fromLatin1("DetailsDisplayed"))
-    {
-        EventLogger::instance()->installerDetailsDisplayed();
-    }
-    else if (event == QString::fromLatin1("DetailsHidden"))
-    {
-        EventLogger::instance()->installerDetailsHidden();
     }
     else if (event == QString::fromLatin1("AutoRunEnabled"))
     {

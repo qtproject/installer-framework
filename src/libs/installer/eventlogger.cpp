@@ -333,20 +333,6 @@ void EventLogger::uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_
     m_httpThreadController->lastChanceToFinish();
 }
 
-void EventLogger::uninstallerDetailsDisplayed()
-{
-    auto evt = new eve_launcher::uninstaller::DetailsDisplayed;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::uninstallerDetailsHidden()
-{
-    auto evt = new eve_launcher::uninstaller::DetailsHidden;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    sendAllocatedEvent(evt);
-}
-
 void EventLogger::uninstallerUninstallationStarted()
 {
     auto evt = new eve_launcher::uninstaller::UninstallationStarted;
@@ -470,20 +456,6 @@ void EventLogger::installerPreparationFinished(int duration)
     auto evt = new eve_launcher::installer::PreparationFinished;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_duration(duration);
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerDetailsDisplayed()
-{
-    auto evt = new eve_launcher::installer::DetailsDisplayed;
-    evt->set_allocated_event_metadata(getEventMetadata());
-    sendAllocatedEvent(evt);
-}
-
-void EventLogger::installerDetailsHidden()
-{
-    auto evt = new eve_launcher::installer::DetailsHidden;
-    evt->set_allocated_event_metadata(getEventMetadata());
     sendAllocatedEvent(evt);
 }
 
