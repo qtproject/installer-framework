@@ -90,8 +90,8 @@ namespace QInstaller {
     void INSTALLER_EXPORT setInstallerFileName(const QString& fileName);
     QString INSTALLER_EXPORT getInstallerFileName();
 
-    void INSTALLER_EXPORT setJourneyId(const QByteArray& journeyId);
-    QByteArray INSTALLER_EXPORT getJourneyId();
+    void INSTALLER_EXPORT setJourneyId(const QUuid& journeyId);
+    QUuid INSTALLER_EXPORT getJourneyId();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
