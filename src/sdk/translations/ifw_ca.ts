@@ -2569,6 +2569,31 @@ S&apos;instal·la el component %1...</translation>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2630,8 +2655,8 @@ S&apos;instal·la el component %1...</translation>
         <translation>Llest per a desinstal·lar</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>El programa d&apos;instal·lació està preparat per a començar a eliminar %1 de l&apos;ordinador.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directori del programa %2 se suprimirà completament&lt;/font&gt;, incloent tot el contingut d&apos;aquest directori.</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">El programa d&apos;instal·lació està preparat per a començar a eliminar %1 de l&apos;ordinador.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directori del programa %2 se suprimirà completament&lt;/font&gt;, incloent tot el contingut d&apos;aquest directori.</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2662,8 +2687,8 @@ S&apos;instal·la el component %1...</translation>
         <translation>Carpeta d&apos;instal·lació</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Especifiqueu el directori en el que s&apos;instal·larà %1.</translation>
+        <source>Install location:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2671,8 +2696,8 @@ S&apos;instal·la el component %1...</translation>
         <translation>Alt+X</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>E&amp;xplora...</translation>
+        <source>Change...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2739,6 +2764,14 @@ Voleu continuar?</translation>
     <message>
         <source>Error</source>
         <translation>Error</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <!--

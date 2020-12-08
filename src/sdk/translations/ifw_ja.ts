@@ -2522,6 +2522,31 @@ Installing component %1...</source>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation>EVE Onlineランチャーのセットアップ</translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation>EVE Onlineアンインストーラ</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2583,8 +2608,8 @@ Installing component %1...</source>
         <translation>アンインストールの準備ができました</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2639,8 +2664,8 @@ Installing component %1...</source>
         <translation>インストール フォルダー</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>%1 をインストールするディレクトリを指定してください。</translation>
+        <source>Install location:</source>
+        <translation>インストール場所：</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2648,8 +2673,8 @@ Installing component %1...</source>
         <translation>Alt + R</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>参照(&amp;R)...</translation>
+        <source>Change...</source>
+        <translation>変更</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2716,6 +2741,14 @@ Do you want to continue?</source>
     <message>
         <source>Error</source>
         <translation>エラー</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation>WindowsのUniversal C Runtimeのアップデートがインストールされます。</translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>%1必要、%2利用可能</translation>
     </message>
 </context>
 <!--

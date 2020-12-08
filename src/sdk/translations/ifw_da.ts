@@ -2541,6 +2541,31 @@ Installerer komponenten %1...</translation>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2602,8 +2627,8 @@ Installerer komponenten %1...</translation>
         <translation>Klar til afinstallation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2658,8 +2683,8 @@ Installerer komponenten %1...</translation>
         <translation>Installationsmappe</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Angiv venligst mappen hvor %1 skal installeres.</translation>
+        <source>Install location:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2667,8 +2692,8 @@ Installerer komponenten %1...</translation>
         <translation>Alt+G</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>&amp;Gennemse...</translation>
+        <source>Change...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2735,6 +2760,14 @@ Vil du fortsætte?</translation>
     <message>
         <source>Error</source>
         <translation>Fejl</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <!--

@@ -2564,6 +2564,31 @@ Installing component %1...</source>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation>Настройка программы запуска EVE Online</translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation>Программа удаления EVE Online</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2625,8 +2650,8 @@ Installing component %1...</source>
         <translation>Всё готово к удалению</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Программа установки готова начать удаление %1 с вашего компьютера. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Директория с программой %2 будет полностью удалена&lt;/font&gt;, включая содержимое этой директории!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">Программа установки готова начать удаление %1 с вашего компьютера. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Директория с программой %2 будет полностью удалена&lt;/font&gt;, включая содержимое этой директории!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2687,8 +2712,8 @@ Installing component %1...</source>
         <translation>Alt+R</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>О&amp;бзор...</translation>
+        <source>Change...</source>
+        <translation>Выбрать...</translation>
     </message>
     <message>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
@@ -2731,8 +2756,8 @@ Installing component %1...</source>
         <translation>Выберите каталог для установки</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Укажите каталог для установки %1.</translation>
+        <source>Install location:</source>
+        <translation>Директория для установки:</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2759,6 +2784,14 @@ Do you want to continue?</source>
     <message>
         <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
         <translation>Путь к каталогу установки не может содержать «%1». Выберите другой каталог.</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation>Будет установлено обновление Universal C Runtime для Windows.</translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>Нужно: %1, доступно: %2.</translation>
     </message>
 </context>
 <!--

@@ -25,8 +25,6 @@ public:
     void uninstallerFinishedPageDisplayed();
     void uninstallerFailedPageDisplayed();
     void uninstallerShutDown(eve_launcher::uninstaller::Page page, eve_launcher::uninstaller::ShutDown_State state, bool finishButton);
-    void uninstallerDetailsDisplayed();
-    void uninstallerDetailsHidden();
     void uninstallerUninstallationStarted();
     void uninstallerUninstallationInterrupted(int duration);
     void uninstallerUninstallationFinished(int duration);
@@ -44,8 +42,6 @@ public:
     void installerShutDown(eve_launcher::installer::Page page, eve_launcher::installer::ShutDown_State state, bool finishButton);
     void installerPreparationStarted();
     void installerPreparationFinished(int duration);
-    void installerDetailsDisplayed();
-    void installerDetailsHidden();
     void installerAutoRunEnabled();
     void installerAutoRunDisabled();
     void installerEulaAccepted();

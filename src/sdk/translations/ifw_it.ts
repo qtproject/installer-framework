@@ -2522,6 +2522,31 @@ Installazione componente %1...</translation>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2583,8 +2608,8 @@ Installazione componente %1...</translation>
         <translation>Pronto alla disinstallazione</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Si è ora pronti per iniziare la rimozione di %1 dal computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;La directory del programma %2 verrà eliminata completamente&lt;/font&gt;, incluso tutto il contenuto di tale directory!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">Si è ora pronti per iniziare la rimozione di %1 dal computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;La directory del programma %2 verrà eliminata completamente&lt;/font&gt;, incluso tutto il contenuto di tale directory!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2639,8 +2664,8 @@ Installazione componente %1...</translation>
         <translation>Cartella di installazione</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Specificare la directory in cui %1 verrà installato.</translation>
+        <source>Install location:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2648,8 +2673,8 @@ Installazione componente %1...</translation>
         <translation>Alt+F</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>S&amp;foglia...</translation>
+        <source>Change...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2716,6 +2741,14 @@ Continuare?</translation>
     <message>
         <source>Error</source>
         <translation>Errore</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <!--

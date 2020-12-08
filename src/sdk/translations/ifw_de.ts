@@ -2555,6 +2555,31 @@ Komponente %1 wird installiert...</translation>
 
 <!--
   ==============================================================================================
+  === | START | QInstaller::PackageManagerGui | ================================================
+  ==============================================================================================
+  Here we are providing translations for the new installer/uninstaller names.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::PackageManagerGui</name>
+    <message>
+        <source>EVE Online Launcher Setup</source>
+        <translation>Einrichtung des EVE Online Launchers</translation>
+    </message>
+    <message>
+        <source>EVE Online Uninstaller</source>
+        <translation>EVE Online Deinstallationsprogramm</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::PackageManagerGui | ==================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
   === | START | CustomIntroductionPage | =======================================================
   ==============================================================================================
   We have added our own CustomIntroductionPage, and since we want to make use of the
@@ -2616,8 +2641,8 @@ Komponente %1 wird installiert...</translation>
         <translation>Bereit zum Deinstallieren</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Verzeichnis!</translation>
+        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <translation type="unfinished">Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Verzeichnis!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2672,8 +2697,8 @@ Komponente %1 wird installiert...</translation>
         <translation>Installationsordner</translation>
     </message>
     <message>
-        <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Bitte geben Sie den Verzeichnis an, in dem %1 installiert werden soll.</translation>
+        <source>Install location:</source>
+        <translation>Installationsort:</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2682,8 +2707,8 @@ Komponente %1 wird installiert...</translation>
         <translation>Alt+D</translation>
     </message>
     <message>
-        <source>B&amp;rowse...</source>
-        <translation>&amp;Durchsuchen ...</translation>
+        <source>Change...</source>
+        <translation>Ändern ...</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2750,6 +2775,14 @@ Möchten Sie trotzdem fortsetzen?</translation>
      <message>
         <source>Error</source>
         <translation>Fehler</translation>
+    </message>
+    <message>
+        <source>Update for Universal C Runtime in Windows will be installed.</source>
+        <translation>Update für universelle C-Laufzeit in Windows wird installiert.</translation>
+    </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>%1 benötigt, %2 verfügbar.</translation>
     </message>
 </context>
 <!--
