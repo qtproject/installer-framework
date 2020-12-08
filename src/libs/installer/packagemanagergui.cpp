@@ -69,6 +69,7 @@
 #include <QRadioButton>
 #include <QStringListModel>
 #include <QTextBrowser>
+#include <QUuid>
 
 #include <QVBoxLayout>
 #include <QShowEvent>
