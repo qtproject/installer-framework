@@ -383,6 +383,7 @@
         \row
             \li InstallerWindowIcon
             \li Filename for a custom window icon in PNG format for the Installer application.
+                Used on Windows and Linux, no functionality on macOS.
         \row
             \li Logo
             \li Filename for a logo used as \c QWizard::LogoPixmap.
