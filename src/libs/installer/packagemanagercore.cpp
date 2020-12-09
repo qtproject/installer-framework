@@ -1983,6 +1983,8 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         "required:" << humanReadableSize(tempRequired) << "Local repository size:"
         << humanReadableSize(repositorySize);
 
+    quint64 availableSpace = 0;
+
     if (d->m_checkAvailableSpace) {
         const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
         const VolumeInfo targetVolume = VolumeInfo::fromPath(value(scTargetDir));
@@ -2041,9 +2043,20 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
             message = tr("The volume you selected for installation seems to have sufficient "
                 "space for installation, but there will be less than 100 MB available afterwards.");
         }
+
+        availableSpace = installVolumeAvailableSize;
     }
-    message = QString::fromLatin1("%1 %2").arg(message, tr("Installation will use %1 of disk space.")
-        .arg(humanReadableSize(requiredDiskSpace()))).simplified();
+
+    if (d->m_core->isCustomInstaller() && availableSpace > 0)
+    {
+        message = QString::fromLatin1("%1 %2").arg(message, tr("%1 Required, %2 Available.")
+            .arg(humanReadableSize(requiredDiskSpace()), humanReadableSize(availableSpace))).simplified();
+    }
+    else
+    {
+        message = QString::fromLatin1("%1 %2").arg(message, tr("Installation will use %1 of disk space.")
+            .arg(humanReadableSize(requiredDiskSpace()))).simplified();
+    }
 
     return true;
 }

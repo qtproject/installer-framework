@@ -2482,6 +2482,10 @@ come utente con i diritti appropriati, quindi fare clic su OK.</translation>
         <source>Installation will use %1 of disk space.</source>
         <translation>L&apos;installazione utilizzerà %1 di spazio su disco.</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2746,14 +2750,31 @@ Continuare?</translation>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <!--
   ==============================================================================================
   === | END | CustomIntroductionPage | =========================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::FinishedPage | =====================================================
+  ==============================================================================================
+  Here we are providing translations for additional FinishedPage texts.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::FinishedPage</name>
+    <message>
+        <source>Quit</source>
+        <translation>Esci</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::FinishedPage | =======================================================
   ==============================================================================================
 -->
 

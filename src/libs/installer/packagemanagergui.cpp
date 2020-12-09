@@ -361,6 +361,18 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setOption(QWizard::NoCancelButton);
     }
 
+    if (m_core->isCustomInstaller())
+    {
+        // Note that it would have been ideal to use `setOption(QWizard::IgnoreSubTitles);` here
+        // to turn off the subtitles even though they are provided.
+        // However doing so also removes the banner image. So instead we need to make sure
+        // None of the pages we show have subtitles
+
+        // Update the button layout, this is needed to remove the back button
+        // from the QWizard.
+        updateButtonLayout();
+    }
+
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
 
@@ -421,6 +433,13 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 void PackageManagerGui::setMaxSize()
 {
     setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+
+    if (m_core->isCustomInstaller())
+    {
+        // We don't allow changing the with of the custom installer
+        // Since that would screw up the banner image
+        setFixedWidth(this->size().width());
+    }
 }
 
 /*!
@@ -933,10 +952,20 @@ void PackageManagerGui::updateButtonLayout()
     if (!(options() & QWizard::NoCancelButton))
         buttons[(options() & QWizard::CancelButtonOnLeft) ? 5 : 10] = QWizard::CancelButton;
 
-    buttons[6] = QWizard::BackButton;
-    buttons[7] = QWizard::NextButton;
-    buttons[8] = QWizard::CommitButton;
-    buttons[9] = QWizard::FinishButton;
+    // In case of our custom installer, we don't want the back button
+    if (m_core->isCustomInstaller())
+    {
+        buttons[6] = QWizard::NextButton;
+        buttons[7] = QWizard::CommitButton;
+        buttons[8] = QWizard::FinishButton;
+    }
+    else
+    {
+        buttons[6] = QWizard::BackButton;
+        buttons[7] = QWizard::NextButton;
+        buttons[8] = QWizard::CommitButton;
+        buttons[9] = QWizard::FinishButton;
+    }
 
     setOption(QWizard::NoBackButtonOnLastPage, true);
     setOption(QWizard::NoBackButtonOnStartPage, true);
@@ -1157,7 +1186,14 @@ QString PackageManagerPage::productName() const
 */
 void PackageManagerPage::setColoredTitle(const QString &title)
 {
-    setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
+    if (m_core->isCustomInstaller())
+    {
+        setTitle(QString::fromLatin1("<br /><font color=\"%1\" style=\"font-size: 16px;\">%2</font>").arg(m_titleColor, title));
+    }
+    else
+    {
+        setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
+    }
 }
 
 /*!
@@ -1165,7 +1201,14 @@ void PackageManagerPage::setColoredTitle(const QString &title)
 */
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
-    setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+    // No subtitles in the custom installer
+    if (!packageManagerCore()->isCustomInstaller())
+    {
+        // Note that it would have been ideal to use `setOption(QWizard::IgnoreSubTitles);` in
+        // the PackageManagerGui constructor, but then the banner image disappears. So instead we need
+        // to make sure none of the pages we show have subtitles
+        setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+    }
 }
 
 /*!
@@ -1782,7 +1825,7 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     , m_label(nullptr)
     , m_redistLabel(nullptr)
     , m_msgLabel(nullptr)
-    , m_dirLabel(nullptr)
+    , m_lineEdit(nullptr)
     , m_spaceLabel(nullptr)
     , m_errorLabel(nullptr)
     , m_progressBar(nullptr)
@@ -1794,19 +1837,24 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
 
+    layout->setMargin(20);
+    layout->setSpacing(20);
+
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
+    m_msgLabel->setStyleSheet(QLatin1String("QLabel { font-weight: bold; }"));
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setText(tr("Install location:"));
     layout->addWidget(m_msgLabel);
 
-    QHBoxLayout *hlayout = new QHBoxLayout;
+    QVBoxLayout *vlayout = new QVBoxLayout;
 
-    // Target dir: Install path label
-    m_dirLabel = new QLabel(this);
-    m_dirLabel->setWordWrap(true);
-    m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
-    hlayout->addWidget(m_dirLabel);
+    vlayout->setSpacing(5);
+
+    m_lineEdit = new QLineEdit(this);
+    m_lineEdit->setEnabled(false);
+    m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
+    vlayout->addWidget(m_lineEdit);
 
     // Target dir: Browse button
     m_browseButton = new QPushButton(this);
@@ -1815,20 +1863,25 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
     m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
     m_browseButton->setText(tr("Change..."));
-    hlayout->addWidget(m_browseButton);
+    vlayout->addWidget(m_browseButton);
 
-    layout->addLayout(hlayout);
-
+    layout->addLayout(vlayout);
 
     // Install redists
     m_redistLabel = new QLabel(this);
     m_redistLabel->setWordWrap(true);
     m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
+    m_redistLabel->setVisible(false);
+    m_redistLabel->setText(tr("Update for Universal C Runtime in Windows will be installed."));
     layout->addWidget(m_redistLabel);
 
     // Space requirements
     m_spaceLabel = new QLabel(this);
     m_spaceLabel->setWordWrap(true);
+    if (core->isInstaller())
+    {
+        m_spaceLabel->setStyleSheet(QLatin1String("QLabel { font-weight: bold; }"));
+    }
     m_spaceLabel->setObjectName(QLatin1String("SpaceLabel"));
     m_spaceLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     layout->addWidget(m_spaceLabel);
@@ -1945,7 +1998,7 @@ void CustomIntroductionPage::initializePage()
 */
 QString CustomIntroductionPage::targetDir() const
 {
-    return m_dirLabel->text().trimmed();
+    return m_lineEdit->text().trimmed();
 }
 
 /*!
@@ -1970,7 +2023,7 @@ void CustomIntroductionPage::setTargetDir(const QString &dirName)
         finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix).trimmed();
     }
 
-    m_dirLabel->setText(finalName);
+    m_lineEdit->setText(finalName);
     validatePage();
 }
 
@@ -2198,10 +2251,13 @@ void CustomIntroductionPage::showInstallerInformation()
 {
     showWidgets(false);
     m_msgLabel->setVisible(true);
-    m_dirLabel->setVisible(true);
+    m_lineEdit->setVisible(true);
     m_spaceLabel->setVisible(true);
     m_browseButton->setVisible(true);
-    m_redistLabel->setVisible(true);
+    if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+    {
+        m_redistLabel->setVisible(true);
+    }
 }
 
 // -- public slots
@@ -2346,25 +2402,17 @@ void CustomIntroductionPage::entering()
         showInstallerInformation();
         setButtonText(QWizard::CommitButton, tr("&Install"));
         // setColoredTitle(tr("Ready to Install"));
-        m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
-            .arg(productName()));
     }
 
-    if (!core->isUninstaller()) {
+    if (!core->isUninstaller())
+    {
         QString spaceInfo;
-        if (core->checkAvailableSpace(spaceInfo)) {
-            m_spaceLabel->setText(QString::fromLatin1("%1 %2").arg(m_spaceLabel->text(), spaceInfo));
-        } else {
-            m_spaceLabel->setText(spaceInfo);
-        }
+        core->checkAvailableSpace(spaceInfo);
+        m_spaceLabel->setText(spaceInfo);
     }
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
-    if (installRedistText == QLatin1String("true")) {
-        m_redistLabel->setText(tr("Update for Universal C Runtime in Windows will be installed."));
-    } else {
-        m_redistLabel->setVisible(false);
-    }
+    m_redistLabel->setVisible(installRedistText == QLatin1String("true"));
 }
 
 /*!
@@ -2413,9 +2461,19 @@ void CustomIntroductionPage::showWidgets(bool show)
     m_label->setVisible(show);
     m_progressBar->setVisible(show);
     m_browseButton->setVisible(show);
-    m_dirLabel->setVisible(show);
+    m_lineEdit->setVisible(show);
     m_msgLabel->setVisible(show);
-    m_redistLabel->setVisible(show);
+    if (show)
+    {
+        if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+        {
+            m_redistLabel->setVisible(true);
+        }
+    }
+    else
+    {
+        m_redistLabel->setVisible(show);
+    }
 }
 
 /*!
@@ -2605,6 +2663,11 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     licenseBoxLayout->addWidget(m_textBrowser);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    if (core->isCustomInstaller())
+    {
+        layout->setMargin(20);
+        layout->setSpacing(20);
+    }
     layout->addLayout(licenseBoxLayout);
 
     m_acceptRadioButton = new QRadioButton(this);
@@ -3449,7 +3512,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
 
-    m_performInstallationForm->setupUi(this);
+    m_performInstallationForm->setupUi(this, core->isCustomInstaller());
 
     if (core->noDetails())
     {
@@ -3627,6 +3690,15 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
 
+    m_failedLabel = new QLabel(this);
+    m_failedLabel->setVisible(false);
+
+    if (core->isCustomInstaller())
+    {
+        m_failedLabel->setWordWrap(true);
+        m_failedLabel->setObjectName(QLatin1String("FailedLabel"));
+    }
+
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
@@ -3636,6 +3708,12 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_runItCheckBox->setChecked(true);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    if (core->isCustomInstaller())
+    {
+        layout->setMargin(20);
+        layout->setSpacing(20);
+        layout->addWidget(m_failedLabel);
+    }
     layout->addWidget(m_msgLabel);
     layout->addWidget(m_runItCheckBox);
     setLayout(layout);
@@ -3710,7 +3788,20 @@ void FinishedPage::entering()
         }
     } else {
         // TODO: how to handle this using the config.xml
-        setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
+        if (packageManagerCore()->isCustomInstaller())
+        {
+            setColoredTitle(tr(""));
+            m_msgLabel->setText(tr("Click %1 to exit the %2 Wizard.")
+                    .arg(tr("Quit"))
+                    .arg(productName()));
+            m_failedLabel->setVisible(true);
+            m_failedLabel->setText(QString::fromLatin1("<font color=\"#f00\"><b>%1</b></font>").arg(tr("The %1 Wizard failed.").arg(productName())));
+            setButtonText(QWizard::FinishButton, tr("Quit"));
+        }
+        else
+        {
+            setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
+        }
     }
 
     m_runItCheckBox->hide();

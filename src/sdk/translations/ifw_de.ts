@@ -2511,6 +2511,10 @@ Brechen Sie entweder die Installation ab, oder verwenden Sie die Fallback-Lösun
         <source>Installation will use %1 of disk space.</source>
         <translation>Die Installation wird %1 Festplattenplatz verwenden.</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>%1 benötigt, %2 verfügbar.</translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2780,14 +2784,31 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
         <translation>Update für universelle C-Laufzeit in Windows wird installiert.</translation>
     </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
-        <translation>%1 benötigt, %2 verfügbar.</translation>
-    </message>
 </context>
 <!--
   ==============================================================================================
   === | END | CustomIntroductionPage | =========================================================
+  ==============================================================================================
+-->
+
+
+<!--
+  ==============================================================================================
+  === | START | QInstaller::FinishedPage | =====================================================
+  ==============================================================================================
+  Here we are providing translations for additional FinishedPage texts.
+  ==============================================================================================
+-->
+<context>
+    <name>QInstaller::FinishedPage</name>
+    <message>
+        <source>Quit</source>
+        <translation>Beenden</translation>
+    </message>
+</context>
+<!--
+  ==============================================================================================
+  === | END | QInstaller::FinishedPage | =======================================================
   ==============================================================================================
 -->
 

@@ -317,7 +317,7 @@ private:
     QLabel *m_label;
     QLabel *m_redistLabel;
     QLabel *m_msgLabel;
-    QLabel *m_dirLabel;
+    QLineEdit *m_lineEdit;
     QLabel *m_spaceLabel;
     QLabel *m_errorLabel;
     QProgressBar *m_progressBar;
@@ -528,6 +528,7 @@ protected:
     void leaving();
 
 private:
+    QLabel *m_failedLabel;
     QLabel *m_msgLabel;
     QCheckBox *m_runItCheckBox;
     QAbstractButton *m_commitButton;
