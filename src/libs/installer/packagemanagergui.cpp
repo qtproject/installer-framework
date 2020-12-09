@@ -359,6 +359,14 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     {
         // Remove the cancel button from the installer/uninstaller
         setOption(QWizard::NoCancelButton);
+    }
+
+    if (m_core->isCustomInstaller())
+    {
+        // Note that it would have been ideal to use `setOption(QWizard::IgnoreSubTitles);` here
+        // to turn off the subtitles even though they are provided.
+        // However doing so also removes the banner image. So instead we need to make sure
+        // None of the pages we show have subtitles
 
         // Update the button layout, this is needed to remove the back button
         // from the QWizard.
@@ -1178,7 +1186,14 @@ QString PackageManagerPage::productName() const
 */
 void PackageManagerPage::setColoredTitle(const QString &title)
 {
-    setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
+    if (m_core->isCustomInstaller())
+    {
+        setTitle(QString::fromLatin1("<br /><font color=\"%1\" style=\"font-size: 16px;\">%2</font>").arg(m_titleColor, title));
+    }
+    else
+    {
+        setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
+    }
 }
 
 /*!
@@ -1186,7 +1201,14 @@ void PackageManagerPage::setColoredTitle(const QString &title)
 */
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
-    setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+    // No subtitles in the custom installer
+    if (!packageManagerCore()->isCustomInstaller())
+    {
+        // Note that it would have been ideal to use `setOption(QWizard::IgnoreSubTitles);` in
+        // the PackageManagerGui constructor, but then the banner image disappears. So instead we need
+        // to make sure none of the pages we show have subtitles
+        setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+    }
 }
 
 /*!
