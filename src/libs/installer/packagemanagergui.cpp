@@ -421,6 +421,13 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 void PackageManagerGui::setMaxSize()
 {
     setMaximumSize(qApp->desktop()->availableGeometry(this).size());
+
+    if (m_core->isCustomInstaller())
+    {
+        // We don't allow changing the with of the custom installer
+        // Since that would screw up the banner image
+        setFixedWidth(this->size().width());
+    }
 }
 
 /*!
