@@ -1801,15 +1801,20 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
 
+    layout->setMargin(20);
+    layout->setSpacing(20);
+
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
+    m_msgLabel->setStyleSheet(QLatin1String("QLabel { font-weight: bold; }"));
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setText(tr("Install location:"));
     layout->addWidget(m_msgLabel);
 
-    QHBoxLayout *hlayout = new QHBoxLayout;
+    QVBoxLayout *vlayout = new QVBoxLayout;
 
-    // Target dir: Install path read only line edit
+    vlayout->setSpacing(5);
+
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setEnabled(false);
     m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
@@ -1822,9 +1827,9 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     connect(m_browseButton, &QAbstractButton::clicked, this, &CustomIntroductionPage::dirRequested);
     m_browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
     m_browseButton->setText(tr("Change..."));
-    hlayout->addWidget(m_browseButton);
+    vlayout->addWidget(m_browseButton);
 
-    layout->addLayout(hlayout);
+    layout->addLayout(vlayout);
 
     // Install redists
     m_redistLabel = new QLabel(this);
@@ -1835,6 +1840,10 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     // Space requirements
     m_spaceLabel = new QLabel(this);
     m_spaceLabel->setWordWrap(true);
+    if (core->isInstaller())
+    {
+        m_spaceLabel->setStyleSheet(QLatin1String("QLabel { font-weight: bold; }"));
+    }
     m_spaceLabel->setObjectName(QLatin1String("SpaceLabel"));
     m_spaceLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     layout->addWidget(m_spaceLabel);
