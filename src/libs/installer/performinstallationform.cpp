@@ -95,10 +95,16 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
 /*!
     Sets up the perform installation UI specified by \a widget.
 */
-void PerformInstallationForm::setupUi(QWidget *widget)
+void PerformInstallationForm::setupUi(QWidget *widget, bool customInstaller)
 {
     QVBoxLayout *baseLayout = new QVBoxLayout(widget);
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
+
+    if (customInstaller)
+    {
+        baseLayout->setMargin(20);
+        baseLayout->setSpacing(20);
+    }
 
     QVBoxLayout *topLayout = new QVBoxLayout();
     topLayout->setObjectName(QLatin1String("TopLayout"));

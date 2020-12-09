@@ -3459,7 +3459,7 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
 
-    m_performInstallationForm->setupUi(this);
+    m_performInstallationForm->setupUi(this, core->isCustomInstaller());
 
     if (core->noDetails())
     {

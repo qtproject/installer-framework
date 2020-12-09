@@ -51,7 +51,7 @@ class PerformInstallationForm : public QObject
 public:
     explicit PerformInstallationForm(QObject *parent);
 
-    void setupUi(QWidget *widget);
+    void setupUi(QWidget *widget, bool customInstaller);
     void setDetailsWidgetVisible(bool visible);
     void enableDetails();
     void startUpdateProgress();
