@@ -359,6 +359,10 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     {
         // Remove the cancel button from the installer/uninstaller
         setOption(QWizard::NoCancelButton);
+
+        // Update the button layout, this is needed to remove the back button
+        // from the QWizard.
+        updateButtonLayout();
     }
 
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
@@ -940,10 +944,20 @@ void PackageManagerGui::updateButtonLayout()
     if (!(options() & QWizard::NoCancelButton))
         buttons[(options() & QWizard::CancelButtonOnLeft) ? 5 : 10] = QWizard::CancelButton;
 
-    buttons[6] = QWizard::BackButton;
-    buttons[7] = QWizard::NextButton;
-    buttons[8] = QWizard::CommitButton;
-    buttons[9] = QWizard::FinishButton;
+    // In case of our custom installer, we don't want the back button
+    if (m_core->isCustomInstaller())
+    {
+        buttons[6] = QWizard::NextButton;
+        buttons[7] = QWizard::CommitButton;
+        buttons[8] = QWizard::FinishButton;
+    }
+    else
+    {
+        buttons[6] = QWizard::BackButton;
+        buttons[7] = QWizard::NextButton;
+        buttons[8] = QWizard::CommitButton;
+        buttons[9] = QWizard::FinishButton;
+    }
 
     setOption(QWizard::NoBackButtonOnLastPage, true);
     setOption(QWizard::NoBackButtonOnStartPage, true);
