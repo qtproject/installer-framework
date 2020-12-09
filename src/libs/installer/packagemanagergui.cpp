@@ -3637,6 +3637,15 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
 
+    m_failedLabel = new QLabel(this);
+    m_failedLabel->setVisible(false);
+
+    if (core->isCustomInstaller())
+    {
+        m_failedLabel->setWordWrap(true);
+        m_failedLabel->setObjectName(QLatin1String("FailedLabel"));
+    }
+
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
@@ -3646,6 +3655,12 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_runItCheckBox->setChecked(true);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    if (core->isCustomInstaller())
+    {
+        layout->setMargin(20);
+        layout->setSpacing(20);
+        layout->addWidget(m_failedLabel);
+    }
     layout->addWidget(m_msgLabel);
     layout->addWidget(m_runItCheckBox);
     setLayout(layout);
@@ -3720,7 +3735,20 @@ void FinishedPage::entering()
         }
     } else {
         // TODO: how to handle this using the config.xml
-        setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
+        if (packageManagerCore()->isCustomInstaller())
+        {
+            setColoredTitle(tr(""));
+            m_msgLabel->setText(tr("Click %1 to exit the %2 Wizard.")
+                    .arg(tr("Quit"))
+                    .arg(productName()));
+            m_failedLabel->setVisible(true);
+            m_failedLabel->setText(QString::fromLatin1("<font color=\"#f00\"><b>%1</b></font>").arg(tr("The %1 Wizard failed.").arg(productName())));
+            setButtonText(QWizard::FinishButton, tr("Quit"));
+        }
+        else
+        {
+            setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
+        }
     }
 
     m_runItCheckBox->hide();

@@ -528,6 +528,7 @@ protected:
     void leaving();
 
 private:
+    QLabel *m_failedLabel;
     QLabel *m_msgLabel;
     QCheckBox *m_runItCheckBox;
     QAbstractButton *m_commitButton;
