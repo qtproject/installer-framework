@@ -2482,6 +2482,10 @@ as a user with the appropriate rights and then clicking OK.</source>
         <source>Installation will use %1 of disk space.</source>
         <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>%1必要、%2利用可能</translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2745,10 +2749,6 @@ Do you want to continue?</source>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
         <translation>WindowsのUniversal C Runtimeのアップデートがインストールされます。</translation>
-    </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
-        <translation>%1必要、%2利用可能</translation>
     </message>
 </context>
 <!--

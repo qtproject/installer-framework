@@ -2533,7 +2533,13 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
   stopped working. It now lives in the PackageManagerCore class.
   ==============================================================================================
 -->
-<!-- THIS IS ALREADY INCLUDED IN THE RIGHT PLACE FOR CA -->
+<context>
+    <name>QInstaller::PackageManagerCore</name>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <!--
   ==============================================================================================
   === | END | QInstaller::PackageManagerCore | =================================================
@@ -2767,10 +2773,6 @@ Voleu continuar?</translation>
     </message>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

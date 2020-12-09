@@ -2482,6 +2482,10 @@ jako użytkownik z odpowiednimi prawami, a następnie kliknij przycisk OK.</tran
         <source>Installation will use %1 of disk space.</source>
         <translation>Instalacja zajmie %1 miejsca na dysku.</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2744,10 +2748,6 @@ Czy chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

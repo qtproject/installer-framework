@@ -2346,17 +2346,12 @@ void CustomIntroductionPage::entering()
         showInstallerInformation();
         setButtonText(QWizard::CommitButton, tr("&Install"));
         // setColoredTitle(tr("Ready to Install"));
-        m_spaceLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
-            .arg(productName()));
     }
 
     if (!core->isUninstaller()) {
         QString spaceInfo;
-        if (core->checkAvailableSpace(spaceInfo)) {
-            m_spaceLabel->setText(QString::fromLatin1("%1 %2").arg(m_spaceLabel->text(), spaceInfo));
-        } else {
-            m_spaceLabel->setText(spaceInfo);
-        }
+        core->checkAvailableSpace(spaceInfo);
+        m_spaceLabel->setText(spaceInfo);
     }
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));

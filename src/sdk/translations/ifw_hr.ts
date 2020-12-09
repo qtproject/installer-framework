@@ -2497,6 +2497,10 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
         <source>Installation will use %1 of disk space.</source>
         <translation>Instalacija će zauzeti otprilike %1 na tvom tvrdom disku.</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2755,10 +2759,6 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
     </message>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -2482,6 +2482,10 @@ as a user with the appropriate rights and then clicking OK.</source>
         <source>Installation will use %1 of disk space.</source>
         <translation>安装程序将使用 %1 的磁盘空间。</translation>
     </message>
+    <message>
+        <source>%1 Required, %2 Available.</source>
+        <translation>需要%1，可用空间%2。</translation>
+    </message>
 </context>
 <!--
   ==============================================================================================
@@ -2781,10 +2785,6 @@ Do you want to continue?</source>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
         <translation>Universal C Runtime Windows更新将被安装。</translation>
-    </message>
-    <message>
-        <source>%1 Required, %2 Available.</source>
-        <translation>需要%1，可用空间%2。</translation>
     </message>
 </context>
 <!--
