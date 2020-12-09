@@ -732,7 +732,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir)
 
         QString targetFile;
         QFileInfo elementFileInfo;
-        if (tagName == QLatin1String("Icon") || tagName == QLatin1String("InstallerApplicationIcon")) {
+        if (tagName == QLatin1String("InstallerApplicationIcon")) {
 #if defined(Q_OS_MACOS)
             const QString suffix = QLatin1String(".icns");
 #elif defined(Q_OS_WIN)

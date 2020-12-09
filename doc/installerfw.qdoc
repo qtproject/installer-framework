@@ -377,15 +377,9 @@
             \li URL to a page that contains product information on your web
                 site.
         \row
-            \li Icon
-            \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (macOS), '.ico' (Windows) or '.png' (Unix) suffix. Deprecated,
-                use \c <InstallerApplicationIcon> or \c <InstallerWindowIcon>
-                instead.
-        \row
             \li InstallerApplicationIcon
             \li Filename for a custom installer icon. The actual file is looked up by attaching
-                a '.icns' (macOS), '.ico' (Windows). No functionality on Unix.
+                a '.icns' (macOS), '.ico' (Windows) suffix. No functionality on Unix.
         \row
             \li InstallerWindowIcon
             \li Filename for a custom window icon in PNG format for the Installer application.
