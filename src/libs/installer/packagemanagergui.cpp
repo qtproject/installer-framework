@@ -2615,6 +2615,11 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     licenseBoxLayout->addWidget(m_textBrowser);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    if (core->isCustomInstaller())
+    {
+        layout->setMargin(20);
+        layout->setSpacing(20);
+    }
     layout->addLayout(licenseBoxLayout);
 
     m_acceptRadioButton = new QRadioButton(this);
