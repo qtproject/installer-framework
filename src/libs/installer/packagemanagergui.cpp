@@ -1871,6 +1871,8 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     m_redistLabel = new QLabel(this);
     m_redistLabel->setWordWrap(true);
     m_redistLabel->setObjectName(QLatin1String("RedistLabel"));
+    m_redistLabel->setVisible(false);
+    m_redistLabel->setText(tr("Update for Universal C Runtime in Windows will be installed."));
     layout->addWidget(m_redistLabel);
 
     // Space requirements
@@ -2252,7 +2254,10 @@ void CustomIntroductionPage::showInstallerInformation()
     m_lineEdit->setVisible(true);
     m_spaceLabel->setVisible(true);
     m_browseButton->setVisible(true);
-    m_redistLabel->setVisible(true);
+    if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+    {
+        m_redistLabel->setVisible(true);
+    }
 }
 
 // -- public slots
@@ -2407,7 +2412,7 @@ void CustomIntroductionPage::entering()
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
     if (installRedistText == QLatin1String("true")) {
-        m_redistLabel->setText(tr("Update for Universal C Runtime in Windows will be installed."));
+        m_redistLabel->setVisible(true);
     } else {
         m_redistLabel->setVisible(false);
     }
@@ -2461,7 +2466,17 @@ void CustomIntroductionPage::showWidgets(bool show)
     m_browseButton->setVisible(show);
     m_lineEdit->setVisible(show);
     m_msgLabel->setVisible(show);
-    m_redistLabel->setVisible(show);
+    if (show)
+    {
+        if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+        {
+            m_redistLabel->setVisible(true);
+        }
+    }
+    else
+    {
+        m_redistLabel->setVisible(show);
+    }
 }
 
 /*!
