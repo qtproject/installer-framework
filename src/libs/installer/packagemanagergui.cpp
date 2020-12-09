@@ -1782,7 +1782,7 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     , m_label(nullptr)
     , m_redistLabel(nullptr)
     , m_msgLabel(nullptr)
-    , m_dirLabel(nullptr)
+    , m_lineEdit(nullptr)
     , m_spaceLabel(nullptr)
     , m_errorLabel(nullptr)
     , m_progressBar(nullptr)
@@ -1802,11 +1802,11 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
 
     QHBoxLayout *hlayout = new QHBoxLayout;
 
-    // Target dir: Install path label
-    m_dirLabel = new QLabel(this);
-    m_dirLabel->setWordWrap(true);
-    m_dirLabel->setObjectName(QLatin1String("TargetDirectoryLabel"));
-    hlayout->addWidget(m_dirLabel);
+    // Target dir: Install path read only line edit
+    m_lineEdit = new QLineEdit(this);
+    m_lineEdit->setEnabled(false);
+    m_lineEdit->setObjectName(QLatin1String("TargetDirectoryLineEdit"));
+    vlayout->addWidget(m_lineEdit);
 
     // Target dir: Browse button
     m_browseButton = new QPushButton(this);
@@ -1818,7 +1818,6 @@ CustomIntroductionPage::CustomIntroductionPage(PackageManagerCore *core)
     hlayout->addWidget(m_browseButton);
 
     layout->addLayout(hlayout);
-
 
     // Install redists
     m_redistLabel = new QLabel(this);
@@ -1945,7 +1944,7 @@ void CustomIntroductionPage::initializePage()
 */
 QString CustomIntroductionPage::targetDir() const
 {
-    return m_dirLabel->text().trimmed();
+    return m_lineEdit->text().trimmed();
 }
 
 /*!
@@ -1970,7 +1969,7 @@ void CustomIntroductionPage::setTargetDir(const QString &dirName)
         finalName = QString(QLatin1String("%1%2")).arg(dirName).arg(postfix).trimmed();
     }
 
-    m_dirLabel->setText(finalName);
+    m_lineEdit->setText(finalName);
     validatePage();
 }
 
@@ -2198,7 +2197,7 @@ void CustomIntroductionPage::showInstallerInformation()
 {
     showWidgets(false);
     m_msgLabel->setVisible(true);
-    m_dirLabel->setVisible(true);
+    m_lineEdit->setVisible(true);
     m_spaceLabel->setVisible(true);
     m_browseButton->setVisible(true);
     m_redistLabel->setVisible(true);
@@ -2408,7 +2407,7 @@ void CustomIntroductionPage::showWidgets(bool show)
     m_label->setVisible(show);
     m_progressBar->setVisible(show);
     m_browseButton->setVisible(show);
-    m_dirLabel->setVisible(show);
+    m_lineEdit->setVisible(show);
     m_msgLabel->setVisible(show);
     m_redistLabel->setVisible(show);
 }
