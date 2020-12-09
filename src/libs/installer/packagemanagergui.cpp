@@ -2404,18 +2404,15 @@ void CustomIntroductionPage::entering()
         // setColoredTitle(tr("Ready to Install"));
     }
 
-    if (!core->isUninstaller()) {
+    if (!core->isUninstaller())
+    {
         QString spaceInfo;
         core->checkAvailableSpace(spaceInfo);
         m_spaceLabel->setText(spaceInfo);
     }
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
-    if (installRedistText == QLatin1String("true")) {
-        m_redistLabel->setVisible(true);
-    } else {
-        m_redistLabel->setVisible(false);
-    }
+    m_redistLabel->setVisible(installRedistText == QLatin1String("true"));
 }
 
 /*!
