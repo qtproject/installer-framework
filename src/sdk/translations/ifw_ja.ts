@@ -2613,7 +2613,7 @@ Installing component %1...</source>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation type="unfinished">コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
+        <translation>これでセットアップが完了し、お使いのコンピュータから%1の削除を開始する準備が整いました。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2は、そのディレクトリ内のすべてのコンテンツを含め、削除されます!&lt;/font&gt;</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>

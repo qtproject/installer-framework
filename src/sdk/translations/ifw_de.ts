@@ -2646,7 +2646,7 @@ Komponente %1 wird installiert...</translation>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation type="unfinished">Das Einrichtungsprogramm ist jetzt bereit, %1 von Ihrem Computer zu entfernen. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Das Programmverzeichnis %2 wird vollständig gelöscht&lt;/font&gt;, inklusive allen Inhalten in diesem Verzeichnis!</translation>
+        <translation>Einrichtung ist jetzt bereit, mit dem Entfernen von %1 von Ihrem Computer zu beginnen.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 wird vollständig gelöscht&lt;/font&gt;, inklusive aller Inhalte in dem Verzeichnis!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
