@@ -2649,7 +2649,7 @@ Installing component %1...</source>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation type="unfinished">安装程序现已准备好从您的计算机中移除 %1。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;将彻底删除程序目录 %2&lt;/font&gt;，目录内所有内容也将被删除!</translation>
+        <translation>即将从你的计算机中移除%1 。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2将被彻底删除&lt;/font&gt;，包括该路径下的所有文件！</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>

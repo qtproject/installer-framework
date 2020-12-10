@@ -2613,7 +2613,7 @@ Installation du composant %1...</translation>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation type="unfinished">Le programme d’installation est maintenant prêt à supprimer %1 de votre ordinateur.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Le répertoire du programme %2 va être entièrement supprimé&lt;/font&gt;, y compris tout son contenu !</translation>
+        <translation>Le désinstallateur est désormais prêt à supprimer %1 de votre ordinateur.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Le désinstallateur supprimera entièrement %2&lt;/font&gt;, y compris tous les contenus de ce répertoire !</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
