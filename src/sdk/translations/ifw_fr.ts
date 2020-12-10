@@ -2769,7 +2769,7 @@ Souhaitez-vous continuer ?</translation>
     <name>QInstaller::FinishedPage</name>
     <message>
         <source>Quit</source>
-        <translation>Выйти</translation>
+        <translation>Quitter</translation>
     </message>
 </context>
 <!--
