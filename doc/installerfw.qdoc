@@ -350,6 +350,10 @@
     relative paths, which the tools resolve relative to the location of
     the config.xml file.
 
+    \note The filenames of the referred files must be unique. That is, if you
+    want to use the same image for both \c <Logo> and \c <Watermark>, you
+    must add two copies of the image file with different filenames.
+
     You can use predefined variables (embedded in @ characters) as values of the
     elements. For more information, see \l{Predefined Variables}.
 
