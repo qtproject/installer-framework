@@ -2254,7 +2254,7 @@ void CustomIntroductionPage::showInstallerInformation()
     m_lineEdit->setVisible(true);
     m_spaceLabel->setVisible(true);
     m_browseButton->setVisible(true);
-    if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+    if (packageManagerCore()->isInstaller() && packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
     {
         m_redistLabel->setVisible(true);
     }
@@ -2412,7 +2412,7 @@ void CustomIntroductionPage::entering()
     }
 
     QString installRedistText = core->value(QLatin1String("InstallRedists"), QLatin1String("false"));
-    m_redistLabel->setVisible(installRedistText == QLatin1String("true"));
+    m_redistLabel->setVisible(core->isInstaller() && installRedistText == QLatin1String("true"));
 }
 
 /*!
@@ -2465,7 +2465,7 @@ void CustomIntroductionPage::showWidgets(bool show)
     m_msgLabel->setVisible(show);
     if (show)
     {
-        if (packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
+        if (packageManagerCore()->isInstaller() && packageManagerCore()->value(QLatin1String("InstallRedists"), QLatin1String("false")) == QLatin1String("true"))
         {
             m_redistLabel->setVisible(true);
         }
