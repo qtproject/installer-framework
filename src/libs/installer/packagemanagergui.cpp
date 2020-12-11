@@ -1238,10 +1238,13 @@ QPixmap PackageManagerPage::bannerPixmap() const
 
 /*!
     Returns the logo pixmap specified in the \c <Logo> element of the package information file.
+    If @2x image is provided, returns that instead for high DPI displays.
 */
 QPixmap PackageManagerPage::logoPixmap() const
 {
-    return QPixmap(m_core->value(QLatin1String("LogoPixmap")));
+    QString logoPixmap = m_core->value(QLatin1String("LogoPixmap"));
+    QInstaller::replaceHighDpiImage(logoPixmap);
+    return QPixmap(logoPixmap);
 }
 
 /*!

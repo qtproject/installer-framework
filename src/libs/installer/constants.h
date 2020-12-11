@@ -98,6 +98,7 @@ static const QLatin1String scSupportsModify("SupportsModify");
 static const QLatin1String scAllowUnstableComponents("AllowUnstableComponents");
 static const QLatin1String scSaveDefaultRepositories("SaveDefaultRepositories");
 static const QLatin1String scRepositoryCategoryDisplayName("RepositoryCategoryDisplayName");
+static const QLatin1String scHighDpi("@2x.");
 
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 }

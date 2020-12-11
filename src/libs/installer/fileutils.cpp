@@ -28,6 +28,7 @@
 #include "fileutils.h"
 
 #include "globals.h"
+#include "constants.h"
 #include <errors.h>
 
 #include <QtCore/QDateTime>
@@ -40,6 +41,8 @@
 #include <QtCore/QCoreApplication>
 #include <QImageReader>
 #include <QRandomGenerator>
+#include <QGuiApplication>
+#include <QScreen>
 
 #include <errno.h>
 
@@ -706,4 +709,18 @@ QString QInstaller::replacePath(const QString &path, const QString &before, cons
     if (pathToPatch.startsWith(pathToReplace))
         return QDir::cleanPath(after) + pathToPatch.mid(pathToReplace.size());
     return path;
+}
+
+/*!
+    Replaces \a imagePath with high dpi image. If high dpi image is not provided or
+    high dpi screen is not in use, the original value is returned.
+*/
+void QInstaller::replaceHighDpiImage(QString &imagePath)
+{
+    if (QGuiApplication::primaryScreen()->devicePixelRatio() >= 2 ) {
+        QFileInfo fi(imagePath);
+        QString highdpiPixmap = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + scHighDpi + fi.suffix();
+        if (QFileInfo::exists(highdpiPixmap))
+            imagePath = highdpiPixmap;
+    }
 }

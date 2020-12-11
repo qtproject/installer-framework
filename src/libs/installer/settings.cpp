@@ -32,6 +32,7 @@
 #include "repository.h"
 #include "repositorycategory.h"
 #include "globals.h"
+#include "fileutils.h"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
@@ -497,10 +498,12 @@ QStringList Settings::productImages() const
     const QVariant variant = d->m_data.value(scProductImages);
     QStringList imagePaths;
     if (variant.canConvert<QStringList>()) {
-        foreach (const QString &imagePath, variant.value<QStringList>()) {
-            QFileInfo(imagePath).isAbsolute()
-                ? imagePaths.append(imagePath)
-                : imagePaths.append(d->m_data.value(scPrefix).toString() + QLatin1Char('/') + imagePath);
+        foreach (auto image, variant.value<QStringList>()) {
+            QString imagePath = QFileInfo(image).isAbsolute()
+                    ? image
+                    : d->m_data.value(scPrefix).toString() + QLatin1Char('/') + image;
+            QInstaller::replaceHighDpiImage(imagePath);
+            imagePaths.append(imagePath);
         }
     }
     return imagePaths;

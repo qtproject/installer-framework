@@ -60,7 +60,6 @@
 
 using namespace QInstaller;
 using namespace QInstallerTools;
-static const QLatin1String scHighDpi("@2x.");
 
 #ifndef Q_OS_WIN
 static void chmod755(const QString &absolutFilePath)

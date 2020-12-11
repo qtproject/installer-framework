@@ -92,6 +92,7 @@ private:
     bool INSTALLER_EXPORT isInBundle(const QString &path, QString *bundlePath = 0);
 
     QString replacePath(const QString &path, const QString &pathBefore, const QString &pathAfter);
+    void replaceHighDpiImage(QString &imagePath);
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);
