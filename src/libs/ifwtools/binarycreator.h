@@ -115,6 +115,7 @@ private:
 };
 
 void copyConfigData(const QString &configFile, const QString &targetDir);
+void copyHighDPIImage(const QFileInfo &childFileInfo, const QString &childName, const QString &targetFile);
 
 int IFWTOOLS_EXPORT createBinary(BinaryCreatorArgs args, QString &argumentError);
 

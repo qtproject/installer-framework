@@ -60,6 +60,7 @@
 
 using namespace QInstaller;
 using namespace QInstallerTools;
+static const QLatin1String scHighDpi("@2x.");
 
 #ifndef Q_OS_WIN
 static void chmod755(const QString &absolutFilePath)
@@ -610,6 +611,7 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
                 const QString targetFile = targetDir + QLatin1Char('/') + childElement.text();
                 const QFileInfo childFileInfo = QFileInfo(sourceConfigFilePath, childElement.text());
                 QInstallerTools::copyWithException(childFileInfo.absoluteFilePath(), targetFile, childName);
+                copyHighDPIImage(childFileInfo, childName, targetFile);
             }
             continue;
         }
@@ -641,6 +643,7 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
 
         domElement.replaceChild(dom.createTextNode(newName), domElement.firstChild());
         QInstallerTools::copyWithException(elementFileInfo.absoluteFilePath(), targetFile, tagName);
+        copyHighDPIImage(elementFileInfo, tagName, targetFile);
     }
 
     QInstaller::openForWrite(&configXml);
@@ -648,6 +651,18 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
     dom.save(stream, 4);
 
     qDebug() << "done.\n";
+}
+
+void QInstallerTools::copyHighDPIImage(const QFileInfo &childFileInfo,
+            const QString &childName, const QString &targetFile)
+{
+    //Copy also highdpi image if present
+    const QFileInfo childFileInfoHighDpi = QFileInfo(childFileInfo.absolutePath(), childFileInfo.baseName() + scHighDpi + childFileInfo.suffix());
+    if (childFileInfoHighDpi.exists()) {
+        const QFileInfo tf(targetFile);
+        const QString highDpiTarget = tf.absolutePath() + QLatin1Char('/') + tf.baseName() + scHighDpi + tf.suffix();
+        QInstallerTools::copyWithException(childFileInfoHighDpi.absoluteFilePath(), highDpiTarget, childName);
+    }
 }
 
 int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError)
