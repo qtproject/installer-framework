@@ -1935,10 +1935,10 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addLayout(licenseBoxLayout);
 
-    m_acceptRadioButton = new QRadioButton(this);
-    m_acceptRadioButton->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
-    m_acceptRadioButton->setObjectName(QLatin1String("AcceptLicenseRadioButton"));
-    ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptRadioButton);
+    m_acceptCheckBox = new QCheckBox(this);
+    m_acceptCheckBox->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
+    m_acceptCheckBox->setObjectName(QLatin1String("AcceptLicenseCheckBox"));
+    ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptCheckBox);
 
     m_acceptLabel = new QLabel;
     m_acceptLabel->setWordWrap(true);
@@ -1948,11 +1948,11 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 
     QGridLayout *gridLayout = new QGridLayout;
     gridLayout->setColumnStretch(1, 1);
-    gridLayout->addWidget(m_acceptRadioButton, 0, 0);
+    gridLayout->addWidget(m_acceptCheckBox, 0, 0);
     gridLayout->addWidget(m_acceptLabel, 0, 1);
     layout->addLayout(gridLayout);
 
-    connect(m_acceptRadioButton, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
+    connect(m_acceptCheckBox, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
 }
 
 /*!
@@ -1988,7 +1988,7 @@ void LicenseAgreementPage::entering()
 */
 bool LicenseAgreementPage::isComplete() const
 {
-    return m_acceptRadioButton->isChecked();
+    return m_acceptCheckBox->isChecked();
 }
 
 void LicenseAgreementPage::openLicenseUrl(const QUrl &url)

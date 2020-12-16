@@ -301,7 +301,7 @@ private:
     QTextBrowser *m_textBrowser;
     QListWidget *m_licenseListWidget;
 
-    QRadioButton *m_acceptRadioButton;
+    QCheckBox *m_acceptCheckBox;
     QLabel *m_acceptLabel;
 };
 
