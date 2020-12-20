@@ -314,6 +314,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scSortingPriority, package.data(scSortingPriority).toString());
 
     setValue(scEssential, package.data(scEssential).toString());
+    setValue(scForcedUpdate, package.data(scForcedUpdate).toString());
     setValue(scUpdateText, package.data(scUpdateText).toString());
     setValue(scNewComponent, package.data(scNewComponent).toString());
     setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
@@ -1341,8 +1342,10 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
         if (componentsToInstall.contains(autoDependOnSet)) {
             foreach (const QString &autoDep, autoDependOnSet) {
                 Component *component = packageManagerCore()->componentByName(autoDep);
-                if (component->value(scEssential, scFalse).toLower() == scTrue)
+                if ((component->value(scEssential, scFalse).toLower() == scTrue)
+                        || component->isForcedUpdate()) {
                     return true;
+                }
             }
         }
         return false;
@@ -1449,6 +1452,17 @@ bool Component::componentChangeRequested()
     return updateRequested() || isSelectedForInstallation() || uninstallationRequested();
 }
 
+/*!
+    Returns \c true if the component is installed and has a \c ForcedUpdate flag set.
+    ForcedUpdate components will be updated together with essential components before
+    any other component can be updated or installed.
+
+    \sa {component::isForcedUpdate}{component.isForcedUpdate}
+*/
+bool Component::isForcedUpdate()
+{
+    return isInstalled() && (value(scForcedUpdate, scFalse).toLower() == scTrue);
+}
 
 /*!
     \sa {component::setUninstalled}{component.setUninstalled}

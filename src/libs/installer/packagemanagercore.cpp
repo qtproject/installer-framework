@@ -1551,12 +1551,18 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
             return false;
         if (success && isPackageManager()) {
             foreach (Package *const update, packages) {
-                if (update->data(scEssential, scFalse).toString().toLower() == scTrue) {
+                bool essentialUpdate = (update->data(scEssential, scFalse).toString().toLower() == scTrue);
+                bool forcedUpdate = (update->data(scForcedUpdate, scFalse).toString().toLower() == scTrue);
+                if (essentialUpdate || forcedUpdate) {
                     const QString name = update->data(scName).toString();
-                    if (!installedPackages.contains(name)) {
+                    // 'Essential' package not installed, install.
+                    if (essentialUpdate && !installedPackages.contains(name)) {
                         success = false;
-                        continue;  // unusual, the maintenance tool should always be available
+                        continue;
                     }
+                    // 'Forced update' package  not installed, no update needed
+                    if (forcedUpdate && !installedPackages.contains(name))
+                        continue;
 
                     const LocalPackage localPackage = installedPackages.value(name);
                     const QString updateVersion = update->data(scVersion).toString();
@@ -1568,7 +1574,7 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
                         continue;  // remote release date equals or is less than the installed maintenance tool
 
                     success = false;
-                    break;  // we found a newer version of the maintenance tool
+                    break;  // we found a newer version of the forced/essential update package
                 }
             }
 
@@ -2290,7 +2296,8 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
         // restart installer and install rest of the updates.
         bool essentialUpdatesFound = false;
         foreach (Component *component, componentList) {
-            if (component->value(scEssential, scFalse).toLower() == scTrue)
+            if ((component->value(scEssential, scFalse).toLower() == scTrue)
+                || component->isForcedUpdate())
                 essentialUpdatesFound = true;
         }
         if (!essentialUpdatesFound) {
@@ -3634,8 +3641,10 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             if (localPackage.lastUpdateDate > updateDate)
                 continue;
 
-            if (update->data(scEssential, scFalse).toString().toLower() == scTrue)
+            if (update->data(scEssential, scFalse).toString().toLower() == scTrue ||
+                    update->data(scForcedUpdate, scFalse).toString().toLower() == scTrue) {
                 setFoundEssentialUpdate(true);
+            }
 
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
@@ -3693,13 +3702,14 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
                     component->setCheckable(false);
                     component->setSelectable(false);
-                    if (component->value(scEssential, scFalse).toLower() == scFalse) {
+                    if ((component->value(scEssential, scFalse).toLower() == scTrue)
+                        || (component->value(scForcedUpdate, scFalse).toLower() == scTrue)) {
+                        // essential updates are enabled, still not checkable but checked
+                        component->setEnabled(true);
+                    } else {
                         // non essential updates are disabled, not checkable and unchecked
                         component->setEnabled(false);
                         component->setCheckState(Qt::Unchecked);
-                    } else {
-                        // essential updates are enabled, still not checkable but checked
-                        component->setEnabled(true);
                     }
                 }
             }

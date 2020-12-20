@@ -895,6 +895,12 @@
             \li Determines that the package must always be installed. End users
                 cannot deselect it in the installer.
         \row
+            \li ForcedUpdate
+            \li Marks the package as \c ForcedUpdate to force a restart of the
+                \c MaintenanceTool. If there are updates available
+                for a \c ForcedUpdate component, the package manager stays
+                disabled until that component is updated.
+        \row
             \li Replaces
             \li Comma-separated list of components to replace. Optional.
 

@@ -50,6 +50,7 @@ static const QLatin1String scInheritVersion("inheritVersionFrom");
 static const QLatin1String scReplaces("Replaces");
 static const QLatin1String scDownloadableArchives("DownloadableArchives");
 static const QLatin1String scEssential("Essential");
+static const QLatin1String scForcedUpdate("ForcedUpdate");
 static const QLatin1String scTargetDir("TargetDir");
 static const QLatin1String scReleaseDate("ReleaseDate");
 static const QLatin1String scDescription("Description");

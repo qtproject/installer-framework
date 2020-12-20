@@ -63,8 +63,10 @@ struct VerifyInstaller
 
     static void verifyFileExistence(const QString &installDir, const QStringList &fileList)
     {
-        for (int i = 0; i < fileList.count(); i++)
-            QVERIFY(QFileInfo::exists(installDir + QDir::separator() + fileList.at(i)));
+        for (int i = 0; i < fileList.count(); i++) {
+            bool fileExists = QFileInfo::exists(installDir + QDir::separator() + fileList.at(i));
+            QVERIFY2(fileExists, QString("File \"%1\" does not exist.").arg(fileList.at(i)).toLatin1());
+        }
 
         QDir dir(installDir);
         QCOMPARE(dir.entryList(QStringList() << "*.*", QDir::Files).count(), fileList.count());

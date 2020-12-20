@@ -104,6 +104,7 @@ void printPackageInformation(const PackagesList &matchedPackages, const LocalPac
             update.setAttribute(QLatin1String("checkable"), package->data(scCheckable).toString());
             update.setAttribute(QLatin1String("default"), package->data(scDefault).toString());
             update.setAttribute(QLatin1String("essential"), package->data(scEssential).toString());
+            update.setAttribute(QLatin1String("forcedUpdate"), package->data(scForcedUpdate).toString());
             update.setAttribute(QLatin1String("compressedsize"), package->data(QLatin1String("CompressedSize")).toString());
             update.setAttribute(QLatin1String("uncompressedsize"), package->data(QLatin1String("UncompressedSize")).toString());
             update.setAttribute(QLatin1String("releaseDate"), package->data(scReleaseDate).toString());

@@ -191,6 +191,7 @@ public:
     Q_INVOKABLE bool updateRequested();
 
     Q_INVOKABLE bool componentChangeRequested();
+    Q_INVOKABLE bool isForcedUpdate();
 
     bool isUnstable() const;
     void setUnstable(Component::UnstableError error, const QString &errorMessage = QString());

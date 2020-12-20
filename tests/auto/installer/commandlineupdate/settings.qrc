@@ -10,6 +10,7 @@
         <file>data/installPackagesRepository/componentF/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentG/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentG/1.0.0meta.7z</file>
+        <file>data/installPackagesRepository/componentH/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
@@ -25,6 +26,7 @@
         <file>data/installPackagesRepositoryUpdate/componentF/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentG/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentG/2.0.0meta.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentH/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>

@@ -419,9 +419,11 @@
     \section1 Updating Components
 
     Running \c update without arguments will update all components that have an update
-    available. Essential components are always updated first, same way as it is done when
-    launching updater from GUI. To update only a specific subset of installed components,
-    they can be provided as an optional argument for \c update:
+    available. Essential and ForcedUpdate components are always updated first, same way as
+    when launching the updater from GUI. After Essential and ForcedUpdate components
+    are updated, the installer needs to be restarted for other updates. To update only
+    a specific subset of installed components, they can be provided as an optional argument
+    for \c update:
 
     \code
     maintenancetool.exe update componentA componentB

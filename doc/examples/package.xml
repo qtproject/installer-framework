@@ -26,6 +26,7 @@
     <UpdateText>This changed compared to the last release</UpdateText>
     <Default>false</Default>
     <ForcedInstallation>false</ForcedInstallation>
+    <ForcedUpdate>false</ForcedUpdate>
     <Essential>false</Essential>
     <Replaces>com.vendor.root.component2old</Replaces>
     <Operations>

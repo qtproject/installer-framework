@@ -151,4 +151,13 @@
   <DownloadableArchives>content.7z</DownloadableArchives>
   <SHA1>8cba36dd589492c28e0d04942b4f8aa0a09f59cc</SHA1>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentH</Name>
+  <DisplayName>Component H. ForcedUpdate</DisplayName>
+  <Description>Component H. ForcedUpdate</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <ForcedUpdate>true</ForcedUpdate>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
 </Updates>

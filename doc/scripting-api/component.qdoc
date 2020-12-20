@@ -421,6 +421,14 @@
 */
 
 /*!
+    \qmlmethod boolean component::isForcedUpdate()
+
+    Returns \c true if the component is installed and has a \c ForcedUpdate flag set.
+    Forced updates will be updated together with essential components before any
+    other component can be updated or installed.
+*/
+
+/*!
     \qmlmethod void component::setUninstalled()
 
     Sets the component state to uninstalled.
