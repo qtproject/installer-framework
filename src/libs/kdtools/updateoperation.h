@@ -91,6 +91,8 @@ protected:
     bool deleteFileNowOrLater(const QString &file, QString *errorString = 0);
     bool checkArgumentCount(int minArgCount, int maxArgCount, const QString &argDescription = QString());
     bool checkArgumentCount(int argCount);
+    QStringList parsePerformOperationArguments();
+    QStringList parseUndoOperationArguments();
 
 private:
     QString m_name;

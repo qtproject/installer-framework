@@ -49,8 +49,9 @@ void GlobalSettingsOperation::backup()
 
 bool GlobalSettingsOperation::performOperation()
 {
+    const QStringList args = parsePerformOperationArguments();
     QString key, value;
-    QScopedPointer<QSettingsWrapper> settings(setup(&key, &value, arguments()));
+    QScopedPointer<QSettingsWrapper> settings(setup(&key, &value, args));
     if (settings.isNull())
         return false;
 
@@ -76,8 +77,12 @@ bool GlobalSettingsOperation::performOperation()
 
 bool GlobalSettingsOperation::undoOperation()
 {
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
+
+    const QStringList args = parsePerformOperationArguments();
     QString key, val;
-    QScopedPointer<QSettingsWrapper> settings(setup(&key, &val, arguments()));
+    QScopedPointer<QSettingsWrapper> settings(setup(&key, &val, args));
     if (settings.isNull())
         return false;
 

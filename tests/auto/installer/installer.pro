@@ -35,7 +35,8 @@ SUBDIRS += \
     commandlineupdate \
     moveoperation \
     environmentvariableoperation \
-    licenseagreement
+    licenseagreement \
+    globalsettingsoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

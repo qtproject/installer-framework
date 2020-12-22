@@ -190,7 +190,7 @@ QStringList UpdateOperation::arguments() const
 bool UpdateOperation::checkArgumentCount(int minArgCount, int maxArgCount,
                                          const QString &argDescription)
 {
-    const int argCount = arguments().count();
+    const int argCount = parsePerformOperationArguments().count();
     if (argCount < minArgCount || argCount > maxArgCount) {
         setError(InvalidArguments);
         QString countRange;
@@ -224,6 +224,38 @@ bool UpdateOperation::checkArgumentCount(int minArgCount, int maxArgCount,
 bool UpdateOperation::checkArgumentCount(int argCount)
 {
     return checkArgumentCount(argCount, argCount);
+}
+
+/*!
+    Returns operation argument list without
+    \c UNDOOOPERATION arguments.
+*/
+QStringList UpdateOperation::parsePerformOperationArguments()
+{
+    QStringList args;
+    int index = arguments().indexOf(QLatin1String("UNDOOPERATION"));
+    args = arguments().mid(0, index);
+    return args;
+}
+
+/*!
+    Returns undo operation argument list. If the installation is
+    cancelled or failed, returns an empty list so that full undo
+    operation can be performed.
+*/
+QStringList UpdateOperation::parseUndoOperationArguments()
+{
+    //Install has failed, allow a normal undo
+    if (m_core && (m_core->status() == QInstaller::PackageManagerCore::Canceled
+              || m_core->status() == QInstaller::PackageManagerCore::Failure)) {
+        return QStringList();
+    }
+    int index = arguments().indexOf(QLatin1String("UNDOOPERATION"));
+    QStringList args;
+    if ((index != -1) && (arguments().length() > index + 1)) {
+        args = arguments().mid(index + 1);
+    }
+    return args;
 }
 
 struct StartsWith
