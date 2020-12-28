@@ -74,6 +74,10 @@
             \li SimpleMoveFile
             \li "SimpleMoveFile" \c source \c target
             \li Moves a file from \c source to \c target.
+
+            \note Files will be moved from \c target to \c source during uninstallation.
+            If you want to move the files persistently, you can overwrite the \e UNDO
+            by passing \e UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li Delete
             \li "Delete" \c filename
