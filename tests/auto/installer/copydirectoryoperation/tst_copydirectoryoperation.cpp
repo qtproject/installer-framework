@@ -75,6 +75,20 @@ private:
         core->deleteLater();
     }
 
+    QStringList populateSourceDirectory()
+    {
+        QStringList fileEntries;
+        fileEntries << "file1" << "file2" << ".hidden1" << ".hidden2";
+
+        // Populate source directory
+        foreach (const QString &entry, fileEntries) {
+            QFile file(m_sourcePath + entry);
+            file.open(QFileDevice::ReadWrite);
+            file.close();
+        }
+        return fileEntries;
+    }
+
 private slots:
     void initTestCase()
     {
@@ -129,17 +143,9 @@ private slots:
 
     void testCopyDirectoryWithUndo()
     {
-        QStringList fileEntries;
-        fileEntries << "file1" << "file2" << ".hidden1" << ".hidden2";
+        const QStringList fileEntries = populateSourceDirectory();
 
-        // Populate source directory
-        foreach (const QString &entry, fileEntries) {
-            QFile file(m_sourcePath + entry);
-            QVERIFY(file.open(QFileDevice::ReadWrite));
-            file.close();
-        }
         CopyDirectoryOperation op(nullptr);
-
         op.setArguments(QStringList() << m_sourcePath << m_destinationPath);
         QVERIFY2(op.performOperation(), op.errorString().toLatin1());
 
@@ -149,6 +155,25 @@ private slots:
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
         // Undo will delete the empty destination directory here
         QVERIFY(!QFileInfo(m_destinationPath).exists());
+    }
+
+
+    void testCopyDirectoryNoUndo()
+    {
+        const QStringList fileEntries = populateSourceDirectory();
+
+        CopyDirectoryOperation op(nullptr);
+        op.setArguments(QStringList() << m_sourcePath << m_destinationPath << "UNDOOPERATION" << "");
+
+        QVERIFY2(op.performOperation(), op.errorString().toLatin1());
+
+        foreach (const QString &entry, fileEntries)
+            QVERIFY(QFile(m_destinationPath + entry).exists());
+
+        QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
+        // Undo will NOT delete the empty destination directory here
+        foreach (const QString &entry, fileEntries)
+            QVERIFY(QFile(m_destinationPath + entry).exists());
     }
 
     void testCopyDirectoryOverwrite()

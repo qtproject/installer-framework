@@ -90,6 +90,9 @@
             \li CopyDirectory
             \li "CopyDirectory" \c sourcePath \c targetPath
             \li Copies a directory from \c sourcePath to \c targetPath.
+            \note Directories will be reset during uninstallation. If you want to copy the
+                directory persistently, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li AppendFile
             \li "AppendFile" \c filename \c text

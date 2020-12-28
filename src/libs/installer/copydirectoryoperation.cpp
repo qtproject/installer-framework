@@ -67,7 +67,7 @@ bool CopyDirectoryOperation::performOperation()
     if (!checkArgumentCount(2, 3, tr("<source> <target> [\"forceOverwrite\"]")))
         return false;
 
-    const QStringList args = arguments();
+    const QStringList args = parsePerformOperationArguments();
     const QString sourcePath = args.at(0);
     const QString targetPath = args.at(1);
     bool overwrite = false;
@@ -153,7 +153,11 @@ bool CopyDirectoryOperation::performOperation()
 
 bool CopyDirectoryOperation::undoOperation()
 {
-    Q_ASSERT(arguments().count() == 2);
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
+
+    if (!checkArgumentCount(2))
+        return false;
 
     QDir dir;
     const QStringList files = value(QLatin1String("files")).toStringList();
