@@ -231,6 +231,9 @@
                 \c command. Optionally, you can specify \c description,
                 \c contentType, and \c icon. This is currently only supported on
                 Windows.
+                \note File type will be unregistered during uninstallation. If you want keep the
+                type registered, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li ConsumeOutput
             \li "ConsumeOutput" \c installerKeyName \c executablePath \c processArguments
