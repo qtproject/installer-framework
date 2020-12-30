@@ -374,7 +374,11 @@ bool CreateLocalRepositoryOperation::performOperation()
 
 bool CreateLocalRepositoryOperation::undoOperation()
 {
-    Q_ASSERT(arguments().count() == 2);
+    if (parseUndoOperationArguments().count() > 0)
+        return true;
+
+    if (!checkArgumentCount(2))
+        return false;
 
     AutoHelper _(this);
     emit progressChanged(0.0);

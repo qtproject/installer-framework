@@ -252,6 +252,9 @@
             \li Creates a local repository in the directory specified by
                 \c repoPath. For offline installers, stores binary data in the
                 directory specified by \c binaryPath.
+                \note The repository will be deleted during uninstallation. If you want keep
+                the repository, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li FakeStopProcessForUpdate
             \li "FakeStopProcessForUpdate" \c processlist
