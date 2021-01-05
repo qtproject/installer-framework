@@ -162,7 +162,8 @@
                 If \c filename is absolute, the desktop entry is stored there.
                 Otherwise, it is stored in the location specified in
                 \c{$XDG_DATA_HOME/applications}, including the default path,
-                as defined by freedesktop.org.
+                as defined by freedesktop.org. For system-wide installations,
+                it is stored in \c {/usr/local/share/applications} instead.
 
                 The key-value pairs are written to the file.
 
@@ -172,8 +173,8 @@
             \li "InstallIcons" \c directory \c [Vendorprefix]
             \li Installs the contents of \c directory into a location, as
                 specified by freedesktop.org. That is, into
-                \c {$XDG_DATA_HOME/icons} or
-                \c {$HOME/.local/share/icons}. The files are removed from their initial
+                \c {$XDG_DATA_HOME/icons}, \c {$HOME/.local/share/icons} or
+                \c {/usr/local/share/icons}. The files are removed from their initial
                 location. Make sure to add this operation after the operation
                 that extracts the files from the archive.
                 If you provide a \c Vendorprefix it replaces all characters up to the

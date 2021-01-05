@@ -205,6 +205,8 @@ private slots:
             .split(QLatin1Char(':'), QString::SkipEmptyParts);
         // Default path if XDG_DATA_HOME is not set
         directories.append(QDir::home().absoluteFilePath(QLatin1String(".local/share")));
+        // Default path if run as root
+        directories.append(QLatin1String("/usr/local/share"));
         bool validPath = false;
         foreach (const QString &dir, directories) {
             // Icon directory should be one of the expected locations

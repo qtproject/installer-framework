@@ -30,6 +30,8 @@
 #include "fileutils.h"
 #include "packagemanagercore.h"
 #include "globals.h"
+#include "adminauthorization.h"
+#include "remoteclient.h"
 
 #include <QDebug>
 #include <QDir>
@@ -52,7 +54,10 @@ QString InstallIconsOperation::targetDirectory()
     QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
-    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default path
+    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
+
+    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+        XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     QString directory;
     const QStringList& directories = XDG_DATA_HOME;

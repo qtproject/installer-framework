@@ -30,6 +30,8 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "globals.h"
+#include "adminauthorization.h"
+#include "remoteclient.h"
 
 #include <QDir>
 #include <QFile>
@@ -60,7 +62,10 @@ QString CreateDesktopEntryOperation::absoluteFileName()
                                                         .split(QLatin1Char(':'),
         QString::SkipEmptyParts);
 
-    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default path
+    XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
+
+    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+        XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     const QStringList directories = XDG_DATA_HOME;
     QString directory;
