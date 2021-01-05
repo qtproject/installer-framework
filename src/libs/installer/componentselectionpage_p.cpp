@@ -102,12 +102,15 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A",
             "select default components")));
         m_checkDefault->setText(ComponentSelectionPage::tr("Def&ault"));
+        m_checkDefault->setToolTip(ComponentSelectionPage::tr("Select default components in the tree view."));
     } else {
         m_checkDefault->setEnabled(false);
         m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
         m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R",
             "reset to already installed components")));
         m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
+        m_checkDefault->setToolTip(
+            ComponentSelectionPage::tr("Reset all components to their original selection state in the tree view."));
     }
     buttonHLayout->addWidget(m_checkDefault);
 
@@ -118,6 +121,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
         "select all components")));
     m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
+    m_checkAll->setToolTip(ComponentSelectionPage::tr("Select all components in the tree view."));
     buttonHLayout->addWidget(m_checkAll);
 
     m_uncheckAll = new QPushButton;
@@ -127,6 +131,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
         "deselect all components")));
     m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
+    m_uncheckAll->setToolTip(ComponentSelectionPage::tr("Deselect all components in the tree view."));
     buttonHLayout->addWidget(m_uncheckAll);
 
     QWidget *progressStackedWidget = new QWidget();
@@ -193,6 +198,9 @@ void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
         wizard->setOption(QWizard::HaveCustomButton2, true);
         wizard->setButtonText(QWizard::CustomButton2,
                 ComponentSelectionPage::tr("&Browse QBSP files"));
+        wizard->button(QWizard::CustomButton2)->setToolTip(
+                ComponentSelectionPage::tr("Select a Qt Board Support Package file to install "
+                "additional content that is not directly available from the online repositories."));
         connect(wizard, &QWizard::customButtonClicked,
                 this, &ComponentSelectionPagePrivate::customButtonClicked);
         q->gui()->updateButtonLayout();
@@ -224,6 +232,8 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
     QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
+    fetchCategoryButton->setToolTip(
+        ComponentSelectionPage::tr("Filter the enabled repository categories to selection."));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 

@@ -999,6 +999,8 @@ void PackageManagerGui::showSettingsButton(bool show)
     d->m_showSettingsButton = show;
     setOption(QWizard::HaveCustomButton1, show);
     setButtonText(QWizard::CustomButton1, tr("Settings"));
+    button(QWizard::CustomButton1)->setToolTip(
+        PackageManagerGui::tr("Specify proxy settings and configure repositories for add-on components."));
 
     updateButtonLayout();
 }
@@ -2282,6 +2284,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     connect(browseButton, &QAbstractButton::clicked, this, &TargetDirectoryPage::dirRequested);
     browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
     browseButton->setText(tr("B&rowse..."));
+    browseButton->setToolTip(TargetDirectoryPage::tr("Browse file system to choose the installation directory."));
     hlayout->addWidget(browseButton);
 
     layout->addLayout(hlayout);
