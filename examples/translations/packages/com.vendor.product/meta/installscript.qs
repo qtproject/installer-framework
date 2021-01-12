@@ -55,6 +55,6 @@ Component.prototype.dynamicPageEntered = function ()
 {
     var pageWidget = gui.pageWidgetByObjectName("DynamicPage");
     if (pageWidget != null) {
-        pageWidget.m_pageLabel.text = qsTr("This is a dynamically created page.");
+        pageWidget.m_pageLabel.text = qsTranslate("installscript", "This is a dynamically created page.");
     }
 }

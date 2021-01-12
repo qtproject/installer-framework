@@ -372,6 +372,7 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     QObject(core),
     m_guiProxy(new GuiProxy(this, this))
 {
+    m_engine.installExtensions(QJSEngine::TranslationExtension);
     QJSValue global = m_engine.globalObject();
     global.setProperty(QLatin1String("console"), m_engine.newQObject(new ConsoleProxy));
     global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy(core)));
@@ -379,12 +380,6 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     global.setProperty(QLatin1String("InstallerProxy"), proxy);
     global.setProperty(QLatin1String("print"), m_engine.newQObject(new ConsoleProxy)
         .property(QLatin1String("log")));
-#if QT_VERSION < 0x050400
-    global.setProperty(QLatin1String("qsTr"), m_engine.newQObject(new QCoreApplicationProxy)
-        .property(QStringLiteral("qsTr")));
-#else
-    m_engine.installTranslatorFunctions();
-#endif
     global.setProperty(QLatin1String("systemInfo"), m_engine.newQObject(new SystemInfo));
 
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
