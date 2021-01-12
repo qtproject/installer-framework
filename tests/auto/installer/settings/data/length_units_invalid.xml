@@ -4,4 +4,6 @@
     <Version>1.2.3</Version>
     <WizardDefaultWidth>800pt</WizardDefaultWidth>
     <WizardDefaultHeight>600pt</WizardDefaultHeight>
+    <WizardMinimumWidth>640pt</WizardMinimumWidth>
+    <WizardMinimumHeight>480pt</WizardMinimumHeight>
 </Installer>

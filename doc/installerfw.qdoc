@@ -431,6 +431,14 @@
                 override this. You can add the \c em or \c ex suffix to the specified value to
                 use the \e em or \e ex unit, as in a CSS file.
         \row
+            \li WizardMinimumWidth
+            \li Sets the minimum width of the wizard in pixels. You can add the \c em or \c ex
+                suffix to the specified value to use the \e em or \e ex unit, as in a CSS file.
+        \row
+            \li WizardMinimumHeight
+            \li Sets the minimum height of the wizard in pixels. You can add the \c em or \c ex
+                suffix to the specified value to use the \e em or \e ex unit, as in a CSS file.
+        \row
             \li WizardShowPageList
             \li Set to \c false if the widget listing installer pages on the left side of the
                 wizard should not be shown. Defaults to \c true. If visible, this widget hides

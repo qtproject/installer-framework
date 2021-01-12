@@ -93,6 +93,8 @@ static const QLatin1String scStyleSheet("StyleSheet");
 static const QLatin1String scTitleColor("TitleColor");
 static const QLatin1String scWizardDefaultWidth("WizardDefaultWidth");
 static const QLatin1String scWizardDefaultHeight("WizardDefaultHeight");
+static const QLatin1String scWizardMinimumWidth("WizardMinimumWidth");
+static const QLatin1String scWizardMinimumHeight("WizardMinimumHeight");
 static const QLatin1String scWizardShowPageList("WizardShowPageList");
 static const QLatin1String scProductImages("ProductImages");
 static const QLatin1String scUrlQueryString("UrlQueryString");

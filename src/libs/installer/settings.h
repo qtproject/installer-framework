@@ -89,6 +89,8 @@ public:
     QString titleColor() const;
     int wizardDefaultWidth() const;
     int wizardDefaultHeight() const;
+    int wizardMinimumWidth() const;
+    int wizardMinimumHeight() const;
     bool wizardShowPageList() const;
     QStringList productImages() const;
     void setProductImages(const QStringList &images);

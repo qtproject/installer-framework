@@ -743,7 +743,16 @@ void PackageManagerGui::showEvent(QShowEvent *event)
                 }
             }
         }
-        setMinimumSize(size());
+        QSize minimumSize;
+        minimumSize.setWidth(m_core->settings().wizardMinimumWidth()
+            ? m_core->settings().wizardMinimumWidth()
+            : width());
+
+        minimumSize.setHeight(m_core->settings().wizardMinimumHeight()
+            ? m_core->settings().wizardMinimumHeight()
+            : height());
+
+        setMinimumSize(minimumSize);
         if (minimumWidth() < m_core->settings().wizardDefaultWidth())
             resize(m_core->settings().wizardDefaultWidth(), height());
         if (minimumHeight() < m_core->settings().wizardDefaultHeight())

@@ -90,6 +90,8 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.wizardStyle(), QString());
     QCOMPARE(settings.wizardDefaultWidth(), settings.wizardShowPageList() ? 800 : 0);
     QCOMPARE(settings.wizardDefaultHeight(), 0);
+    QCOMPARE(settings.wizardMinimumWidth(), 0);
+    QCOMPARE(settings.wizardMinimumHeight(), 0);
     QCOMPARE(settings.wizardShowPageList(), true);
     QCOMPARE(settings.productImages(), QStringList());
     QCOMPARE(settings.titleColor(), QString());
@@ -244,6 +246,8 @@ void tst_Settings::loadConfigWithValidLengthUnits()
         Settings settings = Settings::fromFileAndPrefix(":///data/length_units_valid_px.xml", ":///data");
         QCOMPARE(settings.wizardDefaultWidth(), 800);
         QCOMPARE(settings.wizardDefaultHeight(), 600);
+        QCOMPARE(settings.wizardMinimumWidth(), 640);
+        QCOMPARE(settings.wizardMinimumHeight(), 480);
 
         // Cannot test the parsed values for these units portably since the
         // pixel value depends on the font metrics. Let's just check for parse
@@ -261,6 +265,8 @@ void tst_Settings::loadConfigWithInvalidLengthUnits()
         Settings settings = Settings::fromFileAndPrefix(":///data/length_units_invalid.xml", ":///data");
         QCOMPARE(settings.wizardDefaultWidth(), 0);
         QCOMPARE(settings.wizardDefaultHeight(), 0);
+        QCOMPARE(settings.wizardMinimumWidth(), 0);
+        QCOMPARE(settings.wizardMinimumHeight(), 0);
     } catch (const Error &error) {
         QFAIL(qPrintable(QString::fromLatin1("Exception caught: %1").arg(error.message())));
     }
