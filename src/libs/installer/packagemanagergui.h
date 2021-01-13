@@ -152,10 +152,8 @@ public:
     explicit PackageManagerPage(PackageManagerCore *core);
     virtual ~PackageManagerPage() {}
 
-    virtual QPixmap logoPixmap() const;
     virtual QString productName() const;
-    virtual QPixmap watermarkPixmap() const;
-    virtual QPixmap bannerPixmap() const;
+    virtual QPixmap wizardPixmap(const QString &pixmapType) const;
 
     void setColoredTitle(const QString &title);
     void setColoredSubTitle(const QString &subTitle);

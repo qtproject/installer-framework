@@ -100,7 +100,11 @@ static const QLatin1String scAllowUnstableComponents("AllowUnstableComponents");
 static const QLatin1String scSaveDefaultRepositories("SaveDefaultRepositories");
 static const QLatin1String scRepositoryCategoryDisplayName("RepositoryCategoryDisplayName");
 static const QLatin1String scHighDpi("@2x.");
-
+static const QLatin1String scWatermark("Watermark");
+static const QLatin1String scBanner("Banner");
+static const QLatin1String scLogo("Logo");
+static const QLatin1String scBackground("Background");
+static const QLatin1String scPageListPixmap("PageListPixmap");
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 }
 

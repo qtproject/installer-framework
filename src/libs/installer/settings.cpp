@@ -59,13 +59,8 @@ using namespace QInstaller;
 
 static const QLatin1String scInstallerApplicationIcon("InstallerApplicationIcon");
 static const QLatin1String scInstallerWindowIcon("InstallerWindowIcon");
-static const QLatin1String scLogo("Logo");
 static const QLatin1String scPrefix("Prefix");
-static const QLatin1String scWatermark("Watermark");
-static const QLatin1String scBanner("Banner");
 static const QLatin1String scProductUrl("ProductUrl");
-static const QLatin1String scBackground("Background");
-static const QLatin1String scPageListPixmap("PageListPixmap");
 static const QLatin1String scAdminTargetDir("AdminTargetDir");
 static const QLatin1String scMaintenanceToolName("MaintenanceToolName");
 static const QLatin1String scUserRepositories("UserRepositories");

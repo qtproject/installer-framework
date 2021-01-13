@@ -81,10 +81,10 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     m_variables.insert(QLatin1String("Url"), m_settings.url());
     m_variables.insert(scStartMenuDir, m_settings.startMenuDir());
     m_variables.insert(scTargetConfigurationFile, m_settings.configurationFileName());
-    m_variables.insert(QLatin1String("LogoPixmap"), m_settings.logo());
-    m_variables.insert(QLatin1String("WatermarkPixmap"), m_settings.watermark());
-    m_variables.insert(QLatin1String("BannerPixmap"), m_settings.banner());
-    m_variables.insert(QLatin1String("PageListPixmap"), m_settings.pageListPixmap());
+    m_variables.insert(scLogo, m_settings.logo());
+    m_variables.insert(scWatermark, m_settings.watermark());
+    m_variables.insert(scBanner, m_settings.banner());
+    m_variables.insert(scPageListPixmap, m_settings.pageListPixmap());
 
     const QString description = m_settings.runProgramDescription();
     if (!description.isEmpty())

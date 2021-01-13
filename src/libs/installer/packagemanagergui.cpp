@@ -300,8 +300,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 #ifndef Q_OS_MACOS
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #endif
-    if (!m_core->settings().wizardShowPageList())
-        setPixmap(QWizard::BackgroundPixmap, m_core->settings().background());
+    if (!m_core->settings().wizardShowPageList()) {
+        QString pixmapStr = m_core->settings().background();
+        QInstaller::replaceHighDpiImage(pixmapStr);
+        setPixmap(QWizard::BackgroundPixmap, pixmapStr);
+    }
 #ifdef Q_OS_LINUX
     setWizardStyle(QWizard::ModernStyle);
     setSizeGripEnabled(true);
@@ -347,8 +350,9 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
         QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
 
-        const QString pageListPixmap = m_core->settings().pageListPixmap();
+        QString pageListPixmap = m_core->settings().pageListPixmap();
         if (!pageListPixmap.isEmpty()) {
+            QInstaller::replaceHighDpiImage(pageListPixmap);
             QLabel *pageListPixmapLabel = new QLabel(sideWidget);
             pageListPixmapLabel->setObjectName(QLatin1String("PageListPixmapLabel"));
             pageListPixmapLabel->setPixmap(pageListPixmap);
@@ -1188,10 +1192,10 @@ PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
         m_titleColor = m_core->settings().titleColor();
 
     if (!m_core->settings().wizardShowPageList())
-        setPixmap(QWizard::WatermarkPixmap, watermarkPixmap());
+        setPixmap(QWizard::WatermarkPixmap, wizardPixmap(scWatermark));
 
-    setPixmap(QWizard::BannerPixmap, bannerPixmap());
-    setPixmap(QWizard::LogoPixmap, logoPixmap());
+    setPixmap(QWizard::BannerPixmap, wizardPixmap(scBanner));
+    setPixmap(QWizard::LogoPixmap, wizardPixmap(scLogo));
 
     // Can't use PackageManagerPage::gui() here as the page is not set yet
     if (PackageManagerGui *gui = qobject_cast<PackageManagerGui *>(core->guiObject())) {
@@ -1209,42 +1213,26 @@ PackageManagerCore *PackageManagerPage::packageManagerCore() const
 }
 
 /*!
-    Returns the watermark pixmap specified in the \c <Watermark> element of the package information
-    file.
+    Returns the pixmap specified by \a pixmapType. \a pixmapType can be \c <Banner>,
+    \c <Logo> or \c <Watermark> element of the package information file. If @2x image
+    is provided, returns that instead for high DPI displays.
 */
-QPixmap PackageManagerPage::watermarkPixmap() const
+QPixmap PackageManagerPage::wizardPixmap(const QString &pixmapType) const
 {
-    return QPixmap(m_core->value(QLatin1String("WatermarkPixmap")));
-}
-
-/*!
-    Returns the banner pixmap specified in the \c <Banner> element of the package information file.
-    Only used by the modern UI style.
-*/
-QPixmap PackageManagerPage::bannerPixmap() const
-{
-    QPixmap banner(m_core->value(QLatin1String("BannerPixmap")));
-
-    if (!banner.isNull()) {
-        int width;
-        if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
-            width = m_core->settings().wizardDefaultWidth();
-        else
-            width = size().width();
-        banner = banner.scaledToWidth(width, Qt::SmoothTransformation);
+    QString pixmapStr = m_core->value(pixmapType);
+    QInstaller::replaceHighDpiImage(pixmapStr);
+    QPixmap pixmap(pixmapStr);
+    if (pixmapType == scBanner) {
+        if (!pixmap.isNull()) {
+            int width;
+            if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
+                width = m_core->settings().wizardDefaultWidth();
+            else
+                width = size().width();
+            pixmap = pixmap.scaledToWidth(width, Qt::SmoothTransformation);
+        }
     }
-    return banner;
-}
-
-/*!
-    Returns the logo pixmap specified in the \c <Logo> element of the package information file.
-    If @2x image is provided, returns that instead for high DPI displays.
-*/
-QPixmap PackageManagerPage::logoPixmap() const
-{
-    QString logoPixmap = m_core->value(QLatin1String("LogoPixmap"));
-    QInstaller::replaceHighDpiImage(logoPixmap);
-    return QPixmap(logoPixmap);
+    return pixmap;
 }
 
 /*!
