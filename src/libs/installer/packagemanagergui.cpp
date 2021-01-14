@@ -1529,9 +1529,6 @@ int IntroductionPage::nextId() const
     if (packageManagerCore()->isUninstaller())
         return PackageManagerCore::ReadyForInstallation;
 
-    if (packageManagerCore()->isMaintainer())
-        return PackageManagerCore::ComponentSelection;
-
     return PackageManagerPage::nextId();
 }
 
