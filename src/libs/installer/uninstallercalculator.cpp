@@ -125,7 +125,12 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
 
     if (!autoDependOnList.isEmpty())
         appendComponentsToUninstall(autoDependOnList);
+    else
+        continueAppendComponentsToUninstall();
+}
 
+void UninstallerCalculator::continueAppendComponentsToUninstall()
+{
     QList<Component*> unneededVirtualList;
     // Check for virtual components without dependees
     foreach (Component *component, m_installedComponents) {
