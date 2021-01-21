@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -101,8 +101,11 @@ public:
             return;
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("%1 %2 operation: %3")
             .arg(state, m_operation->value(QLatin1String("component")).toString(), m_operation->name());
+        QStringList args = m_operation->arguments();
+        if (m_operation->requiresUnreplacedVariables())
+            args = m_operation->packageManager()->replaceVariables(m_operation->arguments());
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("\t- arguments: %1")
-            .arg(m_operation->arguments().join(QLatin1String(", ")));
+            .arg(args.join(QLatin1String(", ")));
     }
     ~OperationTracer() {
         if (!m_operation)

@@ -71,6 +71,7 @@ public:
     QString errorString() const;
     int error() const;
     QStringList filesForDelayedDeletion() const;
+    bool requiresUnreplacedVariables() const;
 
     QInstaller::PackageManagerCore *packageManager() const;
 
@@ -93,6 +94,7 @@ protected:
     bool checkArgumentCount(int argCount);
     QStringList parsePerformOperationArguments();
     QStringList parseUndoOperationArguments();
+    void setRequiresUnreplacedVariables(bool isRequired);
 
 private:
     QString m_name;
@@ -102,6 +104,7 @@ private:
     QVariantMap m_values;
     QStringList m_delayedDeletionFiles;
     QInstaller::PackageManagerCore *m_core;
+    bool m_requiresUnreplacedVariables;
 };
 
 } // namespace KDUpdater

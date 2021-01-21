@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1096,7 +1096,13 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     if (operation->name() == QLatin1String("Delete"))
         operation->setValue(QLatin1String("performUndo"), false);
 
-    operation->setArguments(d->m_core->replaceVariables(parameters));
+    // Operation can contain variables which are resolved when performing the operation
+    if (operation->requiresUnreplacedVariables())
+        operation->setArguments(parameters);
+    else
+        operation->setArguments(d->m_core->replaceVariables(parameters));
+
+
     operation->setValue(QLatin1String("component"), name());
     return operation;
 }

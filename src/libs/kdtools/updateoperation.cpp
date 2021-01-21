@@ -89,6 +89,7 @@ static QString backupFileName(const QString &templateName)
 UpdateOperation::UpdateOperation(QInstaller::PackageManagerCore *core)
     : m_error(0)
     , m_core(core)
+    , m_requiresUnreplacedVariables(false)
 {
     // Store the value for compatibility reasons.
     m_values[QLatin1String("installer")] = QVariant::fromValue(core);
@@ -258,6 +259,16 @@ QStringList UpdateOperation::parseUndoOperationArguments()
     return args;
 }
 
+/*!
+   Sets the requirement for unresolved variables to \a isRequired.
+
+   \sa requiresUnreplacedVariables()
+*/
+void UpdateOperation::setRequiresUnreplacedVariables(bool isRequired)
+{
+    m_requiresUnreplacedVariables = isRequired;
+}
+
 struct StartsWith
 {
     StartsWith(const QString &searchTerm)
@@ -351,6 +362,15 @@ void UpdateOperation::clear()
 QStringList UpdateOperation::filesForDelayedDeletion() const
 {
     return m_delayedDeletionFiles;
+}
+
+/*!
+    Returns true if installer saves the variables unresolved.
+    The variables are resolved right before operation is performed.
+*/
+bool UpdateOperation::requiresUnreplacedVariables() const
+{
+    return m_requiresUnreplacedVariables;
 }
 
 /*!

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,6 +31,7 @@
 #include "environment.h"
 #include "qprocesswrapper.h"
 #include "globals.h"
+#include "packagemanagercore.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QProcessEnvironment>
@@ -72,6 +73,7 @@ ElevatedExecuteOperation::ElevatedExecuteOperation(PackageManagerCore *core)
 {
     // this operation has to "overwrite" the Execute operation from KDUpdater
     setName(QLatin1String("Execute"));
+    setRequiresUnreplacedVariables(true);
 }
 
 ElevatedExecuteOperation::~ElevatedExecuteOperation()
@@ -94,6 +96,10 @@ bool ElevatedExecuteOperation::performOperation()
             break; //we don't need the UNDOEXECUTE args here
     }
 
+    if (requiresUnreplacedVariables()) {
+        PackageManagerCore *const core = packageManager();
+        args = core->replaceVariables(args);
+    }
     return d->run(args);
 }
 
@@ -262,7 +268,6 @@ void ElevatedExecuteOperation::Private::readProcessOutput()
     }
 }
 
-
 bool ElevatedExecuteOperation::undoOperation()
 {
     QStringList args;
@@ -276,6 +281,10 @@ bool ElevatedExecuteOperation::undoOperation()
     if (args.isEmpty())
         return true;
 
+    if (requiresUnreplacedVariables()) {
+        PackageManagerCore *const core = packageManager();
+        args = core->replaceVariables(args);
+    }
     return d->run(args);
 }
 
