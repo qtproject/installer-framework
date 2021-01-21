@@ -57,9 +57,6 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 
-#define QUOTE_(x) #x
-#define QUOTE(x) QUOTE_(x)
-
 template<class T>
 class SDKApp : public T
 {
@@ -194,8 +191,6 @@ public:
                 QUuid::createUuid().toString(), QUuid::createUuid().toString(),
                 QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
         }
-        // Set this for convenience usage with the installer JS object
-        m_core->setValue(QLatin1String("FrameworkVersion"), QLatin1String(QUOTE(IFW_VERSION_STR)));
 
         // From Qt5.8 onwards system proxy is used by default. If Qt is built with
         // QT_USE_SYSTEM_PROXIES false then system proxies are not used by default.

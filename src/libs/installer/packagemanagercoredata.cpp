@@ -182,6 +182,8 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
 #endif
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
+    m_variables.insert(QLatin1String("FrameworkVersion"), QLatin1String(QUOTE(IFW_VERSION_STR)));
+    // Undocumented, left for compatibility with scripts using the old key
     m_variables.insert(QLatin1String("IFW_VERSION_STR"),  QLatin1String(QUOTE(IFW_VERSION_STR)));
 #undef QUOTE
 #undef QUOTE_

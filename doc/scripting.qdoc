@@ -257,6 +257,9 @@
 
                 This variable is deprecated: Use \l systemInfo instead.
         \row
+            \li FrameworkVersion
+            \li Version number of the Qt Installer Framework used to build the installation program.
+        \row
             \li RootDir
             \li Root directory of the filesystem.
         \row
