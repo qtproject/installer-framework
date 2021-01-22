@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -67,12 +67,6 @@ class PackageManagerCorePrivate : public QObject
     Q_DISABLE_COPY(PackageManagerCorePrivate)
 
 public:
-    enum OperationType {
-        Backup,
-        Perform,
-        Undo
-    };
-
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations);
@@ -80,8 +74,8 @@ public:
 
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
 
-    static bool performOperationThreaded(Operation *op, PackageManagerCorePrivate::OperationType type
-        = PackageManagerCorePrivate::Perform);
+    static bool performOperationThreaded(Operation *op, UpdateOperation::OperationType type
+        = UpdateOperation::Perform);
 
     void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;

@@ -36,7 +36,8 @@ SUBDIRS += \
     moveoperation \
     environmentvariableoperation \
     licenseagreement \
-    globalsettingsoperation
+    globalsettingsoperation \
+    elevatedexecuteoperation
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

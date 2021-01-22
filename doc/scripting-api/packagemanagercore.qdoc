@@ -728,6 +728,13 @@
 */
 
 /*!
+    \qmlmethod string installer::key(string value)
+
+    Returns the installer key for \a value. If \a value is not known, empty string is
+    returned.
+*/
+
+/*!
     \qmlmethod void installer::setValue(string key, string value)
 
     Sets the installer value for \a key to \a value.

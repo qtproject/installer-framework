@@ -875,7 +875,7 @@ void PackageManagerCore::rollBackInstallation()
                 operation->setValue(QLatin1String("forceremoval"), false);
             }
 
-            PackageManagerCorePrivate::performOperationThreaded(operation, PackageManagerCorePrivate::Undo);
+            PackageManagerCorePrivate::performOperationThreaded(operation, Operation::Undo);
 
             const QString componentName = operation->value(QLatin1String("component")).toString();
             if (!componentName.isEmpty()) {
@@ -2963,7 +2963,7 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
     op->setArguments(replaceVariables(arguments));
     op->backup();
     if (!PackageManagerCorePrivate::performOperationThreaded(op.data())) {
-        PackageManagerCorePrivate::performOperationThreaded(op.data(), PackageManagerCorePrivate::Undo);
+        PackageManagerCorePrivate::performOperationThreaded(op.data(), Operation::Undo);
         return false;
     }
     return true;
@@ -3118,6 +3118,17 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
 QStringList PackageManagerCore::values(const QString &key, const QStringList &defaultValue) const
 {
     return d->m_data.value(key, defaultValue).toStringList();
+}
+
+/*!
+    Returns the installer key for \a value. If \a value is not known, empty string is
+    returned.
+
+    \sa {installer::key}{installer.key}
+*/
+QString PackageManagerCore::key(const QString &value) const
+{
+    return d->m_data.key(value);
 }
 
 /*!

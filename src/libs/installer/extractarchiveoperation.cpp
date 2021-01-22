@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -163,7 +163,7 @@ bool ExtractArchiveOperation::performOperation()
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
 
     // delete all backups we can delete right now, remember the rest
-    foreach (const Backup &i, callback.backupFiles())
+    foreach (const QInstaller::Backup &i, callback.backupFiles())
         deleteFileNowOrLater(i.second);
 
     if (!receiver.success()) {

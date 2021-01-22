@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -242,6 +242,11 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         return m_variables.value(key);
 
     return m_settings.value(key, _default);
+}
+
+QString PackageManagerCoreData::key(const QString &value) const
+{
+    return m_variables.key(value, QString());
 }
 
 QString PackageManagerCoreData::replaceVariables(const QString &str) const

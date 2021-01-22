@@ -117,18 +117,18 @@ private:
     Operation *m_operation;
 };
 
-static bool runOperation(Operation *operation, PackageManagerCorePrivate::OperationType type)
+static bool runOperation(Operation *operation, Operation::OperationType type)
 {
     OperationTracer tracer(operation);
     switch (type) {
-        case PackageManagerCorePrivate::Backup:
+        case Operation::Backup:
             tracer.trace(QLatin1String("backup"));
             operation->backup();
             return true;
-        case PackageManagerCorePrivate::Perform:
+        case Operation::Perform:
             tracer.trace(QLatin1String("perform"));
             return operation->performOperation();
-        case PackageManagerCorePrivate::Undo:
+        case Operation::Undo:
             tracer.trace(QLatin1String("undo"));
             return operation->undoOperation();
         default:
@@ -368,7 +368,7 @@ bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
 }
 
 /* static */
-bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation, OperationType type)
+bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation, Operation::OperationType type)
 {
     QFutureWatcher<bool> futureWatcher;
     const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type);
@@ -1254,7 +1254,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         // create the directory containing the maintenance tool (like a bundle structure on macOS...)
         Operation *op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << targetAppDirPath);
-        performOperationThreaded(op, Backup);
+        performOperationThreaded(op, Operation::Backup);
         performOperationThreaded(op);
         performedOperations.append(takeOwnedOperation(op));
     }
@@ -1266,14 +1266,14 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         Operation *op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../PkgInfo"))
             << (targetAppDirPath + QLatin1String("/../PkgInfo")));
-        performOperationThreaded(op, Backup);
+        performOperationThreaded(op, Operation::Backup);
         performOperationThreaded(op);
 
         // copy Info.plist to target directory
         op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Info.plist"))
             << (targetAppDirPath + QLatin1String("/../Info.plist")));
-        performOperationThreaded(op, Backup);
+        performOperationThreaded(op, Operation::Backup);
         performOperationThreaded(op);
 
         // patch the Info.plist after copying it
@@ -1306,7 +1306,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 
         op = createOwnedOperation(QLatin1String("Mkdir"));
         op->setArguments(QStringList() << (QFileInfo(targetAppDirPath).path() + QLatin1String("/Resources")));
-        performOperationThreaded(op, Backup);
+        performOperationThreaded(op, Operation::Backup);
         performOperationThreaded(op);
 
         // copy application icons if it exists.
@@ -1315,7 +1315,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         op = createOwnedOperation(QLatin1String("Copy"));
         op->setArguments(QStringList() << (sourceAppDirPath + QLatin1String("/../Resources/") + icon)
             << (targetAppDirPath + QLatin1String("/../Resources/") + icon));
-        performOperationThreaded(op, Backup);
+        performOperationThreaded(op, Operation::Backup);
         performOperationThreaded(op);
 
         // finally, copy everything within Frameworks and plugins
@@ -1617,7 +1617,7 @@ bool PackageManagerCorePrivate::runInstaller()
         mkdirOp->setValue(QLatin1String("forceremoval"), true);
         mkdirOp->setValue(QLatin1String("uninstall-only"), true);
 
-        performOperationThreaded(mkdirOp, Backup);
+        performOperationThreaded(mkdirOp, Operation::Backup);
         if (!performOperationThreaded(mkdirOp)) {
             // if we cannot create the target dir, we try to activate the admin rights
             adminRightsGained = m_core->gainAdminRights();
@@ -2177,7 +2177,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         connectOperationCallMethodRequest(operation);
 
         // allow the operation to backup stuff before performing the operation
-        performOperationThreaded(operation, PackageManagerCorePrivate::Backup);
+        performOperationThreaded(operation, Operation::Backup);
 
         bool ignoreError = false;
         bool ok = performOperationThreaded(operation);
@@ -2412,7 +2412,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
             qCDebug(QInstaller::lcInstallerInstallLog) << "undo operation=" << undoOperation->name();
 
             bool ignoreError = false;
-            bool ok = performOperationThreaded(undoOperation, PackageManagerCorePrivate::Undo);
+            bool ok = performOperationThreaded(undoOperation, Operation::Undo);
 
             const QString componentName = undoOperation->value(QLatin1String("component")).toString();
 
@@ -2425,7 +2425,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                         QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Ignore);
 
                     if (button == QMessageBox::Retry)
-                        ok = performOperationThreaded(undoOperation, Undo);
+                        ok = performOperationThreaded(undoOperation, Operation::Undo);
                     else if (button == QMessageBox::Ignore)
                         ignoreError = true;
                 }

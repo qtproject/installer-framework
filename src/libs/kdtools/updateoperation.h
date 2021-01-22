@@ -53,6 +53,12 @@ public:
         UserDefinedError = 128
     };
 
+    enum OperationType {
+        Backup,
+        Perform,
+        Undo
+    };
+
     explicit UpdateOperation(QInstaller::PackageManagerCore *core);
     virtual ~UpdateOperation();
 

@@ -26,46 +26,42 @@
 **
 **************************************************************************/
 
-#ifndef ELEVATEDEXECUTEOPERATION_H
-#define ELEVATEDEXECUTEOPERATION_H
+#include <packagemanagercore.h>
+#include <elevatedexecuteoperation.h>
 
-#include "qinstallerglobal.h"
+#include <QTest>
 
-namespace QInstaller {
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
 
-class INSTALLER_EXPORT ElevatedExecuteOperation : public QObject, public Operation
+using namespace QInstaller;
+
+class tst_elevatedexecuteoperation : public QObject
 {
     Q_OBJECT
 
-public:
-    enum Error {
-        NoError = 0,
-        Error,
-        NeedsRerun
-    };
+private slots:
+    void testExecuteOperation()
+    {
+        m_core.setValue(QLatin1String("QMAKE_BINARY"), QUOTE(QMAKE_BINARY));
+        m_core.setValue(QLatin1String("QMAKE_BINARY_OLD"), QLatin1String("FAKE_QMAKE"));
+        ElevatedExecuteOperation operation(&m_core);
+        operation.setArguments(QStringList() << QLatin1String("UNDOEXECUTE") << QLatin1String("FAKE_QMAKE"));
 
-    explicit ElevatedExecuteOperation(PackageManagerCore *core);
-    ~ElevatedExecuteOperation();
+        QTest::ignoreMessage(QtDebugMsg, "\"FAKE_QMAKE\" started, arguments: \"\"");
+        QString message =  "Failed to run undo operation \"Execute\" for component . Trying again with arguments %1";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(QUOTE(QMAKE_BINARY))));
+        message =  "\"%1\" started, arguments: \"\"";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(QUOTE(QMAKE_BINARY))));
 
-    void backup() Q_DECL_OVERRIDE;
-    bool performOperation() Q_DECL_OVERRIDE;
-    bool undoOperation() Q_DECL_OVERRIDE;
-    bool testOperation() Q_DECL_OVERRIDE;
-
-Q_SIGNALS:
-    void cancelProcess();
-    void outputTextChanged(const QString &text);
-
-public Q_SLOTS:
-    void cancelOperation();
+        QCOMPARE(operation.undoOperation(), true);
+        QCOMPARE(Operation::Error(operation.error()), Operation::NoError);
+    }
 
 private:
-    Q_PRIVATE_SLOT(d, void readProcessOutput())
-
-    class Private;
-    Private *d;
+    PackageManagerCore m_core;
 };
 
-} // namespace
+QTEST_MAIN(tst_elevatedexecuteoperation)
 
-#endif
+#include "tst_elevatedexecuteoperation.moc"

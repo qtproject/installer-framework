@@ -169,6 +169,7 @@ public:
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
     Q_INVOKABLE QStringList values(const QString &key, const QStringList &defaultValue = QStringList()) const;
+    Q_INVOKABLE QString key(const QString &value) const;
 
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
