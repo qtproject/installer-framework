@@ -30,6 +30,16 @@ instructions:
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to run make, check logs."
       - type: ExecuteCommand
+        command: ['make', 'html_docs']
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: 'Could not build documentation.'
+      - type: UploadArtifact
+        archiveDirectory: '{{.BuildDir}}/doc'
+        transferType: UploadModuleDocumentation
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 1800
+      - type: ExecuteCommand
         command: "make install INSTALL_ROOT={{.InstallRoot}}"
         maxTimeInSeconds: 1800
         maxTimeBetweenOutput: 600
@@ -51,6 +61,16 @@ instructions:
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to run jom/make, check logs."
+      - type: ExecuteCommand
+        command: ['jom', 'html_docs']
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: 'Could not build documentation.'
+      - type: UploadArtifact
+        archiveDirectory: '{{.BuildDir}}\\doc'
+        transferType: UploadModuleDocumentation
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 1800
       - type: ExecuteCommand
         command: "nmake install INSTALL_ROOT={{.InstallRoot}}"
         maxTimeInSeconds: 1800
