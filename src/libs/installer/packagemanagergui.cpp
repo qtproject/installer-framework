@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -67,6 +67,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QSplitter>
 #include <QStringListModel>
 #include <QTextBrowser>
 
@@ -1915,7 +1916,6 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
 
     m_licenseListWidget = new QListWidget(this);
     m_licenseListWidget->setObjectName(QLatin1String("LicenseListWidget"));
-    m_licenseListWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     connect(m_licenseListWidget, &QListWidget::currentItemChanged,
         this, &LicenseAgreementPage::currentItemChanged);
 
@@ -1924,15 +1924,18 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
-    m_textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(m_textBrowser, &QTextBrowser::anchorClicked, this, &LicenseAgreementPage::openLicenseUrl);
 
-    QVBoxLayout *licenseBoxLayout = new QVBoxLayout();
-    licenseBoxLayout->addWidget(m_licenseListWidget);
-    licenseBoxLayout->addWidget(m_textBrowser);
+    QSplitter *licenseSplitter = new QSplitter(this);
+    licenseSplitter->setOrientation(Qt::Vertical);
+    licenseSplitter->setChildrenCollapsible(false);
+    licenseSplitter->addWidget(m_licenseListWidget);
+    licenseSplitter->addWidget(m_textBrowser);
+    licenseSplitter->setStretchFactor(0, 1);
+    licenseSplitter->setStretchFactor(1, 3);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addLayout(licenseBoxLayout);
+    layout->addWidget(licenseSplitter);
 
     m_acceptCheckBox = new QCheckBox(this);
     m_acceptCheckBox->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
