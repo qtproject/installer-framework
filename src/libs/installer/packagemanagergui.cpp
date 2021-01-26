@@ -41,6 +41,7 @@
 #include "productkeycheck.h"
 #include "repositorycategory.h"
 #include "componentselectionpage_p.h"
+#include "loggingutils.h"
 
 #include "sysinfo.h"
 #include "globals.h"
@@ -2578,7 +2579,7 @@ void ReadyForInstallationPage::entering()
     QString htmlOutput;
     bool componentsOk = packageManagerCore()->calculateComponents(&htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
-    m_taskDetailsBrowser->setVisible(!componentsOk || isVerbose());
+    m_taskDetailsBrowser->setVisible(!componentsOk || LoggingHandler::instance().isVerbose());
     setComplete(componentsOk);
 
     QString spaceInfo;
@@ -2719,7 +2720,7 @@ void PerformInstallationPage::entering()
     if (packageManagerCore()->settings().productImages().count() > 1)
         m_imageChangeTimer.start();
 
-    if (isVerbose()) {
+    if (LoggingHandler::instance().isVerbose()) {
         m_performInstallationForm->toggleDetails();
     }
     if (packageManagerCore()->isUninstaller()) {

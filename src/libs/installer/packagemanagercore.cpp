@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -45,7 +45,7 @@
 #include "settings.h"
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
-#include "printoutput.h"
+#include "loggingutils.h"
 
 #include <productkeycheck.h>
 
@@ -1202,40 +1202,6 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
             ProgressCoordinator::instance(), &ProgressCoordinator::printProgressMessage);
 }
 
-class VerboseWriterAdminOutput : public VerboseWriterOutput
-{
-public:
-    VerboseWriterAdminOutput(PackageManagerCore *core) : m_core(core) {}
-
-    virtual bool write(const QString &fileName, QIODevice::OpenMode openMode, const QByteArray &data) Q_DECL_OVERRIDE
-    {
-        bool gainedAdminRights = false;
-
-        if (!RemoteClient::instance().isActive()) {
-            m_core->gainAdminRights();
-            gainedAdminRights = true;
-        }
-
-        RemoteFileEngine file;
-        file.setFileName(fileName);
-        if (file.open(openMode)) {
-            file.write(data.constData(), data.size());
-            file.close();
-            if (gainedAdminRights)
-                m_core->dropAdminRights();
-            return true;
-        }
-
-        if (gainedAdminRights)
-            m_core->dropAdminRights();
-
-        return false;
-    }
-
-private:
-    PackageManagerCore *m_core;
-};
-
 /*!
     Destroys the instance.
 */
@@ -2225,7 +2191,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
     if (matchedPackages.count() == 0)
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
     else
-        QInstaller::printPackageInformation(matchedPackages, localInstalledPackages());
+        LoggingHandler::instance().printPackageInformation(matchedPackages, localInstalledPackages());
 }
 
 bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
@@ -2321,7 +2287,7 @@ void PackageManagerCore::listInstalledPackages(const QString &regexp)
         if (re.match(package.name).hasMatch())
             packages.append(package);
     }
-    QInstaller::printLocalPackageInformation(packages);
+    LoggingHandler::instance().printLocalPackageInformation(packages);
 }
 
 /*!
@@ -3177,15 +3143,7 @@ bool PackageManagerCore::containsValue(const QString &key) const
 */
 bool PackageManagerCore::isVerbose() const
 {
-    return QInstaller::isVerbose();
-}
-
-/*!
-    Returns verbose level.
-*/
-VerbosityLevel PackageManagerCore::verboseLevel() const
-{
-    return QInstaller::verboseLevel();
+    return LoggingHandler::instance().isVerbose();
 }
 
 /*!
@@ -3194,7 +3152,7 @@ VerbosityLevel PackageManagerCore::verboseLevel() const
 */
 void PackageManagerCore::setVerbose(bool on)
 {
-    QInstaller::setVerbose(on);
+    LoggingHandler::instance().setVerbose(on);
 }
 
 PackageManagerCore::Status PackageManagerCore::status() const
@@ -3562,7 +3520,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         component->setUninstalled();
         const QString localPath = component->localTempPath();
-        if (verboseLevel() == VerbosityLevel::Detailed) {
+        if (LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed) {
             static QString lastLocalPath;
             if (lastLocalPath != localPath)
                 qCDebug(QInstaller::lcDeveloperBuild()) << "Url is:" << localPath;

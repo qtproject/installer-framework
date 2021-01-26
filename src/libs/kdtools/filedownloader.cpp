@@ -32,6 +32,7 @@
 
 #include "fileutils.h"
 #include "utils.h"
+#include "loggingutils.h"
 
 #include <QDialog>
 #include <QDir>
@@ -1401,7 +1402,8 @@ void KDUpdater::HttpDownloader::httpReqFinished()
         const QUrl url = d->http->url();
         // Only print host information when the logging category is enabled
         // and output verbosity is set above standard level.
-        if (url.isValid() && QInstaller::lcServer().isDebugEnabled() && verboseLevel() == VerbosityLevel::Detailed) {
+        if (url.isValid() && QInstaller::lcServer().isDebugEnabled()
+                && LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed) {
             const QFileInfo fi(d->http->url().toString());
             if (fi.suffix() != QLatin1String("sha1")){
                 const QString hostName = url.host();

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,6 +36,7 @@
 #include <selfrestarter.h>
 #include <remoteserver.h>
 #include <utils.h>
+#include <loggingutils.h>
 
 #include <QCommandLineParser>
 #include <QDateTime>
@@ -212,14 +213,14 @@ int main(int argc, char *argv[])
         foreach (QString value, optionNames) {
             if (value == CommandLineOptions::scVerboseShort
                     || value == CommandLineOptions::scVerboseLong) {
-                QInstaller::setVerbose(true);
+                QInstaller::LoggingHandler::instance().setVerbose(true);
             }
         }
 
         foreach (const QString &option, CommandLineOptions::scCommandLineInterfaceOptions) {
             bool setVerbose = parser.positionalArguments().contains(option);
             if (setVerbose) {
-                QInstaller::setVerbose(setVerbose);
+                QInstaller::LoggingHandler::instance().setVerbose(setVerbose);
                 break;
             }
         }
@@ -267,7 +268,7 @@ int main(int argc, char *argv[])
                 || parser.positionalArguments().contains(CommandLineOptions::scCreateOfflineLong)) {
             return CommandLineInterface(argc, argv).createOfflineInstaller();
         }
-        if (QInstaller::isVerbose()) {
+        if (QInstaller::LoggingHandler::instance().isVerbose()) {
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
         } else {
 #ifdef Q_OS_WIN

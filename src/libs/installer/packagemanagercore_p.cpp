@@ -49,6 +49,7 @@
 #include "componentchecker.h"
 #include "globals.h"
 #include "binarycreator.h"
+#include "loggingutils.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -465,7 +466,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         restoreCheckState();
 
-        if (m_core->verboseLevel() == VerbosityLevel::Detailed) {
+        if (LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed) {
             foreach (QInstaller::Component *component, components) {
                 const QStringList warnings = ComponentChecker::checkComponent(component);
                 foreach (const QString &warning, warnings)

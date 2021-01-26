@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,7 @@
 #include <binarycreator.h>
 #include <init.h>
 #include <utils.h>
+#include <loggingutils.h>
 
 #include <QtCore/QDebug>
 
@@ -152,7 +153,7 @@ int main(int argc, char **argv)
             parsedArgs.ftype = QInstallerTools::Include;
         }
         else if (*it == QLatin1String("-v") || *it == QLatin1String("--verbose")) {
-            QInstaller::setVerbose(true);
+            LoggingHandler::instance().setVerbose(true);
         } else if (*it == QLatin1String("-n") || *it == QLatin1String("--online-only")) {
             parsedArgs.onlineOnly = true;
         } else if (*it == QLatin1String("-f") || *it == QLatin1String("--offline-only")) {

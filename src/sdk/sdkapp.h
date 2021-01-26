@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,6 +46,7 @@
 #include <runoncechecker.h>
 #include <globals.h>
 #include <errors.h>
+#include <loggingutils.h>
 
 #include <QApplication>
 #include <QDir>
@@ -164,7 +165,7 @@ public:
                                         "ifw.package.* = true\n");
         }
 
-        if (QInstaller::verboseLevel() == QInstaller::VerbosityLevel::Detailed) {
+        if (QInstaller::LoggingHandler::instance().verboseLevel() == QInstaller::LoggingHandler::Detailed) {
             loggingRules += QLatin1String("\nifw.developer.build = true\n"
                                           "ifw.package.* = true\n");
         }

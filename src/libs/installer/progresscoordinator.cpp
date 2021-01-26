@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,6 +35,7 @@
 
 #include "globals.h"
 #include "utils.h"
+#include "loggingutils.h"
 
 using namespace QInstaller;
 
@@ -312,7 +313,7 @@ void ProgressCoordinator::emitDownloadStatus(const QString &status)
 
 void ProgressCoordinator::printProgressPercentage(int progress)
 {
-    if (!isVerbose())
+    if (!LoggingHandler::instance().isVerbose())
         return;
 
     Q_ASSERT(m_progressSpinner->currentIndex < m_progressSpinner->spinnerChars.size());

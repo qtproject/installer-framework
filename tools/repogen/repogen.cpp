@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -33,6 +33,7 @@
 #include <updater.h>
 #include <settings.h>
 #include <utils.h>
+#include <loggingutils.h>
 #include <lib7z_facade.h>
 
 #include <QDomDocument>
@@ -112,7 +113,7 @@ int main(int argc, char** argv)
         while (!args.isEmpty() && args.first().startsWith(QLatin1Char('-'))) {
             if (args.first() == QLatin1String("--verbose") || args.first() == QLatin1String("-v")) {
                 args.removeFirst();
-                setVerbose(true);
+                LoggingHandler::instance().setVerbose(true);
             } else if (args.first() == QLatin1String("--exclude") || args.first() == QLatin1String("-e")) {
                 args.removeFirst();
                 if (!filteredPackages.isEmpty()) {

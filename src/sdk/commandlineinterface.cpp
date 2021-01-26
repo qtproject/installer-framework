@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,7 +34,7 @@
 #include <globals.h>
 #include <productkeycheck.h>
 #include <errors.h>
-#include <printoutput.h>
+#include <loggingutils.h>
 
 #include <QDir>
 
@@ -101,7 +101,7 @@ int CommandLineInterface::checkUpdates()
         qCWarning(QInstaller::lcInstallerInstallLog) << "There are currently no updates available.";
         return EXIT_SUCCESS;
     }
-    QInstaller::printComponentInfo(components);
+    QInstaller::LoggingHandler::instance().printComponentInfo(components);
     return EXIT_SUCCESS;
 }
 
