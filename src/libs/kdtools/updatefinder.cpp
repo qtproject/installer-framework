@@ -55,6 +55,18 @@ using namespace QInstaller;
     objects.
 */
 
+/*!
+    \fn void KDUpdater::UpdateFinder::addCompressedPackage(bool add)
+    \internal
+
+*/
+
+/*!
+    \fn void KDUpdater::UpdateFinder::isCompressedPackage()
+    \internal
+
+*/
+
 //
 // Private
 //
@@ -476,6 +488,9 @@ QList<Update *> UpdateFinder::updates() const
     return d->updates.values();
 }
 
+/*!
+    Sets the information about installed local packages \a hub.
+*/
 void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 {
     d->m_localPackageHub = std::move(hub);

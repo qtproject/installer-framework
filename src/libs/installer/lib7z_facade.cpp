@@ -197,6 +197,9 @@ namespace Lib7z {
 
 std::once_flag gOnceFlag;
 
+/*!
+    Initializes 7z and registers codecs and compression methods.
+*/
 void initSevenZ()
 {
     std::call_once(gOnceFlag, [] {
@@ -563,6 +566,9 @@ bool operator==(const File &lhs, const File &rhs)
         || rhs.permissions == static_cast<QFile::Permissions>(-1));
 }
 
+/*!
+   Returns a list of files belonging to an \a archive.
+*/
 QVector<File> listArchive(QFileDevice *archive)
 {
     LIB7Z_ASSERTS(archive, Readable)

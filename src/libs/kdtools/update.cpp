@@ -42,6 +42,11 @@ using namespace KDUpdater;
    KDUpdater::UpdateFinder (which is a friend class). The destructor however is public.
 */
 
+/*!
+    \fn KDUpdater::Update::packageSource() const
+
+    Returns the package source.
+*/
 
 /*!
    \internal

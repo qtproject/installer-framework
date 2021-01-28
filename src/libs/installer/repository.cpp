@@ -33,6 +33,12 @@
 #include <QFileInfo>
 #include <QStringList>
 
+/*!
+    \fn inline uint QInstaller::qHash(const Repository &repository)
+
+    Returns a hash of the \a repository.
+*/
+
 namespace QInstaller {
 
 /*
