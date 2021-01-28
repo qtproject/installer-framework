@@ -42,7 +42,8 @@
 #if defined(Q_OS_UNIX)
 #include <unistd.h>
 #elif defined(Q_OS_WIN)
-#include <fileapi.h>
+#include <stdio.h>
+#include <io.h>
 #endif
 
 namespace QInstaller {
@@ -114,7 +115,7 @@ LoggingHandler::LoggingHandler()
 #if defined(Q_OS_UNIX)
     m_outputRedirected = !isatty(fileno(stdout));
 #elif defined(Q_OS_WIN)
-    m_outputRedirected = (GetFileType(GetStdHandle(STD_OUTPUT_HANDLE)) == FILE_TYPE_DISK);
+    m_outputRedirected = !_isatty(_fileno(stdout));
 #endif
 }
 

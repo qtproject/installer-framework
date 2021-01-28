@@ -31,6 +31,7 @@
 #include "errors.h"
 #include "scriptengine_p.h"
 #include "systeminfo.h"
+#include "loggingutils.h"
 
 #include <QMetaEnum>
 #include <QQmlEngine>
@@ -344,7 +345,7 @@ QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
                         .arg(identifier, selectedDirectoryOrFile);
             selectedDirectoryOrFile = QString();
         }
-    } else {
+    } else if (!LoggingHandler::instance().outputRedirected()) {
         qDebug().nospace().noquote() << identifier << ": " << caption << ": ";
         QTextStream stream(stdin);
         stream.readLineInto(&selectedDirectoryOrFile);
@@ -358,6 +359,12 @@ QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
                         .arg(selectedDirectoryOrFile);
             selectedDirectoryOrFile = QString();
         }
+    } else {
+        qCDebug(QInstaller::lcInstallerInstallLog).nospace()
+            << "No answer available for "<< identifier << ": " << caption;
+
+        throw Error(tr("User input is required but the output "
+            "device is not associated with a terminal."));
     }
     if (!errorString.isEmpty())
         qCWarning(QInstaller::lcInstallerInstallLog).nospace() << errorString;

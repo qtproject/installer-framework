@@ -971,6 +971,8 @@ QString PackageManagerCore::readFile(const QString &filePath, const QString &cod
  * characters. If \a maxlen is 0, the line can be of any length.
  *
  * \note Can be only called when installing from command line instance without GUI.
+ * If the output device is not a TTY, i.e. when forwarding to a file, the function
+ * will throw an error.
  *
  * \sa {installer::readConsoleLine}{installer.readConsoleLine}
  */
@@ -978,6 +980,10 @@ QString PackageManagerCore::readConsoleLine(const QString &title, qint64 maxlen)
 {
     if (!isCommandLineInstance())
         return QString();
+    if (LoggingHandler::instance().outputRedirected()) {
+        throw Error(tr("User input is required but the output "
+            "device is not associated with a terminal."));
+    }
     if (!title.isEmpty())
         qDebug() << title;
     QTextStream stream(stdin);

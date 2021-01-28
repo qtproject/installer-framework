@@ -29,6 +29,7 @@
 #include "messageboxhandler.h"
 
 #include "globals.h"
+#include "loggingutils.h"
 
 #include <QtCore/QDebug>
 
@@ -420,6 +421,9 @@ QMessageBox::StandardButton MessageBoxHandler::showMessageBox(MessageType messag
     if (qobject_cast<QApplication*> (qApp) == nullptr) {
         QMessageBox::StandardButton button = defaultButton;
         bool showAnswerInLog = true;
+        if (LoggingHandler::instance().outputRedirected() && (m_defaultAction == AskUser))
+            setDefaultAction(Reject);
+
         if (m_defaultAction == AskUser) {
             if (!availableAnswers.isEmpty()) {
                 while (!askAnswerFromUser(button, buttons)) {
