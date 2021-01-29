@@ -58,6 +58,9 @@
             KDUpdater classes are a fork of KDAB's general
             \l{http://docs.kdab.com/kdtools/2.2.2/group__kdupdater.html}
             {KDUpdater module}.
+    \row
+        \li \l{Lib7z}
+        \li Contains classes to create and extract archives.
     \endtable
 
     \section1 QInstaller C++ Classes
@@ -67,4 +70,8 @@
     \section1 KDUpdater C++ Classes
 
     \generatelist{classesbymodule kdupdater}
+
+    \section1 Lib7z C++ Classes
+
+    \generatelist{classesbymodule Lib7z}
 */

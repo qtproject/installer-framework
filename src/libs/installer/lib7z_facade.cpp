@@ -116,6 +116,12 @@ void registerCodecByteSwap();
 namespace Lib7z {
 
 /*!
+    \inmodule Lib7z
+    \class Lib7z::PercentPrinter
+    \brief The PercentPrinter class displays the archiving process.
+*/
+
+/*!
     \fn void Lib7z::PercentPrinter::PrintRatio()
 
     Prints ratio.
