@@ -117,6 +117,36 @@ namespace Lib7z {
 
 /*!
     \inmodule Lib7z
+    \class Lib7z::File
+    \internal
+*/
+
+/*!
+    \inmodule Lib7z
+    \class Lib7z::UpdateCallback
+    \internal
+*/
+
+/*!
+    \inmodule Lib7z
+    \class Lib7z::SevenZipException
+    \brief The SevenZipException provides a class for lib7z exceptions.
+*/
+
+/*!
+    \fn explicit Lib7z::SevenZipException::SevenZipException(const QString &msg)
+
+    Constructs an instance of SevenZipException with error message \a msg.
+*/
+
+/*!
+    \fn explicit Lib7z::SevenZipException::SevenZipException(const char *msg)
+
+    Constructs an instance of SevenZipException with error message \a msg.
+*/
+
+/*!
+    \inmodule Lib7z
     \class Lib7z::PercentPrinter
     \brief The PercentPrinter class displays the archiving process.
 */
@@ -606,15 +636,24 @@ QVector<File> listArchive(QFileDevice *archive)
     return QVector<File>(); // never reached
 }
 
+/*!
+    \inmodule Lib7z
+    \class Lib7z::ExtractCallback
+    \brief Provides a callback for archive extraction.
+*/
 
-// -- ExtractCallback
-
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetTotal(UInt64 t)
 {
     total = t;
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 *c)
 {
     completed = *c;
@@ -623,8 +662,12 @@ STDMETHODIMP ExtractCallback::SetCompleted(const UInt64 *c)
     return S_OK;
 }
 
-// this method will be called by CFolderOutStream::OpenFile to stream via
-// CDecoder::CodeSpec extracted content to an output stream.
+/*!
+    \internal
+
+    This method will be called by CFolderOutStream::OpenFile to stream via
+    CDecoder::CodeSpec extracted content to an output stream.
+*/
 STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **outStream, Int32 /*askExtractMode*/)
 {
     *outStream = nullptr;
@@ -685,11 +728,17 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::PrepareOperation(Int32 /*askExtractMode*/)
 {
     return S_OK;
 }
 
+/*!
+    \internal
+*/
 STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*/)
 {
     if (targetDir.isEmpty())
@@ -838,9 +887,26 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
 /*!
     \fn virtual Lib7z::ExtractCallback::setCompleted(quint64 completed, quint64 total)
 
-    Always returns \c true. \c completed and \c total are unused.
+    Always returns \c true.
 */
 
+/*!
+    \fn ULONG Lib7z::ExtractCallback::AddRef()
+
+    \internal
+*/
+
+/*!
+    \fn LONG Lib7z::ExtractCallback::QueryInterface(const GUID &iid, void **outObject)
+
+    \internal
+*/
+
+/*!
+    \fn ULONG Lib7z::ExtractCallback::Release()
+
+    \internal
+*/
 
 // -- UpdateCallback
 
