@@ -26,7 +26,6 @@
 ****************************************************************************/
 
 /*!
-    \contentspage {index.html}{Qt Installer Framework}
     \previouspage ifw-getting-started.html
     \page ifw-use-cases.html
     \nextpage ifw-use-cases-install.html
@@ -61,7 +60,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases.html
     \page ifw-use-cases-install.html
     \nextpage ifw-use-cases-add.html
@@ -170,7 +168,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases-install.html
     \page ifw-use-cases-add.html
     \nextpage ifw-use-cases-remove.html
@@ -234,7 +231,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases-add.html
     \page ifw-use-cases-remove.html
     \nextpage ifw-use-cases-update.html
@@ -287,7 +283,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases-remove.html
     \page ifw-use-cases-update.html
     \nextpage ifw-use-cases-settings.html
@@ -338,7 +333,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases-update.html
     \page ifw-use-cases-settings.html
     \nextpage ifw-use-cases-cli.html
@@ -375,7 +369,6 @@
 */
 
 /*!
-    \contentspage index.html
     \previouspage ifw-use-cases-settings.html
     \page ifw-use-cases-cli.html
     \nextpage ifw-tutorial.html
