@@ -111,3 +111,6 @@ vendors/pdm-proto/*/libs/Windows/x32/MD
 vendors/pdm-proto/*/libs/Windows/x32/MT/libprotobuf.lib
 vendors/protobuf/*/lib/*
 !vendors/protobuf/*/lib/libprotobuf.lib
+
+# Include the entire Crashpad folder
+!vendors/crashpad/**/*
