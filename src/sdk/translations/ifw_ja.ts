@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="ja">
 <context>
     <name>AuthenticationRequiredException</name>
     <message>
@@ -106,12 +106,8 @@
 <context>
     <name>InstallerBase</name>
     <message>
-        <source>Waiting for %1</source>
-        <translation>%1 を待機しています</translation>
-    </message>
-    <message>
-        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
-        <translation>別の %1 インスタンスがすでに実行されています。 そのインスタンスが終了するまで待機するか、そのインスタンスを閉じるか、システムを再起動してください。</translation>
+        <source>Unable to start installer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -728,16 +724,20 @@
         <translation>テンプレート %1 の一時ファイルを開けません: %2</translation>
     </message>
     <message>
-        <source>Corrupt installation</source>
-        <translation>インストールが破損しています</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>ファイル &quot;%1&quot; を &quot;%2&quot; にコピーできません: %3</translation>
     </message>
     <message>
-        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
-        <translation>インストールが破損している可能性があります。 再インストールを検討してください。</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The specified module could not be found.</source>
         <translation>指定したモジュールが見つかりませんでした。</translation>
+    </message>
+    <message>
+        <source>Invalid content in &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -771,8 +771,16 @@
         <translation>%1 で isDefault を解決できません</translation>
     </message>
     <message>
+        <source>There was an error loading the selected component. This component can not be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Update Info: </source>
         <translation>更新情報: </translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -830,6 +838,10 @@
         <translation>デフォルト (&amp;A)</translation>
     </message>
     <message>
+        <source>Select default components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translation>Alt + R</translation>
@@ -837,6 +849,10 @@
     <message>
         <source>&amp;Reset</source>
         <translation>リセット(&amp;R)</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -848,6 +864,10 @@
         <translation>すべて選択(&amp;S)</translation>
     </message>
     <message>
+        <source>Select all components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translation>Alt + D</translation>
@@ -857,12 +877,20 @@
         <translation>すべて選択解除 (&amp;D)</translation>
     </message>
     <message>
-        <source>To install new compressed repository, browse the repositories from your computer</source>
-        <translation>圧縮されたリポジトリを新規にインストールするには、お使いのコンピューターを参照して該当するリポジトリを選択します。</translation>
+        <source>Deselect all components in the tree view.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Browse QBSP files</source>
         <translation>QBSP ファイルの参照 (&amp;B)</translation>
+    </message>
+    <message>
+        <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories to selection.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
@@ -891,6 +919,10 @@
     <message>
         <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
         <translation>インストールするコンポーネントを選択します。 コンポーネントをアンインストールするには、インストール済みのコンポーネントを選択解除します。 すでにインストールされているコンポーネントは更新されません。</translation>
+    </message>
+    <message>
+        <source>Mandatory components need to be updated first before you can select other components to update.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1009,6 +1041,14 @@
     <message>
         <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
         <translation>&quot;%1&quot; のインストーラーをオフラインにする必要があります。</translation>
+    </message>
+    <message>
+        <source>Cannot create path &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -1131,10 +1171,6 @@ Error while loading %2</source>
     <message>
         <source>Redirect loop detected for &quot;%1&quot;.</source>
         <translation>&quot;%1&quot; でリダイレクト ループが検出されました。</translation>
-    </message>
-    <message>
-        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
-        <translation>&quot;%1&quot; でチェックサムの不一致が検出されました。</translation>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
@@ -1262,6 +1298,10 @@ Error while loading %2</source>
         <translation>%1 ウィザードを完了しています</translation>
     </message>
     <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Click %1 to exit the %2 Wizard.</source>
         <translation>%2 ウィザードを終了するには、%1 をクリックします。</translation>
     </message>
@@ -1371,11 +1411,6 @@ Error while loading %2</source>
         <translation>Alt + A</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>do not agree license</comment>
-        <translation>Alt + D</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>次の使用許諾契約をお読みください。 インストール処理に進む前に、この契約に記載された利用条件に同意する必要があります。</translation>
     </message>
@@ -1384,20 +1419,12 @@ Error while loading %2</source>
         <translation>使用許諾に同意します。</translation>
     </message>
     <message>
-        <source>I do not accept the license.</source>
-        <translation>使用許諾に同意しません。</translation>
-    </message>
-    <message>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
         <translation>次の使用許諾契約をお読みください。 インストール処理に進む前に、これらの契約に記載された利用条件に同意する必要があります。</translation>
     </message>
     <message>
         <source>I accept the licenses.</source>
         <translation>使用許諾に同意します。</translation>
-    </message>
-    <message>
-        <source>I do not accept the licenses.</source>
-        <translation>使用許諾に同意しません。</translation>
     </message>
 </context>
 <context>
@@ -1421,6 +1448,10 @@ Error while loading %2</source>
 </context>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
+    <message>
+        <source>Invalid argument in %1: Empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>読み取り用のファイル &quot;%1&quot; を開けません: %2</translation>
@@ -1471,6 +1502,10 @@ Error while loading %2</source>
     <message>
         <source>Extracting meta information...</source>
         <translation>メタ情報を取得しています...</translation>
+    </message>
+    <message>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>&quot;%1&quot; でチェックサムの不一致が検出されました。</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository... %1/%2 </source>
@@ -1534,6 +1569,64 @@ Downloading packages...</source>
         <translation>不明なエラーが発生したため、一部のコンポーネントを削除できませんでした。</translation>
     </message>
     <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>選択したディレクトリはすでに存在し、インストール内容が含まれています。 別のターゲットをインストール用に選択してください。</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>空でない既存のディレクトリをインストール用に選択しました。
+選択したディレクトリは、このアプリケーションのアンインストール時に完全に消去されるので注意してください。
+インストールに失敗することもあるため、このディレクトリへのインストールはお勧めしません。
+続行しますか？</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>既存のファイルまたはシンボリック リンクを選択しました。別のターゲットをインストール用に選択してください。</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>インストール パスを空にすることはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>インストール パスを相対パスにすることはできません。絶対パスを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>パスまたはインストール ディレクトリに ASCII 以外の文字が含まれています。 この文字は現在サポートされていません。 別のパスまたはインストール ディレクトリを選択してください。</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>インストール ディレクトリ全体が削除されるので、%1 へのインストールはできません。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>入力したパスは長すぎます。有効なパスを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>入力したパスは無効です。有効なターゲットを指定してください。</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>入力したパスは無効です。有効なドライブを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>インストール パスを &apos;.&apos; で終了することはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>インストール パスに &quot;%1&quot; を含めることはできません。有効なディレクトリを指定してください。</translation>
+    </message>
+    <message>
         <source>Application not running in Package Manager mode.</source>
         <translation>アプリケーションがパッケージ マネージャー モードで実行されていません。</translation>
     </message>
@@ -1558,12 +1651,69 @@ Downloading packages...</source>
         <translation>コンポーネントを削除しようとしています。</translation>
     </message>
     <message>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Component %1 already installed
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is virtual.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component not found.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running processes found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error while elevating access rights.</source>
         <translation>アクセス権限の昇格中にエラーが発生しました。</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>エラー</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、一時ファイルとインストール内容を格納できません。%2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、選択された一部のコンポーネントを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>十分なディスク空き容量がないため、一時ファイルを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
     </message>
     <message>
         <source>invalid</source>
@@ -1609,6 +1759,10 @@ Downloading packages...</source>
         <translation>ユーザーがインストールをキャンセルしました</translation>
     </message>
     <message>
+        <source>Retry count exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Writing maintenance tool.</source>
         <translation>保守ツールのデータを書き込んでいます。</translation>
     </message>
@@ -1633,8 +1787,32 @@ Downloading packages...</source>
         <translation>保守ツールのデータを &quot;%1&quot; に書き込めません: %2</translation>
     </message>
     <message>
+        <source>Cannot remove temporary data file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>保守ツールのバイナリ データを %1 に書き込めません: %2</translation>
+    </message>
+    <message>
+        <source>Writing offline base binary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>ファイル &quot;%1&quot; を削除できません: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>ディレクトリ &quot;%1&quot; を作成できません。</translation>
+    </message>
+    <message>
+        <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1697,6 +1875,38 @@ Update aborted!</source>
         <translation>アンインストールが中止されました。</translation>
     </message>
     <message>
+        <source>Cannot create target directory for installer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing offline generation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing installer configuration...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the installer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create offline installer. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation aborted!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
 Installing component %1</source>
         <translation>
@@ -1711,6 +1921,10 @@ Installing component %1</source>
 %2</source>
         <translation>インストール処理中にエラーが発生しました (%1):
 %2</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot prepare uninstall</source>
@@ -1794,6 +2008,10 @@ Installing component %1</source>
         <translation>設定</translation>
     </message>
     <message>
+        <source>Specify proxy settings and configure repositories for add-on components.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
@@ -1840,6 +2058,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Installing %1</source>
         <translation>%1 をインストールしています</translation>
+    </message>
+    <message>
+        <source>Installing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uninstalling</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1912,36 +2142,12 @@ Please copy the installer to a local drive</source>
         <translation>コンピューターに %1 をインストールする準備が整っています。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>十分なディスク空き容量がないため、一時ファイルとインストール内容を格納できません。%2 が最低限必要な場合は、%1 を利用できます。</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>十分なディスク空き容量がないため、選択された一部のコンポーネントを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>十分なディスク空き容量がないため、一時ファイルを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
-        <translation>インストール用に選択したボリュームには、インストールできるだけの容量はありますが、インストール後にそのボリュームの空き容量は 1 % 未満になります。%1</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation>インストール用に選択したボリュームには、インストールできるだけの容量はありますが、インストール後の空き容量は 100 MB 未満になります。%1</translation>
-    </message>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>ディスク空き容量の %1 がインストールに使用されます。</translation>
+        <source>Ready to Update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
-    <message>
-        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
-        <translation>&lt;エクステンション&gt; &lt;コマンド&gt; [説明 [contentType [アイコン]]]</translation>
-    </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
         <translation>ファイル タイプの登録は Windows でのみ実行できます。</translation>
@@ -1960,6 +2166,14 @@ Please copy the installer to a local drive</source>
 </context>
 <context>
     <name>QInstaller::ReplaceOperation</name>
+    <message>
+        <source>Current search argument calling &quot;%1&quot; with empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>読み取り用のファイル &quot;%1&quot; を開けません: %2</translation>
@@ -2109,70 +2323,12 @@ Please copy the installer to a local drive</source>
         <translation>参照(&amp;R)...</translation>
     </message>
     <message>
-        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>選択したディレクトリはすでに存在し、インストール内容が含まれています。 別のターゲットをインストール用に選択してください。</translation>
-    </message>
-    <message>
-        <source>You have selected an existing, non-empty directory for installation.
-Note that it will be completely wiped on uninstallation of this application.
-It is not advisable to install into this directory as installation might fail.
-Do you want to continue?</source>
-        <translation>空でない既存のディレクトリをインストール用に選択しました。
-選択したディレクトリは、このアプリケーションのアンインストール時に完全に消去されるので注意してください。
-インストールに失敗することもあるため、このディレクトリへのインストールはお勧めしません。
-続行しますか？</translation>
-    </message>
-    <message>
-        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation>既存のファイルまたはシンボリック リンクを選択しました。別のターゲットをインストール用に選択してください。</translation>
+        <source>Browse file system to choose the installation directory.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
         <translation>インストール フォルダーの選択</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation>インストール パスを空にすることはできません。有効なディレクトリを指定してください。</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation>インストール パスを相対パスにすることはできません。絶対パスを指定してください。</translation>
-    </message>
-    <message>
-        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>パスまたはインストール ディレクトリに ASCII 以外の文字が含まれています。 この文字は現在サポートされていません。 別のパスまたはインストール ディレクトリを選択してください。</translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>インストール ディレクトリ全体が削除されるので、%1 へのインストールはできません。</translation>
-    </message>
-    <message>
-        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>入力したパスは長すぎます。有効なパスを指定してください。</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>入力したパスは無効です。有効なターゲットを指定してください。</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>入力したパスは無効です。有効なドライブを指定してください。</translation>
-    </message>
-    <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation>インストール パスを &apos;.&apos; で終了することはできません。有効なディレクトリを指定してください。</translation>
-    </message>
-    <message>
-        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>インストール パスに &quot;%1&quot; を含めることはできません。有効なディレクトリを指定してください。</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>警告</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>エラー</translation>
     </message>
 </context>
 <context>
@@ -2224,6 +2380,58 @@ Do you want to continue?</source>
         <source>Error acquiring admin rights</source>
         <translation>管理者権限の取得中にエラーが発生しました</translation>
     </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>別の %1 インスタンスがすでに実行されています。 そのインスタンスが終了するまで待機するか、そのインスタンスを閉じるか、システムを再起動してください。</translation>
+    </message>
+    <message>
+        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as updater.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as package manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as uninstaller.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;setTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;installCompressedRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %1 does not exist.</source>
+        <translation>ファイル %1 は存在しません。</translation>
+    </message>
+    <message>
+        <source>Arguments missing for option %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid button value %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Incorrect arguments for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2268,6 +2476,10 @@ as a user with the appropriate rights and then clicking OK.</source>
     <message>
         <source>Cannot open settings file %1 for reading: %2</source>
         <translation>読み取り用の設定ファイル %1 を開けません: %2</translation>
+    </message>
+    <message>
+        <source>Select Categories</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2396,6 +2608,14 @@ as a user with the appropriate rights and then clicking OK.</source>
         <source>User defined repositories</source>
         <translation>ユーザー定義のリポジトリ</translation>
     </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2442,6 +2662,24 @@ as a user with the appropriate rights and then clicking OK.</source>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>ファイル名を &quot;%1&quot; から &quot;%2&quot; に変更できませんでした: %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ComponentSelectionPagePrivate</name>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>エラー</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

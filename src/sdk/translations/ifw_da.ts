@@ -106,12 +106,8 @@
 <context>
     <name>InstallerBase</name>
     <message>
-        <source>Waiting for %1</source>
-        <translation>Venter på %1</translation>
-    </message>
-    <message>
-        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
-        <translation>En anden %1-instans kører allerede. Vent til den er færdig, luk den eller genstart dit system.</translation>
+        <source>Unable to start installer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -733,16 +729,20 @@
         <translation>Kan ikke åbne midlertidig fil til skabelonen %1: %2</translation>
     </message>
     <message>
-        <source>Corrupt installation</source>
-        <translation>Ødelagt installation</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Kan ikke kopiere filen &quot;%1&quot; til &quot;%2&quot;: %3</translation>
     </message>
     <message>
-        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
-        <translation>Din installation ser ud til at være ødelagt. Overvej venligst at geninstallere from bunden.</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The specified module could not be found.</source>
         <translation>Det angivne modul blev ikke fundet.</translation>
+    </message>
+    <message>
+        <source>Invalid content in &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -843,6 +843,10 @@
         <translation>&amp;Standard</translation>
     </message>
     <message>
+        <source>Select default components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translation>Alt+N</translation>
@@ -850,6 +854,10 @@
     <message>
         <source>&amp;Reset</source>
         <translation>&amp;Nulstil</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -861,6 +869,10 @@
         <translation>&amp;Vælg alle</translation>
     </message>
     <message>
+        <source>Select all components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translation>Alt+F</translation>
@@ -870,8 +882,16 @@
         <translation>&amp;Fravælg alle</translation>
     </message>
     <message>
-        <source>To install new compressed repository, browse the repositories from your computer</source>
-        <translation>Gennemse repositorierne fra din computer, for at installere nyt komprimeret repository</translation>
+        <source>Deselect all components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories to selection.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Browse QBSP files</source>
@@ -904,6 +924,10 @@
     <message>
         <source>Please select the components you want to uninstall.</source>
         <translation>Vælg venligst de komponenter du vil afinstallere.</translation>
+    </message>
+    <message>
+        <source>Mandatory components need to be updated first before you can select other components to update.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1022,6 +1046,14 @@
     <message>
         <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
         <translation>Installeren ved &quot;%1&quot; skal være af typen offline.</translation>
+    </message>
+    <message>
+        <source>Cannot create path &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -1275,6 +1307,10 @@ Fejl under indlæsning af %2</translation>
         <translation>Fuldfører %1-assistenten</translation>
     </message>
     <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Click %1 to exit the %2 Wizard.</source>
         <translation>Klik på %1 for at afslutte %2-assistenten.</translation>
     </message>
@@ -1384,11 +1420,6 @@ Fejl under indlæsning af %2</translation>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>do not agree license</comment>
-        <translation>Alt+I</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Læs venligst følgende licensaftale. Du skal acceptere vilkårene i aftalen for at fortsætte installationen.</translation>
     </message>
@@ -1397,20 +1428,12 @@ Fejl under indlæsning af %2</translation>
         <translation>Jeg accepterer licensen.</translation>
     </message>
     <message>
-        <source>I do not accept the license.</source>
-        <translation>Jeg accepterer ikke licensen.</translation>
-    </message>
-    <message>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
         <translation>Læs venligst følgende licensaftaler. Du skal acceptere vilkårene i disse aftaler for at fortsætte installationen.</translation>
     </message>
     <message>
         <source>I accept the licenses.</source>
         <translation>Jeg accepterer licenserne.</translation>
-    </message>
-    <message>
-        <source>I do not accept the licenses.</source>
-        <translation>Jeg accepterer ikke licenserne.</translation>
     </message>
 </context>
 <context>
@@ -1434,6 +1457,10 @@ Fejl under indlæsning af %2</translation>
 </context>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
+    <message>
+        <source>Invalid argument in %1: Empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
@@ -1551,6 +1578,64 @@ Downloader pakker...</translation>
         <translation>Nogle komponenter kunne ikke fjernes fuldstændigt da der opstod en ukendt fejl.</translation>
     </message>
     <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Mappen du har valgt findes allerede og indeholder en installation. Vælg et andet mål til installationen.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Advarsel</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Du har valgt en eksisterende mappe til installation som ikke er tom.
+Bemærk at den vil blive fuldstændigt ryddet ved afinstallation af programmet.
+Det anbefales ikke at installere i mappen eftersom installationen kan mislykkes.
+Vil du fortsætte?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Du har valgt en eksisterende fil eller symlink, vælg venligst et andet mål for installationen.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke være tom, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Installationsstien må ikke være relativ, angiv venligst en absolut sti.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>Stien eller installationsmappen indeholder ikke-ASCII-tegn. Det understøttes ikke i øjeblikket! Vælg venligst en anden sti eller installationsmappe.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Da installationsmappen er fuldstændigt slettet, er installation i %1 forbudt.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Stien du har indtastet er for lang, sørg venligst for at angive en gyldig sti.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt mål.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt drev.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke slutte med &apos;.&apos;, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Installationsstien må ikke indholde &quot;%1&quot;, angiv venligst en gyldig mappe.</translation>
+    </message>
+    <message>
         <source>Application not running in Package Manager mode.</source>
         <translation>Program kører ikke i pakkehåndteringstilstand.</translation>
     </message>
@@ -1575,12 +1660,69 @@ Downloader pakker...</translation>
         <translation>Komponenter som er ved at blive fjernet.</translation>
     </message>
     <message>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Component %1 already installed
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is virtual.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component not found.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running processes found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error while elevating access rights.</source>
         <translation>Fejl under ophøjelse af adgangsrettigheder.</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Fejl</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre midlertidige filer og installationen. %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre alle valgte komponenter! %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>Ikke nok displads til at lagre midlertidige filer! %1 er tilgængelige, mens mindst %2 kræves.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>Installationen vil bruge %1 diskplads.</translation>
     </message>
     <message>
         <source>invalid</source>
@@ -1626,6 +1768,10 @@ Downloader pakker...</translation>
         <translation>Installation annulleret af bruger</translation>
     </message>
     <message>
+        <source>Retry count exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Writing maintenance tool.</source>
         <translation>Skriver vedligeholdelsesværktøj.</translation>
     </message>
@@ -1650,8 +1796,32 @@ Downloader pakker...</translation>
         <translation>Kan ikke skrive vedligeholdelsesværktøjet til &quot;%1&quot;: %2</translation>
     </message>
     <message>
+        <source>Cannot remove temporary data file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>Kan ikke skrive vedligeholdelsesværktøjets binære data til %1: %2</translation>
+    </message>
+    <message>
+        <source>Writing offline base binary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Kan ikke fjerne filen &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Kan ikke oprette mappen &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1714,6 +1884,38 @@ Opdatering afbrudt!</translation>
         <translation>Afinstallation afbrudt.</translation>
     </message>
     <message>
+        <source>Cannot create target directory for installer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing offline generation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing installer configuration...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the installer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create offline installer. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation aborted!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
 Installing component %1</source>
         <translation>
@@ -1728,6 +1930,10 @@ Installerer komponenten %1</translation>
 %2</source>
         <translation>Fejl under installationsprocessen (%1):
 %2</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot prepare uninstall</source>
@@ -1811,6 +2017,10 @@ Installerer komponenten %1</translation>
         <translation>Indstillinger</translation>
     </message>
     <message>
+        <source>Specify proxy settings and configure repositories for add-on components.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Fejl</translation>
     </message>
@@ -1857,6 +2067,18 @@ Kopiér venligst installeren til et lokalt drev</translation>
     <message>
         <source>Installing %1</source>
         <translation>Installerer %1</translation>
+    </message>
+    <message>
+        <source>Installing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uninstalling</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1929,36 +2151,12 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Opsætningen er nu klar til at begynde installationen af %1 på din computer.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre midlertidige filer og installationen. %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre alle valgte komponenter! %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre midlertidige filer! %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
-        <translation>Det bind du har valg til installation ser ud til at have tilstrækkelig plads til installationen, men der vil efterfølgende være mindre end 1% af bindets plads tilgængeligt. %1</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation>Det bind du har valg til installation ser ud til at have tilstrækkelig plads til installationen, men der vil efterfølgende være mindre end 100 MB tilgængeligt. %1</translation>
-    </message>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>Installationen vil bruge %1 diskplads.</translation>
+        <source>Ready to Update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
-    <message>
-        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
-        <translation>&lt;udvidelse&gt; &lt;kommando&gt; [beskrivelse [indholdsType [ikon]]]</translation>
-    </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
         <translation>Tilknytning af filtyper understøttes kun i Windows.</translation>
@@ -1977,6 +2175,14 @@ Kopiér venligst installeren til et lokalt drev</translation>
 </context>
 <context>
     <name>QInstaller::ReplaceOperation</name>
+    <message>
+        <source>Current search argument calling &quot;%1&quot; with empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
@@ -2126,70 +2332,12 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>&amp;Gennemse...</translation>
     </message>
     <message>
-        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Mappen du har valgt findes allerede og indeholder en installation. Vælg et andet mål til installationen.</translation>
-    </message>
-    <message>
-        <source>You have selected an existing, non-empty directory for installation.
-Note that it will be completely wiped on uninstallation of this application.
-It is not advisable to install into this directory as installation might fail.
-Do you want to continue?</source>
-        <translation>Du har valgt en eksisterende mappe til installation som ikke er tom.
-Bemærk at den vil blive fuldstændigt ryddet ved afinstallation af programmet.
-Det anbefales ikke at installere i mappen eftersom installationen kan mislykkes.
-Vil du fortsætte?</translation>
-    </message>
-    <message>
-        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation>Du har valgt en eksisterende fil eller symlink, vælg venligst et andet mål for installationen.</translation>
+        <source>Browse file system to choose the installation directory.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
         <translation>Vælg installationsmappe</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke være tom, angiv venligst en gyldig mappe.</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation>Installationsstien må ikke være relativ, angiv venligst en absolut sti.</translation>
-    </message>
-    <message>
-        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>Stien eller installationsmappen indeholder ikke-ASCII-tegn. Det understøttes ikke i øjeblikket! Vælg venligst en anden sti eller installationsmappe.</translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>Da installationsmappen er fuldstændigt slettet, er installation i %1 forbudt.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>Stien du har indtastet er for lang, sørg venligst for at angive en gyldig sti.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt mål.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>Stien du har indtastet er ikke gyldig, sørg venligst for at angive et gyldigt drev.</translation>
-    </message>
-    <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke slutte med &apos;.&apos;, angiv venligst en gyldig mappe.</translation>
-    </message>
-    <message>
-        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>Installationsstien må ikke indholde &quot;%1&quot;, angiv venligst en gyldig mappe.</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Advarsel</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fejl</translation>
     </message>
 </context>
 <context>
@@ -2241,6 +2389,58 @@ Vil du fortsætte?</translation>
         <source>Error acquiring admin rights</source>
         <translation>Fejl ved anskaffelse af administrator rettigheder</translation>
     </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>En anden %1-instans kører allerede. Vent til den er færdig, luk den eller genstart dit system.</translation>
+    </message>
+    <message>
+        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as updater.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as package manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as uninstaller.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;setTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;installCompressedRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %1 does not exist.</source>
+        <translation>Filen %1 findes ikke.</translation>
+    </message>
+    <message>
+        <source>Arguments missing for option %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid button value %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Incorrect arguments for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2285,6 +2485,10 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     <message>
         <source>Cannot open settings file %1 for reading: %2</source>
         <translation>Kan ikke åbne indstillingsfilen %1 til læsning: %2</translation>
+    </message>
+    <message>
+        <source>Select Categories</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2413,6 +2617,14 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
         <source>User defined repositories</source>
         <translation>Brugerdefinerede repositories</translation>
     </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2461,6 +2673,24 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>Omdøbning af filen &quot;%1&quot; til &quot;%2&quot; mislykkedes: %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ComponentSelectionPagePrivate</name>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fejl</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

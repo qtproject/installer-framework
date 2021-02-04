@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1">
+<TS version="2.1" language="fr">
 <context>
     <name>AuthenticationRequiredException</name>
     <message>
@@ -106,12 +106,8 @@
 <context>
     <name>InstallerBase</name>
     <message>
-        <source>Waiting for %1</source>
-        <translation>Attente de %1</translation>
-    </message>
-    <message>
-        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
-        <translation>Une autre instance de %1 est déjà en cours d’exécution. Attendez qu’elle soit terminée, fermez-la ou redémarrez votre système.</translation>
+        <source>Unable to start installer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -239,24 +235,28 @@
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n jour(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
             <numerusform>%n heure(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
             <numerusform>%n minute(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
             <numerusform>%n seconde(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -454,6 +454,7 @@
         <source>%n update(s) found.</source>
         <translation>
             <numerusform>%n mise(s) à jour trouvée(s).</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -728,16 +729,20 @@
         <translation>Ouvrir d’ouvrir le fichier temporaire pour le modèle %1 : %2</translation>
     </message>
     <message>
-        <source>Corrupt installation</source>
-        <translation>Installation endommagée</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
+        <translation>Impossible de copier le fichier &quot;%1&quot; vers &quot;%2&quot; : %3</translation>
     </message>
     <message>
-        <source>Your installation seems to be corrupted. Please consider re-installing from scratch.</source>
-        <translation>Votre installation semble endommagée. Vous pouvez réinstaller entièrement le produit.</translation>
+        <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The specified module could not be found.</source>
         <translation>Le module spécifié est introuvable.</translation>
+    </message>
+    <message>
+        <source>Invalid content in &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -771,8 +776,16 @@
         <translation>Impossible de résoudre isDefault dans %1</translation>
     </message>
     <message>
+        <source>There was an error loading the selected component. This component can not be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Update Info: </source>
         <translation>Informations de mise à jour : </translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -830,6 +843,10 @@
         <translation>Par déf&amp;aut</translation>
     </message>
     <message>
+        <source>Select default components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+R</source>
         <comment>reset to already installed components</comment>
         <translation>Alt+R</translation>
@@ -837,6 +854,10 @@
     <message>
         <source>&amp;Reset</source>
         <translation>&amp;Réinitialiser</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Alt+S</source>
@@ -848,6 +869,10 @@
         <translation>&amp;Sélectionner tout</translation>
     </message>
     <message>
+        <source>Select all components in the tree view.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Alt+D</source>
         <comment>deselect all components</comment>
         <translation>Alt+D</translation>
@@ -857,12 +882,20 @@
         <translation>&amp;Tout désélectionner</translation>
     </message>
     <message>
-        <source>To install new compressed repository, browse the repositories from your computer</source>
-        <translation>Pour installer un nouveau référentiel compressé, parcourez les référentiels sur votre ordinateur</translation>
+        <source>Deselect all components in the tree view.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Browse QBSP files</source>
         <translation>&amp;Parcourir les fichiers QBSP</translation>
+    </message>
+    <message>
+        <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories to selection.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
@@ -891,6 +924,10 @@
     <message>
         <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
         <translation>Sélectionnez les composants à installer. Désélectionnez les composants installés pour les désinstaller. Les composants déjà installés ne seront pas mis à jour.</translation>
+    </message>
+    <message>
+        <source>Mandatory components need to be updated first before you can select other components to update.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1009,6 +1046,14 @@
     <message>
         <source>Installer at &quot;%1&quot; needs to be an offline one.</source>
         <translation>Le programme d’installation de &quot;%1&quot; doit être hors connexion.</translation>
+    </message>
+    <message>
+        <source>Cannot create path &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -1133,10 +1178,6 @@ Erreur lors du chargement de %2</translation>
         <translation>Boucle de redirection détectée pour &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
-        <translation>Non-concordance des sommes de contrôle détectée pour &quot;%1&quot;.</translation>
-    </message>
-    <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
         <translation>Erreur réseau lors du téléchargement de &apos;%1&apos; : %2.</translation>
     </message>
@@ -1226,24 +1267,28 @@ Erreur lors du chargement de %2</translation>
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n jour(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
             <numerusform>%n heure(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
             <numerusform>%n minute(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
             <numerusform>%n seconde(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1260,6 +1305,10 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Completing the %1 Wizard</source>
         <translation>Exécution de l’assistant de %1</translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Click %1 to exit the %2 Wizard.</source>
@@ -1371,11 +1420,6 @@ Erreur lors du chargement de %2</translation>
         <translation>Alt+A</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>do not agree license</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Lisez le contrat de licence suivant. Vous devez accepter les termes contenus dans ce contrat avant de poursuivre l’installation.</translation>
     </message>
@@ -1384,20 +1428,12 @@ Erreur lors du chargement de %2</translation>
         <translation>J’accepte la licence.</translation>
     </message>
     <message>
-        <source>I do not accept the license.</source>
-        <translation>Je n’accepte pas la licence.</translation>
-    </message>
-    <message>
         <source>Please read the following license agreements. You must accept the terms contained in these agreements before continuing with the installation.</source>
         <translation>Lisez les contrats de licence suivants. Vous devez accepter les termes contenus dans ces contrats avant de poursuivre l’installation.</translation>
     </message>
     <message>
         <source>I accept the licenses.</source>
         <translation>J’accepte les licences.</translation>
-    </message>
-    <message>
-        <source>I do not accept the licenses.</source>
-        <translation>Je n’accepte pas les licences.</translation>
     </message>
 </context>
 <context>
@@ -1421,6 +1457,10 @@ Erreur lors du chargement de %2</translation>
 </context>
 <context>
     <name>QInstaller::LineReplaceOperation</name>
+    <message>
+        <source>Invalid argument in %1: Empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Impossible d’ouvrir le fichier &quot;%1&quot; en lecture : %2</translation>
@@ -1471,6 +1511,10 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Extracting meta information...</source>
         <translation>Extraction des métadonnées...</translation>
+    </message>
+    <message>
+        <source>Checksum mismatch detected for &quot;%1&quot;.</source>
+        <translation>Non-concordance des sommes de contrôle détectée pour &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository... %1/%2 </source>
@@ -1534,6 +1578,64 @@ Téléchargement des paquetages...</translation>
         <translation>Certains composants n’ont pas pu être supprimés entièrement en raison d’une erreur inconnue.</translation>
     </message>
     <message>
+        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
+        <translation>Le répertoire sélectionné existe déjà et contient une installation. Choisissez une autre cible pour l’installation.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Avertissement</translation>
+    </message>
+    <message>
+        <source>You have selected an existing, non-empty directory for installation.
+Note that it will be completely wiped on uninstallation of this application.
+It is not advisable to install into this directory as installation might fail.
+Do you want to continue?</source>
+        <translation>Vous avez sélectionné un répertoire existant et non vide pour l’installation.
+Notez qu’il va être entièrement effacé lors de la désinstallation de l’application.
+Il n’est pas conseillé d’effectuer l’installation dans ce répertoire car elle risque d’échouer.
+Souhaitez-vous continuer ?</translation>
+    </message>
+    <message>
+        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
+        <translation>Vous avez sélectionné un fichier ou lien symbolique existant. Choisissez une autre cible pour l’installation.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be empty, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne peut pas être vide. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
+        <source>The installation path cannot be relative, please specify an absolute path.</source>
+        <translation>Le chemin d’installation ne peut pas être relatif. Spécifiez un chemin absolu.</translation>
+    </message>
+    <message>
+        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
+        <translation>Le chemin d’accès ou le répertoire d’installation contient des caractères autres qu’ASCII. Cette opération n’est actuellement pas prise en charge ! Choisissez un autre chemin d’accès ou répertoire d’installation.</translation>
+    </message>
+    <message>
+        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
+        <translation>Comme le répertoire d’installation est entièrement supprimé, l’installation de %1 est interdite.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
+        <translation>Le chemin d’accès que vous avez saisi est trop long. Spécifiez un chemin valide.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
+        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez une cible valide.</translation>
+    </message>
+    <message>
+        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
+        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez un disque valide.</translation>
+    </message>
+    <message>
+        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne doit pas se terminer par &apos;.&apos;. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
+        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
+        <translation>Le chemin d’installation ne doit pas contenir &quot;%1&quot;. Spécifiez un répertoire valide.</translation>
+    </message>
+    <message>
         <source>Application not running in Package Manager mode.</source>
         <translation>L’application ne s’exécute pas en mode de gestionnaire de paquetages.</translation>
     </message>
@@ -1558,12 +1660,69 @@ Téléchargement des paquetages...</translation>
         <translation>Les composants vont être supprimés.</translation>
     </message>
     <message>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Component %1 already installed
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is virtual.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component not found.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Running processes found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error while elevating access rights.</source>
         <translation>Erreur lors de l’élévation des droits d’accès.</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Erreur</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires et l’installation. %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker tous les composants sélectionnés ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
+        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Installation will use %1 of disk space.</source>
+        <translation>L’installation va utiliser %1 de l’espace disque.</translation>
     </message>
     <message>
         <source>invalid</source>
@@ -1609,6 +1768,10 @@ Téléchargement des paquetages...</translation>
         <translation>Installation annulée par l’utilisateur</translation>
     </message>
     <message>
+        <source>Retry count exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Writing maintenance tool.</source>
         <translation>Écriture de l’outil de maintenance.</translation>
     </message>
@@ -1633,8 +1796,32 @@ Téléchargement des paquetages...</translation>
         <translation>Impossible d’écrire l’outil de maintenance dans %1 : %2</translation>
     </message>
     <message>
+        <source>Cannot remove temporary data file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
         <translation>Impossible d’écrire les données binaires de l’outil de maintenance dans %1 : %2</translation>
+    </message>
+    <message>
+        <source>Writing offline base binary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove file &quot;%1&quot;: %2</source>
+        <translation>Impossible de supprimer le fichier &quot;%1&quot; : %2</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot;.</source>
+        <translation>Impossible de créer le répertoire &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1697,6 +1884,38 @@ Mise à jour annulée !</translation>
         <translation>Désinstallation abandonnée.</translation>
     </message>
     <message>
+        <source>Cannot create target directory for installer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing offline generation...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing installer configuration...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating the installer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to create offline installer. %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove temporary directory &quot;%1&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline generation aborted!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>
 Installing component %1</source>
         <translation>
@@ -1711,6 +1930,10 @@ Installation du composant %1</translation>
 %2</source>
         <translation>Une erreur s’est produite au cours de l’installation (%1) :
 %2</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot prepare uninstall</source>
@@ -1794,6 +2017,10 @@ Installation du composant %1</translation>
         <translation>Réglages</translation>
     </message>
     <message>
+        <source>Specify proxy settings and configure repositories for add-on components.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
@@ -1840,6 +2067,18 @@ Copiez le programme d’installation sur un disque local</translation>
     <message>
         <source>Installing %1</source>
         <translation>Installation de %1</translation>
+    </message>
+    <message>
+        <source>Installing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Updating</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uninstalling</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1912,36 +2151,12 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>Le programme d’installation est maintenant prêt à installer %1 sur votre ordinateur.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires et l’installation. %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>L’espace disque est insuffisant pour stocker tous les composants sélectionnés ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards. %1</source>
-        <translation>Le volume sélectionné pour l’installation semble avoir un espace suffisant, mais il restera ensuite moins de 1% de l’espace du volume. %1</translation>
-    </message>
-    <message>
-        <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards. %1</source>
-        <translation>Le volume sélectionné pour l’installation semble avoir un espace suffisant, mais il restera ensuite moins de 100 Mo. %1</translation>
-    </message>
-    <message>
-        <source>Installation will use %1 of disk space.</source>
-        <translation>L’installation va utiliser %1 de l’espace disque.</translation>
+        <source>Ready to Update</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RegisterFileTypeOperation</name>
-    <message>
-        <source>&lt;extension&gt; &lt;command&gt; [description [contentType [icon]]]</source>
-        <translation>&lt;extension&gt; &lt;commande&gt; [description [contentType [icon]]]</translation>
-    </message>
     <message>
         <source>Registering file types is only supported on Windows.</source>
         <translation>L’inscription des types de fichiers est uniquement prise en charge sur Windows.</translation>
@@ -1960,6 +2175,14 @@ Copiez le programme d’installation sur un disque local</translation>
 </context>
 <context>
     <name>QInstaller::ReplaceOperation</name>
+    <message>
+        <source>Current search argument calling &quot;%1&quot; with empty search argument is not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Impossible d’ouvrir le fichier &quot;%1&quot; en lecture : %2</translation>
@@ -2109,70 +2332,12 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>P&amp;arcourir...</translation>
     </message>
     <message>
-        <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>Le répertoire sélectionné existe déjà et contient une installation. Choisissez une autre cible pour l’installation.</translation>
-    </message>
-    <message>
-        <source>You have selected an existing, non-empty directory for installation.
-Note that it will be completely wiped on uninstallation of this application.
-It is not advisable to install into this directory as installation might fail.
-Do you want to continue?</source>
-        <translation>Vous avez sélectionné un répertoire existant et non vide pour l’installation.
-Notez qu’il va être entièrement effacé lors de la désinstallation de l’application.
-Il n’est pas conseillé d’effectuer l’installation dans ce répertoire car elle risque d’échouer.
-Souhaitez-vous continuer ?</translation>
-    </message>
-    <message>
-        <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation>Vous avez sélectionné un fichier ou lien symbolique existant. Choisissez une autre cible pour l’installation.</translation>
+        <source>Browse file system to choose the installation directory.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
         <translation>Sélectionner le dossier d’installation</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation>Le chemin d’installation ne peut pas être vide. Spécifiez un répertoire valide.</translation>
-    </message>
-    <message>
-        <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation>Le chemin d’installation ne peut pas être relatif. Spécifiez un chemin absolu.</translation>
-    </message>
-    <message>
-        <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>Le chemin d’accès ou le répertoire d’installation contient des caractères autres qu’ASCII. Cette opération n’est actuellement pas prise en charge ! Choisissez un autre chemin d’accès ou répertoire d’installation.</translation>
-    </message>
-    <message>
-        <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation>Comme le répertoire d’installation est entièrement supprimé, l’installation de %1 est interdite.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation>Le chemin d’accès que vous avez saisi est trop long. Spécifiez un chemin valide.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez une cible valide.</translation>
-    </message>
-    <message>
-        <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation>Le chemin d’accès que vous avez saisi n’est pas valide. Spécifiez un disque valide.</translation>
-    </message>
-    <message>
-        <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation>Le chemin d’installation ne doit pas se terminer par &apos;.&apos;. Spécifiez un répertoire valide.</translation>
-    </message>
-    <message>
-        <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>Le chemin d’installation ne doit pas contenir &quot;%1&quot;. Spécifiez un répertoire valide.</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Avertissement</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Erreur</translation>
     </message>
 </context>
 <context>
@@ -2224,6 +2389,58 @@ Souhaitez-vous continuer ?</translation>
         <source>Error acquiring admin rights</source>
         <translation>Erreur d’acquisition des droits d’administrateur</translation>
     </message>
+    <message>
+        <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
+        <translation>Une autre instance de %1 est déjà en cours d’exécution. Attendez qu’elle soit terminée, fermez-la ou redémarrez votre système.</translation>
+    </message>
+    <message>
+        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as updater.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as package manager.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start installer binary as uninstaller.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;addTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;setTempRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty repository list for option &apos;installCompressedRepository&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The file %1 does not exist.</source>
+        <translation>Le fichier %1 n’existe pas.</translation>
+    </message>
+    <message>
+        <source>Arguments missing for option %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid button value %1 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Incorrect arguments for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2268,6 +2485,10 @@ en tant qu’utilisateur doté des droits appropriés, puis cliquez sur OK.</tra
     <message>
         <source>Cannot open settings file %1 for reading: %2</source>
         <translation>Impossible d’ouvrir le fichier de paramètres %1 en lecture : %2</translation>
+    </message>
+    <message>
+        <source>Select Categories</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2396,6 +2617,14 @@ en tant qu’utilisateur doté des droits appropriés, puis cliquez sur OK.</tra
         <source>User defined repositories</source>
         <translation>Référentiels définis par l’utilisateur</translation>
     </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2431,17 +2660,37 @@ en tant qu’utilisateur doté des droits appropriés, puis cliquez sur OK.</tra
         <source>Invalid arguments in %1: %n arguments given, %2 arguments expected.</source>
         <translation>
             <numerusform>Arguments non valides dans %1 : %n arguments fournis, %2 arguments attendus.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>Invalid arguments in %1: %n arguments given, %2 arguments expected in the form: %3.</source>
         <translation>
             <numerusform>Arguments non valides dans %1 : %n arguments fournis, %2 arguments attendus dans le formulaire : %3.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>Le changement de nom du fichier &quot;%1&quot; en &quot;%2&quot; a échoué : %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ComponentSelectionPagePrivate</name>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erreur</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
