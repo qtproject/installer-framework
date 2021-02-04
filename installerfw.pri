@@ -141,8 +141,10 @@ equals(TEMPLATE, app) {
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
 }
 
+# Library paths
 PROTOBUF_PATH = $$PWD/vendors/protobuf/v3.6.0
 PDM_PATH = $$PWD/vendors/pdm-proto/1.1.9
+CRASHPAD_PATH = $$PWD/vendors/crashpad
 
 # Protobuf
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
@@ -152,3 +154,7 @@ INCLUDEPATH += $$PROTOBUF_PATH/include
 LIBS += -L$$PDM_PATH/libs/Windows/x32/MT/ -lpdm -lplatform_pdm_proto_wrapper
 INCLUDEPATH += $$PDM_PATH/include
 INCLUDEPATH += $$PDM_PATH/include/generated
+
+# Crashpad
+LIBS += -L$$CRASHPAD_PATH/lib/Windows/x86/v141/MT/ -lbase -lclient -util
+INCLUDEPATH += $$CRASHPAD_PATH/include
