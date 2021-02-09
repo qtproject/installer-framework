@@ -114,6 +114,7 @@ int InstallerBase::run()
 
                 // To stop loading other translations it's sufficient that
                 // qt was loaded successfully or we hit English as system language
+                emit m_core->defaultTranslationsLoadedForLanguage(locale.language());
                 break;
             }
         }
