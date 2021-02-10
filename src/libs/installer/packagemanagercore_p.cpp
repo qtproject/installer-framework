@@ -624,6 +624,9 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 #else
         readMaintenanceConfigFiles(QCoreApplication::applicationDirPath());
 #endif
+        // Maintenancetool might have overwritten the variables
+        // user has given from command line. Reset those variables.
+        m_data.setUserDefinedVariables(params);
     }
     processFilesForDelayedDeletion();
 

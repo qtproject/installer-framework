@@ -52,20 +52,21 @@ namespace QInstaller
 
 PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables)
 {
-    setDynamicPredefinedVariables();
-
+    // Add user defined variables before dynamic as user settings can affect dynamic variables.
+    setUserDefinedVariables(variables);
+    addDynamicPredefinedVariables();
     // Set some common variables that may used e.g. as placeholder in some of the settings variables or
     // in a script or...
-    m_variables.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
-    m_variables.insert(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
-    m_variables.insert(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
+    addNewVariable(scTargetConfigurationFile, QLatin1String("components.xml"));
+    addNewVariable(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
+    addNewVariable(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
 
 #ifdef Q_OS_WIN
-    m_variables.insert(QLatin1String("os"), QLatin1String("win"));
+    addNewVariable(QLatin1String("os"), QLatin1String("win"));
 #elif defined(Q_OS_MACOS)
-    m_variables.insert(QLatin1String("os"), QLatin1String("mac"));
+    addNewVariable(QLatin1String("os"), QLatin1String("mac"));
 #elif defined(Q_OS_LINUX)
-    m_variables.insert(QLatin1String("os"), QLatin1String("x11"));
+    addNewVariable(QLatin1String("os"), QLatin1String("x11"));
 #else
     // TODO: add more platforms as needed...
 #endif
@@ -75,30 +76,24 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
         QFileInfo(m_settingsFilePath).absolutePath(), Settings::RelaxedParseMode);
 
     // fill the variables defined in the settings
-    m_variables.insert(QLatin1String("ProductName"), m_settings.applicationName());
-    m_variables.insert(QLatin1String("ProductVersion"), m_settings.version());
-    m_variables.insert(scTitle, replaceVariables(m_settings.title()));
-    m_variables.insert(scPublisher, m_settings.publisher());
-    m_variables.insert(QLatin1String("Url"), m_settings.url());
-    m_variables.insert(scStartMenuDir, m_settings.startMenuDir());
-    m_variables.insert(scTargetConfigurationFile, m_settings.configurationFileName());
-    m_variables.insert(scLogo, m_settings.logo());
-    m_variables.insert(scWatermark, m_settings.watermark());
-    m_variables.insert(scBanner, m_settings.banner());
-    m_variables.insert(scPageListPixmap, m_settings.pageListPixmap());
+    addNewVariable(QLatin1String("ProductName"), m_settings.applicationName());
+    addNewVariable(QLatin1String("ProductVersion"), m_settings.version());
+    addNewVariable(scTitle, replaceVariables(m_settings.title()));
+    addNewVariable(scPublisher, m_settings.publisher());
+    addNewVariable(QLatin1String("Url"), m_settings.url());
+    addNewVariable(scStartMenuDir, m_settings.startMenuDir());
+    addNewVariable(scTargetConfigurationFile, m_settings.configurationFileName());
+    addNewVariable(scLogo, m_settings.logo());
+    addNewVariable(scWatermark, m_settings.watermark());
+    addNewVariable(scBanner, m_settings.banner());
+    addNewVariable(scPageListPixmap, m_settings.pageListPixmap());
 
     const QString description = m_settings.runProgramDescription();
     if (!description.isEmpty())
-        m_variables.insert(scRunProgramDescription, description);
+        addNewVariable(scRunProgramDescription, description);
 
-    m_variables.insert(scTargetDir, replaceVariables(m_settings.targetDir()));
-    m_variables.insert(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
-
-    // Iterate over user defined parameters. If those are found, add to table or
-    // replace existing values.
-    QHash<QString, QString>::const_iterator it;
-    for (it = variables.begin(); it != variables.end(); ++it)
-        m_variables.insert(it.key(), it.value());
+    addNewVariable(scTargetDir, replaceVariables(m_settings.targetDir()));
+    addNewVariable(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 }
 
 void PackageManagerCoreData::clear()
@@ -111,12 +106,12 @@ void PackageManagerCoreData::clear()
     Set some common variables that may be used e.g. as placeholder in some of the settings
     variables or in a script or...
 */
-void PackageManagerCoreData::setDynamicPredefinedVariables()
+void PackageManagerCoreData::addDynamicPredefinedVariables()
 {
-    m_variables.insert(QLatin1String("rootDir"), QDir::rootPath());
-    m_variables.insert(QLatin1String("homeDir"), QDir::homePath());
-    m_variables.insert(QLatin1String("RootDir"), QDir::rootPath());
-    m_variables.insert(QLatin1String("HomeDir"), QDir::homePath());
+    addNewVariable(QLatin1String("rootDir"), QDir::rootPath());
+    addNewVariable(QLatin1String("homeDir"), QDir::homePath());
+    addNewVariable(QLatin1String("RootDir"), QDir::rootPath());
+    addNewVariable(QLatin1String("HomeDir"), QDir::homePath());
 
     QString dir = QLatin1String("/opt");
 #ifdef Q_OS_WIN
@@ -126,13 +121,13 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
 #elif defined (Q_OS_MACOS)
     dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
 #endif
-    m_variables.insert(QLatin1String("ApplicationsDir"), dir);
+    addNewVariable(QLatin1String("ApplicationsDir"), dir);
 
     QString dirUser = dir;
 #ifdef Q_OS_MACOS
     dirUser = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
 #endif
-    m_variables.insert(QLatin1String("ApplicationsDirUser"), dirUser);
+    addNewVariable(QLatin1String("ApplicationsDirUser"), dirUser);
 
     QString dirX86 = dir;
     QString dirX64 = dir;
@@ -155,8 +150,8 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
     dirX86 = replaceWindowsEnvironmentVariables(programfilesX86);
     dirX64 = replaceWindowsEnvironmentVariables(programfilesX64);
 #endif
-    m_variables.insert(QLatin1String("ApplicationsDirX86"), dirX86);
-    m_variables.insert(QLatin1String("ApplicationsDirX64"), dirX64);
+    addNewVariable(QLatin1String("ApplicationsDirX86"), dirX86);
+    addNewVariable(QLatin1String("ApplicationsDirX64"), dirX64);
 
 #ifdef Q_OS_WIN
     QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
@@ -174,19 +169,32 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
     } else {
         desktop = user.value(QLatin1String("Desktop")).toString();
     }
-    m_variables.insert(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
-    m_variables.insert(scUserStartMenuProgramsPath,
+    addNewVariable(QLatin1String("DesktopDir"), replaceWindowsEnvironmentVariables(desktop));
+    addNewVariable(scUserStartMenuProgramsPath,
         replaceWindowsEnvironmentVariables(programs));
-    m_variables.insert(scAllUsersStartMenuProgramsPath,
+    addNewVariable(scAllUsersStartMenuProgramsPath,
         replaceWindowsEnvironmentVariables(allPrograms));
 #endif
 #define QUOTE_(x) #x
 #define QUOTE(x) QUOTE_(x)
-    m_variables.insert(QLatin1String("FrameworkVersion"), QLatin1String(QUOTE(IFW_VERSION_STR)));
+    addNewVariable(QLatin1String("FrameworkVersion"), QLatin1String(QUOTE(IFW_VERSION_STR)));
     // Undocumented, left for compatibility with scripts using the old key
-    m_variables.insert(QLatin1String("IFW_VERSION_STR"),  QLatin1String(QUOTE(IFW_VERSION_STR)));
+    addNewVariable(QLatin1String("IFW_VERSION_STR"),  QLatin1String(QUOTE(IFW_VERSION_STR)));
 #undef QUOTE
 #undef QUOTE_
+}
+
+void PackageManagerCoreData::setUserDefinedVariables(const QHash<QString, QString> &variables)
+{
+    QHash<QString, QString>::const_iterator it;
+    for (it = variables.begin(); it != variables.end(); ++it)
+        m_variables.insert(it.key(), it.value());
+}
+
+void PackageManagerCoreData::addNewVariable(const QString &key, const QString &value)
+{
+    if (!m_variables.contains(key))
+        m_variables.insert(key, value);
 }
 
 Settings &PackageManagerCoreData::settings() const
