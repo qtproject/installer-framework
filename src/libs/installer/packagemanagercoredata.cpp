@@ -170,7 +170,7 @@ void PackageManagerCoreData::setDynamicPredefinedVariables()
 
     QString desktop;
     if (m_variables.value(QLatin1String("AllUsers")) == scTrue) {
-        desktop = system.value(QLatin1String("Desktop")).toString();
+        desktop = system.value(QLatin1String("Common Desktop")).toString();
     } else {
         desktop = user.value(QLatin1String("Desktop")).toString();
     }
