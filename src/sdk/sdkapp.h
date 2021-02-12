@@ -173,6 +173,16 @@ public:
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Arguments:" <<
                 QCoreApplication::arguments().join(QLatin1String(", "));
 
+        for (auto &optionName : m_parser.optionNames()) {
+            if (isCommandLineInterface)
+                break;
+
+            if (m_parser.optionContextFlags(optionName) & CommandLineParser::CommandLineOnly) {
+                qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Found command line only option "
+                    << optionName << ". This will not have any effect when running in graphical mode.";
+            }
+        }
+
         dumpResourceTree();
 
         SDKApp::registerMetaResources(manager.collectionByName("QResources"));

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,8 +36,16 @@
 class CommandLineParser
 {
 public:
+    enum OptionContextFlag {
+        CommandLineOnly = 0x1
+    };
+    Q_DECLARE_FLAGS(OptionContextFlags, OptionContextFlag)
+
     CommandLineParser();
     ~CommandLineParser();
+
+    bool addOption(const QCommandLineOption &option) { return m_parser.addOption(option); }
+    bool addOptionWithContext(const QCommandLineOption &option, OptionContextFlags flags);
 
     QString helpText() const { return m_parser.helpText(); }
     bool isSet(const QString &option) { return m_parser.isSet(option); }
@@ -47,9 +55,13 @@ public:
     QString value(const QString &option) const { return m_parser.value(option); }
     QStringList optionNames() const { return m_parser.optionNames(); }
 
+    OptionContextFlags optionContextFlags(const QString &option) const;
+
 private:
     QCommandLineParser m_parser;
     class CommandLineParserPrivate *const d;
+
+    QHash<QString, OptionContextFlags> m_optionContextFlagsNameHash;
 };
 
 #endif // COMMANDLINEPARSER_H

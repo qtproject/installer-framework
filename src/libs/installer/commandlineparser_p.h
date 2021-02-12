@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,20 +29,23 @@
 #ifndef COMMANDLINEPARSER_P_H
 #define COMMANDLINEPARSER_P_H
 
+#include "commandlineparser.h"
+
 #include <QCommandLineParser>
+
+class CommandLineParser;
 
 class CommandLineParserPrivate
 {
-public:
-    CommandLineParserPrivate();
+    Q_DISABLE_COPY(CommandLineParserPrivate)
 
-    QList<QCommandLineOption> &extensionsOptions()
-    {
-        return m_extensionOptions;
-    }
+public:
+    explicit CommandLineParserPrivate(CommandLineParser *parser) : q(parser) {};
+
+    void addExtensionsOptions() const;
 
 private:
-    QList<QCommandLineOption> m_extensionOptions;
+    CommandLineParser *const q;
 };
 
 #endif // COMMANDLINEPARSER_P_H
