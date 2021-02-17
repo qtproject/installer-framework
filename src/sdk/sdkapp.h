@@ -63,8 +63,10 @@ class SDKApp : public T
 {
 public:
     SDKApp(int& argc, char** argv)
-        : T(argc, argv), m_runCheck(QDir::tempPath() + QLatin1Char('/')
-                            + qApp->applicationName() + QLatin1String("1234865.lock"))
+        : T(argc, argv)
+        , m_runCheck(QDir::tempPath() + QLatin1Char('/')
+            + qApp->applicationName() + QLatin1String("1234865.lock"))
+        , m_core(nullptr)
     {
         m_parser.parse(QCoreApplication::arguments());
     }
