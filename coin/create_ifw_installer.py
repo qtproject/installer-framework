@@ -76,7 +76,7 @@ def create_installer_package(src_dir: str, bld_dir: str, target_dir: str, target
             check_call(["strip", os.path.join(package_dir, 'bin/repogen')])
 
     # Copy remaining payload to package dir
-    shutil.copytree(os.path.join(bld_dir, 'doc'), os.path.join(package_dir, 'doc'))
+    shutil.copytree(os.path.join(bld_dir, 'doc/html'), os.path.join(package_dir, 'doc/html'))
     shutil.copytree(os.path.join(src_dir, 'examples'), os.path.join(package_dir, 'examples'))
     shutil.copy(os.path.join(src_dir, 'README'), package_dir)
 
