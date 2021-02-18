@@ -304,6 +304,7 @@ void LocalPackageHub::refresh()
     Marks the package specified by \a name as installed. Sets the values of
     \a version,
     \a title,
+    \a treeName,
     \a description,
     \a dependencies,
     \a autoDependencies,

@@ -68,6 +68,18 @@ using namespace KDUpdater;
             to get the human-readable description of the error that occurred.
 */
 
+/*!
+    \enum UpdateOperation::OperationType
+    This enum code specifies the operation type.
+
+    \value  Backup
+            Backup operation.
+    \value  Perform
+            Perform operation.
+    \value  Undo
+            Undo operation.
+*/
+
 /*
     \internal
     Returns a filename for a temporary file based on \a templateName.

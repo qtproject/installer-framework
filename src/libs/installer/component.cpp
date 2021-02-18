@@ -212,6 +212,16 @@ static const QLatin1String scUnstable("Unstable");
 */
 
 /*!
+    \property QInstaller::Component::treeName
+
+    \brief The tree name of the component. Specifies the location of the component in the install tree view.
+
+    \note If the tree name is not set, the tree view is organized based on the component name.
+
+    \note Must be unique, the tree name must not conflict with other component's names or tree names.
+*/
+
+/*!
     \fn QInstaller::Component::loaded()
 
     \sa {component::loaded}{component.loaded}
