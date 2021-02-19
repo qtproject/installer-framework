@@ -1769,6 +1769,8 @@ void IntroductionPage::setUpdater(bool value)
         gui()->showSettingsButton(true);
         packageManagerCore()->setUpdater();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
     }
 }
 
@@ -1779,6 +1781,8 @@ void IntroductionPage::setUninstaller(bool value)
         gui()->showSettingsButton(false);
         packageManagerCore()->setUninstaller();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
     }
 }
 
@@ -1789,6 +1793,8 @@ void IntroductionPage::setPackageManager(bool value)
         gui()->showSettingsButton(true);
         packageManagerCore()->setPackageManager();
         emit packageManagerCoreTypeChanged();
+
+        gui()->updatePageListWidget();
     }
 }
 /*!
