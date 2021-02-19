@@ -738,7 +738,9 @@
 
     Place all components in the same root directory, which is called the
     \e {package directory}. The directory name acts as a domain-like identifier,
-    which identifies all components. For example, \c com.vendor.root.
+    which identifies all components. For example, \c com.vendor.root. The directory
+    name must not contain \c : or \c - characters as those are reserved for separating
+    the version number from the identifier.
 
     Within the root directory, create subdirectories called \c data and \c meta.
 
