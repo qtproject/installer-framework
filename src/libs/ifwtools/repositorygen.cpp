@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -51,6 +51,9 @@
 #include <QTemporaryDir>
 
 #include <iostream>
+
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
 
 using namespace QInstaller;
 using namespace QInstallerTools;
@@ -986,4 +989,63 @@ QString QInstallerTools::existingUniteMeta7z(const QString &repositoryDir)
         }
     }
     return uniteMeta7z;
+}
+
+PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents)
+{
+    PackageInfoVector packages;
+    PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages(info.repositoryPackages,
+        filteredPackages, filterType);
+    packages.append(precompressedPackages);
+
+    PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(info.packages,
+        filteredPackages, filterType);
+    packages.append(preparedPackages);
+    if (updateNewComponents) {
+         filterNewComponents(info.repositoryDir, packages);
+    }
+
+    foreach (const QInstallerTools::PackageInfo &package, packages) {
+        const QFileInfo fi(info.repositoryDir, package.name);
+        if (fi.exists())
+            removeDirectory(fi.absoluteFilePath());
+    }
+
+    return packages;
+}
+
+void QInstallerTools::createRepository(RepositoryInfo info, PackageInfoVector *packages,
+        const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata)
+{
+    QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(*packages);
+
+    QStringList directories;
+    directories.append(info.packages);
+    directories.append(info.repositoryPackages);
+    QStringList unite7zFiles;
+    foreach (const QString &repositoryDirectory, info.repositoryPackages) {
+        QDirIterator it(repositoryDirectory, QStringList(QLatin1String("*_meta.7z"))
+                        , QDir::Files | QDir::CaseSensitive);
+        while (it.hasNext()) {
+            it.next();
+            unite7zFiles.append(it.fileInfo().absoluteFilePath());
+        }
+    }
+    QInstallerTools::copyComponentData(directories, info.repositoryDir, packages);
+    QInstallerTools::copyMetaData(tmpMetaDir, info.repositoryDir, *packages, QLatin1String("{AnyApplication}"),
+        QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
+
+    QString existing7z = QInstallerTools::existingUniteMeta7z(info.repositoryDir);
+    if (!existing7z.isEmpty())
+        existing7z = info.repositoryDir + QDir::separator() + existing7z;
+    QInstallerTools::compressMetaDirectories(tmpMetaDir, existing7z, pathToVersionMapping,
+                                             createComponentMetadata, createUnifiedMetadata);
+
+    QDirIterator it(info.repositoryDir, QStringList(QLatin1String("Updates*.xml"))
+                    << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
+    while (it.hasNext()) {
+        it.next();
+        QFile::remove(it.fileInfo().absoluteFilePath());
+    }
+    QInstaller::moveDirectoryContents(tmpMetaDir, info.repositoryDir);
 }

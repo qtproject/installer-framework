@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,6 +56,13 @@ enum IFWTOOLS_EXPORT FilterType {
     Exclude
 };
 
+struct IFWTOOLS_EXPORT RepositoryInfo
+{
+    QStringList packages;
+    QStringList repositoryPackages;
+    QString repositoryDir;
+};
+
 void IFWTOOLS_EXPORT printRepositoryGenOptions();
 QString IFWTOOLS_EXPORT makePathAbsolute(const QString &path);
 void IFWTOOLS_EXPORT copyWithException(const QString &source, const QString &target, const QString &kind = QString());
@@ -82,6 +89,8 @@ void IFWTOOLS_EXPORT copyComponentData(const QStringList &packageDir, const QStr
 void IFWTOOLS_EXPORT filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
 QString IFWTOOLS_EXPORT existingUniteMeta7z(const QString &repositoryDir);
+PackageInfoVector IFWTOOLS_EXPORT collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents);
+void IFWTOOLS_EXPORT createRepository(RepositoryInfo info, PackageInfoVector *packages, const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata);
 
 } // namespace QInstallerTools
 

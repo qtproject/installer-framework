@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,114 +39,63 @@ class tst_repotest : public QObject
 {
     Q_OBJECT
 private:
-    // TODO generateRepo() is almost direct copy from repogen.cpp.
-    // Move the needed parts of repogen.cpp to a usable function for easier maintenance.
+
     void generateRepo(bool createSplitMetadata, bool createUnifiedMetadata, bool updateNewComponents)
     {
         QStringList filteredPackages;
-        QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
 
-        QInstallerTools::PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages
-                (m_repositoryDirectories, &filteredPackages, filterType);
-        m_packages.append(precompressedPackages);
-
-        QInstallerTools::PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(m_packagesDirectories,
-            &filteredPackages, filterType);
-        m_packages.append(preparedPackages);
-
-        if (updateNewComponents)
-            QInstallerTools::filterNewComponents(m_repositoryDir, m_packages);
-        QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(m_packages);
-
-        foreach (const QInstallerTools::PackageInfo &package, m_packages) {
-            const QFileInfo fi(m_repositoryDir, package.name);
-            if (fi.exists())
-                removeDirectory(fi.absoluteFilePath());
-        }
+        QInstallerTools::PackageInfoVector m_packages = QInstallerTools::collectPackages(m_repoInfo,
+            &filteredPackages, QInstallerTools::Exclude, updateNewComponents);
 
         if (updateNewComponents) { //Verify that component B exists as that is not updated
             if (createSplitMetadata) {
-                VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", QStringList() << "1.0.0content.7z"
+                VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/B", QStringList() << "1.0.0content.7z"
                                                     << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
             } else {
-                VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", QStringList() << "1.0.0content.7z"
+                VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/B", QStringList() << "1.0.0content.7z"
                                                     << "1.0.0content.7z.sha1");
             }
         } else {
-            QDir dir(m_repositoryDir + "/B");
+            QDir dir(m_repoInfo.repositoryDir + "/B");
             QVERIFY(!dir.exists());
         }
-        QStringList directories;
-        directories.append(m_packagesDirectories);
-        directories.append(m_repositoryDirectories);
-
-        QStringList unite7zFiles;
-        foreach (const QString &repositoryDirectory, m_repositoryDirectories) {
-            QDirIterator it(repositoryDirectory, QStringList(QLatin1String("*_meta.7z"))
-                            , QDir::Files | QDir::CaseSensitive);
-            while (it.hasNext()) {
-                it.next();
-                unite7zFiles.append(it.fileInfo().absoluteFilePath());
-            }
-        }
-
-        QInstallerTools::copyComponentData(directories, m_repositoryDir, &m_packages);
-        QInstallerTools::copyMetaData(m_tmpMetaDir, m_repositoryDir, m_packages, QLatin1String("{AnyApplication}"),
-            QLatin1String("1.0.0"), unite7zFiles);
-        QString existing7z = QInstallerTools::existingUniteMeta7z(m_repositoryDir);
-        if (!existing7z.isEmpty())
-             existing7z = m_repositoryDir + QDir::separator() + existing7z;
-        QInstallerTools::compressMetaDirectories(m_tmpMetaDir, existing7z, pathToVersionMapping,
-                                                 createSplitMetadata, createUnifiedMetadata);
-        QDirIterator it(m_repositoryDir, QStringList(QLatin1String("Updates*.xml"))
-                        << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
-        while (it.hasNext()) {
-            it.next();
-            QFile::remove(it.fileInfo().absoluteFilePath());
-        }
-        QInstaller::moveDirectoryContents(m_tmpMetaDir, m_repositoryDir);
-    }
-
-    void generateTempMetaDir()
-    {
-        if (!m_tmpMetaDir.isEmpty())
-            m_tempDirDeleter.releaseAndDelete(m_tmpMetaDir);
         QTemporaryDir tmp;
         tmp.setAutoRemove(false);
-        m_tmpMetaDir = tmp.path();
-        m_tempDirDeleter.add(m_tmpMetaDir);
+        const QString tmpMetaDir = tmp.path();
+        QInstallerTools::createRepository(m_repoInfo, &m_packages, tmpMetaDir, createSplitMetadata,
+                                          createUnifiedMetadata);
+        QInstaller::removeDirectory(tmpMetaDir, true);
     }
 
     void clearData()
     {
-        generateTempMetaDir();
-        m_packagesDirectories.clear();
-        m_repositoryDirectories.clear();
+        m_repoInfo.packages.clear();
+        m_repoInfo.repositoryPackages.clear();
         m_packages.clear();
     }
 
     void initRepoUpdate()
     {
         clearData();
-        m_packagesDirectories << ":///packages_update";
+        m_repoInfo.packages << ":///packages_update";
     }
 
     void initRepoUpdateFromRepository(const QString &repository)
     {
         clearData();
-        m_repositoryDirectories << repository;
+        m_repoInfo.repositoryPackages << repository;
     }
 
     void verifyUniteMetadata(const QString &scriptVersion)
     {
-        QString fileContent = VerifyInstaller::fileContent(m_repositoryDir + QDir::separator()
+        QString fileContent = VerifyInstaller::fileContent(m_repoInfo.repositoryDir + QDir::separator()
                                             + "Updates.xml");
         QRegularExpression re("<MetadataName>(.*)<.MetadataName>");
         QStringList matches = re.match(fileContent).capturedTexts();
-        QString existingUniteMeta7z = QInstallerTools::existingUniteMeta7z(m_repositoryDir);
+        QString existingUniteMeta7z = QInstallerTools::existingUniteMeta7z(m_repoInfo.repositoryDir);
         QCOMPARE(2, matches.count());
         QCOMPARE(existingUniteMeta7z, matches.at(1));
-        QFile file(m_repositoryDir + QDir::separator() + matches.at(1));
+        QFile file(m_repoInfo.repositoryDir + QDir::separator() + matches.at(1));
         QVERIFY(file.open(QIODevice::ReadOnly));
 
         //We have script<version>.qs for package A in the unite metadata
@@ -159,11 +108,11 @@ private:
             QCOMPARE(qPrintable(fileName.arg(scriptVersion)), fileIt->path);
         }
 
-        VerifyInstaller::verifyFileExistence(m_repositoryDir, QStringList() << "Updates.xml"
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir, QStringList() << "Updates.xml"
                                             << matches.at(1));
-        VerifyInstaller::verifyFileContent(m_repositoryDir + QDir::separator() + "Updates.xml",
+        VerifyInstaller::verifyFileContent(m_repoInfo.repositoryDir + QDir::separator() + "Updates.xml",
                                             "SHA1");
-        VerifyInstaller::verifyFileContent(m_repositoryDir + QDir::separator() + "Updates.xml",
+        VerifyInstaller::verifyFileContent(m_repoInfo.repositoryDir + QDir::separator() + "Updates.xml",
                                             "MetadataName");
     }
 
@@ -180,14 +129,14 @@ private:
             componentA << qPrintable(meta.arg(componentAVersion));
             componentB << "1.0.0meta.7z";
         }
-        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/A", componentA);
-        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/B", componentB);
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/A", componentA);
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/B", componentB);
     }
 
     void verifyComponentMetaUpdatesXml()
     {
-        VerifyInstaller::verifyFileExistence(m_repositoryDir, QStringList() << "Updates.xml");
-        VerifyInstaller::verifyFileHasNoContent(m_repositoryDir + QDir::separator() + "Updates.xml",
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir, QStringList() << "Updates.xml");
+        VerifyInstaller::verifyFileHasNoContent(m_repoInfo.repositoryDir + QDir::separator() + "Updates.xml",
                                            "MetadataName");
     }
 
@@ -216,7 +165,7 @@ private:
         foreach (const QString &fileName, contentFiles) {
             message = "Copying file from \":///%5/%1/%2%4\" to \"%3/%1/%2%4\"";
             QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(component).arg(version)
-                .arg(m_repositoryDir).arg(fileName).arg(repository)));
+                .arg(m_repoInfo.repositoryDir).arg(fileName).arg(repository)));
         }
     }
 
@@ -303,9 +252,9 @@ private:
     void ignoreMessageForUpdateComponent()
     {
         QString message = "Update component \"A\" in \"%1\" .";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repositoryDir)));
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
         message = "Update component \"C\" in \"%1\" .";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repositoryDir)));
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
     }
 
 private slots:
@@ -313,11 +262,10 @@ private slots:
     {
         ignoreMessageForCollectingPackages("1.0.0", "1.0.0");
 
-        m_repositoryDir = QInstallerTools::makePathAbsolute(QInstaller::generateTemporaryFileName());
-        m_tempDirDeleter.add(m_repositoryDir);
-        generateTempMetaDir();
+        m_repoInfo.repositoryDir = QInstallerTools::makePathAbsolute(QInstaller::generateTemporaryFileName());
+        m_tempDirDeleter.add(m_repoInfo.repositoryDir);
 
-        m_packagesDirectories << ":///packages";
+        m_repoInfo.packages << ":///packages";
 
         ignoreMessagesForComponentHash(QStringList() << "A" << "B", false);
         ignoreMessagesForCopyMetadata("A", true, false); //Only A has metadata
@@ -371,7 +319,7 @@ private slots:
         ignoreMessagesForComponentHash(QStringList() << "A", true);
         ignoreMessagesForCopyMetadata("A", true, true);
         const QString &message = "Update component \"A\" in \"%1\" .";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repositoryDir)));
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
         generateRepo(true, false, true);
         verifyComponentRepository("2.0.0", true);
         verifyComponentMetaUpdatesXml();
@@ -458,7 +406,7 @@ private slots:
 
         generateRepo(true, true, true);
         verifyComponentRepository("2.0.0", true);
-        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
         verifyUniteMetadata("2.0.0");
     }
 
@@ -478,23 +426,20 @@ private slots:
 
         generateRepo(false, true, true);
         verifyComponentRepository("2.0.0", false);
-        VerifyInstaller::verifyFileExistence(m_repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1");
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1");
         verifyUniteMetadata("2.0.0");
     }
 
     void cleanup()
     {
         m_tempDirDeleter.releaseAndDeleteAll();
-        m_packagesDirectories.clear();
+        m_repoInfo.packages.clear();
         m_packages.clear();
-        m_repositoryDirectories.clear();
+        m_repoInfo.repositoryPackages.clear();
     }
 
 private:
-    QString m_tmpMetaDir;
-    QString m_repositoryDir;
-    QStringList m_packagesDirectories;
-    QStringList m_repositoryDirectories;
+    QInstallerTools::RepositoryInfo m_repoInfo;
     QInstallerTools::PackageInfoVector m_packages;
     TempDirDeleter m_tempDirDeleter;
 };

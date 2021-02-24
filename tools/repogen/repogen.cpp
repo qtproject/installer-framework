@@ -44,8 +44,6 @@
 
 #include <iostream>
 
-#define QUOTE_(x) #x
-#define QUOTE(x) QUOTE_(x)
 
 using namespace QInstaller;
 
@@ -100,8 +98,7 @@ int main(int argc, char** argv)
 
         QStringList filteredPackages;
         bool updateExistingRepository = false;
-        QStringList packagesDirectories;
-        QStringList repositoryDirectories;
+        QInstallerTools::RepositoryInfo repoInfo;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
         bool updateExistingRepositoryWithNewComponents = false;
@@ -168,7 +165,7 @@ int main(int argc, char** argv)
                         "Error: Package directory is empty"));
                 }
 
-                packagesDirectories.append(args.first());
+                repoInfo.packages.append(args.first());
                 args.removeFirst();
             } else if (args.first() == QLatin1String("--repository")) {
                 args.removeFirst();
@@ -181,7 +178,7 @@ int main(int argc, char** argv)
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Only local filesystem repositories now supported"));
                 }
-                repositoryDirectories.append(args.first());
+                repoInfo.repositoryPackages.append(args.first());
                 args.removeFirst();
             } else if (args.first() == QLatin1String("--ignore-translations")
                 || args.first() == QLatin1String("--ignore-invalid-packages")) {
@@ -202,7 +199,7 @@ int main(int argc, char** argv)
             }
         }
 
-        if ((packagesDirectories.isEmpty() && repositoryDirectories.isEmpty()) || (args.count() != 1)) {
+        if ((repoInfo.packages.isEmpty() && repoInfo.repositoryPackages.isEmpty()) || (args.count() != 1)) {
                 printUsage();
                 return 1;
         }
@@ -213,12 +210,12 @@ int main(int argc, char** argv)
                 "Argument -r|--remove and --update|--update-new-components are mutually exclusive!"));
         }
 
-        const QString repositoryDir = QInstallerTools::makePathAbsolute(args.first());
+        repoInfo.repositoryDir = QInstallerTools::makePathAbsolute(args.first());
         if (remove)
-            QInstaller::removeDirectory(repositoryDir);
+            QInstaller::removeDirectory(repoInfo.repositoryDir);
 
         if (updateExistingRepositoryWithNewComponents) {
-            QStringList meta7z = QDir(repositoryDir).entryList(QStringList()
+            QStringList meta7z = QDir(repoInfo.repositoryDir).entryList(QStringList()
                 << QLatin1String("*_meta.7z"), QDir::Files);
             if (!meta7z.isEmpty()) {
                 throw QInstaller::Error(QCoreApplication::translate("QInstaller",
@@ -228,72 +225,27 @@ int main(int argc, char** argv)
             }
         }
 
-        if (!update && QFile::exists(repositoryDir) && !QDir(repositoryDir).entryList(
+        if (!update && QFile::exists(repoInfo.repositoryDir) && !QDir(repoInfo.repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {
 
             throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                "Repository target directory \"%1\" already exists.").arg(QDir::toNativeSeparators(repositoryDir)));
+                "Repository target directory \"%1\" already exists.").arg(QDir::toNativeSeparators(repoInfo.repositoryDir)));
         }
 
-        QInstallerTools::PackageInfoVector packages;
-
-        QInstallerTools::PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages(repositoryDirectories,
-            &filteredPackages, filterType);
-        packages.append(precompressedPackages);
-
-        QInstallerTools::PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(packagesDirectories,
-            &filteredPackages, filterType);
-        packages.append(preparedPackages);
-
-        if (updateExistingRepositoryWithNewComponents) {
-             QInstallerTools::filterNewComponents(repositoryDir, packages);
-             if (packages.isEmpty()) {
-                 std::cout << QString::fromLatin1("Cannot find new components to update \"%1\".")
-                     .arg(repositoryDir) << std::endl;
-                 return EXIT_SUCCESS;
-             }
-        }
-
-        QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(packages);
-
-        foreach (const QInstallerTools::PackageInfo &package, packages) {
-            const QFileInfo fi(repositoryDir, package.name);
-            if (fi.exists())
-                removeDirectory(fi.absoluteFilePath());
+        QInstallerTools::PackageInfoVector packages = QInstallerTools::collectPackages(repoInfo,
+            &filteredPackages, filterType, updateExistingRepositoryWithNewComponents);
+        if (packages.isEmpty()) {
+            std::cout << QString::fromLatin1("Cannot find components to update \"%1\".")
+                .arg(repoInfo.repositoryDir) << std::endl;
+            return EXIT_SUCCESS;
         }
 
         QTemporaryDir tmp;
         tmp.setAutoRemove(false);
         tmpMetaDir = tmp.path();
-        QStringList directories;
-        directories.append(packagesDirectories);
-        directories.append(repositoryDirectories);
-        QStringList unite7zFiles;
-        foreach (const QString &repositoryDirectory, repositoryDirectories) {
-            QDirIterator it(repositoryDirectory, QStringList(QLatin1String("*_meta.7z"))
-                            , QDir::Files | QDir::CaseSensitive);
-            while (it.hasNext()) {
-                it.next();
-                unite7zFiles.append(it.fileInfo().absoluteFilePath());
-            }
-        }
-        QInstallerTools::copyComponentData(directories, repositoryDir, &packages);
-        QInstallerTools::copyMetaData(tmpMetaDir, repositoryDir, packages, QLatin1String("{AnyApplication}"),
-            QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
+        QInstallerTools::createRepository(repoInfo, &packages, tmpMetaDir,
+            createComponentMetadata, createUnifiedMetadata);
 
-        QString existing7z = QInstallerTools::existingUniteMeta7z(repositoryDir);
-        if (!existing7z.isEmpty())
-            existing7z = repositoryDir + QDir::separator() + existing7z;
-        QInstallerTools::compressMetaDirectories(tmpMetaDir, existing7z, pathToVersionMapping,
-                                                 createComponentMetadata, createUnifiedMetadata);
-
-        QDirIterator it(repositoryDir, QStringList(QLatin1String("Updates*.xml"))
-                        << QLatin1String("*_meta.7z"), QDir::Files | QDir::CaseSensitive);
-        while (it.hasNext()) {
-            it.next();
-            QFile::remove(it.fileInfo().absoluteFilePath());
-        }
-        QInstaller::moveDirectoryContents(tmpMetaDir, repositoryDir);
         exitCode = EXIT_SUCCESS;
     } catch (const Lib7z::SevenZipException &e) {
         std::cerr << "Caught 7zip exception: " << e.message() << std::endl;
