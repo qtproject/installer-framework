@@ -103,7 +103,7 @@ instructions:
       - type: RunQtUnitTest
         testRepetitionAllowance: 3
         directory: "{{.SourceDir}}/tests/auto"
-        runTestCommand: ["jom", "check"]
+        runTestCommand: ["jom", "check", "-j1"]
         maxTimeInSeconds: 3600
         maxTimeBetweenOutput: 600
         userMessageOnFailure: "Failed to run make check, check logs."
