@@ -48,6 +48,8 @@ struct IFWTOOLS_EXPORT PackageInfo
     QStringList copiedFiles;
     QString metaFile;
     QString metaNode;
+    QString contentSha1;
+    bool createContentSha1Node;
 };
 typedef QVector<PackageInfo> PackageInfoVector;
 
@@ -68,7 +70,7 @@ QString IFWTOOLS_EXPORT makePathAbsolute(const QString &path);
 void IFWTOOLS_EXPORT copyWithException(const QString &source, const QString &target, const QString &kind = QString());
 
 PackageInfoVector IFWTOOLS_EXPORT createListOfPackages(const QStringList &packagesDirectories, QStringList *packagesToFilter,
-    FilterType ftype);
+    FilterType ftype, QStringList packagesUpdatedWithSha = QStringList());
 
 PackageInfoVector IFWTOOLS_EXPORT createListOfRepositoryPackages(const QStringList &repositoryDirectories, QStringList *packagesToFilter,
     FilterType filterType);
@@ -89,9 +91,8 @@ void IFWTOOLS_EXPORT copyComponentData(const QStringList &packageDir, const QStr
 void IFWTOOLS_EXPORT filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
 QString IFWTOOLS_EXPORT existingUniteMeta7z(const QString &repositoryDir);
-PackageInfoVector IFWTOOLS_EXPORT collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents);
+PackageInfoVector IFWTOOLS_EXPORT collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents, QStringList packagesUpdatedWithSha);
 void IFWTOOLS_EXPORT createRepository(RepositoryInfo info, PackageInfoVector *packages, const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata);
-
 } // namespace QInstallerTools
 
 #endif // REPOSITORYGEN_H

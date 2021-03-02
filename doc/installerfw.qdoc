@@ -1215,6 +1215,11 @@
         \row
             \li -v or --verbose
             \li Display debug output.
+         \row
+            \li -s or --sha-update p1,...,pn
+            \li Comma-separated list of packages to be updated based on the component sha
+                checksum instead of the version number. This parameter adds a new \c <ContentSha1>
+                node to the \c Updates.xml.
     \endtable
     \note We recommend that you use the \c {--update-new-packages} parameter
           to update an existing repository, especially if you have a content delivery

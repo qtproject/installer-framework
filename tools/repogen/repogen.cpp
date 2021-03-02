@@ -99,6 +99,7 @@ int main(int argc, char** argv)
         QStringList filteredPackages;
         bool updateExistingRepository = false;
         QInstallerTools::RepositoryInfo repoInfo;
+        QStringList packagesUpdatedWithSha;
         QInstallerTools::FilterType filterType = QInstallerTools::Exclude;
         bool remove = false;
         bool updateExistingRepositoryWithNewComponents = false;
@@ -192,8 +193,11 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--component-metadata")) {
                 createUnifiedMetadata = false;
                 args.removeFirst();
-            }
-            else {
+            } else if (args.first() == QLatin1String("--sha-update") || args.first() == QLatin1String("-s")) {
+                args.removeFirst();
+                packagesUpdatedWithSha = args.first().split(QLatin1Char(','));
+                args.removeFirst();
+            } else {
                 printUsage();
                 return 1;
             }
@@ -233,7 +237,7 @@ int main(int argc, char** argv)
         }
 
         QInstallerTools::PackageInfoVector packages = QInstallerTools::collectPackages(repoInfo,
-            &filteredPackages, filterType, updateExistingRepositoryWithNewComponents);
+            &filteredPackages, filterType, updateExistingRepositoryWithNewComponents, packagesUpdatedWithSha);
         if (packages.isEmpty()) {
             std::cout << QString::fromLatin1("Cannot find components to update \"%1\".")
                 .arg(repoInfo.repositoryDir) << std::endl;

@@ -39,7 +39,8 @@ SUBDIRS += \
     globalsettingsoperation \
     elevatedexecuteoperation \
     treename \
-    createoffline
+    createoffline \
+    contentshaupdate
 
 win32 {
     SUBDIRS += registerfiletypeoperation \

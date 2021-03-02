@@ -1549,9 +1549,8 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
                         continue;
 
                     const LocalPackage localPackage = installedPackages.value(name);
-                    const QString updateVersion = update->data(scVersion).toString();
-                    if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
-                        continue;  // remote version equals or is less than the installed maintenance tool
+                    if (!d->packageNeedsUpdate(localPackage, update))
+                        continue;
 
                     const QDate updateDate = update->data(scReleaseDate).toDate();
                     if (localPackage.lastUpdateDate >= updateDate)
@@ -2322,6 +2321,7 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
 
     if (componentList.count() ==  0) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No updates available.";
+        setCanceled();
     } else {
         // Check if essential components are available (essential components are disabled).
         // If essential components are found, update first essential updates,
@@ -3769,10 +3769,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 continue;   // Update for not installed package found, skip it.
 
             const LocalPackage &localPackage = locals.value(name);
-            const QString updateVersion = update->data(scVersion).toString();
-            if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
+            if (!d->packageNeedsUpdate(localPackage, update))
                 continue;
-
             // It is quite possible that we may have already installed the update. Lets check the last
             // update date of the package and the release date of the update. This way we can compare and
             // figure out if the update has been installed or not.

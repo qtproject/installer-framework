@@ -306,7 +306,7 @@ private slots:
         QTest::ignoreMessage(QtWarningMsg, re);
         QTest::ignoreMessage(QtDebugMsg, "No updates available.");
 
-        QCOMPARE(PackageManagerCore::Failure, core.updateComponentsSilently(QStringList()));
+        QCOMPARE(PackageManagerCore::Canceled, core.updateComponentsSilently(QStringList()));
         QVERIFY(QDir().rmdir(testDirectory));
     }
 

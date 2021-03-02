@@ -2246,7 +2246,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                                   component->value(scUncompressedSize).toULongLong(),
                                   component->value(scInheritVersion),
                                   component->isCheckable(),
-                                  component->isExpandedByDefault());
+                                  component->isExpandedByDefault(),
+                                  component->value(scContentSha1));
     m_localPackageHub->writeToDisk();
 
     component->setInstalled();
@@ -2896,6 +2897,21 @@ bool PackageManagerCorePrivate::askUserConfirmCommand() const
             qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
         }
     }
+}
+
+bool PackageManagerCorePrivate::packageNeedsUpdate(const LocalPackage &localPackage, const Package *update) const
+{
+    bool updateNeeded = true;
+    const QString contentSha1 = update->data(scContentSha1).toString();
+    if (!contentSha1.isEmpty()) {
+        if (contentSha1 == localPackage.contentSha1)
+            updateNeeded = false;
+    } else {
+        const QString updateVersion = update->data(scVersion).toString();
+        if (KDUpdater::compareVersion(updateVersion, localPackage.version) <= 0)
+            updateNeeded = false;
+    }
+    return updateNeeded;
 }
 
 } // namespace QInstaller

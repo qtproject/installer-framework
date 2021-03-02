@@ -327,7 +327,8 @@ void LocalPackageHub::addPackage(const QString &name,
                                  quint64 uncompressedSize,
                                  const QString &inheritVersionFrom,
                                  bool checkable,
-                                 bool expandedByDefault)
+                                 bool expandedByDefault,
+                                 const QString &contentSha1)
 {
     // TODO: This somewhat unexpected, remove?
     if (d->m_packageInfoMap.contains(name)) {
@@ -350,6 +351,7 @@ void LocalPackageHub::addPackage(const QString &name,
         info.uncompressedSize = uncompressedSize;
         info.checkable = checkable;
         info.expandedByDefault = expandedByDefault;
+        info.contentSha1 = contentSha1;
         d->m_packageInfoMap.insert(name, info);
     }
     d->modified = true;
@@ -426,6 +428,8 @@ void LocalPackageHub::writeToDisk()
                 addTextChildHelper(&package, QLatin1String("Checkable"), QLatin1String("true"));
             if (info.expandedByDefault)
                 addTextChildHelper(&package, QLatin1String("ExpandedByDefault"), QLatin1String("true"));
+            if (!info.contentSha1.isEmpty())
+                addTextChildHelper(&package, scContentSha1, info.contentSha1);
 
             root.appendChild(package);
         }
@@ -498,6 +502,8 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.checkable = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
         else if (childNodeE.tagName() == QLatin1String("ExpandedByDefault"))
             info.expandedByDefault = childNodeE.text().toLower() == QLatin1String("true") ? true : false;
+        else if (childNodeE.tagName() == QLatin1String("ContentSha1"))
+            info.contentSha1 = childNodeE.text();
     }
     m_packageInfoMap.insert(info.name, info);
 }

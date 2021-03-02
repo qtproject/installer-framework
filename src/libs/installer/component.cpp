@@ -300,6 +300,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
     setValue(scExpandedByDefault, package.expandedByDefault ? scTrue : scFalse);
+    setValue(scContentSha1, package.contentSha1);
 }
 
 /*!
@@ -341,6 +342,7 @@ void Component::loadDataFromPackage(const Package &package)
     if (PackageManagerCore::noForceInstallation())
         forced = scFalse;
     setValue(scForcedInstallation, forced);
+    setValue(scContentSha1, package.data(scContentSha1).toString());
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()

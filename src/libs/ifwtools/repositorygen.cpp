@@ -72,6 +72,8 @@ void QInstallerTools::printRepositoryGenOptions()
     std::cout << "  --ignore-translations     Do not use any translation" << std::endl;
     std::cout << "  --ignore-invalid-packages Ignore all invalid packages instead of aborting." << std::endl;
     std::cout << "  --ignore-invalid-repositories Ignore all invalid repositories instead of aborting." << std::endl;
+    std::cout << "  -s|--sha-update p1,...,pn List of packages which are updated using" <<std::endl;
+    std::cout << "                            content sha1 instead of version number." << std::endl;
 }
 
 QString QInstallerTools::makePathAbsolute(const QString &path)
@@ -292,6 +294,11 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             fileElement.setAttribute(QLatin1String("OS"), QLatin1String("Any"));
             update.appendChild(fileElement);
 
+            if (info.createContentSha1Node) {
+                QDomNode contentSha1Element = update.appendChild(doc.createElement(QLatin1String("ContentSha1")));
+                contentSha1Element.appendChild(doc.createTextNode(info.contentSha1));
+            }
+
             root.appendChild(update);
 
             // copy script file
@@ -417,7 +424,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 }
 
 PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packagesDirectories,
-    QStringList *packagesToFilter, FilterType filterType)
+    QStringList *packagesToFilter, FilterType filterType, QStringList packagesUpdatedWithSha)
 {
     qDebug() << "Collecting information about available packages...";
 
@@ -511,6 +518,13 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         info.dependencies = packageElement.firstChildElement(QLatin1String("Dependencies")).text()
             .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
         info.directory = it->filePath();
+        if (packagesUpdatedWithSha.contains(info.name)) {
+            info.createContentSha1Node = true;
+            packagesUpdatedWithSha.removeOne(info.name);
+        } else {
+            info.createContentSha1Node = false;
+        }
+
         dict.push_back(info);
 
         qDebug() << "- it provides the package" << info.name << " - " << info.version;
@@ -523,6 +537,11 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
 
     if (dict.isEmpty())
         qDebug() << "No available packages found at the specified location.";
+
+    if (!packagesUpdatedWithSha.isEmpty()) {
+        throw QInstaller::Error(QString::fromLatin1("The following packages could not be found in "
+            "package directory:  %1").arg(packagesUpdatedWithSha.join(QLatin1String(", "))));
+    }
 
     return dict;
 }
@@ -905,6 +924,8 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                     archiveHashFile.write(hashOfArchiveData);
                     qDebug() << "Generated sha1 hash:" << hashOfArchiveData;
                     (*infos)[i].copiedFiles.append(archiveHashFile.fileName());
+                    if ((*infos)[i].createContentSha1Node)
+                        (*infos)[i].contentSha1 = QLatin1String(hashOfArchiveData);
                     archiveHashFile.close();
                 } catch (const QInstaller::Error &/*e*/) {
                     archiveFile.close();
@@ -991,7 +1012,7 @@ QString QInstallerTools::existingUniteMeta7z(const QString &repositoryDir)
     return uniteMeta7z;
 }
 
-PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents)
+PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents, QStringList packagesUpdatedWithSha)
 {
     PackageInfoVector packages;
     PackageInfoVector precompressedPackages = QInstallerTools::createListOfRepositoryPackages(info.repositoryPackages,
@@ -999,18 +1020,16 @@ PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringL
     packages.append(precompressedPackages);
 
     PackageInfoVector preparedPackages = QInstallerTools::createListOfPackages(info.packages,
-        filteredPackages, filterType);
+        filteredPackages, filterType, packagesUpdatedWithSha);
     packages.append(preparedPackages);
     if (updateNewComponents) {
          filterNewComponents(info.repositoryDir, packages);
     }
-
     foreach (const QInstallerTools::PackageInfo &package, packages) {
         const QFileInfo fi(info.repositoryDir, package.name);
         if (fi.exists())
             removeDirectory(fi.absoluteFilePath());
     }
-
     return packages;
 }
 

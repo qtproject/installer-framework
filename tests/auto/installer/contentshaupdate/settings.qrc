@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/repository/Updates.xml</file>
+        <file>data/repository/componentA/1.0.0content.7z</file>
+        <file>data/repository/componentB/1.0.0content.7z</file>
+        <file>data/repository/componentC/1.0.0content.7z</file>
+        <file>data/repository/componentD/1.0.0content.7z</file>
+        <file>data/repositoryUpdate/Updates.xml</file>
+        <file>data/repositoryUpdate/componentA/0.1.0content.7z</file>
+        <file>data/repositoryUpdate/componentB/0.1.0content.7z</file>
+        <file>data/repositoryUpdate/componentC/2.0.0content.7z</file>
+        <file>data/repositoryUpdate/componentD/2.0.0content.7z</file>
+    </qresource>
+</RCC>

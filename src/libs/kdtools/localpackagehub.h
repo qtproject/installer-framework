@@ -55,6 +55,7 @@ struct KDTOOLS_EXPORT LocalPackage
     quint64 uncompressedSize;
     bool checkable;
     bool expandedByDefault;
+    QString contentSha1;
 };
 
 class KDTOOLS_EXPORT LocalPackageHub
@@ -108,7 +109,8 @@ public:
                     quint64 uncompressedSize,
                     const QString &inheritVersionFrom,
                     bool checkable,
-                    bool expandedByDefault);
+                    bool expandedByDefault,
+                    const QString &contentSha1);
     bool removePackage(const QString &pkgName);
 
     void refresh();

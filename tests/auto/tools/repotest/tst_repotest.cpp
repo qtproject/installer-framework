@@ -39,13 +39,13 @@ class tst_repotest : public QObject
 {
     Q_OBJECT
 private:
-
-    void generateRepo(bool createSplitMetadata, bool createUnifiedMetadata, bool updateNewComponents)
+    void generateRepo(bool createSplitMetadata, bool createUnifiedMetadata, bool updateNewComponents,
+                      QStringList packagesUpdatedWithSha = QStringList())
     {
         QStringList filteredPackages;
 
         QInstallerTools::PackageInfoVector m_packages = QInstallerTools::collectPackages(m_repoInfo,
-            &filteredPackages, QInstallerTools::Exclude, updateNewComponents);
+            &filteredPackages, QInstallerTools::Exclude, updateNewComponents, packagesUpdatedWithSha);
 
         if (updateNewComponents) { //Verify that component B exists as that is not updated
             if (createSplitMetadata) {
@@ -119,11 +119,11 @@ private:
     void verifyComponentRepository(const QString &componentAVersion, bool hasComponentMeta)
     {
         const QString content = "%1content.7z";
-        const QString contentSha = "%1content.7z.sha1";
+        const QString contentSha1 = "%1content.7z.sha1";
         const QString meta = "%1meta.7z";
         QStringList componentA;
         QStringList componentB;
-        componentA << qPrintable(content.arg(componentAVersion)) << qPrintable(contentSha.arg(componentAVersion));
+        componentA << qPrintable(content.arg(componentAVersion)) << qPrintable(contentSha1.arg(componentAVersion));
         componentB << "1.0.0content.7z" << "1.0.0content.7z.sha1";
         if (hasComponentMeta) {
             componentA << qPrintable(meta.arg(componentAVersion));
@@ -257,6 +257,20 @@ private:
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
     }
 
+    void verifyComponentShaUpdate(int shaUpdateComponents)
+    {
+        QString updatesXmlFile(m_repoInfo.repositoryDir + QDir::separator() + "Updates.xml");
+        QFile file(updatesXmlFile);
+        QDomDocument dom;
+
+        QVERIFY(file.open(QIODevice::ReadOnly));
+        QVERIFY(dom.setContent(&file));
+        file.close();
+        QCOMPARE(dom.elementsByTagName("ContentSha1").count(), shaUpdateComponents);
+        VerifyInstaller::verifyFileContent(updatesXmlFile,
+            "<ContentSha1>059e5ed8cd3a1fbca08cccfa4075265192603e3f</ContentSha1>");
+    }
+
 private slots:
     void init()
     {
@@ -303,6 +317,26 @@ private slots:
 
         verifyComponentRepository("1.0.0", false);
         verifyUniteMetadata("1.0.0");
+    }
+
+    void testWithComponentShaUpdate()
+    {
+        ignoreMessagesForComponentSha(QStringList () << "A" << "B", false);
+        generateRepo(true, false, false, QStringList () << "A");
+
+        verifyComponentRepository("1.0.0", true);
+        verifyComponentMetaUpdatesXml();
+        verifyComponentShaUpdate(1);
+    }
+
+    void testWithTwoComponentsShaUpdate()
+    {
+        ignoreMessagesForComponentSha(QStringList () << "A" << "B", false);
+        generateRepo(true, false, false, QStringList () << "A" << "B");
+
+        verifyComponentRepository("1.0.0", true);
+        verifyComponentMetaUpdatesXml();
+        verifyComponentShaUpdate(2);
     }
 
     void testUpdateNewComponents()
