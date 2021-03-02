@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 #define LIB7Z_CREATE_H
 
 #include "installer_global.h"
+#include "abstractarchive.h"
 
 #include <Common/MyCom.h>
 #include <7zip/UI/Common/Update.h>
@@ -46,14 +47,7 @@ namespace Lib7z
         Yes
     };
 
-    enum struct Compression {
-        Non = 0,
-        Fastest = 1,
-        Fast = 3,
-        Normal = 5,
-        Maximum = 7,
-        Ultra = 9
-    };
+    typedef QInstaller::AbstractArchive::CompressionLevel Compression;
 
     class INSTALLER_EXPORT UpdateCallback : public IUpdateCallbackUI2, public CMyUnknownImp
     {

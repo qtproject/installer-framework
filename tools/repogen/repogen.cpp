@@ -34,7 +34,7 @@
 #include <settings.h>
 #include <utils.h>
 #include <loggingutils.h>
-#include <lib7z_facade.h>
+#include <archivefactory.h>
 
 #include <QDomDocument>
 #include <QtCore/QDir>
@@ -50,6 +50,8 @@ using namespace QInstaller;
 static void printUsage()
 {
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+    const QString archiveFormats = ArchiveFactory::supportedTypes().join(QLatin1Char('|'));
+
     std::cout << "Usage: " << appName << " [options] repository-dir" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
@@ -71,6 +73,9 @@ static void printUsage()
     std::cout << "                            download phase." << std::endl;
 
     std::cout << "  --component-metadata      Creates one metadata 7z per component. " << std::endl;
+    std::cout << "  --af|--archive-format " << archiveFormats << std::endl;
+    std::cout << "                            Set the format used when packaging new component data archives. If" << std::endl;
+    std::cout << "                            you omit this option the 7z format will be used as a default." << std::endl;
 
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
@@ -105,6 +110,7 @@ int main(int argc, char** argv)
         bool updateExistingRepositoryWithNewComponents = false;
         bool createUnifiedMetadata = true;
         bool createComponentMetadata = true;
+        QString archiveSuffix = QLatin1String("7z");
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -197,6 +203,15 @@ int main(int argc, char** argv)
                 args.removeFirst();
                 packagesUpdatedWithSha = args.first().split(QLatin1Char(','));
                 args.removeFirst();
+            } else if (args.first() == QLatin1String("--af") || args.first() == QLatin1String("--archive-format")) {
+                args.removeFirst();
+                if (args.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Archive format parameter missing argument"));
+                }
+                // TODO: do we need early check for supported formats?
+                archiveSuffix = args.first();
+                args.removeFirst();
             } else {
                 printUsage();
                 return 1;
@@ -248,11 +263,9 @@ int main(int argc, char** argv)
         tmp.setAutoRemove(false);
         tmpMetaDir = tmp.path();
         QInstallerTools::createRepository(repoInfo, &packages, tmpMetaDir,
-            createComponentMetadata, createUnifiedMetadata);
+            createComponentMetadata, createUnifiedMetadata, archiveSuffix);
 
         exitCode = EXIT_SUCCESS;
-    } catch (const Lib7z::SevenZipException &e) {
-        std::cerr << "Caught 7zip exception: " << e.message() << std::endl;
     } catch (const QInstaller::Error &e) {
         std::cerr << "Caught exception: " << e.message() << std::endl;
     } catch (...) {

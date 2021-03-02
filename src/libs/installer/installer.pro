@@ -138,10 +138,18 @@ HEADERS += packagemanagercore.h \
     repositorycategory.h \
     componentselectionpage_p.h \
     commandlineparser.h \
-    commandlineparser_p.h
+    commandlineparser_p.h \
+    abstractarchive.h \
+    directoryguard.h \
+    lib7zarchive.h \
+    archivefactory.h
 
 SOURCES += packagemanagercore.cpp \
+    abstractarchive.cpp \
+    archivefactory.cpp \
     aspectratiolabel.cpp \
+    directoryguard.cpp \
+    lib7zarchive.cpp \
     loggingutils.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
@@ -229,8 +237,19 @@ unix {
     else: SOURCES += adminauthorization_x11.cpp
 }
 
+CONFIG(libarchive) {
+    HEADERS += libarchivearchive.h \
+        libarchivewrapper.h \
+        libarchivewrapper_p.h
+
+    SOURCES += libarchivearchive.cpp \
+        libarchivewrapper.cpp \
+        libarchivewrapper_p.cpp
+
+    LIBS += -llibarchive
+}
+
 LIBS += -l7z
-CONFIG(libarchive): LIBS += -llibarchive
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 

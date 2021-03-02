@@ -33,10 +33,7 @@
 #include "fileutils.h"
 #include "errors.h"
 #include "globals.h"
-#include "lib7z_create.h"
-#include "lib7z_extract.h"
-#include "lib7z_facade.h"
-#include "lib7z_list.h"
+#include "archivefactory.h"
 #include "settings.h"
 #include "qinstallerglobal.h"
 #include "utils.h"
@@ -256,6 +253,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             qDebug() << "calculate size of directory" << dataDir.absolutePath();
             foreach (const QFileInfo &fi, entries) {
                 try {
+                    QScopedPointer<AbstractArchive> archive(ArchiveFactory::instance().create(fi.filePath()));
                     if (fi.isDir()) {
                         QDirIterator recursDirIt(fi.filePath(), QDirIterator::Subdirectories);
                         while (recursDirIt.hasNext()) {
@@ -264,14 +262,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                             componentSize += size;
                             compressedComponentSize += size;
                         }
-                    } else if (Lib7z::isSupportedArchive(fi.filePath())) {
+                    } else if (archive && archive->open(QIODevice::ReadOnly) && archive->isSupported()) {
                         // if it's an archive already, list its files and sum the uncompressed sizes
-                        QFile archive(fi.filePath());
-                        compressedComponentSize += archive.size();
-                        QInstaller::openForRead(&archive);
+                        compressedComponentSize += fi.size();
 
-                        QVector<Lib7z::File>::const_iterator fileIt;
-                        const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
+                        QVector<ArchiveEntry>::const_iterator fileIt;
+                        const QVector<ArchiveEntry> files = archive->list();
                         for (fileIt = files.begin(); fileIt != files.end(); ++fileIt)
                             componentSize += fileIt->uncompressedSize;
                     } else {
@@ -393,9 +389,15 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
         } else {
             // Extract metadata from archive
             if (!info.metaFile.isEmpty()){
-                QFile metaFile(info.metaFile);
-                QInstaller::openForRead(&metaFile);
-                Lib7z::extractArchive(&metaFile, targetDir);
+                QScopedPointer<AbstractArchive> metaFile(ArchiveFactory::instance().create(info.metaFile));
+                if (!metaFile) {
+                    throw QInstaller::Error(QString::fromLatin1("Could not create handler "
+                        "object for archive \"%1\": \"%2\".").arg(info.metaFile, QLatin1String(Q_FUNC_INFO)));
+                }
+                if (!(metaFile->open(QIODevice::ReadOnly) && metaFile->extract(targetDir))) {
+                    throw Error(QString::fromLatin1("Could not extract archive \"%1\": %2").arg(
+                        QDir::toNativeSeparators(info.metaFile), metaFile->errorString()));
+                }
             }
 
             // Restore "PackageUpdate" node;
@@ -411,9 +413,16 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
     // Packages can be in repositories using different meta formats,
     // always extract unified meta if given as argument.
     foreach (const QString uniteMetadata, uniteMetadatas) {
-        QFile metaFile(QFileInfo(metaDataDir, uniteMetadata).absoluteFilePath());
-        QInstaller::openForRead(&metaFile);
-        Lib7z::extractArchive(&metaFile, targetDir);
+        const QString metaFilePath = QFileInfo(metaDataDir, uniteMetadata).absoluteFilePath();
+        QScopedPointer<AbstractArchive> metaFile(ArchiveFactory::instance().create(metaFilePath));
+        if (!metaFile) {
+            throw QInstaller::Error(QString::fromLatin1("Could not create handler "
+                "object for archive \"%1\": \"%2\".").arg(metaFilePath, QLatin1String(Q_FUNC_INFO)));
+        }
+        if (!(metaFile->open(QIODevice::ReadOnly) && metaFile->extract(targetDir))) {
+            throw Error(QString::fromLatin1("Could not extract archive \"%1\": %2").arg(
+                QDir::toNativeSeparators(metaFilePath), metaFile->errorString()));
+        }
     }
 
     doc.appendChild(root);
@@ -750,6 +759,19 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
     }
 }
 
+void QInstallerTools::createArchive(const QString &filename, const QStringList &data)
+{
+    QScopedPointer<AbstractArchive> targetArchive(ArchiveFactory::instance().create(filename));
+    if (!targetArchive) {
+        throw QInstaller::Error(QString::fromLatin1("Could not create handler "
+            "object for archive \"%1\": \"%2\".").arg(filename, QLatin1String(Q_FUNC_INFO)));
+    }
+    if (!(targetArchive->open(QIODevice::WriteOnly) && targetArchive->create(data))) {
+        throw Error(QString::fromLatin1("Could not create archive \"%1\": %2").arg(
+            QDir::toNativeSeparators(filename), targetArchive->errorString()));
+    }
+}
+
 void QInstallerTools::compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata)
 {
@@ -799,9 +821,15 @@ QStringList QInstallerTools::unifyMetadata(const QString &repoDir, const QString
     QString existingRepoTemp = existingRepoTempDir.path();
     if (!existingRepoDir.isEmpty()) {
         existingRepoTempDir.setAutoRemove(false);
-        QFile archiveFile(existingRepoDir);
-        QInstaller::openForRead(&archiveFile);
-        Lib7z::extractArchive(&archiveFile, existingRepoTemp);
+        QScopedPointer<AbstractArchive> archiveFile(ArchiveFactory::instance().create(existingRepoDir));
+        if (!archiveFile) {
+            throw QInstaller::Error(QString::fromLatin1("Could not create handler "
+                "object for archive \"%1\": \"%2\".").arg(existingRepoDir, QLatin1String(Q_FUNC_INFO)));
+        }
+        if (!(archiveFile->open(QIODevice::ReadOnly) && archiveFile->extract(existingRepoTemp))) {
+            throw Error(QString::fromLatin1("Could not extract archive \"%1\": %2").arg(
+                QDir::toNativeSeparators(existingRepoDir), archiveFile->errorString()));
+        }
         QDir dir2(existingRepoTemp);
         QStringList existingRepoEntries = dir2.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
         foreach (const QString existingRepoEntry, existingRepoEntries) {
@@ -819,7 +847,7 @@ QStringList QInstallerTools::unifyMetadata(const QString &repoDir, const QString
     const QString metadataFilename = QDateTime::currentDateTime().
             toString(QLatin1String("yyyy-MM-dd-hhmm")) + QLatin1String("_meta.7z");
     const QString tmpTarget = repoDir + QDir::separator() + metadataFilename;
-    Lib7z::createArchive(tmpTarget, absPaths, Lib7z::TmpFile::No);
+    createArchive(tmpTarget, absPaths);
 
     QFile tmp(tmpTarget);
     tmp.open(QFile::ReadOnly);
@@ -859,7 +887,9 @@ void QInstallerTools::splitMetadata(const QStringList &entryList, const QString 
         const QString versionPrefix = versionMapping[path];
         const QString fn = QLatin1String(versionPrefix.toLatin1() + "meta.7z");
         const QString tmpTarget = repoDir + QLatin1String("/") + fn;
-        Lib7z::createArchive(tmpTarget, QStringList() << absPath, Lib7z::TmpFile::No);
+
+        createArchive(tmpTarget, QStringList() << absPath);
+
         // remove the files that got compressed
         QInstaller::removeFiles(absPath, true);
         QFile tmp(tmpTarget);
@@ -876,7 +906,7 @@ void QInstallerTools::splitMetadata(const QStringList &entryList, const QString 
 }
 
 void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QString &repoDir,
-    PackageInfoVector *const infos)
+    PackageInfoVector *const infos, const QString &archiveSuffix)
 {
     for (int i = 0; i < infos->count(); ++i) {
         const PackageInfo info = infos->at(i);
@@ -898,7 +928,9 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                     QFileInfo fileInfo(dataDir.absoluteFilePath(entry));
                     if (fileInfo.isFile() && !fileInfo.isSymLink()) {
                         const QString absoluteEntryFilePath = dataDir.absoluteFilePath(entry);
-                        if (Lib7z::isSupportedArchive(absoluteEntryFilePath)) {
+                        QScopedPointer<AbstractArchive> archive(ArchiveFactory::instance()
+                            .create(absoluteEntryFilePath));
+                        if (archive && archive->open(QIODevice::ReadOnly) && archive->isSupported()) {
                             QFile tmp(absoluteEntryFilePath);
                             QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, entry, info.version);
                             qDebug() << "Copying archive from" << tmp.fileName() << "to" << target;
@@ -912,9 +944,8 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                         }
                     } else if (fileInfo.isDir()) {
                         qDebug() << "Compressing data directory" << entry;
-                        QString target = QString::fromLatin1("%1/%3%2.7z").arg(namedRepoDir, entry, info.version);
-                        Lib7z::createArchive(target, QStringList() << dataDir.absoluteFilePath(entry),
-                            Lib7z::TmpFile::No);
+                        QString target = QString::fromLatin1("%1/%3%2.%4").arg(namedRepoDir, entry, info.version, archiveSuffix);
+                        createArchive(target, QStringList() << dataDir.absoluteFilePath(entry));
                         compressedFiles.append(target);
                     } else if (fileInfo.isSymLink()) {
                         filesToCompress.append(dataDir.absoluteFilePath(entry));
@@ -924,9 +955,8 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
 
             if (!filesToCompress.isEmpty()) {
                 qDebug() << "Compressing files found in data directory:" << filesToCompress;
-                QString target = QString::fromLatin1("%1/%3%2").arg(namedRepoDir, QLatin1String("content.7z"),
-                    info.version);
-                Lib7z::createArchive(target, filesToCompress, Lib7z::TmpFile::No);
+                QString target = QString::fromLatin1("%1/%2content.%3").arg(namedRepoDir, info.version, archiveSuffix);
+                createArchive(target, filesToCompress);
                 compressedFiles.append(target);
             }
 
@@ -1059,7 +1089,7 @@ PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringL
 }
 
 void QInstallerTools::createRepository(RepositoryInfo info, PackageInfoVector *packages,
-        const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata)
+        const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata, const QString &archiveSuffix)
 {
     QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(*packages);
 
@@ -1075,7 +1105,7 @@ void QInstallerTools::createRepository(RepositoryInfo info, PackageInfoVector *p
             unite7zFiles.append(it.fileInfo().absoluteFilePath());
         }
     }
-    QInstallerTools::copyComponentData(directories, info.repositoryDir, packages);
+    QInstallerTools::copyComponentData(directories, info.repositoryDir, packages, archiveSuffix);
     QInstallerTools::copyMetaData(tmpMetaDir, info.repositoryDir, *packages, QLatin1String("{AnyApplication}"),
         QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
 

@@ -992,9 +992,16 @@
     \section1 Data Directory
 
     The \c data directory contains the content that the installer extracts
-    during the installation. You must package the data as a 7zip archive (.7z).
-    You can use either the \l archivegen tool that is delivered with the Qt
-    Installer Framework or some other tool that generates 7zip archives.
+    during the installation. The data must be packaged into archive files. This is either
+    done automatically by \l binarycreator and \l repogen when creating an installer or
+    a repository, respectively, or you can do this beforehand for more control.
+
+    For manual archive creation you can use either the \l archivegen tool that is
+    delivered with the Qt Installer Framework or some other tool that generates archives in
+    any of the file formats: \c{7z}, \c{zip}, \c{tar.gz}, \c{tar.bz2} and \c{tar.xz}.
+
+    \note If the Installer Framework tools were built without libarchive support,
+    only \c{7z} format is supported.
 */
 
 /*!
@@ -1248,6 +1255,12 @@
             \li Comma-separated list of packages to be updated based on the component sha
                 checksum instead of the version number. This parameter adds a new \c <ContentSha1>
                 node to the \c Updates.xml.
+         \row
+            \li --af or --archive-format 7z|zip|tar.gz|tar.bz2|tar.xz
+            \li Set the format used when packaging new component data archives. If
+                you omit this option, the 7z format will be used as a default.
+                \note If the Installer Framework tools were built without libarchive
+                support, only \c{7z} format is supported.
     \endtable
     \note We recommend that you use the \c {--update-new-packages} parameter
           to update an existing repository, especially if you have a content delivery
@@ -1258,19 +1271,57 @@
 
     \section1 archivegen
 
-    You can use \c archivegen to package files and directories into 7zip (.7z)
-    archives.
+    You can use \c archivegen to package files and directories into archives.
 
     The \c archivegen tool expects the following parameters in the following
     order:
 
     \code
-    archivegen <name.7z> <data>
+    archivegen <archive_name> <data>
     \endcode
 
-    Where \e <name.7z> is the path and file name of the archive to create and
+    Where \e <archive_name> is the path and file name of the archive to create and
     \e <data> contains the paths and names of the files or directories to
     package into the archive, separated by spaces.
+
+    \section2 Summary of archivegen Parameters
+
+    \table
+        \header
+            \li Parameter
+            \li Use
+        \row
+            \li -h, --help
+            \li Displays this help.
+        \row
+            \li -v, --version
+            \li Displays version information.
+        \row
+            \li -f, --format <format>
+            \li Format for the archive. Defaults to 7z.
+                \note If the Installer Framework tools were built without libarchive
+                support, only \c{7z} format is supported.
+                \list
+                    \li 7z (7z archive)
+                    \li zip (ZIP archive)
+                    \li tar.gz (gzip compressed tar archive)
+                    \li tar.bz2 (bzip2 compressed tar archive)
+                    \li tar.xz (xz compressed tar archive)
+                \endlist
+        \row
+            \li -c, --compression <5>
+            \li Defaults to 5 (Normal compression). \note Some formats do not support
+                all the possible values, for example bzip2 compression only supports
+                values from 1 to 9.
+                \list
+                    \li 0 (No compression)
+                    \li 1 (Fastest compressing)
+                    \li 3 (Fast compressing)
+                    \li 5 (Normal compressing)
+                    \li 7 (Maximum compressing)
+                    \li 9 (Ultra compressing)
+                \endlist
+    \endtable
 
     \section1 devtool
 

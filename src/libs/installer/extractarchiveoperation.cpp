@@ -88,27 +88,28 @@ bool ExtractArchiveOperation::performOperation()
 
     connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
-    if (PackageManagerCore *core = packageManager()) {
-        connect(core, &PackageManagerCore::statusChanged, &callback, &Callback::statusChanged);
-    }
-
-    Runnable *runnable = new Runnable(archivePath, targetDir, &callback);
-    connect(runnable, &Runnable::finished, &receiver, &Receiver::runnableFinished,
+    Worker *worker = new Worker(archivePath, targetDir, &callback);
+    connect(worker, &Worker::finished, &receiver, &Receiver::workerFinished,
         Qt::QueuedConnection);
+
+    if (PackageManagerCore *core = packageManager())
+        connect(core, &PackageManagerCore::statusChanged, worker, &Worker::onStatusChanged);
 
     QFileInfo fileInfo(archivePath);
     emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
+    {
+        QEventLoop loop;
+        QThread workerThread;
+        worker->moveToThread(&workerThread);
 
-    QEventLoop loop;
-    connect(&receiver, &Receiver::finished, &loop, &QEventLoop::quit);
-    if (QThreadPool::globalInstance()->tryStart(runnable)) {
+        connect(&workerThread, &QThread::started, worker, &Worker::run);
+        connect(&receiver, &Receiver::finished, &workerThread, &QThread::quit);
+        connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+        connect(&workerThread, &QThread::finished, &loop, &QEventLoop::quit);
+
+        workerThread.start();
         loop.exec();
-    } else {
-        // HACK: In case there is no availabe thread we should call it directly.
-        runnable->run();
-        receiver.runnableFinished(true, QString());
     }
-
     // Write all file names which belongs to a package to a separate file and only the separate
     // filename to a .dat file. There can be enormous amount of files in a package, which makes
     // the dat file very slow to read and write. The .dat file is read into memory in startup,

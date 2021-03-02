@@ -34,6 +34,9 @@
 #include "utils.h"
 #include "permissionsettings.h"
 #include "globals.h"
+#ifdef IFW_LIBARCHIVE
+#include "libarchivearchive.h"
+#endif
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -59,8 +62,10 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
     , m_socketDescriptor(socketDescriptor)
     , m_process(nullptr)
     , m_engine(nullptr)
+    , m_archive(nullptr)
     , m_authorizationKey(key)
-    , m_signalReceiver(nullptr)
+    , m_processSignalReceiver(nullptr)
+    , m_archiveSignalReceiver(nullptr)
 {
     setObjectName(QString::fromLatin1("RemoteServerConnection(%1)").arg(socketDescriptor));
 }
@@ -89,6 +94,7 @@ void RemoteServerConnection::run()
 
         if (!receivePacket(&socket, &cmd, &data)) {
             socket.waitForReadyRead(250);
+            qApp->processEvents();
             continue;
         }
 
@@ -142,11 +148,20 @@ void RemoteServerConnection::run()
                     if (m_process)
                         m_process->deleteLater();
                     m_process = new QProcess;
-                    m_signalReceiver = new QProcessSignalReceiver(m_process);
+                    m_processSignalReceiver = new QProcessSignalReceiver(m_process);
                 } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
                     if (m_engine)
                         delete m_engine;
                     m_engine = new QFSFileEngine;
+                } else if (type == QLatin1String(Protocol::AbstractArchive)) {
+#ifdef IFW_LIBARCHIVE
+                    if (m_archive)
+                        m_archive->deleteLater();
+                    m_archive = new LibArchiveArchive;
+                    m_archiveSignalReceiver = new AbstractArchiveSignalReceiver(static_cast<LibArchiveArchive *>(m_archive));
+#else
+                    Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
+#endif
                 }
                 continue;
             }
@@ -157,24 +172,44 @@ void RemoteServerConnection::run()
                 if (type == QLatin1String(Protocol::QSettings)) {
                     settings.reset();
                 } else if (type == QLatin1String(Protocol::QProcess)) {
-                    m_signalReceiver->m_receivedSignals.clear();
+                    m_processSignalReceiver->m_receivedSignals.clear();
                     m_process->deleteLater();
                     m_process = nullptr;
                 } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
                     delete m_engine;
                     m_engine = nullptr;
+                } else if (type == QLatin1String(Protocol::AbstractArchive)) {
+#ifdef IFW_LIBARCHIVE
+                    m_archiveSignalReceiver->m_receivedSignals.clear();
+                    m_archive->deleteLater();
+                    m_archive = nullptr;
+#else
+                    Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
+#endif
                 }
                 return;
             }
 
             if (command == QLatin1String(Protocol::GetQProcessSignals)) {
-                if (m_signalReceiver) {
-                    QMutexLocker _(&m_signalReceiver->m_lock);
-                    sendData(&socket, m_signalReceiver->m_receivedSignals);
+                if (m_processSignalReceiver) {
+                    QMutexLocker _(&m_processSignalReceiver->m_lock);
+                    sendData(&socket, m_processSignalReceiver->m_receivedSignals);
                     socket.flush();
-                    m_signalReceiver->m_receivedSignals.clear();
+                    m_processSignalReceiver->m_receivedSignals.clear();
                 }
                 continue;
+            } else if (command == QLatin1String(Protocol::GetAbstractArchiveSignals)) {
+#ifdef IFW_LIBARCHIVE
+                if (m_archiveSignalReceiver) {
+                    QMutexLocker _(&m_archiveSignalReceiver->m_lock);
+                    sendData(&socket, m_archiveSignalReceiver->m_receivedSignals);
+                    socket.flush();
+                    m_archiveSignalReceiver->m_receivedSignals.clear();
+                }
+                continue;
+#else
+                Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
+#endif
             }
 
             if (command.startsWith(QLatin1String(Protocol::QProcess))) {
@@ -183,6 +218,8 @@ void RemoteServerConnection::run()
                 handleQSettings(&socket, command, stream, settings.data());
             } else if (command.startsWith(QLatin1String(Protocol::QAbstractFileEngine))) {
                 handleQFSFileEngine(&socket, command, stream);
+            } else if (command.startsWith(QLatin1String(Protocol::AbstractArchive))) {
+                handleArchive(&socket, command, stream);
             } else {
                 qCDebug(QInstaller::lcServer) << "Unknown command:" << command;
             }
@@ -517,6 +554,58 @@ void RemoteServerConnection::handleQFSFileEngine(QIODevice *socket, const QStrin
     } else if (!command.isEmpty()) {
         qCDebug(QInstaller::lcServer) << "Unknown QAbstractFileEngine command:" << command;
     }
+}
+
+void RemoteServerConnection::handleArchive(QIODevice *socket, const QString &command, QDataStream &data)
+{
+#ifdef IFW_LIBARCHIVE
+    LibArchiveArchive *archive = static_cast<LibArchiveArchive *>(m_archive);
+    if (command == QLatin1String(Protocol::AbstractArchiveOpen)) {
+        qint32 openMode;
+        data >> openMode;
+        sendData(socket, archive->open(static_cast<QIODevice::OpenMode>(openMode)));
+    } else if (command == QLatin1String(Protocol::AbstractArchiveClose)) {
+        archive->close();
+    } else if (command == QLatin1String(Protocol::AbstractArchiveSetFilename)) {
+        QString fileName;
+        data >> fileName;
+        archive->setFilename(fileName);
+    } else if (command == QLatin1String(Protocol::AbstractArchiveErrorString)) {
+        sendData(socket, archive->errorString());
+    } else if (command == QLatin1String(Protocol::AbstractArchiveExtract)) {
+        QString dirPath;
+        quint64 total;
+        data >> dirPath;
+        data >> total;
+        archive->workerExtract(dirPath, total);
+    } else if (command == QLatin1String(Protocol::AbstractArchiveCreate)) {
+        QStringList entries;
+        data >> entries;
+        sendData(socket, archive->create(entries));
+    } else if (command == QLatin1String(Protocol::AbstractArchiveList)) {
+        sendData(socket, archive->list());
+    } else if (command == QLatin1String(Protocol::AbstractArchiveIsSupported)) {
+        sendData(socket, archive->isSupported());
+    } else if (command == QLatin1String(Protocol::AbstractArchiveSetCompressionLevel)) {
+        qint32 level;
+        data >> level;
+        archive->setCompressionLevel(static_cast<AbstractArchive::CompressionLevel>(level));
+    } else if (command == QLatin1String(Protocol::AbstractArchiveAddDataBlock)) {
+        QByteArray buff;
+        data >> buff;
+        archive->workerAddDataBlock(buff);
+    } else if (command == QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd)) {
+        archive->workerSetDataAtEnd();
+    } else if (command == QLatin1String(Protocol::AbstractArchiveWorkerStatus)) {
+        sendData(socket, static_cast<qint32>(archive->workerStatus()));
+    } else if (command == QLatin1String(Protocol::AbstractArchiveCancel)) {
+        archive->workerCancel();
+    } else if (!command.isEmpty()) {
+        qCDebug(QInstaller::lcServer) << "Unknown AbstractArchive command:" << command;
+    }
+#else
+    Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
+#endif
 }
 
 } // namespace QInstaller

@@ -84,8 +84,7 @@ private slots:
         QVERIFY(op.undoOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
-        QCOMPARE(op.errorString(), QString("Error while extracting archive \":///data/invalid.7z\": "
-                                           "Cannot open archive \":///data/invalid.7z\"."));
+        QCOMPARE(op.errorString(), QString("Cannot open archive \":///data/invalid.7z\" for reading: "));
     }
 
     void testExtractArchiveFromXML()

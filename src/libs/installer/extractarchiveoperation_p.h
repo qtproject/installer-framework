@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,8 +31,7 @@
 #include "extractarchiveoperation.h"
 
 #include "fileutils.h"
-#include "lib7z_extract.h"
-#include "lib7z_facade.h"
+#include "archivefactory.h"
 #include "packagemanagercore.h"
 
 #include <QRunnable>
@@ -85,7 +84,7 @@ private:
 typedef QPair<QString, QString> Backup;
 typedef QVector<Backup> BackupFiles;
 
-class ExtractArchiveOperation::Callback : public QObject, public Lib7z::ExtractCallback
+class ExtractArchiveOperation::Callback : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(Callback)
@@ -93,36 +92,14 @@ class ExtractArchiveOperation::Callback : public QObject, public Lib7z::ExtractC
 public:
     Callback() = default;
 
-    BackupFiles backupFiles() const {
+    BackupFiles backupFiles() const
+    {
         return m_backupFiles;
     }
 
-    QStringList extractedFiles() const {
+    QStringList extractedFiles() const
+    {
         return m_extractedFiles;
-    }
-
-public slots:
-    void statusChanged(QInstaller::PackageManagerCore::Status status)
-    {
-        switch(status) {
-            case PackageManagerCore::Canceled:
-                m_state = E_ABORT;
-                break;
-            case PackageManagerCore::Failure:
-                m_state = E_FAIL;
-                break;
-            default:    // ignore all other status values
-                break;
-        }
-    }
-
-signals:
-    void progressChanged(double progress);
-
-private:
-    void setCurrentFile(const QString &filename) Q_DECL_OVERRIDE
-    {
-        m_extractedFiles.prepend(QDir::toNativeSeparators(filename));
     }
 
     static QString generateBackupName(const QString &fn)
@@ -135,7 +112,7 @@ private:
         return res;
     }
 
-    bool prepareForFile(const QString &filename) Q_DECL_OVERRIDE
+    bool prepareForFile(const QString &filename)
     {
         if (!QFile::exists(filename))
             return true;
@@ -151,59 +128,110 @@ private:
         return true;
     }
 
-    HRESULT setCompleted(quint64 completed, quint64 total) Q_DECL_OVERRIDE
+Q_SIGNALS:
+    void progressChanged(double progress);
+
+public Q_SLOTS:
+    void onCurrentEntryChanged(const QString &filename)
+    {
+        m_extractedFiles.prepend(QDir::toNativeSeparators(filename));
+    }
+
+    void onCompletedChanged(quint64 completed, quint64 total)
     {
         emit progressChanged(double(completed) / total);
-        return m_state;
     }
 
 private:
-    HRESULT m_state = S_OK;
     BackupFiles m_backupFiles;
     QStringList m_extractedFiles;
 };
 
-class ExtractArchiveOperation::Runnable : public QObject, public QRunnable
+class ExtractArchiveOperation::Worker : public QObject
 {
     Q_OBJECT
-    Q_DISABLE_COPY(Runnable)
+    Q_DISABLE_COPY(Worker)
 
 public:
-    Runnable(const QString &archivePath, const QString &targetDir,
-            ExtractArchiveOperation::Callback *callback)
+    Worker(const QString &archivePath, const QString &targetDir, Callback *callback)
         : m_archivePath(archivePath)
         , m_targetDir(targetDir)
+        , m_canceled(false)
         , m_callback(callback)
     {}
 
+Q_SIGNALS:
+    void finished(bool success, const QString &errorString);
+
+public Q_SLOTS:
     void run()
     {
-        QFile archive(m_archivePath);
-        if (!archive.open(QIODevice::ReadOnly)) {
-            emit finished(false, tr("Cannot open archive \"%1\" for reading: %2").arg(m_archivePath,
-                archive.errorString()));
+        m_canceled = false;
+        m_archive.reset(ArchiveFactory::instance().create(m_archivePath));
+        if (!m_archive) {
+            emit finished(false, tr("Could not create handler object for archive \"%1\": \"%2\".")
+                .arg(m_archivePath, QLatin1String(Q_FUNC_INFO)));
             return;
         }
 
-        try {
-            Lib7z::extractArchive(&archive, m_targetDir, m_callback);
-            emit finished(true, QString());
-        } catch (const Lib7z::SevenZipException& e) {
+        connect(m_archive.get(), &AbstractArchive::currentEntryChanged, m_callback, &Callback::onCurrentEntryChanged);
+        connect(m_archive.get(), &AbstractArchive::completedChanged, m_callback, &Callback::onCompletedChanged);
+
+        if (!(m_archive->open(QIODevice::ReadOnly) && m_archive->isSupported())) {
+            emit finished(false, tr("Cannot open archive \"%1\" for reading: %2").arg(m_archivePath,
+                m_archive->errorString()));
+            return;
+        }
+        const QVector<ArchiveEntry> entries = m_archive->list();
+        if (entries.isEmpty()) {
+            emit finished(false, tr("Error while reading contents of archive \"%1\": %2").arg(m_archivePath,
+                m_archive->errorString()));
+            return;
+        }
+        for (auto &entry : entries) {
+            QString completeFilePath = m_targetDir + QDir::separator() + entry.path;
+            if (!entry.isDirectory && !m_callback->prepareForFile(completeFilePath)) {
+                emit finished(false, tr("Cannot prepare for file \"%1\"").arg(completeFilePath));
+                return;
+            }
+        }
+        if (m_canceled) {
+            // For large archives the reading takes some time, and the user might have
+            // canceled before we start the actual extracting.
+            emit finished(false, tr("Extract for archive \"%1\" canceled.").arg(m_archivePath));
+        } else if (!m_archive->extract(m_targetDir, entries.size())) {
             emit finished(false, tr("Error while extracting archive \"%1\": %2").arg(m_archivePath,
-                e.message()));
-        } catch (...) {
-            emit finished(false, tr("Unknown exception caught while extracting \"%1\".")
-                .arg(m_archivePath));
+                m_archive->errorString()));
+        } else {
+            emit finished(true, QString());
         }
     }
 
-signals:
-    void finished(bool success, const QString &errorString);
+    void onStatusChanged(PackageManagerCore::Status status)
+    {
+        if (!m_archive)
+            return;
+
+        switch (status) {
+        case PackageManagerCore::Canceled:
+            m_canceled = true;
+            m_archive->cancel();
+            break;
+        case PackageManagerCore::Failure:
+            m_canceled = true;
+            m_archive->cancel();
+            break;
+        default: // ignore all other status values
+            break;
+        }
+    }
 
 private:
     QString m_archivePath;
     QString m_targetDir;
-    ExtractArchiveOperation::Callback *m_callback;
+    QScopedPointer<AbstractArchive> m_archive;
+    bool m_canceled;
+    Callback *m_callback;
 };
 
 class ExtractArchiveOperation::Receiver : public QObject
@@ -223,7 +251,7 @@ public:
     }
 
 public slots:
-    void runnableFinished(bool ok, const QString &msg)
+    void workerFinished(bool ok, const QString &msg)
     {
         m_success = ok;
         m_errorString = msg;

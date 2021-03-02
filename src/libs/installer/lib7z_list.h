@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2015 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,6 +40,7 @@
 #define LIB7Z_LIST_H
 
 #include "installer_global.h"
+#include "abstractarchive.h"
 
 #include <QDateTime>
 #include <QFile>
@@ -47,19 +48,7 @@
 
 namespace Lib7z
 {
-    struct INSTALLER_EXPORT File
-    {
-    public:
-        QString path;
-        QDateTime utcTime;
-        QPoint archiveIndex;
-        bool isDirectory = false;
-        quint64 compressedSize = 0;
-        quint64 uncompressedSize = 0;
-        QFile::Permissions permissions = 0;
-    };
-
-    INSTALLER_EXPORT bool operator==(const File &lhs, const File &rhs);
+    typedef QInstaller::ArchiveEntry File;
 
     QVector<File> INSTALLER_EXPORT listArchive(QFileDevice *archive);
 

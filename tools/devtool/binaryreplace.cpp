@@ -34,9 +34,7 @@
 #include <errors.h>
 #include <fileio.h>
 #include <fileutils.h>
-#include <lib7z_extract.h>
-#include <lib7z_facade.h>
-#include <lib7z_list.h>
+#include <archivefactory.h>
 
 #include <QDir>
 #include <QFutureWatcher>
@@ -68,29 +66,22 @@ int BinaryReplace::replace(const QString &source, const QString &target)
             return result;
 
         QString newInstallerBasePath = future.result().target();
-        if (Lib7z::isSupportedArchive(newInstallerBasePath)) {
-            QFile archive(newInstallerBasePath);
-            if (archive.open(QIODevice::ReadOnly)) {
-                try {
-                    Lib7z::extractArchive(&archive, QDir::tempPath());
-                    const QVector<Lib7z::File> files = Lib7z::listArchive(&archive);
-                    newInstallerBasePath = QDir::tempPath() + QLatin1Char('/') + files.value(0)
-                        .path;
-                    result = EXIT_SUCCESS;
-                } catch (const Lib7z::SevenZipException& e) {
-                    std::cerr << qPrintable(QString::fromLatin1("Error while extracting \"%1\": %2")
-                        .arg(QDir::toNativeSeparators(newInstallerBasePath), e.message())) << std::endl;
-                } catch (...) {
-                    std::cerr << qPrintable(QString::fromLatin1("Unknown exception caught while "
-                        "extracting \"%1\".").arg(QDir::toNativeSeparators(newInstallerBasePath))) << std::endl;
-                }
+        QScopedPointer<QInstaller::AbstractArchive> archive(
+            QInstaller::ArchiveFactory::instance().create(newInstallerBasePath));
+
+        if (archive && archive->open(QIODevice::ReadOnly) && archive->isSupported()) {
+            if (archive->extract(QDir::tempPath())) {
+                const QVector<QInstaller::ArchiveEntry> files = archive->list();
+                newInstallerBasePath = QDir::tempPath() + QLatin1Char('/') + files.value(0).path;
+                result = EXIT_SUCCESS;
             } else {
-                std::cerr << qPrintable(QString::fromLatin1("Cannot open \"%1\" for reading: %2")
-                    .arg(QDir::toNativeSeparators(newInstallerBasePath), archive.errorString())) << std::endl;
+                std::cerr << qPrintable(QString::fromLatin1("Error while extracting \"%1\": %2")
+                    .arg(QDir::toNativeSeparators(newInstallerBasePath), archive->errorString())) << std::endl;
             }
-            if (!archive.remove()) {
-                std::cerr << qPrintable(QString::fromLatin1("Cannot delete file \"%1\": %2")
-                    .arg(QDir::toNativeSeparators(newInstallerBasePath), archive.errorString())) << std::endl;
+
+            if (!QFile::remove(newInstallerBasePath)) {
+                std::cerr << qPrintable(QString::fromLatin1("Cannot delete file \"%1\"")
+                    .arg(QDir::toNativeSeparators(newInstallerBasePath))) << std::endl;
             }
             if (result != EXIT_SUCCESS)
                 return result;

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,8 +34,7 @@
 #include "fileio.h"
 #include "fileutils.h"
 #include "copydirectoryoperation.h"
-#include "lib7z_create.h"
-#include "lib7z_facade.h"
+#include "lib7zarchive.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
 #include "constants.h"
@@ -124,8 +123,12 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
     const QString fileName = QString::fromLatin1("/%1meta.7z").arg(version);
 
     QFile archive(repoPath + fileName);
-    QInstaller::openForWrite(&archive);
-    Lib7z::createArchive(&archive, QStringList() << sourceDir);
+
+    Lib7zArchive archiveFile(archive.fileName());
+    if (!(archiveFile.open(QIODevice::WriteOnly) && archiveFile.create(QStringList() << sourceDir))) {
+        throw Error(CreateLocalRepositoryOperation::tr("Cannot create archive \"%1\": %2")
+            .arg(QDir::toNativeSeparators(archive.fileName()), archiveFile.errorString()));
+    }
     removeFiles(sourceDir, helper); // cleanup the files we compressed
     if (!archive.rename(sourceDir + fileName)) {
         throw Error(CreateLocalRepositoryOperation::tr("Cannot move file \"%1\" to \"%2\": %3")
@@ -356,10 +359,6 @@ bool CreateLocalRepositoryOperation::performOperation()
             }
         } catch (...) {}
         setValue(QLatin1String("local-repo"), repoPath);
-    } catch (const Lib7z::SevenZipException &e) {
-        setError(UserDefinedError);
-        setErrorString(e.message());
-        return false;
     } catch (const QInstaller::Error &e) {
         setError(UserDefinedError);
         setErrorString(e.message());

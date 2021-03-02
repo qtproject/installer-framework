@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,6 +36,7 @@
 #include "lib7z_list.h"
 #include "lib7z_guid.h"
 #include "globals.h"
+#include "directoryguard.h"
 
 #ifndef Q_OS_WIN
 #   include "StdAfx.h"
@@ -294,73 +295,6 @@ QString errorMessageFrom7zResult(const LONG  &extractResult)
     return errorMessage;
 }
 
-/*
-    RAII class to create a directory (tryCreate()) and delete it on destruction unless released.
-*/
-struct DirectoryGuard
-{
-    explicit DirectoryGuard(const QString &path)
-        : m_path(path)
-        , m_created(false)
-        , m_released(false)
-    {
-        m_path.replace(QLatin1Char('\\'), QLatin1Char('/'));
-    }
-
-    ~DirectoryGuard()
-    {
-        if (!m_created || m_released)
-            return;
-        QDir dir(m_path);
-        if (!dir.rmdir(m_path))
-            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot delete directory " << m_path;
-    }
-
-    /*
-        Tries to create the directory structure.
-        Returns a list of every directory created.
-    */
-    QStringList tryCreate()
-    {
-        if (m_path.isEmpty())
-            return QStringList();
-
-        const QFileInfo fi(m_path);
-        if (fi.exists() && fi.isDir())
-            return QStringList();
-        if (fi.exists() && !fi.isDir()) {
-            throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
-                "Path \"%1\" exists but is not a directory.").arg(QDir::toNativeSeparators(m_path)));
-        }
-        QStringList created;
-
-        QDir toCreate(m_path);
-        while (!toCreate.exists()) {
-            QString p = toCreate.absolutePath();
-            created.push_front(p);
-            p = p.section(QLatin1Char('/'), 0, -2);
-            toCreate = QDir(p);
-        }
-
-        QDir dir(m_path);
-        m_created = dir.mkpath(m_path);
-        if (!m_created) {
-            throw SevenZipException(QCoreApplication::translate("DirectoryGuard",
-                "Cannot create directory \"%1\".").arg(QDir::toNativeSeparators(m_path)));
-        }
-        return created;
-    }
-
-    void release()
-    {
-        m_released = true;
-    }
-
-    QString m_path;
-    bool m_created;
-    bool m_released;
-};
-
 static UString QString2UString(const QString &str)
 {
     return str.toStdWString().c_str();
@@ -554,18 +488,6 @@ private:
     QPointer<QIODevice> m_device;
 };
 
-bool operator==(const File &lhs, const File &rhs)
-{
-    return lhs.path == rhs.path
-        && lhs.utcTime == rhs.utcTime
-        && lhs.isDirectory == rhs.isDirectory
-        && lhs.compressedSize == rhs.compressedSize
-        && lhs.uncompressedSize == rhs.uncompressedSize
-        && (lhs.permissions == rhs.permissions
-        || lhs.permissions == static_cast<QFile::Permissions>(-1)
-        || rhs.permissions == static_cast<QFile::Permissions>(-1));
-}
-
 /*!
    Returns a list of files belonging to an \a archive.
 */
@@ -586,6 +508,8 @@ QVector<File> listArchive(QFileDevice *archive)
         op.types = &types;  // Empty, because we use a stream.
 
         CIntVector excluded;
+        excluded.Add(codecs.FindFormatForExtension(
+            QString2UString(QLatin1String("xz")))); // handled by libarchive
         op.excludedFormats = &excluded;
 
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);
@@ -620,7 +544,7 @@ QVector<File> listArchive(QFileDevice *archive)
                 f.archiveIndex.setY(item);
                 f.path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 Archive_IsItem_Folder(arch, item, f.isDirectory);
-                f.permissions = getPermissions(arch, item, nullptr);
+                f.permissions_enum = getPermissions(arch, item, nullptr);
                 getDateTimeProperty(arch, item, kpidMTime, &(f.utcTime));
                 f.uncompressedSize = getUInt64Property(arch, item, kpidSize, 0);
                 f.compressedSize = getUInt64Property(arch, item, kpidPackSize, 0);
@@ -692,7 +616,7 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
 
     const QFileInfo fi(QString::fromLatin1("%1/%2").arg(targetDir, UString2QString(s)));
 
-    DirectoryGuard guard(fi.absolutePath());
+    QInstaller::DirectoryGuard guard(fi.absolutePath());
     const QStringList directories = guard.tryCreate();
 
     bool isDir = false;
@@ -843,19 +767,6 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
             File is not a temporary file.
     \value  Yes
             File is a tmp file.
-*/
-
-/*!
-    \enum Lib7z::Compression
-
-    This enum specifies the compression ratio of an archive:
-
-    \value  Non
-    \value  Fastest
-    \value  Fast
-    \value  Normal
-    \value  Maximum
-    \value  Ultra
 */
 
 /*!
@@ -1176,7 +1087,7 @@ void extractArchive(QFileDevice *archive, const QString &directory, ExtractCallb
         localCallback = callback;
     }
 
-    DirectoryGuard outDir(QFileInfo(directory).absolutePath());
+    QInstaller::DirectoryGuard outDir(QFileInfo(directory).absolutePath());
     try {
         outDir.tryCreate();
 
@@ -1191,6 +1102,8 @@ void extractArchive(QFileDevice *archive, const QString &directory, ExtractCallb
         op.types = &types;  // Empty, because we use a stream.
 
         CIntVector excluded;
+        excluded.Add(codecs.FindFormatForExtension(
+            QString2UString(QLatin1String("xz")))); // handled by libarchive
         op.excludedFormats = &excluded;
 
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);
@@ -1248,6 +1161,8 @@ bool isSupportedArchive(QFileDevice *archive)
         op.types = &types;  // Empty, because we use a stream.
 
         CIntVector excluded;
+        excluded.Add(codecs.FindFormatForExtension(
+            QString2UString(QLatin1String("xz")))); // handled by libarchive
         op.excludedFormats = &excluded;
 
         const CMyComPtr<IInStream> stream = new QIODeviceInStream(archive);

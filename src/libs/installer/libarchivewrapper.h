@@ -26,47 +26,46 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTARCHIVEOPERATION_H
-#define EXTRACTARCHIVEOPERATION_H
+#ifndef LIBARCHIVEWRAPPER_H
+#define LIBARCHIVEWRAPPER_H
 
-#include "qinstallerglobal.h"
-
-#include <QtCore/QObject>
+#include "installer_global.h"
+#include "abstractarchive.h"
+#include "libarchivewrapper_p.h"
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
+class INSTALLER_EXPORT LibArchiveWrapper : public AbstractArchive
 {
     Q_OBJECT
-    friend class WorkerThread;
+    Q_DISABLE_COPY(LibArchiveWrapper)
 
 public:
-    explicit ExtractArchiveOperation(PackageManagerCore *core);
+    LibArchiveWrapper(const QString &filename, QObject *parent = nullptr);
+    explicit LibArchiveWrapper(QObject *parent = nullptr);
+    ~LibArchiveWrapper();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    bool open(QIODevice::OpenMode mode) Q_DECL_OVERRIDE;
+    void close() Q_DECL_OVERRIDE;
+    void setFilename(const QString &filename) Q_DECL_OVERRIDE;
 
-    bool readDataFileContents(QString &targetDir, QStringList *resultList);
+    QString errorString() const Q_DECL_OVERRIDE;
 
-Q_SIGNALS:
-    void outputTextChanged(const QString &progress);
-    void progressChanged(double);
+    bool extract(const QString &dirPath) Q_DECL_OVERRIDE;
+    bool extract(const QString &dirPath, const quint64 totalFiles) Q_DECL_OVERRIDE;
+    bool create(const QStringList &data) Q_DECL_OVERRIDE;
+    QVector<ArchiveEntry> list() Q_DECL_OVERRIDE;
+    bool isSupported() Q_DECL_OVERRIDE;
+
+    void setCompressionLevel(const AbstractArchive::CompressionLevel level) Q_DECL_OVERRIDE;
+
+public Q_SLOTS:
+    void cancel() Q_DECL_OVERRIDE;
 
 private:
-    void startUndoProcess(const QStringList &files);
-    void deleteDataFile(const QString &fileName);
-
-private:
-    QString m_relocatedDataFileName;
-
-private:
-    class Callback;
-    class Worker;
-    class Receiver;
+    LibArchiveWrapperPrivate *const d;
 };
 
-}
+} // namespace QInstaller
 
-#endif
+#endif // LIBARCHIVEWRAPPER_H

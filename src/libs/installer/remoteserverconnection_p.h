@@ -30,6 +30,9 @@
 #define REMOTESERVERCONNECTION_P_H
 
 #include "protocol.h"
+#ifdef IFW_LIBARCHIVE
+#include "libarchivearchive.h"
+#endif
 
 #include <QMutex>
 #include <QProcess>
@@ -123,6 +126,60 @@ private:
     QMutex m_lock;
     QVariantList m_receivedSignals;
 };
+
+#ifdef IFW_LIBARCHIVE
+class AbstractArchiveSignalReceiver : public QObject
+{
+    Q_OBJECT
+    friend class RemoteServerConnection;
+
+private:
+    explicit AbstractArchiveSignalReceiver(LibArchiveArchive *archive)
+        : QObject(archive)
+    {
+        connect(archive, &LibArchiveArchive::currentEntryChanged,
+                this, &AbstractArchiveSignalReceiver::onCurrentEntryChanged);
+        connect(archive, &LibArchiveArchive::completedChanged,
+                this, &AbstractArchiveSignalReceiver::onCompletedChanged);
+        connect(archive, &LibArchiveArchive::dataBlockRequested,
+                this, &AbstractArchiveSignalReceiver::onDataBlockRequested);
+        connect(archive, &LibArchiveArchive::workerFinished,
+                this, &AbstractArchiveSignalReceiver::onWorkerFinished);
+    }
+
+private Q_SLOTS:
+    void onCurrentEntryChanged(const QString &filename)
+    {
+        QMutexLocker _(&m_lock);
+        m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalCurrentEntryChanged));
+        m_receivedSignals.append(filename);
+    }
+
+    void onCompletedChanged(quint64 completed, quint64 total)
+    {
+        QMutexLocker _(&m_lock);
+        m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalCompletedChanged));
+        m_receivedSignals.append(completed);
+        m_receivedSignals.append(total);
+    }
+
+    void onDataBlockRequested()
+    {
+        QMutexLocker _(&m_lock);
+        m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalDataBlockRequested));
+    }
+
+    void onWorkerFinished()
+    {
+        QMutexLocker _(&m_lock);
+        m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalWorkerFinished));
+    }
+
+private:
+    QMutex m_lock;
+    QVariantList m_receivedSignals;
+};
+#endif
 
 } // namespace QInstaller
 

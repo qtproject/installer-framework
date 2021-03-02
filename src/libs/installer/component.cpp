@@ -31,7 +31,7 @@
 #include "errors.h"
 #include "fileutils.h"
 #include "globals.h"
-#include "lib7z_facade.h"
+#include "archivefactory.h"
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 #include "remoteclient.h"
@@ -864,7 +864,8 @@ void Component::createOperationsForArchive(const QString &archive)
             return;
     }
 
-    const bool isZip = Lib7z::isSupportedArchive(archive);
+    QScopedPointer<AbstractArchive> archiveFile(ArchiveFactory::instance().create(archive));
+    const bool isZip = (archiveFile && archiveFile->open(QIODevice::ReadOnly) && archiveFile->isSupported());
 
     if (isZip) {
         // component.xml can override this value

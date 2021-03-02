@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,8 +29,7 @@
 #ifndef METADATAJOB_P_H
 #define METADATAJOB_P_H
 
-#include "lib7z_extract.h"
-#include "lib7z_facade.h"
+#include "lib7zarchive.h"
 #include "metadatajob.h"
 
 #include <QDir>
@@ -76,20 +75,14 @@ public:
             return; // ignore already canceled
         }
 
-        QFile archive(m_archive);
-        if (archive.open(QIODevice::ReadOnly)) {
-            try {
-                Lib7z::extractArchive(&archive, m_targetDir);
-            } catch (const Lib7z::SevenZipException& e) {
-                fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
-                    "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), e.message())));
-            } catch (...) {
-                fi.reportException(UnzipArchiveException(MetadataJob::tr("Unknown exception "
-                    "caught while extracting archive \"%1\".").arg(QDir::toNativeSeparators(m_archive))));
-            }
-        } else {
+        Lib7zArchive archive(m_archive);
+        if (!archive.open(QIODevice::ReadOnly)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
                 "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive.errorString())));
+        }
+        if (!archive.extract(m_targetDir)) {
+            fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
+                "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive.errorString())));
         }
 
         fi.reportFinished();

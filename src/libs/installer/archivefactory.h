@@ -26,47 +26,44 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTARCHIVEOPERATION_H
-#define EXTRACTARCHIVEOPERATION_H
+#ifndef ARCHIVEFACTORY_H
+#define ARCHIVEFACTORY_H
 
-#include "qinstallerglobal.h"
-
-#include <QtCore/QObject>
+#include "installer_global.h"
+#include "genericfactory.h"
+#include "abstractarchive.h"
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
+class INSTALLER_EXPORT ArchiveFactory
+    : public GenericFactory<AbstractArchive, QString, QString, QObject *>
 {
-    Q_OBJECT
-    friend class WorkerThread;
+    Q_DISABLE_COPY(ArchiveFactory)
 
 public:
-    explicit ExtractArchiveOperation(PackageManagerCore *core);
+    static ArchiveFactory &instance();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    template <typename T>
+    void registerArchive(const QString &name, const QStringList &types)
+    {
+        if (containsProduct(name))
+            m_supportedTypesHash.remove(name);
 
-    bool readDataFileContents(QString &targetDir, QStringList *resultList);
+        registerProduct<T>(name);
+        m_supportedTypesHash.insert(name, types);
+    }
+    AbstractArchive *create(const QString &filename, QObject *parent = nullptr) const;
 
-Q_SIGNALS:
-    void outputTextChanged(const QString &progress);
-    void progressChanged(double);
-
-private:
-    void startUndoProcess(const QStringList &files);
-    void deleteDataFile(const QString &fileName);
-
-private:
-    QString m_relocatedDataFileName;
+    static QStringList supportedTypes();
+    static bool isSupportedType(const QString &filename);
 
 private:
-    class Callback;
-    class Worker;
-    class Receiver;
+    ArchiveFactory();
+
+private:
+    QHash<QString, QStringList> m_supportedTypesHash;
 };
 
-}
+} // namespace QInstaller
 
-#endif
+#endif // ARCHIVEFACTORY_H

@@ -30,6 +30,8 @@
 #include <repositorygen.h>
 #include <repositorygen.cpp>
 #include <init.h>
+#include <lib7z_facade.h>
+#include <lib7zarchive.h>
 
 #include <QFile>
 #include <QTest>
@@ -63,7 +65,7 @@ private:
         tmp.setAutoRemove(false);
         const QString tmpMetaDir = tmp.path();
         QInstallerTools::createRepository(m_repoInfo, &m_packages, tmpMetaDir, createSplitMetadata,
-                                          createUnifiedMetadata);
+                                          createUnifiedMetadata, QLatin1String("7z"));
         QInstaller::removeDirectory(tmpMetaDir, true);
     }
 
@@ -95,12 +97,12 @@ private:
         QString existingUniteMeta7z = QInstallerTools::existingUniteMeta7z(m_repoInfo.repositoryDir);
         QCOMPARE(2, matches.count());
         QCOMPARE(existingUniteMeta7z, matches.at(1));
-        QFile file(m_repoInfo.repositoryDir + QDir::separator() + matches.at(1));
+        Lib7zArchive file(m_repoInfo.repositoryDir + QDir::separator() + matches.at(1));
         QVERIFY(file.open(QIODevice::ReadOnly));
 
         //We have script<version>.qs for package A in the unite metadata
-        QVector<Lib7z::File>::const_iterator fileIt;
-        const QVector<Lib7z::File> files = Lib7z::listArchive(&file);
+        QVector<ArchiveEntry>::const_iterator fileIt;
+        const QVector<ArchiveEntry> files = file.list();
         for (fileIt = files.begin(); fileIt != files.end(); ++fileIt) {
             if (fileIt->isDirectory)
                 continue;

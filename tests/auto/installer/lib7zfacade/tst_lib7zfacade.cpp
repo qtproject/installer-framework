@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,7 +46,7 @@ private slots:
         Lib7z::initSevenZ();
 
         m_file.path = "valid";
-        m_file.permissions = 0;
+        m_file.permissions_enum = 0;
         m_file.compressedSize = 836;
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;

@@ -29,6 +29,8 @@
 #ifndef REMOTESERVERCONNECTION_H
 #define REMOTESERVERCONNECTION_H
 
+#include "abstractarchive.h"
+
 #include <QPointer>
 #include <QThread>
 
@@ -44,6 +46,7 @@ namespace QInstaller {
 class PermissionSettings;
 
 class QProcessSignalReceiver;
+class AbstractArchiveSignalReceiver;
 
 class RemoteServerConnection : public QThread
 {
@@ -66,14 +69,17 @@ private:
     void handleQSettings(QIODevice *device, const QString &command, QDataStream &data,
                          PermissionSettings *settings);
     void handleQFSFileEngine(QIODevice *device, const QString &command, QDataStream &data);
+    void handleArchive(QIODevice *device, const QString &command, QDataStream &data);
 
 private:
     qintptr m_socketDescriptor;
 
     QProcess *m_process;
     QFSFileEngine *m_engine;
+    AbstractArchive *m_archive;
     QString m_authorizationKey;
-    QProcessSignalReceiver *m_signalReceiver;
+    QProcessSignalReceiver *m_processSignalReceiver;
+    AbstractArchiveSignalReceiver *m_archiveSignalReceiver;
 };
 
 } // namespace QInstaller

@@ -27,101 +27,18 @@
 **************************************************************************/
 
 #include <errors.h>
-#include <lib7z_create.h>
+#include <archivefactory.h>
 #include <lib7z_facade.h>
 #include <utils.h>
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
 #include <QDir>
+#include <QMetaEnum>
 
 #include <iostream>
 
 using namespace QInstaller;
-
-class FailOnErrorCallback : public Lib7z::UpdateCallback
-{
-    HRESULT OpenFileError(const wchar_t*, DWORD) Q_DECL_OVERRIDE {
-        return S_FALSE;
-    }
-
-    HRESULT CanNotFindError(const wchar_t*, DWORD) Q_DECL_OVERRIDE {
-        return S_FALSE;
-    }
-
-    HRESULT OpenResult(const wchar_t*, HRESULT result, const wchar_t*) Q_DECL_OVERRIDE {
-        return result;
-    }
-};
-
-class VerbosePrinterCallback : public Lib7z::UpdateCallback
-{
-public:
-    ~VerbosePrinterCallback() {
-        m_PercentPrinter.ClosePrint();
-    }
-
-private:
-    HRESULT SetTotal(UInt64 size) Q_DECL_OVERRIDE {
-        m_PercentPrinter.SetTotal(size);
-        return S_OK;
-    }
-
-    HRESULT SetCompleted(const UInt64 *size) Q_DECL_OVERRIDE {
-        if (size) {
-            m_PercentPrinter.SetRatio(*size);
-            m_PercentPrinter.PrintRatio();
-        }
-        return S_OK;
-    }
-
-    HRESULT OpenResult(const wchar_t *file, HRESULT result, const wchar_t*) Q_DECL_OVERRIDE {
-        if (result != S_OK) {
-            printBlock(QCoreApplication::translate("archivegen", "Cannot update file \"%1\". "
-                "Unsupported archive.").arg(QDir::toNativeSeparators(QString::fromWCharArray(file))), Q_NULLPTR);
-        }
-        return result;
-    }
-
-    HRESULT OpenFileError(const wchar_t *file, DWORD) Q_DECL_OVERRIDE {
-        printBlock(QCoreApplication::translate("archivegen", "Cannot open file "), file);
-        return S_FALSE;
-    }
-
-    HRESULT CanNotFindError(const wchar_t *file, DWORD) Q_DECL_OVERRIDE {
-        printBlock(QCoreApplication::translate("archivegen", "Cannot find file "), file);
-        return S_FALSE;
-    }
-
-    HRESULT StartArchive(const wchar_t *name, bool) Q_DECL_OVERRIDE {
-        printLine(QCoreApplication::translate("archivegen", "Create archive."));
-        if (name) {
-            m_PercentPrinter.PrintNewLine();
-            m_PercentPrinter.PrintString(name);
-        }
-        return S_OK;
-    }
-
-    HRESULT FinishArchive() Q_DECL_OVERRIDE {
-        m_PercentPrinter.PrintNewLine();
-        printLine(QCoreApplication::translate("archivegen", "Finished archive."));
-        return S_OK;
-    }
-
-    void printLine(const QString &message) {
-        m_PercentPrinter.PrintString(message.toStdWString().c_str());
-    }
-
-    void printBlock(const QString &message, const wchar_t *message2) {
-        m_PercentPrinter.PrintNewLine();
-        m_PercentPrinter.PrintString(message.toStdWString().c_str());
-        if (message2)
-            m_PercentPrinter.PrintString(message2);
-        m_PercentPrinter.PrintNewLine();
-    }
-
-    Lib7z::PercentPrinter m_PercentPrinter;
-};
 
 int main(int argc, char *argv[])
 {
@@ -132,12 +49,16 @@ int main(int argc, char *argv[])
         QCoreApplication::setApplicationVersion(QLatin1String(QUOTE(IFW_VERSION_STR)));
 #undef QUOTE
 #undef QUOTE_
-
+        const QString archiveFormats = ArchiveFactory::supportedTypes().join(QLatin1Char('|'));
         QCommandLineParser parser;
         const QCommandLineOption help = parser.addHelpOption();
         const QCommandLineOption version = parser.addVersionOption();
-        QCommandLineOption verbose(QLatin1String("verbose"),
-            QCoreApplication::translate("archivegen", "Verbose mode. Prints out more information."));
+        const QCommandLineOption format = QCommandLineOption(QStringList()
+            << QLatin1String("f") << QLatin1String("format"),
+            QCoreApplication::translate("archivegen",
+                "%1\n"
+                "Format for the archive. Defaults to 7z."
+            ).arg(archiveFormats), QLatin1String("format"), QLatin1String("7z"));
         const QCommandLineOption compression = QCommandLineOption(QStringList()
             << QLatin1String("c") << QLatin1String("compression"),
             QCoreApplication::translate("archivegen",
@@ -147,10 +68,12 @@ int main(int argc, char *argv[])
                 "5 (Normal compressing)\n"
                 "7 (Maximum compressing)\n"
                 "9 (Ultra compressing)\n"
-                "Defaults to 5 (Normal compression)."
+                "Defaults to 5 (Normal compression).\n"
+                "Note: some formats do not support all the possible values, "
+                "for example bzip2 compression only supports values from 1 to 9."
             ), QLatin1String("5"), QLatin1String("5"));
 
-        parser.addOption(verbose);
+        parser.addOption(format);
         parser.addOption(compression);
         parser.addPositionalArgument(QLatin1String("archive"),
             QCoreApplication::translate("archivegen", "Compressed archive to create."));
@@ -176,22 +99,29 @@ int main(int argc, char *argv[])
         }
 
         bool ok = false;
-        const int values[6] = { 0, 1, 3, 5, 7, 9 };
+        QMetaEnum levels = QMetaEnum::fromType<AbstractArchive::CompressionLevel>();
         const int value = parser.value(compression).toInt(&ok);
-        if (!ok || (std::find(std::begin(values), std::end(values), value) == std::end(values))) {
+        if (!ok || !levels.valueToKey(value)) {
             throw QInstaller::Error(QCoreApplication::translate("archivegen",
                 "Unknown compression level \"%1\". See 'archivgen --help'.").arg(value));
         }
 
         Lib7z::initSevenZ();
-        Lib7z::createArchive(args[0], args.mid(1), Lib7z::TmpFile::No, Lib7z::Compression(value),
-            [&] () -> Lib7z::UpdateCallback * {
-                if (parser.isSet(verbose))
-                    return new VerbosePrinterCallback;
-                return new FailOnErrorCallback;
-            } ()
-        );
-        return EXIT_SUCCESS;
+        QString archiveFilename = args[0];
+        // Check if filename already has a supported suffix
+        if (!ArchiveFactory::isSupportedType(archiveFilename))
+             archiveFilename += QLatin1Char('.') + parser.value(format);
+
+        QScopedPointer<AbstractArchive> archive(ArchiveFactory::instance().create(archiveFilename));
+        if (!archive) {
+            throw QInstaller::Error(QString::fromLatin1("Could not create handler "
+                "object for archive \"%1\": \"%2\".").arg(archiveFilename, QLatin1String(Q_FUNC_INFO)));
+        }
+        archive->setCompressionLevel(AbstractArchive::CompressionLevel(value));
+        if (archive->open(QIODevice::WriteOnly) && archive->create(args.mid(1)))
+            return EXIT_SUCCESS;
+
+        std::cerr << archive->errorString() << std::endl;
     } catch (const QInstaller::Error &e) {
         std::cerr << e.message() << std::endl;
     } catch (...) {

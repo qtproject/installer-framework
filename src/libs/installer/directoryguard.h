@@ -26,47 +26,30 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTARCHIVEOPERATION_H
-#define EXTRACTARCHIVEOPERATION_H
+#ifndef DIRECTORYGUARD_H
+#define DIRECTORYGUARD_H
 
-#include "qinstallerglobal.h"
+#include "installer_global.h"
 
-#include <QtCore/QObject>
+#include <QString>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
+class INSTALLER_EXPORT DirectoryGuard
 {
-    Q_OBJECT
-    friend class WorkerThread;
-
 public:
-    explicit ExtractArchiveOperation(PackageManagerCore *core);
+    explicit DirectoryGuard(const QString &path);
+    ~DirectoryGuard();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
-
-    bool readDataFileContents(QString &targetDir, QStringList *resultList);
-
-Q_SIGNALS:
-    void outputTextChanged(const QString &progress);
-    void progressChanged(double);
+    QStringList tryCreate();
+    void release();
 
 private:
-    void startUndoProcess(const QStringList &files);
-    void deleteDataFile(const QString &fileName);
-
-private:
-    QString m_relocatedDataFileName;
-
-private:
-    class Callback;
-    class Worker;
-    class Receiver;
+    QString m_path;
+    bool m_created;
+    bool m_released;
 };
 
-}
+} // namespace QInstaller
 
-#endif
+#endif // DIRECTORYGUARD_H
