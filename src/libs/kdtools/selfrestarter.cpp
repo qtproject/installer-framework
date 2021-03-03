@@ -45,6 +45,7 @@ public:
     }
 
     Private()
+        : restartOnQuit(false)
     {
         executable = qApp->applicationFilePath();
         workingPath = QDir::currentPath();

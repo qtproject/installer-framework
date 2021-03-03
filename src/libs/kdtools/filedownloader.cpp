@@ -192,6 +192,7 @@ struct KDUpdater::FileDownloader::Private
         : m_hash(QCryptographicHash::Sha1)
         , m_assumedSha1Sum("")
         , autoRemove(true)
+        , followRedirect(false)
         , m_speedTimerInterval(100)
         , m_downloadDeadlineTimerInterval(30000)
         , m_downloadPaused(false)
@@ -255,7 +256,6 @@ KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent
     , d(new Private)
 {
     d->scheme = scheme;
-    d->followRedirect = false;
 }
 
 /*!

@@ -81,6 +81,7 @@ public:
 
     Private(UpdateFinder *qq)
         : q(qq)
+        , cancel(false)
         , downloadCompleteCount(0)
         , m_downloadsToComplete(0)
     {}
