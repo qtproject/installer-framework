@@ -104,6 +104,13 @@
     </message>
 </context>
 <context>
+    <name>InstallerBase</name>
+    <message>
+        <source>Unable to start installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>InstallerCalculator</name>
     <message>
         <source>Components added as automatic dependencies:</source>
@@ -703,7 +710,7 @@
     </message>
     <message>
         <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%1&quot; kopieren: %3</translation>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%2&quot; kopieren: %3</translation>
     </message>
     <message>
         <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
@@ -723,7 +730,7 @@
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei &quot;%1&quot; nicht nach &quot;%2&quot; kopieren: %3</translation>
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
@@ -766,7 +773,7 @@
     </message>
     <message>
         <source>Cannot resolve isDefault in %1</source>
-        <translation>Kann isDefault in %1 nicht auflösen.</translation>
+        <translation>Kann isDefault in %1 nicht auflösen</translation>
     </message>
     <message>
         <source>There was an error loading the selected component. This component can not be installed.</source>
@@ -921,6 +928,17 @@
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ComponentSelectionPagePrivate</name>
+    <message>
+        <source>Filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
     </message>
 </context>
 <context>
@@ -1213,6 +1231,13 @@ Fehler beim Laden von %2</translation>
     </message>
 </context>
 <context>
+    <name>QInstaller::ExtractArchiveOperation</name>
+    <message>
+        <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QInstaller::ExtractArchiveOperation::Runnable</name>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
@@ -1301,7 +1326,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Abschließen</translation>
     </message>
     <message>
         <source>Click %1 to exit the %2 Wizard.</source>
@@ -1516,7 +1541,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository... </source>
-        <translation type="unfinished"></translation>
+        <translation>Metainformationen werden vom Installationsserver empfangen ... </translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
@@ -1570,6 +1595,10 @@ Pakete werden heruntergeladen ...</translation>
     <message>
         <source>Some components could not be removed completely because an unknown error happened.</source>
         <translation>Einige Komponenten konnten nicht vollständig entfernt werden, weil ein unbekannter Fehler aufgetreten ist.</translation>
+    </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -1636,6 +1665,10 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>No installed packages found.</source>
         <translation>Keine installierten Pakete gefunden.</translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Application running in Uninstaller mode.</source>
@@ -1823,7 +1856,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>Cannot remove file &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
@@ -2064,7 +2097,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Installing</source>
-        <translation type="unfinished"></translation>
+        <translation>Installieren</translation>
     </message>
     <message>
         <source>Updating</source>
@@ -2103,6 +2136,13 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Proxy Credentials</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2611,11 +2651,11 @@ als root aufrufen und dann &quot;Ok&quot; auswählen.</translation>
     </message>
     <message>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle auswählen</translation>
     </message>
     <message>
         <source>Deselect All</source>
-        <translation type="unfinished"></translation>
+        <translation>Alle abwählen</translation>
     </message>
 </context>
 <context>
@@ -2665,31 +2705,6 @@ als root aufrufen und dann &quot;Ok&quot; auswählen.</translation>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>Verbleibende Datei &quot;%1&quot; wegen &quot;%2&quot;: %3</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ComponentSelectionPagePrivate</name>
-    <message>
-        <source>Filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation>Fehler</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation</name>
-    <message>
-        <source>Extracting &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>InstallerBase</name>
-    <message>
-        <source>Unable to start installer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
