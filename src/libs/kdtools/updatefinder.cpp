@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2019 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -79,7 +79,7 @@ public:
         RemoveExisting
     };
 
-    Private(UpdateFinder *qq)
+    explicit Private(UpdateFinder *qq)
         : q(qq)
         , cancel(false)
         , downloadCompleteCount(0)
@@ -94,7 +94,7 @@ public:
     struct Data {
         Data()
             : downloader(0) {}
-        Data(const PackageSource &i, FileDownloader *d = 0)
+        explicit Data(const PackageSource &i, FileDownloader *d = 0)
             : info(i), downloader(d) {}
 
         PackageSource info;

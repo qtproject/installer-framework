@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,7 +46,7 @@ using namespace QInstaller;
 class DummyComponent : public Component
 {
 public:
-    DummyComponent(PackageManagerCore *core)
+    explicit DummyComponent(PackageManagerCore *core)
         : Component(core)
     {
         setCheckState(Qt::Checked);

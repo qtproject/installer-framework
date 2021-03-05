@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -82,7 +82,7 @@ public:
         : Food(amount)
         , m_expireDate(expireDate)
     { qDebug().nospace().noquote() << "Constructor."; }
-    QDate expireDate() const {
+    QDate expireDate() const Q_DECL_OVERRIDE {
         return m_expireDate;
     }
 private:
@@ -92,7 +92,7 @@ private:
 class Butter : public Food
 {
 public:
-    QDate expireDate() const {
+    QDate expireDate() const Q_DECL_OVERRIDE {
         return m_expireDate;
     }
     static Food *create(int amount, const QDate expireDate) {
@@ -117,7 +117,7 @@ public:
         : Food(amount)
         , m_expireDate(expireDate)
     { qDebug().nospace().noquote() << "Constructor."; }
-    QDate expireDate() const {
+    QDate expireDate() const Q_DECL_OVERRIDE {
         return m_expireDate;
     }
 

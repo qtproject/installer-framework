@@ -283,7 +283,7 @@ void UpdateOperation::setRequiresUnreplacedVariables(bool isRequired)
 
 struct StartsWith
 {
-    StartsWith(const QString &searchTerm)
+    explicit StartsWith(const QString &searchTerm)
         : m_searchTerm(searchTerm) {}
 
     bool operator()(const QString &searchString)
