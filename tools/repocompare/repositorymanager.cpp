@@ -120,6 +120,7 @@ void RepositoryManager::createRepositoryMap(const QByteArray &data, QMap<QString
                 currentDescription.updateText.clear();
                 currentDescription.version.clear();
                 currentDescription.checksum.clear();
+                currentDescription.update = false;
             }
             if (reader.name() == QLatin1String("SHA1"))
                 currentDescription.checksum = reader.readElementText();

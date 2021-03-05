@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -48,7 +48,12 @@ KeepAliveObject::KeepAliveObject()
 
 void KeepAliveObject::start()
 {
+    if (m_timer)
+        delete m_timer;
     m_timer = new QTimer(this);
+
+    if (m_socket)
+        delete m_socket;
     m_socket = new QLocalSocket(this);
 
     connect(m_timer, &QTimer::timeout, [this]() {

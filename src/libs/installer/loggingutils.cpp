@@ -259,7 +259,7 @@ void LoggingHandler::printComponentInfo(const QList<Component *> components) con
     QDomElement root = doc.createElement(QLatin1String("updates"));
     doc.appendChild(root);
 
-    foreach (Component *component, components) {
+    foreach (const Component *component, components) {
         QDomElement update = doc.createElement(QLatin1String("update"));
         update.setAttribute(QLatin1String("name"), component->value(scDisplayName));
         update.setAttribute(QLatin1String("version"), component->value(scVersion));

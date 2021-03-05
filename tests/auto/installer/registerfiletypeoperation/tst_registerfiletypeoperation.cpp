@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -80,7 +80,6 @@ private slots:
         QInstaller::init();
         QString randomString = "";
         const QString possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-        qsrand(QTime::currentTime().msec());
         for (int i = 0; i < 5; i++) {
             int index = QRandomGenerator::global()->generate() % possible.length();
             QChar nextChar = possible.at(index);

@@ -399,10 +399,9 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
 {
     updateWidgetVisibility(true);
 
-    QCheckBox *checkbox;
     QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
     for (int i = 0; i < checkboxes.count(); i++) {
-        checkbox = checkboxes.at(i);
+        QCheckBox *checkbox = checkboxes.at(i);
         enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
     }
 

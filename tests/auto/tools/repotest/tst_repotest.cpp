@@ -44,7 +44,7 @@ private:
     {
         QStringList filteredPackages;
 
-        QInstallerTools::PackageInfoVector m_packages = QInstallerTools::collectPackages(m_repoInfo,
+        m_packages = QInstallerTools::collectPackages(m_repoInfo,
             &filteredPackages, QInstallerTools::Exclude, updateNewComponents, packagesUpdatedWithSha);
 
         if (updateNewComponents) { //Verify that component B exists as that is not updated
