@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>data/config.xml</file>
         <file>data/repository/Updates.xml</file>
         <file>data/repositoryActionAdd/Updates.xml</file>
         <file>data/repositoryActionRemove/Updates.xml</file>

@@ -3630,7 +3630,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                     qCWarning(QInstaller::lcDeveloperBuild) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            if (!componentToReplace && !d->componentsToReplace().contains(componentName)) {
+            if (!d->componentsToReplace().contains(componentName)) {
                 componentToReplace = new Component(this);
                 componentToReplace->setValue(scName, componentName);
             } else {

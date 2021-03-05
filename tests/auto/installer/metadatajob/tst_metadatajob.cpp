@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,7 +47,6 @@ class tst_MetaDataJob : public QObject
 private slots:
     void testRepository()
     {
-        Settings settings = Settings::fromFileAndPrefix(":///data/config.xml", ":///data");
         PackageManagerCore core;
         core.setInstaller();
         QSet<Repository> repoList;
@@ -63,7 +62,6 @@ private slots:
 
     void testRepositoryUpdateActionAdd()
     {
-        Settings settings = Settings::fromFileAndPrefix(":///data/config.xml", ":///data");
         PackageManagerCore core;
         core.setInstaller();
         QSet<Repository> repoList;
@@ -82,7 +80,6 @@ private slots:
 
     void testRepositoryUpdateActionRemove()
     {
-        Settings settings = Settings::fromFileAndPrefix(":///data/config.xml", ":///data");
         PackageManagerCore core;
         core.setInstaller();
         QSet<Repository> repoList;

@@ -501,7 +501,7 @@ private slots:
         QFile file;
         file.setFileName(filename);
         file.open(QIODevice::ReadWrite);
-        const QByteArray ba = file.readLine();
+        file.readLine();
         file.seek(0);
         QCOMPARE(file.atEnd(), false);
 
