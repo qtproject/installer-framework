@@ -120,18 +120,18 @@ public:
 RCCFileInfo::RCCFileInfo(const QString &name, const QFileInfo &fileInfo,
     QLocale::Language language, QLocale::Country country, uint flags,
     int compressLevel, int compressThreshold)
+    : m_flags(flags)
+    , m_name(name)
+    , m_language(language)
+    , m_country(country)
+    , m_fileInfo(fileInfo)
+    , m_parent(nullptr)
+    , m_compressLevel(compressLevel)
+    , m_compressThreshold(compressThreshold)
+    , m_nameOffset(0)
+    , m_dataOffset(0)
+    , m_childOffset(0)
 {
-    m_name = name;
-    m_fileInfo = fileInfo;
-    m_language = language;
-    m_country = country;
-    m_flags = flags;
-    m_parent = nullptr;
-    m_nameOffset = 0;
-    m_dataOffset = 0;
-    m_childOffset = 0;
-    m_compressLevel = compressLevel;
-    m_compressThreshold = compressThreshold;
 }
 
 RCCFileInfo::~RCCFileInfo()

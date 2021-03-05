@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -74,9 +74,9 @@ public:
 
     Private(const QString &fileName, QSettings::Format format)
         : m_filename(fileName)
+        , m_format(format)
         , settings(fileName, format)
     {
-        m_format = format;
         m_scope = settings.scope();
         m_application = settings.applicationName();
         m_organization = settings.organizationName();

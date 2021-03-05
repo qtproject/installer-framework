@@ -36,20 +36,21 @@ class SelfRestarter::Private
 {
 public:
     Private(int argc, char *argv[])
-        : restartOnQuit(false)
+        : executable(QString::fromLocal8Bit(argv[0]))
+        , restartOnQuit(false)
+        , workingPath(QDir::currentPath())
     {
-        executable = QString::fromLocal8Bit(argv[0]);
-        workingPath = QDir::currentPath();
+
         for (int i = 1; i < argc; ++i)
             args << QString::fromLocal8Bit(argv[i]);
     }
 
     Private()
-        : restartOnQuit(false)
+        : executable(qApp->applicationFilePath())
+        , args(qApp->arguments().mid(1))
+        , restartOnQuit(false)
+        , workingPath(QDir::currentPath())
     {
-        executable = qApp->applicationFilePath();
-        workingPath = QDir::currentPath();
-        args = qApp->arguments().mid(1);
     }
 
     ~Private()
