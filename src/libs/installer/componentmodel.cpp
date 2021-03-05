@@ -260,9 +260,9 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
             newValue = (oldValue == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
         }
         QSet<QModelIndex> changed = updateCheckedState(nodes << component, newValue);
-        foreach (const QModelIndex &index, changed) {
-            emit dataChanged(index, index);
-            emit checkStateChanged(index);
+        foreach (const QModelIndex &changedIndex, changed) {
+            emit dataChanged(changedIndex, changedIndex);
+            emit checkStateChanged(changedIndex);
         }
         updateAndEmitModelState();     // update the internal state
     } else {

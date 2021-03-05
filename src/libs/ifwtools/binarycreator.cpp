@@ -410,9 +410,9 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
             collection.setName(info.name.toUtf8());
 
             qDebug() << "Creating resource archive for" << info.name;
-            foreach (const QString &file, info.copiedFiles) {
-                const QSharedPointer<Resource> resource(new Resource(file));
-                qDebug().nospace() << "Appending " << file << " (" << humanReadableSize(resource->size()) << ")";
+            foreach (const QString &copiedFile, info.copiedFiles) {
+                const QSharedPointer<Resource> resource(new Resource(copiedFile));
+                qDebug().nospace() << "Appending " << copiedFile << " (" << humanReadableSize(resource->size()) << ")";
                 collection.appendResource(resource);
             }
             input.manager.insertCollection(collection);
@@ -610,8 +610,8 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
 
         if (tagName == QLatin1String("ProductImages")) {
             const QDomNodeList childNodes = domElement.childNodes();
-            for (int i = 0; i < childNodes.count(); ++i) {
-                const QDomElement childElement = childNodes.at(i).toElement();
+            for (int index = 0; index < childNodes.count(); ++index) {
+                const QDomElement childElement = childNodes.at(index).toElement();
                 const QString childName = childElement.tagName();
                 if (childName != QLatin1String("Image"))
                     continue;

@@ -777,14 +777,14 @@ QStringList QInstallerTools::unifyMetadata(const QString &repoDir, const QString
         QFile archiveFile(existingRepoDir);
         QInstaller::openForRead(&archiveFile);
         Lib7z::extractArchive(&archiveFile, existingRepoTemp);
-        QDir dir(existingRepoTemp);
-        QStringList existingRepoEntries = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+        QDir dir2(existingRepoTemp);
+        QStringList existingRepoEntries = dir2.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
         foreach (const QString existingRepoEntry, existingRepoEntries) {
             if (entryList.contains(existingRepoEntry)) {
                 continue;
             } else {
-                dir.cd(existingRepoEntry);
-                const QString absPath = dir.absolutePath();
+                dir2.cd(existingRepoEntry);
+                const QString absPath = dir2.absolutePath();
                 absPaths.append(absPath);
             }
         }

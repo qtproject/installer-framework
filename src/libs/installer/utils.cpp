@@ -351,12 +351,12 @@ static QString qt_create_commandline(const QString &program, const QStringList &
             // as escaping the quote -- rather put the \ behind the quote: e.g.
             // rather use "foo"\ than "foo\"
             QString endQuote(QLatin1Char('\"'));
-            int i = tmp.length();
-            while (i > 0 && tmp.at(i - 1) == QLatin1Char('\\')) {
-                --i;
+            int j = tmp.length();
+            while (j > 0 && tmp.at(j - 1) == QLatin1Char('\\')) {
+                --j;
                 endQuote += QLatin1Char('\\');
             }
-            args += QLatin1String(" \"") + tmp.left(i) + endQuote;
+            args += QLatin1String(" \"") + tmp.left(j) + endQuote;
         } else {
             args += QLatin1Char(' ') + tmp;
         }

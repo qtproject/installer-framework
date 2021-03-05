@@ -117,10 +117,10 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
                 if ((!isOpen) && (!resource->open()))
                     continue;   // TODO: should we throw here?
 
-                QFile target(targetDir.filePath(name) + QDir::separator()
+                QFile targetFile(targetDir.filePath(name) + QDir::separator()
                     + QString::fromUtf8(resource->name()));
-                QInstaller::openForWrite(&target);
-                resource->copyData(&target); // copy the 7z files into the target directory
+                QInstaller::openForWrite(&targetFile);
+                resource->copyData(&targetFile); // copy the 7z files into the target directory
 
                 if (!isOpen) // If we reach that point, either the resource was opened already...
                     resource->close();           // or we did open it and have to close it again.

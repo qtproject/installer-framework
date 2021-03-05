@@ -134,8 +134,8 @@ bool InstallIconsOperation::performOperation()
         if (status == PackageManagerCore::Canceled || status == PackageManagerCore::Failure)
             return true;
 
-        const QString &source = it.next();
-        QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source));
+        const QString &source2 = it.next();
+        QString target = targetDir.absoluteFilePath(sourceDir.relativeFilePath(source2));
 
         emit outputTextChanged(target);
 
@@ -185,7 +185,7 @@ bool InstallIconsOperation::performOperation()
             }
 
             // copy the file to its new location
-            QFile cf(source);
+            QFile cf(source2);
             if (!cf.copy(target)) {
                 setError(UserDefinedError);
                 setErrorString(tr("Failed to copy file \"%1\": %2").arg(
@@ -193,8 +193,8 @@ bool InstallIconsOperation::performOperation()
                 undoOperation();
                 return false;
             }
-            deleteFileNowOrLater(source);
-            files.push_back(source);
+            deleteFileNowOrLater(source2);
+            files.push_back(source2);
             files.push_back(target);
             setValue(QLatin1String("files"), files);
         } else if (fi.isDir() && !QDir(target).exists()) {

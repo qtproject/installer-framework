@@ -182,31 +182,31 @@ int main(int argc, char *argv[])
     quint64 cookie = QInstaller::BinaryContent::MagicCookie;
     try {
         {
-            QFile tmp(path);
-            QInstaller::openForRead(&tmp);
+            QFile tmpFile(path);
+            QInstaller::openForRead(&tmpFile);
 
-            if (!tmp.seek(QInstaller::BinaryContent::findMagicCookie(&tmp, cookie) - sizeof(qint64)))
+            if (!tmpFile.seek(QInstaller::BinaryContent::findMagicCookie(&tmpFile, cookie) - sizeof(qint64)))
                 throw QInstaller::Error(QLatin1String("Cannot seek to read magic marker."));
 
             QInstaller::BinaryLayout layout;
-            layout.magicMarker = QInstaller::retrieveInt64(&tmp);
+            layout.magicMarker = QInstaller::retrieveInt64(&tmpFile);
 
             if (layout.magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
-                QFileInfo fi(path);
+                QFileInfo fileInfo(path);
 
-                QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath);
-                fi.setFile(bundlePath);
+                QInstaller::isInBundle(fileInfo.absoluteFilePath(), &bundlePath);
+                fileInfo.setFile(bundlePath);
 
-                path = fi.absolutePath() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat");
+                path = fileInfo.absolutePath() + QLatin1Char('/') + fileInfo.baseName() + QLatin1String(".dat");
 
-                tmp.close();
-                tmp.setFileName(path);
-                QInstaller::openForRead(&tmp);
+                tmpFile.close();
+                tmpFile.setFileName(path);
+                QInstaller::openForRead(&tmpFile);
 
                 cookie = QInstaller::BinaryContent::MagicCookieDat;
             }
-            layout = QInstaller::BinaryContent::binaryLayout(&tmp, cookie);
-            tmp.close();
+            layout = QInstaller::BinaryContent::binaryLayout(&tmpFile, cookie);
+            tmpFile.close();
 
             if (command == QLatin1String("update")) {
                 BinaryReplace br(layout);   // To update the binary we do not need any mapping.

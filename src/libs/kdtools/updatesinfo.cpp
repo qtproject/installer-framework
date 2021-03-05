@@ -125,8 +125,8 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
         } else if (childE.tagName() == QLatin1String("Licenses")) {
             QHash<QString, QVariant> licenseHash;
             const QDomNodeList licenseNodes = childE.childNodes();
-            for (int i = 0; i < licenseNodes.count(); ++i) {
-                const QDomNode licenseNode = licenseNodes.at(i);
+            for (int index = 0; index < licenseNodes.count(); ++index) {
+                const QDomNode licenseNode = licenseNodes.at(index);
                 if (licenseNode.nodeName() == QLatin1String("License")) {
                     QDomElement element = licenseNode.toElement();
                     QVariantMap attributes;
@@ -210,8 +210,8 @@ QVariant UpdatesInfoData::parseOperations(const QDomNodeList &operationNodes)
         if (operationNode.nodeName() == QLatin1String("Operation")) {
             const QDomNodeList argumentNodes = operationNode.childNodes();
             QStringList attributes;
-            for (int i = 0; i < argumentNodes.count(); ++i) {
-                const QDomNode argumentNode = argumentNodes.at(i);
+            for (int index = 0; index < argumentNodes.count(); ++index) {
+                const QDomNode argumentNode = argumentNodes.at(index);
                 if (argumentNode.nodeName() == QLatin1String("Argument")) {
                     QDomElement argumentElement = argumentNode.toElement();
                     attributes.append(argumentElement.text());
