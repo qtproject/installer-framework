@@ -321,7 +321,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         QFile sheet(styleSheetFile);
         if (sheet.exists()) {
             if (sheet.open(QIODevice::ReadOnly)) {
-                setStyleSheet(QString::fromLatin1(sheet.readAll()));
+                qApp->setStyleSheet(QString::fromLatin1(sheet.readAll()));
             } else {
                 qCWarning(QInstaller::lcDeveloperBuild) << "The specified style sheet file "
                     "can not be opened.";
