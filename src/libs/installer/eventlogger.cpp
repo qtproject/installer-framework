@@ -432,6 +432,37 @@ void EventLogger::uninstallerUninstallationFailed(int duration)
 
 void EventLogger::uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEncountered_ErrorCode code, eve_launcher::uninstaller::Page page)
 {
+    // We also send this information to Sentry as an exception.
+    // First we create the exception
+    qDebug() << "framework | EventLogger::uninstallerErrorEncountered |" << code << page;
+    sentry_value_t exc = sentry_value_new_object();
+    if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Failure"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Failed"));
+    }
+    else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::ForceUpdate"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to ForceUpdate"));
+    }
+    else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Unfinished"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
+    }
+    else 
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::UnknownException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));
+    }
+
+    // And then we send it
+    sentry_value_t event = sentry_value_new_event();
+    sentry_value_set_by_key(event, "exception", exc);
+    sentry_capture_event(event);
+
+    // Finally we move on to sending our event
     auto evt = new eve_launcher::uninstaller::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_code(code);
@@ -668,6 +699,62 @@ void EventLogger::installerComponentInstallationFinished(int duration)
 
 void EventLogger::installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::RedistVersion redistVersion)
 {
+    // We also send this information to Sentry as an exception.
+    // First we create the exception
+    qDebug() << "framework | EventLogger::installerErrorEncountered |" << code << page;
+    sentry_value_t exc = sentry_value_new_object();
+    if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::Failure"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Failed"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::ForceUpdate"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to ForceUpdate"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::Unfinished"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_CREATE_OPERATIONS)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::LauncherInstallOperationException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed to prepare all the required operations to be able to install the Launcher"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_ADD_OPERATION)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::UniversalCrtOperationException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed to add the operation that installs the Microsoft Universal C RunTime."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_DLL)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::DllLookupException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed when trying to look for UCRT runtime dll."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_WINDOWS_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::WindowsUpdateLookupException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed when trying to look for installed Windows Updates."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_MISSING_PREREQUISITE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::PrerequisiteMissingException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("This Windows 8.1 version is missing a very large Windows Update, that is a prerequisite for the redist Windows Updates, we are therefore unable to install the redist, and the installation of the launcher will succeed, but the launcher will not start but fail instead."));
+    }
+    else 
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::UnknownException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));
+    }
+
+    // And then we send it
+    sentry_value_t event = sentry_value_new_event();
+    sentry_value_set_by_key(event, "exception", exc);
+    sentry_capture_event(event);
+
+    // Finally we move on to sending our event
     auto evt = new eve_launcher::installer::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_code(code);
