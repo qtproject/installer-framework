@@ -225,6 +225,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(0) // initialize with pseudo marker
+    , m_magicMarkerSupplement(BinaryContent::Default)
     , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(nullptr)
     , m_controlScriptEngine(nullptr)
@@ -243,7 +244,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
-    , m_offlineGenerator(false)
 {
 }
 
@@ -264,6 +264,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
+    , m_magicMarkerSupplement(BinaryContent::Default)
     , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(nullptr)
     , m_controlScriptEngine(nullptr)
@@ -282,7 +283,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
-    , m_offlineGenerator(false)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -717,7 +717,12 @@ bool PackageManagerCorePrivate::isPackageManager() const
 
 bool PackageManagerCorePrivate::isOfflineGenerator() const
 {
-    return m_offlineGenerator;
+    return m_magicMarkerSupplement == BinaryContent::OfflineGenerator;
+}
+
+bool PackageManagerCorePrivate::isPackageViewer() const
+{
+    return m_magicMarkerSupplement == BinaryContent::PackageViewer;
 }
 
 bool PackageManagerCorePrivate::statusCanceledOrFailed() const

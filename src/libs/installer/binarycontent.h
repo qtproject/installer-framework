@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,6 +47,13 @@ public:
 
     static const qint64 MagicUpdaterMarker = 0x12023235UL;
     static const qint64 MagicPackageManagerMarker = 0x12023236UL;
+
+    // additional distinguishers only used at runtime, not written to the binary itself
+    enum MagicMarkerSupplement {
+        Default = 0x0,
+        OfflineGenerator = 0x1,
+        PackageViewer = 0x2
+    };
 
     // the cookie put at the end of the file
     static const quint64 MagicCookie = 0xc2630a1c99d668f8LL;  // binary

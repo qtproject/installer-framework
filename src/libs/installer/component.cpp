@@ -306,6 +306,8 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 /*!
     Sets variables according to the values set in the package.xml file of \a package.
     Also loads UI files, licenses and translations if they are referenced in the package.xml.
+    If the \c PackageManagerCore object of this component is run as package viewer, then
+    only sets the variables without loading referenced files.
 */
 void Component::loadDataFromPackage(const Package &package)
 {
@@ -343,6 +345,9 @@ void Component::loadDataFromPackage(const Package &package)
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     setValue(scContentSha1, package.data(scContentSha1).toString());
+
+    if (d->m_core->isPackageViewer())
+        return;
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()

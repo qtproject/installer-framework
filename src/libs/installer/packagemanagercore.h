@@ -264,8 +264,11 @@ public:
     Q_INVOKABLE void setPackageManager();
     Q_INVOKABLE bool isPackageManager() const;
 
-    void setOfflineGenerator(bool offlineGenerator = true);
+    void setOfflineGenerator();
     Q_INVOKABLE bool isOfflineGenerator() const;
+
+    void setPackageViewer();
+    Q_INVOKABLE bool isPackageViewer() const;
 
     void setUserSetBinaryMarker(qint64 magicMarker);
     Q_INVOKABLE bool isUserSetBinaryMarker() const;

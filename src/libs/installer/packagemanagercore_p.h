@@ -132,6 +132,8 @@ public:
     bool runOfflineGenerator();
     bool isOfflineGenerator() const;
 
+    bool isPackageViewer() const;
+
     QString replaceVariables(const QString &str) const;
     QByteArray replaceVariables(const QByteArray &str) const;
 
@@ -265,9 +267,10 @@ private:
     bool m_repoFetched;
     bool m_updateSourcesAdded;
     qint64 m_magicBinaryMarker;
+    int m_magicMarkerSupplement;
+
     bool m_componentsToInstallCalculated;
-    bool m_foundEssentialUpdate;
-    bool m_offlineGenerator;
+    bool m_foundEssentialUpdate;;
 
     mutable ScriptEngine *m_componentScriptEngine;
     mutable ScriptEngine *m_controlScriptEngine;

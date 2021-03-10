@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -858,6 +858,12 @@
     \qmlmethod boolean installer::isOfflineGenerator()
 
     Returns \c true if the application is executed in offline generation mode.
+*/
+
+/*!
+    \qmlmethod boolean installer::isPackageViewer()
+
+    Returns \c true if the current installer is executed as package viewer.
 */
 
 /*!

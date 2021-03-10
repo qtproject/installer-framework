@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -89,6 +89,15 @@ private slots:
                              "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
                              "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("^C"));
+
+        // Need to change rules here to catch messages
+        QLoggingCategory::setFilterRules("ifw.* = true\n");
+
+        QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
+        core->listAvailablePackages(QLatin1String("C.virt"));
+
+        QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
+        core->listAvailablePackages(QLatin1String("C.virt.subcomponent"));
     }
 
     void testInstallPackageFails()
@@ -115,6 +124,11 @@ private slots:
         QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.\n");
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B")));
+
+        QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install B.subcomponent. Component is descendant of a virtual component B.\n");
+        QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
+                << QLatin1String("B.subcomponent")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
         QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.\n");

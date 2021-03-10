@@ -2177,21 +2177,32 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 */
 void PackageManagerCore::listAvailablePackages(const QString &regexp)
 {
+    setPackageViewer();
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching packages with regular expression:" << regexp;
+
+    ComponentModel *model = defaultComponentModel();
     d->fetchMetaInformationFromRepositories(DownloadType::UpdatesXML);
 
     d->addUpdateResourcesFromRepositories(true);
     QRegularExpression re(regexp);
     const PackagesList &packages = d->remotePackages();
+    if (!fetchAllPackages(packages, LocalPackagesHash())) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+            << "There was a problem with loading the package data.";
+        return;
+    }
 
     PackagesList matchedPackages;
     foreach (Package *package, packages) {
         const QString name = package->data(scName).toString();
-        if (re.match(name).hasMatch() &&
-                (virtualComponentsVisible() ? true : !package->data(scVirtual, false).toBool())) {
+        Component *component = componentByName(name);
+        if (!component)
+            continue;
+
+        const QModelIndex &idx = model->indexFromComponentName(component->treeName());
+        if (idx.isValid() && re.match(name).hasMatch())
             matchedPackages.append(package);
-        }
     }
     if (matchedPackages.count() == 0)
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
@@ -2267,10 +2278,26 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 installComponentsFound = true;
             }
-        } else { // idx is invalid and component valid when we have invisible virtual component
-            component->isVirtual()
-                ? errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name))
-                : errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+        } else {
+            auto isDescendantOfVirtual = [&]() {
+                Component *trace = component;
+                forever {
+                    trace = trace->parentComponent();
+                    if (!trace) {
+                        // We already checked the root component if there is no parent
+                        return false;
+                    } else if (trace->isVirtual()) {
+                        errorMessage.append(tr("Cannot install %1. Component is descendant "
+                            "of a virtual component %2.\n").arg(name, trace->name()));
+                        return true;
+                    }
+                }
+            };
+            // idx is invalid and component valid when we have invisible virtual component
+            if (component->isVirtual())
+                errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name));
+            else if (!isDescendantOfVirtual())
+                errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
         }
     }
     if (!installComponentsFound)
@@ -2284,6 +2311,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
 */
 void PackageManagerCore::listInstalledPackages(const QString &regexp)
 {
+    setPackageViewer();
     LocalPackagesHash installedPackages = this->localInstalledPackages();
 
     if (!regexp.isEmpty()) {
@@ -3372,11 +3400,11 @@ bool PackageManagerCore::isPackageManager() const
 }
 
 /*!
-    Sets current installer to be offline generator based on \a offlineGenerator.
+    Sets current installer to be offline generator.
 */
-void PackageManagerCore::setOfflineGenerator(bool offlineGenerator)
+void PackageManagerCore::setOfflineGenerator()
 {
-    d->m_offlineGenerator = offlineGenerator;
+    d->m_magicMarkerSupplement = BinaryContent::OfflineGenerator;
 }
 
 /*!
@@ -3387,6 +3415,24 @@ void PackageManagerCore::setOfflineGenerator(bool offlineGenerator)
 bool PackageManagerCore::isOfflineGenerator() const
 {
     return d->isOfflineGenerator();
+}
+
+/*!
+    Sets the current installer as the package viewer.
+*/
+void PackageManagerCore::setPackageViewer()
+{
+    d->m_magicMarkerSupplement = BinaryContent::PackageViewer;
+}
+
+/*!
+    Returns \c true if the current installer is executed as package viewer.
+
+    \sa {installer::isPackageViewer}{installer.isPackageViewer}
+*/
+bool PackageManagerCore::isPackageViewer() const
+{
+    return d->isPackageViewer();
 }
 
 /*!

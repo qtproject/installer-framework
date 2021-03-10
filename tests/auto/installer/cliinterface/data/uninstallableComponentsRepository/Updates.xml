@@ -37,4 +37,14 @@
   <SHA1>cfa136fa1d7a4196896c90af72d510727ba799ae</SHA1>
   <Virtual>true</Virtual>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>B.subcomponent</Name>
+  <DisplayName>Subcomponent of B</DisplayName>
+  <Description>Example non-virtual subcomponent of B</Description>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <UpdateFile CompressedSize="224" OS="Any" UncompressedSize="74"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>cfa136fa1d7a4196896c90af72d510727ba799ae</SHA1>
+ </PackageUpdate>
 </Updates>
