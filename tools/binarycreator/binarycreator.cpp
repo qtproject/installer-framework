@@ -665,7 +665,9 @@ static void printUsage()
 
     std::cout << " -xd|--no-details           Don't offer any details in installer/uninstaller " << std::endl;
 
-    std::cout << " -xr|--release              Build installer/uninstaller in release mode " << std::endl;
+    std::cout << " --release                  Build installer/uninstaller in release mode " << std::endl;
+
+    std::cout << " --dsn url                  Provides the installer/uninstaller with Sentry DSN " << std::endl;
 
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
@@ -877,7 +879,7 @@ int main(int argc, char **argv)
             noCancelButton = true;
         } else if (*it == QLatin1String("-xd") || *it == QLatin1String("--no-details")) {
             noDetails = true;
-        } else if (*it == QLatin1String("-xr") || *it == QLatin1String("--release")) {
+        } else if (*it == QLatin1String("--release")) {
             releaseBuild = true;
         } else if (*it == QLatin1String("--dsn")) {
             ++it;
