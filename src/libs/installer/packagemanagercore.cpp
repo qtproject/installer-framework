@@ -428,6 +428,13 @@ using namespace QInstaller;
     Emitted when installer binary marker \a magicMarker has changed.
 */
 
+/*!
+    \fn QInstaller::PackageManagerCore::componentsRecalculated()
+
+    Emitted when the component tree is recalculated. In a graphical interface,
+    this signal is emitted also after the categories are fetched.
+*/
+
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
 static QFont *sVirtualComponentsFont = nullptr;
 Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
@@ -1577,6 +1584,7 @@ bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const L
 
     if (success && !d->statusCanceledOrFailed())
         d->setStatus(Success);
+    emit componentsRecalculated();
     return success;
 }
 
