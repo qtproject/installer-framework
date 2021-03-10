@@ -153,6 +153,9 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     
     sentry_set_context("App", app);
 
+    // World / China added as tag
+    sentry_set_tag("region", s_region == eve_launcher::application::Application_Region_REGION_CHINA ? "China" : "World");
+   
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
