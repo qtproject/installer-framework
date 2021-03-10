@@ -93,6 +93,13 @@ namespace QInstaller {
     void INSTALLER_EXPORT setJourneyId(const QUuid& journeyId);
     QUuid INSTALLER_EXPORT getJourneyId();
 
+    // %temp%/installer-resources
+    QString INSTALLER_EXPORT getTempPath();
+
+    // Sentry related
+    QString INSTALLER_EXPORT getCrashDb();
+    QString INSTALLER_EXPORT getCrashpadHandlerName();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

@@ -12,6 +12,9 @@
 #include <QDebug>
 #include <QRegularExpression>
 
+#define SENTRY_BUILD_STATIC 1
+#include <sentry.h>
+
 EventLogger::EventLogger()
 {
     QCryptographicHash hasher(QCryptographicHash::Md5);
@@ -66,6 +69,24 @@ EventLogger::EventLogger()
 
     QInstaller::setJourneyId(journeyId);
     m_journeyId = journeyId.toRfc4122();
+
+    qDebug() << "framework | EventLogger::EventLogger | Trying to cause a crash";
+
+    // Now that we have the os uuid, we can add user information to our crashes
+    // All crashes that happen before this point will not contain user information
+    sentry_value_t user = sentry_value_new_object();
+
+    // Add the os uuid as id
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(osUuid.toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
+    
+    // Add the journey ID
+    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(m_journeyId.toBase64()));
+
+    // Add the session ID
+    sentry_value_set_by_key(user, "Session", sentry_value_new_string(m_session.toLocal8Bit().constData()));
+
+    sentry_set_user(user);
 }
 
 EventLogger::~EventLogger()
@@ -89,6 +110,49 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_providerName = providerName;
     s_initSuccessful = true;
     s_gatewayUrl = getGatewayUrl();
+
+    // Add an app context for Sentry
+    sentry_value_t app = sentry_value_new_object();
+
+    // Region
+    sentry_value_t app_region = sentry_value_new_string("Missing");
+    if (s_region == eve_launcher::application::Application_Region_REGION_WORLD)
+    {
+        app_region = sentry_value_new_string("World");
+    }
+    else if (s_region == eve_launcher::application::Application_Region_REGION_CHINA)
+    {
+        app_region = sentry_value_new_string("China");
+    }
+    sentry_value_set_by_key(app, "Region", app_region);
+
+    // Version
+    sentry_value_set_by_key(app, "Version", sentry_value_new_string(s_version.toLocal8Bit().constData()));
+
+    // Buildtype
+    sentry_value_t app_buildtype = sentry_value_new_string("Missing");
+    if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE)
+    {
+        app_buildtype = sentry_value_new_string("Release");
+    }
+    else if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_BETA)
+    {
+        app_buildtype = sentry_value_new_string("Beta");
+    }
+    else if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_DEV)
+    {
+        app_buildtype = sentry_value_new_string("Development");
+    }
+    sentry_value_set_by_key(app, "Buildtype", app_buildtype);
+
+    // Provider
+    if (s_provider && s_region == eve_launcher::application::Application_Region_REGION_CHINA)
+    {
+        sentry_value_set_by_key(app, "Provider (China only)", sentry_value_new_string(s_providerName.toLocal8Bit().constData()));
+    }
+    
+    sentry_set_context("App", app);
+
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 

@@ -84,6 +84,8 @@ public:
         = PackageManagerCorePrivate::Perform);
 
     void initialize(const QHash<QString, QString> &params);
+    QString createInstallerDir(const QString &string, bool temp);
+    void initializeSentry();
     bool isOfflineOnly() const;
 
     // Our additions
@@ -92,6 +94,8 @@ public:
     bool preloadPackages() const;
     bool noCancelButton() const;
     bool noDetails() const;
+    bool isReleaseBuild() const;
+    QString getSentryDSN() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());

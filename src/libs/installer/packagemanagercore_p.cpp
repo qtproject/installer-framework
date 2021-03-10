@@ -48,6 +48,7 @@
 #include "uninstallercalculator.h"
 #include "componentchecker.h"
 #include "globals.h"
+#include "utils.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -69,6 +70,9 @@
 #include <QXmlStreamWriter>
 
 #include <errno.h>
+
+#define SENTRY_BUILD_STATIC 1
+#include <sentry.h>
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -294,6 +298,9 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
 
     // at the moment the tabcontroller deletes the m_gui, this needs to be changed in the future
     // delete m_gui;
+
+    // This should be called before exiting the application
+    sentry_shutdown();
 }
 
 /*!
@@ -618,6 +625,106 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::progress, this, &PackageManagerCorePrivate::infoProgress);
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+
+    initializeSentry();
+}
+
+void sentry_logger(sentry_level_e level, const char * message, va_list args, void *)
+{
+    char buf[1024]{};
+    vsprintf(buf, message, args);
+
+    switch (level)
+    {
+        case SENTRY_LEVEL_DEBUG:
+            qDebug() << "sentry |" << buf;
+            break;
+        case SENTRY_LEVEL_INFO:
+            qInfo() << "sentry |" << buf;
+            break;
+        case SENTRY_LEVEL_WARNING:
+            qWarning() << "sentry |" << buf;
+            break;
+        case SENTRY_LEVEL_ERROR:
+            qCritical() << "sentry |" << buf;
+            break;
+        case SENTRY_LEVEL_FATAL:
+            qFatal("sentry | %s", buf);
+            break;
+    }
+}
+
+void PackageManagerCorePrivate::initializeSentry()
+{
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Starting sentry native setup";
+
+    QString crashmonName = QInstaller::getCrashpadHandlerName();
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | CrashpadHandlerName:" << crashmonName;
+
+    // First thing we want to do is set up all the folders we need
+    QString crashDb = QInstaller::getCrashDb();
+    QString tempPath = QInstaller::getTempPath();
+    if (crashDb.isEmpty() || tempPath.isEmpty())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Couldn't create required crashdump folders, Sentry skipped.";
+        return;
+    }
+
+    // Copy the crashmon.exe into temp so that we can run it
+    Operation *op = createOwnedOperation(QLatin1String("Copy"));
+    op->setArguments(QStringList() << (QLatin1String(":/") + crashmonName)
+                                   << (tempPath));
+    performOperationThreaded(op, Backup);
+    performOperationThreaded(op);
+
+    QString dsnUrl = getSentryDSN();
+
+    QString handlerPath = QString::fromLatin1("%1/%2").arg(tempPath).arg(crashmonName);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Handler path:" << handlerPath;
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Reports path:" << crashDb;
+
+    sentry_options_t *options = sentry_options_new();
+    sentry_options_set_dsn(options, dsnUrl.toLocal8Bit().constData());
+
+    // Set the current installer version here:
+    QString version = m_data.settings().version();
+    version = QString::fromLatin1("eve-installer@%1").arg(version);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Version:" << version;
+    sentry_options_set_release(options, version.toLocal8Bit().constData());
+
+    // Set the current environment:
+    QString env = QString::fromLatin1("Development");
+    if (isReleaseBuild())
+    {
+        env = QString::fromLatin1("Release");
+    }
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Environment:" << env;
+    sentry_options_set_environment(options, env.toLocal8Bit().constData());
+
+    // If we want to throttle events we can do that here. This is a % of how many or let through.
+    // If any number less than 1 is given, then the events to be sent are selected randomly.
+    // sentry_options_set_sample_rate(options, 1.0);
+    
+    // Path of the crashpad handler executable.
+    sentry_options_set_handler_pathw(options, (const wchar_t *)handlerPath.utf16());
+    
+    // Path of the crashdump database.
+    sentry_options_set_database_pathw(options, (const wchar_t *)crashDb.utf16());
+
+    // Turn on sentry logging, only if we are building dev
+    if (!isReleaseBuild())
+    {
+        sentry_options_set_debug(options, 1);
+    }
+
+    // Function to log sentry-native messages. Only called if sentry_options_set_debug is set to 1.
+    sentry_options_set_logger(options, &sentry_logger, nullptr);
+
+    // Finally initialize the sentry-native sdk with the options provided
+    sentry_init(options);
+
+    // Is this an installer or an uninstaller
+    sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
 }
 
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)
@@ -657,6 +764,17 @@ bool PackageManagerCorePrivate::noCancelButton() const
 bool PackageManagerCorePrivate::noDetails() const
 {
     return getConfigValueAsBool(QLatin1String("noDetails"));
+}
+
+bool PackageManagerCorePrivate::isReleaseBuild() const
+{
+    return getConfigValueAsBool(QLatin1String("releaseBuild"));
+}
+
+QString PackageManagerCorePrivate::getSentryDSN() const
+{
+    QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
+    return confInternal.value(QLatin1String("sentryDsn"), QLatin1String("")).toString();
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const
