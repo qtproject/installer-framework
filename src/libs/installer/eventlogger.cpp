@@ -15,6 +15,15 @@
 #define SENTRY_BUILD_STATIC 1
 #include <sentry.h>
 
+// TODO REMOVE THIS ONCE TESTING IS DONE
+int foo(int);
+
+// TODO REMOVE THIS ONCE TESTING IS DONE
+int foo(int p)
+{
+    return foo(p)+foo(p);
+}
+
 EventLogger::EventLogger()
 {
     QCryptographicHash hasher(QCryptographicHash::Md5);
@@ -155,7 +164,7 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
 
     // World / China added as tag
     sentry_set_tag("region", s_region == eve_launcher::application::Application_Region_REGION_CHINA ? "China" : "World");
-   
+
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
@@ -621,6 +630,38 @@ void EventLogger::installerSharedCacheMessageClosed(eve_launcher::installer::Mes
 
 void EventLogger::installerInstallationStarted(const QString& installPath, eve_launcher::installer::RedistVersion redistVersion)
 {
+    // TODO REMOVE THIS ONCE TESTING IS DONE
+    try {
+        // Force an exception to happen
+        throw std::invalid_argument( "received negative value" );
+    } catch (const std::invalid_argument& err) {
+        qDebug() << "std::exception";
+        sentry_value_t exc = sentry_value_new_object();
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("std::exception"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("ExceptionMessage"));
+
+        sentry_value_t event = sentry_value_new_event();
+        sentry_value_set_by_key(event, "exception", exc);
+        // sentry_event_value_add_stacktrace(event, NULL, 0);
+        sentry_capture_event(event);
+    } catch (...) {
+        qDebug() << "... exception";
+        sentry_value_t exc = sentry_value_new_object();
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("TestException2"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("ExceptionMessage"));
+
+        sentry_value_t event = sentry_value_new_event();
+        sentry_value_set_by_key(event, "exception", exc);
+        sentry_event_value_add_stacktrace(event, NULL, 0);
+        sentry_capture_event(event);
+    }
+
+    // TODO REMOVE THIS ONCE TESTING IS DONE
+    // Force a crash to happen
+    int asdf = foo(2);
+    qDebug() << "framework | EventLogger::EventLogger | foo is:" << asdf;
+
+
     qDebug() << "framework | EventLogger::installerInstallationStarted | " << installPath << ", " << redistVersion;
     auto evt = new eve_launcher::installer::InstallationStarted;
     evt->set_allocated_event_metadata(getEventMetadata());
