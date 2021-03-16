@@ -19,6 +19,7 @@ namespace PDM
 	DllExport std::string GetUserLocale();
 	DllExport unsigned GetMonitorCount();
 	DllExport uint64_t GetTotalMemory();
+	DllExport StreamingService GetStreamingService();
 	DllExport bool IsRemoteSession();
 	DllExport size_t GetTimingCycles();
 	DllExport std::string GetMachineUuidString();

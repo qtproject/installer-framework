@@ -39,6 +39,13 @@ namespace PDM
 		WINE,
 	};
 
+	enum class StreamingService
+	{
+		NONE = 0,
+		UNKNOWN,
+		INTEL,
+	};
+
 	enum class VulkanSupport
 	{
 		UNKNOWN = 0,

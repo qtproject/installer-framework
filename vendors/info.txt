@@ -1,13 +1,13 @@
-sentry
+sentry (0.4.7) (Qt IFW v1.12.0)
 ------
 Comes from release v3.0.0 of eve-launcher-vendor-libraries (https://github.com/ccpgames/eve-launcher-vendor-libraries/releases/tag/v3.0.0)
 Comes from TeamCity build tagged v3.0.0 (https://teamcity.evetech.net/buildConfiguration/Applications_EveLauncher_VendorLibraries_Packagers_SentryNativeMt?mode=builds)
 
-pdm-proto
+pdm-proto (1.1.11) (Qt IFW v1.12.0)
 ---------
-Comes from TeamCity build number ?? (https://teamcity.evetech.net/buildConfiguration/Applications_EveVendorLibraries_Builders_PdmProtoWindowsBuild?mode=builds)
+Comes from TeamCity build number 77 (https://teamcity.evetech.net/buildConfiguration/Applications_EveVendorLibraries_Builders_PdmProtoWindowsBuild?mode=builds)
 
-protobuf
+protobuf (v3.6.0)
 --------
 Comes from release ?? of eve-launcher-vendor-libraries (https://github.com/ccpgames/eve-launcher-vendor-libraries/releases/tag/??)
 Comes from TeamCity build tagged ?? (https://teamcity.evetech.net/buildConfiguration/Applications_EveLauncher_VendorLibraries_Builders_ProtobufMt?mode=builds)
