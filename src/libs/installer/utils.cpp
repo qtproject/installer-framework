@@ -175,6 +175,28 @@ QString QInstaller::getAutoLogFileName()
     return autoLogFileName;
 }
 
+QString createInstallerDir(const QString &string, bool temp);
+
+QString createInstallerDir(const QString &string, bool temp)
+{
+    QString envPath = QInstaller::environmentVariable(QLatin1String(temp ? "temp" : "localappdata"));
+
+    // Couldn't get location of %localappdata% / %temp% so we return an empty string
+    if (envPath.isEmpty())
+        return QString();
+
+    // We want to store this in the same place as the Launcher and Client store their data
+    QString dirPath = QString::fromLatin1("%1/CCP/EVE/%2").arg(envPath).arg(string);
+    QDir dir(dirPath);
+
+    // Create the directory if it doesn't exist
+    if (!dir.exists()) {
+        dir.mkpath(QLatin1String("."));
+    }
+
+    return dirPath;
+}
+
 /*!
     Returns new filename for a logfile.
     It also creates eve-installer under %temp% if %temp% is found.
@@ -190,20 +212,9 @@ QString QInstaller::getNewAutoLogFileName()
     QDateTime utcTime(local.toUTC());
     QString currentTime = utcTime.toString(QLatin1String("yyyy.MM.dd-hh.mm.ss.zzz"));
 
-    QString localAppDataPath = environmentVariable(QLatin1String("localappdata"));
-
-    // Couldn't get location of %localappdata% return an empty string
-    if (localAppDataPath.isEmpty())
+    QString dirPath = createInstallerDir(QString::fromLatin1("Installer"), false);
+    if (dirPath.isEmpty())
         return QString();
-    
-    // We want to store the file under installer, in the same folder as launcher logs
-    QString dirPath = QString::fromLatin1("%1/CCP/EVE/Installer").arg(localAppDataPath);
-    QDir dir(dirPath);
-
-    // Create the directory if it doesn't exist
-    if (!dir.exists()) {
-        dir.mkpath(QLatin1String("."));
-    }
 
     // Return the final name
     return QString::fromLatin1("%1/installerlog-%2.txt").arg(dirPath).arg(currentTime);
@@ -296,6 +307,24 @@ void QInstaller::setJourneyId(const QUuid& id)
 QUuid QInstaller::getJourneyId()
 {
     return journeyId;
+}
+
+QString QInstaller::getCrashDb()
+{
+    return createInstallerDir(QString::fromLatin1("Installer/Crashes"), false);
+}
+
+QString QInstaller::getTempPath()
+{
+    return createInstallerDir(QString::fromLatin1("installer-resources"), true);
+}
+
+// If you want to change this name, you need to update installer.qrc as well
+static QString crashpadHandlerName = QString::fromLatin1("eve_installer_crashmon.exe");
+
+QString QInstaller::getCrashpadHandlerName()
+{
+    return crashpadHandlerName;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

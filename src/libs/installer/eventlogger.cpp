@@ -12,6 +12,9 @@
 #include <QDebug>
 #include <QRegularExpression>
 
+#define SENTRY_BUILD_STATIC 1
+#include <sentry.h>
+
 EventLogger::EventLogger()
 {
     QCryptographicHash hasher(QCryptographicHash::Md5);
@@ -66,6 +69,24 @@ EventLogger::EventLogger()
 
     QInstaller::setJourneyId(journeyId);
     m_journeyId = journeyId.toRfc4122();
+
+    qDebug() << "framework | EventLogger::EventLogger | Trying to cause a crash";
+
+    // Now that we have the os uuid, we can add user information to our crashes
+    // All crashes that happen before this point will not contain user information
+    sentry_value_t user = sentry_value_new_object();
+
+    // Add the os uuid as id
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(osUuid.toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
+    
+    // Add the journey ID
+    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(m_journeyId.toBase64()));
+
+    // Add the session ID
+    sentry_value_set_by_key(user, "Session", sentry_value_new_string(m_session.toLocal8Bit().constData()));
+
+    sentry_set_user(user);
 }
 
 EventLogger::~EventLogger()
@@ -89,6 +110,52 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     s_providerName = providerName;
     s_initSuccessful = true;
     s_gatewayUrl = getGatewayUrl();
+
+    // Add an app context for Sentry
+    sentry_value_t app = sentry_value_new_object();
+
+    // Region
+    sentry_value_t app_region = sentry_value_new_string("Missing");
+    if (s_region == eve_launcher::application::Application_Region_REGION_WORLD)
+    {
+        app_region = sentry_value_new_string("World");
+    }
+    else if (s_region == eve_launcher::application::Application_Region_REGION_CHINA)
+    {
+        app_region = sentry_value_new_string("China");
+    }
+    sentry_value_set_by_key(app, "Region", app_region);
+
+    // Version
+    sentry_value_set_by_key(app, "Version", sentry_value_new_string(s_version.toLocal8Bit().constData()));
+
+    // Buildtype
+    sentry_value_t app_buildtype = sentry_value_new_string("Missing");
+    if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE)
+    {
+        app_buildtype = sentry_value_new_string("Release");
+    }
+    else if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_BETA)
+    {
+        app_buildtype = sentry_value_new_string("Beta");
+    }
+    else if (s_buildType == eve_launcher::application::Application_BuildType_BUILDTYPE_DEV)
+    {
+        app_buildtype = sentry_value_new_string("Development");
+    }
+    sentry_value_set_by_key(app, "Buildtype", app_buildtype);
+
+    // Provider
+    if (s_provider && s_region == eve_launcher::application::Application_Region_REGION_CHINA)
+    {
+        sentry_value_set_by_key(app, "Provider (China only)", sentry_value_new_string(s_providerName.toLocal8Bit().constData()));
+    }
+    
+    sentry_set_context("App", app);
+
+    // World / China added as tag
+    sentry_set_tag("region", s_region == eve_launcher::application::Application_Region_REGION_CHINA ? "China" : "World");
+
     qDebug() << "framework | EventLogger::initialize | initialized |" << s_region << s_version << s_buildType << s_provider << s_providerName << s_gatewayUrl;
 }
 
@@ -368,6 +435,37 @@ void EventLogger::uninstallerUninstallationFailed(int duration)
 
 void EventLogger::uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEncountered_ErrorCode code, eve_launcher::uninstaller::Page page)
 {
+    // We also send this information to Sentry as an exception.
+    // First we create the exception
+    qDebug() << "framework | EventLogger::uninstallerErrorEncountered |" << code << page;
+    sentry_value_t exc = sentry_value_new_object();
+    if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Failure"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Failed"));
+    }
+    else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::ForceUpdate"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to ForceUpdate"));
+    }
+    else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Unfinished"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
+    }
+    else 
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::UnknownException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));
+    }
+
+    // And then we send it
+    sentry_value_t event = sentry_value_new_event();
+    sentry_value_set_by_key(event, "exception", exc);
+    sentry_capture_event(event);
+
+    // Finally we move on to sending our event
     auto evt = new eve_launcher::uninstaller::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_code(code);
@@ -604,6 +702,62 @@ void EventLogger::installerComponentInstallationFinished(int duration)
 
 void EventLogger::installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::RedistVersion redistVersion)
 {
+    // We also send this information to Sentry as an exception.
+    // First we create the exception
+    qDebug() << "framework | EventLogger::installerErrorEncountered |" << code << page;
+    sentry_value_t exc = sentry_value_new_object();
+    if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::Failure"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Failed"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::ForceUpdate"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to ForceUpdate"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::QtStatus::Unfinished"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_CREATE_OPERATIONS)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::LauncherInstallOperationException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed to prepare all the required operations to be able to install the Launcher"));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_ADD_OPERATION)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::UniversalCrtOperationException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed to add the operation that installs the Microsoft Universal C RunTime."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_DLL)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::DllLookupException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed when trying to look for UCRT runtime dll."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_WINDOWS_UPDATE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::WindowsUpdateLookupException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Application failed when trying to look for installed Windows Updates."));
+    }
+    else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_MISSING_PREREQUISITE)
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::PrerequisiteMissingException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("This Windows 8.1 version is missing a very large Windows Update, that is a prerequisite for the redist Windows Updates, we are therefore unable to install the redist, and the installation of the launcher will succeed, but the launcher will not start but fail instead."));
+    }
+    else 
+    {
+        sentry_value_set_by_key(exc, "type", sentry_value_new_string("Installer::Scripts::UnknownException"));
+        sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));
+    }
+
+    // And then we send it
+    sentry_value_t event = sentry_value_new_event();
+    sentry_value_set_by_key(event, "exception", exc);
+    sentry_capture_event(event);
+
+    // Finally we move on to sending our event
     auto evt = new eve_launcher::installer::ErrorEncountered;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_code(code);

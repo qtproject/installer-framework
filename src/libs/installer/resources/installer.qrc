@@ -7,5 +7,6 @@
         <file>uninstall.png</file>
         <file>keepinstalled.png</file>
         <file>keepuninstalled.png</file>
+        <file>eve_installer_crashmon.exe</file>
     </qresource>
 </RCC>

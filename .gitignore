@@ -111,3 +111,13 @@ vendors/pdm-proto/*/libs/Windows/x32/MD
 vendors/pdm-proto/*/libs/Windows/x32/MT/libprotobuf.lib
 vendors/protobuf/*/lib/*
 !vendors/protobuf/*/lib/libprotobuf.lib
+
+# Include the eve_installer_crashmon.exe
+!src/libs/installer/resources/eve_installer_crashmon.exe
+
+# Include the relevant parts of the sentry library
+# When upgrading, remember to rename the exe file
+# to the name in QInstaller::getCrashpadHandlerName (utils.cpp)
+# and move it to src\libs\installer\resources
+vendors/sentry/*/bin
+vendors/sentry/*/lib/cmake

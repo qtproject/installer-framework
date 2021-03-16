@@ -64,6 +64,9 @@
 
 #include <iostream>
 
+#define SENTRY_BUILD_STATIC 1
+#include <sentry.h>
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -122,27 +125,39 @@ static QString logFileTrimAndPrepend(QtMsgType type, const QString &msg)
     QString ms = QString::fromLatin1("%1 | ").arg(utcTime.currentMSecsSinceEpoch());
     ba.prepend(ms);
 
+    // We want to log all our log messages as breadcrumbs in Sentry
+    sentry_value_t crumb = sentry_value_new_breadcrumb("default", ba.toLocal8Bit().constData());
+
     // prepend the message type, skip QtDebugMsg
     switch (type) {
         case QtInfoMsg:
             ba.prepend(QStringLiteral("info | "));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("info"));
         break;
 
         case QtWarningMsg:
             ba.prepend(QStringLiteral("warning | "));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("warning"));
         break;
 
         case QtCriticalMsg:
             ba.prepend(QStringLiteral("critical | "));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("critical"));
         break;
 
         case QtFatalMsg:
             ba.prepend(QStringLiteral("fatal | "));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("fatal"));
         break;
 
         default:
             ba.prepend(QStringLiteral("debug | "));
+            sentry_value_set_by_key(crumb, "level", sentry_value_new_string("debug"));
     }
+    
+    // sentry_value_set_by_key(crumb, "category", sentry_value_new_string("auth"));
+    sentry_add_breadcrumb(crumb);
+
     return ba;
 }
 

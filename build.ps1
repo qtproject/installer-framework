@@ -20,7 +20,7 @@ $VerboseSwitch = ""
 if ($Verbose) { $VerboseSwitch = "-Verbose" }
 
 $jom = "$ToolsPrefix\jom\jom.exe"
-$qmake = "$ToolsPrefix\Qt_static\v5.12.7\bin\qmake.exe"
+$qmake = "$ToolsPrefix\static\qt\v5.12.7\bin\qmake.exe"
 $varsall = "C:\$BuildToolsPrefix\BuildTools\VC\Auxiliary\Build\vcvarsall.bat"
 
 Write-Output "Start building installer framework"
@@ -74,8 +74,9 @@ if ($Verbose) {
 Write-Debug "Framework created"
 
 # Copy the output to the build folder
-Copy-Item "$PSScriptRoot\bin\binarycreator.exe" $buildDir
-Copy-Item "$PSScriptRoot\bin\installerbase.exe" $buildDir
+Copy-Item "$PSScriptRoot\bin\binarycreator.*" $buildDir
+Copy-Item "$PSScriptRoot\bin\installerbase.*" $buildDir
+Copy-Item "$PSScriptRoot\tools\repocompare\release\repocompare.*" $buildDir
 
 Write-Debug "Framework output to build"
 
