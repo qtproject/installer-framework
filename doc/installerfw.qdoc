@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -247,6 +247,11 @@
             \li Create a local repository inside the installation directory. This option has no
                 effect on online installers.
         \row
+            \li --fp, --filter-packages <element=regex,...>
+            \li [CLI] Comma separated list of additional key-value pair filters used to query packages with the
+                search command. The keys can be any of the possible package information elements, like
+                \c DisplayName and \c Description.
+        \row
             \li --am, --accept-messages
             \li [CLI] Accepts all message queries without user input.
         \row
@@ -316,6 +321,9 @@
         \row
             \li se, search <regexp>
             \li Search available packages. If no search pattern is given, show all available packages.
+
+                \note The \c --filter-packages option can be used to specify additional filters for
+                the search operation. See \l{Summary of Options}.
         \row
             \li co, create-offline <pkg ...>
             \li Create offline installer from selected packages.

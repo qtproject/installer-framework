@@ -2179,11 +2179,13 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 
 /*!
     Lists available packages filtered with \a regexp without GUI. Virtual
-    components are not listed unless set visible.
+    components are not listed unless set visible. Optionally, a \a filters
+    hash containing package information elements and regular expressions
+    can be used to further filter listed packages.
 
     \sa setVirtualComponentsVisible()
 */
-void PackageManagerCore::listAvailablePackages(const QString &regexp)
+void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHash<QString, QString> &filters)
 {
     setPackageViewer();
     qCDebug(QInstaller::lcInstallerInstallLog)
@@ -2209,8 +2211,19 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp)
             continue;
 
         const QModelIndex &idx = model->indexFromComponentName(component->treeName());
-        if (idx.isValid() && re.match(name).hasMatch())
-            matchedPackages.append(package);
+        if (idx.isValid() && re.match(name).hasMatch()) {
+            bool ignoreComponent = false;
+            for (auto &key : filters.keys()) {
+                const QString elementValue = component->value(key);
+                QRegularExpression elementRegexp(filters.value(key));
+                if (elementValue.isEmpty() || !elementRegexp.match(elementValue).hasMatch()) {
+                    ignoreComponent = true;
+                    break;
+                }
+            }
+            if (!ignoreComponent)
+                matchedPackages.append(package);
+        }
     }
     if (matchedPackages.count() == 0)
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";

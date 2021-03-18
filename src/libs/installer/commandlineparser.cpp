@@ -59,6 +59,9 @@ CommandLineParser::CommandLineParser()
             .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
         + indent + QString::fromLatin1("%1, %2 - search available packages - <regexp>\n")
             .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong)
+        + indent + indent + QString::fromLatin1("Note: The --%1 option can be used to specify\n")
+            .arg(CommandLineOptions::scFilterPackagesLong)
+        + indent + indent + QLatin1String("additional filters for the search operation\n")
         + indent + QString::fromLatin1("%1, %2 - create offline installer from selected packages - <pkg ...>\n")
             .arg(CommandLineOptions::scCreateOfflineShort, CommandLineOptions::scCreateOfflineLong)
         + indent + QString::fromLatin1("%1, %2 - uninstall all packages and remove entire program directory")
@@ -161,6 +164,12 @@ CommandLineParser::CommandLineParser()
         << CommandLineOptions::scCreateLocalRepositoryShort << CommandLineOptions::scCreateLocalRepositoryLong,
         QLatin1String("Create a local repository inside the installation directory. This option "
                       "has no effect on online installers.")));
+    addOptionWithContext(QCommandLineOption(QStringList()
+        << CommandLineOptions::scFilterPackagesShort << CommandLineOptions::scFilterPackagesLong,
+        QLatin1String("[CLI] Comma separated list of additional key-value pair filters used to query packages with the "
+                      "search command. The keys can be any of the possible package information elements, like "
+                      "\"DisplayName\" and \"Description\"."),
+        QLatin1String("element=regex,...")), CommandLineOnly);
 
     // Message query options
     addOptionWithContext(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQueryShort

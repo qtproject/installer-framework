@@ -33,6 +33,7 @@
 #include "repository.h"
 #include "qinstallerglobal.h"
 #include "utils.h"
+#include "commandlineparser.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QObject>
@@ -242,7 +243,8 @@ public:
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
     void listInstalledPackages(const QString &regexp = QString());
-    void listAvailablePackages(const QString &regexp);
+    void listAvailablePackages(const QString &regexp = QString(),
+                               const QHash<QString, QString> &filters = QHash<QString, QString>());
     PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
     PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
     PackageManagerCore::Status installDefaultComponentsSilently();

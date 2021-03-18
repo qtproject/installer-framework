@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -203,6 +203,8 @@ static const QLatin1String scCreateLocalRepositoryShort("cl");
 static const QLatin1String scCreateLocalRepositoryLong("create-local-repository");
 static const QLatin1String scNoDefaultInstallationShort("nd");
 static const QLatin1String scNoDefaultInstallationLong("no-default-installations");
+static const QLatin1String scFilterPackagesShort("fp");
+static const QLatin1String scFilterPackagesLong("filter-packages");
 
 // Developer options
 static const QLatin1String scScriptShort("s");

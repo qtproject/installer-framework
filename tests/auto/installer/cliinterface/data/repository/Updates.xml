@@ -19,7 +19,7 @@
   <Description>Example component B</Description>
   <Version>1.0.0-1</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
-  <Default>true</Default>
+  <Default>false</Default>
   <UpdateFile CompressedSize="222" OS="Any" UncompressedSize="72"/>
   <DownloadableArchives>content.7z</DownloadableArchives>
   <SHA1>9170d55a6af81c1a6a63d708a4ab6ed359775cd9</SHA1>

@@ -132,7 +132,7 @@ int CommandLineInterface::searchAvailablePackages()
     QString regexp;
     if (!m_positionalArguments.isEmpty())
         regexp = m_positionalArguments.first();
-    m_core->listAvailablePackages(regexp);
+    m_core->listAvailablePackages(regexp, parsePackageFilters());
     return EXIT_SUCCESS;
 }
 
@@ -270,4 +270,28 @@ bool CommandLineInterface::setTargetDir()
         }
     }
     return false;
+}
+
+QHash<QString, QString> CommandLineInterface::parsePackageFilters()
+{
+    QHash<QString, QString> filterHash;
+    if (m_parser.isSet(CommandLineOptions::scFilterPackagesLong)) {
+        const QStringList filterList = m_parser.value(CommandLineOptions::scFilterPackagesLong)
+            .split(QLatin1Char(','));
+
+        for (auto &filter : filterList) {
+            const int i = filter.indexOf(QLatin1Char('='));
+            const QString element = filter.left(i).trimmed();
+            const QString value = filter.mid(i + 1).trimmed();
+
+            if ((i == -1) || (filter.count(QLatin1Char('=') > 1))
+                    || element.isEmpty() || value.isEmpty()) {
+                qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Ignoring unknown entry "
+                    << filter << "in package filter arguments. Please use syntax \"element=regex,...\".";
+                continue;
+            }
+            filterHash.insert(element, value);
+        }
+    }
+    return filterHash;
 }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -54,6 +54,7 @@ private:
     bool initialize();
     bool checkLicense();
     bool setTargetDir();
+    QHash<QString, QString> parsePackageFilters();
 
     QStringList m_positionalArguments;
 };

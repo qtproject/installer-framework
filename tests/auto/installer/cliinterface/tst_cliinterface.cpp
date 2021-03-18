@@ -90,6 +90,24 @@ private slots:
                              "</availablepackages>\n");
         core->listAvailablePackages(QLatin1String("^C"));
 
+        // Test with filters
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+                             "</availablepackages>\n");
+        QHash<QString, QString> searchHash {
+            { "Version", "1.0.2" },
+            { "DisplayName", "A" }
+        };
+        core->listAvailablePackages(QString(), searchHash);
+
+        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
+                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+                             "</availablepackages>\n");
+        searchHash.clear();
+        searchHash.insert("Default", "false");
+        core->listAvailablePackages(QString(), searchHash);
+
         // Need to change rules here to catch messages
         QLoggingCategory::setFilterRules("ifw.* = true\n");
 

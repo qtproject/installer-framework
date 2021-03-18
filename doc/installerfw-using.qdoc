@@ -448,10 +448,12 @@
     The \c search command can be used to search components from available repositories, or
     from integrated binary content in case of an offline installer. It can be used with
     no arguments to list all available components or with a regular expression to get a list
-    of only components matching the pattern:
+    of only components matching the pattern. The \c --filter-packages option can be
+    used to specify additional filters for the search operation. For a list of usable
+    information elements with the option, refer to \l{Summary of Package Information File Elements}.
 
     \code
-    installer.exe search "expression"
+    installer.exe --filter-packages "DisplayName=MyComponent, Version=1.0" search "expression"
     \endcode
 
     \section1 Performing Full Uninstallation
