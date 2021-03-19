@@ -3,6 +3,16 @@ instructions:
   - type: MakeDirectory
     directory: ".git"
 
+  - type: Group
+    instructions:
+      - type: InstallSourceArchive
+        maxTimeInSeconds: 600
+        maxTimeBetweenOutput: 600
+        project: qtsdk/qtsdk
+        ref: master
+        directory: qtsdk/qtsdk
+        userMessageOnFailure: "Could not install qtsdk/qtsdk source archive. Please investigate why."
+
   - type: SetBuildDirectory
     directory: "{{.SourceDir}}"
     disable_if:
