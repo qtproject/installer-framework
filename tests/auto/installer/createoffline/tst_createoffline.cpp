@@ -85,6 +85,9 @@ private slots:
         QTest::newRow("Unified metaformat | Script")
             << ":///data/repository-unifiedmeta-script" << "org.qtproject.ifw.example"
             << PackageManagerCore::Success;
+        QTest::newRow("Component metaformat | Empty component meta-archive")
+            << ":///data/repository-componentmeta-emptymetafile" << "A"
+            << PackageManagerCore::Success;
         QTest::newRow("Non-existing component")
             << ":///data/repository-unifiedmeta-script" << "a.dummy.component"
             << PackageManagerCore::Canceled;

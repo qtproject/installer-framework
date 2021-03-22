@@ -654,8 +654,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                     metaFound = parsePackageUpdate(c2, packageName, packageVersion, packageHash,
                                                    online, testCheckSum);
 
-                    //If meta element (script, licenses, etc.) is not found, no need to fetch metadata
-                    if (metaFound) {
+                    // If meta element (script, licenses, etc.) is not found, no need to fetch metadata.
+                    // The offline-generator instance is an exception to this - if the Updates.xml contains
+                    // checksum element for the meta-archive, we will fetch it, so that the temporary
+                    // location contents match the remote repository.
+                    if (metaFound || (m_core->isOfflineGenerator() && !packageHash.isEmpty())) {
                         const QString repoUrl = metadata.repository.url().toString();
                         addFileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName, packageVersion),
                             metadata.directory + QString::fromLatin1("/%1-%2-meta.7z").arg(packageName, packageVersion),
