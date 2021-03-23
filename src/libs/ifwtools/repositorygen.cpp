@@ -672,8 +672,33 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                     el.save(metaStream, 0);
                 }
                 info.metaNode = metaString;
-                dict.push_back(info);
-                qDebug() << "- it provides the package" << info.name << " - " << info.version;
+
+                bool pushToDict = true;
+                bool replacement = false;
+                // Check whether this package already exists in vector:
+                for (int i = 0; i < dict.size(); ++i) {
+                    const QInstallerTools::PackageInfo oldInfo = dict.at(i);
+                    if (oldInfo.name != info.name)
+                        continue;
+
+                    if (KDUpdater::compareVersion(info.version, oldInfo.version) > 0) {
+                        // A package with newer version, it will replace the existing one.
+                        dict.remove(i);
+                        replacement = true;
+                    } else {
+                        // A package with older or same version, do not add it again.
+                        pushToDict = false;
+                    }
+                    break;
+                }
+
+                if (pushToDict) {
+                    replacement ? qDebug() << "- it provides a new version of the package" << info.name << " - " << info.version << "- replaced"
+                                : qDebug() << "- it provides the package" << info.name << " - " << info.version;
+                    dict.push_back(info);
+                } else {
+                    qDebug() << "- it provides an old version of the package" << info.name << " - " << info.version << "- ignored";
+                }
             }
         }
     }

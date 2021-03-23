@@ -80,10 +80,10 @@ private:
         m_repoInfo.packages << ":///packages_update";
     }
 
-    void initRepoUpdateFromRepository(const QString &repository)
+    void initRepoUpdateFromRepositories(const QStringList &repositories)
     {
         clearData();
-        m_repoInfo.repositoryPackages << repository;
+        m_repoInfo.repositoryPackages << repositories;
     }
 
     void verifyUniteMetadata(const QString &scriptVersion)
@@ -116,7 +116,7 @@ private:
                                             "MetadataName");
     }
 
-    void verifyComponentRepository(const QString &componentAVersion, bool hasComponentMeta)
+    void verifyComponentRepository(const QString &componentAVersion, const QString &componentBVersion, bool hasComponentMeta)
     {
         const QString content = "%1content.7z";
         const QString contentSha1 = "%1content.7z.sha1";
@@ -124,10 +124,10 @@ private:
         QStringList componentA;
         QStringList componentB;
         componentA << qPrintable(content.arg(componentAVersion)) << qPrintable(contentSha1.arg(componentAVersion));
-        componentB << "1.0.0content.7z" << "1.0.0content.7z.sha1";
+        componentB << qPrintable(content.arg(componentBVersion)) << qPrintable(contentSha1.arg(componentBVersion));
         if (hasComponentMeta) {
             componentA << qPrintable(meta.arg(componentAVersion));
-            componentB << "1.0.0meta.7z";
+            componentB << qPrintable(meta.arg(componentBVersion));
         }
         VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/A", componentA);
         VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/B", componentB);
@@ -169,14 +169,14 @@ private:
         }
     }
 
-    void ignoreMessageForCollectingRepository(const QString &repository)
+    void ignoreMessageForCollectingRepository(const QStringList &repositories)
     {
         const QString message = "Process repository \"%2\"";
         QTest::ignoreMessage(QtDebugMsg, "Collecting information about available repository packages...");
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(repository)));
+        for (auto &repo : repositories)
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(repo)));
         QTest::ignoreMessage(QtDebugMsg, "Collecting information about available packages...");
         QTest::ignoreMessage(QtDebugMsg, "No available packages found at the specified location.");
-        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
     }
 
     void ignoreMessagesForCopyMetadata(const QString &component, bool hasMeta, bool update)
@@ -296,7 +296,7 @@ private slots:
         ignoreMessagesForComponentSha(QStringList () << "A" << "B", false);
         generateRepo(true, false, false);
 
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
     }
 
@@ -306,7 +306,7 @@ private slots:
         ignoreMessagesForUniteMeta(false);
         generateRepo(true, true, false);
 
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
         verifyUniteMetadata("1.0.0");
     }
 
@@ -315,7 +315,7 @@ private slots:
         ignoreMessagesForUniteMeta(false);
         generateRepo(false, true, false);
 
-        verifyComponentRepository("1.0.0", false);
+        verifyComponentRepository("1.0.0", "1.0.0", false);
         verifyUniteMetadata("1.0.0");
     }
 
@@ -324,7 +324,7 @@ private slots:
         ignoreMessagesForComponentSha(QStringList () << "A" << "B", false);
         generateRepo(true, false, false, QStringList () << "A");
 
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
         verifyComponentShaUpdate(1);
     }
@@ -334,7 +334,7 @@ private slots:
         ignoreMessagesForComponentSha(QStringList () << "A" << "B", false);
         generateRepo(true, false, false, QStringList () << "A" << "B");
 
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
         verifyComponentShaUpdate(2);
     }
@@ -344,7 +344,7 @@ private slots:
         // Create 'base' repository which will be updated
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
         generateRepo(true, false, false);
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
 
         // Update the 'base' repository
         initRepoUpdate();
@@ -355,7 +355,7 @@ private slots:
         const QString &message = "Update component \"A\" in \"%1\" .";
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
         generateRepo(true, false, true);
-        verifyComponentRepository("2.0.0", true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
     }
 
@@ -363,12 +363,12 @@ private slots:
     {
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
         generateRepo(true, false, false);
-        verifyComponentRepository("1.0.0",true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
 
         initRepoUpdate();
         ignoreMessagesForUpdateComponents();
         generateRepo(true, false, false);
-        verifyComponentRepository("2.0.0", true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
     }
 
@@ -377,13 +377,13 @@ private slots:
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
         ignoreMessagesForUniteMeta(false);
         generateRepo(true, true, false);
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
 
         initRepoUpdate();
         ignoreMessagesForUpdateComponents();
         ignoreMessagesForUniteMeta(true);
         generateRepo(true, true, false);
-        verifyComponentRepository("2.0.0", true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
         verifyUniteMetadata("2.0.0");
     }
 
@@ -391,7 +391,7 @@ private slots:
     {
         ignoreMessagesForUniteMeta(false);
         generateRepo(false, true, false);
-        verifyComponentRepository("1.0.0", false);
+        verifyComponentRepository("1.0.0", "1.0.0", false);
 
         initRepoUpdate();
         ignoreMessageForCollectingPackages("2.0.0", "1.0.0");
@@ -400,7 +400,7 @@ private slots:
         ignoreMessagesForCopyMetadata("B", false, true);
         ignoreMessagesForUniteMeta(true);
         generateRepo(false, true, false);
-        verifyComponentRepository("2.0.0", false);
+        verifyComponentRepository("2.0.0", "1.0.0", false);
         verifyUniteMetadata("2.0.0");
     }
 
@@ -408,17 +408,47 @@ private slots:
     {
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
         generateRepo(true, false, false);
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
 
-        initRepoUpdateFromRepository(":///repository_component");
-        ignoreMessageForCollectingRepository("repository_component");
+        initRepoUpdateFromRepositories(QStringList() << ":///repository_component");
+        ignoreMessageForCollectingRepository(QStringList() << "repository_component");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
         QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"B\"  -  \"1.0.0\"");
 
         ignoreMessagesForCopyRepository("B", "1.0.0", "repository_component");
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_component");
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", true);
         generateRepo(true, false, false);
-        verifyComponentRepository("2.0.0", true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
+        verifyComponentMetaUpdatesXml();
+    }
+
+    void testUpdateComponentsFromMultipleRepositories()
+    {
+        ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
+        generateRepo(true, false, false);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
+
+        initRepoUpdateFromRepositories(QStringList() << ":///test_package_versions/repository_1"
+            << ":///test_package_versions/repository_2" << ":///test_package_versions/repository_3");
+
+        ignoreMessageForCollectingRepository(QStringList()
+            << "repository_1" << "repository_2" << "repository_3");
+
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"B\"  -  \"1.0.0\"");
+
+        QTest::ignoreMessage(QtDebugMsg, "- it provides an old version of the package \"A\"  -  \"1.0.0\" - ignored");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides an old version of the package \"B\"  -  \"1.0.0\" - ignored");
+
+        QTest::ignoreMessage(QtDebugMsg, "- it provides an old version of the package \"A\"  -  \"1.0.0\" - ignored");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides a new version of the package \"B\"  -  \"3.0.0\" - replaced");
+
+        ignoreMessagesForCopyRepository("B", "3.0.0", "test_package_versions/repository_3");
+        ignoreMessagesForCopyRepository("A", "2.0.0", "test_package_versions/repository_1");
+        ignoreMessagesForComponentSha(QStringList() << "A" << "B", true);
+        generateRepo(true, false, false);
+        verifyComponentRepository("2.0.0", "3.0.0", true);
         verifyComponentMetaUpdatesXml();
     }
 
@@ -427,10 +457,11 @@ private slots:
         ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
         ignoreMessagesForUniteMeta(false);
         generateRepo(true, true, false);
-        verifyComponentRepository("1.0.0", true);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
 
-        initRepoUpdateFromRepository(":///repository_componentAndUnite");
-        ignoreMessageForCollectingRepository("repository_componentAndUnite");
+        initRepoUpdateFromRepositories(QStringList() << ":///repository_componentAndUnite");
+        ignoreMessageForCollectingRepository(QStringList() << "repository_componentAndUnite");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
         QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"C\"  -  \"1.0.0\"");
         ignoreMessageForUpdateComponent();
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_componentAndUnite");
@@ -439,7 +470,7 @@ private slots:
         ignoreMessagesForComponentSha(QStringList() << "A" << "C", true);
 
         generateRepo(true, true, true);
-        verifyComponentRepository("2.0.0", true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
         VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
         verifyUniteMetadata("2.0.0");
     }
@@ -448,10 +479,11 @@ private slots:
     {
         ignoreMessagesForUniteMeta(false);
         generateRepo(false, true, false);
-        verifyComponentRepository("1.0.0", false);
+        verifyComponentRepository("1.0.0", "1.0.0", false);
 
-        initRepoUpdateFromRepository(":///repository_unite");
-        ignoreMessageForCollectingRepository("repository_unite");
+        initRepoUpdateFromRepositories(QStringList() << ":///repository_unite");
+        ignoreMessageForCollectingRepository(QStringList() << "repository_unite");
+        QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"A\"  -  \"2.0.0\"");
         QTest::ignoreMessage(QtDebugMsg, "- it provides the package \"C\"  -  \"1.0.0\"");
         ignoreMessageForUpdateComponent();
         ignoreMessagesForCopyRepository("A", "2.0.0", "repository_unite");
@@ -459,7 +491,7 @@ private slots:
         ignoreMessagesForUniteMeta(true);
 
         generateRepo(false, true, true);
-        verifyComponentRepository("2.0.0", false);
+        verifyComponentRepository("2.0.0", "1.0.0", false);
         VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/C", QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1");
         verifyUniteMetadata("2.0.0");
     }
