@@ -733,7 +733,7 @@ quint64 PackageManagerCore::requiredDiskSpace() const
     quint64 result = 0;
 
     foreach (QInstaller::Component *component, orderedComponentsToInstall())
-        result += size(component, scUncompressedSize);
+        result += size(component, isOfflineGenerator() ? scCompressedSize : scUncompressedSize);
 
     return result;
 }
@@ -2653,6 +2653,9 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         // if we create a local repository, take that space into account as well
         required += repositorySize;
     }
+    // if we create offline installer, take current executable size into account
+    if (isOfflineGenerator())
+        required += QFile(QCoreApplication::applicationFilePath()).size();
 
     qDebug() << "Installation space required:" << humanReadableSize(required) << "Temporary space "
         "required:" << humanReadableSize(tempRequired) << "Local repository size:"

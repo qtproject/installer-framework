@@ -2806,7 +2806,12 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-        if (!(m_autoConfirmCommand || askUserConfirmCommand())) {
+
+        QString spaceInfo;
+        const bool spaceOk = m_core->checkAvailableSpace(spaceInfo);
+        qCDebug(QInstaller::lcInstallerInstallLog) << spaceInfo;
+
+        if (!spaceOk || !(m_autoConfirmCommand || askUserConfirmCommand())) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Installation aborted.";
         } else if (m_core->run()) {
             // Write maintenance tool if required
