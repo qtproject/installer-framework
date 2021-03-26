@@ -2279,6 +2279,11 @@ void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::Che
 {
     ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
     Component *component = m_core->componentByName(id);
+    if (!component) {
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace()
+            << "Unable to set selection for: " << id << ". Component not found.";
+        return;
+    }
     const QModelIndex &idx = model->indexFromComponentName(component->treeName());
     if (idx.isValid())
         model->setData(idx, state, Qt::CheckStateRole);
