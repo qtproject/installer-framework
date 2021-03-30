@@ -2,7 +2,8 @@
     "version": "1",
     "module-split": {
         "__extract__": [
-            "**/*QtInstallerFramework-*"
+            "**/*QtInstallerFramework-*",
+            "**/*ifw_data*"
         ]
     }
 }
