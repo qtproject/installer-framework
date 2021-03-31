@@ -49,6 +49,7 @@
 #include <QFileDialog>
 #include <QStackedLayout>
 #include <QStackedWidget>
+#include <QToolBox>
 
 namespace QInstaller {
 
@@ -66,19 +67,29 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_updaterModel(m_core->updaterComponentModel())
         , m_currentModel(m_allModel)
         , m_allowCompressedRepositoryInstall(false)
+        , m_toolBox(nullptr)
+        , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
+        , m_categoryLayoutVisible(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
 
-    QVBoxLayout *descriptionVLayout = new QVBoxLayout;
+    m_descriptionBaseWidget = new QWidget(q);
+    m_descriptionBaseWidget->setObjectName(QLatin1String("DescriptionBaseWidget"));
+
+    QVBoxLayout *descriptionVLayout = new QVBoxLayout(m_descriptionBaseWidget);
     descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
+    descriptionVLayout->setContentsMargins(0, 0, 0, 0);
+
+    m_toolBox = new QToolBox(q);
+    m_toolBox->setObjectName(QLatin1String("ToolBox"));
 
     QScrollArea *descriptionScrollArea = new QScrollArea(q);
     descriptionScrollArea->setWidgetResizable(true);
     descriptionScrollArea->setFrameShape(QFrame::NoFrame);
     descriptionScrollArea->setObjectName(QLatin1String("DescriptionScrollArea"));
 
-    m_descriptionLabel = new QLabel(q);
+    m_descriptionLabel = new QLabel(m_descriptionBaseWidget);
     m_descriptionLabel->setWordWrap(true);
     m_descriptionLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_descriptionLabel->setOpenExternalLinks(true);
@@ -87,8 +98,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     descriptionScrollArea->setWidget(m_descriptionLabel);
     descriptionVLayout->addWidget(descriptionScrollArea);
 
-    m_sizeLabel = new QLabel(q);
-    m_sizeLabel->setMargin(5);
+    m_sizeLabel = new QLabel(m_descriptionBaseWidget);
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     descriptionVLayout->addWidget(m_sizeLabel);
@@ -151,11 +161,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
-    m_mainGLayout->addLayout(buttonHLayout, 0, 1);
-    m_mainGLayout->addLayout(treeViewVLayout, 1, 1);
-    m_mainGLayout->addLayout(descriptionVLayout, 1, 2);
-    m_mainGLayout->setColumnStretch(1, 3);
-    m_mainGLayout->setColumnStretch(2, 2);
+    m_mainGLayout->addLayout(buttonHLayout, 0, 0);
+    m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
+    m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
+    m_mainGLayout->setColumnStretch(0, 3);
+    m_mainGLayout->setColumnStretch(1, 2);
 
     m_stackedLayout = new QStackedLayout(q);
     m_stackedLayout->addWidget(mainStackedWidget);
@@ -227,11 +237,11 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     vLayout->setContentsMargins(0, 0, 0, 0);
     m_categoryWidget->setLayout(vLayout);
     m_categoryGroupBox = new QGroupBox(q);
-    m_categoryGroupBox->setTitle(m_core->settings().repositoryCategoryDisplayName());
     m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
     QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
     QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
+    fetchCategoryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     fetchCategoryButton->setToolTip(
         ComponentSelectionPage::tr("Filter the enabled repository categories to selection."));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
@@ -249,16 +259,28 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
 
     vLayout->addWidget(m_categoryGroupBox);
     vLayout->addStretch();
-    m_mainGLayout->addWidget(m_categoryWidget, 1, 0);
+    m_toolBox->insertItem(1, m_categoryWidget, m_core->settings().repositoryCategoryDisplayName());
 }
 
 void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
 {
+    if (!show && !m_categoryWidget)
+        return;
+
+    if (show == m_categoryLayoutVisible)
+        return;
+
+    setupCategoryLayout();
     if (show) {
-        setupCategoryLayout();
+        m_mainGLayout->removeWidget(m_descriptionBaseWidget);
+        m_toolBox->insertItem(0, m_descriptionBaseWidget, tr("Component Information"));
+        m_mainGLayout->addWidget(m_toolBox, 1, 1);
+    } else {
+        m_toolBox->removeItem(0);
+        m_mainGLayout->removeWidget(m_toolBox);
+        m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
     }
-    if (m_categoryWidget)
-        m_categoryWidget->setVisible(show);
+    m_categoryLayoutVisible = show;
 }
 
 void ComponentSelectionPagePrivate::updateTreeView()

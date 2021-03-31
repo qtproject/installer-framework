@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,6 +46,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QStackedLayout;
+class QToolBox;
 
 namespace QInstaller {
 
@@ -88,6 +89,8 @@ private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
+    QToolBox *m_toolBox;
+    QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
     QPushButton *m_checkAll;
@@ -99,6 +102,7 @@ private:
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
     bool m_allowCompressedRepositoryInstall;
+    bool m_categoryLayoutVisible;
     ComponentModel *m_allModel;
     ComponentModel *m_updaterModel;
     ComponentModel *m_currentModel;
