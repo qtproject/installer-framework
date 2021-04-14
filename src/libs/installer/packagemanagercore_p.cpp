@@ -2285,6 +2285,11 @@ void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::Che
 {
     ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
     Component *component = m_core->componentByName(id);
+    if (!component) {
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace()
+            << "Unable to set selection for: " << id << ". Component not found.";
+        return;
+    }
     const QModelIndex &idx = model->indexFromComponentName(component->treeName());
     if (idx.isValid())
         model->setData(idx, state, Qt::CheckStateRole);
@@ -2812,7 +2817,12 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
-        if (!(m_autoConfirmCommand || askUserConfirmCommand())) {
+
+        QString spaceInfo;
+        const bool spaceOk = m_core->checkAvailableSpace(spaceInfo);
+        qCDebug(QInstaller::lcInstallerInstallLog) << spaceInfo;
+
+        if (!spaceOk || !(m_autoConfirmCommand || askUserConfirmCommand())) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Installation aborted.";
         } else if (m_core->run()) {
             // Write maintenance tool if required

@@ -23,5 +23,10 @@
         <file>data/repository-unifiedmeta-script/Updates.xml</file>
         <file>data/repository-unifiedmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z</file>
         <file>data/repository-unifiedmeta-script/org.qtproject.ifw.example/1.0.0-1content.7z.sha1</file>
+
+        <file>data/repository-componentmeta-emptymetafile/Updates.xml</file>
+        <file>data/repository-componentmeta-emptymetafile/A/1.0.2-1content.7z</file>
+        <file>data/repository-componentmeta-emptymetafile/A/1.0.2-1content.7z.sha1</file>
+        <file>data/repository-componentmeta-emptymetafile/A/1.0.2-1meta.7z</file>
     </qresource>
 </RCC>
