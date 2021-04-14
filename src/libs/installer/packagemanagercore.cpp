@@ -70,7 +70,8 @@
 #include "updateoperationfactory.h"
 
 #ifdef Q_OS_WIN
-#   include "qt_windows.h"
+#include "qt_windows.h"
+#include <limits>
 #endif
 
 #include <QStandardPaths>
@@ -2760,6 +2761,13 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
             message = tr("The volume you selected for installation seems to have sufficient "
                 "space for installation, but there will be less than 100 MB available afterwards.");
         }
+#ifdef Q_OS_WIN
+        if (isOfflineGenerator() && (required > UINT_MAX)) {
+            message = tr("The estimated installer size %1 would exceed the supported executable "
+                "size limit of %2. The application may not be able to run.")
+                .arg(humanReadableSize(required), humanReadableSize(UINT_MAX));
+        }
+#endif
     }
     message = QString::fromLatin1("%1 %2").arg(message, tr("Installation will use %1 of disk space.")
         .arg(humanReadableSize(requiredDiskSpace()))).simplified();
