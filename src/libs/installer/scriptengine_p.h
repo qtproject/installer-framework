@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -63,7 +63,7 @@ public:
         : m_engine(engine), m_core(core) {}
 
 public slots:
-    QJSValue components() const;
+    QJSValue components(const QString &regexp = QString()) const;
     QJSValue componentByName(const QString &componentName);
 
 private:
