@@ -280,6 +280,7 @@ void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
         m_mainGLayout->removeWidget(m_toolBox);
         m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
     }
+    m_toolBox->setVisible(show);
     m_categoryLayoutVisible = show;
 }
 
