@@ -940,6 +940,10 @@
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1755,6 +1759,11 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <source>invalid</source>
         <translation>ungültig</translation>
     </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2412,14 +2421,6 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>Authorization required</source>
-        <translation>Autorisierung benötigt.</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Geben Sie Ihr Passwort ein, um sich für sudo zu authentifizieren:</translation>
-    </message>
     <message>
         <source>Error acquiring admin rights</source>
         <translation>Fehler beim Erlangen von Administratorrechten.</translation>

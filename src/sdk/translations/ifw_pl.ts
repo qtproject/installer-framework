@@ -1737,6 +1737,19 @@ Czy chcesz kontynuować?</translation>
         <source>invalid</source>
         <translation>nieprawidłowe</translation>
     </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2387,14 +2400,6 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Wymagana autoryzacja</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Wprowadź swoje hasło, aby zezwolić na sudo:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Błąd w trakcie nabywania praw administratora</translation>
     </message>
@@ -2696,11 +2701,22 @@ jako użytkownik z odpowiednimi prawami, a następnie kliknij przycisk OK.</tran
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

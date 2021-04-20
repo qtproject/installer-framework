@@ -949,6 +949,10 @@
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1759,6 +1763,19 @@ Do you want to continue?</source>
         <source>Components about to be removed.</source>
         <translation>Удаляемые компоненты.</translation>
     </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2409,14 +2426,6 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Требуется аутентификация</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Введите пароль для доступа к &quot;sudo&quot;:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Ошибка при попытке получения прав администратора</translation>
     </message>
@@ -2706,6 +2715,13 @@ as a user with the appropriate rights and then clicking OK.</source>
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>Не удалось переименовать «%1» в «%2»: %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

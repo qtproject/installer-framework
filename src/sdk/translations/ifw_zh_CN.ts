@@ -1719,6 +1719,19 @@ Do you want to continue?</source>
         <source>invalid</source>
         <translation>无效</translation>
     </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2369,14 +2382,6 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>需要授权</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>输入您的密码为 sudo 授权：</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>获取管理员权限时出错</translation>
     </message>
@@ -2674,11 +2679,22 @@ as a user with the appropriate rights and then clicking OK.</source>
         <source>Error</source>
         <translation>错误</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

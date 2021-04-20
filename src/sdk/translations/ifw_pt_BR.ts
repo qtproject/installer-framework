@@ -216,14 +216,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Autorização necessária</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Digite sua senha para autorizar para o sudo:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Erro ao adquirir privilégios de administrador</translation>
     </message>
@@ -1428,6 +1420,19 @@ Você quer continuar?</translation>
     <message>
         <source>invalid</source>
         <translation>inválido</translation>
+    </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2685,12 +2690,23 @@ como um usuário com os privilégios apropriados e, em seguida, clicando em OK.<
         <source>Error</source>
         <translation>Erro</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Extracting &quot;%1&quot;</source>
         <translation>Extraindo &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

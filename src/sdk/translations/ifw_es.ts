@@ -235,24 +235,28 @@
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n día(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
             <numerusform>%n hora(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
             <numerusform>%n minuto(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
             <numerusform>%n segundo(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -450,6 +454,7 @@
         <source>%n update(s) found.</source>
         <translation>
             <numerusform>%n actualizaciones encontradas.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1262,24 +1267,28 @@ Error al descargar %2</translation>
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n día(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n hour(s), </source>
         <translation>
             <numerusform>%n hora(s), </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n minute(s)</source>
         <translation>
             <numerusform>%n minuto(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n second(s)</source>
         <translation>
             <numerusform>%n segundo(s)</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -1718,6 +1727,19 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     <message>
         <source>invalid</source>
         <translation>no válido</translation>
+    </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2369,14 +2391,6 @@ Copie el instalador en una unidad local.</translation>
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Se necesita autorización</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Introduzca su contraseña para autorizar para sudo:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Error al adquirir derechos de administrador</translation>
     </message>
@@ -2651,12 +2665,14 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
         <source>Invalid arguments in %1: %n arguments given, %2 arguments expected.</source>
         <translation>
             <numerusform>Argumentos no válidos en %1: se han proporcionado %n argumentos, se esperaban %2.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>Invalid arguments in %1: %n arguments given, %2 arguments expected in the form: %3.</source>
         <translation>
             <numerusform>Argumentos no válidos en %1: se han proporcionado %n argumentos, se esperaban %2 con la forma: %3.</numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -2674,11 +2690,22 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
         <source>Error</source>
         <translation>Error</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Extracting &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -216,14 +216,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>المصادقة مطلوبة</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>أدخل كلمة مرورك لمصادقة sudo:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>فشل الحصول على صلاحيات المدير</translation>
     </message>
@@ -637,6 +629,10 @@
     <message>
         <source>Error</source>
         <translation>خطأ</translation>
+    </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1578,6 +1574,11 @@ Do you want to continue?</source>
         <source>invalid</source>
         <translation>غير صالح</translation>
     </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -1604,11 +1605,6 @@ Do you want to continue?</source>
     <message>
         <source>Stop Processes</source>
         <translation>أوقف العمليات</translation>
-    </message>
-    <message>
-        <source>These processes should be stopped to continue:
-%1</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Installation canceled by user</source>
@@ -1822,6 +1818,12 @@ Installing component %1</source>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>اكتُشفت دورة اعتماديات بين المكونان &quot;%1&quot; و&quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>These processes should be stopped to continue:
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2133,6 +2135,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
+
 Please start the setup program as a user with the appropriate rights.
 Or accept the elevation of access rights if being asked.</source>
         <translation type="unfinished"></translation>
@@ -2140,7 +2143,9 @@ Or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
+
 %1
+
 as a user with the appropriate rights and then clicking OK.</source>
         <translation type="unfinished"></translation>
     </message>

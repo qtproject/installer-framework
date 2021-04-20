@@ -940,6 +940,10 @@
         <source>Error</source>
         <translation>Error</translation>
     </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1746,6 +1750,19 @@ Voleu continuar?</translation>
         <source>invalid</source>
         <translation>no vàlid</translation>
     </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2396,14 +2413,6 @@ Copieu l&apos;instal·lador en una unitat local</translation>
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Es requereix autorització</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Introduïu la contrasenya per autoritzar el «sudo»:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Error en adquirir els drets d&apos;administrador</translation>
     </message>
@@ -2692,6 +2701,13 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>Ha fallat en canviar el nom del fitxer «%1» a «%2»: %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -216,14 +216,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <source>Authorization required</source>
-        <translation>Potrebna je autorizacija</translation>
-    </message>
-    <message>
-        <source>Enter your password to authorize for sudo:</source>
-        <translation>Dodaj tvoju lozinku za autorizaciju korištenja sudo naredba:</translation>
-    </message>
-    <message>
         <source>Error acquiring admin rights</source>
         <translation>Greška prilikom preuzimanja administratorskih prava</translation>
     </message>
@@ -1441,6 +1433,19 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
     <message>
         <source>invalid</source>
         <translation>nevaljano</translation>
+    </message>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register component! Component with identifier %1 already exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install %1. Component is descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2702,6 +2707,17 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
     <message>
         <source>Error</source>
         <translation>Greška</translation>
+    </message>
+    <message>
+        <source>Component Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::QFileDialogProxy</name>
+    <message>
+        <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
