@@ -896,11 +896,10 @@ void PackageManagerCore::rollBackInstallation()
             }
 
             d->m_localPackageHub->writeToDisk();
-            if (isInstaller()) {
-                if (d->m_localPackageHub->packageInfoCount() == 0) {
-                    QFile file(d->m_localPackageHub->fileName());
+            if (isInstaller() && d->m_localPackageHub->packageInfoCount() == 0) {
+                QFile file(d->m_localPackageHub->fileName());
+                if (!file.fileName().isEmpty() && file.exists())
                     file.remove();
-                }
             }
 
             if (becameAdmin)
