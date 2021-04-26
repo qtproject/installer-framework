@@ -611,7 +611,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
 void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params)
 {
     m_coreCheckedHash.clear();
-    m_data = PackageManagerCoreData(params);
+    m_data = PackageManagerCoreData(params, isInstaller());
     m_componentsToInstallCalculated = false;
 
 #ifdef Q_OS_LINUX
@@ -920,8 +920,8 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
     const QVariantHash v = cfg.value(QLatin1String("Variables")).toHash(); // Do not change to
     // QVariantMap! Breaks reading from existing .ini files, cause the variant types do not match.
     for (QVariantHash::const_iterator it = v.constBegin(); it != v.constEnd(); ++it) {
-        m_data.setValue(it.key(), replacePath(it.value().toString(), QLatin1String(scRelocatable),
-            targetDir));
+        if (!m_data.contains(it.key()) || m_data.value(it.key()).isNull())
+            m_data.setValue(it.key(), replacePath(it.value().toString(), QLatin1String(scRelocatable), targetDir));
     }
     QSet<Repository> repos;
     const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories"))

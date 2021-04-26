@@ -50,14 +50,13 @@ namespace QInstaller
     \internal
 */
 
-PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables)
+PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &variables, const bool isInstaller)
 {
     // Add user defined variables before dynamic as user settings can affect dynamic variables.
     setUserDefinedVariables(variables);
     addDynamicPredefinedVariables();
     // Set some common variables that may used e.g. as placeholder in some of the settings variables or
     // in a script or...
-    addNewVariable(scTargetConfigurationFile, QLatin1String("components.xml"));
     addNewVariable(QLatin1String("InstallerDirPath"), QCoreApplication::applicationDirPath());
     addNewVariable(QLatin1String("InstallerFilePath"), QCoreApplication::applicationFilePath());
 
@@ -81,8 +80,6 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     addNewVariable(scTitle, replaceVariables(m_settings.title()));
     addNewVariable(scPublisher, m_settings.publisher());
     addNewVariable(QLatin1String("Url"), m_settings.url());
-    addNewVariable(scStartMenuDir, m_settings.startMenuDir());
-    addNewVariable(scTargetConfigurationFile, m_settings.configurationFileName());
     addNewVariable(scLogo, m_settings.logo());
     addNewVariable(scWatermark, m_settings.watermark());
     addNewVariable(scBanner, m_settings.banner());
@@ -92,7 +89,20 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     if (!description.isEmpty())
         addNewVariable(scRunProgramDescription, description);
 
-    addNewVariable(scTargetDir, replaceVariables(m_settings.targetDir()));
+    // Some settings might change during install, read those settings later from
+    // maintenancetool if maintenancetool is used.
+    if (isInstaller) {
+        addNewVariable(scTargetDir, replaceVariables(m_settings.targetDir()));
+        addNewVariable(scTargetConfigurationFile, m_settings.configurationFileName());
+        addNewVariable(scStartMenuDir, m_settings.startMenuDir());
+    } else {
+#ifdef Q_OS_MACOS
+        addNewVariable(scTargetDir, QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../../..")).absoluteFilePath());
+#else
+        addNewVariable(scTargetDir, QCoreApplication::applicationDirPath());
+#endif
+
+    }
     addNewVariable(scRemoveTargetDir, replaceVariables(m_settings.removeTargetDir()));
 }
 
