@@ -65,6 +65,9 @@
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
+#include <QNetworkInterface>
+#include <QRandomGenerator>
+#include <QRegularExpression>
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -631,6 +634,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 
     gatherVersionNumbers();
+    initializeIds();
     initializeSentry();
 }
 
@@ -674,36 +678,107 @@ void PackageManagerCorePrivate::gatherVersionNumbers()
     qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | QtIFW:" << QInstaller::getQtIfwVersion();
 }
 
-void PackageManagerCorePrivate::initializeSentry()
+void PackageManagerCorePrivate::initializeGlobalId()
 {
     QUuid globalId;
     // Try to get GlobalId from the registry
     QString value = QInstaller::getKeyFromRegistry(QLatin1String(""), QLatin1String("GlobalId"));
     if (!value.isEmpty()) {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId found in registry";
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId found in registry";
         globalId = QUuid::fromString(value);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
     }
 
     // If GlobalId was not found, we create a new one
     if (globalId.isNull())
     {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | No GlobalId provided, one will be created instead";
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | No GlobalId found, one will be created instead";
         globalId = QUuid::createUuid();
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
 
         // We then store the GlobalId in the registry
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Storing GlobalId to registry";
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | Storing GlobalId to registry";
         QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\");
         QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
         settings.setValue(QLatin1String("GlobalId"), globalId.toString(QUuid::WithoutBraces));
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId stored to registry";
+        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId stored to registry";
     }
 
     QInstaller::setGlobalId(globalId);
+}
 
+void PackageManagerCorePrivate::initializeJourneyId()
+{
+    // Get the journeyId from the installer filename
+    QUuid journeyId;
+    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
+    if (appName.length() > 35)
+    {
+        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
+        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(appName);
+        if (match.hasMatch()) {
+           qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId found in filename:" << match.captured(0);
+           journeyId = QUuid::fromString(match.captured(0));
+        }
+    }
+
+    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
+    if (journeyId.isNull())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | No JourneyId provided, one will be created instead";
+        journeyId = QUuid::createUuid();
+    }
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
+
+    QInstaller::setJourneyId(journeyId);
+}
+
+void PackageManagerCorePrivate::initializeOsId()
+{
+    std::string osUuidString = PDM::GetMachineUuidString();
+    QUuid osId = QUuid::fromString(QString::fromStdString(osUuidString));
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId:" << osId.toString(QUuid::WithoutBraces);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId (base64):" << QLatin1String(osId.toRfc4122().toBase64());
+
+    QInstaller::setOsId(osId);
+}
+
+void PackageManagerCorePrivate::initializeSessionHash()
+{
+    QCryptographicHash hasher(QCryptographicHash::Md5);
+
+    auto interfaces = QNetworkInterface::allInterfaces();
+    if(!interfaces.isEmpty())
+    {
+        auto macAddress = interfaces.first().hardwareAddress();
+        hasher.addData(macAddress.toLocal8Bit());
+    }
+    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
+    hasher.addData(timestamp.toLocal8Bit());
+    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
+    hasher.addData(randomNumber.toLocal8Bit());
+
+    QInstaller::setSessionHash(hasher.result());
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSessionHash | Session:" << QInstaller::getSessionId();
+}
+
+void PackageManagerCorePrivate::initializeIds()
+{
+    initializeGlobalId();
+    initializeJourneyId();
+    initializeOsId();
+    initializeSessionHash();
+}
+
+void PackageManagerCorePrivate::initializeSentry()
+{
     qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Starting sentry native setup";
 
     QString crashmonName = QInstaller::getCrashpadHandlerName();
@@ -776,8 +851,11 @@ void PackageManagerCorePrivate::initializeSentry()
 
     // Add user (using the GlobalId as user id)
     sentry_value_t user = sentry_value_new_object();
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(globalId.toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getGlobalId().toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
+    sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(QInstaller::getOsId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(QInstaller::getJourneyId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "Session", sentry_value_new_string(QInstaller::getSessionId().toLocal8Bit().constData()));
     sentry_set_user(user);
 
     // Add version numbers to Sentry

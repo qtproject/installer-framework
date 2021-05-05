@@ -297,18 +297,6 @@ QString QInstaller::getInstallerFileName()
     return installerFileName;
 }
 
-static QUuid journeyId;
-
-void QInstaller::setJourneyId(const QUuid& id)
-{
-    journeyId = id;
-}
-
-QUuid QInstaller::getJourneyId()
-{
-    return journeyId;
-}
-
 QString QInstaller::getKeyFromRegistry(const QString& path, const QString& name)
 {
     if (name.isEmpty())
@@ -339,6 +327,54 @@ void QInstaller::setGlobalId(const QUuid& id)
 QUuid QInstaller::getGlobalId()
 {
     return globalId;
+}
+
+static QUuid journeyId;
+
+void QInstaller::setJourneyId(const QUuid& id)
+{
+    journeyId = id;
+}
+
+QUuid QInstaller::getJourneyId()
+{
+    return journeyId;
+}
+
+static QUuid osId;
+
+void QInstaller::setOsId(const QUuid& id)
+{
+    osId = id;
+}
+
+QUuid QInstaller::getOsId()
+{
+    return osId;
+}
+
+static QByteArray sessionHash;
+
+void QInstaller::setSessionHash(const QByteArray& hash)
+{
+    sessionHash = hash;
+}
+
+QByteArray QInstaller::getSessionHash()
+{
+    return sessionHash;
+}
+
+static QString sessionId;
+
+QString QInstaller::getSessionId()
+{
+    if (sessionId.isEmpty())
+    {
+        sessionId = QString(QLatin1String("ls")) + QString(QLatin1String(sessionHash.toHex()));
+    }
+
+    return sessionId;
 }
 
 QString QInstaller::getCrashDb()

@@ -234,6 +234,11 @@ private:
     void unregisterMaintenanceTool();
 
     void gatherVersionNumbers();
+    void initializeGlobalId();
+    void initializeJourneyId();
+    void initializeOsId();
+    void initializeSessionHash();
+    void initializeIds();
     void initializeSentry();
 
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);

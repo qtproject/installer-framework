@@ -6,85 +6,21 @@
 #include <google/protobuf/util/json_util.h>
 #include <google/protobuf/message_lite.h>
 
-#include <QNetworkInterface>
-#include <QRandomGenerator>
 #include <QUuid>
 #include <QDebug>
-#include <QRegularExpression>
 
 #define SENTRY_BUILD_STATIC 1
 #include <sentry.h>
 
 EventLogger::EventLogger()
 {
-    QCryptographicHash hasher(QCryptographicHash::Md5);
-
-    auto interfaces = QNetworkInterface::allInterfaces();
-    if(!interfaces.isEmpty())
-    {
-        auto macAddress = interfaces.first().hardwareAddress();
-        hasher.addData(macAddress.toLocal8Bit());
-    }
-    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
-    hasher.addData(timestamp.toLocal8Bit());
-    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
-    hasher.addData(randomNumber.toLocal8Bit());
-
-    m_sessionId = hasher.result();
-
-    std::string osUuidString = PDM::GetMachineUuidString();
-    qDebug() << "framework | EventLogger::EventLogger | os uuid =" << QString::fromStdString(osUuidString);
-    QUuid osUuid = QUuid::fromString(QString::fromStdString(osUuidString));
-    m_operatingSystemUuid = osUuid.toRfc4122();
-
-    // m_session = "ls" + hasher.result().toHex();
-    m_session = QString(QLatin1String("ls")) + QString(QLatin1String(hasher.result().toHex()));
+    m_globalId = QInstaller::getGlobalId().toRfc4122();
+    m_journeyId = QInstaller::getJourneyId().toRfc4122();
+    m_operatingSystemUuid = QInstaller::getOsId().toRfc4122();
+    m_sessionId = QInstaller::getSessionHash();
+    m_session = QInstaller::getSessionId();
 
     m_httpThreadController = new HttpThreadController();
-
-    // Get the journeyId from the installer filename
-    QUuid journeyId;
-    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
-    if (appName.length() > 35)
-    {
-        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
-        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
-        QRegularExpressionMatch match = re.match(appName);
-        if (match.hasMatch()) {
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId found in filename:" << match.captured(0);
-           journeyId = QUuid::fromString(match.captured(0));
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
-        }
-    }
-
-    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
-    if (journeyId.isNull())
-    {
-        qDebug() << "framework | EventLogger::EventLogger | No JourneyId provided, one will be created instead";
-        journeyId = QUuid::createUuid();
-        qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
-    }
-
-    QInstaller::setJourneyId(journeyId);
-    m_journeyId = journeyId.toRfc4122();
-
-    m_globalId = QInstaller::getGlobalId().toRfc4122();
-
-    // Now that we have the os uuid, we can add more user information to our crashes
-    sentry_value_t user = sentry_value_new_object();
-
-    // Add the OS Uuid
-    sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(m_operatingSystemUuid.toBase64()));
-
-    // Add the journey ID
-    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(m_journeyId.toBase64()));
-
-    // Add the session ID
-    sentry_value_set_by_key(user, "Session", sentry_value_new_string(m_session.toLocal8Bit().constData()));
-
-    sentry_set_context("Additional user information", user);
 }
 
 EventLogger::~EventLogger()
