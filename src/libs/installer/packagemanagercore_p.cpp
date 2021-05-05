@@ -69,6 +69,10 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
+#include <pdm.h>
+#include <protobuf.h>
+#include <google/protobuf/stubs/common.h>
+
 #include <errno.h>
 
 #define SENTRY_BUILD_STATIC 1
@@ -626,6 +630,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 
+    gatherVersionNumbers();
     initializeSentry();
 }
 
@@ -652,6 +657,21 @@ void sentry_logger(sentry_level_e level, const char * message, va_list args, voi
             qFatal("sentry | %s", buf);
             break;
     }
+}
+
+void PackageManagerCorePrivate::gatherVersionNumbers()
+{
+    QInstaller::setPdmVersion(QString::fromStdString(PDM::GetPDMVersion()));
+    QInstaller::setProtobufVersion(QString::fromStdString(google::protobuf::internal::VersionString(GOOGLE_PROTOBUF_VERSION)));
+    QInstaller::setSentryNativeSdkVersion(QString::fromStdString(SENTRY_SDK_VERSION));
+    QInstaller::setQtVersion(QString::fromLatin1("%1.%2.%3").arg(((QT_VERSION) >> 16) & 0xff).arg(((QT_VERSION) >> 8) & 0xff).arg((QT_VERSION) & 0xff));
+    QInstaller::setQtIfwVersion(QString::fromLatin1("%1.%2.%3").arg(((IFW_VERSION) >> 16) & 0xff).arg(((IFW_VERSION) >> 8) & 0xff).arg((IFW_VERSION) & 0xff));
+
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | PDM:" << QInstaller::getPdmVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Protobuf:" << QInstaller::getProtobufVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | SentryNativeSDK:" << QInstaller::getSentryNativeSdkVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Qt:" << QInstaller::getQtVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | QtIFW:" << QInstaller::getQtIfwVersion();
 }
 
 void PackageManagerCorePrivate::initializeSentry()
@@ -759,6 +779,14 @@ void PackageManagerCorePrivate::initializeSentry()
     sentry_value_set_by_key(user, "id", sentry_value_new_string(globalId.toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
     sentry_set_user(user);
+
+    // Add version numbers to Sentry
+    sentry_value_t versions = sentry_value_new_object();
+    sentry_value_set_by_key(versions, "PDM", sentry_value_new_string(QInstaller::getPdmVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Protobuf", sentry_value_new_string(QInstaller::getProtobufVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Qt", sentry_value_new_string(QInstaller::getQtVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Qt IFW", sentry_value_new_string(QInstaller::getQtIfwVersion().toLocal8Bit().constData()));
+    sentry_set_context("Library versions", versions);
 }
 
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)

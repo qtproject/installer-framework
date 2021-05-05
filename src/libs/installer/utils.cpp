@@ -359,6 +359,66 @@ QString QInstaller::getCrashpadHandlerName()
     return crashpadHandlerName;
 }
 
+static QString pdmVersion;
+
+void QInstaller::setPdmVersion(const QString& version)
+{
+    pdmVersion = version;
+}
+
+QString QInstaller::getPdmVersion()
+{
+    return pdmVersion;
+}
+
+static QString protobufVersion;
+
+void QInstaller::setProtobufVersion(const QString& version)
+{
+    protobufVersion = version;
+}
+
+QString QInstaller::getProtobufVersion()
+{
+    return protobufVersion;
+}
+
+static QString sentryNativeVersion;
+
+void QInstaller::setSentryNativeSdkVersion(const QString& version)
+{
+    sentryNativeVersion = version;
+}
+
+QString QInstaller::getSentryNativeSdkVersion()
+{
+    return sentryNativeVersion;
+}
+
+static QString qtVersion;
+
+void QInstaller::setQtVersion(const QString& version)
+{
+    qtVersion = version;
+}
+
+QString QInstaller::getQtVersion()
+{
+    return qtVersion;
+}
+
+static QString qtIfwVersion;
+
+void QInstaller::setQtIfwVersion(const QString& version)
+{
+    qtIfwVersion = version;
+}
+
+QString QInstaller::getQtIfwVersion()
+{
+    return qtIfwVersion;
+}
+
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
 {
     return os << qPrintable(string);

@@ -104,6 +104,18 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getCrashDb();
     QString INSTALLER_EXPORT getCrashpadHandlerName();
 
+    // Versions
+    void INSTALLER_EXPORT setPdmVersion(const QString& version);
+    QString INSTALLER_EXPORT getPdmVersion();
+    void INSTALLER_EXPORT setProtobufVersion(const QString& version);
+    QString INSTALLER_EXPORT getProtobufVersion();
+    void INSTALLER_EXPORT setSentryNativeSdkVersion(const QString& version);
+    QString INSTALLER_EXPORT getSentryNativeSdkVersion();
+    void INSTALLER_EXPORT setQtVersion(const QString& version);
+    QString INSTALLER_EXPORT getQtVersion();
+    void INSTALLER_EXPORT setQtIfwVersion(const QString& version);
+    QString INSTALLER_EXPORT getQtIfwVersion();
+
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
     class INSTALLER_EXPORT VerboseWriterOutput

@@ -233,6 +233,7 @@ private:
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
 
+    void gatherVersionNumbers();
     void initializeSentry();
 
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
