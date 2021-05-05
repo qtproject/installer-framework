@@ -58,7 +58,7 @@ EventLogger::EventLogger()
         }
     }
 
-    // If journey Id was found, or we weren't able to create a QUuid from it, we create a new one instead
+    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
     if (journeyId.isNull())
     {
         qDebug() << "framework | EventLogger::EventLogger | No JourneyId provided, one will be created instead";
@@ -70,23 +70,21 @@ EventLogger::EventLogger()
     QInstaller::setJourneyId(journeyId);
     m_journeyId = journeyId.toRfc4122();
 
-    qDebug() << "framework | EventLogger::EventLogger | Trying to cause a crash";
+    m_globalId = QInstaller::getGlobalId().toRfc4122();
 
-    // Now that we have the os uuid, we can add user information to our crashes
-    // All crashes that happen before this point will not contain user information
+    // Now that we have the os uuid, we can add more user information to our crashes
     sentry_value_t user = sentry_value_new_object();
 
-    // Add the os uuid as id
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(osUuid.toRfc4122().toBase64()));
-    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
-    
+    // Add the OS Uuid
+    sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(m_operatingSystemUuid.toBase64()));
+
     // Add the journey ID
     sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(m_journeyId.toBase64()));
 
     // Add the session ID
     sentry_value_set_by_key(user, "Session", sentry_value_new_string(m_session.toLocal8Bit().constData()));
 
-    sentry_set_user(user);
+    sentry_set_context("Additional user information", user);
 }
 
 EventLogger::~EventLogger()
@@ -150,7 +148,7 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     {
         sentry_value_set_by_key(app, "Provider (China only)", sentry_value_new_string(s_providerName.toLocal8Bit().constData()));
     }
-    
+
     sentry_set_context("App", app);
 
     // World / China added as tag
@@ -266,7 +264,7 @@ std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
-    
+
     if (verbose)
     {
         // Following options are good for testing
@@ -274,7 +272,7 @@ std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose
         options.always_print_primitive_fields = true;
         // options.preserve_proto_field_names = true;
     }
-    
+
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;
@@ -454,7 +452,7 @@ void EventLogger::uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEn
         sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Unfinished"));
         sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
     }
-    else 
+    else
     {
         sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::UnknownException"));
         sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));

@@ -93,6 +93,10 @@ namespace QInstaller {
     void INSTALLER_EXPORT setJourneyId(const QUuid& journeyId);
     QUuid INSTALLER_EXPORT getJourneyId();
 
+    QString INSTALLER_EXPORT getKeyFromRegistry(const QString& path, const QString& name);
+    void INSTALLER_EXPORT setGlobalId(const QUuid& id);
+    QUuid INSTALLER_EXPORT getGlobalId();
+
     // %temp%/installer-resources
     QString INSTALLER_EXPORT getTempPath();
 

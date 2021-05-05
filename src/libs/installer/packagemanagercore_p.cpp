@@ -656,6 +656,34 @@ void sentry_logger(sentry_level_e level, const char * message, va_list args, voi
 
 void PackageManagerCorePrivate::initializeSentry()
 {
+    QUuid globalId;
+    // Try to get GlobalId from the registry
+    QString value = QInstaller::getKeyFromRegistry(QLatin1String(""), QLatin1String("GlobalId"));
+    if (!value.isEmpty()) {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId found in registry";
+        globalId = QUuid::fromString(value);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
+    }
+
+    // If GlobalId was not found, we create a new one
+    if (globalId.isNull())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | No GlobalId provided, one will be created instead";
+        globalId = QUuid::createUuid();
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
+
+        // We then store the GlobalId in the registry
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Storing GlobalId to registry";
+        QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\");
+        QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
+        settings.setValue(QLatin1String("GlobalId"), globalId.toString(QUuid::WithoutBraces));
+        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | GlobalId stored to registry";
+    }
+
+    QInstaller::setGlobalId(globalId);
+
     qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Starting sentry native setup";
 
     QString crashmonName = QInstaller::getCrashpadHandlerName();
@@ -704,10 +732,10 @@ void PackageManagerCorePrivate::initializeSentry()
     // If we want to throttle events we can do that here. This is a % of how many or let through.
     // If any number less than 1 is given, then the events to be sent are selected randomly.
     // sentry_options_set_sample_rate(options, 1.0);
-    
+
     // Path of the crashpad handler executable.
     sentry_options_set_handler_pathw(options, (const wchar_t *)handlerPath.utf16());
-    
+
     // Path of the crashdump database.
     sentry_options_set_database_pathw(options, (const wchar_t *)crashDb.utf16());
 
@@ -725,6 +753,12 @@ void PackageManagerCorePrivate::initializeSentry()
 
     // Is this an installer or an uninstaller
     sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
+
+    // Add user (using the GlobalId as user id)
+    sentry_value_t user = sentry_value_new_object();
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(globalId.toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
+    sentry_set_user(user);
 }
 
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)

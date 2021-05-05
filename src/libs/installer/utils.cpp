@@ -309,6 +309,38 @@ QUuid QInstaller::getJourneyId()
     return journeyId;
 }
 
+QString QInstaller::getKeyFromRegistry(const QString& path, const QString& name)
+{
+    if (name.isEmpty())
+    {
+        return QString();
+    }
+
+#ifdef Q_OS_WIN
+    QString registryPath = QString::fromLatin1("HKEY_CURRENT_USER\\SOFTWARE\\CCP");
+    if (!path.isEmpty())
+    {
+        registryPath = QString::fromLatin1("%1\\%2").arg(registryPath).arg(path);
+    }
+    static QLatin1String userEnvironmentRegistryPath(registryPath.toLocal8Bit());
+    return QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+#else
+    return QString();
+#endif
+}
+
+static QUuid globalId;
+
+void QInstaller::setGlobalId(const QUuid& id)
+{
+    globalId = id;
+}
+
+QUuid QInstaller::getGlobalId()
+{
+    return globalId;
+}
+
 QString QInstaller::getCrashDb()
 {
     return createInstallerDir(QString::fromLatin1("Installer/Crashes"), false);

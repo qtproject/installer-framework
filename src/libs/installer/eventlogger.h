@@ -73,6 +73,7 @@ protected:
     QByteArray m_sessionId;
     QByteArray m_operatingSystemUuid;
     QByteArray m_journeyId;
+    QByteArray m_globalId;
     QPointer<HttpThreadController> m_httpThreadController;
 
     explicit EventLogger();

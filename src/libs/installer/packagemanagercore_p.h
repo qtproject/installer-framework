@@ -85,7 +85,6 @@ public:
 
     void initialize(const QHash<QString, QString> &params);
     QString createInstallerDir(const QString &string, bool temp);
-    void initializeSentry();
     bool isOfflineOnly() const;
 
     // Our additions
@@ -233,6 +232,8 @@ private:
     void deleteMaintenanceTool();
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
+
+    void initializeSentry();
 
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
