@@ -268,6 +268,10 @@ eve_launcher::application::EventMetadata* EventLogger::getEventMetadata()
     // Set the journey
     data->set_allocated_journey(new std::string(m_journeyId.data(), size_t(m_journeyId.size())));
 
+    // Set the first journey
+    // TODO: Uncomment when proto is ready
+    // data->set_allocated_first_journey(new std::string(m_firstJourneyId.data(), size_t(m_firstJourneyId.size())));
+
     return data;
 }
 
