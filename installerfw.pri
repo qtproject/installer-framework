@@ -143,7 +143,7 @@ equals(TEMPLATE, app) {
 
 # Library paths
 PROTOBUF_PATH = $$PWD/vendors/protobuf/v3.6.0
-PDM_PATH = $$PWD/vendors/pdm-proto/1.1.11
+PDM_PATH = $$PWD/vendors/pdm-proto/1.1.12
 SENTRY_PATH = $$PWD/vendors/sentry/0.4.7
 
 # Protobuf
