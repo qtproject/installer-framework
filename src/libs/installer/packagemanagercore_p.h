@@ -234,8 +234,7 @@ private:
     void unregisterMaintenanceTool();
 
     void gatherVersionNumbers();
-    void initializeGlobalId();
-    void initializeJourneyId();
+    void initializeJourneyIds();
     void initializeOsId();
     void initializeSessionHash();
     void initializeIds();

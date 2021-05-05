@@ -317,16 +317,16 @@ QString QInstaller::getKeyFromRegistry(const QString& path, const QString& name)
 #endif
 }
 
-static QUuid globalId;
+static QUuid firstJourneyId;
 
-void QInstaller::setGlobalId(const QUuid& id)
+void QInstaller::setFirstJourneyId(const QUuid& id)
 {
-    globalId = id;
+    firstJourneyId = id;
 }
 
-QUuid QInstaller::getGlobalId()
+QUuid QInstaller::getFirstJourneyId()
 {
-    return globalId;
+    return firstJourneyId;
 }
 
 static QUuid journeyId;

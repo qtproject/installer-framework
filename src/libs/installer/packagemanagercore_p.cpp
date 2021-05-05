@@ -678,38 +678,7 @@ void PackageManagerCorePrivate::gatherVersionNumbers()
     qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | QtIFW:" << QInstaller::getQtIfwVersion();
 }
 
-void PackageManagerCorePrivate::initializeGlobalId()
-{
-    QUuid globalId;
-    // Try to get GlobalId from the registry
-    QString value = QInstaller::getKeyFromRegistry(QLatin1String(""), QLatin1String("GlobalId"));
-    if (!value.isEmpty()) {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId found in registry";
-        globalId = QUuid::fromString(value);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
-    }
-
-    // If GlobalId was not found, we create a new one
-    if (globalId.isNull())
-    {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | No GlobalId found, one will be created instead";
-        globalId = QUuid::createUuid();
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId:" << globalId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId (base64):" << QLatin1String(globalId.toRfc4122().toBase64());
-
-        // We then store the GlobalId in the registry
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | Storing GlobalId to registry";
-        QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\");
-        QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
-        settings.setValue(QLatin1String("GlobalId"), globalId.toString(QUuid::WithoutBraces));
-        qDebug() << "framework | PackageManagerCorePrivate::initializeGlobalId | GlobalId stored to registry";
-    }
-
-    QInstaller::setGlobalId(globalId);
-}
-
-void PackageManagerCorePrivate::initializeJourneyId()
+void PackageManagerCorePrivate::initializeJourneyIds()
 {
     // Get the journeyId from the installer filename
     QUuid journeyId;
@@ -736,6 +705,32 @@ void PackageManagerCorePrivate::initializeJourneyId()
     qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
 
     QInstaller::setJourneyId(journeyId);
+
+    QUuid firstJourneyId;
+    // Try to get FirstJourneyId from the registry
+    QString value = QInstaller::getKeyFromRegistry(QLatin1String(""), QLatin1String("FirstJourneyId"));
+    if (!value.isEmpty()) {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId found in registry";
+        firstJourneyId = QUuid::fromString(value);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId:" << firstJourneyId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId (base64):" << QLatin1String(firstJourneyId.toRfc4122().toBase64());
+    }
+
+    // If FirstJourneyId was not found in the registry, then we use the current JourneyId
+    if (firstJourneyId.isNull())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | No FirstJourneyId found, using the current JourneyId instead";
+        firstJourneyId = QInstaller::getJourneyId();
+
+        // We then store the FirstJourneyId in the registry
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | Storing FirstJourneyId to registry";
+        QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\");
+        QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
+        settings.setValue(QLatin1String("FirstJourneyId"), firstJourneyId.toString(QUuid::WithoutBraces));
+        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId stored to registry";
+    }
+
+    QInstaller::setFirstJourneyId(firstJourneyId);
 }
 
 void PackageManagerCorePrivate::initializeOsId()
@@ -771,8 +766,7 @@ void PackageManagerCorePrivate::initializeSessionHash()
 
 void PackageManagerCorePrivate::initializeIds()
 {
-    initializeGlobalId();
-    initializeJourneyId();
+    initializeJourneyIds();
     initializeOsId();
     initializeSessionHash();
 }
@@ -849,9 +843,9 @@ void PackageManagerCorePrivate::initializeSentry()
     // Is this an installer or an uninstaller
     sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
 
-    // Add user (using the GlobalId as user id)
+    // Add user (using the FirstJourneyId as user id)
     sentry_value_t user = sentry_value_new_object();
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getGlobalId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getFirstJourneyId().toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
     sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(QInstaller::getOsId().toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(QInstaller::getJourneyId().toRfc4122().toBase64()));

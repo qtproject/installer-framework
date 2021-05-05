@@ -14,7 +14,7 @@
 
 EventLogger::EventLogger()
 {
-    m_globalId = QInstaller::getGlobalId().toRfc4122();
+    m_firstJourneyId = QInstaller::getGlobalId().toRfc4122();
     m_journeyId = QInstaller::getJourneyId().toRfc4122();
     m_operatingSystemUuid = QInstaller::getOsId().toRfc4122();
     m_sessionId = QInstaller::getSessionHash();
