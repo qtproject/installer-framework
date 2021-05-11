@@ -774,6 +774,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, system_information_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, filename_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, start_menu_item_path_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::Started, device_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::installer::IntroductionPageDisplayed, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -1006,39 +1007,39 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::installer::Started)},
-  { 10, -1, sizeof(::eve_launcher::installer::IntroductionPageDisplayed)},
-  { 16, -1, sizeof(::eve_launcher::installer::EulaPageDisplayed)},
-  { 22, -1, sizeof(::eve_launcher::installer::ExecutionPageDisplayed)},
-  { 28, -1, sizeof(::eve_launcher::installer::FinishedPageDisplayed)},
-  { 34, -1, sizeof(::eve_launcher::installer::FailedPageDisplayed)},
-  { 40, -1, sizeof(::eve_launcher::installer::UserCancelled)},
-  { 48, -1, sizeof(::eve_launcher::installer::ShutDown)},
-  { 57, -1, sizeof(::eve_launcher::installer::PreparationStarted)},
-  { 63, -1, sizeof(::eve_launcher::installer::PreparationFinished)},
-  { 70, -1, sizeof(::eve_launcher::installer::DetailsDisplayed)},
-  { 76, -1, sizeof(::eve_launcher::installer::DetailsHidden)},
-  { 82, -1, sizeof(::eve_launcher::installer::AutoRunEnabled)},
-  { 88, -1, sizeof(::eve_launcher::installer::AutoRunDisabled)},
-  { 94, -1, sizeof(::eve_launcher::installer::EulaAccepted)},
-  { 100, -1, sizeof(::eve_launcher::installer::EulaDeclined)},
-  { 106, -1, sizeof(::eve_launcher::installer::RedistSearchConcluded)},
-  { 114, -1, sizeof(::eve_launcher::installer::ProvidedClientFound)},
-  { 120, -1, sizeof(::eve_launcher::installer::SharedCacheMessageShown)},
-  { 126, -1, sizeof(::eve_launcher::installer::SharedCacheMessageClosed)},
-  { 134, -1, sizeof(::eve_launcher::installer::InstallationStarted)},
-  { 142, -1, sizeof(::eve_launcher::installer::InstallationInterrupted)},
-  { 149, -1, sizeof(::eve_launcher::installer::InstallationFinished)},
-  { 157, -1, sizeof(::eve_launcher::installer::InstallationFailed)},
-  { 164, -1, sizeof(::eve_launcher::installer::UninstallerCreationStarted)},
-  { 170, -1, sizeof(::eve_launcher::installer::UninstallerCreationFinished)},
-  { 177, -1, sizeof(::eve_launcher::installer::ComponentInitializationStarted)},
-  { 183, -1, sizeof(::eve_launcher::installer::ComponentInitializationFinished)},
-  { 190, -1, sizeof(::eve_launcher::installer::ComponentInstallationStarted)},
-  { 196, -1, sizeof(::eve_launcher::installer::ComponentInstallationFinished)},
-  { 203, -1, sizeof(::eve_launcher::installer::ErrorEncountered)},
-  { 212, -1, sizeof(::eve_launcher::installer::AnalyticsMessageSent)},
-  { 219, -1, sizeof(::eve_launcher::installer::IPAddress)},
-  { 227, -1, sizeof(::eve_launcher::installer::Event)},
+  { 11, -1, sizeof(::eve_launcher::installer::IntroductionPageDisplayed)},
+  { 17, -1, sizeof(::eve_launcher::installer::EulaPageDisplayed)},
+  { 23, -1, sizeof(::eve_launcher::installer::ExecutionPageDisplayed)},
+  { 29, -1, sizeof(::eve_launcher::installer::FinishedPageDisplayed)},
+  { 35, -1, sizeof(::eve_launcher::installer::FailedPageDisplayed)},
+  { 41, -1, sizeof(::eve_launcher::installer::UserCancelled)},
+  { 49, -1, sizeof(::eve_launcher::installer::ShutDown)},
+  { 58, -1, sizeof(::eve_launcher::installer::PreparationStarted)},
+  { 64, -1, sizeof(::eve_launcher::installer::PreparationFinished)},
+  { 71, -1, sizeof(::eve_launcher::installer::DetailsDisplayed)},
+  { 77, -1, sizeof(::eve_launcher::installer::DetailsHidden)},
+  { 83, -1, sizeof(::eve_launcher::installer::AutoRunEnabled)},
+  { 89, -1, sizeof(::eve_launcher::installer::AutoRunDisabled)},
+  { 95, -1, sizeof(::eve_launcher::installer::EulaAccepted)},
+  { 101, -1, sizeof(::eve_launcher::installer::EulaDeclined)},
+  { 107, -1, sizeof(::eve_launcher::installer::RedistSearchConcluded)},
+  { 115, -1, sizeof(::eve_launcher::installer::ProvidedClientFound)},
+  { 121, -1, sizeof(::eve_launcher::installer::SharedCacheMessageShown)},
+  { 127, -1, sizeof(::eve_launcher::installer::SharedCacheMessageClosed)},
+  { 135, -1, sizeof(::eve_launcher::installer::InstallationStarted)},
+  { 143, -1, sizeof(::eve_launcher::installer::InstallationInterrupted)},
+  { 150, -1, sizeof(::eve_launcher::installer::InstallationFinished)},
+  { 158, -1, sizeof(::eve_launcher::installer::InstallationFailed)},
+  { 165, -1, sizeof(::eve_launcher::installer::UninstallerCreationStarted)},
+  { 171, -1, sizeof(::eve_launcher::installer::UninstallerCreationFinished)},
+  { 178, -1, sizeof(::eve_launcher::installer::ComponentInitializationStarted)},
+  { 184, -1, sizeof(::eve_launcher::installer::ComponentInitializationFinished)},
+  { 191, -1, sizeof(::eve_launcher::installer::ComponentInstallationStarted)},
+  { 197, -1, sizeof(::eve_launcher::installer::ComponentInstallationFinished)},
+  { 204, -1, sizeof(::eve_launcher::installer::ErrorEncountered)},
+  { 213, -1, sizeof(::eve_launcher::installer::AnalyticsMessageSent)},
+  { 220, -1, sizeof(::eve_launcher::installer::IPAddress)},
+  { 228, -1, sizeof(::eve_launcher::installer::Event)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -1104,152 +1105,152 @@ void AddDescriptorsImpl() {
       ".proto\032\026eve_launcher/pdm.proto\032\031google/p"
       "rotobuf/any.proto\032\033google/protobuf/empty"
       ".proto\032\037google/protobuf/timestamp.proto\""
-      "\277\001\n\007Started\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
+      "\317\001\n\007Started\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
       "e_launcher.application.EventMetadata\022\020\n\010"
       "duration\030\002 \001(\005\0221\n\022system_information\030\003 \001"
       "(\0132\025.platform.Information\022\020\n\010filename\030\004 "
-      "\001(\t\022\034\n\024start_menu_item_path\030\005 \001(\t\"\\\n\031Int"
-      "roductionPageDisplayed\022\?\n\016event_metadata"
-      "\030\001 \001(\0132\'.eve_launcher.application.EventM"
-      "etadata\"T\n\021EulaPageDisplayed\022\?\n\016event_me"
-      "tadata\030\001 \001(\0132\'.eve_launcher.application."
-      "EventMetadata\"Y\n\026ExecutionPageDisplayed\022"
-      "\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.a"
-      "pplication.EventMetadata\"X\n\025FinishedPage"
-      "Displayed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
-      "launcher.application.EventMetadata\"V\n\023Fa"
-      "iledPageDisplayed\022\?\n\016event_metadata\030\001 \001("
-      "\0132\'.eve_launcher.application.EventMetada"
-      "ta\"\304\002\n\rUserCancelled\022\?\n\016event_metadata\030\001"
+      "\001(\t\022\034\n\024start_menu_item_path\030\005 \001(\t\022\016\n\006dev"
+      "ice\030\006 \001(\014\"\\\n\031IntroductionPageDisplayed\022\?"
+      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
+      "plication.EventMetadata\"T\n\021EulaPageDispl"
+      "ayed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\"Y\n\026Executi"
+      "onPageDisplayed\022\?\n\016event_metadata\030\001 \001(\0132"
+      "\'.eve_launcher.application.EventMetadata"
+      "\"X\n\025FinishedPageDisplayed\022\?\n\016event_metad"
+      "ata\030\001 \001(\0132\'.eve_launcher.application.Eve"
+      "ntMetadata\"V\n\023FailedPageDisplayed\022\?\n\016eve"
+      "nt_metadata\030\001 \001(\0132\'.eve_launcher.applica"
+      "tion.EventMetadata\"\304\002\n\rUserCancelled\022\?\n\016"
+      "event_metadata\030\001 \001(\0132\'.eve_launcher.appl"
+      "ication.EventMetadata\022*\n\004page\030\002 \001(\0162\034.ev"
+      "e_launcher.installer.Page\022@\n\010progress\030\003 "
+      "\001(\0162..eve_launcher.installer.UserCancell"
+      "ed.Progress\"\203\001\n\010Progress\022\030\n\024PROGRESS_UNS"
+      "PECIFIED\020\000\022\030\n\024PROGRESS_NOT_STARTED\020\001\022\027\n\023"
+      "PROGRESS_INSTALLING\020\002\022\025\n\021PROGRESS_FINISH"
+      "ED\020\003\022\023\n\017PROGRESS_FAILED\020\004\"\275\002\n\010ShutDown\022\?"
+      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
+      "plication.EventMetadata\022*\n\004page\030\002 \001(\0162\034."
+      "eve_launcher.installer.Page\0225\n\005state\030\003 \001"
+      "(\0162&.eve_launcher.installer.ShutDown.Sta"
+      "te\022\025\n\rfinish_button\030\004 \001(\010\"v\n\005State\022\025\n\021ST"
+      "ATE_UNSPECIFIED\020\000\022\023\n\017STATE_INSTALLED\020\001\022\035"
+      "\n\031STATE_INSTALLATION_FAILED\020\002\022\"\n\036STATE_I"
+      "NSTALLATION_NOT_STARTED\020\003\"U\n\022Preparation"
+      "Started\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_la"
+      "uncher.application.EventMetadata\"h\n\023Prep"
+      "arationFinished\022\?\n\016event_metadata\030\001 \001(\0132"
+      "\'.eve_launcher.application.EventMetadata"
+      "\022\020\n\010duration\030\002 \001(\005\"S\n\020DetailsDisplayed\022\?"
+      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
+      "plication.EventMetadata\"P\n\rDetailsHidden"
+      "\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher."
+      "application.EventMetadata\"Q\n\016AutoRunEnab"
+      "led\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launch"
+      "er.application.EventMetadata\"R\n\017AutoRunD"
+      "isabled\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_la"
+      "uncher.application.EventMetadata\"O\n\014Eula"
+      "Accepted\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_l"
+      "auncher.application.EventMetadata\"O\n\014Eul"
+      "aDeclined\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
+      "launcher.application.EventMetadata\"\345\003\n\025R"
+      "edistSearchConcluded\022\?\n\016event_metadata\030\001"
       " \001(\0132\'.eve_launcher.application.EventMet"
-      "adata\022*\n\004page\030\002 \001(\0162\034.eve_launcher.insta"
-      "ller.Page\022@\n\010progress\030\003 \001(\0162..eve_launch"
-      "er.installer.UserCancelled.Progress\"\203\001\n\010"
-      "Progress\022\030\n\024PROGRESS_UNSPECIFIED\020\000\022\030\n\024PR"
-      "OGRESS_NOT_STARTED\020\001\022\027\n\023PROGRESS_INSTALL"
-      "ING\020\002\022\025\n\021PROGRESS_FINISHED\020\003\022\023\n\017PROGRESS"
-      "_FAILED\020\004\"\275\002\n\010ShutDown\022\?\n\016event_metadata"
-      "\030\001 \001(\0132\'.eve_launcher.application.EventM"
-      "etadata\022*\n\004page\030\002 \001(\0162\034.eve_launcher.ins"
-      "taller.Page\0225\n\005state\030\003 \001(\0162&.eve_launche"
-      "r.installer.ShutDown.State\022\025\n\rfinish_but"
-      "ton\030\004 \001(\010\"v\n\005State\022\025\n\021STATE_UNSPECIFIED\020"
-      "\000\022\023\n\017STATE_INSTALLED\020\001\022\035\n\031STATE_INSTALLA"
-      "TION_FAILED\020\002\022\"\n\036STATE_INSTALLATION_NOT_"
-      "STARTED\020\003\"U\n\022PreparationStarted\022\?\n\016event"
-      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
-      "on.EventMetadata\"h\n\023PreparationFinished\022"
+      "adata\0226\n\007version\030\002 \001(\0162%.eve_launcher.in"
+      "staller.RedistVersion\022J\n\006reason\030\003 \001(\0162:."
+      "eve_launcher.installer.RedistSearchConcl"
+      "uded.RedistReason\"\206\002\n\014RedistReason\022\034\n\030RE"
+      "DISTREASON_UNSPECIFIED\020\000\022\034\n\030REDISTREASON"
+      "_NOT_WINDOWS\020\001\022,\n(REDISTREASON_INCLUDED_"
+      "IN_WINDOWS_VERSION\020\002\022\033\n\027REDISTREASON_FOU"
+      "ND_DLLS\020\003\022%\n!REDISTREASON_FOUND_WINDOWS_"
+      "UPDATE\020\004\022\'\n#REDISTREASON_WINDOWS_UPDATE_"
+      "MISSING\020\005\022\037\n\033REDISTREASON_REDIST_MISSING"
+      "\020\006\"V\n\023ProvidedClientFound\022\?\n\016event_metad"
+      "ata\030\001 \001(\0132\'.eve_launcher.application.Eve"
+      "ntMetadata\"Z\n\027SharedCacheMessageShown\022\?\n"
+      "\016event_metadata\030\001 \001(\0132\'.eve_launcher.app"
+      "lication.EventMetadata\"\271\001\n\030SharedCacheMe"
+      "ssageClosed\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
+      "e_launcher.application.EventMetadata\022D\n\022"
+      "message_box_button\030\002 \001(\0162(.eve_launcher."
+      "installer.MessageBoxButton\022\026\n\016time_displ"
+      "ayed\030\003 \001(\005\"\253\001\n\023InstallationStarted\022\?\n\016ev"
+      "ent_metadata\030\001 \001(\0132\'.eve_launcher.applic"
+      "ation.EventMetadata\022\024\n\014install_path\030\002 \001("
+      "\t\022=\n\016redist_version\030\003 \001(\0162%.eve_launcher"
+      ".installer.RedistVersion\"l\n\027Installation"
+      "Interrupted\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
+      "e_launcher.application.EventMetadata\022\020\n\010"
+      "duration\030\002 \001(\005\"\204\001\n\024InstallationFinished\022"
       "\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.a"
       "pplication.EventMetadata\022\020\n\010duration\030\002 \001"
-      "(\005\"S\n\020DetailsDisplayed\022\?\n\016event_metadata"
-      "\030\001 \001(\0132\'.eve_launcher.application.EventM"
-      "etadata\"P\n\rDetailsHidden\022\?\n\016event_metada"
-      "ta\030\001 \001(\0132\'.eve_launcher.application.Even"
-      "tMetadata\"Q\n\016AutoRunEnabled\022\?\n\016event_met"
-      "adata\030\001 \001(\0132\'.eve_launcher.application.E"
-      "ventMetadata\"R\n\017AutoRunDisabled\022\?\n\016event"
-      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
-      "on.EventMetadata\"O\n\014EulaAccepted\022\?\n\016even"
-      "t_metadata\030\001 \001(\0132\'.eve_launcher.applicat"
-      "ion.EventMetadata\"O\n\014EulaDeclined\022\?\n\016eve"
-      "nt_metadata\030\001 \001(\0132\'.eve_launcher.applica"
-      "tion.EventMetadata\"\345\003\n\025RedistSearchConcl"
-      "uded\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
-      "her.application.EventMetadata\0226\n\007version"
-      "\030\002 \001(\0162%.eve_launcher.installer.RedistVe"
-      "rsion\022J\n\006reason\030\003 \001(\0162:.eve_launcher.ins"
-      "taller.RedistSearchConcluded.RedistReaso"
-      "n\"\206\002\n\014RedistReason\022\034\n\030REDISTREASON_UNSPE"
-      "CIFIED\020\000\022\034\n\030REDISTREASON_NOT_WINDOWS\020\001\022,"
-      "\n(REDISTREASON_INCLUDED_IN_WINDOWS_VERSI"
-      "ON\020\002\022\033\n\027REDISTREASON_FOUND_DLLS\020\003\022%\n!RED"
-      "ISTREASON_FOUND_WINDOWS_UPDATE\020\004\022\'\n#REDI"
-      "STREASON_WINDOWS_UPDATE_MISSING\020\005\022\037\n\033RED"
-      "ISTREASON_REDIST_MISSING\020\006\"V\n\023ProvidedCl"
-      "ientFound\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
-      "launcher.application.EventMetadata\"Z\n\027Sh"
-      "aredCacheMessageShown\022\?\n\016event_metadata\030"
-      "\001 \001(\0132\'.eve_launcher.application.EventMe"
-      "tadata\"\271\001\n\030SharedCacheMessageClosed\022\?\n\016e"
-      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
-      "cation.EventMetadata\022D\n\022message_box_butt"
-      "on\030\002 \001(\0162(.eve_launcher.installer.Messag"
-      "eBoxButton\022\026\n\016time_displayed\030\003 \001(\005\"\253\001\n\023I"
-      "nstallationStarted\022\?\n\016event_metadata\030\001 \001"
-      "(\0132\'.eve_launcher.application.EventMetad"
-      "ata\022\024\n\014install_path\030\002 \001(\t\022=\n\016redist_vers"
-      "ion\030\003 \001(\0162%.eve_launcher.installer.Redis"
-      "tVersion\"l\n\027InstallationInterrupted\022\?\n\016e"
-      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
-      "cation.EventMetadata\022\020\n\010duration\030\002 \001(\005\"\204"
-      "\001\n\024InstallationFinished\022\?\n\016event_metadat"
-      "a\030\001 \001(\0132\'.eve_launcher.application.Event"
-      "Metadata\022\020\n\010duration\030\002 \001(\005\022\031\n\021shared_cac"
-      "he_path\030\003 \001(\t\"g\n\022InstallationFailed\022\?\n\016e"
-      "vent_metadata\030\001 \001(\0132\'.eve_launcher.appli"
-      "cation.EventMetadata\022\020\n\010duration\030\002 \001(\005\"]"
-      "\n\032UninstallerCreationStarted\022\?\n\016event_me"
-      "tadata\030\001 \001(\0132\'.eve_launcher.application."
-      "EventMetadata\"p\n\033UninstallerCreationFini"
-      "shed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
-      "her.application.EventMetadata\022\020\n\010duratio"
-      "n\030\002 \001(\005\"m\n\036ComponentInitializationStarte"
-      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
-      ".application.EventMetadataJ\004\010\002\020\003J\004\010\003\020\004\"\200"
-      "\001\n\037ComponentInitializationFinished\022\?\n\016ev"
-      "ent_metadata\030\001 \001(\0132\'.eve_launcher.applic"
-      "ation.EventMetadata\022\020\n\010duration\030\004 \001(\005J\004\010"
-      "\002\020\003J\004\010\003\020\004\"k\n\034ComponentInstallationStarte"
-      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
-      ".application.EventMetadataJ\004\010\002\020\003J\004\010\003\020\004\"~"
-      "\n\035ComponentInstallationFinished\022\?\n\016event"
-      "_metadata\030\001 \001(\0132\'.eve_launcher.applicati"
-      "on.EventMetadata\022\020\n\010duration\030\004 \001(\005J\004\010\002\020\003"
-      "J\004\010\003\020\004\"\273\004\n\020ErrorEncountered\022\?\n\016event_met"
-      "adata\030\001 \001(\0132\'.eve_launcher.application.E"
-      "ventMetadata\022@\n\004code\030\002 \001(\01622.eve_launche"
-      "r.installer.ErrorEncountered.ErrorCode\022*"
-      "\n\004page\030\003 \001(\0162\034.eve_launcher.installer.Pa"
-      "ge\022=\n\016redist_version\030\005 \001(\0162%.eve_launche"
-      "r.installer.RedistVersion\"\262\002\n\tErrorCode\022"
-      "\031\n\025ERRORCODE_UNSPECIFIED\020\000\022\037\n\033ERRORCODE_"
-      "CREATE_OPERATIONS\020\001\022\033\n\027ERRORCODE_ADD_OPE"
-      "RATION\020\002\022\030\n\024ERRORCODE_SEARCH_DLL\020\003\022#\n\037ER"
-      "RORCODE_SEARCH_WINDOWS_UPDATE\020\004\022\"\n\036ERROR"
-      "CODE_MISSING_PREREQUISITE\020\005\022\037\n\033ERRORCODE"
-      "_QT_STATUS_FAILURE\020\006\022\"\n\036ERRORCODE_QT_STA"
-      "TUS_UNFINISHED\020\007\022$\n ERRORCODE_QT_STATUS_"
-      "FORCE_UPDATE\020\010J\004\010\004\020\005\"h\n\024AnalyticsMessage"
-      "Sent\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
-      "her.application.EventMetadata\022\017\n\007message"
-      "\030\002 \001(\t\"2\n\tIPAddress\022\014\n\002v4\030\001 \001(\007H\000\022\014\n\002v6\030"
-      "\002 \001(\014H\000B\t\n\007version\"\360\001\n\005Event\022,\n\010occurred"
-      "\030\001 \001(\0132\032.google.protobuf.Timestamp\022,\n\010re"
-      "ceived\030\002 \001(\0132\032.google.protobuf.Timestamp"
-      "\022\014\n\004uuid\030\003 \001(\014\0225\n\nip_address\030\004 \001(\0132!.eve"
-      "_launcher.installer.IPAddress\022\016\n\006tenant\030"
-      "\005 \001(\t\022%\n\007payload\030\006 \001(\0132\024.google.protobuf"
-      ".Any\022\017\n\007journey\030\007 \001(\014*\254\001\n\004Page\022\024\n\020PAGE_U"
-      "NSPECIFIED\020\000\022\022\n\016PAGE_NOT_FOUND\020\001\022\025\n\021PAGE"
-      "_INTRODUCTION\020\003\022\r\n\tPAGE_EULA\020\006\022\022\n\016PAGE_E"
-      "XECUTION\020\t\022\021\n\rPAGE_FINISHED\020\n\022\017\n\013PAGE_FA"
-      "ILED\020\013\"\004\010\002\020\002\"\004\010\004\020\004\"\004\010\005\020\005\"\004\010\007\020\007\"\004\010\010\020\010*\344\001\n"
-      "\rRedistVersion\022\035\n\031REDISTVERSION_UNSPECIF"
-      "IED\020\000\022\026\n\022REDISTVERSION_NONE\020\001\022\032\n\026REDISTV"
-      "ERSION_7SP1_X64\020\002\022\032\n\026REDISTVERSION_7SP1_"
-      "X86\020\003\022\027\n\023REDISTVERSION_8_X64\020\004\022\027\n\023REDIST"
-      "VERSION_8_X86\020\005\022\030\n\024REDISTVERSION_81_X64\020"
-      "\006\022\030\n\024REDISTVERSION_81_X86\020\007*g\n\020MessageBo"
-      "xButton\022 \n\034MESSAGEBOXBUTTON_UNSPECIFIED\020"
-      "\000\022\030\n\024MESSAGEBOXBUTTON_YES\020\001\022\027\n\023MESSAGEBO"
-      "XBUTTON_NO\020\0022P\n\007Gateway\022E\n\014PublishEvent\022"
-      "\035.eve_launcher.installer.Event\032\026.google."
-      "protobuf.EmptyBCZAgithub.com/ccpgames/ev"
-      "e-proto-go/generated/eve_launcher/instal"
-      "lerb\006proto3"
+      "(\005\022\031\n\021shared_cache_path\030\003 \001(\t\"g\n\022Install"
+      "ationFailed\022\?\n\016event_metadata\030\001 \001(\0132\'.ev"
+      "e_launcher.application.EventMetadata\022\020\n\010"
+      "duration\030\002 \001(\005\"]\n\032UninstallerCreationSta"
+      "rted\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\"p\n\033Uninsta"
+      "llerCreationFinished\022\?\n\016event_metadata\030\001"
+      " \001(\0132\'.eve_launcher.application.EventMet"
+      "adata\022\020\n\010duration\030\002 \001(\005\"m\n\036ComponentInit"
+      "ializationStarted\022\?\n\016event_metadata\030\001 \001("
+      "\0132\'.eve_launcher.application.EventMetada"
+      "taJ\004\010\002\020\003J\004\010\003\020\004\"\200\001\n\037ComponentInitializati"
+      "onFinished\022\?\n\016event_metadata\030\001 \001(\0132\'.eve"
+      "_launcher.application.EventMetadata\022\020\n\010d"
+      "uration\030\004 \001(\005J\004\010\002\020\003J\004\010\003\020\004\"k\n\034ComponentIn"
+      "stallationStarted\022\?\n\016event_metadata\030\001 \001("
+      "\0132\'.eve_launcher.application.EventMetada"
+      "taJ\004\010\002\020\003J\004\010\003\020\004\"~\n\035ComponentInstallationF"
+      "inished\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_la"
+      "uncher.application.EventMetadata\022\020\n\010dura"
+      "tion\030\004 \001(\005J\004\010\002\020\003J\004\010\003\020\004\"\273\004\n\020ErrorEncounte"
+      "red\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launch"
+      "er.application.EventMetadata\022@\n\004code\030\002 \001"
+      "(\01622.eve_launcher.installer.ErrorEncount"
+      "ered.ErrorCode\022*\n\004page\030\003 \001(\0162\034.eve_launc"
+      "her.installer.Page\022=\n\016redist_version\030\005 \001"
+      "(\0162%.eve_launcher.installer.RedistVersio"
+      "n\"\262\002\n\tErrorCode\022\031\n\025ERRORCODE_UNSPECIFIED"
+      "\020\000\022\037\n\033ERRORCODE_CREATE_OPERATIONS\020\001\022\033\n\027E"
+      "RRORCODE_ADD_OPERATION\020\002\022\030\n\024ERRORCODE_SE"
+      "ARCH_DLL\020\003\022#\n\037ERRORCODE_SEARCH_WINDOWS_U"
+      "PDATE\020\004\022\"\n\036ERRORCODE_MISSING_PREREQUISIT"
+      "E\020\005\022\037\n\033ERRORCODE_QT_STATUS_FAILURE\020\006\022\"\n\036"
+      "ERRORCODE_QT_STATUS_UNFINISHED\020\007\022$\n ERRO"
+      "RCODE_QT_STATUS_FORCE_UPDATE\020\010J\004\010\004\020\005\"h\n\024"
+      "AnalyticsMessageSent\022\?\n\016event_metadata\030\001"
+      " \001(\0132\'.eve_launcher.application.EventMet"
+      "adata\022\017\n\007message\030\002 \001(\t\"2\n\tIPAddress\022\014\n\002v"
+      "4\030\001 \001(\007H\000\022\014\n\002v6\030\002 \001(\014H\000B\t\n\007version\"\360\001\n\005E"
+      "vent\022,\n\010occurred\030\001 \001(\0132\032.google.protobuf"
+      ".Timestamp\022,\n\010received\030\002 \001(\0132\032.google.pr"
+      "otobuf.Timestamp\022\014\n\004uuid\030\003 \001(\014\0225\n\nip_add"
+      "ress\030\004 \001(\0132!.eve_launcher.installer.IPAd"
+      "dress\022\016\n\006tenant\030\005 \001(\t\022%\n\007payload\030\006 \001(\0132\024"
+      ".google.protobuf.Any\022\017\n\007journey\030\007 \001(\014*\254\001"
+      "\n\004Page\022\024\n\020PAGE_UNSPECIFIED\020\000\022\022\n\016PAGE_NOT"
+      "_FOUND\020\001\022\025\n\021PAGE_INTRODUCTION\020\003\022\r\n\tPAGE_"
+      "EULA\020\006\022\022\n\016PAGE_EXECUTION\020\t\022\021\n\rPAGE_FINIS"
+      "HED\020\n\022\017\n\013PAGE_FAILED\020\013\"\004\010\002\020\002\"\004\010\004\020\004\"\004\010\005\020\005"
+      "\"\004\010\007\020\007\"\004\010\010\020\010*\344\001\n\rRedistVersion\022\035\n\031REDIST"
+      "VERSION_UNSPECIFIED\020\000\022\026\n\022REDISTVERSION_N"
+      "ONE\020\001\022\032\n\026REDISTVERSION_7SP1_X64\020\002\022\032\n\026RED"
+      "ISTVERSION_7SP1_X86\020\003\022\027\n\023REDISTVERSION_8"
+      "_X64\020\004\022\027\n\023REDISTVERSION_8_X86\020\005\022\030\n\024REDIS"
+      "TVERSION_81_X64\020\006\022\030\n\024REDISTVERSION_81_X8"
+      "6\020\007*g\n\020MessageBoxButton\022 \n\034MESSAGEBOXBUT"
+      "TON_UNSPECIFIED\020\000\022\030\n\024MESSAGEBOXBUTTON_YE"
+      "S\020\001\022\027\n\023MESSAGEBOXBUTTON_NO\020\0022P\n\007Gateway\022"
+      "E\n\014PublishEvent\022\035.eve_launcher.installer"
+      ".Event\032\026.google.protobuf.EmptyBCZAgithub"
+      ".com/ccpgames/eve-proto-go/generated/eve"
+      "_launcher/installerb\006proto3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 5891);
+      descriptor, 5907);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "eve_launcher/installer.proto", &protobuf_RegisterTypes);
   ::protobuf_eve_5flauncher_2fapplication_2eproto::AddDescriptors();
@@ -1471,6 +1472,7 @@ const int Started::kDurationFieldNumber;
 const int Started::kSystemInformationFieldNumber;
 const int Started::kFilenameFieldNumber;
 const int Started::kStartMenuItemPathFieldNumber;
+const int Started::kDeviceFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Started::Started()
@@ -1492,6 +1494,10 @@ Started::Started(const Started& from)
   if (from.start_menu_item_path().size() > 0) {
     start_menu_item_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.start_menu_item_path_);
   }
+  device_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.device().size() > 0) {
+    device_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.device_);
+  }
   if (from.has_event_metadata()) {
     event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
   } else {
@@ -1509,6 +1515,7 @@ Started::Started(const Started& from)
 void Started::SharedCtor() {
   filename_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   start_menu_item_path_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  device_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&event_metadata_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&duration_) -
       reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
@@ -1522,6 +1529,7 @@ Started::~Started() {
 void Started::SharedDtor() {
   filename_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   start_menu_item_path_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  device_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete event_metadata_;
   if (this != internal_default_instance()) delete system_information_;
 }
@@ -1548,6 +1556,7 @@ void Started::Clear() {
 
   filename_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   start_menu_item_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  device_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
@@ -1640,6 +1649,18 @@ bool Started::MergePartialFromCodedStream(
         break;
       }
 
+      // bytes device = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(50u /* 50 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_device()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -1703,6 +1724,12 @@ void Started::SerializeWithCachedSizes(
       5, this->start_menu_item_path(), output);
   }
 
+  // bytes device = 6;
+  if (this->device().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      6, this->device(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -1758,6 +1785,13 @@ void Started::SerializeWithCachedSizes(
         5, this->start_menu_item_path(), target);
   }
 
+  // bytes device = 6;
+  if (this->device().size() > 0) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        6, this->device(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -1787,6 +1821,13 @@ size_t Started::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->start_menu_item_path());
+  }
+
+  // bytes device = 6;
+  if (this->device().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->device());
   }
 
   // .eve_launcher.application.EventMetadata event_metadata = 1;
@@ -1845,6 +1886,10 @@ void Started::MergeFrom(const Started& from) {
 
     start_menu_item_path_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.start_menu_item_path_);
   }
+  if (from.device().size() > 0) {
+
+    device_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.device_);
+  }
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
@@ -1883,6 +1928,8 @@ void Started::InternalSwap(Started* other) {
   filename_.Swap(&other->filename_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   start_menu_item_path_.Swap(&other->start_menu_item_path_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  device_.Swap(&other->device_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   swap(event_metadata_, other->event_metadata_);
   swap(system_information_, other->system_information_);

@@ -268,10 +268,6 @@ eve_launcher::application::EventMetadata* EventLogger::getEventMetadata()
     // Set the journey
     data->set_allocated_journey(new std::string(m_journeyId.data(), size_t(m_journeyId.size())));
 
-    // Set the device id
-    // TODO: Uncomment when proto is ready
-    // data->set_allocated_deviceid(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
-
     return data;
 }
 
@@ -298,6 +294,8 @@ void EventLogger::uninstallerStarted(int duration)
     evt->set_duration(duration);
     auto inf = pdm_proto::GetData();
     evt->set_allocated_system_information(&inf);
+    // todo: Uncomment when uninstaller.pb.cc/h are available
+    // evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
 }
 
@@ -432,6 +430,7 @@ void EventLogger::installerStarted(const QString& startMenuItemPath, int duratio
     evt->set_filename(fileName.toStdString());
     evt->set_start_menu_item_path(startMenuItemPath.toStdString());
     evt->set_duration(duration);
+    evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
 }
 
