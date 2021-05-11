@@ -294,8 +294,7 @@ void EventLogger::uninstallerStarted(int duration)
     evt->set_duration(duration);
     auto inf = pdm_proto::GetData();
     evt->set_allocated_system_information(&inf);
-    // todo: Uncomment when uninstaller.pb.cc/h are available
-    // evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
+    evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
 }
 
