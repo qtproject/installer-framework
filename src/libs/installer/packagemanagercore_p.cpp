@@ -707,29 +707,29 @@ void PackageManagerCorePrivate::initializeJourneyIds()
     QInstaller::setJourneyId(journeyId);
 
     QString keyName = QLatin1String("DeviceId");
-    QUuid firstJourneyId;
-    // Try to get FirstJourneyId from the registry
+    QUuid deviceId;
+    // Try to get DeviceId from the registry
     QString value = QInstaller::getCCPRegistryKey(keyName);
     if (!value.isEmpty()) {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId found in registry";
-        firstJourneyId = QUuid::fromString(value);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId:" << firstJourneyId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId (base64):" << QLatin1String(firstJourneyId.toRfc4122().toBase64());
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId found in registry";
+        deviceId = QUuid::fromString(value);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
     }
 
-    // If FirstJourneyId was not found in the registry, then we use the current JourneyId
-    if (firstJourneyId.isNull())
+    // If DeviceId was not found in the registry, then we use the current JourneyId
+    if (deviceId.isNull())
     {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | No FirstJourneyId found, using the current JourneyId instead";
-        firstJourneyId = QInstaller::getJourneyId();
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | No DeviceId found, using the current JourneyId instead";
+        deviceId = QInstaller::getJourneyId();
 
-        // We then store the FirstJourneyId in the registry
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | Storing FirstJourneyId to registry";
-        QInstaller::setCCPRegistryKey(keyName, firstJourneyId.toString(QUuid::WithoutBraces));
-        qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId stored to registry";
+        // We then store the DeviceId in the registry
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | Storing DeviceId to registry";
+        QInstaller::setCCPRegistryKey(keyName, deviceId.toString(QUuid::WithoutBraces));
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId stored to registry";
     }
 
-    QInstaller::setFirstJourneyId(firstJourneyId);
+    QInstaller::setDeviceId(deviceId);
 }
 
 void PackageManagerCorePrivate::initializeOsId()
@@ -842,9 +842,9 @@ void PackageManagerCorePrivate::initializeSentry()
     // Is this an installer or an uninstaller
     sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
 
-    // Add user (using the FirstJourneyId as user id)
+    // Add user (using the DeviceId as user id)
     sentry_value_t user = sentry_value_new_object();
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getFirstJourneyId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getDeviceId().toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
     sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(QInstaller::getOsId().toRfc4122().toBase64()));
     sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(QInstaller::getJourneyId().toRfc4122().toBase64()));

@@ -339,16 +339,16 @@ QString QInstaller::getCCPRegistryKey(const QString& name, const QString& path)
 #endif
 }
 
-static QUuid firstJourneyId;
+static QUuid deviceId;
 
-void QInstaller::setFirstJourneyId(const QUuid& id)
+void QInstaller::setDeviceId(const QUuid& id)
 {
-    firstJourneyId = id;
+    deviceId = id;
 }
 
-QUuid QInstaller::getFirstJourneyId()
+QUuid QInstaller::getDeviceId()
 {
-    return firstJourneyId;
+    return deviceId;
 }
 
 static QUuid journeyId;

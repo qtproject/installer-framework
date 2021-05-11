@@ -14,7 +14,7 @@
 
 EventLogger::EventLogger()
 {
-    m_firstJourneyId = QInstaller::getFirstJourneyId().toRfc4122();
+    m_deviceId = QInstaller::getDeviceId().toRfc4122();
     m_journeyId = QInstaller::getJourneyId().toRfc4122();
     m_operatingSystemUuid = QInstaller::getOsId().toRfc4122();
     m_sessionId = QInstaller::getSessionHash();
@@ -268,9 +268,9 @@ eve_launcher::application::EventMetadata* EventLogger::getEventMetadata()
     // Set the journey
     data->set_allocated_journey(new std::string(m_journeyId.data(), size_t(m_journeyId.size())));
 
-    // Set the first journey
+    // Set the device id
     // TODO: Uncomment when proto is ready
-    // data->set_allocated_first_journey(new std::string(m_firstJourneyId.data(), size_t(m_firstJourneyId.size())));
+    // data->set_allocated_deviceid(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
 
     return data;
 }

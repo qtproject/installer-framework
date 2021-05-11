@@ -94,8 +94,8 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getCCPRegistryKey(const QString& name, const QString& path = QLatin1String("EVE"));
 
     // Ids
-    void INSTALLER_EXPORT setFirstJourneyId(const QUuid& id);
-    QUuid INSTALLER_EXPORT getFirstJourneyId();
+    void INSTALLER_EXPORT setDeviceId(const QUuid& id);
+    QUuid INSTALLER_EXPORT getDeviceId();
     void INSTALLER_EXPORT setJourneyId(const QUuid& id);
     QUuid INSTALLER_EXPORT getJourneyId();
     void INSTALLER_EXPORT setOsId(const QUuid& id);
