@@ -90,7 +90,8 @@ namespace QInstaller {
     void INSTALLER_EXPORT setInstallerFileName(const QString& fileName);
     QString INSTALLER_EXPORT getInstallerFileName();
 
-    QString INSTALLER_EXPORT getKeyFromRegistry(const QString& path, const QString& name);
+    void INSTALLER_EXPORT setCCPRegistryKey(const QString& name, const QString& value, const QString& path = QLatin1String("EVE"));
+    QString INSTALLER_EXPORT getCCPRegistryKey(const QString& name, const QString& path = QLatin1String("EVE"));
 
     // Ids
     void INSTALLER_EXPORT setFirstJourneyId(const QUuid& id);

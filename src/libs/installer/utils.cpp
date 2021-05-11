@@ -30,6 +30,8 @@
 
 #include "fileutils.h"
 
+#include "qsettingswrapper.h"
+
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
@@ -297,7 +299,32 @@ QString QInstaller::getInstallerFileName()
     return installerFileName;
 }
 
-QString QInstaller::getKeyFromRegistry(const QString& path, const QString& name)
+static QString baseCCPRegistryPath = QString::fromLatin1("HKEY_CURRENT_USER\\SOFTWARE\\CCP");
+
+QString getPath(const QString& path)
+{
+    QString registryPath = baseCCPRegistryPath;
+    if (!path.isEmpty())
+    {
+        registryPath = QString::fromLatin1("%1\\%2").arg(registryPath).arg(path);
+    }
+    return registryPath;
+}
+
+void QInstaller::setCCPRegistryKey(const QString& name, const QString& value, const QString& path)
+{
+    if (name.isEmpty())
+    {
+        return;
+    }
+
+#ifdef Q_OS_WIN
+    QSettingsWrapper settings(getPath(path), QSettingsWrapper::NativeFormat);
+    settings.setValue(name, value);
+#endif
+}
+
+QString QInstaller::getCCPRegistryKey(const QString& name, const QString& path)
 {
     if (name.isEmpty())
     {
@@ -305,12 +332,7 @@ QString QInstaller::getKeyFromRegistry(const QString& path, const QString& name)
     }
 
 #ifdef Q_OS_WIN
-    QString registryPath = QString::fromLatin1("HKEY_CURRENT_USER\\SOFTWARE\\CCP");
-    if (!path.isEmpty())
-    {
-        registryPath = QString::fromLatin1("%1\\%2").arg(registryPath).arg(path);
-    }
-    static QLatin1String userEnvironmentRegistryPath(registryPath.toLocal8Bit());
+    static QLatin1String userEnvironmentRegistryPath(getPath(path).toLocal8Bit());
     return QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
 #else
     return QString();

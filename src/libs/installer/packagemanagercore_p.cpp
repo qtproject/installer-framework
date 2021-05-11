@@ -706,9 +706,10 @@ void PackageManagerCorePrivate::initializeJourneyIds()
 
     QInstaller::setJourneyId(journeyId);
 
+    QString keyName = QLatin1String("DeviceId");
     QUuid firstJourneyId;
     // Try to get FirstJourneyId from the registry
-    QString value = QInstaller::getKeyFromRegistry(QLatin1String(""), QLatin1String("FirstJourneyId"));
+    QString value = QInstaller::getCCPRegistryKey(keyName);
     if (!value.isEmpty()) {
         qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId found in registry";
         firstJourneyId = QUuid::fromString(value);
@@ -724,9 +725,7 @@ void PackageManagerCorePrivate::initializeJourneyIds()
 
         // We then store the FirstJourneyId in the registry
         qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | Storing FirstJourneyId to registry";
-        QString path = QLatin1String("HKEY_CURRENT_USER\\SOFTWARE\\CCP\\");
-        QSettingsWrapper settings(path, QSettingsWrapper::NativeFormat);
-        settings.setValue(QLatin1String("FirstJourneyId"), firstJourneyId.toString(QUuid::WithoutBraces));
+        QInstaller::setCCPRegistryKey(keyName, firstJourneyId.toString(QUuid::WithoutBraces));
         qDebug() << "framework | PackageManagerCorePrivate::initializeFirstJourneyId | FirstJourneyId stored to registry";
     }
 
