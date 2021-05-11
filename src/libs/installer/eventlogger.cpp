@@ -6,87 +6,21 @@
 #include <google/protobuf/util/json_util.h>
 #include <google/protobuf/message_lite.h>
 
-#include <QNetworkInterface>
-#include <QRandomGenerator>
 #include <QUuid>
 #include <QDebug>
-#include <QRegularExpression>
 
 #define SENTRY_BUILD_STATIC 1
 #include <sentry.h>
 
 EventLogger::EventLogger()
 {
-    QCryptographicHash hasher(QCryptographicHash::Md5);
-
-    auto interfaces = QNetworkInterface::allInterfaces();
-    if(!interfaces.isEmpty())
-    {
-        auto macAddress = interfaces.first().hardwareAddress();
-        hasher.addData(macAddress.toLocal8Bit());
-    }
-    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
-    hasher.addData(timestamp.toLocal8Bit());
-    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
-    hasher.addData(randomNumber.toLocal8Bit());
-
-    m_sessionId = hasher.result();
-
-    std::string osUuidString = PDM::GetMachineUuidString();
-    qDebug() << "framework | EventLogger::EventLogger | os uuid =" << QString::fromStdString(osUuidString);
-    QUuid osUuid = QUuid::fromString(QString::fromStdString(osUuidString));
-    m_operatingSystemUuid = osUuid.toRfc4122();
-
-    // m_session = "ls" + hasher.result().toHex();
-    m_session = QString(QLatin1String("ls")) + QString(QLatin1String(hasher.result().toHex()));
+    m_deviceId = QInstaller::getDeviceId().toRfc4122();
+    m_journeyId = QInstaller::getJourneyId().toRfc4122();
+    m_operatingSystemUuid = QInstaller::getOsId().toRfc4122();
+    m_sessionId = QInstaller::getSessionHash();
+    m_session = QInstaller::getSessionId();
 
     m_httpThreadController = new HttpThreadController();
-
-    // Get the journeyId from the installer filename
-    QUuid journeyId;
-    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
-    if (appName.length() > 35)
-    {
-        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
-        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
-        QRegularExpressionMatch match = re.match(appName);
-        if (match.hasMatch()) {
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId found in filename:" << match.captured(0);
-           journeyId = QUuid::fromString(match.captured(0));
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-           qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
-        }
-    }
-
-    // If journey Id was found, or we weren't able to create a QUuid from it, we create a new one instead
-    if (journeyId.isNull())
-    {
-        qDebug() << "framework | EventLogger::EventLogger | No JourneyId provided, one will be created instead";
-        journeyId = QUuid::createUuid();
-        qDebug() << "framework | EventLogger::EventLogger | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | EventLogger::EventLogger | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
-    }
-
-    QInstaller::setJourneyId(journeyId);
-    m_journeyId = journeyId.toRfc4122();
-
-    qDebug() << "framework | EventLogger::EventLogger | Trying to cause a crash";
-
-    // Now that we have the os uuid, we can add user information to our crashes
-    // All crashes that happen before this point will not contain user information
-    sentry_value_t user = sentry_value_new_object();
-
-    // Add the os uuid as id
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(osUuid.toRfc4122().toBase64()));
-    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
-    
-    // Add the journey ID
-    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(m_journeyId.toBase64()));
-
-    // Add the session ID
-    sentry_value_set_by_key(user, "Session", sentry_value_new_string(m_session.toLocal8Bit().constData()));
-
-    sentry_set_user(user);
 }
 
 EventLogger::~EventLogger()
@@ -150,7 +84,7 @@ void EventLogger::initialize(eve_launcher::application::Application_Region regio
     {
         sentry_value_set_by_key(app, "Provider (China only)", sentry_value_new_string(s_providerName.toLocal8Bit().constData()));
     }
-    
+
     sentry_set_context("App", app);
 
     // World / China added as tag
@@ -266,7 +200,7 @@ std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose
 {
     std::string jsonString;
     google::protobuf::util::JsonPrintOptions options;
-    
+
     if (verbose)
     {
         // Following options are good for testing
@@ -274,7 +208,7 @@ std::string EventLogger::toJson(google::protobuf::Message* message, bool verbose
         options.always_print_primitive_fields = true;
         // options.preserve_proto_field_names = true;
     }
-    
+
     MessageToJsonString(*message, &jsonString, options);
     replace(jsonString, "type.googleapis.com", "type.evetech.net");
     return jsonString;
@@ -360,6 +294,7 @@ void EventLogger::uninstallerStarted(int duration)
     evt->set_duration(duration);
     auto inf = pdm_proto::GetData();
     evt->set_allocated_system_information(&inf);
+    evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
 }
 
@@ -454,7 +389,7 @@ void EventLogger::uninstallerErrorEncountered(eve_launcher::uninstaller::ErrorEn
         sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::QtStatus::Unfinished"));
         sentry_value_set_by_key(exc, "value", sentry_value_new_string("Status of application changed to Unfinished"));
     }
-    else 
+    else
     {
         sentry_value_set_by_key(exc, "type", sentry_value_new_string("Uninstaller::Scripts::UnknownException"));
         sentry_value_set_by_key(exc, "value", sentry_value_new_string("Something unexpected happened"));
@@ -494,6 +429,7 @@ void EventLogger::installerStarted(const QString& startMenuItemPath, int duratio
     evt->set_filename(fileName.toStdString());
     evt->set_start_menu_item_path(startMenuItemPath.toStdString());
     evt->set_duration(duration);
+    evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
 }
 

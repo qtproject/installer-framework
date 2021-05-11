@@ -90,8 +90,19 @@ namespace QInstaller {
     void INSTALLER_EXPORT setInstallerFileName(const QString& fileName);
     QString INSTALLER_EXPORT getInstallerFileName();
 
-    void INSTALLER_EXPORT setJourneyId(const QUuid& journeyId);
+    void INSTALLER_EXPORT setCCPRegistryKey(const QString& name, const QString& value, const QString& path = QLatin1String("EVE"));
+    QString INSTALLER_EXPORT getCCPRegistryKey(const QString& name, const QString& path = QLatin1String("EVE"));
+
+    // Ids
+    void INSTALLER_EXPORT setDeviceId(const QUuid& id);
+    QUuid INSTALLER_EXPORT getDeviceId();
+    void INSTALLER_EXPORT setJourneyId(const QUuid& id);
     QUuid INSTALLER_EXPORT getJourneyId();
+    void INSTALLER_EXPORT setOsId(const QUuid& id);
+    QUuid INSTALLER_EXPORT getOsId();
+    void INSTALLER_EXPORT setSessionHash(const QByteArray& hash);
+    QByteArray INSTALLER_EXPORT getSessionHash();
+    QString INSTALLER_EXPORT getSessionId();
 
     // %temp%/installer-resources
     QString INSTALLER_EXPORT getTempPath();
@@ -99,6 +110,18 @@ namespace QInstaller {
     // Sentry related
     QString INSTALLER_EXPORT getCrashDb();
     QString INSTALLER_EXPORT getCrashpadHandlerName();
+
+    // Versions
+    void INSTALLER_EXPORT setPdmVersion(const QString& version);
+    QString INSTALLER_EXPORT getPdmVersion();
+    void INSTALLER_EXPORT setProtobufVersion(const QString& version);
+    QString INSTALLER_EXPORT getProtobufVersion();
+    void INSTALLER_EXPORT setSentryNativeSdkVersion(const QString& version);
+    QString INSTALLER_EXPORT getSentryNativeSdkVersion();
+    void INSTALLER_EXPORT setQtVersion(const QString& version);
+    QString INSTALLER_EXPORT getQtVersion();
+    void INSTALLER_EXPORT setQtIfwVersion(const QString& version);
+    QString INSTALLER_EXPORT getQtIfwVersion();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 

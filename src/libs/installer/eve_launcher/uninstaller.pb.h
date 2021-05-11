@@ -303,6 +303,20 @@ class Started : public ::google::protobuf::Message /* @@protoc_insertion_point(c
 
   // accessors -------------------------------------------------------
 
+  // bytes device = 4;
+  void clear_device();
+  static const int kDeviceFieldNumber = 4;
+  const ::std::string& device() const;
+  void set_device(const ::std::string& value);
+  #if LANG_CXX11
+  void set_device(::std::string&& value);
+  #endif
+  void set_device(const char* value);
+  void set_device(const void* value, size_t size);
+  ::std::string* mutable_device();
+  ::std::string* release_device();
+  void set_allocated_device(::std::string* device);
+
   // .eve_launcher.application.EventMetadata event_metadata = 1;
   bool has_event_metadata() const;
   void clear_event_metadata();
@@ -337,6 +351,7 @@ class Started : public ::google::protobuf::Message /* @@protoc_insertion_point(c
  private:
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr device_;
   ::eve_launcher::application::EventMetadata* event_metadata_;
   ::platform::Information* system_information_;
   ::google::protobuf::int32 duration_;
@@ -2165,6 +2180,59 @@ inline void Started::set_allocated_system_information(::platform::Information* s
   }
   system_information_ = system_information;
   // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.Started.system_information)
+}
+
+// bytes device = 4;
+inline void Started::clear_device() {
+  device_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Started::device() const {
+  // @@protoc_insertion_point(field_get:eve_launcher.uninstaller.Started.device)
+  return device_.GetNoArena();
+}
+inline void Started::set_device(const ::std::string& value) {
+  
+  device_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:eve_launcher.uninstaller.Started.device)
+}
+#if LANG_CXX11
+inline void Started::set_device(::std::string&& value) {
+  
+  device_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:eve_launcher.uninstaller.Started.device)
+}
+#endif
+inline void Started::set_device(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  device_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:eve_launcher.uninstaller.Started.device)
+}
+inline void Started::set_device(const void* value, size_t size) {
+  
+  device_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:eve_launcher.uninstaller.Started.device)
+}
+inline ::std::string* Started::mutable_device() {
+  
+  // @@protoc_insertion_point(field_mutable:eve_launcher.uninstaller.Started.device)
+  return device_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Started::release_device() {
+  // @@protoc_insertion_point(field_release:eve_launcher.uninstaller.Started.device)
+  
+  return device_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Started::set_allocated_device(::std::string* device) {
+  if (device != NULL) {
+    
+  } else {
+    
+  }
+  device_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), device);
+  // @@protoc_insertion_point(field_set_allocated:eve_launcher.uninstaller.Started.device)
 }
 
 // -------------------------------------------------------------------

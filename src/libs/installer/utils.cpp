@@ -30,6 +30,8 @@
 
 #include "fileutils.h"
 
+#include "qsettingswrapper.h"
+
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
@@ -297,6 +299,58 @@ QString QInstaller::getInstallerFileName()
     return installerFileName;
 }
 
+static QString baseCCPRegistryPath = QString::fromLatin1("HKEY_CURRENT_USER\\SOFTWARE\\CCP");
+
+QString getPath(const QString& path)
+{
+    QString registryPath = baseCCPRegistryPath;
+    if (!path.isEmpty())
+    {
+        registryPath = QString::fromLatin1("%1\\%2").arg(registryPath).arg(path);
+    }
+    return registryPath;
+}
+
+void QInstaller::setCCPRegistryKey(const QString& name, const QString& value, const QString& path)
+{
+    if (name.isEmpty())
+    {
+        return;
+    }
+
+#ifdef Q_OS_WIN
+    QSettingsWrapper settings(getPath(path), QSettingsWrapper::NativeFormat);
+    settings.setValue(name, value);
+#endif
+}
+
+QString QInstaller::getCCPRegistryKey(const QString& name, const QString& path)
+{
+    if (name.isEmpty())
+    {
+        return QString();
+    }
+
+#ifdef Q_OS_WIN
+    static QLatin1String userEnvironmentRegistryPath(getPath(path).toLocal8Bit());
+    return QSettings(userEnvironmentRegistryPath, QSettings::NativeFormat).value(name).toString();
+#else
+    return QString();
+#endif
+}
+
+static QUuid deviceId;
+
+void QInstaller::setDeviceId(const QUuid& id)
+{
+    deviceId = id;
+}
+
+QUuid QInstaller::getDeviceId()
+{
+    return deviceId;
+}
+
 static QUuid journeyId;
 
 void QInstaller::setJourneyId(const QUuid& id)
@@ -307,6 +361,42 @@ void QInstaller::setJourneyId(const QUuid& id)
 QUuid QInstaller::getJourneyId()
 {
     return journeyId;
+}
+
+static QUuid osId;
+
+void QInstaller::setOsId(const QUuid& id)
+{
+    osId = id;
+}
+
+QUuid QInstaller::getOsId()
+{
+    return osId;
+}
+
+static QByteArray sessionHash;
+
+void QInstaller::setSessionHash(const QByteArray& hash)
+{
+    sessionHash = hash;
+}
+
+QByteArray QInstaller::getSessionHash()
+{
+    return sessionHash;
+}
+
+static QString sessionId;
+
+QString QInstaller::getSessionId()
+{
+    if (sessionId.isEmpty())
+    {
+        sessionId = QString(QLatin1String("ls")) + QString(QLatin1String(sessionHash.toHex()));
+    }
+
+    return sessionId;
 }
 
 QString QInstaller::getCrashDb()
@@ -325,6 +415,66 @@ static QString crashpadHandlerName = QString::fromLatin1("eve_installer_crashmon
 QString QInstaller::getCrashpadHandlerName()
 {
     return crashpadHandlerName;
+}
+
+static QString pdmVersion;
+
+void QInstaller::setPdmVersion(const QString& version)
+{
+    pdmVersion = version;
+}
+
+QString QInstaller::getPdmVersion()
+{
+    return pdmVersion;
+}
+
+static QString protobufVersion;
+
+void QInstaller::setProtobufVersion(const QString& version)
+{
+    protobufVersion = version;
+}
+
+QString QInstaller::getProtobufVersion()
+{
+    return protobufVersion;
+}
+
+static QString sentryNativeVersion;
+
+void QInstaller::setSentryNativeSdkVersion(const QString& version)
+{
+    sentryNativeVersion = version;
+}
+
+QString QInstaller::getSentryNativeSdkVersion()
+{
+    return sentryNativeVersion;
+}
+
+static QString qtVersion;
+
+void QInstaller::setQtVersion(const QString& version)
+{
+    qtVersion = version;
+}
+
+QString QInstaller::getQtVersion()
+{
+    return qtVersion;
+}
+
+static QString qtIfwVersion;
+
+void QInstaller::setQtIfwVersion(const QString& version)
+{
+    qtIfwVersion = version;
+}
+
+QString QInstaller::getQtIfwVersion()
+{
+    return qtIfwVersion;
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

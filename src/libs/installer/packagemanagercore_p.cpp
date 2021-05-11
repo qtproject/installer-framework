@@ -65,9 +65,16 @@
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
+#include <QNetworkInterface>
+#include <QRandomGenerator>
+#include <QRegularExpression>
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+
+#include <pdm.h>
+#include <protobuf.h>
+#include <google/protobuf/stubs/common.h>
 
 #include <errno.h>
 
@@ -626,6 +633,8 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 
+    gatherVersionNumbers();
+    initializeIds();
     initializeSentry();
 }
 
@@ -652,6 +661,113 @@ void sentry_logger(sentry_level_e level, const char * message, va_list args, voi
             qFatal("sentry | %s", buf);
             break;
     }
+}
+
+void PackageManagerCorePrivate::gatherVersionNumbers()
+{
+    QInstaller::setPdmVersion(QString::fromStdString(PDM::GetPDMVersion()));
+    QInstaller::setProtobufVersion(QString::fromStdString(google::protobuf::internal::VersionString(GOOGLE_PROTOBUF_VERSION)));
+    QInstaller::setSentryNativeSdkVersion(QString::fromStdString(SENTRY_SDK_VERSION));
+    QInstaller::setQtVersion(QString::fromLatin1("%1.%2.%3").arg(((QT_VERSION) >> 16) & 0xff).arg(((QT_VERSION) >> 8) & 0xff).arg((QT_VERSION) & 0xff));
+    QInstaller::setQtIfwVersion(QString::fromLatin1("%1.%2.%3").arg(((IFW_VERSION) >> 16) & 0xff).arg(((IFW_VERSION) >> 8) & 0xff).arg((IFW_VERSION) & 0xff));
+
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | PDM:" << QInstaller::getPdmVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Protobuf:" << QInstaller::getProtobufVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | SentryNativeSDK:" << QInstaller::getSentryNativeSdkVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Qt:" << QInstaller::getQtVersion();
+    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | QtIFW:" << QInstaller::getQtIfwVersion();
+}
+
+void PackageManagerCorePrivate::initializeJourneyIds()
+{
+    // Get the journeyId from the installer filename
+    QUuid journeyId;
+    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
+    if (appName.length() > 35)
+    {
+        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
+        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(appName);
+        if (match.hasMatch()) {
+           qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId found in filename:" << match.captured(0);
+           journeyId = QUuid::fromString(match.captured(0));
+        }
+    }
+
+    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
+    if (journeyId.isNull())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | No JourneyId provided, one will be created instead";
+        journeyId = QUuid::createUuid();
+    }
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
+
+    QInstaller::setJourneyId(journeyId);
+
+    QString keyName = QLatin1String("DeviceId");
+    QUuid deviceId;
+    // Try to get DeviceId from the registry
+    QString value = QInstaller::getCCPRegistryKey(keyName);
+    if (!value.isEmpty()) {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId found in registry";
+        deviceId = QUuid::fromString(value);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
+    }
+
+    // If DeviceId was not found in the registry, then we use the current JourneyId
+    if (deviceId.isNull())
+    {
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | No DeviceId found, using the current JourneyId instead";
+        deviceId = QInstaller::getJourneyId();
+
+        // We then store the DeviceId in the registry
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | Storing DeviceId to registry";
+        QInstaller::setCCPRegistryKey(keyName, deviceId.toString(QUuid::WithoutBraces));
+        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId stored to registry";
+    }
+
+    QInstaller::setDeviceId(deviceId);
+}
+
+void PackageManagerCorePrivate::initializeOsId()
+{
+    std::string osUuidString = PDM::GetMachineUuidString();
+    QUuid osId = QUuid::fromString(QString::fromStdString(osUuidString));
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId:" << osId.toString(QUuid::WithoutBraces);
+    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId (base64):" << QLatin1String(osId.toRfc4122().toBase64());
+
+    QInstaller::setOsId(osId);
+}
+
+void PackageManagerCorePrivate::initializeSessionHash()
+{
+    QCryptographicHash hasher(QCryptographicHash::Md5);
+
+    auto interfaces = QNetworkInterface::allInterfaces();
+    if(!interfaces.isEmpty())
+    {
+        auto macAddress = interfaces.first().hardwareAddress();
+        hasher.addData(macAddress.toLocal8Bit());
+    }
+    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
+    hasher.addData(timestamp.toLocal8Bit());
+    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
+    hasher.addData(randomNumber.toLocal8Bit());
+
+    QInstaller::setSessionHash(hasher.result());
+
+    qDebug() << "framework | PackageManagerCorePrivate::initializeSessionHash | Session:" << QInstaller::getSessionId();
+}
+
+void PackageManagerCorePrivate::initializeIds()
+{
+    initializeJourneyIds();
+    initializeOsId();
+    initializeSessionHash();
 }
 
 void PackageManagerCorePrivate::initializeSentry()
@@ -704,10 +820,10 @@ void PackageManagerCorePrivate::initializeSentry()
     // If we want to throttle events we can do that here. This is a % of how many or let through.
     // If any number less than 1 is given, then the events to be sent are selected randomly.
     // sentry_options_set_sample_rate(options, 1.0);
-    
+
     // Path of the crashpad handler executable.
     sentry_options_set_handler_pathw(options, (const wchar_t *)handlerPath.utf16());
-    
+
     // Path of the crashdump database.
     sentry_options_set_database_pathw(options, (const wchar_t *)crashDb.utf16());
 
@@ -725,6 +841,23 @@ void PackageManagerCorePrivate::initializeSentry()
 
     // Is this an installer or an uninstaller
     sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
+
+    // Add user (using the DeviceId as user id)
+    sentry_value_t user = sentry_value_new_object();
+    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getDeviceId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
+    sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(QInstaller::getOsId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(QInstaller::getJourneyId().toRfc4122().toBase64()));
+    sentry_value_set_by_key(user, "Session", sentry_value_new_string(QInstaller::getSessionId().toLocal8Bit().constData()));
+    sentry_set_user(user);
+
+    // Add version numbers to Sentry
+    sentry_value_t versions = sentry_value_new_object();
+    sentry_value_set_by_key(versions, "PDM", sentry_value_new_string(QInstaller::getPdmVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Protobuf", sentry_value_new_string(QInstaller::getProtobufVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Qt", sentry_value_new_string(QInstaller::getQtVersion().toLocal8Bit().constData()));
+    sentry_value_set_by_key(versions, "Qt IFW", sentry_value_new_string(QInstaller::getQtIfwVersion().toLocal8Bit().constData()));
+    sentry_set_context("Library versions", versions);
 }
 
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)

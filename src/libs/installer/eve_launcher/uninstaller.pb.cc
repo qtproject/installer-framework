@@ -361,6 +361,7 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::uninstaller::Started, event_metadata_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::uninstaller::Started, duration_),
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::uninstaller::Started, system_information_),
+  GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::uninstaller::Started, device_),
   ~0u,  // no _has_bits_
   GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(::eve_launcher::uninstaller::IntroductionPageDisplayed, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -459,20 +460,20 @@ const ::google::protobuf::uint32 TableStruct::offsets[] GOOGLE_PROTOBUF_ATTRIBUT
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::eve_launcher::uninstaller::Started)},
-  { 8, -1, sizeof(::eve_launcher::uninstaller::IntroductionPageDisplayed)},
-  { 14, -1, sizeof(::eve_launcher::uninstaller::ExecutionPageDisplayed)},
-  { 20, -1, sizeof(::eve_launcher::uninstaller::FinishedPageDisplayed)},
-  { 26, -1, sizeof(::eve_launcher::uninstaller::FailedPageDisplayed)},
-  { 32, -1, sizeof(::eve_launcher::uninstaller::UserCancelled)},
-  { 40, -1, sizeof(::eve_launcher::uninstaller::ShutDown)},
-  { 49, -1, sizeof(::eve_launcher::uninstaller::DetailsDisplayed)},
-  { 55, -1, sizeof(::eve_launcher::uninstaller::DetailsHidden)},
-  { 61, -1, sizeof(::eve_launcher::uninstaller::UninstallationStarted)},
-  { 67, -1, sizeof(::eve_launcher::uninstaller::UninstallationInterrupted)},
-  { 74, -1, sizeof(::eve_launcher::uninstaller::UninstallationFinished)},
-  { 81, -1, sizeof(::eve_launcher::uninstaller::UninstallationFailed)},
-  { 88, -1, sizeof(::eve_launcher::uninstaller::ErrorEncountered)},
-  { 96, -1, sizeof(::eve_launcher::uninstaller::AnalyticsMessageSent)},
+  { 9, -1, sizeof(::eve_launcher::uninstaller::IntroductionPageDisplayed)},
+  { 15, -1, sizeof(::eve_launcher::uninstaller::ExecutionPageDisplayed)},
+  { 21, -1, sizeof(::eve_launcher::uninstaller::FinishedPageDisplayed)},
+  { 27, -1, sizeof(::eve_launcher::uninstaller::FailedPageDisplayed)},
+  { 33, -1, sizeof(::eve_launcher::uninstaller::UserCancelled)},
+  { 41, -1, sizeof(::eve_launcher::uninstaller::ShutDown)},
+  { 50, -1, sizeof(::eve_launcher::uninstaller::DetailsDisplayed)},
+  { 56, -1, sizeof(::eve_launcher::uninstaller::DetailsHidden)},
+  { 62, -1, sizeof(::eve_launcher::uninstaller::UninstallationStarted)},
+  { 68, -1, sizeof(::eve_launcher::uninstaller::UninstallationInterrupted)},
+  { 75, -1, sizeof(::eve_launcher::uninstaller::UninstallationFinished)},
+  { 82, -1, sizeof(::eve_launcher::uninstaller::UninstallationFailed)},
+  { 89, -1, sizeof(::eve_launcher::uninstaller::ErrorEncountered)},
+  { 97, -1, sizeof(::eve_launcher::uninstaller::AnalyticsMessageSent)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -516,71 +517,72 @@ void AddDescriptorsImpl() {
   static const char descriptor[] GOOGLE_PROTOBUF_ATTRIBUTE_SECTION_VARIABLE(protodesc_cold) = {
       "\n\036eve_launcher/uninstaller.proto\022\030eve_la"
       "uncher.uninstaller\032\036eve_launcher/applica"
-      "tion.proto\032\026eve_launcher/pdm.proto\"\217\001\n\007S"
+      "tion.proto\032\026eve_launcher/pdm.proto\"\237\001\n\007S"
       "tarted\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_lau"
       "ncher.application.EventMetadata\022\020\n\010durat"
       "ion\030\002 \001(\005\0221\n\022system_information\030\003 \001(\0132\025."
-      "platform.Information\"\\\n\031IntroductionPage"
-      "Displayed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
-      "launcher.application.EventMetadata\"Y\n\026Ex"
-      "ecutionPageDisplayed\022\?\n\016event_metadata\030\001"
-      " \001(\0132\'.eve_launcher.application.EventMet"
-      "adata\"X\n\025FinishedPageDisplayed\022\?\n\016event_"
-      "metadata\030\001 \001(\0132\'.eve_launcher.applicatio"
-      "n.EventMetadata\"V\n\023FailedPageDisplayed\022\?"
-      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
-      "plication.EventMetadata\"\312\002\n\rUserCancelle"
-      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
-      ".application.EventMetadata\022,\n\004page\030\002 \001(\016"
-      "2\036.eve_launcher.uninstaller.Page\022B\n\010prog"
-      "ress\030\003 \001(\01620.eve_launcher.uninstaller.Us"
-      "erCancelled.Progress\"\205\001\n\010Progress\022\030\n\024PRO"
-      "GRESS_UNSPECIFIED\020\000\022\030\n\024PROGRESS_NOT_STAR"
-      "TED\020\001\022\031\n\025PROGRESS_UNINSTALLING\020\002\022\025\n\021PROG"
-      "RESS_FINISHED\020\003\022\023\n\017PROGRESS_FAILED\020\004\"\307\002\n"
-      "\010ShutDown\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_"
-      "launcher.application.EventMetadata\022,\n\004pa"
-      "ge\030\002 \001(\0162\036.eve_launcher.uninstaller.Page"
-      "\0227\n\005state\030\003 \001(\0162(.eve_launcher.uninstall"
-      "er.ShutDown.State\022\025\n\rfinish_button\030\004 \001(\010"
-      "\"|\n\005State\022\025\n\021STATE_UNSPECIFIED\020\000\022\025\n\021STAT"
-      "E_UNINSTALLED\020\001\022\037\n\033STATE_UNINSTALLATION_"
-      "FAILED\020\002\022$\n STATE_UNINSTALLATION_NOT_STA"
-      "RTED\020\003\"S\n\020DetailsDisplayed\022\?\n\016event_meta"
-      "data\030\001 \001(\0132\'.eve_launcher.application.Ev"
-      "entMetadata\"P\n\rDetailsHidden\022\?\n\016event_me"
+      "platform.Information\022\016\n\006device\030\004 \001(\014\"\\\n\031"
+      "IntroductionPageDisplayed\022\?\n\016event_metad"
+      "ata\030\001 \001(\0132\'.eve_launcher.application.Eve"
+      "ntMetadata\"Y\n\026ExecutionPageDisplayed\022\?\n\016"
+      "event_metadata\030\001 \001(\0132\'.eve_launcher.appl"
+      "ication.EventMetadata\"X\n\025FinishedPageDis"
+      "played\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_lau"
+      "ncher.application.EventMetadata\"V\n\023Faile"
+      "dPageDisplayed\022\?\n\016event_metadata\030\001 \001(\0132\'"
+      ".eve_launcher.application.EventMetadata\""
+      "\312\002\n\rUserCancelled\022\?\n\016event_metadata\030\001 \001("
+      "\0132\'.eve_launcher.application.EventMetada"
+      "ta\022,\n\004page\030\002 \001(\0162\036.eve_launcher.uninstal"
+      "ler.Page\022B\n\010progress\030\003 \001(\01620.eve_launche"
+      "r.uninstaller.UserCancelled.Progress\"\205\001\n"
+      "\010Progress\022\030\n\024PROGRESS_UNSPECIFIED\020\000\022\030\n\024P"
+      "ROGRESS_NOT_STARTED\020\001\022\031\n\025PROGRESS_UNINST"
+      "ALLING\020\002\022\025\n\021PROGRESS_FINISHED\020\003\022\023\n\017PROGR"
+      "ESS_FAILED\020\004\"\307\002\n\010ShutDown\022\?\n\016event_metad"
+      "ata\030\001 \001(\0132\'.eve_launcher.application.Eve"
+      "ntMetadata\022,\n\004page\030\002 \001(\0162\036.eve_launcher."
+      "uninstaller.Page\0227\n\005state\030\003 \001(\0162(.eve_la"
+      "uncher.uninstaller.ShutDown.State\022\025\n\rfin"
+      "ish_button\030\004 \001(\010\"|\n\005State\022\025\n\021STATE_UNSPE"
+      "CIFIED\020\000\022\025\n\021STATE_UNINSTALLED\020\001\022\037\n\033STATE"
+      "_UNINSTALLATION_FAILED\020\002\022$\n STATE_UNINST"
+      "ALLATION_NOT_STARTED\020\003\"S\n\020DetailsDisplay"
+      "ed\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launche"
+      "r.application.EventMetadata\"P\n\rDetailsHi"
+      "dden\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\"X\n\025Uninsta"
+      "llationStarted\022\?\n\016event_metadata\030\001 \001(\0132\'"
+      ".eve_launcher.application.EventMetadata\""
+      "n\n\031UninstallationInterrupted\022\?\n\016event_me"
       "tadata\030\001 \001(\0132\'.eve_launcher.application."
-      "EventMetadata\"X\n\025UninstallationStarted\022\?"
-      "\n\016event_metadata\030\001 \001(\0132\'.eve_launcher.ap"
-      "plication.EventMetadata\"n\n\031Uninstallatio"
-      "nInterrupted\022\?\n\016event_metadata\030\001 \001(\0132\'.e"
-      "ve_launcher.application.EventMetadata\022\020\n"
-      "\010duration\030\002 \001(\005\"k\n\026UninstallationFinishe"
-      "d\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launcher"
-      ".application.EventMetadata\022\020\n\010duration\030\002"
-      " \001(\005\"i\n\024UninstallationFailed\022\?\n\016event_me"
+      "EventMetadata\022\020\n\010duration\030\002 \001(\005\"k\n\026Unins"
+      "tallationFinished\022\?\n\016event_metadata\030\001 \001("
+      "\0132\'.eve_launcher.application.EventMetada"
+      "ta\022\020\n\010duration\030\002 \001(\005\"i\n\024UninstallationFa"
+      "iled\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launc"
+      "her.application.EventMetadata\022\020\n\010duratio"
+      "n\030\002 \001(\005\"\331\002\n\020ErrorEncountered\022\?\n\016event_me"
       "tadata\030\001 \001(\0132\'.eve_launcher.application."
-      "EventMetadata\022\020\n\010duration\030\002 \001(\005\"\331\002\n\020Erro"
-      "rEncountered\022\?\n\016event_metadata\030\001 \001(\0132\'.e"
-      "ve_launcher.application.EventMetadata\022B\n"
-      "\004code\030\002 \001(\01624.eve_launcher.uninstaller.E"
-      "rrorEncountered.ErrorCode\022,\n\004page\030\003 \001(\0162"
-      "\036.eve_launcher.uninstaller.Page\"\221\001\n\tErro"
-      "rCode\022\031\n\025ERRORCODE_UNSPECIFIED\020\000\022\037\n\033ERRO"
-      "RCODE_QT_STATUS_FAILURE\020\001\022\"\n\036ERRORCODE_Q"
-      "T_STATUS_UNFINISHED\020\002\022$\n ERRORCODE_QT_ST"
-      "ATUS_FORCE_UPDATE\020\003\"h\n\024AnalyticsMessageS"
-      "ent\022\?\n\016event_metadata\030\001 \001(\0132\'.eve_launch"
-      "er.application.EventMetadata\022\017\n\007message\030"
-      "\002 \001(\t*\213\001\n\004Page\022\024\n\020PAGE_UNSPECIFIED\020\000\022\022\n\016"
-      "PAGE_NOT_FOUND\020\001\022\025\n\021PAGE_INTRODUCTION\020\003\022"
-      "\022\n\016PAGE_EXECUTION\020\005\022\021\n\rPAGE_FINISHED\020\006\022\017"
-      "\n\013PAGE_FAILED\020\007\"\004\010\002\020\002\"\004\010\004\020\004BEZCgithub.co"
-      "m/ccpgames/eve-proto-go/generated/eve_la"
-      "uncher/uninstallerb\006proto3"
+      "EventMetadata\022B\n\004code\030\002 \001(\01624.eve_launch"
+      "er.uninstaller.ErrorEncountered.ErrorCod"
+      "e\022,\n\004page\030\003 \001(\0162\036.eve_launcher.uninstall"
+      "er.Page\"\221\001\n\tErrorCode\022\031\n\025ERRORCODE_UNSPE"
+      "CIFIED\020\000\022\037\n\033ERRORCODE_QT_STATUS_FAILURE\020"
+      "\001\022\"\n\036ERRORCODE_QT_STATUS_UNFINISHED\020\002\022$\n"
+      " ERRORCODE_QT_STATUS_FORCE_UPDATE\020\003\"h\n\024A"
+      "nalyticsMessageSent\022\?\n\016event_metadata\030\001 "
+      "\001(\0132\'.eve_launcher.application.EventMeta"
+      "data\022\017\n\007message\030\002 \001(\t*\213\001\n\004Page\022\024\n\020PAGE_U"
+      "NSPECIFIED\020\000\022\022\n\016PAGE_NOT_FOUND\020\001\022\025\n\021PAGE"
+      "_INTRODUCTION\020\003\022\022\n\016PAGE_EXECUTION\020\005\022\021\n\rP"
+      "AGE_FINISHED\020\006\022\017\n\013PAGE_FAILED\020\007\"\004\010\002\020\002\"\004\010"
+      "\004\020\004BEZCgithub.com/ccpgames/eve-proto-go/"
+      "generated/eve_launcher/uninstallerb\006prot"
+      "o3"
   };
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
-      descriptor, 2546);
+      descriptor, 2562);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "eve_launcher/uninstaller.proto", &protobuf_RegisterTypes);
   ::protobuf_eve_5flauncher_2fapplication_2eproto::AddDescriptors();
@@ -720,6 +722,7 @@ void Started::clear_system_information() {
 const int Started::kEventMetadataFieldNumber;
 const int Started::kDurationFieldNumber;
 const int Started::kSystemInformationFieldNumber;
+const int Started::kDeviceFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Started::Started()
@@ -733,6 +736,10 @@ Started::Started(const Started& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(NULL) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  device_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.device().size() > 0) {
+    device_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.device_);
+  }
   if (from.has_event_metadata()) {
     event_metadata_ = new ::eve_launcher::application::EventMetadata(*from.event_metadata_);
   } else {
@@ -748,6 +755,7 @@ Started::Started(const Started& from)
 }
 
 void Started::SharedCtor() {
+  device_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&event_metadata_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&duration_) -
       reinterpret_cast<char*>(&event_metadata_)) + sizeof(duration_));
@@ -759,6 +767,7 @@ Started::~Started() {
 }
 
 void Started::SharedDtor() {
+  device_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete event_metadata_;
   if (this != internal_default_instance()) delete system_information_;
 }
@@ -783,6 +792,7 @@ void Started::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
+  device_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && event_metadata_ != NULL) {
     delete event_metadata_;
   }
@@ -843,6 +853,18 @@ bool Started::MergePartialFromCodedStream(
         break;
       }
 
+      // bytes device = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(34u /* 34 & 0xFF */)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_device()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -886,6 +908,12 @@ void Started::SerializeWithCachedSizes(
       3, this->_internal_system_information(), output);
   }
 
+  // bytes device = 4;
+  if (this->device().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      4, this->device(), output);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), output);
@@ -919,6 +947,13 @@ void Started::SerializeWithCachedSizes(
         3, this->_internal_system_information(), deterministic, target);
   }
 
+  // bytes device = 4;
+  if (this->device().size() > 0) {
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteBytesToArray(
+        4, this->device(), target);
+  }
+
   if ((_internal_metadata_.have_unknown_fields() &&  ::google::protobuf::internal::GetProto3PreserveUnknownsDefault())) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()), target);
@@ -936,6 +971,13 @@ size_t Started::ByteSizeLong() const {
       ::google::protobuf::internal::WireFormat::ComputeUnknownFieldsSize(
         (::google::protobuf::internal::GetProto3PreserveUnknownsDefault()   ? _internal_metadata_.unknown_fields()   : _internal_metadata_.default_instance()));
   }
+  // bytes device = 4;
+  if (this->device().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->device());
+  }
+
   // .eve_launcher.application.EventMetadata event_metadata = 1;
   if (this->has_event_metadata()) {
     total_size += 1 +
@@ -984,6 +1026,10 @@ void Started::MergeFrom(const Started& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
+  if (from.device().size() > 0) {
+
+    device_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.device_);
+  }
   if (from.has_event_metadata()) {
     mutable_event_metadata()->::eve_launcher::application::EventMetadata::MergeFrom(from.event_metadata());
   }
@@ -1019,6 +1065,8 @@ void Started::Swap(Started* other) {
 }
 void Started::InternalSwap(Started* other) {
   using std::swap;
+  device_.Swap(&other->device_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(event_metadata_, other->event_metadata_);
   swap(system_information_, other->system_information_);
   swap(duration_, other->duration_);
