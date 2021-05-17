@@ -1,3 +1,13 @@
+4.1.1
+- Add possibility to filter available packages with regexp from script (QTIFW-2225)
+- Add documentation for configuring and overwriting default translations (QTIFW-2217)
+- Fix loading of component translations (QTIFW-2220)
+- CLI: Print warning when creating over 4GB installers on Windows (QTIFW-2199)
+- Remove wayland dependency from Linux binaries (QTIFW-2067)
+- Fix maintenancetool overwriting installer values (QTIFW-2218)
+- Fix QFile warning on rollback (QTIFW-2213)
+- Fix return value for detached 'Execute' operation (QTIFW-2210)
+
 4.1.0
 - Emit signal when components are recalculated (QTIFW-2172)
 - Add Arabic translation (QTIFW-1425)
