@@ -61,16 +61,7 @@ instructions:
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to run jom/make, check logs."
-      - type: ExecuteCommand
-        command: ['jom', 'html_docs']
-        maxTimeInSeconds: 36000
-        maxTimeBetweenOutput: 3600
-        userMessageOnFailure: 'Could not build documentation.'
-      - type: UploadArtifact
-        archiveDirectory: '{{.BuildDir}}\\doc'
-        transferType: UploadModuleDocumentation
-        maxTimeInSeconds: 1800
-        maxTimeBetweenOutput: 1800
+      - !include "{{installer-framework/installer-framework}}/make_win_docs_instructions.yaml"
       - type: ExecuteCommand
         command: "nmake install INSTALL_ROOT={{.InstallRoot}}"
         maxTimeInSeconds: 1800

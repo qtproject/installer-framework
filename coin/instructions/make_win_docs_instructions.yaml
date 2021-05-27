@@ -1,0 +1,33 @@
+type: Group
+instructions:
+  - type: Group
+    instructions:
+      - type: ChangeDirectory
+        directory: "{{.SourceDir}}\\doc"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change dir"
+      - type: ExecuteCommand
+        command: ['sed', '-i', 's/Users\\qt\\work\\install/Utils\\qt-bld-dynamic\\qtbase/g', 'qdoc_wrapper.bat']
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: 'Failed to patch qdoc_wrapper.bat.'
+      - type: ChangeDirectory
+        directory: "{{.BuildDir}}"
+        maxTimeInSeconds: 300
+        maxTimeBetweenOutput: 120
+        userMessageOnFailure: "Failed to change dir"
+      - type: ExecuteCommand
+        command: ['jom', 'html_docs']
+        maxTimeInSeconds: 36000
+        maxTimeBetweenOutput: 3600
+        userMessageOnFailure: 'Could not build documentation.'
+      - type: UploadArtifact
+        archiveDirectory: '{{.BuildDir}}\\doc'
+        transferType: UploadModuleDocumentation
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 1800
+    enable_if:
+      condition: property
+      property: target.compiler
+      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
