@@ -150,6 +150,11 @@
                 On Windows, this creates a .lnk file which can have
                 \c arguments. Furthermore, \c filename can be
                 an HTTP or FTP URL in which case a URL shortcut is created.
+                \note If the \c @AllUsersStartMenuProgramsPath@ is used for
+                placing the shortcut, then due to a problem on Windows, it will
+                drop any arguments to the target and any description set. In
+                this case, you should place the shortcut elsewhere and copy it
+                to the location desired.
                 The operation is currently not implemented on other platforms.
         \row
             \li CreateDesktopEntry
