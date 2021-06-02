@@ -1447,6 +1447,10 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
 </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
