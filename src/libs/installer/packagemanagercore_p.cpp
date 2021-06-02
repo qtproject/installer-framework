@@ -2017,7 +2017,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         m_core->dropAdminRights();
 
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QString::fromLatin1("\n%1").arg(
-        success ? tr("Uninstallation completed successfully.") : tr("Uninstallation aborted.")));
+        success ? tr("Removal completed successfully.") : tr("Removal aborted.")));
 
     emit uninstallationFinished();
     return success;
@@ -2309,7 +2309,7 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
         QLatin1String("uninstall.vbs")).absoluteFilePath());
     QFile f(batchfile);
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
-        throw Error(tr("Cannot prepare uninstall"));
+        throw Error(tr("Cannot prepare removal"));
 
     QTextStream batch(&f);
     batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
@@ -2340,7 +2340,7 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     }
 
     if (!QProcessWrapper::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
-        throw Error(tr("Cannot start uninstall"));
+        throw Error(tr("Cannot start removal"));
 #else
     // every other platform has no problem if we just delete ourselves now
     QFile maintenanceTool(QFileInfo(installerBinaryPath()).absoluteFilePath());
@@ -2438,7 +2438,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                     const QMessageBox::StandardButton button =
                         MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
                         QLatin1String("installationErrorWithIgnore"), tr("Installer Error"),
-                        tr("Error during uninstallation process:\n%1").arg(undoOperation->errorString()),
+                        tr("Error during removal process:\n%1").arg(undoOperation->errorString()),
                         QMessageBox::Retry | QMessageBox::Ignore, QMessageBox::Ignore);
 
                     if (button == QMessageBox::Retry)

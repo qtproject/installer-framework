@@ -101,7 +101,7 @@ public:
         // we should check this and prompt the user to run the executable as admin if needed.
         if (!binary.open(QIODevice::ReadOnly)) {
             QFileInfo binaryInfo(binary.fileName());
-            errorMessage = QObject::tr("Please make sure that the current user has reading access "
+            errorMessage = QObject::tr("Please make sure that the current user has read access "
                 "to file \"%1\" or try running %2 as an administrator.").arg(binaryInfo.fileName(), qAppName());
             return false;
         }

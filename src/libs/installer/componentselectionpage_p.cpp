@@ -110,14 +110,14 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     if (m_core->isInstaller()) {
         m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
         m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A",
-            "select default components")));
+            "Select default components")));
         m_checkDefault->setText(ComponentSelectionPage::tr("Def&ault"));
         m_checkDefault->setToolTip(ComponentSelectionPage::tr("Select default components in the tree view."));
     } else {
         m_checkDefault->setEnabled(false);
         m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
         m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R",
-            "reset to already installed components")));
+            "Reset to already installed components")));
         m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
         m_checkDefault->setToolTip(
             ComponentSelectionPage::tr("Reset all components to their original selection state in the tree view."));
@@ -129,7 +129,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
             this, &ComponentSelectionPagePrivate::selectAll);
     m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
     m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
-        "select all components")));
+        "Select all components")));
     m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
     m_checkAll->setToolTip(ComponentSelectionPage::tr("Select all components in the tree view."));
     buttonHLayout->addWidget(m_checkAll);
@@ -139,7 +139,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
             this, &ComponentSelectionPagePrivate::deselectAll);
     m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
     m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
-        "deselect all components")));
+        "Deselect all components")));
     m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
     m_uncheckAll->setToolTip(ComponentSelectionPage::tr("Deselect all components in the tree view."));
     buttonHLayout->addWidget(m_uncheckAll);
@@ -243,7 +243,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
     fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
     fetchCategoryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     fetchCategoryButton->setToolTip(
-        ComponentSelectionPage::tr("Filter the enabled repository categories to selection."));
+        ComponentSelectionPage::tr("Filter the enabled repository categories"));
     connect(fetchCategoryButton, &QPushButton::clicked, this,
             &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 

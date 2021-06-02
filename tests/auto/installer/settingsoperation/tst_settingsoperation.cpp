@@ -90,7 +90,7 @@ private slots:
             UpdateOperation::InvalidArguments);
         compareString = "Current method argument calling \"Settings\" with arguments \"path=first; "
             "method=second; key=third; value=fourth\" is not supported. Please use set, remove, "
-            "add_array_value or remove_array_value.";
+            "add_array_value, or remove_array_value.";
         QCOMPARE(wrongMethodArgumentOperation.errorString(), compareString);
 
         // same for undo

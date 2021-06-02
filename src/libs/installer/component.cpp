@@ -1641,7 +1641,7 @@ void Component::updateModelData(const QString &key, const QString &data)
                 = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
         if (isUnstable()) {
             tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component can not be installed.");
+                                                          "This component cannot be installed.");
         }
         setData(tooltipText, Qt::ToolTipRole);
     } else {
@@ -1650,7 +1650,7 @@ void Component::updateModelData(const QString &key, const QString &data)
                 + tr("Update Info: ") + updateInfo;
         if (isUnstable()) {
             tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component can not be updated.");
+                                                          "This component cannot be updated.");
         }
 
         setData(tooltipText, Qt::ToolTipRole);

@@ -61,7 +61,7 @@ bool SelfRestartOperation::performOperation()
 
     if (!core->isMaintainer()) {
         setError(UserDefinedError);
-        setErrorString(tr("Self Restart: Only valid within updater or packagemanager mode."));
+        setErrorString(tr("Self Restart: Only valid within updater or package manager mode."));
         return false;
     }
 

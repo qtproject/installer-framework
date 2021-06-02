@@ -847,7 +847,7 @@ void PackageManagerCore::setNeedsHardRestart(bool needsHardRestart)
 */
 void PackageManagerCore::rollBackInstallation()
 {
-    emit titleMessageChanged(tr("Cancelling the Installer"));
+    emit titleMessageChanged(tr("Canceling the Installer"));
 
     // this unregisters all operation progressChanged connected
     ProgressCoordinator::instance()->setUndoMode();
@@ -2302,7 +2302,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                     errorMessage.append(tr("Cannot install component %1. Component is installed only as automatic "
                         "dependency to %2.\n").arg(name, component->autoDependencies().join(QLatin1Char(','))));
                 } else if (!component->isCheckable()) {
-                    errorMessage.append(tr("Cannot install component %1. Component is not checkable meaning you "
+                    errorMessage.append(tr("Cannot install component %1. Component is not checkable, meaning you "
                         "have to select one of the subcomponents.\n").arg(name));
                 }
             } else if (component->isInstalled()) {
@@ -2320,7 +2320,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                         // We already checked the root component if there is no parent
                         return false;
                     } else if (trace->isVirtual()) {
-                        errorMessage.append(tr("Cannot install %1. Component is descendant "
+                        errorMessage.append(tr("Cannot install %1. Component is a descendant "
                             "of a virtual component %2.\n").arg(name, trace->name()));
                         return true;
                     }
@@ -2744,21 +2744,21 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
 
         if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
             message = tr("Not enough disk space to store temporary files and the "
-                "installation. %1 are available, while %2 are at least required.").arg(
+                "installation. %1 are available, while the minimum required is %2.").arg(
                 humanReadableSize(installVolumeAvailableSize), humanReadableSize(required + tempRequired));
             return false;
         }
 
         if (installVolumeAvailableSize < required) {
             message = tr("Not enough disk space to store all selected components! %1 are "
-                "available while %2 are at least required.").arg(humanReadableSize(installVolumeAvailableSize),
+                "available, while the minimum required is %2.").arg(humanReadableSize(installVolumeAvailableSize),
                 humanReadableSize(required));
             return false;
         }
 
         if (tempVolumeAvailableSize < tempRequired) {
-            message = tr("Not enough disk space to store temporary files! %1 are available "
-                "while %2 are at least required.").arg(humanReadableSize(tempVolumeAvailableSize),
+            message = tr("Not enough disk space to store temporary files! %1 are available, "
+                "while the minimum required is %2.").arg(humanReadableSize(tempVolumeAvailableSize),
                 humanReadableSize(tempRequired));
             return false;
         }
@@ -3986,7 +3986,7 @@ void PackageManagerCore::updateDisplayVersions(const QString &displayKey)
         const QString displayVersionRemote = findDisplayVersion(key, componentsHash,
             scVersion, visited);
         if (displayVersionRemote.isEmpty())
-            componentsHash.value(key)->setValue(displayKey, tr("invalid"));
+            componentsHash.value(key)->setValue(displayKey, tr("Invalid"));
         else
             componentsHash.value(key)->setValue(displayKey, displayVersionRemote);
     }

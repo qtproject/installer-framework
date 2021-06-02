@@ -134,7 +134,7 @@ private slots:
                 << QLatin1String("A")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable meaning you have to select one of the subcomponents.\n");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable, meaning you have to select one of the subcomponents.\n");
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("AB")));
 
@@ -144,7 +144,7 @@ private slots:
                 << QLatin1String("B")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install B.subcomponent. Component is descendant of a virtual component B.\n");
+        QTest::ignoreMessage(QtDebugMsg, "Cannot install B.subcomponent. Component is a descendant of a virtual component B.\n");
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B.subcomponent")));
 

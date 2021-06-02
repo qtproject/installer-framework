@@ -238,7 +238,7 @@ void MetadataJob::startXMLTask(const QList<FileTaskItem> &items)
 void MetadataJob::doCancel()
 {
     reset();
-    emitFinishedWithError(Job::Canceled, tr("Meta data download canceled."));
+    emitFinishedWithError(Job::Canceled, tr("Metadata download canceled."));
 }
 
 void MetadataJob::startUnzipRepositoryTask(const Repository &repo)

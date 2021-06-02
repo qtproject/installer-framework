@@ -261,7 +261,7 @@ QString errorMessageFrom7zResult(const LONG  &extractResult)
     if (!lastError().isEmpty())
         return lastError();
 
-    QString errorMessage = QCoreApplication::translate("Lib7z", "internal code: %1");
+    QString errorMessage = QCoreApplication::translate("Lib7z", "Internal code: %1");
     switch (extractResult) {
         case S_OK:
             qFatal("S_OK value is not a valid error code.");
@@ -282,7 +282,7 @@ QString errorMessageFrom7zResult(const LONG  &extractResult)
             errorMessage = errorMessage.arg(QLatin1String("STG_E_INVALIDFUNCTION"));
         break;
         case E_OUTOFMEMORY:
-            errorMessage = QCoreApplication::translate("Lib7z", "not enough memory");
+            errorMessage = QCoreApplication::translate("Lib7z", "Not enough memory");
         break;
         case E_INVALIDARG:
             errorMessage = errorMessage.arg(QLatin1String("E_INVALIDARG"));

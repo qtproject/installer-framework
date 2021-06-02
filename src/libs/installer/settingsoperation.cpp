@@ -82,7 +82,7 @@ bool SettingsOperation::checkArguments()
     if (!possibleMethodValues.contains(method)) {
         setError(InvalidArguments);
         setErrorString(tr("Current method argument calling \"%1\" with arguments \"%2\" is not "
-            "supported. Please use set, remove, add_array_value or remove_array_value.").arg(name(),
+            "supported. Please use set, remove, add_array_value, or remove_array_value.").arg(name(),
             arguments().join(QLatin1String("; "))));
         return false;
     }

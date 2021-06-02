@@ -945,7 +945,7 @@ void PackageManagerGui::cancelButtonClicked()
             interrupt = true;
             question = tr("Do you want to cancel the installation process?");
             if (m_core->isUninstaller())
-                question = tr("Do you want to cancel the uninstallation process?");
+                question = tr("Do you want to cancel the removal process?");
     } else {
         question = tr("Do you want to quit the installer application?");
         if (m_core->isUninstaller())
@@ -1963,7 +1963,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     layout->addWidget(licenseSplitter);
 
     m_acceptCheckBox = new QCheckBox(this);
-    m_acceptCheckBox->setShortcut(QKeySequence(tr("Alt+A", "agree license")));
+    m_acceptCheckBox->setShortcut(QKeySequence(tr("Alt+A", "Agree license")));
     m_acceptCheckBox->setObjectName(QLatin1String("AcceptLicenseCheckBox"));
     ClickForwarder *acceptClickForwarder = new ClickForwarder(m_acceptCheckBox);
 
@@ -2307,7 +2307,7 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     QPushButton *browseButton = new QPushButton(this);
     browseButton->setObjectName(QLatin1String("BrowseDirectoryButton"));
     connect(browseButton, &QAbstractButton::clicked, this, &TargetDirectoryPage::dirRequested);
-    browseButton->setShortcut(QKeySequence(tr("Alt+R", "browse file system to choose a file")));
+    browseButton->setShortcut(QKeySequence(tr("Alt+R", "Browse file system to choose a file")));
     browseButton->setText(tr("B&rowse..."));
     browseButton->setToolTip(TargetDirectoryPage::tr("Browse file system to choose the installation directory."));
     hlayout->addWidget(browseButton);

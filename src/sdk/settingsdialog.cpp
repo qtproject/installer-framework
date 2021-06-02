@@ -132,7 +132,7 @@ QVariant RepositoryItem::data(int column, int role) const
                 case 3:
                     return SettingsDialog::tr("Add the password to authenticate on the server.");
                 case 4:
-                    return SettingsDialog::tr("The servers URL that contains a valid repository.");
+                    return SettingsDialog::tr("The server's URL that contains a valid repository.");
                 default:
                     return QVariant();
             }   break;
