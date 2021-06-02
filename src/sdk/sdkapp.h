@@ -496,9 +496,9 @@ private:
     QList<QByteArray> m_resourceMappings;
 
 public:
+    RunOnceChecker m_runCheck;
     QInstaller::PackageManagerCore *m_core;
     CommandLineParser m_parser;
-    RunOnceChecker m_runCheck;
 };
 
 #endif  // SDKAPP_H

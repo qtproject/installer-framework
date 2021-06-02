@@ -37,7 +37,7 @@ class PackageManagerCoreData
 {
 public:
     PackageManagerCoreData() {}
-    explicit PackageManagerCoreData(const QHash<QString, QString> &variables);
+    explicit PackageManagerCoreData(const QHash<QString, QString> &variables, const bool isInstaller);
 
     void clear();
     void addDynamicPredefinedVariables();

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -75,10 +75,10 @@ namespace QInstaller {
     \internal
 */
 
-QJSValue InstallerProxy::components() const
+QJSValue InstallerProxy::components(const QString &regexp) const
 {
     if (m_core) {
-        const QList<Component*> all = m_core->components(PackageManagerCore::ComponentType::All);
+        const QList<Component*> all = m_core->components(PackageManagerCore::ComponentType::All, regexp);
         QJSValue scriptComponentsObject = m_engine->newArray(all.count());
         for (int i = 0; i < all.count(); ++i) {
             Component *const component = all.at(i);

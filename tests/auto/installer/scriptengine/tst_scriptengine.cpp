@@ -349,6 +349,21 @@ private slots:
       }
     }
 
+    void testComponentsWithRegexp()
+    {
+      const QString script = QString::fromLatin1("var components = installer.components(\"component.test.addOperation\");"
+                                                 "\n"
+                                                 "for (i = 0; i < components.length; i++)"
+                                                 "print(components[i].name);");
+
+      setExpectedScriptOutput("component.test.addOperation");
+      const QJSValue value = m_scriptEngine->evaluate(script);
+      if (value.isError()) {
+        QFAIL(qPrintable(QString::fromLatin1("ScriptEngine error:\n %1").arg(
+                           value.toString())));
+      }
+    }
+
     void testFindFiles()
     {
         const QString expectedOutput = QString::fromLatin1("Found file %1/tst_scriptengine.moc").arg(m_applicatonDirPath);

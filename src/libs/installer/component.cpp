@@ -624,15 +624,15 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
     while (it.hasNext()) {
         const QString filename = it.next();
         const QString basename = QFileInfo(filename).baseName();
-        if (!uiLanguage.startsWith(QFileInfo(filename).baseName(), Qt::CaseInsensitive))
-            continue; // do not load the file if it does not match the UI language
 
         if (!translations.isEmpty()) {
             bool found = false;
             foreach (const QString &translation, translations)
-                found |= translation.startsWith(basename, Qt::CaseInsensitive);
+                found |= translation.startsWith(QLatin1String("ifw_") + basename, Qt::CaseInsensitive);
             if (!found) // don't load the file if it does match the UI language but is not allowed to be used
                 continue;
+        } else if (!uiLanguage.startsWith(QFileInfo(filename).baseName(), Qt::CaseInsensitive)) {
+            continue; // do not load the file if it does not match the UI language
         }
 
         QScopedPointer<QTranslator> translator(new QTranslator(this));

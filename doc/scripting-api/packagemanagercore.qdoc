@@ -33,11 +33,12 @@
 */
 
 /*!
-    \qmlmethod array installer::components()
+    \qmlmethod array installer::components(string regexp)
 
     Returns an array of all components currently available.
     If the repository metadata have not been fetched yet,
-    the array will be empty.
+    the array will be empty. Optionally, a \a regexp expression
+    can be used to further filter the listed packages.
 
     \sa component, finishAllComponentsReset(), finishUpdaterComponentsReset()
 */

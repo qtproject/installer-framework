@@ -225,7 +225,7 @@ public:
     void appendRootComponent(Component *components);
     void appendUpdaterComponent(Component *components);
 
-    QList<Component *> components(ComponentTypes mask) const;
+    QList<Component *> components(ComponentTypes mask, const QString &regexp = QString()) const;
     Component *componentByName(const QString &identifier) const;
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;

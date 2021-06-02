@@ -897,11 +897,10 @@ void PackageManagerCore::rollBackInstallation()
             }
 
             d->m_localPackageHub->writeToDisk();
-            if (isInstaller()) {
-                if (d->m_localPackageHub->packageInfoCount() == 0) {
-                    QFile file(d->m_localPackageHub->fileName());
+            if (isInstaller() && d->m_localPackageHub->packageInfoCount() == 0) {
+                QFile file(d->m_localPackageHub->fileName());
+                if (!file.fileName().isEmpty() && file.exists())
                     file.remove();
-                }
             }
 
             if (becameAdmin)
@@ -1863,8 +1862,9 @@ void PackageManagerCore::appendRootComponent(Component *component)
 
 /*!
     Returns a list of components depending on the component types passed in \a mask.
+    Optionally, a \a regexp expression can be used to further filter the listed packages.
 */
-QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
+QList<Component *> PackageManagerCore::components(ComponentTypes mask, const QString &regexp) const
 {
     QList<Component *> components;
 
@@ -1883,6 +1883,17 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask) const
         if (mask.testFlag(ComponentType::Dependencies))
             components.append(d->m_updaterComponentsDeps);
         // No descendants here, updates are always a flat list and cannot have children!
+    }
+
+    if (!regexp.isEmpty()) {
+        QRegularExpression re(regexp);
+        QList<Component*>::iterator iter = components.begin();
+        while (iter != components.end()) {
+            if (!re.match(iter.i->t()->name()).hasMatch())
+                iter = components.erase(iter);
+            else
+                iter++;
+        }
     }
 
     return components;

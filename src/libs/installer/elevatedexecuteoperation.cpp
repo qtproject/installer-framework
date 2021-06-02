@@ -151,13 +151,15 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
 
     // unix style: when there's an ampersand after the command, it's started detached
     if (args.count() >= 2 && args.last() == QLatin1String("&")) {
+        int returnValue = NoError;
         args.pop_back();
         const bool success = QProcessWrapper::startDetached(args.front(), args.mid(1));
         if (!success) {
             q->setError(UserDefinedError);
             q->setErrorString(tr("Cannot start detached: \"%1\"").arg(callstr));
+            returnValue = Error;
         }
-        return success;
+        return returnValue;
     }
 
     process = new QProcessWrapper();
