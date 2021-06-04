@@ -45,6 +45,7 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QRegExp>
 #include <QtCore/QTranslator>
+#include <QtCore/QRegularExpression>
 
 #include <QApplication>
 
@@ -1628,26 +1629,23 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(humanReadableSize(size), UncompressedSize);
     }
 
+    QString tooltipText;
     const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        QString tooltipText
-                = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
-        if (isUnstable()) {
-            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component can not be installed.");
-        }
-        setData(tooltipText, Qt::ToolTipRole);
+        tooltipText = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
     } else {
-        QString tooltipText
-                = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
-                + tr("Update Info: ") + updateInfo;
-        if (isUnstable()) {
-            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component can not be updated.");
-        }
-
-        setData(tooltipText, Qt::ToolTipRole);
+        tooltipText = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
+            + tr("Update Info: ") + updateInfo;
     }
+    if (isUnstable()) {
+        tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                      "This component can not be installed.");
+    }
+    // replace {external-link}='' fields in component description with proper link tags
+    tooltipText.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
+        QLatin1String("<a href=\"\\1\">\\1</a>"));
+
+    setData(tooltipText, Qt::ToolTipRole);
 }
 
 /*!
