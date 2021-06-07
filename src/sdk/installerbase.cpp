@@ -124,6 +124,8 @@ int InstallerBase::run()
             if (translator->load(translation, QLatin1String(":/translations")))
                 QCoreApplication::instance()->installTranslator(translator.take());
         }
+        QLocale currentLocale(translations.at(0).section(QLatin1Char('_'), 1));
+        emit m_core->defaultTranslationsLoadedForLanguage(currentLocale.language());
     }
 #endif
     {
