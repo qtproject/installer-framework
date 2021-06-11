@@ -230,6 +230,7 @@ unix {
 }
 
 LIBS += -l7z
+CONFIG(libarchive): LIBS += -llibarchive
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 

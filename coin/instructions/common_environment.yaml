@@ -50,6 +50,54 @@ instructions:
       property: host.os
       in_values: [MacOS, Linux]
 
+  - type: EnvironmentVariable
+    variableName: IFW_LZMA_LIBRARY
+    variableValue: "/usr/local/opt/xz/lib/liblzma.a"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: MacOS
+
+  - type: EnvironmentVariable
+    variableName: IFW_ICONV_LIBRARY
+    variableValue: "/usr/local/opt/libiconv/lib/libiconv.a"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: MacOS
+
+  - type: PrependToEnvironmentVariable
+    variableName: C_INCLUDE_PATH
+    variableValue: "/usr/local/opt/xz/include:/usr/local/opt/libiconv/include:"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: MacOS
+
+  - type: PrependToEnvironmentVariable
+    variableName: CPLUS_INCLUDE_PATH
+    variableValue: "/usr/local/opt/xz/include:/usr/local/opt/libiconv/include:"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: MacOS
+
+  - type: PrependToEnvironmentVariable
+    variableName: INCLUDE
+    variableValue: "C:\\Utils\\bzip2-1.0.8;C:\\Utils\\zlib-1.2.11;C:\\Utils\\xz-5.2.5\\src\\liblzma\\api;"
+    enable_if:
+      condition: property
+      property: host.os
+      equals_value: Windows
+
+  - type: PrependToEnvironmentVariable
+    variableName: LIB
+    variableValue: "C:\\Utils\\bzip2-1.0.8;C:\\Utils\\zlib-1.2.11;C:\\Utils\\xz-5.2.5\\windows\\vs2015\\ReleaseMT\\Win32\\liblzma;"
+    enable_if:
+      condition: property
+      property: target.compiler
+      equals_value: MSVC2015
+
   - type: Group
     instructions:
       - type: PrependToEnvironmentVariable

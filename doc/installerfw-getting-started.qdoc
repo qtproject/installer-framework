@@ -112,6 +112,72 @@
     make module-qtbase module-qtdeclarative module-qttools module-qttranslations
     \endcode
 
+    \section2 Configuring Support for Archive File Formats
+
+    The Qt Installer Framework sources contain a redistribution of parts of the
+    libarchive compression and archive library, which requires you to link against
+    additional libraries; \c liblzma, \c zlib, \c libbzip2, and on macOS, \c libiconv.
+
+    The usage of libarchive is optional and can be enabled by adding the libarchive
+    configuration feature to the list of values specified by the \c CONFIG variable. Installers
+    created with this configuration support the (de)compression of 7zip, zip, and tar archive
+    files, with gzip, bzip2, and xz as available compression methods.
+
+    The \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
+    variables can be used to specify the exact library files if required.
+
+    If you omit the feature, the installation of the additional dependencies can be skipped,
+    but created installers will only support the 7zip format.
+
+    \code
+    qmake CONFIG+=libarchive
+    \endcode
+
+    \section3 Installing Dependencies for Windows
+
+    The source archives for the dependencies can be downloaded from:
+
+    \list
+        \li \l https://tukaani.org/xz/
+        \li \l https://zlib.net/
+        \li \l https://www.sourceware.org/bzip2/
+    \endlist
+
+    When building the third party libraries with MSVC, make sure to use the
+    same version that you used to build Qt, and that the compiler option used
+    to select the run-time library matches the configuration options for Qt
+    (debug/release, static/dynamic runtime).
+
+    \section3 Installing Dependencies for Linux
+
+    The required third party compression libraries are likely available from
+    your distribution's package manager repositories.
+
+    For example, on Ubuntu 18.04 you can invoke the following to install the
+    development packages containing headers for the libraries:
+
+    \code
+    sudo apt install zlib1g-dev liblzma-dev libbz2-dev
+    \endcode
+
+    \section3 Installing Dependencies for macOS
+
+    The easiest way to install the missing libraries is with a third party
+    package manager solution, like Homebrew or MacPorts. On macOS 10.15 you
+    should only need to additionally install the libiconv and liblzma libraries.
+
+    On Homebrew this would be:
+
+    \code
+    brew install libiconv xz
+    \endcode
+
+    \section3 Troubleshooting
+
+    For libarchive related compilation errors, you may need to edit the definitions in
+    a configuration header file respective to your platform, which can be found from the
+    'src/libs/3rdparty/libarchive/config/' directory of the Installer Framework sources.
+
     \section2 Setting up Qt Installer Framework
 
     \list 1

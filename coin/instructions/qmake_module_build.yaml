@@ -33,7 +33,7 @@ instructions:
     directory: "{{.BuildDir}}"
 
   - type: ExecuteCommand
-    command: ["{{.InstallDir}}/bin/qmake", "QTPLUGIN.platforms = qminimal qxcb", "INSTALL_PREFIX={{.InstallDir}}", "{{.SourceDir}}"]
+    command: ["{{.InstallDir}}/bin/qmake", "CONFIG+=libarchive", "QTPLUGIN.platforms = qminimal qxcb", "INSTALL_PREFIX={{.InstallDir}}", "{{.SourceDir}}"]
     maxTimeInSeconds: 1800
     maxTimeBetweenOutput: 600
     userMessageOnFailure: "Failed to run qmake, check logs."
@@ -43,7 +43,7 @@ instructions:
       equals_value: Linux
 
   - type: ExecuteCommand
-    command: ["{{.InstallDir}}/bin/qmake", "INSTALL_PREFIX={{.InstallDir}}", "{{.SourceDir}}"]
+    command: ["{{.InstallDir}}/bin/qmake", "CONFIG+=libarchive", "INSTALL_PREFIX={{.InstallDir}}", "{{.SourceDir}}"]
     maxTimeInSeconds: 1800
     maxTimeBetweenOutput: 600
     userMessageOnFailure: "Failed to run qmake, check logs."
