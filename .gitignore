@@ -106,11 +106,11 @@ tools/repocompare/mocinclude.opt
 tools/repogen/mocinclude.opt
 
 # Only include the libs we care about
-vendors/pdm-proto/*/libs/Windows/x64
-vendors/pdm-proto/*/libs/Windows/x32/MD
-vendors/pdm-proto/*/libs/Windows/x32/MT/libprotobuf.lib
-vendors/protobuf/*/lib/*
-!vendors/protobuf/*/lib/libprotobuf.lib
+vendors/pdm-proto/libs/Windows/x64
+vendors/pdm-proto/libs/Windows/x32/MD
+vendors/pdm-proto/libs/Windows/x32/MT/libprotobuf.lib
+vendors/protobuf/lib/*
+!vendors/protobuf/lib/libprotobuf.lib
 
 # Include the eve_installer_crashmon.exe
 !src/libs/installer/resources/eve_installer_crashmon.exe

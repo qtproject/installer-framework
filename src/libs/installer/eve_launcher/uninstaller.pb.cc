@@ -23,7 +23,7 @@ namespace protobuf_eve_5flauncher_2fapplication_2eproto {
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fapplication_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_EventMetadata;
 }  // namespace protobuf_eve_5flauncher_2fapplication_2eproto
 namespace protobuf_eve_5flauncher_2fpdm_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fpdm_2eproto ::google::protobuf::internal::SCCInfo<4> scc_info_Information;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fpdm_2eproto ::google::protobuf::internal::SCCInfo<5> scc_info_Information;
 }  // namespace protobuf_eve_5flauncher_2fpdm_2eproto
 namespace eve_launcher {
 namespace uninstaller {

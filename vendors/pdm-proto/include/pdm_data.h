@@ -1,20 +1,16 @@
 #pragma once
 
-#ifndef DllExport
-
-#ifdef DLL_EXPORT
+#ifdef PDM_DLL_EXPORT
 
 #if _WIN32
-#define DllExport __declspec( dllexport )
+#define PDMDllExport __declspec( dllexport )
 #else
-#define DllExport __attribute__(( visibility( "default" ) ))
+#define PDMDllExport __attribute__(( visibility( "default" ) ))
 #endif
 
 #else
 
-#define DllExport
-
-#endif
+#define PDMDllExport
 
 #endif
 
@@ -31,6 +27,15 @@ namespace PDM
 		BITNESS_64      = 64
 	};
 
+	enum class CPUArchitecture
+	{
+		UNKNOWN = 0,
+		X86,
+		X86_64,
+		ARM,
+		ARM64,
+	};
+
 	enum class OS
 	{
 		UNKNOWN = 0,
@@ -43,7 +48,7 @@ namespace PDM
 	{
 		NONE = 0,
 		UNKNOWN,
-		INTEL,
+		INTEL_STREAM,
 	};
 
 	enum class VulkanSupport
@@ -53,17 +58,19 @@ namespace PDM
 		UNSUPPORTED,
 	};
 
-	struct DllExport CPUInfo
+	struct PDMDllExport CPUInfo
 	{
-		int model{ 0 };
-		int stepping{ 0 };
+		int32_t model{ 0 };
+		int32_t stepping{ 0 };
 		std::string vendor;
 		std::string brand;
 		Bitness bitness;
-		unsigned logicalCoreCount{ 0 };
+		uint32_t logicalCoreCount{ 0 };
+		CPUArchitecture architecture{ CPUArchitecture::UNKNOWN };
+		std::vector<std::string> extensions;
 	};
 
-	struct DllExport MonitorInfo
+	struct PDMDllExport MonitorInfo
 	{
 		std::string name;
 		uint32_t width{};
@@ -73,7 +80,7 @@ namespace PDM
 		uint32_t dpiScaling{};
 	};
 
-	struct DllExport GPUInfo
+	struct PDMDllExport GPUInfo
 	{
 		std::string description;
 		uint32_t vendorID{};
@@ -83,9 +90,23 @@ namespace PDM
 		std::string driverVersionString;
 		std::string driverDate;
 		std::string driverVendor;
+
+		bool operator==(const GPUInfo& rhs)
+		{
+			return
+				description == rhs.description &&
+				vendorID == rhs.vendorID &&
+				deviceID == rhs.deviceID &&
+				revision == rhs.revision &&
+				memory == rhs.memory &&
+				driverVersionString == rhs.driverVersionString &&
+				driverDate == rhs.driverDate &&
+				driverVendor == rhs.driverVendor
+				;
+		}
 	};
 
-	struct DllExport NetworkAdapterInfo
+	struct PDMDllExport NetworkAdapterInfo
 	{
 		std::string name;
 		std::string macAddressString;
@@ -94,13 +115,13 @@ namespace PDM
 		std::vector<uint8_t> uuid;
 	};
 
-	struct DllExport VulkanProperties
+	struct PDMDllExport VulkanProperties
 	{
 		VulkanSupport support{ VulkanSupport::UNKNOWN };
 		std::string version;
 	};
 
-	struct DllExport TimeStamp : tm
+	struct PDMDllExport TimeStamp : tm
 	{
 		bool operator ==(const TimeStamp& other) const
 		{
@@ -116,7 +137,7 @@ namespace PDM
 		}
 	};
 
-	struct DllExport DataField
+	struct PDMDllExport DataField
 	{
 		bool operator ==(const DataField& other) const
 		{
@@ -127,7 +148,7 @@ namespace PDM
 		std::string value;
 	};
 
-	struct DllExport SubItem
+	struct PDMDllExport SubItem
 	{
 		bool operator ==(const SubItem& other) const
 		{
@@ -141,7 +162,7 @@ namespace PDM
 		std::vector<DataField> items;
 	};
 
-	struct DllExport PDMData
+	struct PDMDllExport PDMData
 	{
 		bool operator ==(const PDMData& other) const
 		{

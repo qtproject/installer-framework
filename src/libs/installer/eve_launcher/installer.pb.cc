@@ -26,7 +26,7 @@ namespace protobuf_eve_5flauncher_2finstaller_2eproto {
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2finstaller_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_IPAddress;
 }  // namespace protobuf_eve_5flauncher_2finstaller_2eproto
 namespace protobuf_eve_5flauncher_2fpdm_2eproto {
-extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fpdm_2eproto ::google::protobuf::internal::SCCInfo<4> scc_info_Information;
+extern PROTOBUF_INTERNAL_EXPORT_protobuf_eve_5flauncher_2fpdm_2eproto ::google::protobuf::internal::SCCInfo<5> scc_info_Information;
 }  // namespace protobuf_eve_5flauncher_2fpdm_2eproto
 namespace protobuf_google_2fprotobuf_2fany_2eproto {
 extern PROTOBUF_INTERNAL_EXPORT_protobuf_google_2fprotobuf_2fany_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Any;

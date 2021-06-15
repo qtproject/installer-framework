@@ -9,5 +9,5 @@ namespace platform = eve_public::app::platform;
 
 namespace pdm_proto
 {
-    DllExport platform::Information GetData();
+    platform::Information GetData();
 }
