@@ -71,18 +71,7 @@ int InstallerBase::run()
         f.setItalic(true);
         QInstaller::PackageManagerCore::setVirtualComponentsFont(f);
     }
-    QString controlScript;
-    if (m_parser.isSet(CommandLineOptions::scScriptLong)) {
-        controlScript = m_parser.value(CommandLineOptions::scScriptLong);
-        if (!QFileInfo(controlScript).exists()) {
-            qCDebug(QInstaller::lcInstallerInstallLog) << "Script file does not exist.";
-            return false;
-        }
 
-    } else if (!m_core->settings().controlScript().isEmpty()) {
-        controlScript = QLatin1String(":/metadata/installer-config/")
-            + m_core->settings().controlScript();
-    }
     qCDebug(QInstaller::lcInstallerInstallLog) << "Language:" << QLocale().uiLanguages()
         .value(0, QLatin1String("No UI language set")).toUtf8().constData();
 #ifndef IFW_DISABLE_TRANSLATIONS
@@ -140,7 +129,7 @@ int InstallerBase::run()
     //create the wizard GUI
     TabController controller(nullptr);
     controller.setManager(m_core);
-    controller.setControlScript(controlScript);
+    controller.setControlScript(controlScript());
     if (m_core->isInstaller())
         controller.setGui(new InstallerGui(m_core));
     else

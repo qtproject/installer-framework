@@ -78,6 +78,13 @@ bool CommandLineInterface::initialize()
         // quite safe to assume that command is the first positional argument.
         m_positionalArguments.removeFirst();
     }
+
+    QString ctrlScript = controlScript();
+    if (!ctrlScript.isEmpty()) {
+        m_core->controlScriptEngine()->loadInContext(
+                QLatin1String("Controller"), ctrlScript);
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Loaded control script" << ctrlScript;
+    }
     return true;
 }
 

@@ -47,6 +47,7 @@
 #include <globals.h>
 #include <errors.h>
 #include <loggingutils.h>
+#include <scriptengine.h>
 
 #include <QApplication>
 #include <QDir>
@@ -490,6 +491,21 @@ public:
                 continue;
             qCDebug(QInstaller::lcDeveloperBuild) << "    " << it.filePath().toUtf8().constData();
         }
+    }
+
+    QString controlScript()
+    {
+        QString controlScript = QString();
+        if (m_parser.isSet(CommandLineOptions::scScriptLong)) {
+            controlScript = m_parser.value(CommandLineOptions::scScriptLong);
+            if (!QFileInfo(controlScript).exists())
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Script file does not exist.";
+
+        } else if (!m_core->settings().controlScript().isEmpty()) {
+            controlScript = QLatin1String(":/metadata/installer-config/")
+                + m_core->settings().controlScript();
+        }
+        return controlScript;
     }
 
 private:
