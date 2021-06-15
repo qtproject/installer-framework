@@ -1621,6 +1621,10 @@ bool IntroductionPage::validatePage()
                         error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
                             "management available.") + QLatin1String("</font>");
                     }
+                } else if (core->status() == PackageManagerCore::ForceUpdate) {
+                    // replaces the error string from packagemanagercore
+                    error = tr("There is an important update available. Please select '%1' first")
+                        .arg(m_updateComponents->text().remove(QLatin1Char('&')));
                 }
                 setErrorMessage(error);
             }
