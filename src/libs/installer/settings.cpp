@@ -322,7 +322,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             reader.raiseError(QString::fromLatin1("Element \"%1\" has been defined before.").arg(name));
 
         if (name == scTranslations) {
-            s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), true));
+            s.setTranslations(readArgumentAttributes(reader, parseMode, QLatin1String("Translation"), false));
         } else if (name == scRunProgramArguments) {
             s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
         } else if (name == scProductImages) {

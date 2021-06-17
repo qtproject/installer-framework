@@ -97,7 +97,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x86_64-4.2.0.app"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.2.0.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
@@ -105,18 +105,18 @@ instructions:
         variableName: QT_CODESIGN_IDENTITY_KEY
         variableValue: "A5GTH44LYL"
       - type: ExecuteCommand
-        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x86_64-4.2.0.app"
+        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.2.0.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to sign the ifw installer"
       - type: ExecuteCommand
-        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x86_64-4.2.0.dmg"
+        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.2.0.dmg"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to notarize the ifw installer"
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x86_64-4.2.0.dmg"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x86_64-4.2.0.dmg"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.2.0.dmg"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-4.2.0.dmg"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and

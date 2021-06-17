@@ -47,6 +47,7 @@
 #include <globals.h>
 #include <errors.h>
 #include <loggingutils.h>
+#include <scriptengine.h>
 
 #include <QApplication>
 #include <QDir>
@@ -57,6 +58,7 @@
 #include <QUuid>
 #include <QMessageBox>
 #include <QMetaEnum>
+#include <QTranslator>
 
 template<class T>
 class SDKApp : public T
@@ -92,17 +94,6 @@ public:
     bool init(QString &errorMessage) {
         QString appname = qApp->applicationName();
 
-        if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
-            // It is possible to install an application and thus the maintenance tool into a
-            // directory that requires elevated permission to create a lock file. Since this
-            // cannot be done without requesting credentials from the user, we silently ignore
-            // the fact that we could not create the lock file and check the running processes.
-            if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
-                errorMessage = QObject::tr("Another %1 instance is already running. Wait "
-                        "until it finishes, close it, or restart your system.").arg(qAppName());
-                return false;
-            }
-        }
         QFile binary(binaryFile());
     #ifdef Q_OS_WIN
         // On some admin user installations it is possible that the installer.dat
@@ -203,6 +194,62 @@ public:
             m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString(),
                 QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
+        }
+
+#ifndef IFW_DISABLE_TRANSLATIONS
+        if (!isCommandLineInterface) {
+            const QString directory = QLatin1String(":/translations");
+            // Check if there is a modified translation first to enable people
+            // to easily provide corrected translations to Qt/IFW for their installers
+            const QString newDirectory = QLatin1String(":/translations_new");
+            const QStringList translations = m_core->settings().translations();
+
+            if (translations.isEmpty()) {
+                foreach (const QLocale locale, QLocale().uiLanguages()) {
+                    QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
+                    bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                                      QLatin1String("_"), newDirectory);
+                    if (!qtLoaded)
+                        qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
+                                                      QLatin1String("_"), directory);
+
+                    if (qtLoaded || locale.language() == QLocale::English) {
+                        if (qtLoaded)
+                            QCoreApplication::instance()->installTranslator(qtTranslator.take());
+
+                        QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
+                        bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
+                        if (!ifwLoaded)
+                            ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
+                        if (ifwLoaded)
+                            QCoreApplication::instance()->installTranslator(ifwTranslator.take());
+
+                        // To stop loading other translations it's sufficient that
+                        // qt was loaded successfully or we hit English as system language
+                        emit m_core->defaultTranslationsLoadedForLanguage(locale.language());
+                        break;
+                    }
+                }
+            } else {
+                foreach (const QString &translation, translations) {
+                    QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
+                    if (translator->load(translation, QLatin1String(":/translations")))
+                        QCoreApplication::instance()->installTranslator(translator.take());
+                }
+            }
+        }
+#endif
+
+        if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::Lockfile)) {
+            // It is possible to install an application and thus the maintenance tool into a
+            // directory that requires elevated permission to create a lock file. Since this
+            // cannot be done without requesting credentials from the user, we silently ignore
+            // the fact that we could not create the lock file and check the running processes.
+            if (m_runCheck.isRunning(RunOnceChecker::ConditionFlag::ProcessList)) {
+                errorMessage = QObject::tr("Another %1 instance is already running. Wait "
+                        "until it finishes, close it, or restart your system.").arg(qAppName());
+                return false;
+            }
         }
 
         // From Qt5.8 onwards system proxy is used by default. If Qt is built with
@@ -490,6 +537,21 @@ public:
                 continue;
             qCDebug(QInstaller::lcDeveloperBuild) << "    " << it.filePath().toUtf8().constData();
         }
+    }
+
+    QString controlScript()
+    {
+        QString controlScript = QString();
+        if (m_parser.isSet(CommandLineOptions::scScriptLong)) {
+            controlScript = m_parser.value(CommandLineOptions::scScriptLong);
+            if (!QFileInfo(controlScript).exists())
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Script file does not exist.";
+
+        } else if (!m_core->settings().controlScript().isEmpty()) {
+            controlScript = QLatin1String(":/metadata/installer-config/")
+                + m_core->settings().controlScript();
+        }
+        return controlScript;
     }
 
 private:
