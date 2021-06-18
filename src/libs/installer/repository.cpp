@@ -32,6 +32,7 @@
 #include <QDataStream>
 #include <QFileInfo>
 #include <QStringList>
+#include <QDir>
 
 /*!
     \fn inline uint QInstaller::qHash(const Repository &repository)
@@ -89,7 +90,7 @@ Repository::Repository(const QUrl &url, bool isDefault, bool compressed)
 */
 Repository Repository::fromUserInput(const QString &repositoryUrl, bool compressed)
 {
-    QUrl url = QUrl::fromUserInput(repositoryUrl);
+    QUrl url = QUrl::fromUserInput(repositoryUrl, QDir::currentPath());
     const QStringList supportedSchemes = KDUpdater::FileDownloaderFactory::supportedSchemes();
     if (!supportedSchemes.contains(url.scheme()) && QFileInfo(url.toString()).exists())
         url = QLatin1String("file:///") + url.toString();
