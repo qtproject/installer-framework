@@ -732,6 +732,14 @@ void KDUpdater::FileDownloader::setIgnoreSslErrors(bool ignore)
     d->m_ignoreSslErrors = ignore;
 }
 
+/*!
+    Returns the number of received bytes.
+*/
+qint64 FileDownloader::getBytesReceived() const
+{
+    return d->m_bytesReceived;
+}
+
 // -- KDUpdater::LocalFileDownloader
 
 /*!

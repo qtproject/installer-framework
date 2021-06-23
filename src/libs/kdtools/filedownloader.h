@@ -87,6 +87,8 @@ public:
     bool ignoreSslErrors();
     void setIgnoreSslErrors(bool ignore);
 
+    qint64 getBytesReceived() const;
+
 public Q_SLOTS:
     virtual void cancelDownload();
 

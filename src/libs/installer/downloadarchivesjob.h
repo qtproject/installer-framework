@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "job.h"
 
 #include <QtCore/QPair>
+#include <QtCore/QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 class QTimerEvent;
@@ -56,6 +57,7 @@ public:
 
     int numberOfDownloads() const { return m_archivesDownloaded; }
     void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
+    void setExpectedTotalSize(quint64 total);
 
 Q_SIGNALS:
     void progressChanged(double progress);
@@ -66,6 +68,9 @@ protected:
     void doStart();
     void doCancel();
     void timerEvent(QTimerEvent *event);
+
+public Q_SLOTS:
+    void onDownloadStatusChanged(const QString &status);
 
 protected Q_SLOTS:
     void registerFile();
@@ -92,6 +97,10 @@ private:
     QByteArray m_currentHash;
     double m_lastFileProgress;
     int m_progressChangedTimerId;
+
+    quint64 m_totalSizeToDownload;
+    quint64 m_totalSizeDownloaded;
+    QElapsedTimer m_totalDownloadSpeedTimer;
 };
 
 } // namespace QInstaller

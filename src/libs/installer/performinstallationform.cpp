@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -121,6 +121,8 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_downloadStatus = new QLabel(widget);
     m_downloadStatus->setObjectName(QLatin1String("DownloadStatus"));
     m_downloadStatus->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    m_downloadStatus->setWordWrap(true);
+    m_downloadStatus->setTextFormat(Qt::TextFormat::RichText);
     topLayout->addWidget(m_downloadStatus);
     connect(ProgressCoordinator::instance(), &ProgressCoordinator::downloadStatusChanged, this,
         &PerformInstallationForm::onDownloadStatusChanged);
@@ -282,8 +284,7 @@ bool PerformInstallationForm::isShowingDetails() const
 */
 void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 {
-    m_downloadStatus->setText(m_downloadStatus->fontMetrics().elidedText(status, Qt::ElideRight,
-        m_downloadStatus->width()));
+    m_downloadStatus->setText(status);
 }
 
 /*!

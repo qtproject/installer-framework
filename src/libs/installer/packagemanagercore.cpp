@@ -764,6 +764,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
     QList<QPair<QString, QString> > archivesToDownload;
+    quint64 archivesToDownloadTotalSize = 0;
     QList<Component*> neededComponents = orderedComponentsToInstall();
     foreach (Component *component, neededComponents) {
         // collect all archives to be downloaded
@@ -773,6 +774,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
                 .arg(component->name(), versionFreeString), QString::fromLatin1("%1/%2/%3")
                 .arg(component->repositoryUrl().toString(), component->name(), versionFreeString)));
         }
+        archivesToDownloadTotalSize += component->value(scCompressedSize).toULongLong();
     }
 
     if (archivesToDownload.isEmpty())
@@ -783,6 +785,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     DownloadArchivesJob archivesJob(this);
     archivesJob.setAutoDelete(false);
     archivesJob.setArchivesToDownload(archivesToDownload);
+    archivesJob.setExpectedTotalSize(archivesToDownloadTotalSize);
     connect(this, &PackageManagerCore::installationInterrupted, &archivesJob, &Job::cancel);
     connect(&archivesJob, &DownloadArchivesJob::outputTextChanged,
             ProgressCoordinator::instance(), &ProgressCoordinator::emitLabelAndDetailTextChanged);

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 #include "utils.h"
+#include "fileutils.h"
 
 #include "filedownloader.h"
 #include "filedownloaderfactory.h"
@@ -55,6 +56,8 @@ DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     , m_canceled(false)
     , m_lastFileProgress(0)
     , m_progressChangedTimerId(0)
+    , m_totalSizeToDownload(0)
+    , m_totalSizeDownloaded(0)
 {
     setCapabilities(Cancelable);
 }
@@ -79,10 +82,19 @@ void DownloadArchivesJob::setArchivesToDownload(const QList<QPair<QString, QStri
 }
 
 /*!
+    Sets the expected total size of archives to download to \a total.
+*/
+void DownloadArchivesJob::setExpectedTotalSize(quint64 total)
+{
+    m_totalSizeToDownload = total;
+}
+
+/*!
     \reimp
 */
 void DownloadArchivesJob::doStart()
 {
+    m_totalDownloadSpeedTimer.start();
     m_archivesDownloaded = 0;
     fetchNextArchiveHash();
 }
@@ -198,6 +210,70 @@ void DownloadArchivesJob::timerEvent(QTimerEvent *event)
 }
 
 /*!
+    Builds a textual representation of the total download \a status and
+    emits the \c {downloadStatusChanged()} signal.
+*/
+void DownloadArchivesJob::onDownloadStatusChanged(const QString &status)
+{
+    if (!m_downloader || m_canceled) {
+        emit downloadStatusChanged(status);
+        return;
+    }
+
+    QString extendedStatus;
+    quint64 currentDownloaded = m_totalSizeDownloaded + m_downloader->getBytesReceived();
+    if (m_totalSizeToDownload > 0) {
+        QString bytesReceived = humanReadableSize(currentDownloaded);
+        const QString bytesToReceive = humanReadableSize(m_totalSizeToDownload);
+
+        // remove the unit from the bytesReceived value if bytesToReceive has the same
+        const QString tmp = bytesToReceive.mid(bytesToReceive.indexOf(QLatin1Char(' ')));
+        if (bytesReceived.endsWith(tmp))
+            bytesReceived.chop(tmp.length());
+
+        extendedStatus = tr("%1 of %2").arg(bytesReceived, bytesToReceive);
+    } else if (currentDownloaded > 0) {
+        extendedStatus = tr("%1 downloaded.").arg(humanReadableSize(currentDownloaded));
+    }
+
+    const quint64 totalDownloadSpeed = currentDownloaded
+        / double(m_totalDownloadSpeedTimer.elapsed() / 1000);
+
+    if (m_totalSizeToDownload > 0 && totalDownloadSpeed > 0) {
+        const qint64 time = (m_totalSizeToDownload - currentDownloaded) / totalDownloadSpeed;
+
+        int s = time % 60;
+        const int d = time / 86400;
+        const int h = (time / 3600) - (d * 24);
+        const int m = (time / 60) - (d * 1440) - (h * 60);
+
+        QString days;
+        if (d > 0)
+            days = tr("%n day(s), ", "", d);
+
+        QString hours;
+        if (h > 0)
+            hours = tr("%n hour(s), ", "", h);
+
+        QString minutes;
+        if (m > 0)
+            minutes = tr("%n minute(s)", "", m);
+
+        QString seconds;
+        if (s >= 0 && minutes.isEmpty()) {
+            s = (s <= 0 ? 1 : s);
+            seconds = tr("%n second(s)", "", s);
+        }
+        extendedStatus += tr(" - %1%2%3%4 remaining.").arg(days, hours, minutes, seconds);
+    } else {
+        extendedStatus += tr(" - unknown time remaining.");
+    }
+
+    emit downloadStatusChanged(QLatin1String("Archive: ") + status
+        + QLatin1String("<br>Total: ") + extendedStatus);
+}
+
+/*!
     Registers the just downloaded file in the installer's file system.
 */
 void DownloadArchivesJob::registerFile()
@@ -224,6 +300,7 @@ void DownloadArchivesJob::registerFile()
         }
     } else {
         ++m_archivesDownloaded;
+        m_totalSizeDownloaded += QFile(m_downloader->downloadedFileName()).size();
         if (m_progressChangedTimerId) {
             killTimer(m_progressChangedTimerId);
             m_progressChangedTimerId = 0;
@@ -295,7 +372,7 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
             connect(downloader, &FileDownloader::downloadCanceled, this, &DownloadArchivesJob::downloadCanceled);
             connect(downloader, &FileDownloader::downloadAborted, this, &DownloadArchivesJob::downloadFailed,
                 Qt::QueuedConnection);
-            connect(downloader, &FileDownloader::downloadStatus, this, &DownloadArchivesJob::downloadStatusChanged);
+            connect(downloader, &FileDownloader::downloadStatus, this, &DownloadArchivesJob::onDownloadStatusChanged);
 
             if (FileDownloaderFactory::isSupportedScheme(scheme)) {
                 downloader->setDownloadedFileName(component->localTempPath() + QLatin1Char('/')
