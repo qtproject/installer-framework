@@ -515,14 +515,6 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>internal code: %1</source>
-        <translation>内部代码：%1</translation>
-    </message>
-    <message>
-        <source>not enough memory</source>
-        <translation>内存不足</translation>
-    </message>
-    <message>
         <source>Error: %1</source>
         <translation>错误：%1</translation>
     </message>
@@ -585,6 +577,14 @@
     <message>
         <source>Unknown exception caught (%1)</source>
         <translation>捕获到未知异常(%1)</translation>
+    </message>
+    <message>
+        <source>Internal code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -771,15 +771,15 @@
         <translation>无法解决 %1 中的 isDefault</translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Update Info: </source>
         <translation>更新信息： </translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <source>There was an error loading the selected component. This component cannot be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component cannot be updated.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -829,22 +829,12 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Def&amp;ault</source>
         <translation>默认(&amp;A)</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>reset to already installed components</comment>
-        <translation>Alt+R</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
@@ -855,22 +845,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
         <source>&amp;Select All</source>
         <translation>全选(&amp;S)</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>deselect all components</comment>
-        <translation>Alt+D</translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
@@ -886,10 +866,6 @@
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories to selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -922,6 +898,30 @@
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Select default components</comment>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Reset to already installed components</comment>
+        <translation type="unfinished">Alt+R</translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <comment>Select all components</comment>
+        <translation type="unfinished">Alt+S</translation>
+    </message>
+    <message>
+        <source>Alt+D</source>
+        <comment>Deselect all components</comment>
+        <translation type="unfinished">Alt+D</translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1406,11 +1406,6 @@ Error while loading %2</source>
         <translation>许可协议</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>agree license</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>请阅读以下许可协议。 您必须接受此协议中的条款才能继续安装。</translation>
     </message>
@@ -1425,6 +1420,11 @@ Error while loading %2</source>
     <message>
         <source>I accept the licenses.</source>
         <translation>我接受这些许可。</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Agree license</comment>
+        <translation type="unfinished">Alt+A</translation>
     </message>
 </context>
 <context>
@@ -1476,10 +1476,6 @@ Error while loading %2</source>
         <translation>解压压缩资料档案库。 这可能需要一些时间...</translation>
     </message>
     <message>
-        <source>Meta data download canceled.</source>
-        <translation>元数据下载已取消。</translation>
-    </message>
-    <message>
         <source>Unknown exception during extracting.</source>
         <translation>提取过程中出现未知异常。</translation>
     </message>
@@ -1527,6 +1523,10 @@ Error while loading %2</source>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>无法打开文件“%1”进行读取：%2</translation>
     </message>
+    <message>
+        <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1547,10 +1547,6 @@ Downloading packages...</source>
     <message>
         <source>All downloads finished.</source>
         <translation>所有下载均已完成。</translation>
-    </message>
-    <message>
-        <source>Cancelling the Installer</source>
-        <translation>正在取消安装程序</translation>
     </message>
     <message>
         <source>Authentication Error</source>
@@ -1656,11 +1652,6 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Component %1 already installed
 </source>
         <translation type="unfinished"></translation>
@@ -1692,18 +1683,6 @@ Do you want to continue?</source>
         <translation>错误</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>没有足够的磁盘空间来存储临时文件和安装。%1 可用，但至少需要 %2。</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>没有足够的磁盘空间来存储所有选定的组件! %1 可用，但至少需要 %2。</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>没有足够的磁盘空间来存储临时文件! %1 可用，但至少需要 %2。</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1716,10 +1695,6 @@ Do you want to continue?</source>
         <translation>安装程序将使用 %1 的磁盘空间。</translation>
     </message>
     <message>
-        <source>invalid</source>
-        <translation>无效</translation>
-    </message>
-    <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1728,12 +1703,37 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is descendant of a virtual component %2.
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceling the Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1884,14 +1884,6 @@ Update aborted!</source>
 更新已中止!</translation>
     </message>
     <message>
-        <source>Uninstallation completed successfully.</source>
-        <translation>成功卸载。</translation>
-    </message>
-    <message>
-        <source>Uninstallation aborted.</source>
-        <translation>卸载已中止。</translation>
-    </message>
-    <message>
         <source>Cannot create target directory for installer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1944,20 +1936,6 @@ Installing component %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot prepare uninstall</source>
-        <translation>无法准备卸载</translation>
-    </message>
-    <message>
-        <source>Cannot start uninstall</source>
-        <translation>无法开始卸载</translation>
-    </message>
-    <message>
-        <source>Error during uninstallation process:
-%1</source>
-        <translation>卸载过程中出现错误：
-%1</translation>
-    </message>
-    <message>
         <source>Unknown error</source>
         <translation>未知错误</translation>
     </message>
@@ -1985,6 +1963,27 @@ Installing component %1</source>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>检测到组件“%1”和“%2”之间的依赖项循环。</translation>
     </message>
+    <message>
+        <source>Removal completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removal aborted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot prepare removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error during removal process:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -1999,10 +1998,6 @@ Installing component %1</source>
     <message>
         <source>Do you want to cancel the installation process?</source>
         <translation>是否要取消安装过程?</translation>
-    </message>
-    <message>
-        <source>Do you want to cancel the uninstallation process?</source>
-        <translation>是否要取消卸载过程?</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
@@ -2037,6 +2032,10 @@ Installing component %1</source>
 Please copy the installer to a local drive</source>
         <translation>无法从网络位置进行安装。
 请将安装程序复制到本地驱动器</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the removal process?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2248,12 +2247,12 @@ Please copy the installer to a local drive</source>
         <translation>操作 %1 中所需的安装程序对象为空。</translation>
     </message>
     <message>
-        <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>自动重启：仅在更新程序或包管理器模式下有效。</translation>
-    </message>
-    <message>
         <source>Self Restart: Invalid arguments</source>
         <translation>自动重启：无效的参数</translation>
+    </message>
+    <message>
+        <source>Self Restart: Only valid within updater or package manager mode.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2286,8 +2285,8 @@ Please copy the installer to a local drive</source>
         <translation>使用参数“%3”调用 %2 时缺少参数“%1”。</translation>
     </message>
     <message>
-        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>使用参数“%2”调用“%1”的当前方法参数不受支持。 请使用 set、remove、add_array_value 或 remove_array_value。</translation>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value, or remove_array_value.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2331,11 +2330,6 @@ Please copy the installer to a local drive</source>
         <translation>请指定将安装 %1 的目录。</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>browse file system to choose a file</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
         <source>B&amp;rowse...</source>
         <translation>浏览(&amp;R)...</translation>
     </message>
@@ -2346,6 +2340,11 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Select Installation Folder</source>
         <translation>选择安装文件夹</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Browse file system to choose a file</comment>
+        <translation type="unfinished">Alt+R</translation>
     </message>
 </context>
 <context>
@@ -2394,10 +2393,6 @@ Please copy the installer to a local drive</source>
         <translation>另一个 %1 实例已运行。 请等待至完成、关闭或重新启动系统。</translation>
     </message>
     <message>
-        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot start installer binary as updater.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2441,22 +2436,16 @@ Please copy the installer to a local drive</source>
         <source>Incorrect arguments for %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
     <message>
         <source>Cannot get authorization.</source>
         <translation>无法获取授权。</translation>
-    </message>
-    <message>
-        <source>Cannot get authorization that is needed for continuing the installation.
-
-Please start the setup program as a user with the appropriate rights.
-Or accept the elevation of access rights if being asked.</source>
-        <translation>无法获得继续安装所需的授权。
-
-请以具有适当权限的用户身份启动安装程序。
-或者在被询问时接受访问权限的提升。</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
@@ -2471,6 +2460,13 @@ as a user with the appropriate rights and then clicking OK.</source>
 %1
 
 以具有适当权限的用户身份使用回退解决方案，然后按“确定”。</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights,
+or accept the elevation of access rights if being asked.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2566,10 +2562,6 @@ as a user with the appropriate rights and then clicking OK.</source>
         <translation>添加密码以在服务器端进行身份验证。</translation>
     </message>
     <message>
-        <source>The servers URL that contains a valid repository.</source>
-        <translation>服务器 URL 包含有效的资料档案库。</translation>
-    </message>
-    <message>
         <source>An error occurred while testing this repository.</source>
         <translation>测试此资料档案库时出错。</translation>
     </message>
@@ -2623,6 +2615,10 @@ as a user with the appropriate rights and then clicking OK.</source>
     </message>
     <message>
         <source>Deselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The server&apos;s URL that contains a valid repository.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

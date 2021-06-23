@@ -520,14 +520,6 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>internal code: %1</source>
-        <translation>codi intern: %1</translation>
-    </message>
-    <message>
-        <source>not enough memory</source>
-        <translation>no hi ha prou memòria</translation>
-    </message>
-    <message>
         <source>Error: %1</source>
         <translation>Error: %1</translation>
     </message>
@@ -590,6 +582,14 @@
     <message>
         <source>Unknown exception caught (%1)</source>
         <translation>S&apos;ha produït una excepció desconeguda (%1)</translation>
+    </message>
+    <message>
+        <source>Internal code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -776,16 +776,16 @@
         <translation>No s&apos;ha pogut resoldre «isDefault» en %1</translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be installed.</source>
-        <translation>S&apos;ha produït un error en carregar el component seleccionat. Aquest component no es pot instal·lar.</translation>
-    </message>
-    <message>
         <source>Update Info: </source>
         <translation>Informació de l&apos;actualització: </translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be updated.</source>
-        <translation>S&apos;ha produït un error en carregar el component seleccionat. Aquest component no es pot actualitzar.</translation>
+        <source>There was an error loading the selected component. This component cannot be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component cannot be updated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -834,22 +834,12 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Def&amp;ault</source>
         <translation>Predetermin&amp;at</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>reset to already installed components</comment>
-        <translation>Alt+R</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
@@ -860,22 +850,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
         <source>&amp;Select All</source>
         <translation>&amp;Selecciona-ho tot</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>deselect all components</comment>
-        <translation>Alt+D</translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
@@ -891,10 +871,6 @@
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories to selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -928,6 +904,30 @@
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Cal que actualitzeu els components obligatoris abans de poder seleccionar altres components per actualitzar-los.</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Select default components</comment>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Reset to already installed components</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <comment>Select all components</comment>
+        <translation type="unfinished">Alt+S</translation>
+    </message>
+    <message>
+        <source>Alt+D</source>
+        <comment>Deselect all components</comment>
+        <translation type="unfinished">Alt+D</translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1437,11 +1437,6 @@ Error en descarregar %2</translation>
         <translation>Acord de llicència</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>agree license</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Llegiu aquest acord de llicència. Caldrà acceptar els termes continguts en aquest acord abans de continuar amb la instal·lació.</translation>
     </message>
@@ -1456,6 +1451,11 @@ Error en descarregar %2</translation>
     <message>
         <source>I accept the licenses.</source>
         <translation>Accepto les llicències.</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Agree license</comment>
+        <translation type="unfinished">Alt+A</translation>
     </message>
 </context>
 <context>
@@ -1507,10 +1507,6 @@ Error en descarregar %2</translation>
         <translation>S&apos;estan desempaquetant els repositoris comprimits. Aquesta operació pot trigar una estona...</translation>
     </message>
     <message>
-        <source>Meta data download canceled.</source>
-        <translation>S&apos;ha cancel·lat la descàrrega de les metadades.</translation>
-    </message>
-    <message>
         <source>Unknown exception during extracting.</source>
         <translation>S&apos;ha produït una excepció desconeguda durant l&apos;extracció.</translation>
     </message>
@@ -1558,6 +1554,10 @@ Error en descarregar %2</translation>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
     </message>
+    <message>
+        <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1578,10 +1578,6 @@ S&apos;estan descarregant els paquets...</translation>
     <message>
         <source>All downloads finished.</source>
         <translation>S&apos;han finalitzat totes les descàrregues.</translation>
-    </message>
-    <message>
-        <source>Cancelling the Installer</source>
-        <translation>S&apos;ha cancel·lant l&apos;Instal·lador</translation>
     </message>
     <message>
         <source>Authentication Error</source>
@@ -1687,11 +1683,6 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Component %1 already installed
 </source>
         <translation type="unfinished"></translation>
@@ -1719,18 +1710,6 @@ Voleu continuar?</translation>
         <translation>Error en elevar els drets d&apos;accés.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>No hi ha prou espai en el disc per a emmagatzemar els fitxers temporals i la instal·lació. Es disposa d&apos;un espai de %1 i almenys es requereixin %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>No hi ha prou espai en el disc per a emmagatzemar tots els components seleccionats. Es disposa d&apos;un espai de %1 i almenys es requereixin %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>No hi ha prou espai en el disc per a emmagatzemar els fitxers temporals. Es disposa d&apos;un espai de %1 i almenys es requereixin %2.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>El volum seleccionat per a la instal·lació sembla que té espai suficient per a la instal·lació, però després quedarà menys de l&apos;1% de l&apos;espai disponible del volum.</translation>
     </message>
@@ -1747,10 +1726,6 @@ Voleu continuar?</translation>
         <translation>Error</translation>
     </message>
     <message>
-        <source>invalid</source>
-        <translation>no vàlid</translation>
-    </message>
-    <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1759,12 +1734,37 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is descendant of a virtual component %2.
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceling the Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1915,14 +1915,6 @@ Update aborted!</source>
 S&apos;ha interromput l&apos;actualització!</translation>
     </message>
     <message>
-        <source>Uninstallation completed successfully.</source>
-        <translation>La desinstal·lació s&apos;ha completat correctament.</translation>
-    </message>
-    <message>
-        <source>Uninstallation aborted.</source>
-        <translation>S&apos;ha interromput la desinstal·lació.</translation>
-    </message>
-    <message>
         <source>Cannot create target directory for installer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1975,20 +1967,6 @@ S&apos;instal·la el component %1</translation>
         <translation>Fet</translation>
     </message>
     <message>
-        <source>Cannot prepare uninstall</source>
-        <translation>No s&apos;ha pogut preparar la desinstal·lació</translation>
-    </message>
-    <message>
-        <source>Cannot start uninstall</source>
-        <translation>No s&apos;ha pogut iniciar la desinstal·lació</translation>
-    </message>
-    <message>
-        <source>Error during uninstallation process:
-%1</source>
-        <translation>Error durant el procés de desinstal·lació:
-%1</translation>
-    </message>
-    <message>
         <source>Unknown error</source>
         <translation>Error desconegut</translation>
     </message>
@@ -2016,6 +1994,27 @@ S&apos;instal·la el component %1</translation>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>S&apos;ha detectat un cicle de dependència entre components «%1» i «%2».</translation>
     </message>
+    <message>
+        <source>Removal completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removal aborted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot prepare removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error during removal process:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2030,10 +2029,6 @@ S&apos;instal·la el component %1</translation>
     <message>
         <source>Do you want to cancel the installation process?</source>
         <translation>Voleu cancel·lar el procés d&apos;instal·lació?</translation>
-    </message>
-    <message>
-        <source>Do you want to cancel the uninstallation process?</source>
-        <translation>Voleu cancel·lar el procés de desinstal·lació?</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
@@ -2068,6 +2063,10 @@ S&apos;instal·la el component %1</translation>
 Please copy the installer to a local drive</source>
         <translation>No és possible instal·lar des d&apos;una ubicació a la xarxa.
 Copieu l&apos;instal·lador en una unitat local</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the removal process?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2279,12 +2278,12 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>L&apos;objecte de l&apos;instal·lador necessari en l&apos;operació %1 està buit.</translation>
     </message>
     <message>
-        <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>Reinici automàtic: només és vàlid en els modes Actualitzador o Gestor de paquets.</translation>
-    </message>
-    <message>
         <source>Self Restart: Invalid arguments</source>
         <translation>Reinici automàtic: arguments no vàlids</translation>
+    </message>
+    <message>
+        <source>Self Restart: Only valid within updater or package manager mode.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2317,8 +2316,8 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Manquen arguments «%1» que cridin a %2 amb els arguments «%3».</translation>
     </message>
     <message>
-        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>L&apos;argument del mètode actual que crida a «%1» amb els arguments «%2» no està admès. Useu «set», «remove», «add_array_value» o «remove_array_value».</translation>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value, or remove_array_value.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2362,11 +2361,6 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Especifiqueu el directori en el que s&apos;instal·larà %1.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>browse file system to choose a file</comment>
-        <translation>Alt+X</translation>
-    </message>
-    <message>
         <source>B&amp;rowse...</source>
         <translation>E&amp;xplora...</translation>
     </message>
@@ -2377,6 +2371,11 @@ Copieu l&apos;instal·lador en una unitat local</translation>
     <message>
         <source>Select Installation Folder</source>
         <translation>Selecciona la carpeta d&apos;instal·lació</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Browse file system to choose a file</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2425,10 +2424,6 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Ja s&apos;està executant una altra instància de %1. Espereu a que finalitzi, tanqueu-la o reinicieu el sistema.</translation>
     </message>
     <message>
-        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation>Assegureu-vos que l&apos;usuari actual té accés de lectura al fitxer «%1» o intenteu executar %2 com a administrador.</translation>
-    </message>
-    <message>
         <source>Cannot start installer binary as updater.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2472,22 +2467,16 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <source>Incorrect arguments for %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
     <message>
         <source>Cannot get authorization.</source>
         <translation>No s&apos;ha pogut obtenir l&apos;autorització.</translation>
-    </message>
-    <message>
-        <source>Cannot get authorization that is needed for continuing the installation.
-
-Please start the setup program as a user with the appropriate rights.
-Or accept the elevation of access rights if being asked.</source>
-        <translation>No s&apos;ha pogut obtenir l&apos;autorització necessària per continuar la instal·lació.
-
-Inicieu el programa de configuració amb un usuari amb els permisos apropiats.
-O accepteu l&apos;elevació dels drets d&apos;accés si es demana.</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
@@ -2503,6 +2492,13 @@ Interrompeu la instal·lació o useu la solució alternativa de reserva executan
 
 amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
 </translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights,
+or accept the elevation of access rights if being asked.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2606,10 +2602,6 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
         <translation>Afegiu la contrasenya per a autenticar en el servidor.</translation>
     </message>
     <message>
-        <source>The servers URL that contains a valid repository.</source>
-        <translation>Els URL dels servidors que contenen un repositori vàlid.</translation>
-    </message>
-    <message>
         <source>An error occurred while testing this repository.</source>
         <translation>S&apos;ha produït un error en provar aquest repositori.</translation>
     </message>
@@ -2656,6 +2648,10 @@ amb un usuari amb els permisos apropiats i després feu clic a D&apos;acord.
     <message>
         <source>User defined repositories</source>
         <translation>Repositoris definits per l&apos;usuari</translation>
+    </message>
+    <message>
+        <source>The server&apos;s URL that contains a valid repository.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

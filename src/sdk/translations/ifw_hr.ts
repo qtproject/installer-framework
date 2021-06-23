@@ -153,10 +153,6 @@
         <translation>Dodaj lozinku za autentifikaciju na poslužitelju.</translation>
     </message>
     <message>
-        <source>The servers URL that contains a valid repository.</source>
-        <translation>URL poslužitelja koji sadrži valjano spremište.</translation>
-    </message>
-    <message>
         <source>An error occurred while testing this repository.</source>
         <translation>Došlo je do greške prilikom testiranja ovog spremišta.</translation>
     </message>
@@ -212,6 +208,10 @@
         <source>Deselect All</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The server&apos;s URL that contains a valid repository.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -222,10 +222,6 @@
     <message>
         <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
         <translation>Već je pokrenuta jedna instanca za %1. Pričekaj da završi, zatvori je ili ponovo pokreni sustav.</translation>
-    </message>
-    <message>
-        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot start installer binary as updater.</source>
@@ -269,6 +265,10 @@
     </message>
     <message>
         <source>Incorrect arguments for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -466,15 +466,15 @@
         <translation>Nije moguće razriješiti isDefault u %1</translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Update Info: </source>
         <translation>Podaci nadogradnje: </translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be updated.</source>
+        <source>There was an error loading the selected component. This component cannot be installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There was an error loading the selected component. This component cannot be updated.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -977,14 +977,6 @@ Greška prilikom učitavanja %2</translation>
 <context>
     <name>Lib7z</name>
     <message>
-        <source>internal code: %1</source>
-        <translation>interni kȏd: %1</translation>
-    </message>
-    <message>
-        <source>not enough memory</source>
-        <translation>nedovoljno memorije</translation>
-    </message>
-    <message>
         <source>Error: %1</source>
         <translation>Greška: %1</translation>
     </message>
@@ -1047,6 +1039,14 @@ Greška prilikom učitavanja %2</translation>
     <message>
         <source>Unknown exception caught (%1)</source>
         <translation>Nepoznata iznimka (%1)</translation>
+    </message>
+    <message>
+        <source>Internal code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1136,10 +1136,6 @@ Greška prilikom učitavanja %2</translation>
         <translation>Raspakiravanje komprimiranih spremišta. Može ponešto potrajati …</translation>
     </message>
     <message>
-        <source>Meta data download canceled.</source>
-        <translation>Prekinuto je preuzimanje meta podataka.</translation>
-    </message>
-    <message>
         <source>Unknown exception during extracting.</source>
         <translation>Nepoznata iznimka prilikom raspakiravanja.</translation>
     </message>
@@ -1186,6 +1182,10 @@ Greška prilikom učitavanja %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Nije moguće otvoriti datoteku &quot;%1&quot; za učitavanje: %2</translation>
+    </message>
+    <message>
+        <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1262,10 +1262,6 @@ Preuzimanje paketa …</translation>
     <message>
         <source>All downloads finished.</source>
         <translation>Sva preuzimanja su dovršena.</translation>
-    </message>
-    <message>
-        <source>Cancelling the Installer</source>
-        <translation>Program za instaliranje se prekida</translation>
     </message>
     <message>
         <source>Authentication Error</source>
@@ -1371,11 +1367,6 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Component %1 already installed
 </source>
         <translation type="unfinished"></translation>
@@ -1407,18 +1398,6 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
         <translation>Greška</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>Nedovoljno mjesta na disku za spremanje privremenih datoteka i instalacije. Dostupno %1, barem potrebno %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>Nedovoljno mjesta na disku za spremanje odabranih komponenata. Dostupno %1, barem potrebno %2.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>Nedovoljno mjesta na disku za spremanje privremenih datoteka! Dostupno %1, barem potrebno %2.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1431,10 +1410,6 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
         <translation>Instalacija će zauzeti otprilike %1 na tvom tvrdom disku.</translation>
     </message>
     <message>
-        <source>invalid</source>
-        <translation>nevaljano</translation>
-    </message>
-    <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1443,12 +1418,37 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is descendant of a virtual component %2.
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceling the Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1599,14 +1599,6 @@ Update aborted!</source>
 Aktualiziranje je prekinuto!</translation>
     </message>
     <message>
-        <source>Uninstallation completed successfully.</source>
-        <translation>Deinstaliranje je uspješno dovršeno.</translation>
-    </message>
-    <message>
-        <source>Uninstallation aborted.</source>
-        <translation>Deinstaliranje je prekinuto.</translation>
-    </message>
-    <message>
         <source>Cannot create target directory for installer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1659,20 +1651,6 @@ Instaliranje komponente %1</translation>
         <translation>Gotovo</translation>
     </message>
     <message>
-        <source>Cannot prepare uninstall</source>
-        <translation>Nije moguće pripremiti deinstaliranje</translation>
-    </message>
-    <message>
-        <source>Cannot start uninstall</source>
-        <translation>Nije moguće pokrenuti deinstaliranje</translation>
-    </message>
-    <message>
-        <source>Error during uninstallation process:
-%1</source>
-        <translation>Greška prilikom deinstalacijskog procesa:
-%1</translation>
-    </message>
-    <message>
         <source>Unknown error</source>
         <translation>Nepoznata greška</translation>
     </message>
@@ -1700,6 +1678,27 @@ Instaliranje komponente %1</translation>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Ustanovljena je ovisnost između komponenata &quot;%1&quot; i &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Removal completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removal aborted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot prepare removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error during removal process:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -1714,10 +1713,6 @@ Instaliranje komponente %1</translation>
     <message>
         <source>Do you want to cancel the installation process?</source>
         <translation>Želiš li prekinuti proces instaliranja?</translation>
-    </message>
-    <message>
-        <source>Do you want to cancel the uninstallation process?</source>
-        <translation>Želiš li prekinuti proces deinstaliranja?</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
@@ -1752,6 +1747,10 @@ Instaliranje komponente %1</translation>
 Please copy the installer to a local drive</source>
         <translation>Nije moguće instalirati s mrežnog mjesta.
 Kopiraj program za instaliranje na računalo</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the removal process?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1804,11 +1803,6 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Licencni ugovor</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>agree license</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Pročitaj ugovor o licenci. Za nastavljanje s instaliranjem, moraš prihvatiti uvjete sadržane u ovom ugovoru.</translation>
     </message>
@@ -1824,14 +1818,14 @@ Kopiraj program za instaliranje na računalo</translation>
         <source>I accept the licenses.</source>
         <translation>Prihvaćam licencu.</translation>
     </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Agree license</comment>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
-    <message>
-        <source>Alt+A</source>
-        <comment>select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
     <message>
         <source>Def&amp;ault</source>
         <translation>St&amp;andardne</translation>
@@ -1839,11 +1833,6 @@ Kopiraj program za instaliranje na računalo</translation>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>reset to already installed components</comment>
-        <translation>Alt+R</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
@@ -1854,22 +1843,12 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
         <source>&amp;Select All</source>
         <translation>Odaberi &amp;sve</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>deselect all components</comment>
-        <translation>Alt+D</translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
@@ -1885,10 +1864,6 @@ Kopiraj program za instaliranje na računalo</translation>
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories to selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1923,6 +1898,30 @@ Kopiraj program za instaliranje na računalo</translation>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Select default components</comment>
+        <translation type="unfinished">Alt+A</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Reset to already installed components</comment>
+        <translation type="unfinished">Alt+R</translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <comment>Select all components</comment>
+        <translation type="unfinished">Alt+S</translation>
+    </message>
+    <message>
+        <source>Alt+D</source>
+        <comment>Deselect all components</comment>
+        <translation type="unfinished">Alt+D</translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
@@ -1935,11 +1934,6 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Odredi mapu, gdje će se %1 instalirati.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>browse file system to choose a file</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
         <source>B&amp;rowse...</source>
         <translation>P&amp;retraži …</translation>
     </message>
@@ -1950,6 +1944,11 @@ Kopiraj program za instaliranje na računalo</translation>
     <message>
         <source>Select Installation Folder</source>
         <translation>Odaberi mapu za instaliranje</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Browse file system to choose a file</comment>
+        <translation type="unfinished">Alt+R</translation>
     </message>
 </context>
 <context>
@@ -2109,16 +2108,6 @@ Kopiraj program za instaliranje na računalo</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
-
-Please start the setup program as a user with the appropriate rights.
-Or accept the elevation of access rights if being asked.</source>
-        <translation>Nije moguće dobiti autorizaciju, koja je potrebna za nastavljanje s instaliranjem.
-
-Pokreni program za posatvljanje, u modusu korisnika s odgovarajućim pravima.
-Ili dozvoli podizanje korisničkih prava.</translation>
-    </message>
-    <message>
-        <source>Cannot get authorization that is needed for continuing the installation.
  Either abort the installation or use the fallback solution by running
 
 %1
@@ -2130,6 +2119,13 @@ as a user with the appropriate rights and then clicking OK.</source>
 %1
 
 u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights,
+or accept the elevation of access rights if being asked.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2184,12 +2180,12 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
         <translation>Instalacijski objekt, koji je potreban u operaciji &quot;%1&quot; je prazan.</translation>
     </message>
     <message>
-        <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>Samopokretanje: Valjano je samo u modusima za aktualiziranje ili za upravljanje paketima.</translation>
-    </message>
-    <message>
         <source>Self Restart: Invalid arguments</source>
         <translation>Samopokretanje: Nevaljani argumenti</translation>
+    </message>
+    <message>
+        <source>Self Restart: Only valid within updater or package manager mode.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2210,8 +2206,8 @@ u modusu korisnika s odgovarajućim pravima. Zatim klikni &quot;U redu&quot;.</t
         <translation>Nedostajući argumenti &quot;%1&quot; poziva %2 s argumentima &quot;%3&quot;.</translation>
     </message>
     <message>
-        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>Trenutačna metoda, pozivanje &quot;%1&quot; s argumentima &quot;%2&quot;, nije podržana. Umjesto toga koristi set, remove, add_array_value ili remove_array_value.</translation>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value, or remove_array_value.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -520,14 +520,6 @@
 <context>
     <name>Lib7z</name>
     <message>
-        <source>internal code: %1</source>
-        <translation>intern kode: %1</translation>
-    </message>
-    <message>
-        <source>not enough memory</source>
-        <translation>ikke nok hukommelse</translation>
-    </message>
-    <message>
         <source>Error: %1</source>
         <translation>Fejl: %1</translation>
     </message>
@@ -590,6 +582,14 @@
     <message>
         <source>Unknown exception caught (%1)</source>
         <translation>Ukendt undtagelse fanget (%1)</translation>
+    </message>
+    <message>
+        <source>Internal code: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough memory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -780,12 +780,12 @@
         <translation>Opdateringsinfo: </translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be installed.</source>
-        <translation>Der opstod en fejl under indlæsning af den valgte komponent. Komponentet kan ikke installeres.</translation>
+        <source>There was an error loading the selected component. This component cannot be installed.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>There was an error loading the selected component. This component can not be updated.</source>
-        <translation>Der opstod en fejl under indlæsning af den valgte komponent. Komponentet kan ikke opdateres.</translation>
+        <source>There was an error loading the selected component. This component cannot be updated.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -834,22 +834,12 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>select default components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
         <source>Def&amp;ault</source>
         <translation>&amp;Standard</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>reset to already installed components</comment>
-        <translation>Alt+N</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
@@ -860,22 +850,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>select all components</comment>
-        <translation>Alt+V</translation>
-    </message>
-    <message>
         <source>&amp;Select All</source>
         <translation>&amp;Vælg alle</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>deselect all components</comment>
-        <translation>Alt+F</translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
@@ -887,10 +867,6 @@
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories to selection.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -927,6 +903,30 @@
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Select default components</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Reset to already installed components</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <comment>Select all components</comment>
+        <translation type="unfinished">Alt+V</translation>
+    </message>
+    <message>
+        <source>Alt+D</source>
+        <comment>Deselect all components</comment>
+        <translation type="unfinished">Alt+F</translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1415,11 +1415,6 @@ Fejl under indlæsning af %2</translation>
         <translation>Licensaftale</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>agree license</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
         <translation>Læs venligst følgende licensaftale. Du skal acceptere vilkårene i aftalen for at fortsætte installationen.</translation>
     </message>
@@ -1434,6 +1429,11 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>I accept the licenses.</source>
         <translation>Jeg accepterer licenserne.</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Agree license</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1479,10 +1479,6 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>Preparing meta information download...</source>
         <translation>Forbedreder download af metainformation...</translation>
-    </message>
-    <message>
-        <source>Meta data download canceled.</source>
-        <translation>Download af metadata annulleret.</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
@@ -1536,6 +1532,10 @@ Fejl under indlæsning af %2</translation>
         <source>Retrieving meta information from remote repository... </source>
         <translation>Henter metainformation fra fjern-repository... </translation>
     </message>
+    <message>
+        <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1556,10 +1556,6 @@ Downloader pakker...</translation>
     <message>
         <source>All downloads finished.</source>
         <translation>Alle downloads færdige.</translation>
-    </message>
-    <message>
-        <source>Cancelling the Installer</source>
-        <translation>Annullerer installeren</translation>
     </message>
     <message>
         <source>Authentication Error</source>
@@ -1665,11 +1661,6 @@ Vil du fortsætte?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable meaning you have to select one of the subcomponents.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Component %1 already installed
 </source>
         <translation type="unfinished"></translation>
@@ -1701,18 +1692,6 @@ Vil du fortsætte?</translation>
         <translation>Fejl</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre midlertidige filer og installationen. %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre alle valgte komponenter! %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available while %2 are at least required.</source>
-        <translation>Ikke nok displads til at lagre midlertidige filer! %1 er tilgængelige, mens mindst %2 kræves.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1725,10 +1704,6 @@ Vil du fortsætte?</translation>
         <translation>Installationen vil bruge %1 diskplads.</translation>
     </message>
     <message>
-        <source>invalid</source>
-        <translation>ugyldig</translation>
-    </message>
-    <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1737,12 +1712,37 @@ Vil du fortsætte?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is descendant of a virtual component %2.
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Canceling the Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1893,14 +1893,6 @@ Update aborted!</source>
 Opdatering afbrudt!</translation>
     </message>
     <message>
-        <source>Uninstallation completed successfully.</source>
-        <translation>Afinstallation fuldført med succes.</translation>
-    </message>
-    <message>
-        <source>Uninstallation aborted.</source>
-        <translation>Afinstallation afbrudt.</translation>
-    </message>
-    <message>
         <source>Cannot create target directory for installer.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1953,20 +1945,6 @@ Installerer komponenten %1</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot prepare uninstall</source>
-        <translation>Kan ikke klargøre afinstallation</translation>
-    </message>
-    <message>
-        <source>Cannot start uninstall</source>
-        <translation>Kan ikke starte afinstallation</translation>
-    </message>
-    <message>
-        <source>Error during uninstallation process:
-%1</source>
-        <translation>Fejl under afinstallationsprocessen:
-%1</translation>
-    </message>
-    <message>
         <source>Unknown error</source>
         <translation>Ukendt fejl</translation>
     </message>
@@ -1994,6 +1972,27 @@ Installerer komponenten %1</translation>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Afhængighedscyklus registreret mellem komponenterne &quot;%1&quot; og &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Removal completed successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removal aborted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot prepare removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot start removal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error during removal process:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2008,10 +2007,6 @@ Installerer komponenten %1</translation>
     <message>
         <source>Do you want to cancel the installation process?</source>
         <translation>Vil du annullere installationsprocessen?</translation>
-    </message>
-    <message>
-        <source>Do you want to cancel the uninstallation process?</source>
-        <translation>Vil du annullere afinstallationsprocessen?</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
@@ -2046,6 +2041,10 @@ Installerer komponenten %1</translation>
 Please copy the installer to a local drive</source>
         <translation>Det er ikke muligt at installere fra netværksplacering.
 Kopiér venligst installeren til et lokalt drev</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the removal process?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2257,12 +2256,12 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Nødvendigt installer-objekt i %1-handling er tomt.</translation>
     </message>
     <message>
-        <source>Self Restart: Only valid within updater or packagemanager mode.</source>
-        <translation>Selv-genstart: kun gyldigt i opdaterings- eller pakkehåndteringstilstand.</translation>
-    </message>
-    <message>
         <source>Self Restart: Invalid arguments</source>
         <translation>Selv-genstart: ugyldige argumenter</translation>
+    </message>
+    <message>
+        <source>Self Restart: Only valid within updater or package manager mode.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2295,8 +2294,8 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Manglende argument(er) &quot;%1&quot; kalder %2 med argumenterne &quot;%3&quot;.</translation>
     </message>
     <message>
-        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value or remove_array_value.</source>
-        <translation>Nuværende metode-argument som kalder &quot;%1&quot; med argumenterne &quot;%2&quot; understøttes ikke. Brug venligst set, remove, add_array_value eller remove_array_value.</translation>
+        <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value, or remove_array_value.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2340,11 +2339,6 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Angiv venligst mappen hvor %1 skal installeres.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>browse file system to choose a file</comment>
-        <translation>Alt+G</translation>
-    </message>
-    <message>
         <source>B&amp;rowse...</source>
         <translation>&amp;Gennemse...</translation>
     </message>
@@ -2355,6 +2349,11 @@ Kopiér venligst installeren til et lokalt drev</translation>
     <message>
         <source>Select Installation Folder</source>
         <translation>Vælg installationsmappe</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Browse file system to choose a file</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2403,10 +2402,6 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>En anden %1-instans kører allerede. Vent til den er færdig, luk den eller genstart dit system.</translation>
     </message>
     <message>
-        <source>Please make sure that the current user has reading access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot start installer binary as updater.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2450,22 +2445,16 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <source>Incorrect arguments for %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
     <message>
         <source>Cannot get authorization.</source>
         <translation>Kan ikke få godkendelse.</translation>
-    </message>
-    <message>
-        <source>Cannot get authorization that is needed for continuing the installation.
-
-Please start the setup program as a user with the appropriate rights.
-Or accept the elevation of access rights if being asked.</source>
-        <translation>Kan ikke få godkendelse som er nødvendigt for at fortsætte installationen.
-
-Start venligst opsætningsprogrammet som en bruger med de fornødne rettigheder.
-Eller acceptér ophøjelsen af adgangsrettigheder hvis du bliver spurgt.</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
@@ -2480,6 +2469,13 @@ as a user with the appropriate rights and then clicking OK.</source>
 %1
 
 som en bruger med de fornødne rettigheder og klik så på OK.</translation>
+    </message>
+    <message>
+        <source>Cannot get authorization that is needed for continuing the installation.
+
+Please start the setup program as a user with the appropriate rights,
+or accept the elevation of access rights if being asked.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2575,10 +2571,6 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
         <translation>Tilføj adgangskoden til at autentificere på serveren.</translation>
     </message>
     <message>
-        <source>The servers URL that contains a valid repository.</source>
-        <translation>Serverens URL som indeholder et gyldigt repository.</translation>
-    </message>
-    <message>
         <source>An error occurred while testing this repository.</source>
         <translation>Der opstod en fejl under test af repository&apos;et.</translation>
     </message>
@@ -2632,6 +2624,10 @@ som en bruger med de fornødne rettigheder og klik så på OK.</translation>
     </message>
     <message>
         <source>Deselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The server&apos;s URL that contains a valid repository.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
