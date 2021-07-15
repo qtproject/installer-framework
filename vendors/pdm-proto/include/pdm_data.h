@@ -58,6 +58,13 @@ namespace PDM
 		UNSUPPORTED,
 	};
 
+	enum class BatteryStatus
+	{
+		UNKNOWN = 0,
+		DETECTED,
+		NOT_DETECTED,
+	};
+
 	struct PDMDllExport CPUInfo
 	{
 		int32_t model{ 0 };

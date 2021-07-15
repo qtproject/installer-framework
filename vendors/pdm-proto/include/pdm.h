@@ -22,6 +22,7 @@ namespace PDM
 	PDMDllExport StreamingService GetStreamingService();
 	PDMDllExport bool IsRemoteSession();
 	PDMDllExport size_t GetTimingCycles();
+	PDMDllExport BatteryStatus GetBatteryStatus();
 	PDMDllExport std::string GetMachineUuidString();
 	PDMDllExport std::vector<uint8_t> GetMachineUuid();
 	PDMDllExport std::vector<MonitorInfo> GetMonitorsInfo();
