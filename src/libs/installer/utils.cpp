@@ -32,10 +32,20 @@
 
 #include "qsettingswrapper.h"
 
+#define SENTRY_BUILD_STATIC 1
+#include <sentry.h>
+
+#include <pdm.h>
+#include <pdm_data.h>
+#include <protobuf.h>
+
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QNetworkInterface>
 #include <QProcessEnvironment>
+#include <QRandomGenerator>
+#include <QRegularExpression>
 #include <QThread>
 #include <QVector>
 #include <QUuid>
@@ -54,6 +64,9 @@
 #include <signal.h>
 #include <time.h>
 #endif
+
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
 
 void QInstaller::uiDetachedWait(int ms)
 {
@@ -130,6 +143,29 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
     return candidates;
 }
 
+static QString installerVersion;
+
+void QInstaller::setInstallerVersion(const QString& version)
+{
+    installerVersion = version;
+}
+
+QString QInstaller::getInstallerVersion()
+{
+    return installerVersion;
+}
+
+static bool isThisAnInstaller;
+
+void QInstaller::setIsInstaller(bool installer)
+{
+    isThisAnInstaller = installer;
+}
+
+bool QInstaller::isInstaller()
+{
+    return isThisAnInstaller;
+}
 
 static bool verb = false;
 
@@ -141,6 +177,18 @@ void QInstaller::setVerbose(bool v)
 bool QInstaller::isVerbose()
 {
     return verb;
+}
+
+static bool crashModeOn = false;
+
+void QInstaller::setCrashAndBurnMode(bool on)
+{
+    crashModeOn = on;
+}
+
+bool QInstaller::isCrashAndBurnMode()
+{
+    return crashModeOn;
 }
 
 static QString logFileName;
@@ -417,6 +465,18 @@ QString QInstaller::getCrashpadHandlerName()
     return crashpadHandlerName;
 }
 
+static QString sentryDsn;
+
+void QInstaller::setSentryDsn(const QString& dsn)
+{
+    sentryDsn = dsn;
+}
+
+QString QInstaller::getSentryDsn()
+{
+    return sentryDsn;
+}
+
 static QString pdmVersion;
 
 void QInstaller::setPdmVersion(const QString& version)
@@ -475,6 +535,235 @@ void QInstaller::setQtIfwVersion(const QString& version)
 QString QInstaller::getQtIfwVersion()
 {
     return qtIfwVersion;
+}
+
+static QString ccpIfwVersion;
+
+void QInstaller::setCcpIfwVersion(const QString& version)
+{
+    ccpIfwVersion = version;
+}
+
+QString QInstaller::getCcpIfwVersion()
+{
+    return ccpIfwVersion;
+}
+
+static bool isThisRelease = false;
+
+void QInstaller::setReleaseBuild(bool isRelease)
+{
+    isThisRelease = isRelease;
+}
+
+bool QInstaller::isReleaseBuild()
+{
+    return isThisRelease;
+}
+
+static bool isLocalDevelopmentBuid = false;
+
+void QInstaller::setLocalDevelopmentBuild(bool isLocal)
+{
+    isLocalDevelopmentBuid = isLocal;
+}
+
+bool QInstaller::isLocalDevelopmentBuild()
+{
+    return isLocalDevelopmentBuid;
+}
+
+static QString installerRegion = QLatin1String("world");
+
+void QInstaller::setRegion(const QString& region)
+{
+    installerRegion = region;
+}
+
+QString QInstaller::getRegion()
+{
+    return installerRegion;
+}
+
+bool QInstaller::isChina()
+{
+    return QString::compare(installerRegion, QLatin1String("china"), Qt::CaseInsensitive) == 0;
+}
+
+static QString launcherVersion = QString::fromLatin1(DEV_VERSION);
+
+void QInstaller::setLauncherVersion(const QString& version)
+{
+    launcherVersion = version;
+}
+
+QString QInstaller::getLauncherVersion()
+{
+    return launcherVersion;
+}
+
+static QString installerEnvironment;
+
+void QInstaller::setEnvironment(const QString& environment)
+{
+    installerEnvironment = environment;
+}
+
+QString QInstaller::getEnvironment()
+{
+    return installerEnvironment;
+}
+
+bool QInstaller::hasPartnerId()
+{
+    return
+        isChina() &&
+        QString::compare(getPartnerId(), QLatin1String("none"), Qt::CaseInsensitive) != 0;
+}
+
+static QString installerPartnerId = QLatin1String("none");
+
+void QInstaller::setPartnerId(const QString& partnerId)
+{
+    installerPartnerId = partnerId;
+}
+
+QString QInstaller::getPartnerId()
+{
+    return installerPartnerId;
+}
+
+void QInstaller::initializeVersions()
+{
+    // Here we read in the versions of everything we're using
+    QString pdmVersion = QString::fromStdString(PDM::GetPDMVersion());
+    QString protobufVersion = QString::fromStdString(google::protobuf::internal::VersionString(GOOGLE_PROTOBUF_VERSION));
+    QString sentryVersion = QString::fromStdString(SENTRY_SDK_VERSION);
+    QString qtVersion = QString::fromStdString(QT_VERSION_STR);
+    QString qtIfwVersion = QString::fromStdString(QUOTE(IFW_VERSION_STR));
+    QString ccpIfwVersion = QString::fromStdString(QUOTE(CCP_FRAMEWORK_STRING));
+
+    setPdmVersion(pdmVersion);
+    setProtobufVersion(protobufVersion);
+    setSentryNativeSdkVersion(sentryVersion);
+    setQtVersion(qtVersion);
+    setQtIfwVersion(qtIfwVersion);
+    setCcpIfwVersion(ccpIfwVersion);
+
+    QMap<const char*, QString> libraries {
+        { "PDM", getPdmVersion() },
+        { "Qt", getQtVersion() },
+        { "Qt IFW", getQtIfwVersion() },
+        { "Protobuf", getProtobufVersion() },
+        { "CCP IFW", getCcpIfwVersion() },
+        { "Sentry Native SDK", getSentryNativeSdkVersion() },
+    };
+
+    // Print the versions to the log file
+    qDebug() << "Library versions: ";
+    QMapIterator<const char*, QString> i(libraries);
+    while (i.hasNext()) {
+        i.next();
+        qDebug().nospace() << "-- " << i.key() << ": " << i.value();
+    }
+}
+
+void QInstaller::initializeJourneyIds()
+{
+    // Get the journeyId from the installer filename
+    QUuid journeyId;
+    QString appName = getInstallerFileName().split(QLatin1String("/")).last();
+    if (appName.length() > 35)
+    {
+        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
+        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
+        QRegularExpressionMatch match = re.match(appName);
+        if (match.hasMatch()) {
+           qDebug() << "framework | QInstaller::initializeJourneyIds | JourneyId found in filename:" << match.captured(0);
+           journeyId = QUuid::fromString(match.captured(0));
+        }
+    }
+
+    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
+    if (journeyId.isNull())
+    {
+        qDebug() << "framework | QInstaller::initializeJourneyIds | No JourneyId provided, one will be created instead";
+        journeyId = QUuid::createUuid();
+    }
+
+    qDebug() << "JourneyId:";
+    qDebug() << "-- JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
+    qDebug() << "-- JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
+
+    setJourneyId(journeyId);
+
+    QString keyName = QLatin1String("DeviceId");
+    QUuid deviceId;
+    // Try to get DeviceId from the registry
+    QString value = getCCPRegistryKey(keyName);
+    if (!value.isEmpty()) {
+        qDebug() << "framework | QInstaller::initializeJourneyIds | DeviceId found in registry";
+        deviceId = QUuid::fromString(value);
+        qDebug() << "DeviceId:";
+        qDebug() << "-- DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
+        qDebug() << "-- DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
+    }
+
+    // If DeviceId was not found in the registry, then we use the current JourneyId
+    if (deviceId.isNull())
+    {
+        qDebug() << "DeviceId:";
+        qDebug() << "-- DeviceId: (same as JourneyId)";
+        qDebug() << "-- DeviceId (base64): (same as JourneyId (base64))";
+        deviceId = getJourneyId();
+
+        // We then store the DeviceId in the registry
+        qDebug() << "framework | QInstaller::initializeJourneyIds | Storing DeviceId to registry";
+        setCCPRegistryKey(keyName, deviceId.toString(QUuid::WithoutBraces));
+        qDebug() << "framework | QInstaller::initializeJourneyIds | DeviceId stored to registry";
+    }
+
+    setDeviceId(deviceId);
+}
+
+void QInstaller::initializeOsId()
+{
+    std::string osUuidString = PDM::GetMachineUuidString();
+    QUuid osId = QUuid::fromString(QString::fromStdString(osUuidString));
+
+    qDebug() << "OS UUID:";
+    qDebug() << "-- OsId:" << osId.toString(QUuid::WithoutBraces);
+    qDebug() << "-- OsId (base64):" << QLatin1String(osId.toRfc4122().toBase64());
+
+    setOsId(osId);
+}
+
+void QInstaller::initializeSessionHash()
+{
+    QCryptographicHash hasher(QCryptographicHash::Md5);
+
+    auto interfaces = QNetworkInterface::allInterfaces();
+    if(!interfaces.isEmpty())
+    {
+        auto macAddress = interfaces.first().hardwareAddress();
+        hasher.addData(macAddress.toLocal8Bit());
+    }
+    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
+    hasher.addData(timestamp.toLocal8Bit());
+    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
+    hasher.addData(randomNumber.toLocal8Bit());
+
+    setSessionHash(hasher.result());
+
+    qDebug() << "Session:";
+    qDebug() << "-- ID:" << getSessionId();
+}
+
+void QInstaller::initializeIds()
+{
+    initializeJourneyIds();
+    initializeOsId();
+    initializeSessionHash();
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)

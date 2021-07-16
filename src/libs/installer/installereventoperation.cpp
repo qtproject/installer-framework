@@ -2,6 +2,8 @@
 
 #include "packagemanagercore.h"
 #include "globals.h"
+#include "utils.h"
+#include "sentryhelper.h"
 
 #include <QtCore/QDebug>
 
@@ -28,11 +30,6 @@ bool InstallerEventOperation::performOperation()
 
     const QString action = args.at(0);
 
-    if (action == QString::fromLatin1("init"))
-    {
-        return sendInit(args);
-    }
-
     if (action == QString::fromLatin1("uninstaller"))
     {
         return sendUninstallerEvent(args);
@@ -44,55 +41,6 @@ bool InstallerEventOperation::performOperation()
     }
 
     return false;
-}
-
-// init takes: the following parameters
-//   1. region: "world" | "china"
-//   2. version: "1.0.x"
-//   3. environment: "release" | "dev"
-//   4. provider: "none" | "A" | "B" | ...
-bool InstallerEventOperation::sendInit(QStringList args)
-{
-    qDebug() << "framework | InstallerEventOperation::sendInit | args =" << args;
-    if (args.size() != 5) return false;
-
-    // Get region
-    eve_launcher::application::Application_Region region = eve_launcher::application::Application_Region_REGION_WORLD;
-    if (args.at(1) == QString::fromLatin1("china"))
-    {
-        region = eve_launcher::application::Application_Region_REGION_CHINA;
-    }
-
-    qDebug() << "framework | InstallerEventOperation::sendInit | region =" << region;
-
-    // Get version
-    QString version = args.at(2);
-
-    qDebug() << "framework | InstallerEventOperation::sendInit | version =" << version;
-
-    // Get build type
-    eve_launcher::application::Application_BuildType buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_DEV;
-    if (args.at(3) == QString::fromLatin1("release"))
-    {
-        buildType = eve_launcher::application::Application_BuildType_BUILDTYPE_RELEASE;
-    }
-
-    qDebug() << "framework | InstallerEventOperation::sendInit | buildType =" << buildType;
-
-    // Get provider
-    bool provider = false;
-    QString providerName = QString::fromLatin1("");
-    if (!args.at(4).isEmpty() && args.at(4) != QString::fromLatin1("none"))
-    {
-        provider = true;
-        providerName = args.at(4);
-    }
-
-    qDebug() << "framework | InstallerEventOperation::sendInit | provider = " << provider << "| providerName =" << providerName;
-
-    EventLogger::instance()->initialize(region, version, buildType, provider, providerName);
-
-    return true;
 }
 
 eve_launcher::uninstaller::Page InstallerEventOperation::toUninstallerPage(bool *ok, QString value)
@@ -129,7 +77,7 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
     const QString event = args.at(1);
     bool ok;
     int id;
-    
+
     if (event == QString::fromLatin1("Started") && args.size() == 3)
     {
         int duration = args.at(2).toInt(&ok);
@@ -192,15 +140,46 @@ bool InstallerEventOperation::sendUninstallerEvent(QStringList args)
 
         EventLogger::instance()->uninstallerUninstallationFailed(duration);
     }
-    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 4)
+    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 7)
     {
         id = args.at(2).toInt(&ok);
         if (!ok) return false;
         if (!eve_launcher::uninstaller::ErrorEncountered_ErrorCode_IsValid(id)) return false;
         auto code = static_cast<eve_launcher::uninstaller::ErrorEncountered_ErrorCode>(id);
-        
+
         auto page = toUninstallerPage(&ok, args.at(3));
         if (!ok) return false;
+
+        QString fileName = args.at(4);
+        QString functionName = args.at(5);
+        int lineNumber = args.at(6).toInt(&ok);
+        if (!ok) return false;
+
+        QString type;
+        QString value;
+        if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+        {
+            type = QLatin1String("QtStatus::Failure");
+            value = QLatin1String("Status of application changed to Failed");
+        }
+        else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+        {
+            type = QLatin1String("QtStatus::ForceUpdate");
+            value = QLatin1String("Status of application changed to ForceUpdate");
+        }
+        else if (code == eve_launcher::uninstaller::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+        {
+            type = QLatin1String("QtStatus::Unfinished");
+            value = QLatin1String("Status of application changed to Unfinished");
+        }
+        else
+        {
+            type = QLatin1String("UnknownException");
+            value = QLatin1String("Something unexpected happened");
+        }
+
+        type = QString::fromLatin1("Uninstaller::Scripts::%1").arg(type);
+        sendException(type, value, functionName, fileName, lineNumber);
 
         EventLogger::instance()->uninstallerErrorEncountered(code, page);
     }
@@ -329,7 +308,7 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 
         int timeDisplayed = args.at(3).toInt(&ok);
         if (!ok) return false;
-        
+
         EventLogger::instance()->installerSharedCacheMessageClosed(messageBoxButton, timeDisplayed);
     }
     else if (event == QString::fromLatin1("InstallationStarted") && args.size() == 4)
@@ -397,18 +376,74 @@ bool InstallerEventOperation::sendInstallerEvent(QStringList args)
 
         EventLogger::instance()->installerComponentInstallationFinished(duration);
     }
-    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 5)
+    else if (event == QString::fromLatin1("ErrorEncountered") && args.size() == 8)
     {
         id = args.at(2).toInt(&ok);
         if (!ok) return false;
         if (!eve_launcher::installer::ErrorEncountered_ErrorCode_IsValid(id)) return false;
         auto code = static_cast<eve_launcher::installer::ErrorEncountered_ErrorCode>(id);
-        
+
         auto page = toInstallerPage(&ok, args.at(3));
         if (!ok) return false;
 
-        auto redistVersion = toInstallerRedistVersion(&ok, args.at(4));
+        QString fileName = args.at(4);
+        QString functionName = args.at(5);
+        int lineNumber = args.at(6).toInt(&ok);
         if (!ok) return false;
+
+        auto redistVersion = toInstallerRedistVersion(&ok, args.at(7));
+        if (!ok) return false;
+
+        QString type;
+        QString value;
+        if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FAILURE)
+        {
+            type = QLatin1String("QtStatus::Failure");
+            value = QLatin1String("Status of application changed to Failed");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_FORCE_UPDATE)
+        {
+            type = QLatin1String("QtStatus::ForceUpdate");
+            value = QLatin1String("Status of application changed to ForceUpdate");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_QT_STATUS_UNFINISHED)
+        {
+            type = QLatin1String("QtStatus::Unfinished");
+            value = QLatin1String("Status of application changed to Unfinished");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_CREATE_OPERATIONS)
+        {
+            type = QLatin1String("LauncherInstallOperationException");
+            value = QLatin1String("Application failed to prepare all the required operations to be able to install the Launcher");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_ADD_OPERATION)
+        {
+            type = QLatin1String("UniversalCrtOperationException");
+            value = QLatin1String("Application failed to add the operation that installs the Microsoft Universal C RunTime.");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_DLL)
+        {
+            type = QLatin1String("DllLookupException");
+            value = QLatin1String("Application failed when trying to look for UCRT runtime dll.");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_SEARCH_WINDOWS_UPDATE)
+        {
+            type = QLatin1String("WindowsUpdateLookupException");
+            value = QLatin1String("Application failed when trying to look for installed Windows Updates.");
+        }
+        else if (code == eve_launcher::installer::ErrorEncountered_ErrorCode_ERRORCODE_MISSING_PREREQUISITE)
+        {
+            type = QLatin1String("PrerequisiteMissingException");
+            value = QLatin1String("This Windows 8.1 version is missing a very large Windows Update, that is a prerequisite for the redist Windows Updates, we are therefore unable to install the redist, and the installation of the launcher will succeed, but the launcher will not start but fail instead.");
+        }
+        else
+        {
+            type = QLatin1String("UnknownException");
+            value = QLatin1String("Something unexpected happened");
+        }
+
+        type = QString::fromLatin1("Installer::Scripts::%1").arg(type);
+        sendException(type, value, functionName, fileName, lineNumber);
 
         EventLogger::instance()->installerErrorEncountered(code, page, redistVersion);
     }

@@ -119,5 +119,5 @@ vendors/protobuf/lib/*
 # When upgrading, remember to rename the exe file
 # to the name in QInstaller::getCrashpadHandlerName (utils.cpp)
 # and move it to src\libs\installer\resources
-vendors/sentry/*/bin
-vendors/sentry/*/lib/cmake
+vendors/sentry/bin
+vendors/sentry/lib/cmake

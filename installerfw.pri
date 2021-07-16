@@ -7,6 +7,8 @@ IFW_VERSION_STR = 3.2.3
 IFW_VERSION = 0x030203
 IFW_VERSION_WIN32 = 3,2,3,0
 
+CCP_FRAMEWORK_STRING = 1.15.0
+
 IFW_VERSION_STR_WIN32 = $$IFW_VERSION_STR\0
 
 IFW_REPOSITORY_FORMAT_VERSION = 1.0.0
@@ -129,7 +131,8 @@ DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUIL
            IFW_VERSION_STR=$$IFW_VERSION_STR \
            IFW_VERSION=$$IFW_VERSION \
            IFW_VERSION_STR_WIN32=$$IFW_VERSION_STR_WIN32 \
-           IFW_VERSION_WIN32=$$IFW_VERSION_WIN32
+           IFW_VERSION_WIN32=$$IFW_VERSION_WIN32 \
+           CCP_FRAMEWORK_STRING=$$CCP_FRAMEWORK_STRING
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
 LIBS += -l7z
@@ -144,7 +147,6 @@ equals(TEMPLATE, app) {
 # Library paths
 PROTOBUF_PATH = $$PWD/vendors/protobuf/v3.6.0
 PDM_PATH = $$PWD/vendors/pdm-proto
-SENTRY_PATH = $$PWD/vendors/sentry/0.4.7
 
 # Protobuf
 LIBS += -L$$PROTOBUF_PATH/lib/ -llibprotobuf
@@ -158,7 +160,8 @@ INCLUDEPATH += $$PDM_PATH/include/generated
 # These are Windows libraries needed by Sentry
 LIBS += -lwinhttp -ldbghelp
 
-# Sentry
+# Sentry Native
+SENTRY_PATH = $$PWD/vendors/sentry
 LIBS += -L$$SENTRY_PATH/lib/ -lcrashpad_client -lcrashpad_compat -lcrashpad_handler_lib -lcrashpad_minidump -lcrashpad_snapshot -lcrashpad_tools -lcrashpad_util -lcrashpad_zlib -lmini_chromium -lsentry
 INCLUDEPATH += $$SENTRY_PATH/include
 

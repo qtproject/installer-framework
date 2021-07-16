@@ -63,9 +63,6 @@ public:
     void installerErrorEncountered(eve_launcher::installer::ErrorEncountered_ErrorCode code, eve_launcher::installer::Page page, eve_launcher::installer::RedistVersion redistVersion);
     void installerAnalyticsMessageSent(const QString& message);
 
-    QString getSession();
-
-    void initialize(eve_launcher::application::Application_Region region, const QString& version, eve_launcher::application::Application_BuildType buildType, bool provider, const QString& providerName);
 protected:
     ~EventLogger();
 
@@ -74,6 +71,12 @@ protected:
     QByteArray m_operatingSystemUuid;
     QByteArray m_journeyId;
     QByteArray m_deviceId;
+    QString m_version;
+    bool m_provider;
+    QString m_providerName;
+    eve_launcher::application::Application_Region m_region;
+    eve_launcher::application::Application_BuildType m_buildType;
+    QString m_gatewayUrl;
     QPointer<HttpThreadController> m_httpThreadController;
 
     explicit EventLogger();
@@ -89,14 +92,6 @@ protected:
     QByteArray toJsonByteArray(google::protobuf::Message* message, bool verbose = false);
     std::string toJson(::google::protobuf::Message* event, bool verbose = false);
     bool replace(std::string& str, const std::string& from, const std::string& to);
-
-    eve_launcher::application::Application_Region s_region;
-    QString s_version;
-    eve_launcher::application::Application_BuildType s_buildType;
-    bool s_provider;
-    QString s_providerName;
-    bool s_initSuccessful;
-    QString s_gatewayUrl;
 };
 
 #endif // EVENTLOGGER_H

@@ -48,6 +48,7 @@ HEADERS += eventlogger.h \
     eve_launcher/application.pb.h \
     eve_launcher/installer.pb.h \
     eve_launcher/uninstaller.pb.h \
+    sentryhelper.h \
     packagemanagercore.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
@@ -151,6 +152,7 @@ SOURCES += eventlogger.cpp \
     eve_launcher/application.pb.cc \
     eve_launcher/installer.pb.cc \
     eve_launcher/uninstaller.pb.cc \
+    sentryhelper.cpp \
     packagemanagercore.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \

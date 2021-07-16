@@ -279,7 +279,7 @@ int InstallerBase::run()
     // to easily provide corrected translations to Qt/IFW for their installers
     const QString newDirectory = QLatin1String(":/translations_new");
     const QStringList translations = m_core->settings().translations();
-    const bool isChinaInstaller = m_core->settings().isChinaInstaller();
+    const bool isChinaInstaller = QInstaller::isChina();
     const bool isCustomInstaller = m_core->isCustomInstaller();
     QStringList uiLanguages = QLocale().uiLanguages();
     int allowedLanguages [6] = { QLocale::English, QLocale::German, QLocale::French, QLocale::Russian, QLocale::Japanese, QLocale::Chinese };

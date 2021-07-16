@@ -89,7 +89,6 @@ static const QLatin1String scUrlQueryString("UrlQueryString");
 static const QLatin1String scProductUUID("ProductUUID");
 static const QLatin1String scAllUsers("AllUsers");
 static const QLatin1String scSupportsModify("SupportsModify");
-static const QLatin1String scChinaInstaller("ChinaInstaller");
 static const QLatin1String scUninstallerComments("UninstallerComments");
 static const QLatin1String scAllowUnstableComponents("AllowUnstableComponents");
 static const QLatin1String scSaveDefaultRepositories("SaveDefaultRepositories");

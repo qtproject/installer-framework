@@ -160,7 +160,6 @@ public:
     QString controlScript() const;
 
     bool supportsModify() const;
-    bool isChinaInstaller() const;
     QString uninstallerComments() const;
 
     bool allowUnstableComponents() const;

@@ -20,7 +20,6 @@ public:
     bool undoOperation();
     bool testOperation();
 private:
-    bool sendInit(QStringList args);
     bool sendInstallerEvent(QStringList args);
     bool sendUninstallerEvent(QStringList args);
     eve_launcher::uninstaller::Page toUninstallerPage(bool *ok, QString value);

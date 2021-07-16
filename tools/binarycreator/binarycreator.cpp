@@ -669,6 +669,12 @@ static void printUsage()
 
     std::cout << " --dsn url                  Provides the installer/uninstaller with Sentry DSN " << std::endl;
 
+    std::cout << " --launcher-version version Version of the Launcher that this installer installs " << std::endl;
+
+    std::cout << " --region region            The region of the installer (world|china) " << std::endl;
+
+    std::cout << " --partner id               Id of installer provider (or none) " << std::endl;
+
     std::cout << "  -r|--resources r1,.,rn    include the given resource files into the binary" << std::endl;
 
     std::cout << "  -v|--verbose              Verbose output" << std::endl;
@@ -805,6 +811,9 @@ int main(int argc, char **argv)
     bool noDetails = false;
     bool releaseBuild = false;
     QString dsn;
+    QString launcherVersion;
+    QString region;
+    QString partner;
     QStringList resources;
     QStringList filteredPackages;
     QInstallerTools::FilterType ftype = QInstallerTools::Exclude;
@@ -887,6 +896,24 @@ int main(int argc, char **argv)
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: DSN parameter missing argument."));
             }
             dsn = *it;
+        } else if (*it == QLatin1String("--launcher-version")) {
+            ++it;
+            if (it == args.end()) {
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Launcher version parameter missing argument."));
+            }
+            launcherVersion = *it;
+        } else if (*it == QLatin1String("--region")) {
+            ++it;
+            if (it == args.end()) {
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Region parameter missing argument."));
+            }
+            region = *it;
+        } else if (*it == QLatin1String("--partner")) {
+            ++it;
+            if (it == args.end()) {
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Partner parameter missing argument."));
+            }
+            partner = *it;
         } else if (*it == QLatin1String("-t") || *it == QLatin1String("--template")) {
             ++it;
             if (it == args.end()) {
@@ -1040,8 +1067,11 @@ int main(int argc, char **argv)
             confInternal.setValue(QLatin1String("noDetails"), noDetails);
             // assume build is development if --release not set
             confInternal.setValue(QLatin1String("releaseBuild"), releaseBuild);
-            
+
             confInternal.setValue(QLatin1String("sentryDsn"), dsn);
+            confInternal.setValue(QLatin1String("launcherVersion"), launcherVersion);
+            confInternal.setValue(QLatin1String("region"), region);
+            confInternal.setValue(QLatin1String("partnerId"), partner);
         }
 
 #ifdef Q_OS_MACOS

@@ -587,7 +587,7 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
     QDirIterator it(directory.path(), qms, QDir::Files);
     const QStringList translations = d->m_core->settings().translations();
     const QString uiLanguage = QLocale().uiLanguages().value(0, QLatin1String("en"));
-    const bool isChinaInstaller = d->m_core->settings().isChinaInstaller();
+    const bool isChinaInstaller = QInstaller::isChina();
     const QString chineese = QLatin1String("zh");
     while (it.hasNext()) {
         const QString filename = it.next();

@@ -163,4 +163,6 @@ CommandLineParser::CommandLineParser()
         "SQUISH_PATH parameter where SQUISH_PATH is pointing to your Squish installation folder: "
         "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
         QLatin1String("port number")));
+    m_parser.addOption(QCommandLineOption(QLatin1String(CommandLineOptions::CrashAndBurnMode),
+        QLatin1String("Forcefully crashes the installer.")));
 }

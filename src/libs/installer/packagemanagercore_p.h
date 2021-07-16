@@ -95,6 +95,9 @@ public:
     bool noDetails() const;
     bool isReleaseBuild() const;
     QString getSentryDSN() const;
+    QString getLauncherVersion() const;
+    QString getRegion() const;
+    QString getPartnerId() const;
 
     bool statusCanceledOrFailed() const;
     void setStatus(int status, const QString &error = QString());
@@ -233,12 +236,9 @@ private:
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
 
-    void gatherVersionNumbers();
-    void initializeJourneyIds();
-    void initializeOsId();
-    void initializeSessionHash();
-    void initializeIds();
-    void initializeSentry();
+    void initUtils();
+    void initScripts();
+    void prepareCrashpadHandler();
 
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,

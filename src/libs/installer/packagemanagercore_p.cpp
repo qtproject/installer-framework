@@ -49,6 +49,8 @@
 #include "componentchecker.h"
 #include "globals.h"
 #include "utils.h"
+#include "sentryhelper.h"
+#include "eventlogger.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -65,21 +67,11 @@
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
-#include <QNetworkInterface>
-#include <QRandomGenerator>
-#include <QRegularExpression>
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <pdm.h>
-#include <protobuf.h>
-#include <google/protobuf/stubs/common.h>
-
 #include <errno.h>
-
-#define SENTRY_BUILD_STATIC 1
-#include <sentry.h>
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -205,7 +197,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
-
 // -- PackageManagerCorePrivate
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
@@ -307,7 +298,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     // delete m_gui;
 
     // This should be called before exiting the application
-    sentry_shutdown();
+    closeSentry();
 }
 
 /*!
@@ -633,156 +624,104 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
     KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
 
-    gatherVersionNumbers();
-    initializeIds();
-    initializeSentry();
-}
+    QInstaller::setInstallerVersion(m_data.settings().version());
+    initUtils();
 
-void sentry_logger(sentry_level_e level, const char * message, va_list args, void *)
-{
-    char buf[1024]{};
-    vsprintf(buf, message, args);
+    prepareCrashpadHandler();
+    initializeSentry(QCoreApplication::arguments());
 
-    switch (level)
+    // Initialize the eventlogger
+    EventLogger::instance();
+
+    if (QInstaller::isCrashAndBurnMode())
     {
-        case SENTRY_LEVEL_DEBUG:
-            qDebug() << "sentry |" << buf;
-            break;
-        case SENTRY_LEVEL_INFO:
-            qInfo() << "sentry |" << buf;
-            break;
-        case SENTRY_LEVEL_WARNING:
-            qWarning() << "sentry |" << buf;
-            break;
-        case SENTRY_LEVEL_ERROR:
-            qCritical() << "sentry |" << buf;
-            break;
-        case SENTRY_LEVEL_FATAL:
-            qFatal("sentry | %s", buf);
-            break;
+        crashApplication();
     }
 }
 
-void PackageManagerCorePrivate::gatherVersionNumbers()
+void PackageManagerCorePrivate::initUtils()
 {
-    QInstaller::setPdmVersion(QString::fromStdString(PDM::GetPDMVersion()));
-    QInstaller::setProtobufVersion(QString::fromStdString(google::protobuf::internal::VersionString(GOOGLE_PROTOBUF_VERSION)));
-    QInstaller::setSentryNativeSdkVersion(QString::fromStdString(SENTRY_SDK_VERSION));
-    QInstaller::setQtVersion(QString::fromLatin1("%1.%2.%3").arg(((QT_VERSION) >> 16) & 0xff).arg(((QT_VERSION) >> 8) & 0xff).arg((QT_VERSION) & 0xff));
-    QInstaller::setQtIfwVersion(QString::fromLatin1("%1.%2.%3").arg(((IFW_VERSION) >> 16) & 0xff).arg(((IFW_VERSION) >> 8) & 0xff).arg((IFW_VERSION) & 0xff));
-
-    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | PDM:" << QInstaller::getPdmVersion();
-    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Protobuf:" << QInstaller::getProtobufVersion();
-    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | SentryNativeSDK:" << QInstaller::getSentryNativeSdkVersion();
-    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | Qt:" << QInstaller::getQtVersion();
-    qDebug() << "framework | PackageManagerCorePrivate::gatherVersionNumbers | QtIFW:" << QInstaller::getQtIfwVersion();
-}
-
-void PackageManagerCorePrivate::initializeJourneyIds()
-{
-    // Get the journeyId from the installer filename
-    QUuid journeyId;
-    QString appName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
-    if (appName.length() > 35)
+    if (isInstaller())
     {
-        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
-        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
-        QRegularExpressionMatch match = re.match(appName);
-        if (match.hasMatch()) {
-           qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId found in filename:" << match.captured(0);
-           journeyId = QUuid::fromString(match.captured(0));
-        }
+        qDebug() << "Log type: Installer";
     }
-
-    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
-    if (journeyId.isNull())
+    else
     {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | No JourneyId provided, one will be created instead";
-        journeyId = QUuid::createUuid();
+        qDebug() << "Log type: Uninstaller";
     }
 
-    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-    qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyId | JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
+    QInstaller::setIsInstaller(isInstaller());
+    QInstaller::setReleaseBuild(isReleaseBuild());
 
-    QInstaller::setJourneyId(journeyId);
+    // Here come the things fed into binarycreator
 
-    QString keyName = QLatin1String("DeviceId");
-    QUuid deviceId;
-    // Try to get DeviceId from the registry
-    QString value = QInstaller::getCCPRegistryKey(keyName);
-    if (!value.isEmpty()) {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId found in registry";
-        deviceId = QUuid::fromString(value);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
-    }
-
-    // If DeviceId was not found in the registry, then we use the current JourneyId
-    if (deviceId.isNull())
+    QString launcherVersion = getLauncherVersion();
+    if (launcherVersion == QString::fromStdString(DEV_VERSION))
     {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | No DeviceId found, using the current JourneyId instead";
-        deviceId = QInstaller::getJourneyId();
-
-        // We then store the DeviceId in the registry
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | Storing DeviceId to registry";
-        QInstaller::setCCPRegistryKey(keyName, deviceId.toString(QUuid::WithoutBraces));
-        qDebug() << "framework | PackageManagerCorePrivate::initializeJourneyIds | DeviceId stored to registry";
+        QInstaller::setLocalDevelopmentBuild(true);
+        QInstaller::setEnvironment(QLatin1String("Local"));
     }
-
-    QInstaller::setDeviceId(deviceId);
-}
-
-void PackageManagerCorePrivate::initializeOsId()
-{
-    std::string osUuidString = PDM::GetMachineUuidString();
-    QUuid osId = QUuid::fromString(QString::fromStdString(osUuidString));
-
-    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId:" << osId.toString(QUuid::WithoutBraces);
-    qDebug() << "framework | PackageManagerCorePrivate::initializeOsUuid | OsId (base64):" << QLatin1String(osId.toRfc4122().toBase64());
-
-    QInstaller::setOsId(osId);
-}
-
-void PackageManagerCorePrivate::initializeSessionHash()
-{
-    QCryptographicHash hasher(QCryptographicHash::Md5);
-
-    auto interfaces = QNetworkInterface::allInterfaces();
-    if(!interfaces.isEmpty())
+    else if (isReleaseBuild())
     {
-        auto macAddress = interfaces.first().hardwareAddress();
-        hasher.addData(macAddress.toLocal8Bit());
+        QInstaller::setEnvironment(QLatin1String("Release"));
     }
-    QString timestamp = QString(QLatin1String("%1")).arg(QDateTime::currentMSecsSinceEpoch());
-    hasher.addData(timestamp.toLocal8Bit());
-    QString randomNumber = QString(QLatin1String("%1")).arg(QRandomGenerator::securelySeeded().generate());
-    hasher.addData(randomNumber.toLocal8Bit());
+    else
+    {
+        QInstaller::setEnvironment(QLatin1String("Development"));
+    }
 
-    QInstaller::setSessionHash(hasher.result());
+    QInstaller::setLauncherVersion(launcherVersion);
+    QInstaller::setRegion(getRegion());
+    QInstaller::setPartnerId(getPartnerId());
+    QInstaller::setSentryDsn(getSentryDSN());
 
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSessionHash | Session:" << QInstaller::getSessionId();
+    // Print launcher settings
+    qDebug() << "Application: ";
+    qDebug() << "-- Installer Version: " << QInstaller::getInstallerVersion();
+    qDebug() << "-- Launcher Version: " << QInstaller::getLauncherVersion();
+    qDebug() << "-- Region: " << QInstaller::getRegion();
+    if (QInstaller::hasPartnerId())
+    {
+        qDebug() << "-- Provider (China only): " << QInstaller::getPartnerId();
+    }
+    qDebug() << "-- Environment: " << QInstaller::getEnvironment();
+
+    QInstaller::initializeIds();
+    QInstaller::initializeVersions();
+
+    initScripts();
 }
 
-void PackageManagerCorePrivate::initializeIds()
+void PackageManagerCorePrivate::initScripts()
 {
-    initializeJourneyIds();
-    initializeOsId();
-    initializeSessionHash();
+    qDebug() << "framework | PackageManagerCorePrivate::initScripts | Expose certain values to the scripts.";
+
+    QString isChina = QLatin1String(QInstaller::isChina() ? "true" : "false");
+    m_data.setValue(QLatin1String("isChina"), replaceVariables(isChina));
+
+    QString partnerId = QInstaller::hasPartnerId() ? getPartnerId() : QLatin1String("");
+    m_data.setValue(QLatin1String("partnerId"), replaceVariables(partnerId));
+
+    QString isRelease = QLatin1String(QInstaller::isReleaseBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isRelease"), replaceVariables(isRelease));
+
+    QString isDevelopment = QLatin1String(!QInstaller::isReleaseBuild() && !QInstaller::isLocalDevelopmentBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isDevelopment"), replaceVariables(isDevelopment));
+
+    QString isLocal = QLatin1String(QInstaller::isLocalDevelopmentBuild() ? "true" : "false");
+    m_data.setValue(QLatin1String("isLocalDev"), replaceVariables(isLocal));
 }
 
-void PackageManagerCorePrivate::initializeSentry()
+void PackageManagerCorePrivate::prepareCrashpadHandler()
 {
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Starting sentry native setup";
-
     QString crashmonName = QInstaller::getCrashpadHandlerName();
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | CrashpadHandlerName:" << crashmonName;
 
     // First thing we want to do is set up all the folders we need
     QString crashDb = QInstaller::getCrashDb();
     QString tempPath = QInstaller::getTempPath();
     if (crashDb.isEmpty() || tempPath.isEmpty())
     {
-        qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Couldn't create required crashdump folders, Sentry skipped.";
+        qDebug() << "framework | PackageManagerCorePrivate::startSentryInitialization | Couldn't create required crashdump folders, Sentry skipped.";
         return;
     }
 
@@ -792,72 +731,6 @@ void PackageManagerCorePrivate::initializeSentry()
                                    << (tempPath));
     performOperationThreaded(op, Backup);
     performOperationThreaded(op);
-
-    QString dsnUrl = getSentryDSN();
-
-    QString handlerPath = QString::fromLatin1("%1/%2").arg(tempPath).arg(crashmonName);
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Handler path:" << handlerPath;
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Reports path:" << crashDb;
-
-    sentry_options_t *options = sentry_options_new();
-    sentry_options_set_dsn(options, dsnUrl.toLocal8Bit().constData());
-
-    // Set the current installer version here:
-    QString version = m_data.settings().version();
-    version = QString::fromLatin1("eve-installer@%1").arg(version);
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Version:" << version;
-    sentry_options_set_release(options, version.toLocal8Bit().constData());
-
-    // Set the current environment:
-    QString env = QString::fromLatin1("Development");
-    if (isReleaseBuild())
-    {
-        env = QString::fromLatin1("Release");
-    }
-    qDebug() << "framework | PackageManagerCorePrivate::initializeSentry | Environment:" << env;
-    sentry_options_set_environment(options, env.toLocal8Bit().constData());
-
-    // If we want to throttle events we can do that here. This is a % of how many or let through.
-    // If any number less than 1 is given, then the events to be sent are selected randomly.
-    // sentry_options_set_sample_rate(options, 1.0);
-
-    // Path of the crashpad handler executable.
-    sentry_options_set_handler_pathw(options, (const wchar_t *)handlerPath.utf16());
-
-    // Path of the crashdump database.
-    sentry_options_set_database_pathw(options, (const wchar_t *)crashDb.utf16());
-
-    // Turn on sentry logging, only if we are building dev
-    if (!isReleaseBuild())
-    {
-        sentry_options_set_debug(options, 1);
-    }
-
-    // Function to log sentry-native messages. Only called if sentry_options_set_debug is set to 1.
-    sentry_options_set_logger(options, &sentry_logger, nullptr);
-
-    // Finally initialize the sentry-native sdk with the options provided
-    sentry_init(options);
-
-    // Is this an installer or an uninstaller
-    sentry_set_tag("app.type", isInstaller() ? "Installer" : "Uninstaller");
-
-    // Add user (using the DeviceId as user id)
-    sentry_value_t user = sentry_value_new_object();
-    sentry_value_set_by_key(user, "id", sentry_value_new_string(QInstaller::getDeviceId().toRfc4122().toBase64()));
-    sentry_value_set_by_key(user, "ip_address", sentry_value_new_string("{{auto}}"));
-    sentry_value_set_by_key(user, "OS Uuid", sentry_value_new_string(QInstaller::getOsId().toRfc4122().toBase64()));
-    sentry_value_set_by_key(user, "Journey ID", sentry_value_new_string(QInstaller::getJourneyId().toRfc4122().toBase64()));
-    sentry_value_set_by_key(user, "Session", sentry_value_new_string(QInstaller::getSessionId().toLocal8Bit().constData()));
-    sentry_set_user(user);
-
-    // Add version numbers to Sentry
-    sentry_value_t versions = sentry_value_new_object();
-    sentry_value_set_by_key(versions, "PDM", sentry_value_new_string(QInstaller::getPdmVersion().toLocal8Bit().constData()));
-    sentry_value_set_by_key(versions, "Protobuf", sentry_value_new_string(QInstaller::getProtobufVersion().toLocal8Bit().constData()));
-    sentry_value_set_by_key(versions, "Qt", sentry_value_new_string(QInstaller::getQtVersion().toLocal8Bit().constData()));
-    sentry_value_set_by_key(versions, "Qt IFW", sentry_value_new_string(QInstaller::getQtIfwVersion().toLocal8Bit().constData()));
-    sentry_set_context("Library versions", versions);
 }
 
 bool getConfigValueAsBool(const QString &key, bool defaultValue = false)
@@ -904,10 +777,30 @@ bool PackageManagerCorePrivate::isReleaseBuild() const
     return getConfigValueAsBool(QLatin1String("releaseBuild"));
 }
 
-QString PackageManagerCorePrivate::getSentryDSN() const
+QString getConfigValueAsString(const QString &key, const QString &value)
 {
     QSettings confInternal(QLatin1String(":/config/config-internal.ini"), QSettings::IniFormat);
-    return confInternal.value(QLatin1String("sentryDsn"), QLatin1String("")).toString();
+    return confInternal.value(key, value).toString();
+}
+
+QString PackageManagerCorePrivate::getSentryDSN() const
+{
+    return getConfigValueAsString(QLatin1String("sentryDsn"), QLatin1String(""));
+}
+
+QString PackageManagerCorePrivate::getLauncherVersion() const
+{
+    return getConfigValueAsString(QLatin1String("launcherVersion"), QLatin1String("9999999"));
+}
+
+QString PackageManagerCorePrivate::getRegion() const
+{
+    return getConfigValueAsString(QLatin1String("region"), QLatin1String("world"));
+}
+
+QString PackageManagerCorePrivate::getPartnerId() const
+{
+    return getConfigValueAsString(QLatin1String("partnerId"), QLatin1String("none"));
 }
 
 QString PackageManagerCorePrivate::installerBinaryPath() const

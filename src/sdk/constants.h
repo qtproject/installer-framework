@@ -64,6 +64,7 @@ const char InstallCompressedRepository[] = "installCompressedRepository";
 const char SilentUpdate[] = "silentUpdate";
 const char Platform[] = "platform";
 const char SquishPort[] = "squish-port";
+const char CrashAndBurnMode[] = "crash-and-burn";
 
 } // namespace CommandLineOptions
 

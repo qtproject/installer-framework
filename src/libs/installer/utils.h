@@ -39,6 +39,8 @@
 
 #include <ostream>
 
+#define DEV_VERSION "9999999"
+
 QT_BEGIN_NAMESPACE
 class QIODevice;
 QT_END_NAMESPACE
@@ -62,8 +64,17 @@ namespace QInstaller {
 
     QStringList INSTALLER_EXPORT localeCandidates(const QString &locale);
 
+    void INSTALLER_EXPORT setInstallerVersion(const QString& version);
+    QString INSTALLER_EXPORT getInstallerVersion();
+
+    void INSTALLER_EXPORT setIsInstaller(bool installer);
+    bool INSTALLER_EXPORT isInstaller();
+
     void INSTALLER_EXPORT setVerbose(bool v);
     bool INSTALLER_EXPORT isVerbose();
+
+    void INSTALLER_EXPORT setCrashAndBurnMode(bool on);
+    bool INSTALLER_EXPORT isCrashAndBurnMode();
 
     // Log to file
     bool INSTALLER_EXPORT isLogFileEnabled();
@@ -110,6 +121,8 @@ namespace QInstaller {
     // Sentry related
     QString INSTALLER_EXPORT getCrashDb();
     QString INSTALLER_EXPORT getCrashpadHandlerName();
+    void INSTALLER_EXPORT setSentryDsn(const QString& dsn);
+    QString INSTALLER_EXPORT getSentryDsn();
 
     // Versions
     void INSTALLER_EXPORT setPdmVersion(const QString& version);
@@ -122,6 +135,32 @@ namespace QInstaller {
     QString INSTALLER_EXPORT getQtVersion();
     void INSTALLER_EXPORT setQtIfwVersion(const QString& version);
     QString INSTALLER_EXPORT getQtIfwVersion();
+    void INSTALLER_EXPORT setCcpIfwVersion(const QString& version);
+    QString INSTALLER_EXPORT getCcpIfwVersion();
+
+
+    // Launcher related
+    void INSTALLER_EXPORT setReleaseBuild(bool isRelease);
+    bool INSTALLER_EXPORT isReleaseBuild();
+    void INSTALLER_EXPORT setLocalDevelopmentBuild(bool isLocal);
+    bool INSTALLER_EXPORT isLocalDevelopmentBuild();
+    bool INSTALLER_EXPORT isChina();
+    void INSTALLER_EXPORT setRegion(const QString& region);
+    QString INSTALLER_EXPORT getRegion();
+    void INSTALLER_EXPORT setLauncherVersion(const QString& version);
+    QString INSTALLER_EXPORT getLauncherVersion();
+    void INSTALLER_EXPORT setEnvironment(const QString& environment);
+    QString INSTALLER_EXPORT getEnvironment();
+    bool INSTALLER_EXPORT hasPartnerId();
+    void INSTALLER_EXPORT setPartnerId(const QString& partnerId);
+    QString INSTALLER_EXPORT getPartnerId();
+
+    // Init ids
+    void initializeVersions();
+    void initializeJourneyIds();
+    void initializeOsId();
+    void initializeSessionHash();
+    void INSTALLER_EXPORT initializeIds();
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 
