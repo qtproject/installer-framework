@@ -169,7 +169,7 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
             << workingDirectory;
     }
 
-    QProcessEnvironment penv;
+    QProcessEnvironment penv = QProcessEnvironment::systemEnvironment();
     // there is no way to serialize a QProcessEnvironment properly other than per mangled QStringList:
     // (i.e. no other way to list all keys)
     process->setEnvironment(KDUpdater::Environment::instance().applyTo(penv).toStringList());
