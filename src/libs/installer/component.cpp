@@ -375,16 +375,20 @@ quint64 Component::updateUncompressedSize()
 {
     quint64 size = 0;
 
-    if (installAction() == ComponentModelHelper::Install
-            || installAction() == ComponentModelHelper::KeepInstalled) {
+    const bool installOrKeepInstalled = (installAction() == ComponentModelHelper::Install
+        || installAction() == ComponentModelHelper::KeepInstalled);
+
+    if (installOrKeepInstalled)
         size = d->m_vars.value(scUncompressedSize).toLongLong();
-    }
 
     foreach (Component* comp, d->m_allChildComponents)
         size += comp->updateUncompressedSize();
 
     setValue(scUncompressedSizeSum, QString::number(size));
-    setData(humanReadableSize(size), UncompressedSize);
+    if (size == 0 && !installOrKeepInstalled)
+        setData(QVariant(), UncompressedSize);
+    else
+        setData(humanReadableSize(size), UncompressedSize);
 
     return size;
 }
