@@ -2241,7 +2241,16 @@ bool ComponentSelectionPage::isComplete() const
 {
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->checked().count();
-    return d->m_currentModel->checkedState().testFlag(ComponentModel::DefaultChecked) == false;
+
+    if (d->m_currentModel->checkedState().testFlag(ComponentModel::DefaultChecked) == false)
+        return true;
+
+    const QSet<Component *> uncheckable = d->m_currentModel->uncheckable();
+    for (auto &component : uncheckable) {
+        if (component->forcedInstallation() && !component->isInstalled())
+            return true; // allow installation for new forced components
+    }
+    return false;
 }
 
 
