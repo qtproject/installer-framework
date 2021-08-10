@@ -354,6 +354,8 @@
     \qmlmethod void component::addDependency(string newDependency)
 
     Adds a new component \a newDependency to the list of dependencies.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa dependencies
 */
@@ -362,6 +364,8 @@
     \qmlmethod void component::addAutoDependOn(string newDependOn)
 
      Adds the component specified by \a newDependOn to the automatic depend-on list.
+     Alternatively, multiple components can be specified by separating each with
+     a comma.
 
     \sa autoDependencies
 */

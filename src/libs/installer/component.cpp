@@ -1299,6 +1299,8 @@ bool Component::validatePage()
 
 /*!
     Adds the component specified by \a newDependency to the list of dependencies.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa {component::addDependency}{component.addDependency}
     \sa dependencies
@@ -1320,6 +1322,8 @@ QStringList Component::dependencies() const
 
 /*!
     Adds the component specified by \a newDependOn to the automatic depend-on list.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa {component::addAutoDependOn}{component.addAutoDependOn}
     \sa autoDependencies
