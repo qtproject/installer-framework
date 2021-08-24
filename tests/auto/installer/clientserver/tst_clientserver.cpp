@@ -26,12 +26,19 @@
 **
 **************************************************************************/
 
+#include "../shared/verifyinstaller.h"
+
 #include <protocol.h>
 #include <qprocesswrapper.h>
 #include <qsettingswrapper.h>
 #include <remoteclient.h>
 #include <remotefileengine.h>
 #include <remoteserver.h>
+#include <fileutils.h>
+
+#ifdef IFW_LIBARCHIVE
+#include <libarchivewrapper_p.h>
+#endif
 
 #include <QBuffer>
 #include <QSettings>
@@ -511,6 +518,59 @@ private slots:
         file.resize(0);
         file.write(QProcess::systemEnvironment().join(QLatin1String("\n")).toLocal8Bit());
         QCOMPARE(file.atEnd(), true);
+    }
+
+    void testArchiveWrapper_data()
+    {
+        QTest::addColumn<QString>("suffix");
+        QTest::newRow("ZIP archive") << ".zip";
+        QTest::newRow("gzip compressed tar archive") << ".tar.gz";
+        QTest::newRow("bzip2 compressed tar archive") << ".tar.bz2";
+        QTest::newRow("xz compressed tar archive") << ".tar.xz";
+    }
+
+    void testArchiveWrapper()
+    {
+#ifndef IFW_LIBARCHIVE
+        QSKIP("Installer Framework built without libarchive support");
+#else
+        QFETCH(QString, suffix);
+
+        const QString archiveName = generateTemporaryFileName() + suffix;
+        const QString targetName = QDir::tempPath() + "/tst_archivewrapper/";
+
+        QTemporaryFile source;
+        source.open();
+        source.write("Source File");
+        source.setAutoRemove(false);
+
+        RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
+        server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
+
+        LibArchiveWrapperPrivate archive;
+        QCOMPARE(archive.isConnectedToServer(), false);
+        archive.setFilename(archiveName);
+        QCOMPARE(archive.isConnectedToServer(), true);
+
+        QVERIFY(archive.open(QIODevice::ReadWrite));
+        QVERIFY(archive.create(QStringList() << source.fileName()));
+        QVERIFY(QFileInfo::exists(archiveName));
+
+        QVERIFY(archive.extract(targetName, 1));
+        const QString sourceFilename = QFileInfo(source.fileName()).fileName();
+        QVERIFY(QFileInfo::exists(targetName + sourceFilename));
+        VerifyInstaller::verifyFileContent(targetName + sourceFilename, source.readAll());
+        archive.close();
+
+        QVERIFY(source.remove());
+        QVERIFY(QFile::remove(archiveName));
+        removeDirectory(targetName);
+#endif
     }
 
     void cleanupTestCase()
