@@ -31,6 +31,8 @@
 
 #include "ifwtools_global.h"
 
+#include <abstractarchive.h>
+
 #include <QHash>
 #include <QString>
 #include <QStringList>
@@ -52,6 +54,7 @@ struct IFWTOOLS_EXPORT PackageInfo
     bool createContentSha1Node;
 };
 typedef QVector<PackageInfo> PackageInfoVector;
+typedef QInstaller::AbstractArchive::CompressionLevel Compression;
 
 enum IFWTOOLS_EXPORT FilterType {
     Include,
@@ -77,7 +80,7 @@ PackageInfoVector IFWTOOLS_EXPORT createListOfRepositoryPackages(const QStringLi
 
 QHash<QString, QString> IFWTOOLS_EXPORT buildPathToVersionMapping(const PackageInfoVector &info);
 
-void IFWTOOLS_EXPORT createArchive(const QString &filename, const QStringList &data);
+void IFWTOOLS_EXPORT createArchive(const QString &filename, const QStringList &data, Compression compression = Compression::Normal);
 
 void IFWTOOLS_EXPORT compressMetaDirectories(const QString &repoDir, const QString &existingUnite7zUrl,
     const QHash<QString, QString> &versionMapping, bool createSplitMetadata, bool createUnifiedMetadata);
@@ -89,14 +92,16 @@ void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDoc
 void IFWTOOLS_EXPORT copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
     const QString &appName, const QString& appVersion, const QStringList &uniteMetadatas);
 void IFWTOOLS_EXPORT copyComponentData(const QStringList &packageDir, const QString &repoDir,
-                                       PackageInfoVector *const infos, const QString &archiveSuffix);
+                                       PackageInfoVector *const infos, const QString &archiveSuffix,
+                                       Compression compression = Compression::Normal);
 
 void IFWTOOLS_EXPORT filterNewComponents(const QString &repositoryDir, QInstallerTools::PackageInfoVector &packages);
 
 QString IFWTOOLS_EXPORT existingUniteMeta7z(const QString &repositoryDir);
 PackageInfoVector IFWTOOLS_EXPORT collectPackages(RepositoryInfo info, QStringList *filteredPackages, FilterType filterType, bool updateNewComponents, QStringList packagesUpdatedWithSha);
 void IFWTOOLS_EXPORT createRepository(RepositoryInfo info, PackageInfoVector *packages, const QString &tmpMetaDir,
-                                      bool createComponentMetadata, bool createUnifiedMetadata, const QString &archiveSuffix);
+                                      bool createComponentMetadata, bool createUnifiedMetadata, const QString &archiveSuffix,
+                                      Compression compression = Compression::Normal);
 } // namespace QInstallerTools
 
 #endif // REPOSITORYGEN_H

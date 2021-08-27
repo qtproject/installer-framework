@@ -759,13 +759,14 @@ static void writeSHA1ToNodeWithName(QDomDocument &doc, QDomNodeList &list, const
     }
 }
 
-void QInstallerTools::createArchive(const QString &filename, const QStringList &data)
+void QInstallerTools::createArchive(const QString &filename, const QStringList &data, Compression compression)
 {
     QScopedPointer<AbstractArchive> targetArchive(ArchiveFactory::instance().create(filename));
     if (!targetArchive) {
         throw QInstaller::Error(QString::fromLatin1("Could not create handler "
             "object for archive \"%1\": \"%2\".").arg(filename, QLatin1String(Q_FUNC_INFO)));
     }
+    targetArchive->setCompressionLevel(compression);
     if (!(targetArchive->open(QIODevice::WriteOnly) && targetArchive->create(data))) {
         throw Error(QString::fromLatin1("Could not create archive \"%1\": %2").arg(
             QDir::toNativeSeparators(filename), targetArchive->errorString()));
@@ -906,7 +907,7 @@ void QInstallerTools::splitMetadata(const QStringList &entryList, const QString 
 }
 
 void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QString &repoDir,
-    PackageInfoVector *const infos, const QString &archiveSuffix)
+    PackageInfoVector *const infos, const QString &archiveSuffix, Compression compression)
 {
     for (int i = 0; i < infos->count(); ++i) {
         const PackageInfo info = infos->at(i);
@@ -945,7 +946,7 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
                     } else if (fileInfo.isDir()) {
                         qDebug() << "Compressing data directory" << entry;
                         QString target = QString::fromLatin1("%1/%3%2.%4").arg(namedRepoDir, entry, info.version, archiveSuffix);
-                        createArchive(target, QStringList() << dataDir.absoluteFilePath(entry));
+                        createArchive(target, QStringList() << dataDir.absoluteFilePath(entry), compression);
                         compressedFiles.append(target);
                     } else if (fileInfo.isSymLink()) {
                         filesToCompress.append(dataDir.absoluteFilePath(entry));
@@ -956,7 +957,7 @@ void QInstallerTools::copyComponentData(const QStringList &packageDirs, const QS
             if (!filesToCompress.isEmpty()) {
                 qDebug() << "Compressing files found in data directory:" << filesToCompress;
                 QString target = QString::fromLatin1("%1/%2content.%3").arg(namedRepoDir, info.version, archiveSuffix);
-                createArchive(target, filesToCompress);
+                createArchive(target, filesToCompress, compression);
                 compressedFiles.append(target);
             }
 
@@ -1089,7 +1090,8 @@ PackageInfoVector QInstallerTools::collectPackages(RepositoryInfo info, QStringL
 }
 
 void QInstallerTools::createRepository(RepositoryInfo info, PackageInfoVector *packages,
-        const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata, const QString &archiveSuffix)
+        const QString &tmpMetaDir, bool createComponentMetadata, bool createUnifiedMetadata,
+        const QString &archiveSuffix, Compression compression)
 {
     QHash<QString, QString> pathToVersionMapping = QInstallerTools::buildPathToVersionMapping(*packages);
 
@@ -1105,7 +1107,7 @@ void QInstallerTools::createRepository(RepositoryInfo info, PackageInfoVector *p
             unite7zFiles.append(it.fileInfo().absoluteFilePath());
         }
     }
-    QInstallerTools::copyComponentData(directories, info.repositoryDir, packages, archiveSuffix);
+    QInstallerTools::copyComponentData(directories, info.repositoryDir, packages, archiveSuffix, compression);
     QInstallerTools::copyMetaData(tmpMetaDir, info.repositoryDir, *packages, QLatin1String("{AnyApplication}"),
         QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)), unite7zFiles);
 

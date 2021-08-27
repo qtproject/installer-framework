@@ -1261,6 +1261,19 @@
                 you omit this option, the 7z format will be used as a default.
                 \note If the Installer Framework tools were built without libarchive
                 support, only \c{7z} format is supported.
+        \row
+            \li --ac, --compression <5>
+            \li Defaults to 5 (Normal compression). \note Some formats do not support
+                all the possible values, for example bzip2 compression only supports
+                values from 1 to 9.
+                \list
+                    \li 0 (No compression)
+                    \li 1 (Fastest compressing)
+                    \li 3 (Fast compressing)
+                    \li 5 (Normal compressing)
+                    \li 7 (Maximum compressing)
+                    \li 9 (Ultra compressing)
+                \endlist
     \endtable
     \note We recommend that you use the \c {--update-new-packages} parameter
           to update an existing repository, especially if you have a content delivery

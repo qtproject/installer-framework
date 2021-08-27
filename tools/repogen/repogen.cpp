@@ -35,12 +35,14 @@
 #include <utils.h>
 #include <loggingutils.h>
 #include <archivefactory.h>
+#include <abstractarchive.h>
 
 #include <QDomDocument>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
 #include <QtCore/QFileInfo>
 #include <QTemporaryDir>
+#include <QMetaEnum>
 
 #include <iostream>
 
@@ -76,6 +78,8 @@ static void printUsage()
     std::cout << "  --af|--archive-format " << archiveFormats << std::endl;
     std::cout << "                            Set the format used when packaging new component data archives. If" << std::endl;
     std::cout << "                            you omit this option the 7z format will be used as a default." << std::endl;
+    std::cout << "  --ac|--compression 0,1,3,5,7,9" << std::endl;
+    std::cout << "                            Sets the compression level used when packaging new data archives." << std::endl;
 
     std::cout << std::endl;
     std::cout << "Example:" << std::endl;
@@ -111,6 +115,7 @@ int main(int argc, char** argv)
         bool createUnifiedMetadata = true;
         bool createComponentMetadata = true;
         QString archiveSuffix = QLatin1String("7z");
+        AbstractArchive::CompressionLevel compression = AbstractArchive::Normal;
 
         //TODO: use a for loop without removing values from args like it is in binarycreator.cpp
         //for (QStringList::const_iterator it = args.begin(); it != args.end(); ++it) {
@@ -212,6 +217,21 @@ int main(int argc, char** argv)
                 // TODO: do we need early check for supported formats?
                 archiveSuffix = args.first();
                 args.removeFirst();
+            } else if (args.first() == QLatin1String("--ac") || args.first() == QLatin1String("--compression")) {
+                args.removeFirst();
+                if (args.isEmpty()) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Compression parameter missing argument"));
+                }
+                bool ok = false;
+                QMetaEnum levels = QMetaEnum::fromType<AbstractArchive::CompressionLevel>();
+                const int value = args.first().toInt(&ok);
+                if (!ok || !levels.valueToKey(value)) {
+                    return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
+                        "Error: Unknown compression level \"%1\".").arg(value));
+                }
+                compression = static_cast<AbstractArchive::CompressionLevel>(value);
+                args.removeFirst();
             } else {
                 printUsage();
                 return 1;
@@ -263,7 +283,7 @@ int main(int argc, char** argv)
         tmp.setAutoRemove(false);
         tmpMetaDir = tmp.path();
         QInstallerTools::createRepository(repoInfo, &packages, tmpMetaDir,
-            createComponentMetadata, createUnifiedMetadata, archiveSuffix);
+            createComponentMetadata, createUnifiedMetadata, archiveSuffix, compression);
 
         exitCode = EXIT_SUCCESS;
     } catch (const QInstaller::Error &e) {
