@@ -804,7 +804,8 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             // 2.2; copy the packages data and setup the packages vector with the files we copied,
             //    must happen before copying meta data because files will be compressed if
             //    needed and meta data generation relies on this
-            copyComponentData(args.packagesDirectories, tmpRepoDir, &preparedPackages, QLatin1String("7z"));
+            copyComponentData(args.packagesDirectories, tmpRepoDir, &preparedPackages,
+                args.archiveSuffix, args.compression);
             // 2.3; add to common vector
             packages.append(preparedPackages);
         }

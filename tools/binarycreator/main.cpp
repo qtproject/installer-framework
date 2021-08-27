@@ -30,8 +30,10 @@
 #include <init.h>
 #include <utils.h>
 #include <loggingutils.h>
+#include <archivefactory.h>
 
 #include <QtCore/QDebug>
+#include <QMetaEnum>
 
 #include <iostream>
 
@@ -44,6 +46,7 @@ static void printUsage()
     suffix = QLatin1String(".exe");
 #endif
     const QString appName = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+    const QString archiveFormats = ArchiveFactory::supportedTypes().join(QLatin1Char('|'));
     std::cout << "Usage: " << appName << " [options] target" << std::endl;
     std::cout << std::endl;
     std::cout << "Options:" << std::endl;
@@ -72,6 +75,11 @@ static void printUsage()
     std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
     std::cout << "                            signing identity" << std::endl;
 #endif
+    std::cout << "  --af|--archive-format " << archiveFormats << std::endl;
+    std::cout << "                            Set the format used when packaging new component data archives. If" << std::endl;
+    std::cout << "                            you omit this option the 7z format will be used as a default." << std::endl;
+    std::cout << "  --ac|--compression 0,1,3,5,7,9" << std::endl;
+    std::cout << "                            Sets the compression level used when packaging new data archives." << std::endl;
     std::cout << std::endl;
     std::cout << "Packages are to be found in the current working directory and get listed as "
         "their names" << std::endl << std::endl;
@@ -179,6 +187,24 @@ int main(int argc, char **argv)
                 continue;
         } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
             parsedArgs.compileResource = true;
+        } else if (*it == QLatin1String("--af") || *it == QLatin1String("--archive-format")) {
+            ++it;
+            if (it == args.end())
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Archive format parameter missing argument."));
+            parsedArgs.archiveSuffix = *it;
+        } else if (*it == QLatin1String("--ac") || *it == QLatin1String("--compression")) {
+            ++it;
+            if (it == args.end())
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: Compression parameter missing argument"));
+
+            bool ok = false;
+            QMetaEnum levels = QMetaEnum::fromType<AbstractArchive::CompressionLevel>();
+            const int value = it->toInt(&ok);
+            if (!ok || !levels.valueToKey(value)) {
+                return printErrorAndUsageAndExit(QString::fromLatin1(
+                    "Error: Unknown compression level \"%1\".").arg(value));
+            }
+            parsedArgs.compression = static_cast<AbstractArchive::CompressionLevel>(value);
 #ifdef Q_OS_MACOS
         } else if (*it == QLatin1String("-s") || *it == QLatin1String("--sign")) {
             ++it;

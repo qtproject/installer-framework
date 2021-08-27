@@ -35,6 +35,8 @@
 #include "fileutils.h"
 #include "binaryformat.h"
 
+#include <abstractarchive.h>
+
 #include <QtCore/QString>
 #include <QtCore/QFile>
 
@@ -48,6 +50,8 @@ struct Input
     QInstaller::ResourceCollectionManager manager;
 };
 
+typedef QInstaller::AbstractArchive::CompressionLevel Compression;
+
 struct IFWTOOLS_EXPORT BinaryCreatorArgs
 {
     QString target;
@@ -55,6 +59,8 @@ struct IFWTOOLS_EXPORT BinaryCreatorArgs
     QString templateBinary;
     QStringList packagesDirectories;
     QStringList repositoryDirectories;
+    QString archiveSuffix = QLatin1String("7z");
+    Compression compression = Compression::Normal;
     bool onlineOnly = false;
     bool offlineOnly = false;
     QStringList resources;
