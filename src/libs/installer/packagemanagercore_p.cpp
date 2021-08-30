@@ -211,7 +211,6 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(nullptr)
-    , m_compressedFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -250,7 +249,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations)
     : m_updateFinder(nullptr)
-    , m_compressedFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -2481,7 +2479,7 @@ PackagesList PackageManagerCorePrivate::remotePackages()
 
     m_updateFinder = new KDUpdater::UpdateFinder;
     m_updateFinder->setAutoDelete(false);
-    m_updateFinder->setPackageSources(m_packageSources);
+    m_updateFinder->setPackageSources(m_packageSources + m_compressedPackageSources);
     m_updateFinder->setLocalPackageHub(m_localPackageHub);
     m_updateFinder->run();
 
@@ -2493,29 +2491,6 @@ PackagesList PackageManagerCorePrivate::remotePackages()
 
     m_updates = true;
     return m_updateFinder->updates();
-}
-
-PackagesList PackageManagerCorePrivate::compressedPackages()
-{
-    if (m_compressedUpdates && m_compressedFinder)
-        return m_compressedFinder->updates();
-    m_compressedUpdates = false;
-    delete m_compressedFinder;
-
-    m_compressedFinder = new KDUpdater::UpdateFinder;
-    m_compressedFinder->setAutoDelete(false);
-    m_compressedFinder->addCompressedPackage(true);
-    m_compressedFinder->setPackageSources(m_compressedPackageSources);
-
-    m_compressedFinder->setLocalPackageHub(m_localPackageHub);
-    m_compressedFinder->run();
-    if (m_compressedFinder->updates().isEmpty()) {
-        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve remote tree %1.")
-            .arg(m_compressedFinder->errorString()));
-        return PackagesList();
-    }
-    m_compressedUpdates = true;
-    return m_compressedFinder->updates();
 }
 
 /*!
@@ -2585,42 +2560,6 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadTyp
     return m_repoFetched;
 }
 
-bool PackageManagerCorePrivate::fetchMetaInformationFromCompressedRepositories()
-{
-    bool compressedRepoFetched = false;
-
-    m_compressedUpdates = false;
-    m_updateSourcesAdded = false;
-
-    try {
-        //Tell MetadataJob that only compressed packages needed to be fetched and not all.
-        //We cannot do this in general fetch meta method as the compressed packages might be
-        //installed after components tree is generated
-        m_metadataJob.addDownloadType(DownloadType::CompressedPackage);
-        m_metadataJob.start();
-        m_metadataJob.waitForFinished();
-    } catch (Error &error) {
-        setStatus(PackageManagerCore::Failure, tr("Cannot retrieve meta information: %1")
-            .arg(error.message()));
-        return compressedRepoFetched;
-    }
-
-    if (m_metadataJob.error() != Job::NoError) {
-        switch (m_metadataJob.error()) {
-            case QInstaller::UserIgnoreError:
-                break;  // we can simply ignore this error, the user knows about it
-            default:
-                //Do not change core status here, we can recover if there is invalid
-                //compressed repository
-                setStatus(m_core->status(), m_metadataJob.errorString());
-                return compressedRepoFetched;
-        }
-    }
-
-    compressedRepoFetched = true;
-    return compressedRepoFetched;
-}
-
 bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository)
 {
     if (!compressedRepository && m_updateSourcesAdded)
@@ -2680,8 +2619,8 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!checksum.isNull())
                 m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        if (compressedRepository)
-            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
+        if (data.repository.isCompressed())
+            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 2));
         else
             m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
 

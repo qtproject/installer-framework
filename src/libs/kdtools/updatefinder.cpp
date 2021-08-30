@@ -55,18 +55,6 @@ using namespace QInstaller;
     objects.
 */
 
-/*!
-    \fn void KDUpdater::UpdateFinder::addCompressedPackage(bool add)
-    \internal
-
-*/
-
-/*!
-    \fn void KDUpdater::UpdateFinder::isCompressedPackage()
-    \internal
-
-*/
-
 //
 // Private
 //
@@ -182,8 +170,8 @@ void UpdateFinder::Private::computeUpdates()
     // 1. Downloading Update XML files from all the update sources
     // 2. Matching updates with Package XML and figuring out available updates
 
-    if (!q->isCompressedPackage())
-        clear();
+
+    clear();
     cancel = false;
 
     // First do some quick sanity checks on the packages info
@@ -409,8 +397,7 @@ void UpdateFinder::Private::createUpdateObjects(const PackageSource &source,
             delete updates.take(name);
 
         // Create and register the update
-        if (!q->isCompressedPackage() || value == Resolution::AddPackage)
-            updates.insert(name, new Update(source, info));
+        updates.insert(name, new Update(source, info));
     }
 }
 
@@ -450,10 +437,6 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
                 << ", Source: " << QFileInfo(source.url.toLocalFile()).fileName() << "'";
             return Resolution::RemoveExisting;
         }
-        if (q->isCompressedPackage() && match == 0 && source.priority == existingPackage->packageSource().priority) {
-            //Same package with the same priority and version already exists
-            return Resolution::RemoveExisting;
-        }
         return Resolution::KeepExisting; // otherwise keep existing
     }
     return Resolution::AddPackage;
@@ -468,7 +451,6 @@ UpdateFinder::Private::Resolution UpdateFinder::Private::checkPriorityAndVersion
 */
 UpdateFinder::UpdateFinder()
     : Task(QLatin1String("UpdateFinder"), Stoppable),
-      m_compressedPackage(false),
       d(new Private(this))
 {
 }

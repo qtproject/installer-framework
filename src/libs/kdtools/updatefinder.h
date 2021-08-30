@@ -53,8 +53,7 @@ public:
 
     void setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub);
     void setPackageSources(const QSet<QInstaller::PackageSource> &sources);
-    void addCompressedPackage(bool add) { m_compressedPackage = add; }
-    bool isCompressedPackage() { return m_compressedPackage; }
+
 private:
     void doRun();
     bool doStop();
@@ -62,7 +61,6 @@ private:
     bool doResume();
 
 private:
-    bool m_compressedPackage;
     Private *d;
     Q_PRIVATE_SLOT(d, void slotDownloadDone())
 };

@@ -177,7 +177,6 @@ signals:
 
 public:
     UpdateFinder *m_updateFinder;
-    UpdateFinder *m_compressedFinder;
     QSet<PackageSource> m_packageSources;
     QSet<PackageSource> m_compressedPackageSources;
     std::shared_ptr<LocalPackageHub> m_localPackageHub;
@@ -244,10 +243,8 @@ private:
         bool adminRightsGained, bool deleteOperation);
 
     PackagesList remotePackages();
-    PackagesList compressedPackages();
     LocalPackagesHash localInstalledPackages();
     bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
-    bool fetchMetaInformationFromCompressedRepositories();
     bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
     void processFilesForDelayedDeletion();
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
@@ -263,7 +260,6 @@ private:
     MetadataJob m_metadataJob;
 
     bool m_updates;
-    bool m_compressedUpdates;
     bool m_repoFetched;
     bool m_updateSourcesAdded;
     qint64 m_magicBinaryMarker;

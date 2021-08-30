@@ -180,10 +180,6 @@ void MetadataJob::doStart()
                         item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                         items.append(item);
                     }
-                    else {
-                        qCWarning(QInstaller::lcInstallerInstallLog) << "Trying to parse compressed repo as "
-                            "normal repository. Check repository syntax.";
-                    }
                 }
             }
             if (items.count() > 0) {

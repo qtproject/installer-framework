@@ -1,3 +1,34 @@
+/**************************************************************************
+**
+** Copyright (C) 2021 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:GPL-EXCEPT$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+** $QT_END_LICENSE$
+**
+**************************************************************************/
+
+#include "../shared/packagemanager.h"
+#include "../shared/verifyinstaller.h"
+
 #include "repository.h"
 #include "repositorycategory.h"
 #include "settings.h"
@@ -160,6 +191,24 @@ private slots:
 
         update.insert(QLatin1String("replace"), qMakePair(nonMatching, replacement));
         QVERIFY(settings.updateRepositoryCategories(update) == Settings::NoUpdatesApplied);
+    }
+
+    void testCompressedRepositoryWithPriority()
+    {
+        // Compressed repository has higher priority than normal repository.
+        // If the versions match, compressed repository is used instead of normal repository.
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir, ":///data/repository");
+        core->setTemporaryRepositories(QStringList()
+            << ":///data/compressedRepository/compressedRepository.7z", false, true);
+        core->installSelectedComponentsSilently(QStringList() << "A");
+        VerifyInstaller::verifyFileExistence(installDir, QStringList() << "components.xml" << "A_from_compressed.txt");
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
     }
 };
 

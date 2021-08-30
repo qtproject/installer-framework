@@ -1480,20 +1480,16 @@ bool PackageManagerCore::fetchCompressedPackagesTree()
     if (!isInstaller() && status() == Failure)
         return false;
 
-    if (!d->fetchMetaInformationFromCompressedRepositories())
+    if (!d->fetchMetaInformationFromRepositories(DownloadType::CompressedPackage))
         return false;
 
     if (!d->addUpdateResourcesFromRepositories(true, true)) {
         return false;
     }
 
-    PackagesList packages;
-    const PackagesList &compPackages = d->compressedPackages();
-    if (compPackages.isEmpty())
+    const PackagesList &packages = d->remotePackages();
+    if (packages.isEmpty())
         return false;
-    packages.append(compPackages);
-    const PackagesList &rPackages = d->remotePackages();
-    packages.append(rPackages);
 
     return fetchPackagesTree(packages, installedPackages);
 }
@@ -1523,7 +1519,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     if (!d->fetchMetaInformationFromRepositories())
         return false;
 
-    if (!d->fetchMetaInformationFromCompressedRepositories())
+    if (!d->fetchMetaInformationFromRepositories(DownloadType::CompressedPackage))
         return false;
 
     if (!d->addUpdateResourcesFromRepositories(true))
