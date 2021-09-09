@@ -511,15 +511,6 @@ void ComponentModel::updateAndEmitModelState()
     }
 
     emit checkStateChanged(m_modelState);
-
-    foreach (const Component *component, m_rootComponentList) {
-        emit dataChanged(indexFromComponentName(component->treeName()),
-                         indexFromComponentName(component->treeName()));
-        QList<Component *> children = component->childItems();
-        foreach (const Component *child, children)
-            emit dataChanged(indexFromComponentName(child->treeName()),
-                             indexFromComponentName(child->treeName()));
-    }
 }
 
 void ComponentModel::collectComponents(Component *const component, const QModelIndex &parent) const

@@ -44,6 +44,7 @@ win32:QT += winextras
 
 HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
+    componentsortfilterproxymodel.h \
     loggingutils.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
@@ -150,6 +151,7 @@ SOURCES += packagemanagercore.cpp \
     aspectratiolabel.cpp \
     directoryguard.cpp \
     lib7zarchive.cpp \
+    componentsortfilterproxymodel.cpp \
     loggingutils.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \

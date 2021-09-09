@@ -34,6 +34,7 @@
 
 #include "componentmodel.h"
 #include "packagemanagergui.h"
+#include "componentsortfilterproxymodel.h"
 
 class QTreeView;
 class QLabel;
@@ -70,6 +71,8 @@ public:
     void setupCategoryLayout();
     void showCategoryLayout(bool show);
     void updateTreeView();
+    void expandDefault();
+    void expandSearchResults();
 
 public slots:
     void currentSelectedChanged(const QModelIndex &current);
@@ -84,6 +87,7 @@ public slots:
     void setTotalProgress(int totalProgress);
     void selectDefault();
     void onModelStateChanged(QInstaller::ComponentModel::ModelState state);
+    void setSearchPattern(const QString &text);
 
 private:
     ComponentSelectionPage *q;
@@ -107,6 +111,8 @@ private:
     ComponentModel *m_updaterModel;
     ComponentModel *m_currentModel;
     QStackedLayout *m_stackedLayout;
+    ComponentSortFilterProxyModel *m_proxyModel;
+    QLineEdit *m_searchLineEdit;
 };
 
 }  // namespace QInstaller

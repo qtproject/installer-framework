@@ -50,6 +50,7 @@
 #include <QStackedLayout>
 #include <QStackedWidget>
 #include <QToolBox>
+#include <QLineEdit>
 
 namespace QInstaller {
 
@@ -71,8 +72,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_categoryLayoutVisible(false)
+        , m_proxyModel(new ComponentSortFilterProxyModel(q))
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
+    m_proxyModel->setRecursiveFilteringEnabled(true);
+    m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     m_descriptionBaseWidget = new QWidget(q);
     m_descriptionBaseWidget->setObjectName(QLatin1String("DescriptionBaseWidget"));
@@ -155,9 +159,18 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     metaLayout->addWidget(m_progressBar);
     metaLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
+    m_searchLineEdit = new QLineEdit(q);
+    m_searchLineEdit->setObjectName(QLatin1String("SearchLineEdit"));
+    m_searchLineEdit->setPlaceholderText(ComponentSelectionPage::tr("Search"));
+    m_searchLineEdit->setClearButtonEnabled(true);
+    connect(m_searchLineEdit, &QLineEdit::textChanged,
+            this, &ComponentSelectionPagePrivate::setSearchPattern);
+    connect(q, &ComponentSelectionPage::entered, m_searchLineEdit, &QLineEdit::clear);
+
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
+    treeViewVLayout->addWidget(m_searchLineEdit);
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
@@ -292,15 +305,11 @@ void ComponentSelectionPagePrivate::updateTreeView()
             this, &ComponentSelectionPagePrivate::currentSelectedChanged);
     }
 
+    m_searchLineEdit->setVisible(!m_core->isUpdater());
     m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
-    m_treeView->setModel(m_currentModel);
-    m_treeView->setExpanded(m_currentModel->index(0, 0), true);
-    foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::All)) {
-        if (component->isExpandedByDefault()) {
-            const QModelIndex index = m_currentModel->indexFromComponentName(component->treeName());
-            m_treeView->setExpanded(index, true);
-        }
-    }
+    m_proxyModel->setSourceModel(m_currentModel);
+    m_treeView->setModel(m_proxyModel);
+    expandDefault();
 
     const bool installActionColumnVisible = m_core->settings().installActionColumnVisible();
     if (!installActionColumnVisible)
@@ -341,7 +350,44 @@ void ComponentSelectionPagePrivate::updateTreeView()
     connect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
         this, &ComponentSelectionPagePrivate::currentSelectedChanged);
 
-    m_treeView->setCurrentIndex(m_currentModel->index(0, 0));
+    m_treeView->setCurrentIndex(m_proxyModel->index(0, 0));
+}
+
+/*!
+    Expands components that should be expanded by default.
+*/
+void ComponentSelectionPagePrivate::expandDefault()
+{
+    m_treeView->setExpanded(m_proxyModel->index(0, 0), true);
+    foreach (auto *component, m_core->components(PackageManagerCore::ComponentType::All)) {
+        if (component->isExpandedByDefault()) {
+            const QModelIndex index = m_proxyModel->mapFromSource(
+                m_currentModel->indexFromComponentName(component->treeName()));
+            m_treeView->setExpanded(index, true);
+        }
+    }
+}
+
+/*!
+    Expands components that were accepted by proxy models filter.
+*/
+void ComponentSelectionPagePrivate::expandSearchResults()
+{
+    // Expand parents of root indexes accepted by filter
+    const QVector<QModelIndex> acceptedIndexes = m_proxyModel->directlyAcceptedIndexes();
+    for (auto proxyModelIndex : acceptedIndexes) {
+        if (!proxyModelIndex.isValid())
+            continue;
+
+        QModelIndex index = proxyModelIndex.parent();
+        while (index.isValid()) {
+            if (m_treeView->isExpanded(index))
+                break; // Multiple direct matches in a branch, can be skipped
+
+            m_treeView->expand(index);
+            index = index.parent();
+        }
+    }
 }
 
 void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &current)
@@ -351,12 +397,12 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
 
     m_sizeLabel->setText(QString());
 
-    QString description = m_currentModel->data(m_currentModel->index(current.row(),
+    QString description = m_proxyModel->data(m_proxyModel->index(current.row(),
         ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
 
     m_descriptionLabel->setText(description);
 
-    Component *component = m_currentModel->componentFromIndex(current);
+    Component *component = m_currentModel->componentFromIndex(m_proxyModel->mapToSource(current));
     if ((m_core->isUninstaller()) || (!component))
         return;
 
@@ -429,6 +475,7 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
             QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());
     }
     updateWidgetVisibility(false);
+    m_searchLineEdit->text().isEmpty() ? expandDefault() : expandSearchResults();
 }
 
 void ComponentSelectionPagePrivate::customButtonClicked(int which)
@@ -505,6 +552,28 @@ void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentMod
     // update the current selected node (important to reflect possible sub-node changes)
     if (m_treeView->selectionModel())
         currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
+}
+
+/*!
+    Sets the new filter pattern to \a text and expands the tree nodes.
+*/
+void ComponentSelectionPagePrivate::setSearchPattern(const QString &text)
+{
+    m_proxyModel->setFilterWildcard(text);
+
+    m_treeView->collapseAll();
+    if (text.isEmpty()) {
+        // Expand user selection and default expanded, ensure selected is visible
+        QModelIndex index = m_treeView->selectionModel()->currentIndex();
+        while (index.isValid()) {
+            m_treeView->expand(index);
+            index = index.parent();
+        }
+        expandDefault();
+        m_treeView->scrollTo(m_treeView->selectionModel()->currentIndex());
+    } else {
+        expandSearchResults();
+    }
 }
 
 }  // namespace QInstaller
