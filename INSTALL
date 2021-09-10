@@ -95,11 +95,11 @@ $ sudo apt install zlib1g-dev liblzma-dev libbz2-dev
 
 The easiest way to install the missing libraries is with a third party
 package manager solution, like Homebrew or MacPorts. On macOS 10.15 you
-should only need to install the libiconv and liblzma libraries.
+should only need to additionally install the liblzma library.
 
 On Homebrew this would be:
 
-$ brew install libiconv xz
+$ brew install xz
 
 ### Troubleshooting
 

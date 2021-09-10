@@ -58,17 +58,9 @@ instructions:
       property: host.os
       equals_value: MacOS
 
-  - type: EnvironmentVariable
-    variableName: IFW_ICONV_LIBRARY
-    variableValue: "/usr/local/opt/libiconv/lib/libiconv.a"
-    enable_if:
-      condition: property
-      property: host.os
-      equals_value: MacOS
-
   - type: PrependToEnvironmentVariable
     variableName: C_INCLUDE_PATH
-    variableValue: "/usr/local/opt/xz/include:/usr/local/opt/libiconv/include:"
+    variableValue: "/usr/local/opt/xz/include:"
     enable_if:
       condition: property
       property: host.os
@@ -76,7 +68,7 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: CPLUS_INCLUDE_PATH
-    variableValue: "/usr/local/opt/xz/include:/usr/local/opt/libiconv/include:"
+    variableValue: "/usr/local/opt/xz/include:"
     enable_if:
       condition: property
       property: host.os
