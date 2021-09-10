@@ -541,7 +541,9 @@ void MetadataJob::reset()
 
     try {
         m_xmlTask.cancel();
+        m_xmlTask.waitForFinished();
         m_metadataTask.cancel();
+        m_metadataTask.waitForFinished();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
     m_metadataResult.clear();

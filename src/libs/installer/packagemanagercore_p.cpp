@@ -923,8 +923,13 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
     const QVariantHash v = cfg.value(QLatin1String("Variables")).toHash(); // Do not change to
     // QVariantMap! Breaks reading from existing .ini files, cause the variant types do not match.
     for (QVariantHash::const_iterator it = v.constBegin(); it != v.constEnd(); ++it) {
-        if (!m_data.contains(it.key()) || m_data.value(it.key()).isNull())
-            m_data.setValue(it.key(), replacePath(it.value().toString(), QLatin1String(scRelocatable), targetDir));
+        if (m_data.contains(it.key()) && !m_data.value(it.key()).isNull()) {
+            // Exception: StartMenuDir should be permanent after initial installation
+            // and must be read from maintenancetool.ini
+            if (it.key() != scStartMenuDir)
+                continue;
+        }
+        m_data.setValue(it.key(), replacePath(it.value().toString(), QLatin1String(scRelocatable), targetDir));
     }
     QSet<Repository> repos;
     const QVariantList variants = cfg.value(QLatin1String("DefaultRepositories"))
