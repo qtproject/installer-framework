@@ -901,8 +901,10 @@
             \li Translations
             \li List of translation files to load. To add several language
                 variants, specify several \c <Translation> child elements that each
-                specify the filename of a language variant. Optional. For more
-                information, see \l{Translating Pages}.
+                specify the filename of a language variant. The installer loads the
+                translation file that matches the current system locale. For example,
+                if the system locale is German, the de.qm file is loaded. Optional.
+                For more information, see \l{Translating Pages}.
         \row
             \li UpdateText
             \li Description added to the component description if this is an
