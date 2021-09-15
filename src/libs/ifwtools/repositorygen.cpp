@@ -840,6 +840,7 @@ QStringList QInstallerTools::unifyMetadata(const QString &repoDir, const QString
                 dir2.cd(existingRepoEntry);
                 const QString absPath = dir2.absolutePath();
                 absPaths.append(absPath);
+                dir2.cdUp();
             }
         }
     }

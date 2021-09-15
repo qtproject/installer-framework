@@ -82,14 +82,16 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         process.start(qmake.absoluteFilePath(), args, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             QByteArray output = process.readAllStandardOutput();
-            qmakeOutput->append(output);
-            if (process.exitStatus() == QProcess::CrashExit) {
-                qCWarning(QInstaller::lcInstallerInstallLog) << qmake.absoluteFilePath() << args
-                           << "crashed with exit code" << process.exitCode()
-                           << "standard output:" << output
-                           << "error output:" << process.readAllStandardError();
+            if ((process.exitStatus() == QProcess::CrashExit) || (process.exitCode() != EXIT_SUCCESS)) {
+                QStringList detailedOutput = { qmake.absoluteFilePath() + QLatin1Char(' ') + args.join(QLatin1Char(' '))
+                    + QString::fromLatin1(" returned with exit code: \"%1\".").arg(QString::number(process.exitCode()))
+                    , QString::fromLatin1("Standard output: \"%1\".").arg(QLatin1String(output))
+                    , QString::fromLatin1("Error output: \"%1\".").arg(QLatin1String(process.readAllStandardError()))
+                };
+                qmakeOutput->append(detailedOutput.join(QLatin1Char('\n')));
                 return qmakeValueHash;
             }
+            qmakeOutput->append(output);
             qmakeValueHash = readQmakeOutput(output);
         }
         if (qmakeValueHash.isEmpty()) {

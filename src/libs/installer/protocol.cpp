@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,19 +35,19 @@ typedef qint32 PackageSize;
 
 /*!
     \inmodule QtInstallerFramework
-    \namespace Protocol
+    \namespace QInstaller::Protocol
     \brief Contains values related to the internal client-server connection protocol.
 */
 
 /*!
-    \enum Protocol::Mode
+    \enum QInstaller::Protocol::Mode
 
     \value Debug
     \value Production
 */
 
 /*!
-    \enum Protocol::StartAs
+    \enum QInstaller::Protocol::StartAs
 
     \value User
     \value SuperUser

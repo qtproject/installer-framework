@@ -57,9 +57,6 @@ private:
                 VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/B", QStringList() << "1.0.0content.7z"
                                                     << "1.0.0content.7z.sha1");
             }
-        } else {
-            QDir dir(m_repoInfo.repositoryDir + "/B");
-            QVERIFY(!dir.exists());
         }
         QTemporaryDir tmp;
         tmp.setAutoRemove(false);
@@ -144,14 +141,16 @@ private:
 
     void ignoreMessagesForComponentHash(const QStringList &components, bool update)
     {
+        QString packageDir = m_repoInfo.packages.first();
+        packageDir.remove("//"); // e.g. :///packages -> :/packages
         foreach (const QString component, components) {
             QString message = "Copying component data for \"%1\"";
             QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(component)));
             if (update)
-                message = "Compressing files found in data directory: (\":/packages_update/%1/data/%1_update.txt\")";
+                message = "Compressing files found in data directory: (\"%1/%2/data/%2_update.txt\")";
             else
-                message = "Compressing files found in data directory: (\":/packages/%1/data/%1.txt\")";
-            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(component)));
+                message = "Compressing files found in data directory: (\"%1/%2/data/%2.txt\")";
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(packageDir, component)));
             QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Hash is stored in *"));
             QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Creating hash of archive *"));
             QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Generated sha1 hash: *"));
@@ -183,19 +182,15 @@ private:
 
     void ignoreMessagesForCopyMetadata(const QString &component, bool hasMeta, bool update)
     {
-        QString message;
-        if (update)
-            message = "Copy meta data for package \"%1\" using \":///packages_update/%1/meta/package.xml\"";
-        else
-            message = "Copy meta data for package \"%1\" using \":///packages/%1/meta/package.xml\"";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(component)));
+        QString message = "Copy meta data for package \"%2\" using \"%1/%2/meta/package.xml\"";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.packages.first(), component)));
         QTest::ignoreMessage(QtDebugMsg, QRegularExpression("calculate size of directory *"));
         if (hasMeta) {
             if (update)
-                message = "Copying associated \"script\" file \":///packages_update/%1/meta/script2.0.0.qs\"";
+                message = "Copying associated \"script\" file \"%1/%2/meta/script2.0.0.qs\"";
             else
-                message = "Copying associated \"script\" file \":///packages/%1/meta/script1.0.0.qs\"";
-            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(component)));
+                message = "Copying associated \"script\" file \"%1/%2/meta/script1.0.0.qs\"";
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.packages.first(), component)));
             QTest::ignoreMessage(QtDebugMsg, "done.");
         }
     }
@@ -220,16 +215,26 @@ private:
         QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Updating the metadata node with name *"));
     }
 
-    void ignoreMessageForCollectingPackages(const QString &versionA, const QString &versionB)
+    void ignoreMessageForCollectingPackages(const QString &versionA = QString(),
+            const QString &versionB = QString(), const QString &versionC = QString())
     {
         QTest::ignoreMessage(QtDebugMsg, "Collecting information about available repository packages...");
         QTest::ignoreMessage(QtDebugMsg, "Collecting information about available packages...");
-        QTest::ignoreMessage(QtDebugMsg, "Found subdirectory \"A\"");
-        QString message = "- it provides the package \"A\"  -  \"%1\"";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(versionA)));
-        QTest::ignoreMessage(QtDebugMsg, "Found subdirectory \"B\"");
-        message = "- it provides the package \"B\"  -  \"%1\"";
-        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(versionB)));
+        if (!versionA.isEmpty()) {
+            QTest::ignoreMessage(QtDebugMsg, "Found subdirectory \"A\"");
+            const QString message = "- it provides the package \"A\"  -  \"%1\"";
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(versionA)));
+        }
+        if (!versionB.isEmpty()) {
+            QTest::ignoreMessage(QtDebugMsg, "Found subdirectory \"B\"");
+            const QString message = "- it provides the package \"B\"  -  \"%1\"";
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(versionB)));
+        }
+        if (!versionC.isEmpty()) {
+            QTest::ignoreMessage(QtDebugMsg, "Found subdirectory \"C\"");
+            const QString message = "- it provides the package \"C\"  -  \"%1\"";
+            QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(versionC)));
+        }
     }
 
     void ignoreMessageForCollectingPackagesFromRepository(const QString &versionA, const QString &versionB)
@@ -372,6 +377,29 @@ private slots:
         generateRepo(true, false, false);
         verifyComponentRepository("2.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
+    }
+
+    void testUpdateComponentsFromPartialPackageDir()
+    {
+        ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
+        ignoreMessagesForUniteMeta(false);
+        generateRepo(true, true, false);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
+
+        clearData();
+        m_repoInfo.packages << ":///packages_new";
+        { // ignore messages
+            ignoreMessagesForUniteMeta(false);
+            ignoreMessageForCollectingPackages(QString(), QString(), "1.0.0");
+            ignoreMessagesForComponentSha(QStringList() << "C", true);
+            ignoreMessagesForCopyMetadata("C", false, false);
+            ignoreMessagesForComponentHash(QStringList() << "C", false);
+        }
+        generateRepo(true, true, false);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
+        VerifyInstaller::verifyFileExistence(m_repoInfo.repositoryDir + "/C",
+            QStringList() << "1.0.0content.7z" << "1.0.0content.7z.sha1" << "1.0.0meta.7z");
+        verifyUniteMetadata("1.0.0");
     }
 
     void testUpdateComponentsWithUniteMetadata()

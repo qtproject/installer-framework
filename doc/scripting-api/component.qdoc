@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -172,7 +172,7 @@
 */
 
 /*!
-    \qmlmethod string component::value(string key, string value = "")
+    \qmlmethod string component::value(string key, string defaultValue = "")
 
     Returns the value of variable name \a key. If \a key is not known yet, \a defaultValue is returned.
 
@@ -317,7 +317,7 @@
 /*!
     \qmlmethod boolean component::addOperation(string operation, stringlist parameters)
 
-    Creates and adds an installation operation for \a operation. Add any number of parameters.
+    Creates and adds an installation operation for \a operation. Add any number of \a parameters.
     The contents of the parameters get variables like "@TargetDir@" replaced with their values,
     if contained.
 
@@ -328,18 +328,20 @@
     \qmlmethod boolean component::addOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
 
     Convenience method for calling addOperation(string, stringlist) with up to 10 arguments.
+    Creates and adds an installation operation for \a operation.
 */
 
 /*!
     \qmlmethod boolean component::addElevatedOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
 
     Convenience method for calling addElevatedOperation(string, stringlist) with up to 10 arguments.
+    Creates and adds an installation operation for \a operation. The operation is executed with elevated rights.
 */
 
 /*!
     \qmlmethod boolean component::addElevatedOperation(string operation, stringlist parameters)
 
-    Creates and adds an installation operation for \a operation. Add any number of parameters.
+    Creates and adds an installation operation for \a operation. Add any number of \a parameters.
     The contents of the parameters get variables like "@TargetDir@" replaced with their values,
     if contained. \a operation is executed with elevated rights.
 */
@@ -347,13 +349,15 @@
 /*!
     \qmlmethod void component::setAutoCreateOperations(boolean autoCreateOperations)
 
-    Setter for the \l autoCreateOperations property.
+    Sets the value of \l autoCreateOperations property to \a autoCreateOperations.
 */
 
 /*!
     \qmlmethod void component::addDependency(string newDependency)
 
     Adds a new component \a newDependency to the list of dependencies.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa dependencies
 */
@@ -362,6 +366,8 @@
     \qmlmethod void component::addAutoDependOn(string newDependOn)
 
      Adds the component specified by \a newDependOn to the automatic depend-on list.
+     Alternatively, multiple components can be specified by separating each with
+     a comma.
 
     \sa autoDependencies
 */
@@ -375,9 +381,9 @@
 /*!
     \qmlmethod boolean component::isAutoDependOn(QSet<string> componentsToInstall)
 
-    Determines whether the component comes as an auto dependency. Returns \c true if the component needs
-    to be installed.
-*/
+    Determines whether the component comes as an auto dependency. Returns \c true if all components
+    in \a componentsToInstall are already installed or selected for installation and this component
+    thus needs to be installed as well.
 
 /*!
     \qmlmethod boolean component::isDefault()
@@ -404,7 +410,7 @@
 /*!
     \qmlmethod void component::setUpdateAvailable(boolean isUpdateAvailable)
 
-    Sets a flag that the core found an update.
+    Sets a flag that the core found an update based on the value of \a isUpdateAvailable.
 */
 
 /*!

@@ -45,6 +45,7 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QRegExp>
 #include <QtCore/QTranslator>
+#include <QtCore/QRegularExpression>
 
 #include <QApplication>
 
@@ -1310,6 +1311,8 @@ bool Component::validatePage()
 
 /*!
     Adds the component specified by \a newDependency to the list of dependencies.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa {component::addDependency}{component.addDependency}
     \sa dependencies
@@ -1331,6 +1334,8 @@ QStringList Component::dependencies() const
 
 /*!
     Adds the component specified by \a newDependOn to the automatic depend-on list.
+    Alternatively, multiple components can be specified by separating each with
+    a comma.
 
     \sa {component::addAutoDependOn}{component.addAutoDependOn}
     \sa autoDependencies
@@ -1640,26 +1645,23 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(humanReadableSize(size), UncompressedSize);
     }
 
+    QString tooltipText;
     const QString &updateInfo = d->m_vars.value(scUpdateText);
     if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        QString tooltipText
-                = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
-        if (isUnstable()) {
-            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component cannot be installed.");
-        }
-        setData(tooltipText, Qt::ToolTipRole);
+        tooltipText = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
     } else {
-        QString tooltipText
-                = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
-                + tr("Update Info: ") + updateInfo;
-        if (isUnstable()) {
-            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
-                                                          "This component cannot be updated.");
-        }
-
-        setData(tooltipText, Qt::ToolTipRole);
+        tooltipText = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
+            + tr("Update Info: ") + updateInfo;
     }
+    if (isUnstable()) {
+        tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+                                                      "This component cannot be installed.");
+    }
+    // replace {external-link}='' fields in component description with proper link tags
+    tooltipText.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
+        QLatin1String("<a href=\"\\1\">\\1</a>"));
+
+    setData(tooltipText, Qt::ToolTipRole);
 }
 
 /*!
