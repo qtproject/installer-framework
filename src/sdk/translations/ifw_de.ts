@@ -2354,7 +2354,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>Wählen Sie den Verzeichnis im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Verzeichnis anzulegen.</translation>
+        <translation>Wählen Sie das Verzeichnis im Startmenü, in dem die Verknüpfungen zur Anwendung erstellt werden sollen. Sie können einen Namen angeben, um einen neuen Verzeichnis anzulegen.</translation>
     </message>
 </context>
 <context>
@@ -2365,7 +2365,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     </message>
     <message>
         <source>Please specify the directory where %1 will be installed.</source>
-        <translation>Bitte geben Sie den Verzeichnis an, in dem %1 installiert werden soll.</translation>
+        <translation>Bitte geben Sie das Verzeichnis an, in dem %1 installiert werden soll.</translation>
     </message>
     <message>
         <source>B&amp;rowse...</source>
