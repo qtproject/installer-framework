@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ar">
+<TS version="2.1" language="ar_EG" sourcelanguage="en_GB">
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
     <message>
@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>The proxy %1 requires a username and password.</source>
-        <translation>الوكيل %1 بتطلب اسم مستخدم وكلمة مرور.</translation>
+        <translation>الوكيل %1 يتطلب اسم مستخدم وكلمة مرور.</translation>
     </message>
     <message>
         <source>Username:</source>
@@ -161,6 +161,10 @@
         <translation>أضف اسم كلمة المرور للمصادقة على الخادم.</translation>
     </message>
     <message>
+        <source>The server&apos;s URL that contains a valid repository.</source>
+        <translation>رابط الخادم المحتوي على مستودع صالح.</translation>
+    </message>
+    <message>
         <source>An error occurred while testing this repository.</source>
         <translation>حدث خطأ أثناء اختبار هذا المستودع.</translation>
     </message>
@@ -208,10 +212,6 @@
         <source>User defined repositories</source>
         <translation>المستودعات المعرفة من قبل المستخدم</translation>
     </message>
-    <message>
-        <source>The server&apos;s URL that contains a valid repository.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -221,55 +221,55 @@
     </message>
     <message>
         <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
-        <translation type="unfinished">نسخة أخرى من %1 تعمل بالفعل. انتظر حتى تنتهي أو أغلقها أو أعد تشغيل نظامك.</translation>
+        <translation>نسخة أخرى من %1 تعمل بالفعل. انتظر حتى تنتهي أو أغلقها أو أعد تشغيل نظامك.</translation>
     </message>
     <message>
         <source>Cannot start installer binary as updater.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن بدء برنامج التثبيت الثنائي كمُحدث.</translation>
     </message>
     <message>
         <source>Cannot start installer binary as package manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن بدء برنامج التثبيت الثنائي كمدير للحزم.</translation>
     </message>
     <message>
         <source>Cannot start installer binary as uninstaller.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن بدء برنامج التثبيت الثنائي كبرنامج إلغاء التثبيت.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;addRepository&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>قائمة مستودع فارغة للخيار &quot;addRepository&quot;.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;addTempRepository&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>قائمة مستودع فارغة للخيار &quot;addTempRepository&quot;.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;setTempRepository&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>قائمة مستودع فارغة للخيار &quot;setTempRepository&quot;.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;installCompressedRepository&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>قائمة مستودع فارغة للخيار &quot;installCompressedRepository&quot;.</translation>
     </message>
     <message>
         <source>The file %1 does not exist.</source>
-        <translation type="unfinished">الملف %1 ليس موجوداً.</translation>
+        <translation>الملف %1 ليس موجوداً.</translation>
     </message>
     <message>
         <source>Arguments missing for option %1</source>
-        <translation type="unfinished"></translation>
+        <translation>معاملات مفقودة للخيار %1</translation>
     </message>
     <message>
         <source>Invalid button value %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>قيمة زر غير صالحة %1 </translation>
     </message>
     <message>
         <source>Incorrect arguments for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>معاملات غير صحيحة لـ %1</translation>
     </message>
     <message>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>الرجاء التأكد من أن المستخدم الحالي لديه حق قراءة الملف &amp;quot;%1&amp;quot; أو حاول تشغيل%2 كمسؤول.</translation>
     </message>
 </context>
 <context>
@@ -344,43 +344,43 @@
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation></translation>
+        <translation>لا يمكن إنشاء المجلد &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation></translation>
+        <translation>لا يمكن نسخ الملف من &quot;%1&quot; إلى &quot;%2&quot;: %3</translation>
     </message>
     <message>
         <source>Cannot move file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation></translation>
+        <translation>لا يمكن نقل الملف من &quot;%1&quot; إلى &quot;%2&quot;: %3</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
-        <translation></translation>
+        <translation>لا يمكن إنشاء المجلد &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Cannot open temporary file: %1</source>
-        <translation></translation>
+        <translation>لا يمكن فتح الملف المؤقت: %1</translation>
     </message>
     <message>
         <source>Cannot open temporary file for template %1: %2</source>
-        <translation></translation>
+        <translation>لا يمكن فتح الملف المؤقت للقالب %1: %2</translation>
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation type="unfinished">لا يمكن نسخ الملف &quot;%1&quot; إلى &quot;%2&quot;: %3</translation>
+        <translation>لا يمكن نسخ الملف &quot;%1&quot; إلى &quot;%2&quot;: %3</translation>
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن نسخ الملف من &quot;%1&quot; إلى &quot;%2&quot;:</translation>
     </message>
     <message>
         <source>The specified module could not be found.</source>
-        <translation></translation>
+        <translation>تعذر العثور على النموذج المحدد.</translation>
     </message>
     <message>
         <source>Invalid content in &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>محتوى غير صالح في &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
@@ -463,7 +463,7 @@
     </message>
     <message>
         <source>Cannot resolve isDefault in %1</source>
-        <translation></translation>
+        <translation>لا يمكن الحل isDefault في%1</translation>
     </message>
     <message>
         <source>Update Info: </source>
@@ -471,11 +471,7 @@
     </message>
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There was an error loading the selected component. This component cannot be updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>كان هناك خطأ أثناء تحميل المكون المحدد. هذا المكون لا يمكن تثبيته.</translation>
     </message>
 </context>
 <context>
@@ -524,12 +520,22 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
+        <source>Alt+A</source>
+        <comment>Select default components</comment>
+        <translation>Alt+A</translation>
+    </message>
+    <message>
         <source>Def&amp;ault</source>
         <translation>الاف&amp;تراضي</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد المكونات الافتراضية في العرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Alt+R</source>
+        <comment>Reset to already installed components</comment>
+        <translation>Alt+R</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
@@ -537,7 +543,12 @@
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
-        <translation type="unfinished"></translation>
+        <translation>إعادة تعيين جميع المكونات إلى حالة التحديد الأصلية في طريقة العرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Alt+S</source>
+        <comment>Select all components</comment>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -545,7 +556,12 @@
     </message>
     <message>
         <source>Select all components in the tree view.</source>
-        <translation type="unfinished"></translation>
+        <translation>قم بتحديد جميع المكونات في عرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Alt+D</source>
+        <comment>Deselect all components</comment>
+        <translation>Alt+D</translation>
     </message>
     <message>
         <source>&amp;Deselect All</source>
@@ -553,7 +569,7 @@
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>
-        <translation type="unfinished"></translation>
+        <translation>قم بإلغاء تحديد المكونات الافتراضية في عرض الشجري.</translation>
     </message>
     <message>
         <source>&amp;Browse QBSP files</source>
@@ -561,7 +577,11 @@
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد ملف حزمة دعم لوحة Qt لتثبيت محتوى إضافي غير متاح مباشرة في المستودعات التي عبر الإنترنت.</translation>
+    </message>
+    <message>
+        <source>Filter the enabled repository categories</source>
+        <translation>قم بتصفية فئات المستودع الممكنة للاختيار.</translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
@@ -577,7 +597,7 @@
     </message>
     <message>
         <source>Please select the components you want to update.</source>
-        <translation></translation>
+        <translation>الرجاء تحديد المكونات التي تريد تحديثها.</translation>
     </message>
     <message>
         <source>Please select the components you want to install.</source>
@@ -595,30 +615,6 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>المكونات الضرورية التي يجب تحديثها أولاً قبل اختيار المكونات الآخرى للتحديث.</translation>
     </message>
-    <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation type="unfinished">Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation type="unfinished">Alt+R</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation type="unfinished">Alt+S</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation type="unfinished">Alt+D</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -632,7 +628,7 @@
     </message>
     <message>
         <source>Component Information</source>
-        <translation type="unfinished"></translation>
+        <translation>معلومات المكون</translation>
     </message>
 </context>
 <context>
@@ -754,11 +750,11 @@
     </message>
     <message>
         <source>Cannot create path &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إنشاء المسار &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إزالة المجلد &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -791,6 +787,10 @@
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
         <translation>لا يمكن حذف المجلد &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>لا يمكن إنشاء الأرشيف &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -855,6 +855,74 @@ Error while loading %2</source>
     <message>
         <source>Cannot find component for %1.</source>
         <translation>لا يمكن العثور على المكون لـ %1.</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%1 من %2</translation>
+    </message>
+    <message>
+        <source>%1 downloaded.</source>
+        <translation>تم تحميل %1.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n يوم(أيام)، </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation>
+            <numerusform>%n ساعة(ساعات)، </numerusform>
+            <numerusform>ساعة، </numerusform>
+            <numerusform>ساعتان، </numerusform>
+            <numerusform>%n ساعات، </numerusform>
+            <numerusform>%n ساعة، </numerusform>
+            <numerusform>%n ساعة، </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n دقيقة(دقائق)</numerusform>
+            <numerusform>دقيقة</numerusform>
+            <numerusform>دقيقتان</numerusform>
+            <numerusform>%n دقائق</numerusform>
+            <numerusform>%n دقيقة</numerusform>
+            <numerusform>%n دقيقة</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation>
+            <numerusform>%n ثانية(ثوان)</numerusform>
+            <numerusform>ثانية</numerusform>
+            <numerusform>ثانيتان</numerusform>
+            <numerusform>%n ثوان</numerusform>
+            <numerusform>%n ثانية</numerusform>
+            <numerusform>%n ثانية</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation> - يتبقى %1%2%3%4.</translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation> - الوقت المتبقي غير معلوم.</translation>
+    </message>
+    <message>
+        <source>Archive: </source>
+        <translation>أرشيف: </translation>
+    </message>
+    <message>
+        <source>Total: </source>
+        <translation>المجموع: </translation>
     </message>
 </context>
 <context>
@@ -1000,21 +1068,6 @@ Error while loading %2</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::ExtractArchiveOperation::Runnable</name>
-    <message>
-        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
-        <translation>لا يمكن فتح الأرشيف &quot;%1&quot; للقراءة: %2</translation>
-    </message>
-    <message>
-        <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>خطأ أثناء استخراج الأرشيف &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
-        <translation>اكتُشف خطأ غير معروف أثناء استخراج &quot;%1&quot;.</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::FakeStopProcessForUpdateOperation</name>
     <message>
         <source>Cannot get package manager core.</source>
@@ -1097,6 +1150,14 @@ Error while loading %2</source>
 <context>
     <name>Lib7z</name>
     <message>
+        <source>Internal code: %1</source>
+        <translation>الرمز الداخلي: %1</translation>
+    </message>
+    <message>
+        <source>Not enough memory</source>
+        <translation>لا توجد ذاكرة كافية</translation>
+    </message>
+    <message>
         <source>Error: %1</source>
         <translation>خطأ: %1</translation>
     </message>
@@ -1160,14 +1221,6 @@ Error while loading %2</source>
         <source>Unknown exception caught (%1)</source>
         <translation>اكتُشف استثناء مجهول (%1)</translation>
     </message>
-    <message>
-        <source>Internal code: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not enough memory</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DirectoryGuard</name>
@@ -1230,7 +1283,7 @@ Error while loading %2</source>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <source>Invalid argument in %1: Empty search argument is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>معامل غير صالح %1. معامل البحث الفارغ غير مدعومة.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -1254,6 +1307,10 @@ Error while loading %2</source>
     <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>جارٍ فك ضغط المستودعات المضغوطة. قد يستغرق هذا بعص الوقت...</translation>
+    </message>
+    <message>
+        <source>Metadata download canceled.</source>
+        <translation>تم إلغاء تحميل البيانات الوصفية.</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
@@ -1296,16 +1353,8 @@ Error while loading %2</source>
         <translation>حدث خطأ أثناء إستخراج الأرشيف &quot;%1&quot;: %2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
-        <translation>اكتُشف استثناء غير معروف أثناء استخراج الأرشيف &quot;%1&quot;.</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: %2</translation>
-    </message>
-    <message>
-        <source>Metadata download canceled.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1396,6 +1445,10 @@ Downloading packages...</source>
         <translation>انتهت كل التنزيلات.</translation>
     </message>
     <message>
+        <source>Canceling the Installer</source>
+        <translation>إلغاء المثبت</translation>
+    </message>
+    <message>
         <source>Authentication Error</source>
         <translation>حدث خطأ في المصادقة</translation>
     </message>
@@ -1413,65 +1466,65 @@ Downloading packages...</source>
     </message>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>مطلوب إدخال المستخدم ولكن جهاز الإخراج غير مرتبط بطرف.</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation type="unfinished">المجلد الذي اخترته موجود بالفعل ويحتوي على تثبيت. اختر وجهة مختلفة للتثبيت.</translation>
+        <translation>المجلد الذي اخترته موجود بالفعل ويحتوي على تثبيت. اختر وجهة مختلفة للتثبيت.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">تحذير</translation>
+        <translation>تحذير</translation>
     </message>
     <message>
         <source>You have selected an existing, non-empty directory for installation.
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this directory as installation might fail.
 Do you want to continue?</source>
-        <translation type="unfinished">لقد اخترت مجلداً موجودأ وغير فارغ للتثبيت.
+        <translation>لقد اخترت مجلداً موجودأ وغير فارغ للتثبيت.
 سيتم حذفه تماماً عند إزالة تثبيت هذا التطبيق.
 لا يُنصح بالتثبيت إلى هذا المجلد لاحتمالية فشل التثبيت.
 هل تريد الاستمرار؟</translation>
     </message>
     <message>
         <source>You have selected an existing file or symlink, please choose a different target for installation.</source>
-        <translation type="unfinished">لقد حددت ملفاً موجوداً أو اختصاراً، يرجى اختيار وجهة مختلفة للتثبيت.</translation>
+        <translation>لقد حددت ملفاً موجوداً أو اختصاراً، يرجى اختيار وجهة مختلفة للتثبيت.</translation>
     </message>
     <message>
         <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation type="unfinished">لا يمكن أن يكون مسار التثبيت فارغاً. يرجى تحديد مجلد صالح.</translation>
+        <translation>لا يمكن أن يكون مسار التثبيت فارغاً. يرجى تحديد مجلد صالح.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
-        <translation type="unfinished">لا يمكن أن يكون مسار التثبيت نسبياً، يرجى تحديد مسار مطلق.</translation>
+        <translation>لا يمكن أن يكون مسار التثبيت نسبياً، يرجى تحديد مسار مطلق.</translation>
     </message>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation type="unfinished">المسار أو مجلد التثبيت لا يحتوي على محارف ASCII. هذا غير مدعوم حالياً يرجى اختيار مسار أو مجلد تثبيت مختلف.</translation>
+        <translation>المسار أو مجلد التثبيت لا يحتوي على محارف ASCII. هذا غير مدعوم حالياً يرجى اختيار مسار أو مجلد تثبيت مختلف.</translation>
     </message>
     <message>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
-        <translation type="unfinished">التثبيت في %1 محظور لأن مجلد التثبيت سيُمسح تماماً.</translation>
+        <translation>التثبيت في %1 محظور لأن مجلد التثبيت سيُمسح تماماً.</translation>
     </message>
     <message>
         <source>The path you have entered is too long, please make sure to specify a valid path.</source>
-        <translation type="unfinished">المسار الذي أدخلته طويل جداً، يرجى التأكد من تخصيص مسار صالح.</translation>
+        <translation>المسار الذي أدخلته طويل جداً، يرجى التأكد من تخصيص مسار صالح.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid target.</source>
-        <translation type="unfinished">المسار الذي أدخلته غير صالح، يرحى التأكد من تخصيص وجهة صالحة.</translation>
+        <translation>المسار الذي أدخلته غير صالح، يرحى التأكد من تخصيص وجهة صالحة.</translation>
     </message>
     <message>
         <source>The path you have entered is not valid, please make sure to specify a valid drive.</source>
-        <translation type="unfinished">المسار الذي أدخلته غير صالح، يرحى التأكد من تخصيص قرص صالح.</translation>
+        <translation>المسار الذي أدخلته غير صالح، يرحى التأكد من تخصيص قرص صالح.</translation>
     </message>
     <message>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation type="unfinished">يجب ألا ينتهي مسار التثبيت بنقطة &quot;.&quot;، يرجى تخصيص مجلد صالح.</translation>
+        <translation>يجب ألا ينتهي مسار التثبيت بنقطة &quot;.&quot;، يرجى تخصيص مجلد صالح.</translation>
     </message>
     <message>
         <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation type="unfinished">يجب ألا يحتوي مسار التثبيت على &quot;%1&quot;، يرجى تخصيص مجلد صالح.</translation>
+        <translation>يجب ألا يحتوي مسار التثبيت على &quot;%1&quot;، يرجى تخصيص مجلد صالح.</translation>
     </message>
     <message>
         <source>Application not running in Package Manager mode.</source>
@@ -1483,7 +1536,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation type="unfinished"></translation>
+        <translation>المكون ذو المعرف %1 موجود بالفعل.</translation>
     </message>
     <message>
         <source>Application running in Uninstaller mode.</source>
@@ -1504,30 +1557,40 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install %1. Component not found.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>المكون غير موجود.
+</translation>
     </message>
     <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>تم تثبيت المكون فقط كتبعية تلقائية لـ %2.
+</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
+</source>
+        <translation>المكون غير قابل للتحقق مما يعني أنه يجب عليك تحديد أحد المكونات الفرعية.
+</translation>
     </message>
     <message>
         <source>Component %1 already installed
 </source>
-        <translation type="unfinished"></translation>
+        <translation>المكون %1 مثبت بالفعل
+</translation>
     </message>
     <message>
         <source>Cannot install %1. Component is virtual.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>المكون افتراضي.
+</translation>
     </message>
     <message>
         <source>Running processes found.</source>
-        <translation type="unfinished"></translation>
+        <translation>وجدت العمليات الجارية.</translation>
     </message>
     <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>الرجاء إعادة تشغيل التطبيق كمسؤول.</translation>
     </message>
     <message>
         <source>Error while elevating access rights.</source>
@@ -1538,49 +1601,41 @@ Do you want to continue?</source>
         <translation>خطأ</translation>
     </message>
     <message>
+        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
+        <translation>لا توجد مساحة كافية لتخزين الملفات المؤقتة والتثبيت! بينما المساحة المطلوبة هي %2 على الأقل، المساحة المتاحة هي %1.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
+        <translation>لا توجد مساحة كافية لتخزين جميع المكونات المحددة! بينما المساحة المطلوبة هي %2 على الأقل، المساحة المتاحة هي %1.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
+        <translation>لا توجد مساحة كافية لتخزين الملفات المؤقتة!. بينما المساحة المطلوبة هي %2 على الأقل، المساحة المتاحة هي %1.</translation>
+    </message>
+    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
-        <translation type="unfinished"></translation>
+        <translation>يبدو أن وحدة التخزين التي حددتها للتثبيت بها مساحة كافية للتثبيت، ولكن سيكون هناك أقل من 1% من مساحة وحدة التخزين المتاحة بعد ذلك.</translation>
     </message>
     <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 100 MB available afterwards.</source>
-        <translation type="unfinished"></translation>
+        <translation>يبدو أن وحدة التخزين التي حددتها للتثبيت تحتوي على مساحة كافية للتثبيت ، ولكن سيكون هناك أقل من 100 ميجابايت بعد ذلك.</translation>
     </message>
     <message>
         <source>Installation will use %1 of disk space.</source>
-        <translation type="unfinished">سيستخدم التثبيت %1 من مساحة القرص الصلب.</translation>
+        <translation>سيستخدم التثبيت %1 من مساحة القرص الصلب.</translation>
     </message>
     <message>
-        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Canceling the Installer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation type="unfinished"></translation>
+        <source>Invalid</source>
+        <translation>غير صالح</translation>
     </message>
     <message>
         <source>Cannot install %1. Component is a descendant of a virtual component %2.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>المكون تابع لمكون ظاهري %2.
+</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid</source>
+        <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1616,7 +1671,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Retry count exceeded</source>
-        <translation type="unfinished"></translation>
+        <translation>تم تجاوز عدد مرات إعادة المحاولة</translation>
     </message>
     <message>
         <source>Writing maintenance tool.</source>
@@ -1652,23 +1707,23 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Writing offline base binary.</source>
-        <translation type="unfinished"></translation>
+        <translation>كتابة قاعدة ثنائية غير متصلة بالإنترنت.</translation>
     </message>
     <message>
         <source>Cannot remove file &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إزالة المجلد &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation type="unfinished">لا يمكن إنشاء المجلد &quot;%1&quot;.</translation>
+        <translation>لا يمكن إنشاء المجلد &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن كتابة الملف الثنائي دون اتصال إلى &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إزالة الملف المؤقت &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1723,41 +1778,49 @@ Update aborted!</source>
 أُلغي التحديث!</translation>
     </message>
     <message>
+        <source>Removal completed successfully.</source>
+        <translation>أُزيل التثبيت بنجاح.</translation>
+    </message>
+    <message>
+        <source>Removal aborted.</source>
+        <translation>أُلغيت إزالة التثبيت.</translation>
+    </message>
+    <message>
         <source>Cannot create target directory for installer.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إنشاء دليل هدف للمثبت.</translation>
     </message>
     <message>
         <source>Preparing offline generation...</source>
-        <translation type="unfinished"></translation>
+        <translation>جاري تحضير الجيل غير المتصل ...</translation>
     </message>
     <message>
         <source>Preparing installer configuration...</source>
-        <translation type="unfinished"></translation>
+        <translation>جاري تحضير تكوين المثبت ...</translation>
     </message>
     <message>
         <source>Creating the installer...</source>
-        <translation type="unfinished"></translation>
+        <translation>جاري إنشاء المثبت ...</translation>
     </message>
     <message>
         <source>Failed to create offline installer. %1</source>
-        <translation type="unfinished"></translation>
+        <translation>فشل إنشاء برنامج التثبيت دون اتصال. %1</translation>
     </message>
     <message>
         <source>Cannot remove temporary directory &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن إزالة المجلد المؤقت &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>اكتمل الإنشاء في وضع عدم الاتصال بنجاح.</translation>
     </message>
     <message>
         <source>Offline generation aborted!</source>
-        <translation type="unfinished"></translation>
+        <translation>تم إحباط الجيل غير المتصل!</translation>
     </message>
     <message>
         <source>
 Installing component %1</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن تثبيت المكون %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -1772,6 +1835,20 @@ Installing component %1</source>
     <message>
         <source>Done</source>
         <translation>انتهى</translation>
+    </message>
+    <message>
+        <source>Cannot prepare removal</source>
+        <translation>لا يمكن تحضير إزالة التثبيت</translation>
+    </message>
+    <message>
+        <source>Cannot start removal</source>
+        <translation>لا يمكن بدأ إزالة التثبيت</translation>
+    </message>
+    <message>
+        <source>Error during removal process:
+%1</source>
+        <translation>حدث خطأ أثناء عملية إزالة التثبيت :
+%1</translation>
     </message>
     <message>
         <source>Unknown error</source>
@@ -1805,28 +1882,7 @@ Installing component %1</source>
         <source>These processes should be stopped to continue:
 
 %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Removal completed successfully.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Removal aborted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot prepare removal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot start removal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error during removal process:
-%1</source>
-        <translation type="unfinished"></translation>
+        <translation>يجب إيقاف هذه العمليات للمتابعة:%1</translation>
     </message>
 </context>
 <context>
@@ -1842,6 +1898,10 @@ Installing component %1</source>
     <message>
         <source>Do you want to cancel the installation process?</source>
         <translation>هل تريد إلغاء عملية التثبيت؟</translation>
+    </message>
+    <message>
+        <source>Do you want to cancel the removal process?</source>
+        <translation>هل تريد إلغاء عملية إزالة التثبيت؟</translation>
     </message>
     <message>
         <source>Do you want to quit the installer application?</source>
@@ -1865,7 +1925,7 @@ Installing component %1</source>
     </message>
     <message>
         <source>Specify proxy settings and configure repositories for add-on components.</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد إعدادات الوكيل وقم بتكوين المستودعات لمكونات الوظيفة الإضافية.</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1876,10 +1936,6 @@ Installing component %1</source>
 Please copy the installer to a local drive</source>
         <translation>من غير الممكن التثبيت من موقع في الشبكة
 يرجى نسخ المثبت إلى فرص محلي</translation>
-    </message>
-    <message>
-        <source>Do you want to cancel the removal process?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1924,12 +1980,21 @@ Please copy the installer to a local drive</source>
         <source>&amp;Quit</source>
         <translation>&amp;اخرج</translation>
     </message>
+    <message>
+        <source>There is an important update available. Please select &apos;%1&apos; first</source>
+        <translation>هناك تحديث هام متاح. الرجاء تحديد %1 أولا</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
     <message>
         <source>License Agreement</source>
         <translation>اتفاقية الترخيص</translation>
+    </message>
+    <message>
+        <source>Alt+A</source>
+        <comment>Agree license</comment>
+        <translation>Alt+A</translation>
     </message>
     <message>
         <source>Please read the following license agreement. You must accept the terms contained in this agreement before continuing with the installation.</source>
@@ -1947,11 +2012,6 @@ Please copy the installer to a local drive</source>
         <source>I accept the licenses.</source>
         <translation>أقبل الرخص.</translation>
     </message>
-    <message>
-        <source>Alt+A</source>
-        <comment>Agree license</comment>
-        <translation type="unfinished">Alt+A</translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
@@ -1964,21 +2024,21 @@ Please copy the installer to a local drive</source>
         <translation>يرجى تخصيص مجلد تثبيت %1.</translation>
     </message>
     <message>
+        <source>Alt+R</source>
+        <comment>Browse file system to choose a file</comment>
+        <translation>Alt+R</translation>
+    </message>
+    <message>
         <source>B&amp;rowse...</source>
         <translation>ا&amp;ستعرض...</translation>
     </message>
     <message>
         <source>Browse file system to choose the installation directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>تصفح نظام الملفات لاختيار دليل التثبيت.</translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
         <translation>اختر مجلد التثبيت</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>Browse file system to choose a file</comment>
-        <translation type="unfinished">Alt+R</translation>
     </message>
 </context>
 <context>
@@ -2032,7 +2092,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Ready to Update</source>
-        <translation type="unfinished"></translation>
+        <translation>جاهز للتحديث</translation>
     </message>
 </context>
 <context>
@@ -2063,15 +2123,15 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Installing</source>
-        <translation type="unfinished"></translation>
+        <translation>جاري التثبيت</translation>
     </message>
     <message>
         <source>Updating</source>
-        <translation type="unfinished"></translation>
+        <translation>جار التحديث</translation>
     </message>
     <message>
         <source>Uninstalling</source>
-        <translation type="unfinished"></translation>
+        <translation>إلغاء التثبيت</translation>
     </message>
 </context>
 <context>
@@ -2082,7 +2142,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>مكتمل</translation>
     </message>
     <message>
         <source>Click %1 to exit the %2 Wizard.</source>
@@ -2143,14 +2203,21 @@ Please copy the installer to a local drive</source>
 %1
 
 as a user with the appropriate rights and then clicking OK.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن الحصول على التفويض المطلوب لمتابعة التثبيت. قم بإلغاء التثبيت أو استخدام الحل الاحتياطي عن طريق تشغيل
+
+%1
+
+كمستخدم لديه الحقوق المناسبة ثم النقر فوق &quot;موافق&quot;.</translation>
     </message>
     <message>
         <source>Cannot get authorization that is needed for continuing the installation.
 
 Please start the setup program as a user with the appropriate rights,
 or accept the elevation of access rights if being asked.</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يمكن الحصول على التفويض المطلوب لمتابعة التثبيت.
+
+يرجى بدء برنامج الإعداد كمستخدم لديه الحقوق المناسبة ،
+أو قبول رفع حقوق الوصول إذا طُلب منك ذلك.</translation>
     </message>
 </context>
 <context>
@@ -2164,11 +2231,11 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::ReplaceOperation</name>
     <message>
         <source>Current search argument calling &quot;%1&quot; with empty search argument is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>معاملة البحث الحالية التي تستدعي &quot;%1&quot; مع معاملة البحث الفارغ غير مدعومة.</translation>
     </message>
     <message>
         <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
-        <translation type="unfinished"></translation>
+        <translation>الرجاء استخدام string أو regex.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -2205,12 +2272,12 @@ or accept the elevation of access rights if being asked.</source>
         <translation>كائن المثبت المطلوب في العملية %1 فارغ.</translation>
     </message>
     <message>
-        <source>Self Restart: Invalid arguments</source>
-        <translation>إعادة التشغيل التلقائية: معاملات غير صحيحة</translation>
+        <source>Self Restart: Only valid within updater or package manager mode.</source>
+        <translation>إعادة التشغيل التلقائية: متاحة فقط في وضع المحدث أو وضع مدير الحزم.</translation>
     </message>
     <message>
-        <source>Self Restart: Only valid within updater or package manager mode.</source>
-        <translation type="unfinished"></translation>
+        <source>Self Restart: Invalid arguments</source>
+        <translation>إعادة التشغيل التلقائية: معاملات غير صحيحة</translation>
     </message>
 </context>
 <context>
@@ -2221,7 +2288,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Select Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد الاقسام</translation>
     </message>
 </context>
 <context>
@@ -2232,7 +2299,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Current method argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use set, remove, add_array_value, or remove_array_value.</source>
-        <translation type="unfinished"></translation>
+        <translation>معامل الدالة الحالية المستدعاة &amp;quot;%1&amp;quot; بالمعاملات &amp;quot;%2&amp;quot; غير مدعوم. يرجى استخدام set أو remove أو add_array_value أو remove_array_value.</translation>
     </message>
 </context>
 <context>
@@ -2735,14 +2802,41 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::QFileDialogProxy</name>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>مطلوب إدخال المستخدم ولكن جهاز الإخراج غير مرتبط بطرف.</translation>
     </message>
 </context>
 <context>
     <name>InstallerBase</name>
     <message>
         <source>Unable to start installer</source>
-        <translation type="unfinished"></translation>
+        <translation>تعذر بدء المثبت</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation::Worker</name>
+    <message>
+        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
+        <translation>تعذر إنشاء معالج للأرشيف &quot;%1&quot;: &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>لا يمكن فتح الأرشيف &quot;%1&quot; للقراءة: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>حدث خطأ أثناء قراءة محتويات الأرشيف &quot;%1&quot;: %2.</translation>
+    </message>
+    <message>
+        <source>Cannot prepare for file &quot;%1&quot;</source>
+        <translation>لا يمكن التحضير للملف &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>Extract for archive &quot;%1&quot; canceled.</source>
+        <translation>تم إلغاء استخراج الارشيف &quot;%1&quot;.</translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>حدث خطأ أثناء إستخراج الأرشيف &quot;%1&quot;: %2</translation>
     </message>
 </context>
 </TS>
