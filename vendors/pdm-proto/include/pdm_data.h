@@ -75,6 +75,7 @@ namespace PDM
 		uint32_t logicalCoreCount{ 0 };
 		CPUArchitecture architecture{ CPUArchitecture::UNKNOWN };
 		std::vector<std::string> extensions;
+		uint32_t frequency{};
 	};
 
 	struct PDMDllExport MonitorInfo
@@ -94,6 +95,7 @@ namespace PDM
 		uint32_t deviceID{};
 		uint32_t revision{};
 		uint64_t memory{};
+        uint32_t coreCount{};
 		std::string driverVersionString;
 		std::string driverDate;
 		std::string driverVendor;
@@ -106,6 +108,7 @@ namespace PDM
 				deviceID == rhs.deviceID &&
 				revision == rhs.revision &&
 				memory == rhs.memory &&
+                coreCount == rhs.coreCount &&
 				driverVersionString == rhs.driverVersionString &&
 				driverDate == rhs.driverDate &&
 				driverVendor == rhs.driverVendor
@@ -120,6 +123,20 @@ namespace PDM
 		std::string uuidString;
 		std::vector<uint8_t> macAddress;
 		std::vector<uint8_t> uuid;
+	};
+
+	struct PDMDllExport HardDriveInfo
+	{
+		enum class HardDriveType
+		{
+			UNKNOWN = 0,
+			HDD,
+			SSD
+		};
+
+		std::string name;
+		HardDriveType type{ HardDriveType::UNKNOWN };
+		uint64_t size{};
 	};
 
 	struct PDMDllExport VulkanProperties

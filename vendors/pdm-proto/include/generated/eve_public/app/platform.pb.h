@@ -40,7 +40,7 @@ namespace protobuf_eve_5fpublic_2fapp_2fplatform_2eproto {
 struct TableStruct {
   static const ::google::protobuf::internal::ParseTableField entries[];
   static const ::google::protobuf::internal::AuxillaryParseTableField aux[];
-  static const ::google::protobuf::internal::ParseTable schema[14];
+  static const ::google::protobuf::internal::ParseTable schema[15];
   static const ::google::protobuf::internal::FieldMetadata field_metadata[];
   static const ::google::protobuf::internal::SerializationTable serialization_table[];
   static const ::google::protobuf::uint32 offsets[];
@@ -65,6 +65,9 @@ extern Machine_GPUDefaultTypeInternal _Machine_GPU_default_instance_;
 class Machine_GPU_Driver;
 class Machine_GPU_DriverDefaultTypeInternal;
 extern Machine_GPU_DriverDefaultTypeInternal _Machine_GPU_Driver_default_instance_;
+class Machine_HardDrive;
+class Machine_HardDriveDefaultTypeInternal;
+extern Machine_HardDriveDefaultTypeInternal _Machine_HardDrive_default_instance_;
 class Machine_Monitor;
 class Machine_MonitorDefaultTypeInternal;
 extern Machine_MonitorDefaultTypeInternal _Machine_Monitor_default_instance_;
@@ -102,6 +105,7 @@ template<> ::eve_public::app::platform::Machine* Arena::CreateMaybeMessage<::eve
 template<> ::eve_public::app::platform::Machine_CPU* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_CPU>(Arena*);
 template<> ::eve_public::app::platform::Machine_GPU* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_GPU>(Arena*);
 template<> ::eve_public::app::platform::Machine_GPU_Driver* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_GPU_Driver>(Arena*);
+template<> ::eve_public::app::platform::Machine_HardDrive* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_HardDrive>(Arena*);
 template<> ::eve_public::app::platform::Machine_Monitor* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_Monitor>(Arena*);
 template<> ::eve_public::app::platform::Machine_NetworkAdapter* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_NetworkAdapter>(Arena*);
 template<> ::eve_public::app::platform::Machine_VM* Arena::CreateMaybeMessage<::eve_public::app::platform::Machine_VM>(Arena*);
@@ -185,6 +189,28 @@ inline bool Machine_CPU_Architecture_Parse(
     const ::std::string& name, Machine_CPU_Architecture* value) {
   return ::google::protobuf::internal::ParseNamedEnum<Machine_CPU_Architecture>(
     Machine_CPU_Architecture_descriptor(), name, value);
+}
+enum Machine_HardDrive_DriveType {
+  Machine_HardDrive_DriveType_DRIVETYPE_UNSPECIFIED = 0,
+  Machine_HardDrive_DriveType_DRIVETYPE_SSD = 1,
+  Machine_HardDrive_DriveType_DRIVETYPE_HDD = 2,
+  Machine_HardDrive_DriveType_Machine_HardDrive_DriveType_INT_MIN_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32min,
+  Machine_HardDrive_DriveType_Machine_HardDrive_DriveType_INT_MAX_SENTINEL_DO_NOT_USE_ = ::google::protobuf::kint32max
+};
+bool Machine_HardDrive_DriveType_IsValid(int value);
+const Machine_HardDrive_DriveType Machine_HardDrive_DriveType_DriveType_MIN = Machine_HardDrive_DriveType_DRIVETYPE_UNSPECIFIED;
+const Machine_HardDrive_DriveType Machine_HardDrive_DriveType_DriveType_MAX = Machine_HardDrive_DriveType_DRIVETYPE_HDD;
+const int Machine_HardDrive_DriveType_DriveType_ARRAYSIZE = Machine_HardDrive_DriveType_DriveType_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* Machine_HardDrive_DriveType_descriptor();
+inline const ::std::string& Machine_HardDrive_DriveType_Name(Machine_HardDrive_DriveType value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    Machine_HardDrive_DriveType_descriptor(), value);
+}
+inline bool Machine_HardDrive_DriveType_Parse(
+    const ::std::string& name, Machine_HardDrive_DriveType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<Machine_HardDrive_DriveType>(
+    Machine_HardDrive_DriveType_descriptor(), name, value);
 }
 enum Machine_BatteryDetection {
   Machine_BatteryDetection_BATTERY_UNSPECIFIED = 0,
@@ -1270,6 +1296,12 @@ class Machine_CPU : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::eve_public::app::platform::Machine_CPU_Architecture architecture() const;
   void set_architecture(::eve_public::app::platform::Machine_CPU_Architecture value);
 
+  // uint32 frequency = 9;
+  void clear_frequency();
+  static const int kFrequencyFieldNumber = 9;
+  ::google::protobuf::uint32 frequency() const;
+  void set_frequency(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:eve_public.app.platform.Machine.CPU)
  private:
 
@@ -1282,6 +1314,7 @@ class Machine_CPU : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::int32 model_;
   ::google::protobuf::int32 stepping_;
   int architecture_;
+  ::google::protobuf::uint32 frequency_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_eve_5fpublic_2fapp_2fplatform_2eproto::TableStruct;
 };
@@ -1852,6 +1885,12 @@ class Machine_GPU : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::int32 revision() const;
   void set_revision(::google::protobuf::int32 value);
 
+  // uint32 core_count = 7;
+  void clear_core_count();
+  static const int kCoreCountFieldNumber = 7;
+  ::google::protobuf::uint32 core_count() const;
+  void set_core_count(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:eve_public.app.platform.Machine.GPU)
  private:
 
@@ -1862,6 +1901,7 @@ class Machine_GPU : public ::google::protobuf::Message /* @@protoc_insertion_poi
   ::google::protobuf::int32 device_id_;
   ::google::protobuf::int64 video_memory_;
   ::google::protobuf::int32 revision_;
+  ::google::protobuf::uint32 core_count_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::protobuf_eve_5fpublic_2fapp_2fplatform_2eproto::TableStruct;
 };
@@ -2008,6 +2048,159 @@ class Machine_NetworkAdapter : public ::google::protobuf::Message /* @@protoc_in
 };
 // -------------------------------------------------------------------
 
+class Machine_HardDrive : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_public.app.platform.Machine.HardDrive) */ {
+ public:
+  Machine_HardDrive();
+  virtual ~Machine_HardDrive();
+
+  Machine_HardDrive(const Machine_HardDrive& from);
+
+  inline Machine_HardDrive& operator=(const Machine_HardDrive& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  #if LANG_CXX11
+  Machine_HardDrive(Machine_HardDrive&& from) noexcept
+    : Machine_HardDrive() {
+    *this = ::std::move(from);
+  }
+
+  inline Machine_HardDrive& operator=(Machine_HardDrive&& from) noexcept {
+    if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
+      if (this != &from) InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+  #endif
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const Machine_HardDrive& default_instance();
+
+  static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
+  static inline const Machine_HardDrive* internal_default_instance() {
+    return reinterpret_cast<const Machine_HardDrive*>(
+               &_Machine_HardDrive_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    11;
+
+  void Swap(Machine_HardDrive* other);
+  friend void swap(Machine_HardDrive& a, Machine_HardDrive& b) {
+    a.Swap(&b);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline Machine_HardDrive* New() const final {
+    return CreateMaybeMessage<Machine_HardDrive>(NULL);
+  }
+
+  Machine_HardDrive* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<Machine_HardDrive>(arena);
+  }
+  void CopyFrom(const ::google::protobuf::Message& from) final;
+  void MergeFrom(const ::google::protobuf::Message& from) final;
+  void CopyFrom(const Machine_HardDrive& from);
+  void MergeFrom(const Machine_HardDrive& from);
+  void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) final;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const final;
+  ::google::protobuf::uint8* InternalSerializeWithCachedSizesToArray(
+      bool deterministic, ::google::protobuf::uint8* target) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Machine_HardDrive* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  typedef Machine_HardDrive_DriveType DriveType;
+  static const DriveType DRIVETYPE_UNSPECIFIED =
+    Machine_HardDrive_DriveType_DRIVETYPE_UNSPECIFIED;
+  static const DriveType DRIVETYPE_SSD =
+    Machine_HardDrive_DriveType_DRIVETYPE_SSD;
+  static const DriveType DRIVETYPE_HDD =
+    Machine_HardDrive_DriveType_DRIVETYPE_HDD;
+  static inline bool DriveType_IsValid(int value) {
+    return Machine_HardDrive_DriveType_IsValid(value);
+  }
+  static const DriveType DriveType_MIN =
+    Machine_HardDrive_DriveType_DriveType_MIN;
+  static const DriveType DriveType_MAX =
+    Machine_HardDrive_DriveType_DriveType_MAX;
+  static const int DriveType_ARRAYSIZE =
+    Machine_HardDrive_DriveType_DriveType_ARRAYSIZE;
+  static inline const ::google::protobuf::EnumDescriptor*
+  DriveType_descriptor() {
+    return Machine_HardDrive_DriveType_descriptor();
+  }
+  static inline const ::std::string& DriveType_Name(DriveType value) {
+    return Machine_HardDrive_DriveType_Name(value);
+  }
+  static inline bool DriveType_Parse(const ::std::string& name,
+      DriveType* value) {
+    return Machine_HardDrive_DriveType_Parse(name, value);
+  }
+
+  // accessors -------------------------------------------------------
+
+  // string name = 1;
+  void clear_name();
+  static const int kNameFieldNumber = 1;
+  const ::std::string& name() const;
+  void set_name(const ::std::string& value);
+  #if LANG_CXX11
+  void set_name(::std::string&& value);
+  #endif
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  ::std::string* mutable_name();
+  ::std::string* release_name();
+  void set_allocated_name(::std::string* name);
+
+  // uint64 size = 3;
+  void clear_size();
+  static const int kSizeFieldNumber = 3;
+  ::google::protobuf::uint64 size() const;
+  void set_size(::google::protobuf::uint64 value);
+
+  // .eve_public.app.platform.Machine.HardDrive.DriveType drive_type = 2;
+  void clear_drive_type();
+  static const int kDriveTypeFieldNumber = 2;
+  ::eve_public::app::platform::Machine_HardDrive_DriveType drive_type() const;
+  void set_drive_type(::eve_public::app::platform::Machine_HardDrive_DriveType value);
+
+  // @@protoc_insertion_point(class_scope:eve_public.app.platform.Machine.HardDrive)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr name_;
+  ::google::protobuf::uint64 size_;
+  int drive_type_;
+  mutable ::google::protobuf::internal::CachedSize _cached_size_;
+  friend struct ::protobuf_eve_5fpublic_2fapp_2fplatform_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class Machine : public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:eve_public.app.platform.Machine) */ {
  public:
   Machine();
@@ -2043,7 +2236,7 @@ class Machine : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_Machine_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    12;
 
   void Swap(Machine* other);
   friend void swap(Machine& a, Machine& b) {
@@ -2098,6 +2291,7 @@ class Machine : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   typedef Machine_Monitor Monitor;
   typedef Machine_GPU GPU;
   typedef Machine_NetworkAdapter NetworkAdapter;
+  typedef Machine_HardDrive HardDrive;
 
   typedef Machine_BatteryDetection BatteryDetection;
   static const BatteryDetection BATTERY_UNSPECIFIED =
@@ -2164,6 +2358,18 @@ class Machine : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::eve_public::app::platform::Machine_NetworkAdapter* add_network_adapters();
   const ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_NetworkAdapter >&
       network_adapters() const;
+
+  // repeated .eve_public.app.platform.Machine.HardDrive hard_drives = 12;
+  int hard_drives_size() const;
+  void clear_hard_drives();
+  static const int kHardDrivesFieldNumber = 12;
+  ::eve_public::app::platform::Machine_HardDrive* mutable_hard_drives(int index);
+  ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_HardDrive >*
+      mutable_hard_drives();
+  const ::eve_public::app::platform::Machine_HardDrive& hard_drives(int index) const;
+  ::eve_public::app::platform::Machine_HardDrive* add_hard_drives();
+  const ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_HardDrive >&
+      hard_drives() const;
 
   // string model = 1;
   void clear_model();
@@ -2256,6 +2462,7 @@ class Machine : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_Monitor > monitors_;
   ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_GPU > gpus_;
   ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_NetworkAdapter > network_adapters_;
+  ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_HardDrive > hard_drives_;
   ::google::protobuf::internal::ArenaStringPtr model_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr uuid_;
@@ -2304,7 +2511,7 @@ class Process : public ::google::protobuf::Message /* @@protoc_insertion_point(c
                &_Process_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    12;
+    13;
 
   void Swap(Process* other);
   friend void swap(Process& a, Process& b) {
@@ -2414,7 +2621,7 @@ class Information : public ::google::protobuf::Message /* @@protoc_insertion_poi
                &_Information_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    13;
+    14;
 
   void Swap(Information* other);
   friend void swap(Information& a, Information& b) {
@@ -3798,6 +4005,20 @@ Machine_CPU::mutable_extensions() {
   return &extensions_;
 }
 
+// uint32 frequency = 9;
+inline void Machine_CPU::clear_frequency() {
+  frequency_ = 0u;
+}
+inline ::google::protobuf::uint32 Machine_CPU::frequency() const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.CPU.frequency)
+  return frequency_;
+}
+inline void Machine_CPU::set_frequency(::google::protobuf::uint32 value) {
+  
+  frequency_ = value;
+  // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.CPU.frequency)
+}
+
 // -------------------------------------------------------------------
 
 // Machine_VM
@@ -4368,6 +4589,20 @@ inline void Machine_GPU::set_allocated_driver(::eve_public::app::platform::Machi
   // @@protoc_insertion_point(field_set_allocated:eve_public.app.platform.Machine.GPU.driver)
 }
 
+// uint32 core_count = 7;
+inline void Machine_GPU::clear_core_count() {
+  core_count_ = 0u;
+}
+inline ::google::protobuf::uint32 Machine_GPU::core_count() const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.GPU.core_count)
+  return core_count_;
+}
+inline void Machine_GPU::set_core_count(::google::protobuf::uint32 value) {
+  
+  core_count_ = value;
+  // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.GPU.core_count)
+}
+
 // -------------------------------------------------------------------
 
 // Machine_NetworkAdapter
@@ -4529,6 +4764,91 @@ inline void Machine_NetworkAdapter::set_allocated_uuid(::std::string* uuid) {
   }
   uuid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uuid);
   // @@protoc_insertion_point(field_set_allocated:eve_public.app.platform.Machine.NetworkAdapter.uuid)
+}
+
+// -------------------------------------------------------------------
+
+// Machine_HardDrive
+
+// string name = 1;
+inline void Machine_HardDrive::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Machine_HardDrive::name() const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.HardDrive.name)
+  return name_.GetNoArena();
+}
+inline void Machine_HardDrive::set_name(const ::std::string& value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.HardDrive.name)
+}
+#if LANG_CXX11
+inline void Machine_HardDrive::set_name(::std::string&& value) {
+  
+  name_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:eve_public.app.platform.Machine.HardDrive.name)
+}
+#endif
+inline void Machine_HardDrive::set_name(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:eve_public.app.platform.Machine.HardDrive.name)
+}
+inline void Machine_HardDrive::set_name(const char* value, size_t size) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:eve_public.app.platform.Machine.HardDrive.name)
+}
+inline ::std::string* Machine_HardDrive::mutable_name() {
+  
+  // @@protoc_insertion_point(field_mutable:eve_public.app.platform.Machine.HardDrive.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Machine_HardDrive::release_name() {
+  // @@protoc_insertion_point(field_release:eve_public.app.platform.Machine.HardDrive.name)
+  
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Machine_HardDrive::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    
+  } else {
+    
+  }
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:eve_public.app.platform.Machine.HardDrive.name)
+}
+
+// .eve_public.app.platform.Machine.HardDrive.DriveType drive_type = 2;
+inline void Machine_HardDrive::clear_drive_type() {
+  drive_type_ = 0;
+}
+inline ::eve_public::app::platform::Machine_HardDrive_DriveType Machine_HardDrive::drive_type() const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.HardDrive.drive_type)
+  return static_cast< ::eve_public::app::platform::Machine_HardDrive_DriveType >(drive_type_);
+}
+inline void Machine_HardDrive::set_drive_type(::eve_public::app::platform::Machine_HardDrive_DriveType value) {
+  
+  drive_type_ = value;
+  // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.HardDrive.drive_type)
+}
+
+// uint64 size = 3;
+inline void Machine_HardDrive::clear_size() {
+  size_ = GOOGLE_ULONGLONG(0);
+}
+inline ::google::protobuf::uint64 Machine_HardDrive::size() const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.HardDrive.size)
+  return size_;
+}
+inline void Machine_HardDrive::set_size(::google::protobuf::uint64 value) {
+  
+  size_ = value;
+  // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.HardDrive.size)
 }
 
 // -------------------------------------------------------------------
@@ -4934,6 +5254,36 @@ inline void Machine::set_battery_detection(::eve_public::app::platform::Machine_
   // @@protoc_insertion_point(field_set:eve_public.app.platform.Machine.battery_detection)
 }
 
+// repeated .eve_public.app.platform.Machine.HardDrive hard_drives = 12;
+inline int Machine::hard_drives_size() const {
+  return hard_drives_.size();
+}
+inline void Machine::clear_hard_drives() {
+  hard_drives_.Clear();
+}
+inline ::eve_public::app::platform::Machine_HardDrive* Machine::mutable_hard_drives(int index) {
+  // @@protoc_insertion_point(field_mutable:eve_public.app.platform.Machine.hard_drives)
+  return hard_drives_.Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_HardDrive >*
+Machine::mutable_hard_drives() {
+  // @@protoc_insertion_point(field_mutable_list:eve_public.app.platform.Machine.hard_drives)
+  return &hard_drives_;
+}
+inline const ::eve_public::app::platform::Machine_HardDrive& Machine::hard_drives(int index) const {
+  // @@protoc_insertion_point(field_get:eve_public.app.platform.Machine.hard_drives)
+  return hard_drives_.Get(index);
+}
+inline ::eve_public::app::platform::Machine_HardDrive* Machine::add_hard_drives() {
+  // @@protoc_insertion_point(field_add:eve_public.app.platform.Machine.hard_drives)
+  return hard_drives_.Add();
+}
+inline const ::google::protobuf::RepeatedPtrField< ::eve_public::app::platform::Machine_HardDrive >&
+Machine::hard_drives() const {
+  // @@protoc_insertion_point(field_list:eve_public.app.platform.Machine.hard_drives)
+  return hard_drives_;
+}
+
 // -------------------------------------------------------------------
 
 // Process
@@ -5278,6 +5628,8 @@ inline void Information::set_allocated_process(::eve_public::app::platform::Proc
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -5302,6 +5654,11 @@ template <> struct is_proto_enum< ::eve_public::app::platform::Machine_CPU_Archi
 template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::eve_public::app::platform::Machine_CPU_Architecture>() {
   return ::eve_public::app::platform::Machine_CPU_Architecture_descriptor();
+}
+template <> struct is_proto_enum< ::eve_public::app::platform::Machine_HardDrive_DriveType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::eve_public::app::platform::Machine_HardDrive_DriveType>() {
+  return ::eve_public::app::platform::Machine_HardDrive_DriveType_descriptor();
 }
 template <> struct is_proto_enum< ::eve_public::app::platform::Machine_BatteryDetection> : ::std::true_type {};
 template <>
