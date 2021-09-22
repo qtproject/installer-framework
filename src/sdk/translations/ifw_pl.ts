@@ -788,10 +788,6 @@
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>There was an error loading the selected component. This component cannot be updated.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::ComponentModel</name>
@@ -1092,6 +1088,10 @@
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
         <translation>Nie można usunąć katalogu &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>Nie można utworzyć archiwum &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -1155,6 +1155,54 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Cannot find component for %1.</source>
         <translation>Nie można znaleźć elementu dla %1.</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%1 z %2</translation>
+    </message>
+    <message>
+        <source>%1 downloaded.</source>
+        <translation type="unfinished">Liczba pobranych: %1.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n d, </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation>
+            <numerusform>%n godz., </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n min</numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation>
+            <numerusform>%n s</numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation> — %1%2%3%4 pozostało.</translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1222,21 +1270,6 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
         <translation>Wykonanie nie powiodło się (nieoczekiwany kod wyjścia: %1): &quot;%2&quot;</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation::Runnable</name>
-    <message>
-        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
-        <translation>Nie można otworzyć archiwum &quot;%1&quot; do odczytu: %2</translation>
-    </message>
-    <message>
-        <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>Błąd podczas wyodrębniania archiwum &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
-        <translation>Zarejestrowano nieznany wyjątek podczas wyodrębniania &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1317,7 +1350,7 @@ Błąd podczas wczytywania %2</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Zakończone</translation>
     </message>
     <message>
         <source>Click %1 to exit the %2 Wizard.</source>
@@ -1415,6 +1448,10 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>&amp;Quit</source>
         <translation>Zakończ</translation>
+    </message>
+    <message>
+        <source>There is an important update available. Please select &apos;%1&apos; first</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1532,10 +1569,6 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Błąd podczas wyodrębniania archiwum &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
-        <translation>Zarejestrowano nieznany wyjątek podczas wyodrębniania archiwum &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -2095,7 +2128,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Installing</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalowanie</translation>
     </message>
     <message>
         <source>Updating</source>
@@ -2718,6 +2751,33 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation::Worker</name>
+    <message>
+        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation type="unfinished">Nie można otworzyć archiwum &quot;%1&quot; do odczytu: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot prepare for file &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extract for archive &quot;%1&quot; canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation type="unfinished">Błąd podczas wyodrębniania archiwum &quot;%1&quot;: %2</translation>
     </message>
 </context>
 </TS>
