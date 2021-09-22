@@ -9,7 +9,7 @@ IB_TRANSLATIONS -= $$PWD/ifw_en.ts
 
 wd = $$toNativeSeparators($$IFW_SOURCE_TREE)
 sources = src
-lupdate_opts = -locations relative -no-ui-lines -no-sort
+lupdate_opts = -locations relative -no-ui-lines -no-sort -no-obsolete
 
 IB_ALL_TRANSLATIONS = $$IB_TRANSLATIONS $$PWD/ifw_untranslated.ts
 for(file, IB_ALL_TRANSLATIONS) {
