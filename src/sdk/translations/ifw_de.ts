@@ -1655,7 +1655,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>Der Installationspfad darf nicht &quot;%1&quot; enthalten, bitte geben Sie einen gültigen Verzeichnis ein.</translation>
+        <translation>Der Installationspfad darf nicht &quot;%1&quot; enthalten, bitte geben Sie ein gültiges Verzeichnis an.</translation>
     </message>
     <message>
         <source>Application not running in Package Manager mode.</source>
