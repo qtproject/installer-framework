@@ -101,7 +101,6 @@ ComponentModel::ComponentModel(int columns, PackageManagerCore *core)
     , m_modelState(DefaultChecked)
 {
     m_headerData.insert(0, columns, QVariant());
-    connect(this, &QAbstractItemModel::modelReset, this, &ComponentModel::slotModelReset);
 }
 
 /*!
@@ -417,6 +416,7 @@ void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootCompone
         m_rootComponentList.append(component);
     }
     endResetModel();
+    postModelReset();
 }
 
 /*!
@@ -459,7 +459,16 @@ void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag 
 
 // -- private slots
 
-void ComponentModel::slotModelReset()
+void ComponentModel::onVirtualStateChanged()
+{
+    // If the virtual state of a component changes, force a reset of the component model.
+    setRootComponents(m_core->components(PackageManagerCore::ComponentType::Root));
+}
+
+
+// -- private
+
+void ComponentModel::postModelReset()
 {
     ComponentList components = m_rootComponentList;
     if (!m_core->isUpdater()) {
@@ -484,15 +493,6 @@ void ComponentModel::slotModelReset()
     m_currentCheckedState = m_initialCheckedState;
     updateAndEmitModelState();     // update the internal state
 }
-
-void ComponentModel::onVirtualStateChanged()
-{
-    // If the virtual state of a component changes, force a reset of the component model.
-    setRootComponents(m_core->components(PackageManagerCore::ComponentType::Root));
-}
-
-
-// -- private
 
 void ComponentModel::updateAndEmitModelState()
 {
