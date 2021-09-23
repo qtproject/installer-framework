@@ -317,6 +317,9 @@
                 For example, \c {C:\ProgramData\Microsoft\Windows\Start Menu\Programs}
 
                 Only available on Windows.
+        \row
+            \li UILanguage
+            \li The language that is used in the installer.
     \endtable
 
     The variables can be resolved by calls to installer::value(). If embedded

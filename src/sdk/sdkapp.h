@@ -196,7 +196,7 @@ public:
                 QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
         }
 
-        QLocale::Language lang = QLocale::AnyLanguage;
+        QLocale lang = QLocale::English;
 #ifndef IFW_DISABLE_TRANSLATIONS
         if (!isCommandLineInterface) {
             const QString directory = QLatin1String(":/translations");
@@ -227,7 +227,7 @@ public:
 
                         // To stop loading other translations it's sufficient that
                         // qt was loaded successfully or we hit English as system language
-                        lang = locale.language();
+                        lang = locale;
                         break;
                     }
                 }
@@ -238,7 +238,7 @@ public:
                         QCoreApplication::instance()->installTranslator(translator.take());
                 }
                 QLocale currentLocale(translations.at(0).section(QLatin1Char('_'), 1));
-                lang = currentLocale.language();
+                lang = currentLocale;
             }
         }
 #endif
@@ -397,8 +397,9 @@ public:
             errorMessage = e.message();
             return false;
         }
-        if (lang != QLocale::AnyLanguage)
-            emit m_core->defaultTranslationsLoadedForLanguage(lang);
+
+        m_core->setValue(QInstaller::scUILanguage, lang.name());
+        emit m_core->defaultTranslationsLoadedForLanguage(lang.language());
         ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
 
         return true;
