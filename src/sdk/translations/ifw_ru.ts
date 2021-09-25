@@ -73,7 +73,7 @@
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation>Невозможно создать каталог «%1».</translation>
+        <translation>Не удалось создать каталог «%1».</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@
     <name>InstallerBase</name>
     <message>
         <source>Unable to start installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно запустить установщик</translation>
     </message>
 </context>
 <context>
@@ -183,7 +183,7 @@
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation>Не удалось скопировать файл из «%1» в «%2»: %3</translation>
+        <translation>Не удалось скопировать файл «%1» в «%2»: %3</translation>
     </message>
     <message>
         <source>Cannot delete file &quot;%1&quot;: %2</source>
@@ -590,11 +590,11 @@
     </message>
     <message>
         <source>Internal code: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Внутренний код: %1</translation>
     </message>
     <message>
         <source>Not enough memory</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно памяти</translation>
     </message>
 </context>
 <context>
@@ -687,11 +687,11 @@
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось скопировать файл «%1» в «%2»: %3</translation>
     </message>
     <message>
         <source>Cannot copy file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось скопировать файл «%1» в «%2».</translation>
     </message>
     <message>
         <source>No marker found, stopped after %1.</source>
@@ -747,7 +747,7 @@
     </message>
     <message>
         <source>Invalid content in &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое содержание в «%1».</translation>
     </message>
 </context>
 <context>
@@ -786,11 +786,11 @@
     </message>
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при загрузке выбранного компонента. Данный компонент не может быть установлен.</translation>
     </message>
     <message>
         <source>There was an error loading the selected component. This component cannot be updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при загрузке выбранного компонента. Данный компонент не может быть обновлен.</translation>
     </message>
 </context>
 <context>
@@ -1073,11 +1073,11 @@
     </message>
     <message>
         <source>Cannot create path &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать путь «%1».</translation>
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить каталог «%1».</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -1490,7 +1490,7 @@ Error while loading %2</source>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <source>Invalid argument in %1: Empty search argument is not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимый параметр в %1: пустой параметр поиска не поддерживается.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -1565,7 +1565,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Metadata download canceled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка метаданных отменена.</translation>
     </message>
 </context>
 <context>
@@ -1670,7 +1670,8 @@ Do you want to continue?</source>
     <message>
         <source>Component %1 already installed
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Компонент %1 уже установлен
+</translation>
     </message>
     <message>
         <source>Cannot install %1. Component is virtual.
@@ -1680,7 +1681,8 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install %1. Component not found.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось установить %1. Компонент не найден.
+</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1762,15 +1764,15 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно дискового пространства для хранения временных файлов и для установки. Доступно %1, хотя требуется минимум %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store all selected components! %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно дискового пространства для хранения всех выбранных компонентов! Доступно %1, хотя требуется минимум %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Недостаточно дискового пространства для хранения временных файлов! Доступно %1, хотя требуется минимум %2.</translation>
     </message>
     <message>
         <source>Invalid</source>
@@ -1865,7 +1867,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Retry count exceeded</source>
-        <translation type="unfinished"></translation>
+        <translation>Превышено количество повторов</translation>
     </message>
     <message>
         <source>Writing maintenance tool.</source>
@@ -1885,7 +1887,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot remove temporary data file &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить временный файл данных «%1»: %2</translation>
     </message>
     <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
@@ -1901,7 +1903,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать каталог «%1».</translation>
     </message>
     <message>
         <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
@@ -1909,7 +1911,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить временный файл «%1»: %2</translation>
     </message>
     <message>
         <source>Creating Maintenance Tool</source>
@@ -1929,7 +1931,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Creating the installer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание установщика...</translation>
     </message>
     <message>
         <source>Failed to create offline installer. %1</source>
@@ -1937,7 +1939,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot remove temporary directory &quot;%1&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить временный каталог «%1».</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
@@ -2004,24 +2006,25 @@ Installing component %1</source>
     </message>
     <message>
         <source>Removal completed successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Удаление завершилось успешно.</translation>
     </message>
     <message>
         <source>Removal aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Удаление прервано.</translation>
     </message>
     <message>
         <source>Cannot prepare removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось подготовить удаление</translation>
     </message>
     <message>
         <source>Cannot start removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось запустить удаление</translation>
     </message>
     <message>
         <source>Error during removal process:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка при удалении:
+%1</translation>
     </message>
 </context>
 <context>
@@ -2074,7 +2077,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Do you want to cancel the removal process?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите отменить процесс удаления?</translation>
     </message>
 </context>
 <context>
@@ -2116,15 +2119,15 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Installing</source>
-        <translation type="unfinished"></translation>
+        <translation>Установка</translation>
     </message>
     <message>
         <source>Updating</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление</translation>
     </message>
     <message>
         <source>Uninstalling</source>
-        <translation type="unfinished"></translation>
+        <translation>Удаление</translation>
     </message>
 </context>
 <context>
@@ -2469,7 +2472,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Invalid button value %1 </source>
-        <translation type="unfinished"></translation>
+        <translation>Недопустимое значение кнопки %1 </translation>
     </message>
     <message>
         <source>Incorrect arguments for %1</source>
@@ -2477,7 +2480,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
-        <translation type="unfinished"></translation>
+        <translation>Убедитесь, что у текущего пользователя есть доступ чтения файла «%1», или попробуйте запустить%2 от имени администратора.</translation>
     </message>
 </context>
 <context>
