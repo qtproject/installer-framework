@@ -28,6 +28,7 @@ namespace PDM
 	PDMDllExport std::vector<MonitorInfo> GetMonitorsInfo();
 	PDMDllExport std::vector<GPUInfo> GetGPUInfo();
 	PDMDllExport std::vector<NetworkAdapterInfo> GetNetworkAdapterInfo();
+	PDMDllExport std::vector<HardDriveInfo> GetHardDriveInfo();
 	PDMDllExport bool GetMetalSupported();
 	PDMDllExport VulkanProperties GetVulkanProperties();
 	PDMDllExport std::string GetD3DHighestSupport();
