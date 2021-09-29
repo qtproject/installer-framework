@@ -269,8 +269,8 @@ void DownloadArchivesJob::onDownloadStatusChanged(const QString &status)
         extendedStatus += tr(" - unknown time remaining.");
     }
 
-    emit downloadStatusChanged(QLatin1String("Archive: ") + status
-        + QLatin1String("<br>Total: ") + extendedStatus);
+    emit downloadStatusChanged(tr("Archive: ") + status
+        + QLatin1String("<br>") + tr("Total: ")+ extendedStatus);
 }
 
 /*!
