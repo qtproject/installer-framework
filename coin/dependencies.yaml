@@ -1,7 +1,7 @@
 
 product_dependency:
   ../../qt/qt5:
-    ref: "ifw-5.12.10"
+    ref: "ifw-5.12.11"
 dependency_source: supermodule
 dependencies: [
       "../../qt/qtbase",
