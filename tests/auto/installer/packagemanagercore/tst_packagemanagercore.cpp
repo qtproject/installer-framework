@@ -370,6 +370,28 @@ private slots:
         QCOMPARE(core->value("RootDir"), QLatin1String("Overwritten RootDir"));
         core->deleteLater();
     }
+
+    void testToFromNativeSeparators_data()
+    {
+        QTest::addColumn<QString>("path");
+        QTest::newRow("Slash separator") << "a/test/path";
+        QTest::newRow("Backslash separator") << "a\\test\\path";
+        QTest::newRow("Mixed separators") << "a/test\\path";
+    }
+
+    void testToFromNativeSeparators()
+    {
+        QFETCH(QString, path);
+
+        PackageManagerCore core;
+#ifdef Q_OS_WIN
+        QCOMPARE(core.toNativeSeparators(path), "a\\test\\path");
+        QCOMPARE(core.fromNativeSeparators(path), "a/test/path");
+#else
+        QCOMPARE(core.toNativeSeparators(path), path);
+        QCOMPARE(core.fromNativeSeparators(path), path);
+#endif
+    }
 };
 
 

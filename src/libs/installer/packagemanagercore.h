@@ -213,6 +213,9 @@ public:
     Q_INVOKABLE QString readFile(const QString &filePath, const QString &codecName) const;
     Q_INVOKABLE QString readConsoleLine(const QString &title = QString(), qint64 maxlen = 0) const;
 
+    Q_INVOKABLE QString toNativeSeparators(const QString &path);
+    Q_INVOKABLE QString fromNativeSeparators(const QString &path);
+
     bool checkTargetDir(const QString &targetDirectory);
     QString targetDirWarning(const QString &targetDirectory) const;
 

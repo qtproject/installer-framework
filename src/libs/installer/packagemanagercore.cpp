@@ -1003,6 +1003,33 @@ QString PackageManagerCore::readConsoleLine(const QString &title, qint64 maxlen)
 }
 
 /*!
+    Returns \a path with the '/' separators converted to separators that are
+    appropriate for the underlying operating system.
+
+    On Unix platforms the returned string is the same as the argument.
+
+    \sa {installer::toNativeSeparators}{installer.toNativeSeparators}
+    \sa fromNativeSeparators()
+*/
+QString PackageManagerCore::toNativeSeparators(const QString &path)
+{
+    return QDir::toNativeSeparators(path);
+}
+
+/*!
+    Returns \a path using '/' as file separator.
+
+    On Unix platforms the returned string is the same as the argument.
+
+    \sa {installer::fromNativeSeparators}{installer.fromNativeSeparators}
+    \sa toNativeSeparators()
+*/
+QString PackageManagerCore::fromNativeSeparators(const QString &path)
+{
+    return QDir::fromNativeSeparators(path);
+}
+
+/*!
     Checks whether the target directory \a targetDirectory exists and has contents:
     \list
         \li Returns \c true if the directory exists and is empty.
