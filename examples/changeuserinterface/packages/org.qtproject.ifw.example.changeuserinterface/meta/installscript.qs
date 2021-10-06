@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the FOO module of the Qt Toolkit.
@@ -28,12 +28,12 @@
 
 function Component()
 {
-    gui.pageWidgetByObjectName("LicenseAgreementPage").entered.connect(changeLicenseLabels);
+    if (!installer.isCommandLineInstance())
+        gui.pageWidgetByObjectName("LicenseAgreementPage").entered.connect(changeLicenseLabels);
 }
 
 changeLicenseLabels = function()
 {
     page = gui.pageWidgetByObjectName("LicenseAgreementPage");
     page.AcceptLicenseLabel.setText("Yes I do!");
-    page.RejectLicenseLabel.setText("No I don't!");
 }

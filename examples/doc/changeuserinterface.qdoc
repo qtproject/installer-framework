@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,7 +35,7 @@
     \image qtifw-examples-changeuserinterface.png
 
     \e {Change Installer UI} demonstrates how to use the \c Component() function
-    to modify the default text for the radio button labels on the
+    to modify the default text for the check box label on the
     \l{License Agreement Page}{license check page}. This example does not install
     any components, but we specify a dummy component in the package information
     file, because installers without components are not allowed.
@@ -68,8 +68,8 @@
     \skipto Component()
     \printuntil }
 
-    We use the \c changeLicenseLabels function to change the text labels for the
-    accept and reject license radio buttons on the page:
+    We use the \c changeLicenseLabels function to change the text label for the
+    accept license check box on the page:
 
     \printuntil }
 
