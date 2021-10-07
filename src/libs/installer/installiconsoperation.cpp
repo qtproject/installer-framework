@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "globals.h"
 #include "adminauthorization.h"
 #include "remoteclient.h"
+#include "errors.h"
 
 #include <QDebug>
 #include <QDir>
@@ -158,7 +159,16 @@ bool InstallIconsOperation::performOperation()
 
             if (QFile(target).exists()) {
                 // first backup...
-                const QString backup = generateTemporaryFileName(target);
+                QString backup;
+                try {
+                    backup = generateTemporaryFileName(target);
+                } catch (const QInstaller::Error &e) {
+                    setError(UserDefinedError);
+                    setErrorString(tr("Cannot prepare to backup file \"%1\": %2")
+                        .arg(QDir::toNativeSeparators(target), e.message()));
+                    undoOperation();
+                    return false;
+                }
                 QFile bf(target);
                 if (!bf.copy(backup)) {
                     setError(UserDefinedError);
