@@ -128,7 +128,7 @@ bool ExtractArchiveOperation::performOperation()
     // TargetDir for saving filenames, otherwise those would be saved to
     // extracted folder.
     if (packageManager())
-        installDir = packageManager()->value(QLatin1String("TargetDir"));
+        installDir = packageManager()->value(scTargetDir);
     const QString resourcesPath = installDir + QLatin1Char('/') + QLatin1String("installerResources");
     QString fileDirectory = resourcesPath + QLatin1Char('/') + archivePath.section(QLatin1Char('/'), 1, 1,
                             QString::SectionSkipEmpty) + QLatin1Char('/');
@@ -184,7 +184,7 @@ bool ExtractArchiveOperation::undoOperation()
     bool useStringListType(value(QLatin1String("files")).type() == QVariant::StringList);
     QString targetDir = arguments().at(1);
     if (packageManager())
-        targetDir = packageManager()->value(QLatin1String("TargetDir"));
+        targetDir = packageManager()->value(scTargetDir);
     QStringList files;
     if (useStringListType) {
         files = value(QLatin1String("files")).toStringList();

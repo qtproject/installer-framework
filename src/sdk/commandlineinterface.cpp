@@ -264,7 +264,7 @@ bool CommandLineInterface::setTargetDir()
     if (m_parser.isSet(CommandLineOptions::scRootLong)) {
         targetDir = m_parser.value(CommandLineOptions::scRootLong);
     } else {
-        targetDir = m_core->value(QLatin1String("TargetDir"));
+        targetDir = m_core->value(QInstaller::scTargetDir);
         qCDebug(QInstaller::lcInstallerInstallLog) << "No target directory specified, using default value:" << targetDir;
     }
     if (m_core->checkTargetDir(targetDir)) {
@@ -272,7 +272,7 @@ bool CommandLineInterface::setTargetDir()
         if (!targetDirWarning.isEmpty()) {
             qCWarning(QInstaller::lcInstallerInstallLog) << m_core->targetDirWarning(targetDir);
         } else {
-            m_core->setValue(QLatin1String("TargetDir"), targetDir);
+            m_core->setValue(QInstaller::scTargetDir, targetDir);
             return true;
         }
     }
