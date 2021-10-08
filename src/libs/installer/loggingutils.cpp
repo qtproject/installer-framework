@@ -160,7 +160,7 @@ void LoggingHandler::messageHandler(QtMsgType type, const QMessageLogContext &co
     if (VerboseWriter *log = VerboseWriter::instance())
         log->appendLine(ba);
 
-    if (type != QtDebugMsg || isVerbose())
+    if (type != QtDebugMsg || isVerbose() || context.category == lcPackageInfo().categoryName())
         std::cout << qPrintable(ba) << std::endl;
 
     if (type == QtFatalMsg) {
