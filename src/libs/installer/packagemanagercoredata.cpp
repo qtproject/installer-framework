@@ -237,7 +237,7 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         if (dir.isEmpty())
             dir = replaceVariables(m_settings.value(key, _default).toString());
 #ifdef Q_OS_WIN
-        return QInstaller::normalizePathName(dir);
+        return QDir::fromNativeSeparators(QInstaller::normalizePathName(dir));
 #else
         if (dir.startsWith(QLatin1String("~/")))
             return QDir::home().absoluteFilePath(dir.mid(2));
