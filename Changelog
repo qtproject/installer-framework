@@ -1,3 +1,47 @@
+4.2.0
+- Update Chinese translation
+- Add Korean translation
+- Update Russian translation
+- Update French translation
+- Update Japanese translation
+- Add Portuguese translation
+- Update Arabic translation
+- Update Spanish translation
+- Update German translation
+- Update Polish translation file
+- Add ability to query used language in script (QTIFW-2208)
+- Windows: return the value of "TargetDir" variable with '/' as separator (QTIFW-2344)
+- Show messages from lcPackageInfo logging category regardless of verbosity (QTIFW-2349)
+- Fix uncaught exception in InstallIconsOperation::performOperation() (QTIFW-2347)
+- Add invokable methods for converting paths to/from native separators (QTIFW-2344)
+- binarycreator: support selecting compression level and archive format (QTIFW-1587)
+- repogen: add support for setting compression level for data archives (QTIFW-1587)
+- Add support for handling archive files with libarchive (QTIFW-2255)
+- Fix qbsp adding from GUI (QTIFW-2312)
+- Apply environment changes to system environment (QTIFW-2288)
+- Add total remaining download time estimation for archives (QTIFW-2207)
+- Repogen: Fix updating of repository from a partial package set directory (QTIFW-2287)
+- MT: Install new <ForcedInstallation> components with default check state (QTIFW-2286)
+- MT: Fix reading of StartMenuDir value from incorrect config file (QTIFW-2284)
+- MT: Hide superfluous size information when running as package manager (QTIFW-2293)
+- QtPatch: Fix catching non-zero exit codes from "qmake -query" (QTIFW-2273)
+- Fix hang when canceling metadatajob by an external call (QTIFW-2282)
+- Fix replacing of {external-link} tags in component tree view tooltips (QTIFW-2264)
+- Fix usage of '--install-compressed-repository' with a relative file path
+- Load and install translations as early as possible (QTIFW-1888)
+- Load control script also when using CLI (QTIFW-2268)
+- Clarify required user actions when there is an essential update (QTIFW-2244)
+- Doc: add note about limitation with CreateShortcut on Windows (QTIFW-2257)
+- Fix loading translations with upper letters (QTIFW-2265)
+- Fix updating visibility of the QToolBox widget on ComponentSelectionPage
+- Reorder ComponentSelectionPage widgets (QTIFW-2096)
+- Offline-generator: Fix duplicate package entries in internal Updates.xml (QTIFW-2190)
+- CLI: Add support for additional filtering of search results (QTIFW-2168)
+- Use pkexec to start the headless process used for privileged operations (QTIFW-1794)
+- CLI: improvements to 'search' and 'install' command output (QTIFW-2168)
+- Fix styling of QMessageBoxes (QTIFW-2121)
+- Add alternative way to update components from repository (QTIFW-1798)
+
 4.1.1
 - Add possibility to filter available packages with regexp from script (QTIFW-2225)
 - Add documentation for configuring and overwriting default translations (QTIFW-2217)
