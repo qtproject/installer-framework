@@ -81,9 +81,11 @@ QSize AspectRatioLabel::sizeHint() const
 */
 QPixmap AspectRatioLabel::scaledPixmap() const
 {
-    return m_pixmap.isNull()
-        ? QPixmap()
-        : m_pixmap.scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    if (m_pixmap.isNull())
+        return QPixmap();
+
+    return m_pixmap.scaled(size() * m_pixmap.devicePixelRatio(),
+        Qt::KeepAspectRatio, Qt::SmoothTransformation);
 }
 
 /*!
