@@ -129,6 +129,7 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
         throw Error(CreateLocalRepositoryOperation::tr("Cannot create archive \"%1\": %2")
             .arg(QDir::toNativeSeparators(archive.fileName()), archiveFile.errorString()));
     }
+    archiveFile.close();
     removeFiles(sourceDir, helper); // cleanup the files we compressed
     if (!archive.rename(sourceDir + fileName)) {
         throw Error(CreateLocalRepositoryOperation::tr("Cannot move file \"%1\" to \"%2\": %3")
