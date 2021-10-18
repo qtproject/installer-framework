@@ -149,18 +149,15 @@ public:
             loggingRules = QLatin1String("ifw.* = false\n"
                                         "ifw.installer.* = true\n"
                                         "ifw.server = true\n"
-                                        "ifw.progress.indicator = true\n"
-                                        "ifw.package.* = true\n");
+                                        "ifw.progress.indicator = true\n");
         } else {
             // enable all except detailed package information and developer specific logging
             loggingRules = QLatin1String("ifw.* = true\n"
-                                        "ifw.developer.build = false\n"
-                                        "ifw.package.* = true\n");
+                                        "ifw.developer.build = false\n");
         }
 
         if (QInstaller::LoggingHandler::instance().verboseLevel() == QInstaller::LoggingHandler::Detailed) {
-            loggingRules += QLatin1String("\nifw.developer.build = true\n"
-                                          "ifw.package.* = true\n");
+            loggingRules += QLatin1String("\nifw.developer.build = true\n");
         }
         QLoggingCategory::setFilterRules(loggingRules);
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Arguments:" <<

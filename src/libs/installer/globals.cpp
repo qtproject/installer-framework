@@ -33,7 +33,6 @@
 const char IFW_SERVER[] = "ifw.server";
 const char IFW_INSTALLER_INSTALLLOG[] = "ifw.installer.installlog";
 const char IFW_DEVELOPER_BUILD[] = "ifw.developer.build";
-const char IFW_PACKAGE_INFO[] = "ifw.package.info";
 
 // Internal-only, hidden in --help text
 const char IFW_PROGRESS_INDICATOR[] = "ifw.progress.indicator";
@@ -61,16 +60,10 @@ namespace QInstaller
     \internal
 */
 
-/*!
-    \fn QInstaller::lcPackageInfo()
-    \internal
-*/
-
 Q_LOGGING_CATEGORY(lcServer, IFW_SERVER)
 Q_LOGGING_CATEGORY(lcInstallerInstallLog, IFW_INSTALLER_INSTALLLOG)
 Q_LOGGING_CATEGORY(lcProgressIndicator, IFW_PROGRESS_INDICATOR)
 Q_LOGGING_CATEGORY(lcDeveloperBuild, IFW_DEVELOPER_BUILD)
-Q_LOGGING_CATEGORY(lcPackageInfo, IFW_PACKAGE_INFO)
 
 /*!
     Returns available logging categories.
