@@ -177,6 +177,7 @@ const char AbstractArchiveIsSupported[] = "AbstractArchive::isSupported";
 const char AbstractArchiveSetCompressionLevel[] = "AbstractArchive::setCompressionLevel";
 const char AbstractArchiveAddDataBlock[] = "AbstractArchive::addDataBlock";
 const char AbstractArchiveSetClientDataAtEnd[] = "AbstractArchive::setClientDataAtEnd";
+const char AbstractArchiveSetFilePosition[] = "AbstractArchive::setFilePosition";
 const char AbstractArchiveWorkerStatus[] = "AbstractArchive::workerStatus";
 const char AbstractArchiveCancel[] = "AbstractArchive::cancel";
 
@@ -184,6 +185,7 @@ const char GetAbstractArchiveSignals[] = "GetAbstractArchiveSignals";
 const char AbstractArchiveSignalCurrentEntryChanged[] = "AbstractArchive::currentEntryChanged";
 const char AbstractArchiveSignalCompletedChanged[] = "AbstractArchive::completedChanged";
 const char AbstractArchiveSignalDataBlockRequested[] = "AbstractArchive::dataBlockRequested";
+const char AbstractArchiveSignalSeekRequested[] = "AbstractArchive::seekRequested";
 const char AbstractArchiveSignalWorkerFinished[] = "AbstractArchive::workerFinished";
 
 } // namespace Protocol

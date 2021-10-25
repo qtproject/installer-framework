@@ -44,6 +44,7 @@ private slots:
     void initTestCase()
     {
         m_file.path = "valid";
+        m_file.permissions_mode = 0666;
         m_file.compressedSize = 0; // unused
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;
@@ -79,7 +80,7 @@ private slots:
 
         QVector<ArchiveEntry> files = archive.list();
         QCOMPARE(files.count(), 1);
-        QVERIFY(entriesMatch(files.first(), m_file));
+        QCOMPARE(files.first(), m_file);
     }
 
     void testCreateArchive_data()
@@ -165,15 +166,6 @@ private:
         QTest::newRow("gzip compressed tar archive") << ".tar.gz";
         QTest::newRow("bzip2 compressed tar archive") << ".tar.bz2";
         QTest::newRow("xz compressed tar archive") << ".tar.xz";
-    }
-
-    bool entriesMatch(const ArchiveEntry &lhs, const ArchiveEntry &rhs)
-    {
-        return lhs.path == rhs.path
-            && lhs.utcTime == rhs.utcTime
-            && lhs.isDirectory == rhs.isDirectory
-            && lhs.compressedSize == rhs.compressedSize
-            && lhs.uncompressedSize == rhs.uncompressedSize;
     }
 
     QString tempSourceFile(const QByteArray &data, const QString &templateName = QString())

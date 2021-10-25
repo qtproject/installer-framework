@@ -32,6 +32,8 @@
 #include "errors.h"
 #include "globals.h"
 
+#include <stdio.h>
+
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -93,7 +95,11 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
         foreach (const QString &directory, createdDirs)
             emit currentEntryChanged(directory);
 
-        int status = archive_read_open(reader.get(), this, nullptr, readCallback, nullptr);
+        archive_read_set_read_callback(reader.get(), readCallback);
+        archive_read_set_callback_data(reader.get(), this);
+        archive_read_set_seek_callback(reader.get(), seekCallback);
+
+        int status = archive_read_open1(reader.get());
         if (status != ARCHIVE_OK) {
             m_status = Failure;
             emit finished(QLatin1String(archive_error_string(reader.get())));
@@ -142,6 +148,12 @@ void ExtractWorker::addDataBlock(const QByteArray buffer)
     emit dataReadyForRead();
 }
 
+void ExtractWorker::onFilePositionChanged(qint64 pos)
+{
+    m_lastPos = pos;
+    emit seekReady();
+}
+
 void ExtractWorker::cancel()
 {
     m_status = Canceled;
@@ -175,6 +187,26 @@ ssize_t ExtractWorker::readCallback(archive *reader, void *caller, const void **
         return ARCHIVE_FATAL;
 
     return buffer->size();
+}
+
+la_int64_t ExtractWorker::seekCallback(archive *reader, void *caller, la_int64_t offset, int whence)
+{
+    Q_UNUSED(reader)
+
+    ExtractWorker *obj;
+    if (!(obj = static_cast<ExtractWorker *>(caller)))
+        return ARCHIVE_FATAL;
+
+    emit obj->seekRequested(static_cast<qint64>(offset), whence);
+
+    {
+        QEventLoop loop;
+        QTimer::singleShot(30000, &loop, &QEventLoop::quit);
+        connect(obj, &ExtractWorker::seekReady, &loop, &QEventLoop::quit);
+        loop.exec();
+    }
+
+    return static_cast<la_int64_t>(obj->m_lastPos);
 }
 
 bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *entry)
@@ -235,6 +267,13 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
 */
 
 /*!
+    \fn QInstaller::LibArchiveArchive::seekRequested(qint64 offset, int whence)
+
+    Emitted when the worker object requires a seek to \a offset to continue extracting.
+    The \a whence value defines the starting position for \a offset.
+*/
+
+/*!
     \fn QInstaller::LibArchiveArchive::workerFinished()
 
     Emitted when the worker object finished extracting an archive.
@@ -264,6 +303,12 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
     \fn QInstaller::LibArchiveArchive::workerAboutToCancel()
 
     Emitted when the worker object is about to cancel extracting.
+*/
+
+/*!
+    \fn QInstaller::LibArchiveArchive::workerAboutToSetFilePosition(qint64 pos)
+
+    Emitted when the worker object is about to set new file position \a pos.
 */
 
 /*!
@@ -377,7 +422,7 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
         foreach (const QString &directory, createdDirs)
             emit currentEntryChanged(directory);
 
-        int status = archive_read_open(reader.get(), m_data, nullptr, readCallback, nullptr);
+        int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
             throw Error(QLatin1String(archive_error_string(reader.get())));
 
@@ -496,7 +541,7 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
 
     QVector<ArchiveEntry> entries;
     try {
-        int status = archive_read_open(reader.get(), m_data, nullptr, readCallback, nullptr);
+        int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
             throw Error(QLatin1String(archive_error_string(reader.get())));
 
@@ -537,7 +582,7 @@ bool LibArchiveArchive::isSupported()
     configureReader(reader.get());
 
     try {
-        const int status = archive_read_open(reader.get(), m_data, nullptr, readCallback, nullptr);
+        const int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
             throw Error(QLatin1String(archive_error_string(reader.get())));
     } catch (const Error &e) {
@@ -572,6 +617,14 @@ void LibArchiveArchive::workerAddDataBlock(const QByteArray buffer)
 void LibArchiveArchive::workerSetDataAtEnd()
 {
     emit workerAboutToSetDataAtEnd();
+}
+
+/*!
+    Signals the worker object that the client file position changed to \a pos.
+*/
+void LibArchiveArchive::workerSetFilePosition(qint64 pos)
+{
+    emit workerAboutToSetFilePosition(pos);
 }
 
 /*!
@@ -672,15 +725,31 @@ void LibArchiveArchive::initExtractWorker()
     connect(this, &LibArchiveArchive::workerAboutToExtract, &m_worker, &ExtractWorker::extract);
     connect(this, &LibArchiveArchive::workerAboutToAddDataBlock, &m_worker, &ExtractWorker::addDataBlock);
     connect(this, &LibArchiveArchive::workerAboutToSetDataAtEnd, &m_worker, &ExtractWorker::dataAtEnd);
+    connect(this, &LibArchiveArchive::workerAboutToSetFilePosition, &m_worker, &ExtractWorker::onFilePositionChanged);
     connect(this, &LibArchiveArchive::workerAboutToCancel, &m_worker, &ExtractWorker::cancel);
 
     connect(&m_worker, &ExtractWorker::dataBlockRequested, this, &LibArchiveArchive::dataBlockRequested);
+    connect(&m_worker, &ExtractWorker::seekRequested, this, &LibArchiveArchive::seekRequested);
     connect(&m_worker, &ExtractWorker::finished, this, &LibArchiveArchive::onWorkerFinished);
 
     connect(&m_worker, &ExtractWorker::currentEntryChanged, this, &LibArchiveArchive::currentEntryChanged);
     connect(&m_worker, &ExtractWorker::completedChanged, this, &LibArchiveArchive::completedChanged);
 
     m_workerThread.start();
+}
+
+/*!
+    \internal
+
+    Sets default callbacks for archive \a reader and opens for reading.
+*/
+int LibArchiveArchive::archiveReadOpenWithCallbacks(archive *reader)
+{
+    archive_read_set_read_callback(reader, readCallback);
+    archive_read_set_callback_data(reader, m_data);
+    archive_read_set_seek_callback(reader, seekCallback);
+
+    return archive_read_open1(reader);
 }
 
 /*!
@@ -767,6 +836,43 @@ ssize_t LibArchiveArchive::readCallback(archive *reader, void *archiveData, cons
 }
 
 /*!
+    \internal
+
+    Seeks to specified \a offset in the file device in \a archiveData and returns the position.
+    Possible \a whence values are \c SEEK_SET, \c SEEK_CUR, and \c SEEK_END. Returns
+    \c ARCHIVE_FATAL if the seek fails.
+*/
+la_int64_t LibArchiveArchive::seekCallback(archive *reader, void *archiveData, la_int64_t offset, int whence)
+{
+    Q_UNUSED(reader)
+
+    ArchiveData *data;
+    if (!(data = static_cast<ArchiveData *>(archiveData)))
+        return ARCHIVE_FATAL;
+
+    if (!data->file.isOpen() || data->file.isSequential())
+        return ARCHIVE_FATAL;
+
+    switch (whence) {
+    case SEEK_SET: // moves file pointer position to the beginning of the file
+        if (!data->file.seek(offset))
+            return ARCHIVE_FATAL;
+        break;
+    case SEEK_CUR: // moves file pointer position to given location
+        if (!data->file.seek(data->file.pos() + offset))
+            return ARCHIVE_FATAL;
+        break;
+    case SEEK_END: // moves file pointer position to the end of file
+        if (!data->file.seek(data->file.size() + offset))
+            return ARCHIVE_FATAL;
+        break;
+    default:
+        return ARCHIVE_FATAL;
+    }
+    return data->file.pos();
+}
+
+/*!
     Returns the \a path to a file or directory, without the Win32 namespace prefix.
     On Unix platforms, the \a path is returned unaltered.
 */
@@ -794,7 +900,7 @@ quint64 LibArchiveArchive::totalFiles()
     configureReader(reader.get());
 
     try {
-        int status = archive_read_open(reader.get(), m_data, nullptr, readCallback, nullptr);
+        int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
             throw Error(QLatin1String(archive_error_string(reader.get())));
 

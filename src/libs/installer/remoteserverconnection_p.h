@@ -143,6 +143,8 @@ private:
                 this, &AbstractArchiveSignalReceiver::onCompletedChanged);
         connect(archive, &LibArchiveArchive::dataBlockRequested,
                 this, &AbstractArchiveSignalReceiver::onDataBlockRequested);
+        connect(archive, &LibArchiveArchive::seekRequested,
+                this, &AbstractArchiveSignalReceiver::onSeekRequested);
         connect(archive, &LibArchiveArchive::workerFinished,
                 this, &AbstractArchiveSignalReceiver::onWorkerFinished);
     }
@@ -167,6 +169,14 @@ private Q_SLOTS:
     {
         QMutexLocker _(&m_lock);
         m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalDataBlockRequested));
+    }
+
+    void onSeekRequested(qint64 offset, int whence)
+    {
+        QMutexLocker _(&m_lock);
+        m_receivedSignals.append(QLatin1String(Protocol::AbstractArchiveSignalSeekRequested));
+        m_receivedSignals.append(offset);
+        m_receivedSignals.append(whence);
     }
 
     void onWorkerFinished()

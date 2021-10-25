@@ -247,6 +247,10 @@ void LibArchiveWrapperPrivate::processSignals()
             emit completedChanged(completed, total);
         } else if (name == QLatin1String(Protocol::AbstractArchiveSignalDataBlockRequested)) {
             emit dataBlockRequested();
+        } else if (name == QLatin1String(Protocol::AbstractArchiveSignalSeekRequested)) {
+            const qint64 offset = receivedSignals.takeFirst().value<qint64>();
+            const int whence = receivedSignals.takeFirst().value<int>();
+            emit seekRequested(offset, whence);
         } else if (name == QLatin1String(Protocol::AbstractArchiveSignalWorkerFinished)) {
             emit remoteWorkerFinished();
         }
@@ -294,6 +298,35 @@ void LibArchiveWrapperPrivate::onDataBlockRequested()
 }
 
 /*!
+    Seeks to specified \a offset in the underlying file device. Possible \a whence
+    values are \c SEEK_SET, \c SEEK_CUR, and \c SEEK_END.
+*/
+void LibArchiveWrapperPrivate::onSeekRequested(qint64 offset, int whence)
+{
+    QFile *const file = &m_archive.m_data->file;
+    if (!file->isOpen() || file->isSequential()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << file->errorString();
+        setClientFilePosition(ARCHIVE_FATAL);
+        return;
+    }
+    bool success = false;
+    switch (whence) {
+    case SEEK_SET: // moves file pointer position to the beginning of the file
+        success = file->seek(offset);
+        break;
+    case SEEK_CUR: // moves file pointer position to given location
+        success = file->seek(file->pos() + offset);
+        break;
+    case SEEK_END: // moves file pointer position to the end of file
+        success = file->seek(file->size() + offset);
+        break;
+    default:
+        break;
+    }
+    setClientFilePosition(success ? file->pos() : ARCHIVE_FATAL);
+}
+
+/*!
     Starts the timer to process server-side signals and connects handler
     signals for the matching signals of the wrapper object.
 */
@@ -310,6 +343,8 @@ void LibArchiveWrapperPrivate::init()
 
     QObject::connect(this, &LibArchiveWrapperPrivate::dataBlockRequested,
                      this, &LibArchiveWrapperPrivate::onDataBlockRequested);
+    QObject::connect(this, &LibArchiveWrapperPrivate::seekRequested,
+                     this, &LibArchiveWrapperPrivate::onSeekRequested);
 }
 
 /*!
@@ -333,6 +368,18 @@ void LibArchiveWrapperPrivate::setClientDataAtEnd()
     if (connectToServer()) {
         m_lock.lockForWrite();
         callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd));
+        m_lock.unlock();
+    }
+}
+
+/*!
+    Calls a remote method to set new file position \a pos.
+*/
+void LibArchiveWrapperPrivate::setClientFilePosition(qint64 pos)
+{
+    if (connectToServer()) {
+        m_lock.lockForWrite();
+        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetFilePosition), pos, dummy);
         m_lock.unlock();
     }
 }
