@@ -65,7 +65,7 @@ namespace QInstaller {
 */
 
 /*!
-    \fn QInstaller::AbstractArchive::completedChanged(quint64 completed, quint64 total)
+    \fn QInstaller::AbstractArchive::completedChanged(const quint64 completed, const quint64 total)
 
     The ratio of \a completed entries from \a total changed. Subclasses should emit
     this whenever the progress changes.

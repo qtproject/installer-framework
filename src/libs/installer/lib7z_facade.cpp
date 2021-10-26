@@ -188,12 +188,6 @@ namespace Lib7z {
     Prints string \a s.
 */
 
-/*!
-    \fn bool Lib7z::operator==(const File &lhs, const File &rhs);
-
-    Returns \c true if \a lhs and \a rhs are equal; otherwise returns \c false.
-*/
-
 // -- 7z init codecs, archives
 
 std::once_flag gOnceFlag;
@@ -767,6 +761,18 @@ STDMETHODIMP ExtractCallback::SetOperationResult(Int32 /*resultEOperationResult*
             File is not a temporary file.
     \value  Yes
             File is a tmp file.
+*/
+
+/*!
+    \typedef Lib7z::Compression
+
+    Synonym for QInstaller::CompressionLevel
+*/
+
+/*!
+    \typedef Lib7z::File
+
+    Synonym for QInstaller::ArchiveEntry
 */
 
 /*!
