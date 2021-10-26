@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -609,17 +609,28 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
         qDebug().noquote() << QString::fromLatin1("Read dom element: <%1>%2</%1>.").arg(tagName, elementText);
 
         if (tagName == QLatin1String("ProductImages")) {
-            const QDomNodeList childNodes = domElement.childNodes();
-            for (int index = 0; index < childNodes.count(); ++index) {
-                const QDomElement childElement = childNodes.at(index).toElement();
-                const QString childName = childElement.tagName();
-                if (childName != QLatin1String("Image"))
+            const QDomNodeList productImageNode = domElement.childNodes();
+            for (int j = 0; j < productImageNode.count(); ++j) {
+                QDomElement productImagesElement = productImageNode.at(j).toElement();
+                if (productImagesElement.isNull())
                     continue;
+                const QString childName = productImagesElement.tagName();
+                if (childName != QLatin1String("ProductImage"))
+                    continue;
+                const QDomNodeList imageNode = productImagesElement.childNodes();
+                for (int k = 0; k < imageNode.count(); ++k) {
+                    QDomElement productImageElement = imageNode.at(k).toElement();
+                    if (productImageElement.isNull())
+                        continue;
+                    const QString imageChildName = productImageElement.tagName();
+                    if (imageChildName != QLatin1String("Image"))
+                        continue;
+                    const QString targetFile = targetDir + QLatin1Char('/') + productImageElement.text();
+                    const QFileInfo childFileInfo = QFileInfo(sourceConfigFilePath, productImageElement.text());
+                    QInstallerTools::copyWithException(childFileInfo.absoluteFilePath(), targetFile, imageChildName);
+                    copyHighDPIImage(childFileInfo, imageChildName, targetFile);
+                }
 
-                const QString targetFile = targetDir + QLatin1Char('/') + childElement.text();
-                const QFileInfo childFileInfo = QFileInfo(sourceConfigFilePath, childElement.text());
-                QInstallerTools::copyWithException(childFileInfo.absoluteFilePath(), targetFile, childName);
-                copyHighDPIImage(childFileInfo, childName, targetFile);
             }
             continue;
         }

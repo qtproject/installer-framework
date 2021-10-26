@@ -2698,7 +2698,7 @@ void ReadyForInstallationPage::updatePageListTitle()
 */
 PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     : PackageManagerPage(core)
-    , m_performInstallationForm(new PerformInstallationForm(this))
+    , m_performInstallationForm(new PerformInstallationForm(core, this))
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("PerformInstallationPage"));
@@ -2836,17 +2836,26 @@ void PerformInstallationPage::setTitleMessage(const QString &title)
 */
 void PerformInstallationPage::changeCurrentImage()
 {
-    const QStringList productImages = packageManagerCore()->settings().productImages();
+    const QMap<QString, QVariant> productImages = packageManagerCore()->settings().productImages();
     if (productImages.isEmpty())
         return;
 
-    const QString nextImage = (m_currentImage.isEmpty() || m_currentImage == productImages.last())
-       ? productImages.first()
-       : productImages.at(productImages.indexOf(m_currentImage) + 1);
+    QString nextImage;
+    QString nextUrl;
+    if (m_currentImage.isEmpty() || m_currentImage == productImages.lastKey()) {
+        nextImage = productImages.firstKey();
+        nextUrl = productImages.value(nextImage).toString();
+    } else {
+        QMap<QString, QVariant>::const_iterator i = productImages.constFind(m_currentImage);
+        if (++i != productImages.end()) {
+            nextImage = i.key();
+            nextUrl = i.value().toString();
+        }
+    }
 
     // Do not update the pixmap if there was only one image available
     if (nextImage != m_currentImage) {
-        m_performInstallationForm->setImageFromFileName(nextImage);
+        m_performInstallationForm->setImageFromFileName(nextImage, nextUrl);
         m_currentImage = nextImage;
     }
 }

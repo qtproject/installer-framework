@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Product Image</Name>
+    <Version>1.0.0</Version>
+    <Title>Product Image Installer</Title>
+    <Publisher>Your vendor</Publisher>
+    <StartMenuDir>Super App</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/productimage</TargetDir>
+    <ProductImages>
+        <ProductImage>
+            <Image>Built_with_Qt.png</Image>
+            <Url>https://www.qt.io/blog</Url>
+        </ProductImage>
+        <ProductImage>
+            <Image>Built_with_Qt_logo.png</Image>
+            <Url>https://www.qt.io/</Url>
+        </ProductImage>
+    </ProductImages>
+</Installer>

@@ -48,14 +48,20 @@ public:
     QSize sizeHint() const override;
 
 public slots:
-    void setPixmap (const QPixmap &pixmap);
+    void setPixmapAndUrl (const QPixmap &pixmap, const QString &url = QString());
     void resizeEvent(QResizeEvent *event) override;
+
+protected:
+    void mousePressEvent(QMouseEvent* event) override;
+    bool event(QEvent *e) override;
 
 private:
     QPixmap scaledPixmap() const;
 
 private:
     QPixmap m_pixmap;
+    QString m_clickableUrl;
+    bool m_discardMousePress;
 };
 
 } // namespace QInstaller

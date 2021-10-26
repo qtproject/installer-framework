@@ -10,6 +10,7 @@ SUBDIRS += \
   modifyextract \
   online \
   openreadme \
+  productimage \
   quitinstaller \
   registerfileextension \
   registervirtualcomponentforuninstall \

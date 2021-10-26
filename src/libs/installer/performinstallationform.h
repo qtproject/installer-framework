@@ -46,13 +46,14 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
 class AspectRatioLabel;
+class PackageManagerCore;
 
 class PerformInstallationForm : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PerformInstallationForm(QObject *parent);
+    explicit PerformInstallationForm(PackageManagerCore *core, QObject *parent);
 
     void setupUi(QWidget *widget);
     void setDetailsWidgetVisible(bool visible);
@@ -71,7 +72,7 @@ public slots:
     void toggleDetails();
     void clearDetailsBrowser();
     void onDownloadStatusChanged(const QString &status);
-    void setImageFromFileName(const QString &fileName);
+    void setImageFromFileName(const QString &fileName, const QString &url);
 
 private:
     QProgressBar *m_progressBar;
@@ -82,6 +83,7 @@ private:
     QPushButton *m_detailsButton;
     QTextEdit *m_detailsBrowser;
     QTimer *m_updateTimer;
+    PackageManagerCore *m_core;
 
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;

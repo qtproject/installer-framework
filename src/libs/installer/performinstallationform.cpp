@@ -31,6 +31,9 @@
 #include "progresscoordinator.h"
 #include "globals.h"
 #include "aspectratiolabel.h"
+#include "packagemanagercore.h"
+#include "settings.h"
+#include "fileutils.h"
 
 #include <QApplication>
 #include <QLabel>
@@ -41,6 +44,7 @@
 #include <QImageReader>
 #include <QScrollArea>
 #include <QTextEdit>
+#include <QFileInfo>
 
 #include <QtCore/QTimer>
 
@@ -76,9 +80,10 @@ using namespace QInstaller;
 */
 
 /*!
-    Constructs the perform installation UI with \a parent as parent.
+    Constructs the perform installation UI with package manager specified by \a core and
+    with \a parent as parent.
 */
-PerformInstallationForm::PerformInstallationForm(QObject *parent)
+PerformInstallationForm::PerformInstallationForm(PackageManagerCore *core, QObject *parent)
     : QObject(parent)
     , m_progressBar(nullptr)
     , m_progressLabel(nullptr)
@@ -88,6 +93,7 @@ PerformInstallationForm::PerformInstallationForm(QObject *parent)
     , m_detailsButton(nullptr)
     , m_detailsBrowser(nullptr)
     , m_updateTimer(nullptr)
+    , m_core(core)
 {
 #ifdef Q_OS_WIN
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
@@ -290,20 +296,27 @@ void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 }
 
 /*!
-    Sets currently shown form image specified by \a fileName.
+    Sets currently shown form image specified by \a fileName. When clicking the image,
+    \a url is opened in a browser. If the \a url is a reference to a file, it will
+    be opened with a suitable application instead of a Web browser. \a url can be empty.
 */
-void PerformInstallationForm::setImageFromFileName(const QString &fileName)
+void PerformInstallationForm::setImageFromFileName(const QString &fileName, const QString &url)
 {
-    if (!QFile::exists(fileName)) {
+    QString imagePath = QFileInfo(fileName).isAbsolute()
+            ? fileName
+            : m_core->settings().value(QLatin1String("Prefix")).toString() + QLatin1Char('/') + fileName;
+    QInstaller::replaceHighDpiImage(imagePath);
+
+    if (!QFile::exists(imagePath)) {
         qCWarning(QInstaller::lcInstallerInstallLog) << "Image file does not exist:" << fileName;
         return;
     }
-    QImageReader reader(fileName);
+    QImageReader reader(imagePath);
     QPixmap pixmap = QPixmap::fromImageReader(&reader);
     if (!pixmap.isNull()) {
-        m_productImagesLabel->setPixmap(pixmap);
+        m_productImagesLabel->setPixmapAndUrl(pixmap, url);
     } else {
         qCWarning(QInstaller::lcInstallerInstallLog) <<
-            QString::fromLatin1("Failed to load image '%1' : %2.").arg(fileName, reader.errorString());
+            QString::fromLatin1("Failed to load image '%1' : %2.").arg(imagePath, reader.errorString());
     }
 }

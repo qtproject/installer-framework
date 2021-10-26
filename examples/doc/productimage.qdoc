@@ -1,0 +1,57 @@
+/****************************************************************************
+**
+** Copyright (C) 2022 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example productimage
+    \ingroup qtifwexamples
+    \title Product Image Example
+
+    \brief Using components' config.xml files to show a product image while
+    downloading and installing components.
+
+    \image qtifw-examples-productimage.png
+
+    \e {Product Image} example illustrates how to add product images to the installer and
+    show them while downloading and installing components. Product images can have an
+    optional \c url. When clicking the product image, \c url
+    is opened in a browser. If the \c url is a reference to a file, it will
+    be opened with a suitable application instead of a Web browser.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <ProductImages> element can contain one or several \c <ProductImage>
+            child elements, which each contain one \c <Image> element and an
+            optional \c <Url>.
+    \endlist
+
+    \quotefile productimage/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \include installerfw-examples-generating.qdocinc
+*/

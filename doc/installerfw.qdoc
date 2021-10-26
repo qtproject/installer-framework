@@ -450,7 +450,12 @@
         \row
             \li ProductImages
             \li A list of images to be shown on \c PerformInstallationPage. This element can have
-                one or several \c <Image> child elements that contain a filename for an image in PNG format.
+                one or several \c <ProductImage> child elements that contain an \c <Image> child
+                element and an optional \c <Url> child element. The \c <Image> element specifies a
+                filename for an image in PNG format. Optional \c <Url> can be specified for each
+                image. Clicking on the image will open the \c <Url> in a browser. If the \c <Url>
+                is a reference to a file, it will be opened with a suitable application
+                instead of a Web browser.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,

@@ -145,6 +145,26 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
     return arguments;
 }
 
+static QMap<QString, QVariant> readProductImages(QXmlStreamReader &reader)
+{
+    QMap<QString, QVariant> productImages;
+    while (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("ProductImage")) {
+            QString key = QString();
+            QString value = QString();
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("Image")) {
+                    key = reader.readElementText();
+                } else if (reader.name() == QLatin1String("Url")) {
+                    value = reader.readElementText();
+                }
+            }
+            productImages.insert(key, value);
+        }
+    }
+    return productImages;
+}
+
 static QSet<Repository> readRepositories(QXmlStreamReader &reader, bool isDefault, Settings::ParseMode parseMode,
                                          QString *displayName = nullptr, bool *preselected = nullptr,
                                          QString *tooltip = nullptr)
@@ -326,7 +346,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
         } else if (name == scRunProgramArguments) {
             s.setRunProgramArguments(readArgumentAttributes(reader, parseMode, QLatin1String("Argument")));
         } else if (name == scProductImages) {
-            s.setProductImages(readArgumentAttributes(reader, parseMode, QLatin1String("Image")));
+            s.setProductImages(readProductImages(reader));
         } else if (name == scRemoteRepositories) {
             s.addDefaultRepositories(readRepositories(reader, true, parseMode));
         } else if (name == scRepositoryCategories) {
@@ -497,25 +517,18 @@ bool Settings::wizardShowPageList() const
     return d->m_data.value(scWizardShowPageList, true).toBool();
 }
 
-QStringList Settings::productImages() const
+QMap<QString, QVariant> Settings::productImages() const
 {
     const QVariant variant = d->m_data.value(scProductImages);
-    QStringList imagePaths;
-    if (variant.canConvert<QStringList>()) {
-        foreach (auto image, variant.value<QStringList>()) {
-            QString imagePath = QFileInfo(image).isAbsolute()
-                    ? image
-                    : d->m_data.value(scPrefix).toString() + QLatin1Char('/') + image;
-            QInstaller::replaceHighDpiImage(imagePath);
-            imagePaths.append(imagePath);
-        }
-    }
+    QMap<QString, QVariant> imagePaths;
+    if (variant.canConvert<QVariantMap>())
+        imagePaths = variant.toMap();
     return imagePaths;
 }
 
-void Settings::setProductImages(const QStringList &images)
+void Settings::setProductImages(const QMap<QString, QVariant> &images)
 {
-    d->m_data.replace(scProductImages, images);
+    d->m_data.insert(scProductImages, QVariant::fromValue(images));
 }
 
 QString Settings::installerApplicationIcon() const

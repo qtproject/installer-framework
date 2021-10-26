@@ -92,8 +92,8 @@ public:
     int wizardMinimumWidth() const;
     int wizardMinimumHeight() const;
     bool wizardShowPageList() const;
-    QStringList productImages() const;
-    void setProductImages(const QStringList &images);
+    QMap<QString, QVariant> productImages() const;
+    void setProductImages(const QMap<QString, QVariant> &images);
 
     QString applicationName() const;
     QString version() const;

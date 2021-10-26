@@ -36,6 +36,8 @@
 
 using namespace QInstaller;
 
+typedef QMap<QString, QVariant> ProductImageMap;
+
 class tst_Settings : public QObject
 {
     Q_OBJECT
@@ -93,7 +95,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.wizardMinimumWidth(), 0);
     QCOMPARE(settings.wizardMinimumHeight(), 0);
     QCOMPARE(settings.wizardShowPageList(), true);
-    QCOMPARE(settings.productImages(), QStringList());
+    QCOMPARE(settings.productImages(), ProductImageMap());
     QCOMPARE(settings.titleColor(), QString());
     QCOMPARE(settings.runProgram(), QString());
     QCOMPARE(settings.runProgramArguments(), QStringList());

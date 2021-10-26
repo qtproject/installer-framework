@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -28,6 +28,9 @@
 
 #include "aspectratiolabel.h"
 
+#include <QDesktopServices>
+#include <QTimer>
+
 using namespace QInstaller;
 
 /*!
@@ -42,16 +45,21 @@ using namespace QInstaller;
 */
 AspectRatioLabel::AspectRatioLabel(QWidget *parent)
     : QLabel(parent)
+    , m_discardMousePress(false)
 {
     setMinimumSize(1, 1);
     setScaledContents(false);
 }
 
 /*!
-    Sets the \a pixmap shown on the label. Setting a new pixmap clears the previous content.
+    Sets the \a pixmap shown on the label and an optional \a url. Setting a new
+    pixmap clears the previous content. When clicking the \a pixmap, \a url
+    is opened in a browser. If the \a url is a reference to a file, it will
+    be opened with a suitable application instead of a Web browser.
 */
-void AspectRatioLabel::setPixmap(const QPixmap &pixmap)
+void AspectRatioLabel::setPixmapAndUrl(const QPixmap &pixmap, const QString &url)
 {
+    m_clickableUrl = url;
     m_pixmap = pixmap;
     QLabel::setPixmap(scaledPixmap());
 }
@@ -97,4 +105,29 @@ void AspectRatioLabel::resizeEvent(QResizeEvent *event)
 
     if (!m_pixmap.isNull())
         QLabel::setPixmap(scaledPixmap());
+}
+
+/*!
+    \reimp
+*/
+void AspectRatioLabel::mousePressEvent(QMouseEvent* event)
+{
+    Q_UNUSED(event)
+    if (!m_clickableUrl.isEmpty() && !m_discardMousePress)
+        QDesktopServices::openUrl(m_clickableUrl);
+}
+
+/*!
+    \reimp
+*/
+bool AspectRatioLabel::event(QEvent *e)
+{
+    if (e->type() == QEvent::WindowActivate) {
+        QTimer::singleShot(100, [&]() {
+            m_discardMousePress = false;
+        });
+    } else if (e->type() == QEvent::WindowDeactivate) {
+        m_discardMousePress = true;
+    }
+    return QLabel::event(e);
 }
