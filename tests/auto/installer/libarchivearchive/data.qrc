@@ -4,5 +4,6 @@
         <file>data/valid.tar.gz</file>
         <file>data/valid.tar.bz2</file>
         <file>data/valid.tar.xz</file>
+        <file>data/valid.7z</file>
     </qresource>
 </RCC>

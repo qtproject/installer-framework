@@ -87,11 +87,13 @@ private slots:
         QTest::addColumn<QString>("handler");
         QTest::addColumn<QString>("filename");
         QTest::addColumn<QStringList>("types");
-        QTest::newRow("Lib7z")
-            << "Lib7z" << "myfile.7z" << (QStringList() << "7z");
 #ifdef IFW_LIBARCHIVE
         QTest::newRow("LibArchive")
-            << "LibArchive" << "myfile.zip" << (QStringList() << "tar.gz" << "tar.bz2" << "tar.xz" << "zip");
+            << "LibArchive" << "myfile.zip"
+            << (QStringList() << "tar.gz" << "tar.bz2" << "tar.xz" << "zip" << "7z");
+#else
+        QTest::newRow("Lib7z")
+            << "Lib7z" << "myfile.7z" << (QStringList() << "7z");
 #endif
     }
 

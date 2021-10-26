@@ -34,7 +34,7 @@
 #include "fileio.h"
 #include "fileutils.h"
 #include "copydirectoryoperation.h"
-#include "lib7zarchive.h"
+#include "archivefactory.h"
 #include "packagemanagercore.h"
 #include "productkeycheck.h"
 #include "constants.h"
@@ -124,12 +124,16 @@ static QString createArchive(const QString repoPath, const QString &sourceDir, c
 
     QFile archive(repoPath + fileName);
 
-    Lib7zArchive archiveFile(archive.fileName());
-    if (!(archiveFile.open(QIODevice::WriteOnly) && archiveFile.create(QStringList() << sourceDir))) {
-        throw Error(CreateLocalRepositoryOperation::tr("Cannot create archive \"%1\": %2")
-            .arg(QDir::toNativeSeparators(archive.fileName()), archiveFile.errorString()));
+    QScopedPointer<AbstractArchive> archiveFile(ArchiveFactory::instance().create(archive.fileName()));
+    if (!archiveFile) {
+        throw Error(CreateLocalRepositoryOperation::tr("Unsupported archive \"%1\": no handler "
+            "registered for file suffix \"%2\".").arg(archive.fileName(), QFileInfo(archive.fileName()).suffix()));
     }
-    archiveFile.close();
+    if (!(archiveFile->open(QIODevice::WriteOnly) && archiveFile->create(QStringList() << sourceDir))) {
+        throw Error(CreateLocalRepositoryOperation::tr("Cannot create archive \"%1\": %2")
+            .arg(QDir::toNativeSeparators(archive.fileName()), archiveFile->errorString()));
+    }
+    archiveFile->close();
     removeFiles(sourceDir, helper); // cleanup the files we compressed
     if (!archive.rename(sourceDir + fileName)) {
         throw Error(CreateLocalRepositoryOperation::tr("Cannot move file \"%1\" to \"%2\": %3")

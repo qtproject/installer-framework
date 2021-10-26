@@ -32,7 +32,6 @@
 #include "installer_global.h"
 #include "remoteobject.h"
 #include "libarchivearchive.h"
-#include "lib7zarchive.h"
 
 #include <QTimer>
 #include <QReadWriteLock>

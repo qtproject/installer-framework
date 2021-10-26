@@ -138,13 +138,14 @@ QString LibArchiveWrapperPrivate::errorString() const
 */
 bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 totalFiles)
 {
+    const quint64 total = totalFiles ? totalFiles : m_archive.totalFiles();
     if (connectToServer()) {
         QTimer timer;
         connect(&timer, &QTimer::timeout, this, &LibArchiveWrapperPrivate::processSignals);
         timer.start();
 
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, totalFiles);
+        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, total);
         m_lock.unlock();
         {
             QEventLoop loop;
@@ -154,7 +155,7 @@ bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 tot
         timer.stop();
         return (workerStatus() == ExtractWorker::Success);
     }
-    return m_archive.extract(dirPath, totalFiles);
+    return m_archive.extract(dirPath, total);
 }
 
 /*!

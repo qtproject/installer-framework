@@ -29,7 +29,7 @@
 #ifndef METADATAJOB_P_H
 #define METADATAJOB_P_H
 
-#include "lib7zarchive.h"
+#include "archivefactory.h"
 #include "metadatajob.h"
 
 #include <QDir>
@@ -75,14 +75,18 @@ public:
             return; // ignore already canceled
         }
 
-        Lib7zArchive archive(m_archive);
-        if (!archive.open(QIODevice::ReadOnly)) {
-            fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
-                "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive.errorString())));
+        QScopedPointer<AbstractArchive> archive(ArchiveFactory::instance().create(m_archive));
+        if (!archive) {
+            fi.reportException(UnzipArchiveException(MetadataJob::tr("Unsupported archive \"%1\": no handler "
+                "registered for file suffix \"%2\".").arg(m_archive, QFileInfo(m_archive).suffix())));
         }
-        if (!archive.extract(m_targetDir)) {
+        if (!archive->open(QIODevice::ReadOnly)) {
+            fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
+                "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
+        }
+        if (!archive->extract(m_targetDir)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
-                "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive.errorString())));
+                "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
         }
 
         fi.reportFinished();

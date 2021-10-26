@@ -527,6 +527,7 @@ private slots:
         QTest::newRow("gzip compressed tar archive") << ".tar.gz";
         QTest::newRow("bzip2 compressed tar archive") << ".tar.bz2";
         QTest::newRow("xz compressed tar archive") << ".tar.xz";
+        QTest::newRow("7zip archive") << ".7z";
     }
 
     void testArchiveWrapper()

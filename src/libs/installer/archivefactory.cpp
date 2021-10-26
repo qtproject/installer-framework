@@ -27,9 +27,10 @@
 **************************************************************************/
 
 #include "archivefactory.h"
-#include "lib7zarchive.h"
 #ifdef IFW_LIBARCHIVE
 #include "libarchivewrapper.h"
+#else
+#include "lib7zarchive.h"
 #endif
 
 #include <QFileInfo>
@@ -50,7 +51,8 @@ using namespace QInstaller;
     of this class can be created and its reference can be fetched from
     the \c {instance()} method.
 
-    The following archive handlers are registered by default:
+    Depending of the configuration features set at build time, one of the
+    following archive handlers is registered by default:
     \list
         \li Lib7z
         \li LibArchive
@@ -137,11 +139,12 @@ bool ArchiveFactory::isSupportedType(const QString &filename)
 */
 ArchiveFactory::ArchiveFactory()
 {
-    registerArchive<Lib7zArchive>(QLatin1String("Lib7z"), QStringList()
-        << QLatin1String("7z"));
 #ifdef IFW_LIBARCHIVE
     registerArchive<LibArchiveWrapper>(QLatin1String("LibArchive"), QStringList()
         << QLatin1String("tar.gz") << QLatin1String("tar.bz2")
-        << QLatin1String("tar.xz") << QLatin1String("zip") );
+        << QLatin1String("tar.xz") << QLatin1String("zip") << QLatin1String("7z"));
+#else
+    registerArchive<Lib7zArchive>(QLatin1String("Lib7z"), QStringList()
+        << QLatin1String("7z"));
 #endif
 }
