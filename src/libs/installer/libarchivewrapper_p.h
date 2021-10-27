@@ -86,7 +86,6 @@ private:
     ExtractWorker::Status workerStatus() const;
 
 private:
-    QTimer m_timer;
     mutable QReadWriteLock m_lock;
 
     LibArchiveArchive m_archive;

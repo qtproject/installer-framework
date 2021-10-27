@@ -77,7 +77,6 @@ LibArchiveWrapperPrivate::LibArchiveWrapperPrivate()
 */
 LibArchiveWrapperPrivate::~LibArchiveWrapperPrivate()
 {
-    m_timer.stop();
 }
 
 /*!
@@ -140,6 +139,10 @@ QString LibArchiveWrapperPrivate::errorString() const
 bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 totalFiles)
 {
     if (connectToServer()) {
+        QTimer timer;
+        connect(&timer, &QTimer::timeout, this, &LibArchiveWrapperPrivate::processSignals);
+        timer.start();
+
         m_lock.lockForWrite();
         callRemoteMethod(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, totalFiles);
         m_lock.unlock();
@@ -148,6 +151,7 @@ bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 tot
             connect(this, &LibArchiveWrapperPrivate::remoteWorkerFinished, &loop, &QEventLoop::quit);
             loop.exec();
         }
+        timer.stop();
         return (workerStatus() == ExtractWorker::Success);
     }
     return m_archive.extract(dirPath, totalFiles);
@@ -262,7 +266,7 @@ void LibArchiveWrapperPrivate::processSignals()
 */
 void LibArchiveWrapperPrivate::onDataBlockRequested()
 {
-    constexpr quint64 blockSize = 10 * 1024 * 1024; // 10MB
+    constexpr quint64 blockSize = 1024 * 1024; // 1MB
 
     QFile *const file = &m_archive.m_data->file;
     if (!file->isOpen() || file->isSequential()) {
@@ -327,15 +331,10 @@ void LibArchiveWrapperPrivate::onSeekRequested(qint64 offset, int whence)
 }
 
 /*!
-    Starts the timer to process server-side signals and connects handler
-    signals for the matching signals of the wrapper object.
+    Connects handler signals for the matching signals of the wrapper object.
 */
 void LibArchiveWrapperPrivate::init()
 {
-    m_timer.start(250);
-    QObject::connect(&m_timer, &QTimer::timeout,
-                     this, &LibArchiveWrapperPrivate::processSignals);
-
     QObject::connect(&m_archive, &LibArchiveArchive::currentEntryChanged,
                      this, &LibArchiveWrapperPrivate::currentEntryChanged);
     QObject::connect(&m_archive, &LibArchiveArchive::completedChanged,
