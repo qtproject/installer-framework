@@ -500,7 +500,7 @@ bool LibArchiveArchive::create(const QStringList &data)
                 if (status < ARCHIVE_OK)
                     throw Error(QLatin1String(archive_error_string(writer.get())));
 
-                if (fileOrDir.isDir() || fileOrDir.isSymLink() || archive_entry_size(entry.get()) == 0)
+                if (fileOrDir.isDir() || archive_entry_size(entry.get()) == 0)
                     continue; // nothing to copy
 
                 QFile file(pathWithoutNamespace(QLatin1String(archive_entry_sourcepath(entry.get()))));
