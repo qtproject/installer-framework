@@ -123,6 +123,12 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
             const QString outputPath = dirPath + QDir::separator() + QString::fromLocal8Bit(current);
             archive_entry_set_pathname(entry, outputPath.toLocal8Bit());
 
+            const char *hardlink = archive_entry_hardlink(entry);
+            if (hardlink) {
+                const QString hardLinkPath = dirPath + QDir::separator() + QString::fromLocal8Bit(hardlink);
+                archive_entry_set_hardlink(entry, hardLinkPath.toLocal8Bit());
+            }
+
             emit currentEntryChanged(outputPath);
             if (!writeEntry(reader.get(), writer.get(), entry))
                 return;
@@ -439,6 +445,12 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
             const char *current = archive_entry_pathname(entry);
             const QString outputPath = dirPath + QDir::separator() + QString::fromLocal8Bit(current);
             archive_entry_set_pathname(entry, outputPath.toLocal8Bit());
+
+            const char *hardlink = archive_entry_hardlink(entry);
+            if (hardlink) {
+                const QString hardLinkPath = dirPath + QDir::separator() + QString::fromLocal8Bit(hardlink);
+                archive_entry_set_hardlink(entry, hardLinkPath.toLocal8Bit());
+            }
 
             emit currentEntryChanged(outputPath);
             if (!writeEntry(reader.get(), writer.get(), entry))
