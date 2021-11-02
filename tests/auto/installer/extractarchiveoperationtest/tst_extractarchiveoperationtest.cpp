@@ -100,6 +100,18 @@ private slots:
         QFile extractedFile(m_testDirectory + QDir::separator() + "FolderForContent/content.txt");
         QVERIFY(extractedFile.exists());
 
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForTarGzContent/content.txt");
+        QVERIFY(extractedFile.exists());
+
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForTarBz2Content/content.txt");
+        QVERIFY(extractedFile.exists());
+
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForTarXzContent/content.txt");
+        QVERIFY(extractedFile.exists());
+
+        extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForZipContent/content.txt");
+        QVERIFY(extractedFile.exists());
+
         extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForAnotherContent/anothercontent.txt");
         QVERIFY(extractedFile.exists());
 

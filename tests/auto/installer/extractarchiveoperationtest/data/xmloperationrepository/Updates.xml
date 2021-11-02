@@ -8,7 +8,7 @@
   <Version>1.0.0</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
   <Default>true</Default>
-  <DownloadableArchives>content.7z,anothercontent.7z,default.7z</DownloadableArchives>
+  <DownloadableArchives>content.7z,anothercontent.7z,content1.tar.gz,content2.tar.bz2,content3.tar.xz,content4.zip,default.7z</DownloadableArchives>
   <Operations>
     <Operation name="Extract">
       <Argument>@TargetDir@/FolderForContent</Argument>
@@ -17,6 +17,22 @@
     <Operation name="Extract">
       <Argument>@TargetDir@/FolderForAnotherContent</Argument>
       <Argument>anothercontent.7z</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForTarGzContent</Argument>
+      <Argument>content1.tar.gz</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForTarBz2Content</Argument>
+      <Argument>content2.tar.bz2</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForTarXzContent</Argument>
+      <Argument>content3.tar.xz</Argument>
+    </Operation>
+    <Operation name="Extract">
+      <Argument>@TargetDir@/FolderForZipContent</Argument>
+      <Argument>content4.zip</Argument>
     </Operation>
     <Operation name="Extract">
       <Argument>@TargetDir@/FolderForDefault</Argument>
