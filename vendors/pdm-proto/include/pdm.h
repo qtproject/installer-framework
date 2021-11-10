@@ -5,6 +5,7 @@
 namespace PDM
 {
 	PDMDllExport const PDMData& RetrievePDMData(std::string applicationName, std::string applicationVersion);
+	PDMDllExport std::string PDMDataToFormattedString(const PDMData& pdmData);
 
 	PDMDllExport std::string GetPDMVersion();
 	PDMDllExport OS GetOSType();
