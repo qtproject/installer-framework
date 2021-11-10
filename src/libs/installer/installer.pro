@@ -14,8 +14,7 @@ include(../../../installerfw.pri)
 #   SOURCES += $$PWD/productkeycheck.cpp
 #   ...
 #   your files if needed
-HEADERS += productkeycheck.h \
-    eve_public/app/platform.pb.h
+HEADERS += productkeycheck.h
 !isEmpty(PRODUCTKEYCHECK_PRI_FILE) {
     # use undocumented no_batch config which disable the implicit rules on msvc compilers
     # this fixes the problem that same cpp files in different directories are overwritting
@@ -49,6 +48,7 @@ HEADERS += eventlogger.h \
     eve_launcher/application.pb.h \
     eve_launcher/installer.pb.h \
     eve_launcher/uninstaller.pb.h \
+    eve_public/app/platform.pb.h \
     sentryhelper.h \
     packagemanagercore.h \
     packagemanagercore_p.h \
@@ -146,7 +146,6 @@ HEADERS += eventlogger.h \
     componentselectionpage_p.h
 
 SOURCES += eventlogger.cpp \
-    eve_public/app/platform.pb.cc \
     httpthreadcontroller.cpp \
     httpthreadworker.cpp \
     installereventoperation.cpp \
@@ -154,6 +153,7 @@ SOURCES += eventlogger.cpp \
     eve_launcher/application.pb.cc \
     eve_launcher/installer.pb.cc \
     eve_launcher/uninstaller.pb.cc \
+    eve_public/app/platform.pb.cc \
     sentryhelper.cpp \
     packagemanagercore.cpp \
     packagemanagercore_p.cpp \
