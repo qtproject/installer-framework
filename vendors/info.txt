@@ -3,7 +3,7 @@ sentry (0.4.9) (Qt IFW v1.15.0)
 Comes from release v4.0.0 of eve-launcher-vendor-libraries (https://github.com/ccpgames/eve-launcher-vendor-libraries/releases/tag/v4.0.0)
 Comes from TeamCity build tagged v4.0.0 (https://teamcity.evetech.net/buildConfiguration/Applications_EveLauncher_VendorLibraries_Packagers_SentryNativeMt?mode=builds)
 
-pdm-proto (2.1.2) (Qt IFW v1.15.1)
+pdm-proto (2.1.2) (Qt IFW v1.15.2)
 ---------
 Comes from TeamCity build number 140 (https://teamcity.evetech.net/buildConfiguration/Applications_EveVendorLibraries_Builders_PdmProtoWindowsBuild?mode=builds)
 
