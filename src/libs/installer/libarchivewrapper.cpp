@@ -45,19 +45,6 @@ namespace QInstaller {
 */
 
 /*!
-    \fn QInstaller::LibArchiveWrapper::currentEntryChanged(const QString &filename)
-
-    Current entry changed to \a filename. Emitted when the entry to process is changed.
-*/
-
-/*!
-    \fn QInstaller::LibArchiveWrapper::completedChanged(quint64 completed, quint64 total)
-
-    The ratio of \a completed entries from \a total changed.
-    Emitted when the progress changes.
-*/
-
-/*!
     Constructs an archive object representing an archive file
     specified by \a filename with \a parent as the parent object.
 */

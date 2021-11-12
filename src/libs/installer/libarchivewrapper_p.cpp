@@ -41,13 +41,13 @@ namespace QInstaller {
 */
 
 /*!
-    \fn QInstaller::ArchiveWrapper::dataBlockRequested()
+    \fn QInstaller::LibArchiveWrapperPrivate::dataBlockRequested()
 
     Emitted when the server process has requested another data block.
 */
 
 /*!
-    \fn QInstaller::ArchiveWrapper::remoteWorkerFinished()
+    \fn QInstaller::LibArchiveWrapperPrivate::remoteWorkerFinished()
 
     Emitted when the server process has finished extracting an archive.
 */
@@ -77,7 +77,6 @@ LibArchiveWrapperPrivate::LibArchiveWrapperPrivate()
 */
 LibArchiveWrapperPrivate::~LibArchiveWrapperPrivate()
 {
-    m_timer.stop();
 }
 
 /*!
@@ -140,6 +139,10 @@ QString LibArchiveWrapperPrivate::errorString() const
 bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 totalFiles)
 {
     if (connectToServer()) {
+        QTimer timer;
+        connect(&timer, &QTimer::timeout, this, &LibArchiveWrapperPrivate::processSignals);
+        timer.start();
+
         m_lock.lockForWrite();
         callRemoteMethod(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, totalFiles);
         m_lock.unlock();
@@ -148,6 +151,7 @@ bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 tot
             connect(this, &LibArchiveWrapperPrivate::remoteWorkerFinished, &loop, &QEventLoop::quit);
             loop.exec();
         }
+        timer.stop();
         return (workerStatus() == ExtractWorker::Success);
     }
     return m_archive.extract(dirPath, totalFiles);
@@ -247,6 +251,10 @@ void LibArchiveWrapperPrivate::processSignals()
             emit completedChanged(completed, total);
         } else if (name == QLatin1String(Protocol::AbstractArchiveSignalDataBlockRequested)) {
             emit dataBlockRequested();
+        } else if (name == QLatin1String(Protocol::AbstractArchiveSignalSeekRequested)) {
+            const qint64 offset = receivedSignals.takeFirst().value<qint64>();
+            const int whence = receivedSignals.takeFirst().value<int>();
+            emit seekRequested(offset, whence);
         } else if (name == QLatin1String(Protocol::AbstractArchiveSignalWorkerFinished)) {
             emit remoteWorkerFinished();
         }
@@ -258,7 +266,7 @@ void LibArchiveWrapperPrivate::processSignals()
 */
 void LibArchiveWrapperPrivate::onDataBlockRequested()
 {
-    constexpr quint64 blockSize = 10 * 1024 * 1024; // 10MB
+    constexpr quint64 blockSize = 1024 * 1024; // 1MB
 
     QFile *const file = &m_archive.m_data->file;
     if (!file->isOpen() || file->isSequential()) {
@@ -294,15 +302,39 @@ void LibArchiveWrapperPrivate::onDataBlockRequested()
 }
 
 /*!
-    Starts the timer to process server-side signals and connects handler
-    signals for the matching signals of the wrapper object.
+    Seeks to specified \a offset in the underlying file device. Possible \a whence
+    values are \c SEEK_SET, \c SEEK_CUR, and \c SEEK_END.
+*/
+void LibArchiveWrapperPrivate::onSeekRequested(qint64 offset, int whence)
+{
+    QFile *const file = &m_archive.m_data->file;
+    if (!file->isOpen() || file->isSequential()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << file->errorString();
+        setClientFilePosition(ARCHIVE_FATAL);
+        return;
+    }
+    bool success = false;
+    switch (whence) {
+    case SEEK_SET: // moves file pointer position to the beginning of the file
+        success = file->seek(offset);
+        break;
+    case SEEK_CUR: // moves file pointer position to given location
+        success = file->seek(file->pos() + offset);
+        break;
+    case SEEK_END: // moves file pointer position to the end of file
+        success = file->seek(file->size() + offset);
+        break;
+    default:
+        break;
+    }
+    setClientFilePosition(success ? file->pos() : ARCHIVE_FATAL);
+}
+
+/*!
+    Connects handler signals for the matching signals of the wrapper object.
 */
 void LibArchiveWrapperPrivate::init()
 {
-    m_timer.start(250);
-    QObject::connect(&m_timer, &QTimer::timeout,
-                     this, &LibArchiveWrapperPrivate::processSignals);
-
     QObject::connect(&m_archive, &LibArchiveArchive::currentEntryChanged,
                      this, &LibArchiveWrapperPrivate::currentEntryChanged);
     QObject::connect(&m_archive, &LibArchiveArchive::completedChanged,
@@ -310,6 +342,8 @@ void LibArchiveWrapperPrivate::init()
 
     QObject::connect(this, &LibArchiveWrapperPrivate::dataBlockRequested,
                      this, &LibArchiveWrapperPrivate::onDataBlockRequested);
+    QObject::connect(this, &LibArchiveWrapperPrivate::seekRequested,
+                     this, &LibArchiveWrapperPrivate::onSeekRequested);
 }
 
 /*!
@@ -333,6 +367,18 @@ void LibArchiveWrapperPrivate::setClientDataAtEnd()
     if (connectToServer()) {
         m_lock.lockForWrite();
         callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd));
+        m_lock.unlock();
+    }
+}
+
+/*!
+    Calls a remote method to set new file position \a pos.
+*/
+void LibArchiveWrapperPrivate::setClientFilePosition(qint64 pos)
+{
+    if (connectToServer()) {
+        m_lock.lockForWrite();
+        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetFilePosition), pos, dummy);
         m_lock.unlock();
     }
 }

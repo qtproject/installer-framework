@@ -596,6 +596,10 @@ void RemoteServerConnection::handleArchive(QIODevice *socket, const QString &com
         archive->workerAddDataBlock(buff);
     } else if (command == QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd)) {
         archive->workerSetDataAtEnd();
+    } else if (command == QLatin1String(Protocol::AbstractArchiveSetFilePosition)) {
+        qint64 pos;
+        data >> pos;
+        archive->workerSetFilePosition(pos);
     } else if (command == QLatin1String(Protocol::AbstractArchiveWorkerStatus)) {
         sendData(socket, static_cast<qint32>(archive->workerStatus()));
     } else if (command == QLatin1String(Protocol::AbstractArchiveCancel)) {

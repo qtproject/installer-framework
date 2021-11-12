@@ -34,6 +34,9 @@
 #include <QLoggingCategory>
 #include <QTest>
 
+#include <iostream>
+#include <sstream>
+
 using namespace QInstaller;
 
 class tst_CLIInterface : public QObject
@@ -43,8 +46,7 @@ class tst_CLIInterface : public QObject
 private slots:
     void testListAvailablePackages()
     {
-        QString loggingRules = (QLatin1String("ifw.* = false\n"
-                                "ifw.package.* = true\n"));
+        QString loggingRules = (QLatin1String("ifw.* = false\n"));
 
         QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
 
@@ -52,61 +54,52 @@ private slots:
                 (m_installDir, ":///data/repository");
 
         QLoggingCategory::setFilterRules(loggingRules);
+        auto func = &PackageManagerCore::listAvailablePackages;
 
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
-                             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("."));
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+            "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+            "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+            "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("."), QHash<QString, QString>());
 
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("A"));
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+            "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("A"), QHash<QString, QString>());
 
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+            "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("A.*"), QHash<QString, QString>());
 
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("A.*"));
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("^B"), QHash<QString, QString>());
 
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("^B.*"), QHash<QString, QString>());
 
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("^B"));
-
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("^B.*"));
-
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
-                             "</availablepackages>\n");
-        core->listAvailablePackages(QLatin1String("^C"));
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+            "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
+            "</availablepackages>\n"), func, QLatin1String("^C"), QHash<QString, QString>());
 
         // Test with filters
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
-                             "</availablepackages>\n");
         QHash<QString, QString> searchHash {
             { "Version", "1.0.2" },
             { "DisplayName", "A" }
         };
-        core->listAvailablePackages(QString(), searchHash);
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
+             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
+             "</availablepackages>\n"), func, QString(), searchHash);
 
-        QTest::ignoreMessage(QtDebugMsg, "<availablepackages>\n"
-                             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
-                             "</availablepackages>\n");
         searchHash.clear();
         searchHash.insert("Default", "false");
-        core->listAvailablePackages(QString(), searchHash);
+        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
+             "</availablepackages>\n"), func, QString(), searchHash);
 
         // Need to change rules here to catch messages
         QLoggingCategory::setFilterRules("ifw.* = true\n");
@@ -190,11 +183,11 @@ private slots:
 
     void testListInstalledPackages()
     {
-        QString loggingRules = (QLatin1String("ifw.* = false\n"
-                                              "ifw.package.* = true\n"));
+        QString loggingRules = (QLatin1String("ifw.* = false\n"));
         PackageManagerCore core;
         core.setPackageManager();
         QLoggingCategory::setFilterRules(loggingRules);
+        auto func = &PackageManagerCore::listInstalledPackages;
 
         const QString testDirectory = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(testDirectory));
@@ -202,16 +195,14 @@ private slots:
 
         core.setValue(scTargetDir, testDirectory);
 
-        QTest::ignoreMessage(QtDebugMsg, "<localpackages>\n"
-                             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
-                             "    <package name=\"B\" displayname=\"B Title\" version=\"1.0.0-1\"/>\n"
-                             "</localpackages>\n");
-        core.listInstalledPackages();
+        verifyListPackagesMessage(&core, QLatin1String("<localpackages>\n"
+            "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
+            "    <package name=\"B\" displayname=\"B Title\" version=\"1.0.0-1\"/>\n"
+            "</localpackages>\n"), func, QString());
 
-        QTest::ignoreMessage(QtDebugMsg, "<localpackages>\n"
-                             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
-                             "</localpackages>\n");
-        core.listInstalledPackages(QLatin1String("A"));
+        verifyListPackagesMessage(&core, QLatin1String("<localpackages>\n"
+            "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
+            "</localpackages>\n"), func, QLatin1String("A"));
 
         QDir dir(testDirectory);
         QVERIFY(dir.removeRecursively());
@@ -530,6 +521,21 @@ private slots:
     {
         QDir dir(m_installDir);
         QVERIFY(dir.removeRecursively());
+    }
+
+private:
+    template <typename Func, typename... Args>
+    void verifyListPackagesMessage(PackageManagerCore *core, const QString &message,
+                                   Func func, Args... args)
+    {
+        std::ostringstream stream;
+        std::streambuf *buf = std::cout.rdbuf();
+        std::cout.rdbuf(stream.rdbuf());
+
+        (core->*func)(std::forward<Args>(args)...);
+
+        std::cout.rdbuf(buf);
+        QVERIFY(stream && stream.str() == message.toStdString());
     }
 
 private:

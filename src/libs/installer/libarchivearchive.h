@@ -64,12 +64,15 @@ public:
 public Q_SLOTS:
     void extract(const QString &dirPath, const quint64 totalFiles);
     void addDataBlock(const QByteArray buffer);
+    void onFilePositionChanged(qint64 pos);
     void cancel();
 
 Q_SIGNALS:
     void dataBlockRequested();
     void dataAtEnd();
     void dataReadyForRead();
+    void seekRequested(qint64 offset, int whence);
+    void seekReady();
     void finished(const QString &errorString = QString());
 
     void currentEntryChanged(const QString &filename);
@@ -77,10 +80,12 @@ Q_SIGNALS:
 
 private:
     static ssize_t readCallback(archive *reader, void *caller, const void **buff);
+    static la_int64_t seekCallback(archive *reader, void *caller, la_int64_t offset, int whence);
     bool writeEntry(archive *reader, archive *writer, archive_entry *entry);
 
 private:
     QByteArray m_buffer;
+    qint64 m_lastPos = 0;
     Status m_status;
 };
 
@@ -107,16 +112,19 @@ public:
     void workerExtract(const QString &dirPath, const quint64 totalFiles);
     void workerAddDataBlock(const QByteArray buffer);
     void workerSetDataAtEnd();
+    void workerSetFilePosition(qint64 pos);
     void workerCancel();
     ExtractWorker::Status workerStatus() const;
 
 Q_SIGNALS:
     void dataBlockRequested();
+    void seekRequested(qint64 offset, int whence);
     void workerFinished();
 
     void workerAboutToExtract(const QString &dirPath, const quint64 totalFiles);
     void workerAboutToAddDataBlock(const QByteArray buffer);
     void workerAboutToSetDataAtEnd();
+    void workerAboutToSetFilePosition(qint64 pos);
     void workerAboutToCancel();
 
 public Q_SLOTS:
@@ -133,10 +141,13 @@ private:
 
     void initExtractWorker();
 
+    int archiveReadOpenWithCallbacks(archive *reader);
     bool writeEntry(archive *reader, archive *writer, archive_entry *entry);
 
     static qint64 readData(QFile *file, char *data, qint64 maxSize);
     static ssize_t readCallback(archive *reader, void *archiveData, const void **buff);
+
+    static la_int64_t seekCallback(archive *reader, void *archiveData, la_int64_t offset, int whence);
 
     static QString pathWithoutNamespace(const QString &path);
 

@@ -1,6 +1,6 @@
 4.2.0
+- Print essential component information regardless of verbosity (QTIFW-2349)
 - Update Chinese translation
-- Add Korean translation
 - Update Russian translation
 - Update French translation
 - Update Japanese translation
@@ -11,7 +11,6 @@
 - Update Polish translation file
 - Add ability to query used language in script (QTIFW-2208)
 - Windows: return the value of "TargetDir" variable with '/' as separator (QTIFW-2344)
-- Show messages from lcPackageInfo logging category regardless of verbosity (QTIFW-2349)
 - Fix uncaught exception in InstallIconsOperation::performOperation() (QTIFW-2347)
 - Add invokable methods for converting paths to/from native separators (QTIFW-2344)
 - binarycreator: support selecting compression level and archive format (QTIFW-1587)

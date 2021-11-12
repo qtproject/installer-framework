@@ -66,6 +66,7 @@ Q_SIGNALS:
     void currentEntryChanged(const QString &filename);
     void completedChanged(const quint64 completed, const quint64 total);
     void dataBlockRequested();
+    void seekRequested(qint64 offset, int whence);
     void remoteWorkerFinished();
 
 public Q_SLOTS:
@@ -74,16 +75,17 @@ public Q_SLOTS:
 private Q_SLOTS:
     void processSignals();
     void onDataBlockRequested();
+    void onSeekRequested(qint64 offset, int whence);
 
 private:
     void init();
 
     void addDataBlock(const QByteArray &buffer);
     void setClientDataAtEnd();
+    void setClientFilePosition(qint64 pos);
     ExtractWorker::Status workerStatus() const;
 
 private:
-    QTimer m_timer;
     mutable QReadWriteLock m_lock;
 
     LibArchiveArchive m_archive;

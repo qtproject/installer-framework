@@ -26,6 +26,8 @@
 **
 **************************************************************************/
 
+#include "../shared/verifyinstaller.h"
+
 #include <libarchivearchive.h>
 #include <fileutils.h>
 
@@ -44,6 +46,7 @@ private slots:
     void initTestCase()
     {
         m_file.path = "valid";
+        m_file.permissions_mode = 0666;
         m_file.compressedSize = 0; // unused
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;
@@ -79,7 +82,7 @@ private slots:
 
         QVector<ArchiveEntry> files = archive.list();
         QCOMPARE(files.count(), 1);
-        QVERIFY(entriesMatch(files.first(), m_file));
+        QCOMPARE(files.first(), m_file);
     }
 
     void testCreateArchive_data()
@@ -148,6 +151,60 @@ private slots:
         QVERIFY(QFile(QDir::tempPath() + QString("/valid")).remove());
     }
 
+    void testCreateExtractWithSymlink_data()
+    {
+        archiveSuffixesTestData();
+    }
+
+    void testCreateExtractWithSymlink()
+    {
+        QFETCH(QString, suffix);
+
+        const QString workingDir = generateTemporaryFileName() + "/";
+        const QString archiveName = workingDir + "archive" + suffix;
+        const QString targetName = workingDir + "target/";
+#ifdef Q_OS_WIN
+        const QString linkName = workingDir + "link.lnk";
+#else
+        const QString linkName = workingDir + "link";
+#endif
+
+        QVERIFY(QDir().mkpath(targetName));
+
+        QFile source(workingDir + "file");
+        QVERIFY(source.open(QIODevice::ReadWrite));
+        QVERIFY(source.write("Source File"));
+
+        // Creates a shortcut on Windows, a symbolic link on Unix
+        QVERIFY(QFile::link(source.fileName(), linkName));
+
+        LibArchiveArchive archive(archiveName);
+        QVERIFY(archive.open(QIODevice::ReadWrite));
+        QVERIFY(archive.create(QStringList() << source.fileName() << linkName));
+        QVERIFY(QFileInfo::exists(archiveName));
+
+        QVERIFY(archive.extract(targetName));
+        const QString sourceFilename = QFileInfo(source.fileName()).fileName();
+        const QString linkFilename = QFileInfo(linkName).fileName();
+        QVERIFY(QFileInfo::exists(targetName + sourceFilename));
+        QVERIFY(QFileInfo::exists(targetName + linkFilename));
+
+        VerifyInstaller::verifyFileContent(targetName + sourceFilename, source.readAll());
+        const QString sourceFilePath = workingDir + sourceFilename;
+        QCOMPARE(QFile::symLinkTarget(targetName + linkFilename), sourceFilePath);
+
+        archive.close();
+
+        QVERIFY(source.remove());
+        QVERIFY(QFile::remove(archiveName));
+        QVERIFY(QFile::remove(linkName));
+        QVERIFY(QFile::remove(targetName + sourceFilename));
+        QVERIFY(QFile::remove(targetName + linkFilename));
+
+        removeDirectory(targetName, true);
+        removeDirectory(workingDir, true);
+    }
+
 private:
     void archiveFilenamesTestData()
     {
@@ -165,15 +222,6 @@ private:
         QTest::newRow("gzip compressed tar archive") << ".tar.gz";
         QTest::newRow("bzip2 compressed tar archive") << ".tar.bz2";
         QTest::newRow("xz compressed tar archive") << ".tar.xz";
-    }
-
-    bool entriesMatch(const ArchiveEntry &lhs, const ArchiveEntry &rhs)
-    {
-        return lhs.path == rhs.path
-            && lhs.utcTime == rhs.utcTime
-            && lhs.isDirectory == rhs.isDirectory
-            && lhs.compressedSize == rhs.compressedSize
-            && lhs.uncompressedSize == rhs.uncompressedSize;
     }
 
     QString tempSourceFile(const QByteArray &data, const QString &templateName = QString())

@@ -145,10 +145,7 @@ void LoggingHandler::messageHandler(QtMsgType type, const QMessageLogContext &co
 
     static Uptime uptime;
 
-    QString ba;
-    if (context.category != lcPackageInfo().categoryName()) {
-        ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ");
-    }
+    QString ba = QLatin1Char('[') + QString::number(uptime.elapsed()) + QStringLiteral("] ");
     ba += trimAndPrepend(type, msg);
 
     if (type != QtDebugMsg && context.file) {
@@ -160,7 +157,7 @@ void LoggingHandler::messageHandler(QtMsgType type, const QMessageLogContext &co
     if (VerboseWriter *log = VerboseWriter::instance())
         log->appendLine(ba);
 
-    if (type != QtDebugMsg || isVerbose() || context.category == lcPackageInfo().categoryName())
+    if (type != QtDebugMsg || isVerbose())
         std::cout << qPrintable(ba) << std::endl;
 
     if (type == QtFatalMsg) {
@@ -251,9 +248,9 @@ bool LoggingHandler::outputRedirected() const
 }
 
 /*!
-    Prints basic information about \a components.
+    Prints update information from \a components.
 */
-void LoggingHandler::printComponentInfo(const QList<Component *> components) const
+void LoggingHandler::printUpdateInformation(const QList<Component *> components) const
 {
     QDomDocument doc;
     QDomElement root = doc.createElement(QLatin1String("updates"));
@@ -267,7 +264,7 @@ void LoggingHandler::printComponentInfo(const QList<Component *> components) con
         update.setAttribute(QLatin1String("id"), component->value(scName));
         root.appendChild(update);
     }
-    qCDebug(lcPackageInfo) << qPrintable(doc.toString(4));
+    std::cout << qPrintable(doc.toString(4));
 }
 
 /*!
@@ -297,7 +294,7 @@ void LoggingHandler::printLocalPackageInformation(const QList<KDUpdater::LocalPa
         }
         root.appendChild(update);
     }
-    qCDebug(lcPackageInfo) << qPrintable(doc.toString(4));
+    std::cout << qPrintable(doc.toString(4));
 }
 
 /*!
@@ -341,7 +338,7 @@ void LoggingHandler::printPackageInformation(const PackagesList &matchedPackages
         }
         root.appendChild(update);
     }
-    qCDebug(lcPackageInfo) << qPrintable(doc.toString(4));
+    std::cout << qPrintable(doc.toString(4));
 }
 
 /*!
