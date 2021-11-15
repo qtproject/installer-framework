@@ -30,6 +30,7 @@
 
 #include "protocol.h"
 #include "remoteclient.h"
+#include "globals.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
@@ -57,8 +58,20 @@ RemoteObject::~RemoteObject()
 {
     if (m_socket) {
         if (QThread::currentThread() == m_socket->thread()) {
-            if (m_type != QLatin1String("RemoteClientPrivate"))
+            if (m_type != QLatin1String("RemoteClientPrivate")) {
                 writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
+                while (m_socket->bytesToWrite()) {
+                    // QAbstractSocket::waitForBytesWritten() may fail randomly on Windows, use
+                    // an event loop and the bytesWritten() signal instead as the docs suggest.
+                    QEventLoop loop;
+                    connect(m_socket, &QLocalSocket::bytesWritten, &loop, &QEventLoop::quit);
+                    loop.exec();
+                }
+                if (!m_socket->waitForDisconnected()) {
+                    qCWarning(lcServer) << "Error while disconnecting from remote server:"
+                                        << m_socket->error();
+                }
+            }
         } else {
             Q_ASSERT_X(false, Q_FUNC_INFO, "Socket running in a different Thread than this object.");
         }
