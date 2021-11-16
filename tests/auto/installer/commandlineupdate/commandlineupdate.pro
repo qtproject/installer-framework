@@ -6,4 +6,4 @@ SOURCES += tst_commandlineupdate.cpp
 
 RESOURCES += \
     settings.qrc \
-    ..\shared\config.qrc
+    ../shared/config.qrc

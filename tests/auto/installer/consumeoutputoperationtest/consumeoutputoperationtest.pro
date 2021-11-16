@@ -9,4 +9,4 @@ DEFINES += "QMAKE_BINARY=$$fromNativeSeparators($$QMAKE_BINARY)"
 
 RESOURCES += \
     settings.qrc \
-    ..\shared\config.qrc
+    ../shared/config.qrc

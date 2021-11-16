@@ -6,5 +6,5 @@ QT += testlib
 SOURCES = tst_globalsettingsoperation.cpp
 
 RESOURCES += \
-    ..\shared\config.qrc
+    ../shared/config.qrc
 

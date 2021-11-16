@@ -7,4 +7,4 @@ SOURCES = tst_simplemovefileoperation.cpp
 
 RESOURCES += \
     settings.qrc \
-    ..\shared\config.qrc
+    ../shared/config.qrc
