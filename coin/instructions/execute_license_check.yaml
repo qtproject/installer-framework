@@ -11,7 +11,7 @@ instructions:
     maxTimeInSeconds: 600
     maxTimeBetweenOutput: 600
     project: qt/qtbase
-    ref: 5.12.7
+    ref: 5.15.2
     directory: qt/qtbase
     userMessageOnFailure: "Could not install qt/base source archive. Please investigate why."
   - type: ChangeDirectory

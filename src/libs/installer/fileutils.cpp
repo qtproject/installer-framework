@@ -78,7 +78,7 @@ TempDirDeleter::TempDirDeleter(const QString &path)
 }
 
 TempDirDeleter::TempDirDeleter(const QStringList &paths)
-    : m_paths(paths.toSet())
+    : m_paths(QSet<QString>(paths.begin(), paths.end()))
 {
 }
 
@@ -99,7 +99,7 @@ void TempDirDeleter::add(const QString &path)
 
 void TempDirDeleter::add(const QStringList &paths)
 {
-    m_paths += paths.toSet();
+    m_paths += QSet<QString>(paths.begin(), paths.end());
 }
 
 void TempDirDeleter::releaseAndDeleteAll()

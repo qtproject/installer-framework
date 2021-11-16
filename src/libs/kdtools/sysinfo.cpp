@@ -71,7 +71,7 @@ VolumeInfo VolumeInfo::fromPath(const QString &path)
         }
 
         // the target directory does not exist yet, we need to cd up till we find the first existing dir
-        QStringList parts = targetPath.absolutePath().split(QDir::separator(),QString::SkipEmptyParts);
+        QStringList parts = targetPath.absolutePath().split(QDir::separator(), Qt::SkipEmptyParts);
         while (targetPath.absolutePath() != QDir::rootPath()) {
             if (targetPath.exists())
                 break;

@@ -68,7 +68,7 @@ QList<ProcessInfo> runningProcesses()
     char buffer[bufferSize + 1] = { 0 };
     if (QSysInfo::windowsVersion() <= QSysInfo::WV_5_2) {
         const DWORD size = GetLogicalDriveStringsA(bufferSize, buffer);
-        deviceList = QString::fromLatin1(buffer, size).split(QLatin1Char(char(0)), QString::SkipEmptyParts);
+        deviceList = QString::fromLatin1(buffer, size).split(QLatin1Char(char(0)), Qt::SkipEmptyParts);
     }
 
     QLibrary kernel32(QLatin1String("Kernel32.dll"));

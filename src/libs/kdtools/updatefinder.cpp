@@ -375,7 +375,7 @@ QList<UpdateInfo> UpdateFinder::Private::applicableUpdates(UpdatesInfo *updatesI
 
         // Catch hold of app names contained updatesInfo->applicationName()
         // If the application appName isn't one of the app names, then the updates are not applicable.
-        const QStringList apps = appName.split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+        const QStringList apps = appName.split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
         if (apps.indexOf([&packages] { return packages->isValid() ? packages->applicationName()
                 : QCoreApplication::applicationName(); } ()) < 0) {
             return dummy;

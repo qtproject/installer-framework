@@ -525,7 +525,7 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
                 .arg(QDir::toNativeSeparators(fileInfo.absoluteFilePath()), info.version));
         }
         info.dependencies = packageElement.firstChildElement(QLatin1String("Dependencies")).text()
-            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
         info.directory = it->filePath();
         if (packagesUpdatedWithSha.contains(info.name)) {
             info.createContentSha1Node = true;
@@ -663,10 +663,10 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                     const QDomElement c2Element = c2.at(j).toElement();
                     if (c2Element.tagName() == QInstaller::scDependencies)
                         info.dependencies = c2Element.text()
-                            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+                            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
                     else if (c2Element.tagName() == QInstaller::scDownloadableArchives) {
                         QStringList names = c2Element.text()
-                            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+                            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
                         foreach (const QString &name, names) {
                             info.copiedFiles.append(QString::fromLatin1("%1/%3%2").arg(info.directory,
                                 name, info.version));

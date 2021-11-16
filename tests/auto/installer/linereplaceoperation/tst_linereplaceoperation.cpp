@@ -119,7 +119,7 @@ private slots:
         QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Text));
 
         QTextStream stream(&file);
-        stream << source << endl;
+        stream << source << Qt::endl;
         file.close();
 
         LineReplaceOperation op(nullptr);

@@ -49,7 +49,6 @@ struct INSTALLER_EXPORT ArchiveEntry
         , compressedSize(0)
         , uncompressedSize(0)
         , permissions_mode(0)
-        , permissions_enum(0)
     {}
 
     QString path;

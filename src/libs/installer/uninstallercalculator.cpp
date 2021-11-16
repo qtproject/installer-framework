@@ -62,8 +62,9 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component)
 
     PackageManagerCore *core = component->packageManagerCore();
     // remove all already resolved dependees
-    QSet<Component *> dependees = core->dependees(component).toSet()
-            .subtract(m_componentsToUninstall);
+    const QList<Component *> dependeesList = core->dependees(component);
+    QSet<Component *> dependees = QSet<Component *>(dependeesList.begin(),
+        dependeesList.end()).subtract(m_componentsToUninstall);
 
     foreach (Component *dependee, dependees)
         appendComponentToUninstall(dependee);
@@ -104,7 +105,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
             foreach (Component *c, m_installedComponents) {
                 const QString replaces = c->value(scReplaces);
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
-                                                                 QString::SkipEmptyParts) << c->name();
+                                                                 Qt::SkipEmptyParts) << c->name();
                 foreach (const QString &possibleName, possibleNames) {
 
                     Component *cc = PackageManagerCore::componentByName(possibleName, m_installedComponents);

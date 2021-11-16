@@ -352,12 +352,12 @@ void Component::loadDataFromPackage(const Package &package)
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
     const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
-        .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+        .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
     if (!uis.isEmpty())
         loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
 #ifndef IFW_DISABLE_TRANSLATIONS
     const QStringList qms = package.data(QLatin1String("Translations")).toString()
-        .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+        .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 #endif
@@ -1329,7 +1329,7 @@ void Component::addDependency(const QString &newDependency)
 
 QStringList Component::dependencies() const
 {
-    return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+    return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
 }
 
 /*!
@@ -1352,7 +1352,7 @@ void Component::addAutoDependOn(const QString &newDependOn)
 
 QStringList Component::autoDependencies() const
 {
-    return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+    return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
 }
 
 /*!
@@ -1383,7 +1383,7 @@ bool Component::isAutoDependOn(const QSet<QString> &componentsToInstall) const
     // essential updates needs to be installed first, otherwise non-essential components
     // will be installed
     if (packageManagerCore()->foundEssentialUpdate()) {
-        const QSet<QString> autoDependOnSet = autoDependOnList.toSet();
+        const QSet<QString> autoDependOnSet(autoDependOnList.begin(), autoDependOnList.end());
         if (componentsToInstall.contains(autoDependOnSet)) {
             foreach (const QString &autoDep, autoDependOnSet) {
                 Component *component = packageManagerCore()->componentByName(autoDep);

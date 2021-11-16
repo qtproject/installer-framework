@@ -63,7 +63,7 @@ public:
 
     QList<T> edges(const T &node) const
     {
-        return m_graph.value(node).toList();
+        return m_graph.value(node).values();
     }
 
     void addEdge(const T &node, const T &edge)

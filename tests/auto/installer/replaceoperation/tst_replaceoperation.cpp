@@ -103,7 +103,7 @@ private slots:
 
         QTextStream stream(&file);
         stream << "Lorem ipsum dolore sit amet, consectetur adipiscing elit, sed do eiusmod "
-                  "tempor incididunt ut labore et dolore magna aliqua." << endl;
+                  "tempor incididunt ut labore et dolore magna aliqua." << Qt::endl;
         file.close();
 
         ReplaceOperation searchReplaceOperation(nullptr);
@@ -139,7 +139,7 @@ private slots:
 
         QTextStream stream(&file);
         stream << "one | 10/10/2010 | three | 1.2345 | 0.00001 "
-                  "| 7 | A <i>bon mot</i>." << endl;
+                  "| 7 | A <i>bon mot</i>." << Qt::endl;
         file.close();
 
         ReplaceOperation searchReplaceOperation(nullptr);

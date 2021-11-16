@@ -1225,7 +1225,8 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     // Sanity check to detect a broken installations with missing operations.
     // Every installed package should have at least one MinimalProgress operation.
     //
-    QSet<QString> installedPackages = d->m_core->localInstalledPackages().keys().toSet();
+    const QStringList localPackageList = d->m_core->localInstalledPackages().keys();
+    QSet<QString> installedPackages(localPackageList.begin(), localPackageList.end());
     QSet<QString> operationPackages;
     foreach (QInstaller::Operation *operation, d->m_performedOperationsOld) {
         if (operation->hasValue(QLatin1String("component")))
@@ -2110,7 +2111,9 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
     emit aboutCalculateComponentsToUninstall();
     if (!isUpdater()) {
         // hack to avoid removing needed dependencies
-        QSet<Component*>  componentsToInstall = d->installerCalculator()->orderedComponentsToInstall().toSet();
+        const QList<Component *> componentsToInstallList
+            = d->installerCalculator()->orderedComponentsToInstall();
+        QSet<Component*> componentsToInstall(componentsToInstallList.begin(), componentsToInstallList.end());
 
         QList<Component*> componentsToUninstall;
         foreach (Component *component, components(ComponentType::All)) {
@@ -3684,7 +3687,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         // add downloadable archive from xml
         const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
-            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
 
         if (component->isFromOnlineRepository()) {
             foreach (const QString downloadableArchive, downloadableArchives)
@@ -3692,7 +3695,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         }
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
-            .split(QInstaller::commaRegExp(), QString::SkipEmptyParts);
+            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
 
         if (!componentsToReplace.isEmpty()) {
             // Store the component (this is a component that replaces others) and all components that
@@ -3873,7 +3876,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             bool isValidUpdate = locals.contains(name);
             if (!isValidUpdate && !replaces.isEmpty()) {
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
-                    QString::SkipEmptyParts);
+                    Qt::SkipEmptyParts);
                 foreach (const QString &possibleName, possibleNames) {
                     if (locals.contains(possibleName)) {
                         isValidUpdate = true;

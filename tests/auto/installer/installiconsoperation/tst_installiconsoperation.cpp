@@ -202,7 +202,7 @@ private slots:
         QString targetIconsDirectory = op.value("directory").toString();
         QVERIFY(QFileInfo(targetIconsDirectory).exists());
         QStringList directories = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
-            .split(QLatin1Char(':'), QString::SkipEmptyParts);
+            .split(QLatin1Char(':'), Qt::SkipEmptyParts);
         // Default path if XDG_DATA_HOME is not set
         directories.append(QDir::home().absoluteFilePath(QLatin1String(".local/share")));
         // Default path if run as root

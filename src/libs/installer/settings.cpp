@@ -132,7 +132,7 @@ static QStringList readArgumentAttributes(QXmlStreamReader &reader, Settings::Pa
                 if (reader.isWhitespace())
                     continue;
                 arguments.append(reader.text().toString().split(QRegularExpression(QLatin1String("\\s+")),
-                    QString::SkipEmptyParts));
+                    Qt::SkipEmptyParts));
             }
             break;
             case QXmlStreamReader::EndElement: {
@@ -713,7 +713,7 @@ Settings::Update Settings::updateRepositoryCategories(const RepoHash &updates)
         }
     }
     if (update) {
-        categories = categoriesList.toSet();
+        categories = QSet<RepositoryCategory>(categoriesList.begin(), categoriesList.end());
         setRepositoryCategories(categories);
     }
     return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
@@ -764,8 +764,10 @@ Settings::Update Settings::updateDefaultRepositories(const RepoHash &updates)
     }
 
     const bool updated = apply(updates, &defaultRepos);
-    if (updated)
-        setDefaultRepositories(defaultRepos.values().toSet());
+    if (updated) {
+        const QList<Repository> repositoriesList = defaultRepos.values();
+        setDefaultRepositories(QSet<Repository>(repositoriesList.begin(), repositoriesList.end()));
+    }
     return updated ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
@@ -816,8 +818,10 @@ Settings::Update Settings::updateUserRepositories(const RepoHash &updates)
     }
 
     const bool updated = apply(updates, &reposToUpdate);
-    if (updated)
-        setUserRepositories(reposToUpdate.values().toSet());
+    if (updated) {
+        const QList<Repository> repositoriesList = reposToUpdate.values();
+        setUserRepositories(QSet<Repository>(repositoriesList.begin(), repositoriesList.end()));
+    }
     return updated ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 

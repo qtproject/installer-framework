@@ -47,7 +47,6 @@ private slots:
         Lib7z::initSevenZ();
 
         m_file.path = "valid";
-        m_file.permissions_enum = 0;
         m_file.compressedSize = 836;
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;

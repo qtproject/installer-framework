@@ -109,7 +109,7 @@ QList<VolumeInfo> localVolumeInfosFromMountPoints(PTCHAR volumeGUID)
     TCHAR volumeNames[MAX_PATH + 1] = { 0 };
     if (GetVolumePathNamesForVolumeName(volumeGUID, volumeNames, MAX_PATH, &bufferSize)) {
         QStringList mountedPaths = QString::fromWCharArray(volumeNames, bufferSize).split(QLatin1Char(char(0)),
-            QString::SkipEmptyParts);
+            Qt::SkipEmptyParts);
         foreach (const QString &mountedPath, mountedPaths) {
             VolumeInfo info;
             info.setMountPath(mountedPath);

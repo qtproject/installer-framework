@@ -488,10 +488,10 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.uncompressedSize = childNodeE.text().toULongLong();
         else if (childNodeE.tagName() == QLatin1String("Dependencies")) {
             info.dependencies = childNodeE.text().split(QInstaller::commaRegExp(),
-                QString::SkipEmptyParts);
+                Qt::SkipEmptyParts);
         } else if (childNodeE.tagName() == QLatin1String("AutoDependOn")) {
             info.autoDependencies = childNodeE.text().split(QInstaller::commaRegExp(),
-                QString::SkipEmptyParts);
+                Qt::SkipEmptyParts);
         } else if (childNodeE.tagName() == QLatin1String("ForcedInstallation"))
             info.forcedInstallation = childNodeE.text().toLower() == QLatin1String( "true" ) ? true : false;
         else if (childNodeE.tagName() == QLatin1String("LastUpdateDate"))

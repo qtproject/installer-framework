@@ -112,8 +112,10 @@ int main(int argc, char *argv[])
             .arg(mutually.join(QLatin1String(", ")));
         sanityCheck = false;
     }
-    const QSet<QString> commands = parser.positionalArguments().toSet()
-        .intersect(CommandLineOptions::scCommandLineInterfaceOptions.toSet());
+    const QStringList positionalArgs = parser.positionalArguments();
+    QSet<QString> commands(positionalArgs.begin(), positionalArgs.end());
+    commands.intersect(QSet<QString>(CommandLineOptions::scCommandLineInterfaceOptions.begin(),
+                                     CommandLineOptions::scCommandLineInterfaceOptions.end()));
     // Check sanity of the given argument sequence.
     if (commands.size() > 1) {
         sanityMessage = QString::fromLatin1("%1 commands provided, only one can be used at a time.")
@@ -146,7 +148,7 @@ int main(int argc, char *argv[])
 
     if (parser.isSet(CommandLineOptions::scStartServerLong)) {
         const QStringList arguments = parser.value(CommandLineOptions::scStartServerLong)
-            .split(QLatin1Char(','), QString::SkipEmptyParts);
+            .split(QLatin1Char(','), Qt::SkipEmptyParts);
 
         QString socketName, key;
         const QString mode = arguments.value(0);

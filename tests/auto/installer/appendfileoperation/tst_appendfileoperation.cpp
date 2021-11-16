@@ -114,7 +114,7 @@ private slots:
         QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Text));
 
         QTextStream stream(&file);
-        stream << source << flush;
+        stream << source << Qt::flush;
         file.close();
 
         AppendFileOperation op;

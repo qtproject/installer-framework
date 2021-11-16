@@ -252,7 +252,9 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
     if (role == Qt::CheckStateRole) {
         if (index.column() != 0)
             return false;
-        ComponentSet nodes = component->childItems().toSet();
+
+        const QList<Component*> childItems = component->childItems();
+        ComponentSet nodes(childItems.begin(), childItems.end());
         Qt::CheckState newValue = Qt::CheckState(value.toInt());
         if (newValue == Qt::PartiallyChecked) {
             const Qt::CheckState oldValue = component->checkState();

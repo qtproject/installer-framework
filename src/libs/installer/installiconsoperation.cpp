@@ -54,7 +54,7 @@ QString InstallIconsOperation::targetDirectory()
 
     QStringList XDG_DATA_HOME = QString::fromLocal8Bit(qgetenv("XDG_DATA_HOME"))
                                                         .split(QLatin1Char(':'),
-        QString::SkipEmptyParts);
+        Qt::SkipEmptyParts);
     XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
 
     if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())

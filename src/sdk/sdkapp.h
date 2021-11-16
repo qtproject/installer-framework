@@ -143,7 +143,7 @@ public:
         if (m_parser.isSet(CommandLineOptions::scLoggingRulesLong)) {
             loggingRules = QLatin1String("ifw.* = false\n");
             loggingRules += m_parser.value(CommandLineOptions::scLoggingRulesLong)
-                          .split(QLatin1Char(','), QString::SkipEmptyParts)
+                          .split(QLatin1Char(','), Qt::SkipEmptyParts)
                           .join(QLatin1Char('\n')); // take rules from command line
         } else if (isCommandLineInterface) {
             loggingRules = QLatin1String("ifw.* = false\n"
@@ -181,7 +181,7 @@ public:
         const QHash<QString, QString> userArgs = userArguments();
         if (m_parser.isSet(CommandLineOptions::scStartClientLong)) {
             const QStringList arguments = m_parser.value(CommandLineOptions::scStartClientLong)
-                .split(QLatin1Char(','), QString::SkipEmptyParts);
+                .split(QLatin1Char(','), Qt::SkipEmptyParts);
             m_core = new QInstaller::PackageManagerCore(
                 magicMarker, oldOperations,
                 arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
@@ -363,7 +363,7 @@ public:
 
             if (m_parser.isSet(CommandLineOptions::scMessageAutomaticAnswerLong)) {
                 const QString positionalArguments = m_parser.value(CommandLineOptions::scMessageAutomaticAnswerLong);
-                const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+                const QStringList items = positionalArguments.split(QLatin1Char(','), Qt::SkipEmptyParts);
                 if (items.count() > 0) {
                     errorMessage = setMessageBoxAutomaticAnswers(items);
                     if (!errorMessage.isEmpty())
@@ -376,7 +376,7 @@ public:
             }
             if (m_parser.isSet(CommandLineOptions::scFileDialogAutomaticAnswer)) {
                 const QString positionalArguments = m_parser.value(CommandLineOptions::scFileDialogAutomaticAnswer);
-                const QStringList items = positionalArguments.split(QLatin1Char(','), QString::SkipEmptyParts);
+                const QStringList items = positionalArguments.split(QLatin1Char(','), Qt::SkipEmptyParts);
 
                 foreach (const QString &item, items) {
                     if (item.contains(QLatin1Char('='))) {
@@ -485,7 +485,7 @@ public:
 
     QStringList repositories(const QString &list) const
     {
-        const QStringList items = list.split(QLatin1Char(','), QString::SkipEmptyParts);
+        const QStringList items = list.split(QLatin1Char(','), Qt::SkipEmptyParts);
         foreach (const QString &item, items)
             qCDebug(QInstaller::lcInstallerInstallLog) << "Adding custom repository:" << item;
         return items;

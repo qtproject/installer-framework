@@ -60,7 +60,7 @@ quint64 installedMemory()
         else if (s.isEmpty())
             return quint64();
 
-        const QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        const QStringList parts = s.split(QLatin1Char(' '), Qt::SkipEmptyParts);
         return quint64(parts.at(1).toInt() * 1024LL);
     }
 #else
@@ -99,7 +99,7 @@ QList<VolumeInfo> mountedVolumes()
         if (!s.startsWith(QLatin1Char('/')) && !s.startsWith(QLatin1String("tmpfs ") + QDir::tempPath()))
             continue;
 
-        const QStringList parts = s.split(QLatin1Char(' '), QString::SkipEmptyParts);
+        const QStringList parts = s.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 
         VolumeInfo v;
         v.setMountPath(parts.at(1));

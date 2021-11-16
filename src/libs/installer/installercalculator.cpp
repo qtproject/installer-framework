@@ -164,7 +164,8 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
 
 bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version)
 {
-    QSet<QString> allDependencies = component->dependencies().toSet();
+    const QStringList dependenciesList = component->dependencies();
+    QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
     QString requiredDependencyVersion = version;
     foreach (const QString &dependencyComponentName, allDependencies) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a

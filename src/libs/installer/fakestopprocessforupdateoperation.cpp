@@ -68,7 +68,7 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
         return false;
     }
 
-    QStringList processes = arguments().at(0).split(QLatin1Char(','), QString::SkipEmptyParts);
+    QStringList processes = arguments().at(0).split(QLatin1Char(','), Qt::SkipEmptyParts);
     for (int i = processes.count() - 1; i >= 0; --i) {
         if (!core->isProcessRunning(processes.at(i)))
             processes.removeAt(i);
