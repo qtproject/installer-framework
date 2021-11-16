@@ -713,14 +713,11 @@ void LibArchiveArchive::configureReader(archive *archive)
 */
 void LibArchiveArchive::configureWriter(archive *archive)
 {
-    if (QFileInfo(m_data->file.fileName()).suffix() == QLatin1String("zip")) {
-        archive_write_set_format_zip(archive);
-    } else if (QFileInfo(m_data->file.fileName()).suffix() == QLatin1String("7z")) {
-        archive_write_set_format_7zip(archive);
-    } else {
-        archive_write_set_format_pax_restricted(archive);
-        archive_write_set_format_filter_by_ext(archive, m_data->file.fileName().toLatin1());
-    }
+    archive_write_set_format_filter_by_ext(archive, m_data->file.fileName().toLatin1());
+
+    if (compressionLevel() == CompressionLevel::Normal)
+        return;
+
     const QByteArray options = "compression-level=" + QString::number(compressionLevel()).toLatin1();
     if (archive_write_set_options(archive, options.constData())) { // not fatal
         qCWarning(QInstaller::lcInstallerInstallLog) << "Could not set options" << options

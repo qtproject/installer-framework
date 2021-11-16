@@ -1160,7 +1160,7 @@
             \li Only available on macOS. Allows specifying a code signing identity to be
                 used for signing the generated app bundle.
         \row
-            \li --af or --archive-format 7z|zip|tar.gz|tar.bz2|tar.xz
+            \li --af or --archive-format 7z|zip|tar|tar.gz|tar.bz2|tar.xz
             \li Set the format used when packaging new component data archives. If
                 you omit this option, the 7z format will be used as a default.
                 \note If the Installer Framework tools were built without libarchive
@@ -1277,7 +1277,7 @@
                 checksum instead of the version number. This parameter adds a new \c <ContentSha1>
                 node to the \c Updates.xml.
          \row
-            \li --af or --archive-format 7z|zip|tar.gz|tar.bz2|tar.xz
+            \li --af or --archive-format 7z|zip|tar|tar.gz|tar.bz2|tar.xz
             \li Set the format used when packaging new component data archives. If
                 you omit this option, the 7z format will be used as a default.
                 \note If the Installer Framework tools were built without libarchive
@@ -1338,6 +1338,7 @@
                 \list
                     \li 7z (7z archive)
                     \li zip (ZIP archive)
+                    \li tar (uncompressed tar archive)
                     \li tar.gz (gzip compressed tar archive)
                     \li tar.bz2 (bzip2 compressed tar archive)
                     \li tar.xz (xz compressed tar archive)
