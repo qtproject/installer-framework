@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2021 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,7 +39,8 @@
 #include "constants.h"
 
 #include <QCoreApplication>
-#include <QElapsedTimer>
+#include <QDeadlineTimer>
+#include <QTimer>
 #include <QMutex>
 #include <QThread>
 
@@ -165,11 +166,19 @@ public:
         }
 
         if (started) {
-            QElapsedTimer t;
-            t.start();
+            QTimer timer;
+            QEventLoop loop;
             // 30 seconds waiting ought to be enough for the app to start
-            while ((!m_serverStarted) && (t.elapsed() < 30000))
+            QDeadlineTimer deadline(30000);
+
+            connect(&timer, &QTimer::timeout, [&]() {
                 m_serverStarted = authorize();
+                if (m_serverStarted || deadline.hasExpired())
+                    loop.quit();
+            });
+
+            timer.start(100);
+            loop.exec();
         }
     }
 
