@@ -349,6 +349,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         m_pageListWidget->setFocusPolicy(Qt::NoFocus);
         m_pageListWidget->setSelectionMode(QAbstractItemView::NoSelection);
         m_pageListWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+        m_pageListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
         QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
 
@@ -469,7 +470,7 @@ void PackageManagerGui::updatePageListWidget()
             itemText.replace(regExp2, QLatin1String("\\1 \\2"));
         }
         QListWidgetItem *item = new QListWidgetItem(itemText, m_pageListWidget);
-        item->setSizeHint(QSize(item->sizeHint().width(), 30));
+        item->setSizeHint(QSize(m_pageListWidget->width(), 30));
 
         // Give visual indication about current & non-visited pages
         if (id == d->m_currentId) {
