@@ -220,25 +220,11 @@
 
         \row
         \li \c AcceptLicenseLabel
-        \li Shows the text next to the accept license radio button.
+        \li Shows the text next to the accept license check box.
 
         \row
-        \li \c RejectLicenseLabel
-        \li Shows the text next to the reject license radio button.
-    \endtable
-
-    \table
-        \header
-        \li Radio Buttons
-        \li Brief Description
-
-        \row
-        \li \c AcceptLicenseRadioButton
+        \li \c AcceptLicenseCheckBox
         \li Accepts the license agreement.
-
-        \row
-        \li \c RejectLicenseRadioButton
-        \li Rejects the license agreement. Selected by default.
     \endtable
 
     \section2 Target Directory Page
