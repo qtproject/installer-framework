@@ -237,6 +237,7 @@ private:
     void unregisterMaintenanceTool();
 
     void initUtils();
+    void parseFileName();
     void initScripts();
     void prepareCrashpadHandler();
 

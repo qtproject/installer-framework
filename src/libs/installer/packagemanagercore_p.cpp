@@ -67,6 +67,7 @@
 #include <QtCore/QFuture>
 #include <QtCore/QFutureWatcher>
 #include <QtCore/QTemporaryFile>
+#include <QRegularExpression>
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
@@ -686,10 +687,72 @@ void PackageManagerCorePrivate::initUtils()
     }
     qDebug() << "-- Environment: " << QInstaller::getEnvironment();
 
+    parseFileName();
+
     QInstaller::initializeIds();
     QInstaller::initializeVersions();
 
     initScripts();
+}
+
+void PackageManagerCorePrivate::parseFileName()
+{
+    // Now we read Journey ID and Token from the filename
+    // This regex has the following named groups (https://regex101.com/r/GlPWbH/1):
+    //        version: Launcher Version in filename (ex 9999999)
+    //           uuid: Journey ID (ex 13290910-18ac-48e2-a3f1-248dc61d8534)
+    //      journeyId: Journey ID in base64 (ex EykJEBisSOKj8SSNxh2FNA)
+    //  launcherToken: Token in base62 (ex 3bBoA7ktcs4rRY)
+    QString pattern = QLatin1String("(?P<version>\\d+)(\\.|-)?((?P<uuid>[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})|(?P<journeyId>[A-Za-z0-9_-]{22})(\\.(?<launcherToken>[A-Za-z0-9]{10,16}))?)?(\\.(exe|dmg))$");
+    QRegularExpression regex(pattern, QRegularExpression::CaseInsensitiveOption);
+
+    // Run the regular expression on the filename
+    QRegularExpressionMatch match = regex.match(QInstaller::getInstallerFileName().split(QLatin1String("/")).last());
+
+    if (!match.hasMatch())
+    {
+        // No matches found in the filename
+        return;
+    }
+
+    QString journeyIdDecoded = match.captured(QLatin1String("uuid"));
+    QString journeyIdEncoded = match.captured(QLatin1String("journeyId"));
+    QString token = match.captured(QLatin1String("launcherToken"));
+
+    // Regular Journey ID
+    if (!journeyIdDecoded.isNull())
+    {
+        // Since the Journey ID is already decoded we can save it directly
+        QInstaller::setJourneyId(QUuid::fromString(journeyIdDecoded));
+
+        // Tokens are only provided with an encoded Journey ID so we can stop here
+        return;
+    }
+
+    // Base 64 encoded Journey ID
+    if (journeyIdEncoded.isNull())
+    {
+        // No encoded Journey ID found, we can stop here
+        // Tokens are never provided without a Journey ID
+        return;
+    }
+
+    // base64 encoded strings need to be a multiple of 4 (length wise)
+    // Since the encoded Journey ID is 22 letters, we pad the name with 2 `=`
+    journeyIdEncoded = QString::fromLatin1("%1==").arg(journeyIdEncoded);
+
+    // Now we can convert the text to a byte array, then decode it, and finally turn it into a UUID
+    QUuid decoded = QUuid::fromRfc4122(QByteArray::fromBase64(journeyIdEncoded.toUtf8(), QByteArray::Base64UrlEncoding));
+
+    // And now we can save the Journey ID
+    QInstaller::setJourneyId(decoded);
+
+    // Token is only provided if Journey ID is provided
+    if (!token.isNull())
+    {
+        // Since the token is provided, we store it for later use
+        QInstaller::setJourneyToken(token);
+    }
 }
 
 void PackageManagerCorePrivate::initScripts()

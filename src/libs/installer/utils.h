@@ -109,6 +109,8 @@ namespace QInstaller {
     QUuid INSTALLER_EXPORT getDeviceId();
     void INSTALLER_EXPORT setJourneyId(const QUuid& id);
     QUuid INSTALLER_EXPORT getJourneyId();
+    void INSTALLER_EXPORT setJourneyToken(const QString& token);
+    QString INSTALLER_EXPORT getJourneyToken();
     void INSTALLER_EXPORT setOsId(const QUuid& id);
     QUuid INSTALLER_EXPORT getOsId();
     void INSTALLER_EXPORT setSessionHash(const QByteArray& hash);

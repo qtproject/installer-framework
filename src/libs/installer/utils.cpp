@@ -411,6 +411,18 @@ QUuid QInstaller::getJourneyId()
     return journeyId;
 }
 
+static QString journeyToken;
+
+void QInstaller::setJourneyToken(const QString& token)
+{
+    journeyToken = token;
+}
+
+QString QInstaller::getJourneyToken()
+{
+    return journeyToken;
+}
+
 static QUuid osId;
 
 void QInstaller::setOsId(const QUuid& id)
@@ -670,32 +682,22 @@ void QInstaller::initializeVersions()
 
 void QInstaller::initializeJourneyIds()
 {
-    // Get the journeyId from the installer filename
-    QUuid journeyId;
-    QString appName = getInstallerFileName().split(QLatin1String("/")).last();
-    if (appName.length() > 35)
+    QUuid journeyId = getJourneyId();
+    if (!journeyId.isNull())
     {
-        QString pattern = QLatin1String("[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}");
-        QRegularExpression re(pattern, QRegularExpression::CaseInsensitiveOption);
-        QRegularExpressionMatch match = re.match(appName);
-        if (match.hasMatch()) {
-           qDebug() << "framework | QInstaller::initializeJourneyIds | JourneyId found in filename:" << match.captured(0);
-           journeyId = QUuid::fromString(match.captured(0));
-        }
+        // Journey ID has been read from the file name
+        qDebug() << "framework | QInstaller::initializeJourneyIds | JourneyId found in filename:" << journeyId.toString(QUuid::WithoutBraces);
     }
-
-    // If journey Id was not found, or we weren't able to create a QUuid from it, we create a new one instead
-    if (journeyId.isNull())
+    else
     {
         qDebug() << "framework | QInstaller::initializeJourneyIds | No JourneyId provided, one will be created instead";
         journeyId = QUuid::createUuid();
+        setJourneyId(journeyId);
     }
 
     qDebug() << "JourneyId:";
     qDebug() << "-- JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
-    qDebug() << "-- JourneyId (base64):" << QLatin1String(journeyId.toRfc4122().toBase64());
-
-    setJourneyId(journeyId);
+    qDebug() << "-- JourneyId (base64 urlsafe):" << QLatin1String(journeyId.toRfc4122().toBase64(QByteArray::Base64UrlEncoding));
 
     QString keyName = QLatin1String("DeviceId");
     QUuid deviceId;
@@ -764,6 +766,14 @@ void QInstaller::initializeIds()
     initializeJourneyIds();
     initializeOsId();
     initializeSessionHash();
+
+    // Store the Journey Token in the registry
+    QString token = getJourneyToken();
+    if (!token.isNull())
+    {
+        qDebug() << "Storing Journey Token to registry:" << token;
+        setCCPRegistryKey(QLatin1String("JourneyToken"), token);
+    }
 }
 
 std::ostream &QInstaller::operator<<(std::ostream &os, const QString &string)
