@@ -54,6 +54,7 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     , m_autoCreateOperations(true)
     , m_operationsCreatedSuccessfully(true)
     , m_updateIsAvailable(false)
+    , m_treeNameMoveChildren(false)
 {
 }
 

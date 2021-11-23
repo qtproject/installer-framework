@@ -140,6 +140,10 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
             }
             if (!licenseHash.isEmpty())
                 info.data.insert(QLatin1String("Licenses"), licenseHash);
+        } else if (childE.tagName() == QLatin1String("TreeName")) {
+            const bool moveChildren = QVariant(childE.attribute(QLatin1String("moveChildren"))).toBool();
+            const QPair<QString, bool> treeNamePair(childE.text(), moveChildren);
+            info.data.insert(QLatin1String("TreeName"), QVariant::fromValue(treeNamePair));
         } else if (childE.tagName() == QLatin1String("Version")) {
             info.data.insert(QLatin1String("inheritVersionFrom"),
                 childE.attribute(QLatin1String("inheritVersionFrom")));

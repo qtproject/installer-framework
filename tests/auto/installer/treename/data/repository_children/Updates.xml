@@ -1,0 +1,229 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <TreeName moveChildren="true">componentANew</TreeName>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>8148a84c9a52eb989525f4807482f42c49c743a4</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentA.subcomponent1</Name>
+  <DisplayName>Subcomponent 1</DisplayName>
+  <Description>This component does not have leaf components.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>c0c5d273b9c413db07fbd1ffee58759f0059d668</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB</Name>
+  <DisplayName>Component B (automatic dependency to componentA.subcomponent1)</DisplayName>
+  <Description>This component has an automatic dependency, If the dependency is marked for installation, this component is also installed.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>90</SortingPriority>
+  <AutoDependOn>componentA.subcomponent1</AutoDependOn>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>c517b08c40ef5c5984f6bf34a626060dcbab6ba5</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentE</Name>
+  <DisplayName>Component E</DisplayName>
+  <Description>This is a component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>60</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>2833ea6d508925e64f00fb6b699532992b923ab2</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF</Name>
+  <DisplayName>Component F</DisplayName>
+  <Description>This component contains 2 subcomponents.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>21ca242b83ce32dfe066348cbb453080b5967e30</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent1</Name>
+  <DisplayName>Subcomponent 1</DisplayName>
+  <Description>This component contains 2 leaf components.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <TreeName moveChildren="true">FSub1ToRoot</TreeName>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>e2745196bceaae476cac330f0af0ce6e564d2d3d</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent1.subsubcomponent1</Name>
+  <DisplayName>Subsubcomponent 1</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="271" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>8af98107adadb1fda37c1c086c53ed289cc77661</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent1.subsubcomponent2</Name>
+  <DisplayName>Subsubcomponent 2</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="271" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>69458b616989a44e52b480dd9133721bc52b1558</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent2</Name>
+  <DisplayName>Subcomponent 2</DisplayName>
+  <Description>This component contains 2 leaf components.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <TreeName moveChildren="true">componentE.sub1</TreeName>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>9d985ee35442e6e621f8ec24dc41be9f6cab9dad</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent2.subsubcomponent1</Name>
+  <DisplayName>Subsubcomponent 1</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="271" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>43223427efd8c2a428ead343a79709cd1bfc5618</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF.subcomponent2.subsubcomponent2</Name>
+  <DisplayName>Subsubcomponent 2</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="271" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>d76690fb2f41aab262d7d8621c46fa464f35a550</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentH</Name>
+  <DisplayName>Component H</DisplayName>
+  <Description>An example component without dependencies.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>30</SortingPriority>
+  <TreeName moveChildren="true">componentI</TreeName>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>04426aec311900e8d74ae42cc6fe49282d314841</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentH.subcomponent1</Name>
+  <DisplayName>Subcomponent 1</DisplayName>
+  <Description>This component does not contain leaf components.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>065a901fd86d4e7fd86200da47079c97070178c7</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentI.subcomponent2</Name>
+  <DisplayName>Subcomponent 1</DisplayName>
+  <Description>Subcomponent without original parent.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>30</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>3d2d928ed10455fe884cab96498a3fc826505406</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentJ</Name>
+  <DisplayName>Component J</DisplayName>
+  <Description>An example component without dependencies.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>30</SortingPriority>
+  <TreeName moveChildren="true">componentJNew</TreeName>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>1a46e58cd1824b2c0a4a93d6b27050eb0f6feb29</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentJ.subcomponent1</Name>
+  <DisplayName>Subcomponent 1</DisplayName>
+  <Description>Subcomponent with parent.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>30</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="267" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>dd1cfaa8f6cd14f81635e8917f348006ca7ffdce</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentK</Name>
+  <DisplayName>Component K (depends on componentJ.subcomponent1)</DisplayName>
+  <Description>This component depends on Component J subcomponent.</Description>
+  <Dependencies>componentJ.subcomponent1</Dependencies>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <UpdateFile UncompressedSize="99" CompressedSize="263" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>98253c1ab872c9baa64d2fe3525f86a65e73d1f2</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentL</Name>
+  <DisplayName>Component L</DisplayName>
+  <Description>Component with tree name, is replaced by other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+  <TreeName moveChildren="true">LToNewRoot</TreeName>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentL.sub1</Name>
+  <DisplayName>Component L subcomponent 1</DisplayName>
+  <Description>Child of component L</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentL.sub2</Name>
+  <DisplayName>Component L subcomponent 2</DisplayName>
+  <Description>Child of component L</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentM</Name>
+  <DisplayName>Component M</DisplayName>
+  <Description>Component that replaces other component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+  <Replaces>componentL</Replaces>
+ </PackageUpdate>
+</Updates>

@@ -287,7 +287,6 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 {
     setValue(scName, package.name);
     setValue(scDisplayName, package.title);
-    setValue(scTreeName, package.treeName);
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
     setValue(scInheritVersion, package.inheritVersionFrom);
@@ -304,6 +303,9 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
     setValue(scExpandedByDefault, package.expandedByDefault ? scTrue : scFalse);
     setValue(scContentSha1, package.contentSha1);
+
+    setValue(scTreeName, package.treeName.first);
+    d->m_treeNameMoveChildren = package.treeName.second;
 }
 
 /*!
@@ -318,7 +320,6 @@ void Component::loadDataFromPackage(const Package &package)
 
     setValue(scName, package.data(scName).toString());
     setValue(scDisplayName, package.data(scDisplayName).toString());
-    setValue(scTreeName, package.data(scTreeName).toString());
     setValue(scDescription, package.data(scDescription).toString());
     setValue(scDefault, package.data(scDefault).toString());
     setValue(scAutoDependOn, package.data(scAutoDependOn).toString());
@@ -348,6 +349,10 @@ void Component::loadDataFromPackage(const Package &package)
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     setValue(scContentSha1, package.data(scContentSha1).toString());
+
+    const auto treeNamePair = package.data(QLatin1String(scTreeName)).value<QPair<QString, bool>>();
+    setValue(scTreeName, treeNamePair.first);
+    d->m_treeNameMoveChildren = treeNamePair.second;
 
     if (d->m_core->isPackageViewer())
         return;
@@ -565,7 +570,18 @@ QString Component::displayName() const
 */
 QString Component::treeName() const
 {
-    return d->m_vars.value(scTreeName, name());
+    const QString defaultValue = d->m_vars.value(scAutoTreeName, name());
+    return d->m_vars.value(scTreeName, defaultValue);
+}
+
+/*!
+    Returns \c true if descendants of this component should have automatically
+    created tree names in relation to the parent component's modified location,
+    \c false otherwise.
+*/
+bool Component::treeNameMoveChildren() const
+{
+    return d->m_treeNameMoveChildren;
 }
 
 /*!

@@ -27,4 +27,29 @@
   <SortingPriority>40</SortingPriority>
   <TreeName>componentA.sub1</TreeName>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentC.sub1</Name>
+  <DisplayName>Component C subcomponent1</DisplayName>
+  <Description>Component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentD</Name>
+  <DisplayName>Component D</DisplayName>
+  <Description>Component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+  <TreeName moveChildren="true">componentC</TreeName>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentD.sub1</Name>
+  <DisplayName>Component D subcomponent 1</DisplayName>
+  <Description>Component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+ </PackageUpdate>
 </Updates>

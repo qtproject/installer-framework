@@ -319,7 +319,7 @@ void LocalPackageHub::refresh()
 void LocalPackageHub::addPackage(const QString &name,
                                  const QString &version,
                                  const QString &title,
-                                 const QString &treeName,
+                                 const QPair<QString, bool> &treeName,
                                  const QString &description,
                                  const QStringList &dependencies,
                                  const QStringList &autoDependencies,
@@ -404,7 +404,8 @@ void LocalPackageHub::writeToDisk()
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
             addTextChildHelper(&package, QLatin1String("Title"), info.title);
             addTextChildHelper(&package, QLatin1String("Description"), info.description);
-            addTextChildHelper(&package, scTreeName, info.treeName);
+            addTextChildHelper(&package, scTreeName, info.treeName.first, QLatin1String("moveChildren"),
+                               QVariant(info.treeName.second).toString());
             if (info.inheritVersionFrom.isEmpty())
                 addTextChildHelper(&package, QLatin1String("Version"), info.version);
             else
@@ -477,9 +478,10 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.title = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Description"))
             info.description = childNodeE.text();
-        else if (childNodeE.tagName() == scTreeName)
-            info.treeName = childNodeE.text();
-        else if (childNodeE.tagName() == QLatin1String("Version")) {
+        else if (childNodeE.tagName() == scTreeName) {
+            info.treeName.first = childNodeE.text();
+            info.treeName.second = QVariant(childNodeE.attribute(QLatin1String("moveChildren"))).toBool();
+        } else if (childNodeE.tagName() == QLatin1String("Version")) {
             info.version = childNodeE.text();
             info.inheritVersionFrom = childNodeE.attribute(QLatin1String("inheritVersionFrom"));
         }

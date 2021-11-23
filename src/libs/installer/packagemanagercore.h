@@ -414,6 +414,9 @@ private:
     bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
     bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
 
+    void createAutoTreeNames(QHash<QString, Component *> &components,
+                             const QMap<QString, QString> &treeNameComponents);
+
     void updateDisplayVersions(const QString &displayKey);
     QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
                                const QString& versionKey, QHash<QString, bool> &visited);

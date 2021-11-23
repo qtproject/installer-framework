@@ -42,5 +42,5 @@
             <Argument>@TargetDir@/Folder2</Argument>
         </Operation>
     </Operations>
-    <TreeName>com.vendor.subcomponent</TreeName>
+    <TreeName moveChildren="true">com.vendor.subcomponent</TreeName>
 </Package>

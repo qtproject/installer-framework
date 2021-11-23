@@ -43,7 +43,7 @@ struct KDTOOLS_EXPORT LocalPackage
     QString name;
     QString title;
     QString description;
-    QString treeName;
+    QPair<QString, bool> treeName;
     QString version;
     QString inheritVersionFrom;
     QStringList dependencies;
@@ -100,7 +100,7 @@ public:
     void addPackage(const QString &pkgName,
                     const QString &version, // mandatory
                     const QString &title,
-                    const QString &treeName,
+                    const QPair<QString, bool> &treeName,
                     const QString &description,
                     const QStringList &dependencies,
                     const QStringList &autoDependencies,

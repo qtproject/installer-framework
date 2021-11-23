@@ -161,6 +161,7 @@ public:
     QString name() const;
     QString displayName() const;
     QString treeName() const;
+    bool treeNameMoveChildren() const;
     quint64 updateUncompressedSize();
 
     QUrl repositoryUrl() const;

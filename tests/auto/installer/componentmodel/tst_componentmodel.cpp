@@ -521,7 +521,7 @@ private:
 
             // we need at least these to be able to test the model
             component->setValue("Name", info.data.value("Name").toString());
-            component->setValue("TreeName", info.data.value("TreeName").toString());
+            component->setValue("TreeName", info.data.value("TreeName").value<QPair<QString, bool>>().first);
             QString isDefault = info.data.value("Default").toString();
             if (m_core.noDefaultInstallation())
                 isDefault = scFalse;

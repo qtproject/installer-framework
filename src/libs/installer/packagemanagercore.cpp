@@ -1416,11 +1416,12 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 
     d->clearAllComponentLists();
     QHash<QString, QInstaller::Component*> components;
+    QMap<QString, QString> treeNameComponents;
 
     std::function<void(QList<LocalPackage> *, bool)> loadLocalPackages;
     loadLocalPackages = [&](QList<LocalPackage> *treeNamePackages, bool firstRun) {
         foreach (auto &package, (firstRun ? installedPackages.values() : *treeNamePackages)) {
-            if (firstRun && !package.treeName.isEmpty()) {
+            if (firstRun && !package.treeName.first.isEmpty()) {
                 // Package has a tree name, leave for later
                 treeNamePackages->append(package);
                 continue;
@@ -1448,6 +1449,10 @@ bool PackageManagerCore::fetchLocalPackagesTree()
                 d->m_pendingUnstableComponents.insert(component->name(),
                     QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
             }
+            const QString treeName = component->value(scTreeName);
+            if (!treeName.isEmpty())
+                treeNameComponents.insert(component->name(), treeName);
+
             components.insert(name, component.take());
         }
         // Second pass with leftover packages
@@ -1462,6 +1467,8 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         QList<LocalPackage> treeNamePackagesTmp;
         loadLocalPackages(&treeNamePackagesTmp, true);
     }
+
+    createAutoTreeNames(components, treeNameComponents);
 
     if (!d->buildComponentTree(components, false))
         return false;
@@ -3692,7 +3699,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         // Check if we already added the component to the available components list.
         // Component treenames and names must be unique.
         const QString packageName = data.package->data(scName).toString();
-        const QString packageTreeName = data.package->data(scTreeName).toString();
+        const QString packageTreeName = data.package->data(scTreeName).value<QPair<QString, bool>>().first;
 
         QString name = packageTreeName.isEmpty() ? packageName : packageTreeName;
         if (data.components->contains(name)) {
@@ -3837,13 +3844,14 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     emit startAllComponentsReset();
 
     d->clearAllComponentLists();
-    QHash<QString, QInstaller::Component*> components;
+    QHash<QString, QInstaller::Component*> allComponents;
 
     Data data;
-    data.components = &components;
+    data.components = &allComponents;
     data.installedPackages = &locals;
 
-    QMap<QString, QString> treeNameComponents;
+    QMap<QString, QString> remoteTreeNameComponents;
+    QMap<QString, QString> allTreeNameComponents;
 
     std::function<bool(PackagesList *, bool)> loadRemotePackages;
     loadRemotePackages = [&](PackagesList *treeNamePackages, bool firstRun) -> bool {
@@ -3854,24 +3862,25 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
             if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
                 continue;
 
-            if (firstRun && !package->data(scTreeName).toString().isEmpty()) {
+            if (firstRun && !package->data(scTreeName)
+                    .value<QPair<QString, bool>>().first.isEmpty()) {
                 // Package has a tree name, leave for later
                 treeNamePackages->append(package);
                 continue;
             }
 
-            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            QScopedPointer<QInstaller::Component> remoteComponent(new QInstaller::Component(this));
             data.package = package;
-            component->loadDataFromPackage(*package);
-            if (updateComponentData(data, component.data())) {
+            remoteComponent->loadDataFromPackage(*package);
+            if (updateComponentData(data, remoteComponent.data())) {
                 // Create a list where is name and treename. Repo can contain a package with
                 // a different treename of component which is already installed. We don't want
                 // to move already installed local packages.
-                const QString treeName = component->value(scTreeName);
+                const QString treeName = remoteComponent->value(scTreeName);
                 if (!treeName.isEmpty())
-                    treeNameComponents.insert(component->name(), treeName);
-                QString name = component->treeName();
-                components.insert(name, component.take());
+                    remoteTreeNameComponents.insert(remoteComponent->name(), treeName);
+                const QString name = remoteComponent->treeName();
+                allComponents.insert(name, remoteComponent.take());
             }
         }
         // Second pass with leftover packages
@@ -3886,36 +3895,41 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         if (!loadRemotePackages(&treeNamePackagesTmp, true))
             return false;
     }
+    allTreeNameComponents = remoteTreeNameComponents;
 
-    foreach (const QString &key, locals.keys()) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        component->loadDataFromPackage(locals.value(key));
-        QString treeName = component->treeName();
+    foreach (auto &package, locals) {
+        QScopedPointer<QInstaller::Component> localComponent(new QInstaller::Component(this));
+        localComponent->loadDataFromPackage(package);
+        const QString name = localComponent->treeName();
 
-        // 1. Component has a treename in local but not in remote
-        if (!treeNameComponents.contains(component->name()) && !component->value(scTreeName).isEmpty()) {
-            Component *comp = components.take(component->name());
-            delete comp;
-            components.insert(treeName, component.take());
+        // 1. Component has a treename in local but not in remote, add with local treename
+        if (!remoteTreeNameComponents.contains(localComponent->name()) && !localComponent->value(scTreeName).isEmpty()) {
+            delete allComponents.take(localComponent->name());
         // 2. Component has different treename in local and remote, add with local treename
-        } else if (treeNameComponents.contains(component->name())) {
-            QString remoteTreeName = treeNameComponents.value(component->name());
-            QString componentTreeName = component->value(scTreeName);
-            if (remoteTreeName != componentTreeName) {
-                Component *comp = components.take(treeNameComponents.value(component->name()));
-                delete comp;
-                components.insert(treeName, component.take());
-            }
+        } else if (remoteTreeNameComponents.contains(localComponent->name())) {
+            const QString remoteTreeName = remoteTreeNameComponents.value(localComponent->name());
+            const QString localTreeName = localComponent->value(scTreeName);
+            if (remoteTreeName != localTreeName)
+                delete allComponents.take(remoteTreeNameComponents.value(localComponent->name()));
+            else
+                continue;
         // 3. Component has same treename in local and remote, don't add the component again.
-        } else if (!components.contains(treeName)) {
-            components.insert(treeName, component.take());
+        } else if (allComponents.contains(name)) {
+            continue;
         }
+        const QString treeName = localComponent->value(scTreeName);
+        if (!treeName.isEmpty())
+            allTreeNameComponents.insert(localComponent->name(), treeName);
+        allComponents.insert(name, localComponent.take());
     }
 
     // store all components that got a replacement
-    storeReplacedComponents(components, data, &treeNameComponents);
+    storeReplacedComponents(allComponents, data, &allTreeNameComponents);
 
-    if (!d->buildComponentTree(components, true))
+    // Move children of treename components
+    createAutoTreeNames(allComponents, allTreeNameComponents);
+
+    if (!d->buildComponentTree(allComponents, true))
         return false;
 
     d->commitPendingUnstableComponents();
@@ -4080,6 +4094,75 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
     emit finishUpdaterComponentsReset(d->m_updaterComponents);
     return true;
+}
+
+/*!
+    \internal
+
+    Creates automatic tree names for \a components that have a parent declaring
+    an explicit tree name. The child components keep the relative location
+    to their parent component.
+
+    The \a treeNameComponents is a map of original component names and new tree names.
+*/
+void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &components
+    , const QMap<QString, QString> &treeNameComponents)
+{
+    if (treeNameComponents.isEmpty())
+        return;
+
+    QHash<QString, Component *> componentsTemp = components;
+    for (auto *component : qAsConst(components)) {
+        if (component->treeName() != component->name()) // already handled
+            continue;
+
+        QString newName;
+        // Check treename candidates, keep the name closest to a leaf component
+        for (auto &name : treeNameComponents.keys()) {
+            if (!component->name().startsWith(name))
+                continue;
+
+            const Component *parent = components.value(treeNameComponents.value(name));
+            if (!(parent && parent->treeNameMoveChildren()))
+                continue; // TreeName only applied to parent
+
+            if (newName.split(QLatin1Char('.'), QString::SkipEmptyParts).count()
+                    > name.split(QLatin1Char('.'), QString::SkipEmptyParts).count()) {
+                continue;
+            }
+            newName = name;
+        }
+        if (newName.isEmpty()) // Nothing to do
+            continue;
+
+        const QString treeName = component->name()
+            .replace(newName, treeNameComponents.value(newName));
+
+        if (components.contains(treeName) || treeNameComponents.contains(treeName)) {
+            // Can happen if the parent was moved to an existing identifier (which did not
+            // have a component) and contains child that has a conflicting name with a component
+            // in the existing branch.
+            qCritical() << "Cannot register component" << component->name() << "with automatic "
+                "tree name" << treeName << "! Component with identifier" << treeName << "already exists.";
+
+            if (settings().allowUnstableComponents()) {
+                qCDebug(lcInstallerInstallLog)
+                    << "Falling back to using the original indetifier:" << component->name();
+
+                const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
+                d->m_pendingUnstableComponents.insert(component->name(),
+                    QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
+            } else {
+                componentsTemp.remove(componentsTemp.key(component));
+            }
+            continue;
+        }
+        component->setValue(scAutoTreeName, treeName);
+
+        componentsTemp.remove(componentsTemp.key(component));
+        componentsTemp.insert(treeName, component);
+    }
+    components = componentsTemp;
 }
 
 void PackageManagerCore::restoreCheckState()

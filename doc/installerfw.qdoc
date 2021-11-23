@@ -976,6 +976,14 @@
                 location which is calculated from component name. Component names and tree names
                 must be unique. Optional.
 
+                Specifying \c{moveChildren="true"} attribute will also change the location of any
+                child components this component has. Children will move to the overwritten tree name,
+                keeping the relative location to their parent component.
+
+                One component branch in the install tree view can have multiple components
+                specifying a tree name. The order in which the location of components is changed
+                is from leaf to root components.
+
     \endtable
 
     \section2 Component Dependencies

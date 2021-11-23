@@ -57,6 +57,7 @@ static const QLatin1String scReleaseDate("ReleaseDate");
 static const QLatin1String scDescription("Description");
 static const QLatin1String scDisplayName("DisplayName");
 static const QLatin1String scTreeName("TreeName");
+static const QLatin1String scAutoTreeName("AutoTreeName");
 static const QLatin1String scDependencies("Dependencies");
 static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scNewComponent("NewComponent");
