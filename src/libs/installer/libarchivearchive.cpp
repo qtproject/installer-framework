@@ -481,12 +481,32 @@ bool LibArchiveArchive::create(const QStringList &data)
     QScopedPointer<archive, ScopedPointerWriterDeleter> writer(archive_write_new());
     configureWriter(writer.get());
 
+    QStringList globbedData;
+    for (auto &dataEntry : data) { // Expand glob pattern entries with proper filenames
+        if (!dataEntry.contains(QLatin1Char('*'))) {
+            globbedData.append(dataEntry);
+            continue;
+        }
+        const QFileInfo entryInfo(dataEntry);
+        if (entryInfo.path().contains(QLatin1Char('*'))) {
+            setErrorString(QString::fromLatin1("Invalid argument \"%1\": glob patterns "
+                "are not supported between directory paths.").arg(dataEntry));
+            return false;
+        }
+        const QDir parentDir = entryInfo.dir();
+        const QList<QFileInfo> infoList = parentDir.entryInfoList(QStringList()
+            << entryInfo.fileName(), QDir::AllEntries | QDir::Hidden | QDir::NoDotAndDotDot);
+
+        for (auto &info : infoList)
+            globbedData.append(info.absoluteFilePath());
+    }
+
     try {
         int status;
         if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toLocal8Bit())))
             throw Error(QLatin1String(archive_error_string(writer.get())));
 
-        for (auto &dataEntry : data) {
+        for (auto &dataEntry : globbedData) {
             QScopedPointer<archive, ScopedPointerReaderDeleter> reader(archive_read_disk_new());
             configureDiskReader(reader.get());
 

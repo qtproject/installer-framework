@@ -106,6 +106,38 @@ private slots:
         QVERIFY(QFile(filename).remove());
     }
 
+    void testCreateArchiveWithGlobPattern_data()
+    {
+        archiveSuffixesTestData();
+    }
+
+    void testCreateArchiveWithGlobPattern()
+    {
+        QFETCH(QString, suffix);
+
+        const QString baseDir(QDir::tempPath() + "/tst_libarchivearchive");
+        QVERIFY(QDir().mkpath(baseDir));
+
+        const QString path1 = tempSourceFile(
+            "Source File 1.",
+            baseDir + "/file.XXXXXX"
+        );
+        const QString path2 = tempSourceFile(
+            "Source File 2.",
+            baseDir + "/file.XXXXXX"
+        );
+
+        const QString filename = generateTemporaryFileName() + suffix;
+        LibArchiveArchive target(filename);
+        QVERIFY(target.open(QIODevice::ReadWrite));
+        QVERIFY(target.create(QStringList() << baseDir + "/*"));
+        QCOMPARE(target.list().count(), 2);
+        target.close();
+
+        QVERIFY(QFile(filename).remove());
+        QVERIFY(QDir(baseDir).removeRecursively());
+    }
+
     void testCreateArchiveWithSpaces_data()
     {
         archiveSuffixesTestData();
