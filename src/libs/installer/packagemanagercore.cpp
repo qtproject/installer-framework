@@ -1103,8 +1103,8 @@ QString PackageManagerCore::targetDirWarning(const QString &targetDirectory) con
         }
     }
 
-    target = target.canonicalPath();
-    if (!target.isEmpty() && (target == QDir::root() || target == QDir::home())) {
+    target.setPath(target.canonicalPath());
+    if (!target.path().isEmpty() && (target == QDir::root() || target == QDir::home())) {
         return tr("As the install directory is completely deleted, installing in %1 is forbidden.")
             .arg(QDir::toNativeSeparators(target.path()));
     }
