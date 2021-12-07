@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -27,6 +27,7 @@
 **************************************************************************/
 
 #include "../shared/verifyinstaller.h"
+#include "../shared/packagemanager.h"
 
 #include <protocol.h>
 #include <qprocesswrapper.h>
@@ -50,6 +51,17 @@
 #include <QLocalServer>
 
 using namespace QInstaller;
+
+class MyRemoteObject : public RemoteObject
+{
+public:
+    MyRemoteObject()
+        : RemoteObject(QLatin1String("MyRemoteObject")) {};
+
+    ~MyRemoteObject() = default;
+
+    bool connectToServer() { return RemoteObject::connectToServer(); }
+};
 
 class tst_ClientServer : public QObject
 {
@@ -78,7 +90,7 @@ private:
     }
 
 private slots:
-    void initTestCase()
+    void init()
     {
         RemoteClient::instance().setActive(true);
     }
@@ -267,6 +279,37 @@ private slots:
             QCOMPARE(command, QByteArray(Protocol::Reply));
             QCOMPARE(authorized, false);
         }
+    }
+
+    void testCreateDestroyRemoteObject()
+    {
+        RemoteServer server;
+        QString socketName = QUuid::createUuid().toString();
+        server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
+        server.start();
+
+        RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
+                                      Protocol::StartAs::User);
+
+        // Look for warnings on connection and disconnection..
+        qInstallMessageHandler(exitOnWarningMessageHandler);
+
+        MyRemoteObject *object = new MyRemoteObject;
+        QVERIFY(!object->isConnectedToServer());
+        delete object;
+
+        object = new MyRemoteObject;
+        QVERIFY(object->connectToServer());
+        QVERIFY(object->isConnectedToServer());
+        delete object;
+
+        object = new MyRemoteObject;
+        QVERIFY(object->connectToServer());
+        QVERIFY(object->isConnectedToServer());
+
+        RemoteClient::instance().setActive(false);
+        QVERIFY(!object->isConnectedToServer());
+        delete object;
     }
 
     void testQSettingsWrapper()

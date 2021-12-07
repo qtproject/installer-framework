@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -58,7 +58,8 @@ RemoteObject::~RemoteObject()
 {
     if (m_socket) {
         if (QThread::currentThread() == m_socket->thread()) {
-            if (m_type != QLatin1String("RemoteClientPrivate")) {
+            if ((m_type != QLatin1String("RemoteClientPrivate"))
+                    && (m_socket->state() == QLocalSocket::ConnectedState)) {
                 writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
                 while (m_socket->bytesToWrite()) {
                     // QAbstractSocket::waitForBytesWritten() may fail randomly on Windows, use
@@ -67,7 +68,9 @@ RemoteObject::~RemoteObject()
                     connect(m_socket, &QLocalSocket::bytesWritten, &loop, &QEventLoop::quit);
                     loop.exec();
                 }
-                if (!m_socket->waitForDisconnected()) {
+                m_socket->disconnectFromServer();
+                if (!(m_socket->state() == QLocalSocket::UnconnectedState
+                        || m_socket->waitForDisconnected())) {
                     qCWarning(lcServer) << "Error while disconnecting from remote server:"
                                         << m_socket->error();
                 }

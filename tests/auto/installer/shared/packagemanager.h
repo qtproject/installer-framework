@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,12 +35,23 @@
 #include <fileutils.h>
 #include <settings.h>
 #include <init.h>
+#include <errors.h>
 
 #include <QTest>
 
 using namespace QInstaller;
 
 void silentTestMessageHandler(QtMsgType, const QMessageLogContext &, const QString &) {}
+void exitOnWarningMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    const QByteArray localMsg = msg.toLocal8Bit();
+    const char *file = context.file ? context.file : "";
+    const char *function = context.function ? context.function : "";
+    if (!(type == QtDebugMsg) && !(type == QtInfoMsg)) {
+        fprintf(stderr, "Caught message: %s (%s:%u, %s)\n", localMsg.constData(), file, context.line, function);
+        exit(1);
+    }
+}
 
 struct PackageManager
 {
