@@ -5,7 +5,7 @@
     <name>QInstaller::ProxyCredentialsDialog</name>
     <message>
         <source>Dialog</source>
-        <translation>다이얼로그</translation>
+        <translation>대화창</translation>
     </message>
     <message>
         <source>The proxy %1 requires a username and password.</source>
@@ -114,7 +114,7 @@
     </message>
     <message>
         <source>Repositories</source>
-        <translation>리포지토리</translation>
+        <translation>저장소</translation>
     </message>
     <message>
         <source>Add Username and Password for authentication if needed.</source>
@@ -122,7 +122,7 @@
     </message>
     <message>
         <source>Use temporary repositories only</source>
-        <translation>임시 리포지토리만 사용</translation>
+        <translation>임시 저장소만 사용</translation>
     </message>
     <message>
         <source>Add</source>
@@ -150,7 +150,7 @@
     </message>
     <message>
         <source>Check this to use repository during fetch.</source>
-        <translation>가져오는 중에 리포지토리를 사용하려면 확인하십시오.</translation>
+        <translation>가져오는 중에 저장소를 사용하려면 확인하십시오.</translation>
     </message>
     <message>
         <source>Add the username to authenticate on the server.</source>
@@ -162,23 +162,23 @@
     </message>
     <message>
         <source>The server&apos;s URL that contains a valid repository.</source>
-        <translation>유효한 리포지토리가 포함되어 있는 서버 URL입니다.</translation>
+        <translation>유효한 저장소가 포함되어 있는 서버 URL입니다.</translation>
     </message>
     <message>
         <source>An error occurred while testing this repository.</source>
-        <translation>이 리포지토리를 테스트하는 중에 오류가 발생했습니다.</translation>
+        <translation>이 저장소를 테스트하는 중에 오류가 발생했습니다.</translation>
     </message>
     <message>
         <source>The repository was tested successfully.</source>
-        <translation>리포지토리를 성공적으로 테스트했습니다.</translation>
+        <translation>저장소를 성공적으로 테스트했습니다.</translation>
     </message>
     <message>
         <source>Do you want to disable the repository?</source>
-        <translation>이 리포지토리를 비활성화하시겠습니까?</translation>
+        <translation>이 저장소를 비활성화하시겠습니까?</translation>
     </message>
     <message>
         <source>Do you want to enable the repository?</source>
-        <translation>이 리포지토리를 활성화하시겠습니까?</translation>
+        <translation>이 저장소를 활성화하시겠습니까?</translation>
     </message>
     <message>
         <source>Hide Passwords</source>
@@ -198,19 +198,19 @@
     </message>
     <message>
         <source>Repository</source>
-        <translation>리포지토리</translation>
+        <translation>저장소</translation>
     </message>
     <message>
         <source>Default repositories</source>
-        <translation>기본 리포지토리</translation>
+        <translation>기본 저장소</translation>
     </message>
     <message>
         <source>Temporary repositories</source>
-        <translation>임시 리포지토리</translation>
+        <translation>임시 저장소</translation>
     </message>
     <message>
         <source>User defined repositories</source>
-        <translation>사용자 정의 리포지토리</translation>
+        <translation>사용자 정의 저장소</translation>
     </message>
 </context>
 <context>
@@ -285,11 +285,11 @@
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
-        <translation>&quot;1%&quot; 디렉토리를 제거할 수 없음: %2</translation>
+        <translation>&quot;1%&quot; 디렉터리를 제거할 수 없음: %2</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation>&quot;1%&quot; 디렉토리를 생성할 수 없습니다.</translation>
+        <translation>&quot;1%&quot; 디렉터리를 생성할 수 없습니다.</translation>
     </message>
     <message>
         <source>Cannot copy file from &quot;%1&quot; to &quot;%2&quot;: %3</source>
@@ -301,7 +301,7 @@
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; 디렉토리를 생성할 수 없음: %2</translation>
+        <translation>&quot;%1&quot; 디렉터리를 생성할 수 없음: %2</translation>
     </message>
     <message>
         <source>Cannot open temporary file: %1</source>
@@ -348,19 +348,19 @@
     </message>
     <message>
         <source>Empty repository list for option &apos;addRepository&apos;.</source>
-        <translation>옵션 &apos;addRepository&apos;에 대한 리포지토리 목록이 비어있습니다.</translation>
+        <translation>옵션 &apos;addRepository&apos;에 대한 저장소 목록이 비어있습니다.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;addTempRepository&apos;.</source>
-        <translation>옵션 &apos;addTempRepository&apos;에 대한 리포지토리 목록이 비어있습니다.</translation>
+        <translation>옵션 &apos;addTempRepository&apos;에 대한 저장소 목록이 비어있습니다.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;setTempRepository&apos;.</source>
-        <translation>옵션 &apos;setTempRepository&apos;에 대한 리포지토리 목록이 비어있습니다.</translation>
+        <translation>옵션 &apos;setTempRepository&apos;에 대한 저장소 목록이 비어있습니다.</translation>
     </message>
     <message>
         <source>Empty repository list for option &apos;installCompressedRepository&apos;.</source>
-        <translation>옵션 &apos;installCompressedRepository&apos;에 대한 리포지토리 목록이 비어있습니다.</translation>
+        <translation>옵션 &apos;installCompressedRepository&apos;에 대한 저장소 목록이 비어있습니다.</translation>
     </message>
     <message>
         <source>The file %1 does not exist.</source>
@@ -577,11 +577,11 @@
     </message>
     <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
-        <translation>QBSP(Qt Board Support Package) 파일을 선택하여 온라인 리포지토리에서 직접 사용할 수 없는 추가 콘텐츠를 설치합니다.</translation>
+        <translation>QBSP(Qt Board Support Package) 파일을 선택하여 온라인 저장소에서 직접 사용할 수 없는 추가 콘텐츠를 설치합니다.</translation>
     </message>
     <message>
         <source>Filter the enabled repository categories</source>
-        <translation>활성화된 리포지토리 범주를 필터링합니다.</translation>
+        <translation>활성화된 저장소 범주를 필터링합니다.</translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
@@ -666,11 +666,11 @@
     </message>
     <message>
         <source>Invalid argument in %1: Directory &quot;%2&quot; is invalid.</source>
-        <translation>%1에 유효하지 않은 인수: &quot;%2&quot; 디렉토리가 유효하지 않습니다.</translation>
+        <translation>%1에 유효하지 않은 인수: &quot;%2&quot; 디렉터리가 유효하지 않습니다.</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation>&quot;1%&quot; 디렉토리를 생성할 수 없습니다.</translation>
+        <translation>&quot;1%&quot; 디렉터리를 생성할 수 없습니다.</translation>
     </message>
     <message>
         <source>Failed to overwrite &quot;%1&quot;.</source>
@@ -754,7 +754,7 @@
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;.</source>
-        <translation>&quot;1%&quot; 디렉토리를 제거할 수 없습니다.</translation>
+        <translation>&quot;1%&quot; 디렉터리를 제거할 수 없습니다.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading.</source>
@@ -770,7 +770,7 @@
     </message>
     <message>
         <source>Cannot create target directory: &quot;%1&quot;.</source>
-        <translation>대상 디렉토리를 생성할 수 없음: &quot;%1&quot;.</translation>
+        <translation>대상 디렉터리를 생성할 수 없음: &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Unknown exception caught: %1.</source>
@@ -786,7 +786,7 @@
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
-        <translation>&quot;1%&quot; 디렉토리를 제거할 수 없음: %2</translation>
+        <translation>&quot;1%&quot; 디렉터리를 제거할 수 없음: %2</translation>
     </message>
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
@@ -801,7 +801,7 @@
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; 디렉토리를 생성할 수 없음: %2</translation>
+        <translation>&quot;%1&quot; 디렉터리를 생성할 수 없음: %2</translation>
     </message>
     <message>
         <source>Failed to overwrite &quot;%1&quot;: %2</source>
@@ -1098,7 +1098,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Invalid Argument: source directory must not be empty.</source>
-        <translation>유효하지 않은 인수: 소스 디렉토리를 입력해야 합니다.</translation>
+        <translation>유효하지 않은 인수: 소스 디렉터리를 입력해야 합니다.</translation>
     </message>
     <message>
         <source>Cannot backup file &quot;%1&quot;: %2</source>
@@ -1114,7 +1114,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; 디렉토리를 생성할 수 없음: %2</translation>
+        <translation>&quot;%1&quot; 디렉터리를 생성할 수 없음: %2</translation>
     </message>
 </context>
 <context>
@@ -1196,11 +1196,11 @@ Error while loading %2</source>
     <name>DirectoryGuard</name>
     <message>
         <source>Path &quot;%1&quot; exists but is not a directory.</source>
-        <translation>&quot;%1&quot; 경로가 존재하지만 디렉토리가 아닙니다.</translation>
+        <translation>&quot;%1&quot; 경로가 존재하지만 디렉터리가 아닙니다.</translation>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation>&quot;1%&quot; 디렉토리를 생성할 수 없습니다.</translation>
+        <translation>&quot;1%&quot; 디렉터리를 생성할 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -1276,7 +1276,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
-        <translation>압축된 리포지토리의 압축을 해제합니다. 약간의 시간이 걸릴 수 있습니다...</translation>
+        <translation>압축된 저장소의 압축을 해제합니다. 약간의 시간이 걸릴 수 있습니다...</translation>
     </message>
     <message>
         <source>Metadata download canceled.</source>
@@ -1300,7 +1300,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Failure to fetch repositories.</source>
-        <translation>리포지토리를 가져올 수 없습니다.</translation>
+        <translation>저장소를 가져올 수 없습니다.</translation>
     </message>
     <message>
         <source>Extracting meta information...</source>
@@ -1312,15 +1312,15 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>원격 리포지토리에서 메타 정보 검색 중... %1/%2 </translation>
+        <translation>원격 저장소에서 메타 정보 검색 중... %1/%2 </translation>
     </message>
     <message>
         <source>Retrieving meta information from remote repository... </source>
-        <translation>원격 리포지토리에서 메타 정보 검색 중... </translation>
+        <translation>원격 저장소에서 메타 정보 검색 중... </translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>아카이브 &quot;%1&quot; 추출 중에 오류 발생: %2</translation>
+        <translation>자료 보관소 &quot;%1&quot; 추출 중에 오류 발생: %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -1424,7 +1424,7 @@ Downloading packages...</source>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
-        <translation>선택한 디렉토리가 이미 존재하며 설치 항목도 포함되어 있습니다. 설치하려면 다른 디렉토리를 선택하십시오.</translation>
+        <translation>선택한 디렉터리가 이미 존재하며 설치 항목도 포함되어 있습니다. 설치하려면 다른 디렉토리를 선택하십시오.</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -1435,7 +1435,7 @@ Downloading packages...</source>
 Note that it will be completely wiped on uninstallation of this application.
 It is not advisable to install into this directory as installation might fail.
 Do you want to continue?</source>
-        <translation>파일이 이미 있는 기존 디렉토리를 설치 디렉토리로 선택하셨습니다.
+        <translation>파일이 이미 있는 기존 디렉터리를 설치 디렉토리로 선택하셨습니다.
 이 애플리케이션을 제거할 때 디렉토리가 완전히 삭제되오니 유의하십시오.
 설치가 실패할 수 있으므로 이 디렉토리에 설치하는 것은 권장하지 않습니다.
 계속하시겠습니까?</translation>
@@ -1446,7 +1446,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The installation path cannot be empty, please specify a valid directory.</source>
-        <translation>설치 경로가 비어 있으면 안 됩니다. 유효한 디렉토리를 선택하십시오.</translation>
+        <translation>설치 경로가 비어 있으면 안 됩니다. 유효한 디렉터리를 선택하십시오.</translation>
     </message>
     <message>
         <source>The installation path cannot be relative, please specify an absolute path.</source>
@@ -1454,7 +1454,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The path or installation directory contains non ASCII characters. This is currently not supported! Please choose a different path or installation directory.</source>
-        <translation>설치 경로 또는 디렉토리에 ASCII 문자가 아닌 문자가 포함되어 있습니다. 현재 이는 지원되지 않습니다! 다른 설치 경로나 디렉토리를 선택하십시오.</translation>
+        <translation>설치 경로 또는 디렉터리에 ASCII 문자가 아닌 문자가 포함되어 있습니다. 현재 이는 지원되지 않습니다! 다른 설치 경로나 디렉토리를 선택하십시오.</translation>
     </message>
     <message>
         <source>As the install directory is completely deleted, installing in %1 is forbidden.</source>
@@ -1474,11 +1474,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The installation path must not end with &apos;.&apos;, please specify a valid directory.</source>
-        <translation>설치 경로가 &apos;.&apos; 문자로 끝나면 안 됩니다. 유효한 디렉토리를 지정하십시오.</translation>
+        <translation>설치 경로가 &apos;.&apos; 문자로 끝나면 안 됩니다. 유효한 디렉터리를 지정하십시오.</translation>
     </message>
     <message>
         <source>The installation path must not contain &quot;%1&quot;, please specify a valid directory.</source>
-        <translation>설치 경로에 &quot;%1&quot; 문자가 포함되면 안 됩니다. 유효한 디렉토리를 지정하십시오.</translation>
+        <translation>설치 경로에 &quot;%1&quot; 문자가 포함되면 안 됩니다. 유효한 디렉터리를 지정하십시오.</translation>
     </message>
     <message>
         <source>Application not running in Package Manager mode.</source>
@@ -1657,7 +1657,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cannot remove temporary data file &quot;%1&quot;: %2</source>
-        <translation>임시 디렉토리 &quot;%1&quot; 제거가 불가능합니다. %2</translation>
+        <translation>임시 디렉터리 &quot;%1&quot; 제거가 불가능합니다. %2</translation>
     </message>
     <message>
         <source>Cannot write maintenance tool binary data to %1: %2</source>
@@ -1673,7 +1673,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cannot create directory &quot;%1&quot;.</source>
-        <translation>&quot;1%&quot; 디렉토리를 생성할 수 없습니다.</translation>
+        <translation>&quot;1%&quot; 디렉터리를 생성할 수 없습니다.</translation>
     </message>
     <message>
         <source>Cannot write offline binary to &quot;%1&quot;: %2</source>
@@ -1681,7 +1681,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cannot remove temporary file &quot;%1&quot;: %2</source>
-        <translation>임시 디렉토리 &quot;%1&quot; 제거가 불가능합니다. %2</translation>
+        <translation>임시 디렉터리 &quot;%1&quot; 제거가 불가능합니다. %2</translation>
     </message>
     <message>
         <source>Variable &apos;TargetDir&apos; not set.</source>
@@ -1697,7 +1697,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Creating local repository</source>
-        <translation>로컬 리포지토리 생성 중</translation>
+        <translation>로컬 저장소 생성 중</translation>
     </message>
     <message>
         <source>Creating Maintenance Tool</source>
@@ -1745,7 +1745,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot create target directory for installer.</source>
-        <translation>설치 관리자에 사용할 대상 디렉토리를 생성할 수 없습니다.</translation>
+        <translation>설치 관리자에 사용할 대상 디렉터리를 생성할 수 없습니다.</translation>
     </message>
     <message>
         <source>Preparing offline generation...</source>
@@ -1765,7 +1765,7 @@ Update aborted!</source>
     </message>
     <message>
         <source>Cannot remove temporary directory &quot;%1&quot;.</source>
-        <translation>임시 디렉토리 &quot;%1&quot; 제거에 실패했습니다.</translation>
+        <translation>임시 디렉터리 &quot;%1&quot; 제거에 실패했습니다.</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
@@ -1878,7 +1878,7 @@ Installing component %1</source>
     </message>
     <message>
         <source>Specify proxy settings and configure repositories for add-on components.</source>
-        <translation>애드온 구성요소를 위한 프록시 설정과 구성 리포지토리를 지정하십시오.</translation>
+        <translation>애드온 구성요소를 위한 프록시 설정과 구성 저장소를 지정하십시오.</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1919,7 +1919,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>At least one valid and enabled repository required for this action to succeed.</source>
-        <translation>이 작업을 성공적으로 수행하려면 최소 1개의 유효하고 활성화된 리포지토리가 필요합니다.</translation>
+        <translation>이 작업을 성공적으로 수행하려면 최소 1개의 유효하고 활성화된 저장소가 필요합니다.</translation>
     </message>
     <message>
         <source>No updates available.</source>
@@ -1974,7 +1974,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Please specify the directory where %1 will be installed.</source>
-        <translation>%1이(가) 설치될 디렉토리를 지정하십시오.</translation>
+        <translation>%1이(가) 설치될 디렉터리를 지정하십시오.</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -1987,7 +1987,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Browse file system to choose the installation directory.</source>
-        <translation>파일 시스템을 탐색하여 설치 디렉토리를 선택합니다.</translation>
+        <translation>파일 시스템을 탐색하여 설치 디렉터리를 선택합니다.</translation>
     </message>
     <message>
         <source>Select Installation Folder</source>
@@ -2002,7 +2002,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>프로그램 바로 가기를 생성하려는 시작 메뉴를 선택합니다. 이름을 직접 입력하여 새 디렉토리를 생성할 수도 있습니다.</translation>
+        <translation>프로그램 바로 가기를 생성하려는 시작 메뉴를 선택합니다. 이름을 직접 입력하여 새 디렉터리를 생성할 수도 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -2017,7 +2017,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>컴퓨터에 %1 제거를 시작할 준비가 되었습니다.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 프로그램 디렉토리는 모두 삭제되며&lt;/font&gt;, 해당 디렉토리에 포함된 모든 콘텐츠도 삭제됩니다!</translation>
+        <translation>컴퓨터에 %1 제거를 시작할 준비가 되었습니다.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 프로그램 디렉터리는 모두 삭제되며&lt;/font&gt;, 해당 디렉토리에 포함된 모든 콘텐츠도 삭제됩니다!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2290,7 +2290,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Empty repository URL.</source>
-        <translation>리포지토리 URL이 비었습니다.</translation>
+        <translation>저장소 URL이 비었습니다.</translation>
     </message>
     <message>
         <source>Download canceled.</source>
@@ -2298,7 +2298,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Timeout while testing repository &quot;%1&quot;.</source>
-        <translation>&quot;%1&quot; 리포지토리를 테스트하는 중에 시간이 초과되었습니다.</translation>
+        <translation>&quot;%1&quot; 저장소를 테스트하는 중에 시간이 초과되었습니다.</translation>
     </message>
     <message>
         <source>Cannot parse Updates.xml: %1</source>
@@ -2314,7 +2314,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Unknown error while testing repository &quot;%1&quot;.</source>
-        <translation>&quot;%1&quot; 리포지토리를 테스트하는 중에 알 수 없는 오류가 발생했습니다.</translation>
+        <translation>&quot;%1&quot; 저장소를 테스트하는 중에 알 수 없는 오류가 발생했습니다.</translation>
     </message>
 </context>
 <context>
@@ -2619,7 +2619,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>KDUpdater::MkdirOperation</name>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; 디렉토리를 생성할 수 없음: %2</translation>
+        <translation>&quot;%1&quot; 디렉터리를 생성할 수 없음: %2</translation>
     </message>
     <message>
         <source>Unknown error.</source>
@@ -2627,22 +2627,22 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
-        <translation>&quot;1%&quot; 디렉토리를 제거할 수 없음: %2</translation>
+        <translation>&quot;1%&quot; 디렉터리를 제거할 수 없음: %2</translation>
     </message>
 </context>
 <context>
     <name>KDUpdater::RmdirOperation</name>
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
-        <translation>&quot;1%&quot; 디렉토리를 제거할 수 없음: %2</translation>
+        <translation>&quot;1%&quot; 디렉터리를 제거할 수 없음: %2</translation>
     </message>
     <message>
         <source>The directory does not exist.</source>
-        <translation>이 디렉토리가 존재하지 않습니다.</translation>
+        <translation>이 디렉터리가 존재하지 않습니다.</translation>
     </message>
     <message>
         <source>Cannot recreate directory &quot;%1&quot;: %2</source>
-        <translation>&quot;1%&quot; 디렉토리를 다시 생성할 수 없습니다. %2</translation>
+        <translation>&quot;1%&quot; 디렉터리를 다시 생성할 수 없습니다. %2</translation>
     </message>
 </context>
 <context>
