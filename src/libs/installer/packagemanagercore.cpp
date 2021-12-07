@@ -1030,8 +1030,9 @@ QString PackageManagerCore::fromNativeSeparators(const QString &path)
 }
 
 /*!
-    Checks whether the target directory \a targetDirectory exists and has contents:
+    Checks whether installation is allowed to \a targetDirectory:
     \list
+        \li Returns \c true if the directory does not exist.
         \li Returns \c true if the directory exists and is empty.
         \li Returns \c false if the directory already exists and contains an installation.
         \li Returns \c false if the target is a file or a symbolic link.
@@ -1039,14 +1040,17 @@ QString PackageManagerCore::fromNativeSeparators(const QString &path)
             choice that the end users make in the displayed message box.
     \endlist
 */
-bool PackageManagerCore::checkTargetDir(const QString &targetDirectory)
+bool PackageManagerCore::installationAllowedToDirectory(const QString &targetDirectory)
 {
+    const QFileInfo fi(targetDirectory);
+    if (!fi.exists())
+        return true;
+
     const QDir dir(targetDirectory);
     // the directory exists and is empty...
     if (dir.exists() && dir.entryList(QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty())
         return true;
 
-    const QFileInfo fi(targetDirectory);
     if (fi.isDir()) {
         QString fileName = settings().maintenanceToolName();
 #if defined(Q_OS_MACOS)

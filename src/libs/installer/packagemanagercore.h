@@ -216,7 +216,7 @@ public:
     Q_INVOKABLE QString toNativeSeparators(const QString &path);
     Q_INVOKABLE QString fromNativeSeparators(const QString &path);
 
-    bool checkTargetDir(const QString &targetDirectory);
+    bool installationAllowedToDirectory(const QString &targetDirectory);
     QString targetDirWarning(const QString &targetDirectory) const;
 
 public:

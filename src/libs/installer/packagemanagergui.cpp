@@ -2392,7 +2392,7 @@ bool TargetDirectoryPage::validatePage()
     if (!QVariant(remove).toBool())
         return true;
 
-    return this->packageManagerCore()->checkTargetDir(targetDir());
+    return this->packageManagerCore()->installationAllowedToDirectory(targetDir());
 }
 
 /*!
