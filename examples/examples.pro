@@ -5,13 +5,16 @@ SUBDIRS += \
   componenterror \
   dependencies \
   dynamicpage \
+  hidecheckbox \
   licenseagreement \
   modifyextract \
   online \
   openreadme \
   quitinstaller \
   registerfileextension \
+  registervirtualcomponentforuninstall \
   repositorycategories \
   startmenu \
   systeminfo \
-  stylesheet
+  stylesheet \
+  unstablecomponent
