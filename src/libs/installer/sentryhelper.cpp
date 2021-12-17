@@ -256,9 +256,7 @@ void initializeSentry(const QStringList &arguments)
         return;
     }
 
-    // For now test against eve-installer-crashes
-    QString dsnUrl = QLatin1String("https://755a650ea5df47859fe53b92fc1b05c1@o198460.ingest.sentry.io/5631340");
-    // QString dsnUrl = QInstaller::getSentryDsn();
+    QString dsnUrl = QInstaller::getSentryDsn();
 
     sentry_options_t *options = sentry_options_new();
     sentry_options_set_dsn(options, dsnUrl.toLocal8Bit().constData());
