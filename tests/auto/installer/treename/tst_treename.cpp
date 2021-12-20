@@ -44,7 +44,8 @@ private slots:
     void moveToSubItem();
     void dependencyToMovedItem();
     void autodependOnMovedItem();
-    void moveToExistingItem();
+    void moveToExistingItemAllowUnstableComponents();
+    void moveToExistingItemNoUnstableComponents();
 
     void init();
     void cleanup();
@@ -111,12 +112,24 @@ void tst_TreeName::autodependOnMovedItem()
             << "componentASub2.txt" << "componentD.txt");
 }
 
-void tst_TreeName::moveToExistingItem()
+void tst_TreeName::moveToExistingItemAllowUnstableComponents()
 {
     QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
             (m_installDir, ":///data/invalid_repository"));
-    QCOMPARE(PackageManagerCore::Failure, core->installSelectedComponentsSilently(QStringList() << "componentA"));
-    QCOMPARE(core->error(), "Cannot register component! Component with identifier componentA.sub1 already exists.");
+    core->settings().setAllowUnstableComponents(true);
+
+    QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentA"));
+    QVERIFY(core->componentByName("componentB")->isUnstable());
+}
+
+void tst_TreeName::moveToExistingItemNoUnstableComponents()
+{
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/invalid_repository"));
+    core->settings().setAllowUnstableComponents(false);
+
+    QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentA"));
+    QVERIFY(!core->componentByName("componentB"));
 }
 
 void tst_TreeName::init()

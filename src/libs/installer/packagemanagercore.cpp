@@ -1417,22 +1417,56 @@ bool PackageManagerCore::fetchLocalPackagesTree()
     d->clearAllComponentLists();
     QHash<QString, QInstaller::Component*> components;
 
-    const QStringList &keys = installedPackages.keys();
-    foreach (const QString &key, keys) {
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        component->loadDataFromPackage(installedPackages.value(key));
-        const QString &name = component->treeName();
-        if (components.contains(name)) {
-            d->setStatus(Failure, tr("Cannot register component! Component with identifier %1 "
-                                     "already exists.").arg(name));
-            return false;
+    std::function<void(QList<LocalPackage> *, bool)> loadLocalPackages;
+    loadLocalPackages = [&](QList<LocalPackage> *treeNamePackages, bool firstRun) {
+        foreach (auto &package, (firstRun ? installedPackages.values() : *treeNamePackages)) {
+            if (firstRun && !package.treeName.isEmpty()) {
+                // Package has a tree name, leave for later
+                treeNamePackages->append(package);
+                continue;
+            }
+
+            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            component->loadDataFromPackage(package);
+            QString name = component->treeName();
+            if (components.contains(name)) {
+                qCritical() << "Cannot register component" << component->name() << "with name" << name
+                            << "! Component with identifier" << name << "already exists.";
+                // Conflicting original name, skip.
+                if (component->value(scTreeName).isEmpty())
+                    continue;
+
+                // Conflicting tree name, check if we can add with original name.
+                name = component->name();
+                if (!settings().allowUnstableComponents() || components.contains(name))
+                    continue;
+
+                qCDebug(lcInstallerInstallLog)
+                    << "Registering component with the original indetifier:" << name;
+                component->removeValue(scTreeName);
+                const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
+                d->m_pendingUnstableComponents.insert(component->name(),
+                    QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
+            }
+            components.insert(name, component.take());
         }
-        components.insert(name, component.take());
+        // Second pass with leftover packages
+        if (firstRun)
+            loadLocalPackages(treeNamePackages, false);
+    };
+
+    {
+        // Loading package data is performed in two steps: first, components without
+        // - and then components with tree names. This is to ensure components with tree
+        // names do not replace other components when registering fails to a name conflict.
+        QList<LocalPackage> treeNamePackagesTmp;
+        loadLocalPackages(&treeNamePackagesTmp, true);
     }
 
     if (!d->buildComponentTree(components, false))
         return false;
 
+    d->commitPendingUnstableComponents();
     updateDisplayVersions(scDisplayVersion);
 
     emit finishAllComponentsReset(d->m_rootComponents);
@@ -3657,22 +3691,38 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
     try {
         // Check if we already added the component to the available components list.
         // Component treenames and names must be unique.
-        QString name = data.package->data(scTreeName).toString();
-        if (name.isEmpty())
-            name = data.package->data(scName).toString();
+        const QString packageName = data.package->data(scName).toString();
+        const QString packageTreeName = data.package->data(scTreeName).toString();
+
+        QString name = packageTreeName.isEmpty() ? packageName : packageTreeName;
         if (data.components->contains(name)) {
-            d->setStatus(Failure, tr("Cannot register component! Component with identifier %1 "
-                                     "already exists.").arg(name));
-            return false;
+            qCritical() << "Cannot register component" << packageName << "with name" << name
+                        << "! Component with identifier" << name << "already exists.";
+            // Conflicting original name, skip.
+            if (packageTreeName.isEmpty())
+                return false;
+
+            // Conflicting tree name, check if we can add with original name.
+            if (!settings().allowUnstableComponents() || data.components->contains(packageName))
+                return false;
+
+            qCDebug(lcInstallerInstallLog)
+                << "Registering component with the original indetifier:" << packageName;
+
+            component->removeValue(scTreeName);
+            const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
+            d->m_pendingUnstableComponents.insert(component->name(),
+                QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
         }
-        name = data.package->data(scName).toString();
+        name = packageName;
         if (settings().allowUnstableComponents()) {
             // Check if there are sha checksum mismatch. Component will still show in install tree
             // but is unselectable.
             foreach (const QString packageName, d->m_metadataJob.shaMismatchPackages()) {
                 if (packageName == component->name()) {
-                    QString errorString = QLatin1String("SHA mismatch detected for component ") + packageName;
-                    component->setUnstable(Component::UnstableError::ShaMismatch, errorString);
+                    const QString errorString = QLatin1String("SHA mismatch detected for component ") + packageName;
+                    d->m_pendingUnstableComponents.insert(component->name(),
+                        QPair<Component::UnstableError, QString>(Component::ShaMismatch, errorString));
                 }
             }
         }
@@ -3786,28 +3836,47 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     data.installedPackages = &locals;
 
     QMap<QString, QString> treeNameComponents;
-    foreach (Package *const package, remotes) {
-        if (d->statusCanceledOrFailed())
-            return false;
 
-        if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
-            continue;
+    std::function<bool(PackagesList *, bool)> loadRemotePackages;
+    loadRemotePackages = [&](PackagesList *treeNamePackages, bool firstRun) -> bool {
+        foreach (Package *const package, (firstRun ? remotes : *treeNamePackages)) {
+            if (d->statusCanceledOrFailed())
+                return false;
 
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        data.package = package;
-        component->loadDataFromPackage(*package);
-        if (updateComponentData(data, component.data())) {
-            // Create a list where is name and treename. Repo can contain a package with
-            // a different treename of component which is already installed. We don't want
-            // to move already installed local packages.
-            const QString treeName = component->value(scTreeName);
-            if (!treeName.isEmpty())
-                treeNameComponents.insert(component->name(), treeName);
-            QString name = component->treeName();
-            components.insert(name, component.take());
-        } else {
-            return false;
+            if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
+                continue;
+
+            if (firstRun && !package->data(scTreeName).toString().isEmpty()) {
+                // Package has a tree name, leave for later
+                treeNamePackages->append(package);
+                continue;
+            }
+
+            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            data.package = package;
+            component->loadDataFromPackage(*package);
+            if (updateComponentData(data, component.data())) {
+                // Create a list where is name and treename. Repo can contain a package with
+                // a different treename of component which is already installed. We don't want
+                // to move already installed local packages.
+                const QString treeName = component->value(scTreeName);
+                if (!treeName.isEmpty())
+                    treeNameComponents.insert(component->name(), treeName);
+                QString name = component->treeName();
+                components.insert(name, component.take());
+            }
         }
+        // Second pass with leftover packages
+        return firstRun ? loadRemotePackages(treeNamePackages, false) : true;
+    };
+
+    {
+        // Loading remote package data is performed in two steps: first, components without
+        // - and then components with tree names. This is to ensure components with tree
+        // names do not replace other components when registering fails to a name conflict.
+        PackagesList treeNamePackagesTmp;
+        if (!loadRemotePackages(&treeNamePackagesTmp, true))
+            return false;
     }
 
     foreach (const QString &key, locals.keys()) {
@@ -3840,6 +3909,8 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 
     if (!d->buildComponentTree(components, true))
         return false;
+
+    d->commitPendingUnstableComponents();
 
     emit finishAllComponentsReset(d->m_rootComponents);
     return true;
@@ -3916,8 +3987,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 
             // this is not a dependency, it is a real update
             components.insert(name, d->m_updaterComponentsDeps.takeLast());
-        } else {
-            return false;
         }
     }
 

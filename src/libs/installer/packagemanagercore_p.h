@@ -35,6 +35,7 @@
 #include "packagemanagerproxyfactory.h"
 #include "packagesource.h"
 #include "qinstallerglobal.h"
+#include "component.h"
 
 #include "sysinfo.h"
 #include "updatefinder.h"
@@ -52,7 +53,6 @@ using namespace KDUpdater;
 namespace QInstaller {
 
 struct BinaryLayout;
-class Component;
 class ScriptEngine;
 class ComponentModel;
 class TempDirDeleter;
@@ -254,6 +254,7 @@ private:
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
     bool askUserConfirmCommand() const;
     bool packageNeedsUpdate(const LocalPackage &localPackage, const Package *update) const;
+    void commitPendingUnstableComponents();
 
 private:
     PackageManagerCore *m_core;
@@ -273,6 +274,8 @@ private:
     // < name (component to replace), < replacement component, component to replace > >
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceAllMode;
     QHash<QString, QPair<Component*, Component*> > m_componentsToReplaceUpdaterMode;
+
+    QHash<QString, QPair<Component::UnstableError, QString>> m_pendingUnstableComponents;
 
     InstallerCalculator *m_installerCalculator;
     UninstallerCalculator *m_uninstallerCalculator;

@@ -72,7 +72,8 @@ public:
         DepencyToUnstable = 0,
         ShaMismatch,
         ScriptLoadingFailed,
-        MissingDependency
+        MissingDependency,
+        InvalidTreeName
     };
     Q_ENUM(UnstableError)
 
@@ -106,6 +107,7 @@ public:
     QHash<QString, QString> variables() const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString()) const;
+    int removeValue(const QString &key);
 
     QStringList archives() const;
     PackageManagerCore *packageManagerCore() const;

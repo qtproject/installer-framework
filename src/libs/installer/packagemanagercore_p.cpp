@@ -31,7 +31,6 @@
 #include "binarycontent.h"
 #include "binaryformatenginehandler.h"
 #include "binarylayout.h"
-#include "component.h"
 #include "scriptengine.h"
 #include "componentmodel.h"
 #include "errors.h"
@@ -2871,6 +2870,27 @@ bool PackageManagerCorePrivate::packageNeedsUpdate(const LocalPackage &localPack
             updateNeeded = false;
     }
     return updateNeeded;
+}
+
+void PackageManagerCorePrivate::commitPendingUnstableComponents()
+{
+    if (m_pendingUnstableComponents.isEmpty())
+        return;
+
+    for (auto &componentName : m_pendingUnstableComponents.keys()) {
+        Component *const component = m_core->componentByName(componentName);
+        if (!component) {
+            qCWarning(lcInstallerInstallLog) << "Failure while marking component "
+                "unstable. No such component exists:" << componentName;
+            continue;
+        }
+
+        const QPair<Component::UnstableError, QString> unstableError
+            = m_pendingUnstableComponents.value(componentName);
+
+        component->setUnstable(unstableError.first, unstableError.second);
+    }
+    m_pendingUnstableComponents.clear();
 }
 
 } // namespace QInstaller

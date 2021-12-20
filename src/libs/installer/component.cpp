@@ -87,6 +87,8 @@ static const QLatin1String scUnstable("Unstable");
             Component script has errors or loading fails.
     \value  MissingDependency
             Component has dependencies to missing components.
+    \value  InvalidTreeName
+            Component has an invalid tree name.
 */
 
 /*!
@@ -422,6 +424,16 @@ QString Component::value(const QString &key, const QString &defaultValue) const
     if (key == scDefault)
         return isDefault() ? scTrue : scFalse;
     return d->m_vars.value(key, defaultValue);
+}
+
+/*!
+    Removes all the values that have the \a key from the variables set for this component.
+    Returns the number of values removed which is 1 if the key exists in the variables,
+    and 0 otherwise.
+*/
+int Component::removeValue(const QString &key)
+{
+    return d->m_vars.remove(key);
 }
 
 /*!
