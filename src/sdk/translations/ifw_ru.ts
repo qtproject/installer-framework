@@ -930,6 +930,10 @@
         <source>Filter the enabled repository categories</source>
         <translation>Отфильтруйте категории включенного хранилища по выбору.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>Поиск</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -1106,6 +1110,10 @@
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>Не удалось создать архив «%1»: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Неподдерживаемый архив &quot;%1&quot;: нет зарегестрированного обработчика для файла с расширением &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1436,6 +1444,10 @@ Error while loading %2</source>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>Не удалось создать каталог «%1»: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>Не удалось подготовиться для создания резервной копии файла &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1607,6 +1619,10 @@ Error while loading %2</source>
     <message>
         <source>Metadata download canceled.</source>
         <translation>Загрузка метаданных отменена.</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Неподдерживаемый архив &quot;%1&quot;: нет зарегестрированного обработчика для файла с расширением &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
