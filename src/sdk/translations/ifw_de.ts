@@ -882,6 +882,10 @@
         <translation>Wählt alle Komponenten in der Baumansicht ab.</translation>
     </message>
     <message>
+        <source>Search</source>
+        <translation>Suchen</translation>
+    </message>
+    <message>
         <source>Open File</source>
         <translation>Datei öffnen</translation>
     </message>
@@ -1049,6 +1053,10 @@
     <message>
         <source>Cannot remove file &quot;%1&quot;: %2</source>
         <translation>Konnte Datei &quot;%1&quot; nicht löschen: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Nicht unterstütztes Archivformat: &quot;%1&quot;: Für die Dateiendung &quot;%2&quot; ist keine Behandlungsroutine registriert.</translation>
     </message>
     <message>
         <source>Cannot move file &quot;%1&quot; to &quot;%2&quot;: %3</source>
@@ -1408,6 +1416,10 @@ Fehler beim Laden von %2</translation>
         <translation>Ungültiges Argument: Quellordner darf nicht leer sein.</translation>
     </message>
     <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>Konnte Sichern der Datei &quot;%1&quot; nicht vorbereiten: %2</translation>
+    </message>
+    <message>
         <source>Cannot backup file &quot;%1&quot;: %2</source>
         <translation>Konnte Datei &quot;%1&quot; nicht sichern: %2</translation>
     </message>
@@ -1587,6 +1599,10 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Retrieving meta information from remote repository... </source>
         <translation>Metainformationen werden vom Installationsserver empfangen ... </translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Nicht unterstütztes Archivformat: &quot;%1&quot;: Für die Dateiendung &quot;%2&quot; ist keine Behandlungsroutine registriert.</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
