@@ -615,6 +615,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>المكونات الضرورية التي يجب تحديثها أولاً قبل اختيار المكونات الآخرى للتحديث.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>بحث</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -791,6 +795,10 @@
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>لا يمكن إنشاء الأرشيف &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>أرشيف غير مدعوم &quot;%1&quot;: لم يتم تسجيل أي معالج للاحقة الملف &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1146,6 +1154,10 @@ Error while loading %2</source>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>لا يمكن إنشاء المجلد &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>لا يمكن التحضير لملف النسخ الاحتياطي &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>Lib7z</name>
@@ -1355,6 +1367,10 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>أرشيف غير مدعوم &quot;%1&quot;: لم يتم تسجيل أي معالج للاحقة الملف &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
