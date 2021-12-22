@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
+        <file>data/components.xml</file>
+
         <file>data/repository/Updates.xml</file>
         <file>data/repository/componentA/1.0.0meta.7z</file>
         <file>data/repository/componentA/1.0.0content.7z</file>

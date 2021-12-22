@@ -59,6 +59,8 @@ private slots:
     void replaceComponentWithTreeName();
     void replaceComponentWithTreeNameMoveChildren();
 
+    void remotePackageConflictsLocal();
+
     void init();
     void cleanup();
 
@@ -379,6 +381,63 @@ void tst_TreeName::autoDependOnMovedSubItem()
     VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt");
     VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
             << "installcontentA.txt" << "installcontentA_1.txt" << "installcontentB.txt");
+}
+
+void tst_TreeName::remotePackageConflictsLocal()
+{
+    const QString packageHubFile = qApp->applicationDirPath() + QDir::separator() + "components.xml";
+    QFile::remove(packageHubFile);
+    QVERIFY(QFile::copy(":///data/components.xml", packageHubFile));
+    // For some reason Windows sets the read-only flag when we copy the resource..
+    QVERIFY(setDefaultFilePermissions(packageHubFile, DefaultFilePermissions::NonExecutable));
+
+    QHash<QString, QString> params;
+    params.insert(scTargetDir, qApp->applicationDirPath());
+    PackageManagerCore core(BinaryContent::MagicPackageManagerMarker, QList<OperationBlob>(),
+        QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production, params);
+
+    core.settings().setAllowUnstableComponents(true);
+    core.settings().setDefaultRepositories(QSet<Repository>()
+        << Repository::fromUserInput(":///data/repository"));
+
+    QVERIFY(core.fetchRemotePackagesTree());
+    {
+        // Remote treename conflicts with local name
+        Component *const local = core.componentByName("ASub2ToRoot");
+        QVERIFY(local && local->isInstalled());
+
+        Component *const remote = core.componentByName("componentA.sub2");
+        QVERIFY(remote && remote->isUnstable());
+        QCOMPARE(remote->treeName(), remote->name());
+    }
+    {
+        // Remote treename conflicts with local treename
+        Component *const local = core.componentByName("B");
+        QVERIFY(local && local->isInstalled() && local->treeName() == "BSub2ToRoot");
+
+        Component *const remote = core.componentByName("componentB.sub2");
+        QVERIFY(remote && remote->isUnstable());
+        QCOMPARE(remote->treeName(), remote->name());
+    }
+    {
+        // Remote name conflicts with local treename
+        Component *const local = core.componentByName("C");
+        QVERIFY(local && local->isInstalled() && local->treeName() == "componentA");
+
+        Component *const remote = core.componentByName("componentA");
+        QVERIFY(!remote);
+    }
+    {
+        // Component has a treename in local but not in remote, add with local treename
+        Component *const component = core.componentByName("componentD");
+        QVERIFY(component && component->isInstalled() && component->treeName() == "componentDNew");
+    }
+    {
+        // Component has different treename in local and remote, add with local treename
+        Component *const component = core.componentByName("componentB.sub1.sub2");
+        QVERIFY(component && component->isInstalled() && component->treeName() == "componentC.sub2");
+    }
+    QVERIFY(QFile::remove(packageHubFile));
 }
 
 void tst_TreeName::init()

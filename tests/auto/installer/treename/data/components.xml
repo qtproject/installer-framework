@@ -1,0 +1,59 @@
+<Packages>
+    <ApplicationName>Test Application</ApplicationName>
+    <ApplicationVersion>1.0.0</ApplicationVersion>
+    <Package>
+        <Name>ASub2ToRoot</Name>
+        <Title>Root component 1</Title>
+        <Description>A package without treename (remote treename conflicts with local name)</Description>
+        <TreeName></TreeName>
+        <Version>1.0.0-1</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2021-01-01</InstallDate>
+        <Size>0</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>B</Name>
+        <Title>Root component 2</Title>
+        <Description>A package with treename (remote treename conflicts with local treename)</Description>
+        <TreeName>BSub2ToRoot</TreeName>
+        <Version>1.0.0-1</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2021-01-01</InstallDate>
+        <Size>0</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentB.sub1.sub2</Name>
+        <Title>Sub component</Title>
+        <Description>A package with treename (remote has different treename)</Description>
+        <TreeName>componentC.sub2</TreeName>
+        <Version>1.0.0-1</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2021-01-01</InstallDate>
+        <Size>0</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>C</Name>
+        <Title>Root component 3</Title>
+        <Description>A package with treename (remote name conflicts with local treename)</Description>
+        <TreeName>componentA</TreeName>
+        <Version>1.0.0-1</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2021-01-01</InstallDate>
+        <Size>0</Size>
+        <Checkable>true</Checkable>
+    </Package>
+    <Package>
+        <Name>componentD</Name>
+        <Title>Root component 4</Title>
+        <Description>A package with treename (remote does not have treename)</Description>
+        <TreeName>componentDNew</TreeName>
+        <Version>1.0.0-1</Version>
+        <LastUpdateDate></LastUpdateDate>
+        <InstallDate>2021-01-01</InstallDate>
+        <Size>0</Size>
+        <Checkable>true</Checkable>
+    </Package>
+</Packages>

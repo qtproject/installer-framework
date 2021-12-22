@@ -3909,14 +3909,47 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
         } else if (remoteTreeNameComponents.contains(localComponent->name())) {
             const QString remoteTreeName = remoteTreeNameComponents.value(localComponent->name());
             const QString localTreeName = localComponent->value(scTreeName);
-            if (remoteTreeName != localTreeName)
+            if (remoteTreeName != localTreeName) {
                 delete allComponents.take(remoteTreeNameComponents.value(localComponent->name()));
-            else
+            } else {
+                // 3. Component has same treename in local and remote, don't add the component again.
                 continue;
-        // 3. Component has same treename in local and remote, don't add the component again.
-        } else if (allComponents.contains(name)) {
-            continue;
+            }
+        // 4. Component does not have treename in local or remote, don't add the component again.
+        } else if (allComponents.contains(localComponent->name())) {
+            Component *const component = allComponents.value(localComponent->name());
+            if (component->value(scTreeName).isEmpty() && localComponent->value(scTreeName).isEmpty())
+                continue;
         }
+        // 5. Remote has treename for a different component that is already reserved
+        //    by this local component, Or, remote adds component without treename
+        //    but it conflicts with a local treename.
+        if (allComponents.contains(name)) {
+            const QString key = remoteTreeNameComponents.key(name);
+            qCritical() << "Cannot register component" << (key.isEmpty() ? name : key)
+                        << "with name" << name << "! Component with identifier" << name
+                        << "already exists.";
+
+            if (!key.isEmpty())
+                allTreeNameComponents.remove(key);
+
+            // Try to re-add the remote component as unstable
+            if (!key.isEmpty() && !allComponents.contains(key) && settings().allowUnstableComponents()) {
+                qCDebug(lcInstallerInstallLog)
+                    << "Registering component with the original indetifier:" << key;
+
+                Component *component = allComponents.take(name);
+                component->removeValue(scTreeName);
+                const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
+                d->m_pendingUnstableComponents.insert(component->name(),
+                    QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
+
+                allComponents.insert(key, component);
+            } else {
+                delete allComponents.take(name);
+            }
+        }
+
         const QString treeName = localComponent->value(scTreeName);
         if (!treeName.isEmpty())
             allTreeNameComponents.insert(localComponent->name(), treeName);
