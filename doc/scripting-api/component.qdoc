@@ -327,14 +327,16 @@
 /*!
     \qmlmethod boolean component::addOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
 
-    Convenience method for calling addOperation(string, stringlist) with up to 10 arguments.
+    Convenience method for calling addOperation(string, stringlist) with up to
+    10 arguments \a parameter1, \a parameter2, ... \a parameter10.
     Creates and adds an installation operation for \a operation.
 */
 
 /*!
     \qmlmethod boolean component::addElevatedOperation(string operation, string parameter1 = "", string parameter2 = "", ..., string parameter10 = "")
 
-    Convenience method for calling addElevatedOperation(string, stringlist) with up to 10 arguments.
+    Convenience method for calling addElevatedOperation(string, stringlist) with up to
+    10 arguments \a parameter1, \a parameter2, ... \a parameter10.
     Creates and adds an installation operation for \a operation. The operation is executed with elevated rights.
 */
 

@@ -173,10 +173,6 @@
 */
 
 /*!
-    \qmlmethod void gui::setModified(boolean value)
-*/
-
-/*!
     \qmlmethod void gui::setTextItems(object control, stringlist items)
 
     Updates the model of \a control (which must be a QComboBox or QAbstractItemView)

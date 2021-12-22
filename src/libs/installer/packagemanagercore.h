@@ -359,7 +359,7 @@ Q_SIGNALS:
     void updaterComponentsAdded(QList<QInstaller::Component*> components);
     void valueChanged(const QString &key, const QString &value);
     void statusChanged(QInstaller::PackageManagerCore::Status);
-    void defaultTranslationsLoadedForLanguage(QLocale::Language);
+    void defaultTranslationsLoadedForLanguage(QLocale::Language lang);
     void currentPageChanged(int page);
     void finishButtonClicked();
 

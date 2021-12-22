@@ -214,6 +214,13 @@ using namespace QInstaller;
 */
 
 /*!
+    \fn QInstaller::PackageManagerCore::defaultTranslationsLoadedForLanguage(QLocale::Language lang)
+
+    Emitted when the language \a lang has changed.
+
+*/
+
+/*!
     \fn QInstaller::PackageManagerCore::finishButtonClicked()
 
     \sa {installer::finishButtonClicked}{installer.finishButtonClicked}

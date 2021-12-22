@@ -79,30 +79,34 @@
     \qmlmethod Button QMessageBox::critical(string identifier, string title, string text,
     Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
 
-    Opens a critical message box with the parent \a parent, identifier \a identifier,
-    title \a title, and text \a text.
+    Opens a critical message box with identifier \a identifier, title \a title,
+    text \a text, default buttons \a buttons and button \a button selected
+    by default.
 */
 
 /*!
     \qmlmethod Button QMessageBox::information(string identifier, string title, string text,
     Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
 
-    Opens an information message box with the parent \a parent, identifier \a identifier,
-    title \a title, and text \a text.
+    Opens an information message box with identifier \a identifier, title \a title,
+    text \a text, default buttons \a buttons and button \a button selected
+    by default.
 */
 
 /*!
     \qmlmethod Button QMessageBox::question(string identifier, string title, string text,
     Buttons buttons = QMessageBox.Yes | QMessageBox.No, Button button = QMessageBox.NoButton)
 
-    Opens a question message box with the parent \a parent, identifier \a identifier,
-    title \a title, and text \a text.
+    Opens a question message box with identifier \a identifier, title \a title,
+    text \a text, default buttons \a buttons and button \a button selected
+    by default.
 */
 
 /*!
     \qmlmethod Button QMessageBox::warning(string identifier, string title, string text,
     Buttons buttons = QMessageBox.Ok, Button button = QMessageBox.NoButton)
 
-    Opens a warning message box with the parent \a parent, identifier \a identifier,
-    title \a title, and text \a text.
+    Opens a warning message box with identifier \a identifier, title \a title,
+    text \a text, default buttons \a buttons and button \a button selected
+    by default.
 */

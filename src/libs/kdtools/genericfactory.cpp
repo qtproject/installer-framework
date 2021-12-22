@@ -128,6 +128,7 @@
 /*!
     \fn template <typename BASE, typename IDENTIFIER, typename... ARGUMENTS> BASE *GenericFactory<BASE, IDENTIFIER, ARGUMENTS...>::create(const IDENTIFIER &id, ARGUMENTS... args) const
 
-    Creates and returns the type identified by \a id, but automatically upcasted to BASE. Ownership
-    of the type is transferred to the caller.
+    Creates and returns the type identified by \a id with variable number of
+    arguments \a args passed to the object's constructor, but automatically
+    upcasted to BASE. Ownership of the type is transferred to the caller.
 */

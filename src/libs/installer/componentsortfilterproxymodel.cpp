@@ -51,7 +51,7 @@ namespace QInstaller {
            Index was accepted directly by filter.
     \value Descendant
            Index is a descendant of an accepted index.
-    \value Reject
+    \value Rejected
            Index was not accepted by filter.
 */
 

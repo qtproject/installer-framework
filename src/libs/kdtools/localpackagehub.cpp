@@ -313,7 +313,8 @@ void LocalPackageHub::refresh()
     \a uncompressedSize,
     \a inheritVersionFrom,
     \a checkable,
-    and \a expandedByDefault for the package.
+    \a expandedByDefault,
+    and \a contentSha1 for the package.
 */
 void LocalPackageHub::addPackage(const QString &name,
                                  const QString &version,
