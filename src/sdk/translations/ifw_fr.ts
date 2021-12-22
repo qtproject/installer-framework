@@ -925,6 +925,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Les composants obligatoires doivent d&apos;abord être mis à jour avant de pouvoir sélectionner d&apos;autres composants à mettre à jour.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>Recherche</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1086,6 +1090,10 @@
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>Impossible de créer l’archive &quot;%1&quot; : %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Archive non prise en charge &quot;%1&quot;: pas de gestionnaire enregistré pour les fichiers avec suffixe  &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1401,6 +1409,10 @@ Erreur lors du chargement de %2</translation>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>Impossible de créer le répertoire &quot;%1&quot; : %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>Impossible de préparer le fichier de sauvegarder &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1572,6 +1584,10 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Impossible d’ouvrir le fichier &quot;%1&quot; en lecture : %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Archive non prise en charge &quot;%1&quot;: pas de gestionnaire enregistré pour les fichiers avec suffixe  &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
