@@ -925,6 +925,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Los componentes obligatorios deben actualizarse primero antes de poder seleccionar otros componentes para actualizarlos.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>Buscar</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1086,6 +1090,10 @@
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>No se puede crear el archivo &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Archivo &quot;%1&quot; no soportado: ningún controlador registrado para el sufijo de archivo &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1401,6 +1409,10 @@ Error al descargar %2</translation>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>No se puede crear el directorio &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>No se puede preparar para hacer hacer una copia de seguridad del archivo &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1572,6 +1584,10 @@ Error al descargar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>No se puede abrir el archivo &quot;%1&quot; para la lectura: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Archivo &quot;%1&quot; no soportado: ningún controlador registrado para el sufijo de archivo &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
