@@ -678,6 +678,10 @@
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>Não é possível criar o ficheiro &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>O ficheiro &quot;%1&quot; não é suportado. Não está registado um programa para a extensão &quot;%2&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -1001,6 +1005,10 @@ Erro ao carregar %2</translation>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>Não é possível criar o diretório &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>Não é possível preparar para a cópia de segurança &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>Lib7z</name>
@@ -1210,6 +1218,10 @@ Erro ao carregar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Não é possível abrir o ficheiro &quot;%1&quot; para leitura: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>O ficheiro &quot;%1&quot; não é suportado. Não está registado um programa para a extensão &quot;%2&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1952,6 +1964,10 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Os componentes obrigatórios precisam ser atualizados antes de selecionar outros componentes para atualizar.</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Pesquisa</translation>
     </message>
 </context>
 <context>
