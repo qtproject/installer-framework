@@ -615,6 +615,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>필수 구성요소를 먼저 업데이트해야 다른 구성요소를 업데이트하기 위해 선택할 수 있습니다.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>검색</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -792,6 +796,10 @@
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>&quot;%1&quot; 아카이브를 생성할 수 없음: %2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>지원되지 않는 &quot;%1&quot; 아카이브: &quot;%2&quot; 파일 접미사를 위해 등록된 핸들러가 없습니다.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -898,11 +906,11 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Archive: </source>
-        <translation type="unfinished"></translation>
+        <translation>아카이브:</translation>
     </message>
     <message>
         <source>Total: </source>
-        <translation type="unfinished"></translation>
+        <translation>총계:</translation>
     </message>
 </context>
 <context>
@@ -1116,6 +1124,10 @@ Error while loading %2</source>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>&quot;%1&quot; 디렉터리를 생성할 수 없음: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 파일 백업을 준비할 수 없음: %2</translation>
+    </message>
 </context>
 <context>
     <name>Lib7z</name>
@@ -1325,6 +1337,10 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>지원되지 않는 &quot;%1&quot; 아카이브: &quot;%2&quot; 파일 접미사를 위해 등록된 핸들러가 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -1935,7 +1951,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
-        <translation type="unfinished"></translation>
+        <translation>중요한 업데이트가 있습니다. 먼저 &amp;apos;%1&amp;apos; 을(를) 선택해 주십시오.</translation>
     </message>
 </context>
 <context>
@@ -2745,7 +2761,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::ExtractArchiveOperation::Worker</name>
     <message>
         <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; 아카이브를 위한 핸들러 객체를 만들지 못함: &quot;%2&quot;.</translation>
     </message>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
@@ -2753,15 +2769,15 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; 아카이브의 내용을 읽는 중 오류 발생: %2</translation>
     </message>
     <message>
         <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; 파일을 준비할 수 없음</translation>
     </message>
     <message>
         <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;%1&quot; 아카이브 추출 취소됨.</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
