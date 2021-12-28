@@ -2248,6 +2248,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
 
     d->addUpdateResourcesFromRepositories(true);
     QRegularExpression re(regexp);
+    re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     const PackagesList &packages = d->remotePackages();
     if (!fetchAllPackages(packages, LocalPackagesHash())) {
         qCWarning(QInstaller::lcInstallerInstallLog)
@@ -2268,6 +2269,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
             for (auto &key : filters.keys()) {
                 const QString elementValue = component->value(key);
                 QRegularExpression elementRegexp(filters.value(key));
+                elementRegexp.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
                 if (elementValue.isEmpty() || !elementRegexp.match(elementValue).hasMatch()) {
                     ignoreComponent = true;
                     break;
@@ -2391,8 +2393,8 @@ void PackageManagerCore::listInstalledPackages(const QString &regexp)
         qCDebug(QInstaller::lcInstallerInstallLog)
             << "Searching packages with regular expression:" << regexp;
     }
-    const QRegularExpression re(regexp);
-
+    QRegularExpression re(regexp);
+    re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     const QStringList &keys = installedPackages.keys();
     QList<LocalPackage> packages;
     foreach (const QString &key, keys) {
