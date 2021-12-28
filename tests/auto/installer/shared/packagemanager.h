@@ -30,6 +30,7 @@
 #define PACKAGEMANAGER_H
 
 #include <packagemanagercore.h>
+#include <binaryformatenginehandler.h>
 #include <binarycontent.h>
 #include <fileutils.h>
 #include <settings.h>
@@ -45,6 +46,8 @@ struct PackageManager
 {
     static PackageManagerCore *getPackageManager(const QString &targetDir, const QString &repository = QString())
     {
+        BinaryFormatEngineHandler::instance()->clear();
+
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
         QString appFilePath = QCoreApplication::applicationFilePath();
         core->setAllowedRunningProcesses(QStringList() << appFilePath);
