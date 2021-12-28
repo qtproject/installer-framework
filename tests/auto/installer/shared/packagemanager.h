@@ -65,6 +65,7 @@ struct PackageManager
     static PackageManagerCore *getPackageManagerWithInit(const QString &targetDir, const QString &repository = QString())
     {
         QInstaller::init();
+        qInstallMessageHandler(silentTestMessageHandler);
         return getPackageManager(targetDir, repository);
     }
 };
