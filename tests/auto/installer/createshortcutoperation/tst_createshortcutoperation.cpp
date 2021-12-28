@@ -52,9 +52,10 @@ private:
     void installFromCLI(const QString &repository)
     {
         QInstaller::init();
-        PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
-                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
-                                                          QHash<QString, QString>(), true);
+        QScopedPointer<PackageManagerCore> core(new PackageManagerCore(BinaryContent::MagicInstallerMarker,
+            QList<OperationBlob> (), QString(), Protocol::DefaultAuthorizationKey,
+            Protocol::Mode::Production, QHash<QString, QString>(), true));
+
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();
         core->setAutoConfirmCommand();

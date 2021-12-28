@@ -47,8 +47,8 @@ private:
     {
         QString installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, repository);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (installDir, repository));
         core->installDefaultComponentsSilently();
 
         InstallIconsOperation *installIconsOp = nullptr;

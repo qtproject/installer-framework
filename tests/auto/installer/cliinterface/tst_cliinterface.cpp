@@ -50,38 +50,38 @@ private slots:
 
         QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
 
-        PackageManagerCore *core = PackageManager::getPackageManager
-                (m_installDir, ":///data/repository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
+                (m_installDir, ":///data/repository"));
 
         QLoggingCategory::setFilterRules(loggingRules);
         auto func = &PackageManagerCore::listAvailablePackages;
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("."), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^C"), QHash<QString, QString>());
 
@@ -90,14 +90,14 @@ private slots:
             { "Version", "1.0.2" },
             { "DisplayName", "A" }
         };
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
              "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
              "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
 
         searchHash.clear();
         searchHash.insert("Default", "false");
-        verifyListPackagesMessage(core, QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
              "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
 
@@ -116,8 +116,8 @@ private slots:
         QString loggingRules = (QLatin1String("ifw.* = false\n"
                                 "ifw.installer.installlog = true\n"));
 
-        PackageManagerCore *core = PackageManager::getPackageManager
-                (m_installDir, ":///data/uninstallableComponentsRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
+                (m_installDir, ":///data/uninstallableComponentsRepository"));
 
         QLoggingCategory::setFilterRules(loggingRules);
 
@@ -210,8 +210,8 @@ private slots:
 
     void testNoDefaultInstallations()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         core->setNoDefaultInstallation(true);
         QCOMPARE(PackageManagerCore::Success, core->installDefaultComponentsSilently());
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -222,8 +222,8 @@ private slots:
 
     void testInstallForcedPackageSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentE")));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -236,8 +236,8 @@ private slots:
 
     void testInstallPackageSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentA")));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -250,8 +250,8 @@ private slots:
 
     void testUninstallPackageSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentA")));
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentE.txt"
@@ -270,8 +270,8 @@ private slots:
 
     void testRemoveAllSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
             << QLatin1String("componentA")));
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentE.txt"
@@ -296,8 +296,8 @@ private slots:
 
     void testInstallWithDependencySilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentC")));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -314,8 +314,8 @@ private slots:
 
     void testUninstallWithDependencySilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentC")));
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentC.txt"
@@ -341,8 +341,8 @@ private slots:
 
     void testInstallSubcomponentSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentF.subcomponent2.subsubcomponent2")));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -360,8 +360,8 @@ private slots:
 
     void testUninstallSubcomponentSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("componentF.subcomponent2.subsubcomponent2")));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -387,8 +387,8 @@ private slots:
 
     void testInstallDefaultPackagesSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installDefaultComponentsSilently());
         QCOMPARE(PackageManagerCore::Success, core->status());
         VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt"); //Dependency for componentG
@@ -400,8 +400,8 @@ private slots:
 
     void testUnInstallDefaultPackagesSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installDefaultComponentsSilently());
         QCOMPARE(PackageManagerCore::Success, core->status());
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontent.txt"
@@ -421,8 +421,8 @@ private slots:
 
     void testUninstallForcedPackagesSilenly()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installDefaultComponentsSilently());
         QCOMPARE(PackageManagerCore::Success, core->status());
         core->commitSessionOperations();
@@ -440,8 +440,8 @@ private slots:
 
     void testUninstallAutodependencyPackagesSilenly()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 << "componentA" << "componentB"));
         QCOMPARE(PackageManagerCore::Success, core->status());
@@ -463,8 +463,8 @@ private slots:
 
     void testUninstallVirtualSetVisibleSilently()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_installDir, ":///data/installPackagesRepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
         core->setVirtualComponentsVisible(true);
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
                 <<"componentH"));
@@ -481,8 +481,8 @@ private slots:
 
     void testFileQuery()
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_installDir,
-                                    ":///data/filequeryrepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit(m_installDir,
+                                    ":///data/filequeryrepository"));
         core->setCommandLineInstance(true);
         core->setFileDialogAutomaticAnswer("ValidDirectory", m_installDir);
 

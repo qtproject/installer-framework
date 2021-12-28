@@ -92,8 +92,8 @@ private slots:
         QVERIFY(QDir().mkpath(m_testDirectory));
         QVERIFY(QDir(m_testDirectory).exists());
 
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_testDirectory, ":///data/xmloperationrepository");
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_testDirectory, ":///data/xmloperationrepository"));
         core->installDefaultComponentsSilently();
 
         QFile extractedFile(m_testDirectory + QDir::separator() + "FolderForContent/content.txt");

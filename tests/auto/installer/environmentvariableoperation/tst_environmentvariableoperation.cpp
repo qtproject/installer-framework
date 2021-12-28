@@ -47,8 +47,8 @@ private:
     {
         QString installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, repository);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (installDir, repository));
         core->installDefaultComponentsSilently();
 
         QVERIFY(m_settings->value("IFW_UNIT_TEST_LOCAL").toString().isEmpty());

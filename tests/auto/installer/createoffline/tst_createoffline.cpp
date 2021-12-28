@@ -102,7 +102,8 @@ private slots:
         QFETCH(QString, component);
         QFETCH(PackageManagerCore::Status, expectedStatus);
 
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_targetDir, repository);
+        QScopedPointer<PackageManagerCore> core(
+            PackageManager::getPackageManagerWithInit(m_targetDir, repository));
         core->setCommandLineInstance(true);
         core->setOfflineBaseBinary(m_installerBase);
         core->setOfflineBinaryName("ifw_test_offline");
@@ -151,7 +152,8 @@ private slots:
         QFETCH(bool, allowUnstable);
         QFETCH(PackageManagerCore::Status, expectedStatus);
 
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_targetDir, repository);
+        QScopedPointer<PackageManagerCore> core(
+            PackageManager::getPackageManagerWithInit(m_targetDir, repository));
         core->setCommandLineInstance(true);
         core->setOfflineBaseBinary(m_installerBase);
         core->setOfflineBinaryName("ifw_test_offline");

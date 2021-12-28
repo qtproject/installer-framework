@@ -42,8 +42,8 @@ class tst_moveoperation : public QObject
 private:
     void installFromCLI(const QString &repository)
     {
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (m_testDirectory, repository);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_testDirectory, repository));
         core->installDefaultComponentsSilently();
 
         QFile movedFile(m_testDirectory + QDir::separator() + "DestinationFolder/testFile.txt");

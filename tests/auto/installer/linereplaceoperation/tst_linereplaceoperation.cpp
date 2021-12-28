@@ -45,8 +45,8 @@ private:
     {
         QString installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, repository);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (installDir, repository));
         core->installDefaultComponentsSilently();
 
         QFile file(installDir + QDir::separator() + "A.txt");

@@ -57,8 +57,8 @@ private:
 void tst_TreeName::moveToRoot()
 {
     // componentB.sub1.sub1 moved from sub item to root (BSub1Sub1ToRoot)
-    PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-            (m_installDir, ":///data/repository");
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/repository"));
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentB.sub1.sub1"));
     QList<Component*> installedComponents = core->orderedComponentsToInstall();
 
@@ -75,8 +75,8 @@ void tst_TreeName::moveToRoot()
 void tst_TreeName::moveToSubItem()
 {
     // componentB.sub1.sub2 moved under componentC (componentC.sub1)
-    PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-            (m_installDir, ":///data/repository");
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/repository"));
 
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentC"));
     VerifyInstaller::verifyInstallerResources(m_installDir, "componentB.sub1.sub2", "1.0.0content.txt");
@@ -88,8 +88,8 @@ void tst_TreeName::moveToSubItem()
 void tst_TreeName::dependencyToMovedItem()
 {
     // componentA depends on componentB.sub2 which is moved to root
-    PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-            (m_installDir, ":///data/repository");
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/repository"));
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentA"));
 
     VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt");
@@ -102,8 +102,8 @@ void tst_TreeName::dependencyToMovedItem()
 void tst_TreeName::autodependOnMovedItem()
 {
     // componentD autodepends on componentA.sub2 which is moved to root
-    PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-            (m_installDir, ":///data/repository");
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/repository"));
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentA.sub2"));
     VerifyInstaller::verifyInstallerResources(m_installDir, "componentA.sub2", "1.0.0content.txt");
     VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt");
@@ -113,8 +113,8 @@ void tst_TreeName::autodependOnMovedItem()
 
 void tst_TreeName::moveToExistingItem()
 {
-    PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-            (m_installDir, ":///data/invalid_repository");
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/invalid_repository"));
     QCOMPARE(PackageManagerCore::Failure, core->installSelectedComponentsSilently(QStringList() << "componentA"));
     QCOMPARE(core->error(), "Cannot register component! Component with identifier componentA.sub1 already exists.");
 }
