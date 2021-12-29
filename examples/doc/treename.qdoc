@@ -1,0 +1,144 @@
+/****************************************************************************
+**
+** Copyright (C) 2021 The Qt Company Ltd.
+** Contact: http://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example treename
+    \ingroup qtifwexamples
+    \title Tree Name Example
+
+    \brief Using components' package.xml files to define custom locations in the component tree.
+
+    \image qtifw-examples-treename.png
+
+    \e{Tree Name} illustrates how to specify custom locations for components in
+    the component tree view and how that influences the installation and
+    maintenance processes.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <WizardShowPageList> element is set to \c false to hide the page
+            list widget on the left side of the installer wizard window.
+    \endlist
+
+    \quotefile treename/config/config.xml
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \list
+        \li The \c <TreeName> element specifies the location of the component in the
+            component tree. The element accepts an optional \c moveChildren attribute
+            with a boolean value. If the value is set to \c true, any child components
+            of this component are also moved to the modified location.
+
+            \note Without this element the identifier of this component decides the location
+            in the component tree.
+    \endlist
+
+    In this example, the package.xml files for the components contain additional
+    elements that specify the component tree locations. The following sections illustrate
+    how the elements are used.
+
+    \section1 Specifying Tree Name to Root Node
+
+    We define a tree name \e ASub1ToRoot for component \e{A subcomponent 1}.
+    Thus, this child component of \e A becomes a new root component.
+    By default the children are not moved to the new location, so
+    \e {A sub-subcomponent1} becomes a new direct child of \e A.
+
+    \quotefile treename/packages/A.sub1/meta/package.xml
+
+    \section1 Specifying Tree Name and Moving Children
+
+    As above, we define a tree name \e BSub1ToRoot for component \e{B subcomponent 1}, but
+    this time we set the \c moveChildren attribute to \c true. The component becomes a new
+    root component and the child component \e {B sub-subcomponent 1} of this
+    component moves to the new location with the parent.
+
+    \quotefile treename/packages/B.sub1/meta/package.xml
+
+    \section1 Specifying Tree Name to Sub Node
+
+    We define a tree name \e{A.subC} for component \e C and set the \c moveChildren attribute
+    to \c true. Thus, this originally root component is moved as a child component of \e A.
+    The child components \e {C subcomponent 1} and \e {C subcomponent 2} move
+    to the new location with the parent.
+
+    \quotefile treename/packages/C/meta/package.xml
+
+    \section1 Specifying Tree Name to Existing Node
+
+    We define a tree name \e D for component \e E. Node \e D is already a part of an existing
+    component identifier for \e {D subcomponent 1} (\e{D.sub1}), but the packages
+    directory does not contain a component for the identifier, so it is possible to declare a
+    tree name \e D. The component \e E becomes a new root component and parent of
+    \e {D subcomponent 1}. As the \c moveChildren attribute is set to \c true, the
+    child component \e {E subcomponent 2} is moved with the parent.
+
+    \quotefile treename/packages/E/meta/package.xml
+
+    \section1 Other Considerations
+
+    \section2 Multiple Tree Names in One Component Branch
+
+    Components in a single branch (\e A, \e{A.sub1}, \e{A.sub1.sub1}, \e{A.sub1.sub1.sub2} and so
+    on) may each declare a separate tree name. The installer or maintenance tool calculates the
+    new locations for components in an ascending order from leaf components to root components, so that
+    \e{A.sub1.sub1.sub2} is moved first and \e A last.
+
+    \section2 Tree Names of Installed and Remote Components
+
+    For online installers, the repositories may declare updated tree names for components,
+    so the following rules apply:
+
+    \list
+        \li The tree names for components become static after being installed. Therefore, if the user
+            of the installer has installed component \e A with tree name \e ANewName1, and the
+            repository is updated with a new version of component \e A that declares tree name
+            \e ANewName2, the new location is only applied when the user updates the component
+            locally with the maintenance tool.
+        \li The automatic tree names of children of components with tree name and \c moveChildren
+            set to \c true are moved with the parent regardless if installed or not. Therefore, if
+            the user has installed component \e{A.sub1} but not component \e A, and \e A is updated
+            in the repository with a new tree name, the \e{A.sub1} uses also the new tree name in
+            maintenance tool's component tree.
+    \endlist
+
+    \section2 Tree Name and Name Conflicts
+
+    The tree names may conflict with existing component names or other tree names. Depending on whether
+    the installer or maintenance tool is configured to allow unstable components with
+    \c <AllowUnstableComponents> configuration file element, the offending components are either
+    registered as unstable components with their original name or not registered at all.
+
+    \note Components from remote repositories can never override already installed
+    components in the tree view. If a conflicting remote component cannot be registered with
+    the original name either in case a local component has reserved it with a tree name, the
+    component is not registered.
+
+    \include installerfw-examples-generating.qdocinc
+*/

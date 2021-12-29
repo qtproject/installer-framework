@@ -1,0 +1,2 @@
+Example content for package C subcomponent 1.
+

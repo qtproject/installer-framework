@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>E (moved to free existing node with children)</DisplayName>
+    <Description>Example component E</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2021-01-01</ReleaseDate>
+    <TreeName moveChildren="true">D</TreeName>
+</Package>

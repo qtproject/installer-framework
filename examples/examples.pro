@@ -17,4 +17,5 @@ SUBDIRS += \
   startmenu \
   systeminfo \
   stylesheet \
+  treename \
   unstablecomponent

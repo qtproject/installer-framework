@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>E subcomponent 2</DisplayName>
+    <Description>Subcomponent of component E</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2021-01-01</ReleaseDate>
+</Package>

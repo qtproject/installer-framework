@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Tree Name Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Tree Name Example</Title>
+    <Publisher>The Qt Company</Publisher>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/treename</TargetDir>
+    <WizardShowPageList>false</WizardShowPageList>
+</Installer>
