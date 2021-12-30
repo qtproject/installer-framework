@@ -63,7 +63,6 @@ public:
     bool m_autoCreateOperations;
     bool m_operationsCreatedSuccessfully;
     bool m_updateIsAvailable;
-    bool m_unstable;
 
     QString m_componentName;
     QUrl m_repositoryUrl;
