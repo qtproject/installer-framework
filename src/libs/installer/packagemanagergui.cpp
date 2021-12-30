@@ -2949,7 +2949,8 @@ void FinishedPage::entering()
         connect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
     }
 
-    if (packageManagerCore()->status() == PackageManagerCore::Success) {
+    if (packageManagerCore()->status() == PackageManagerCore::Success
+            || packageManagerCore()->status() == PackageManagerCore::EssentialUpdated) {
         const QString finishedText = packageManagerCore()->value(QLatin1String("FinishedText"));
         if (!finishedText.isEmpty())
             m_msgLabel->setText(finishedText);
