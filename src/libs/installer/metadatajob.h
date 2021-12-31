@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -127,7 +127,7 @@ private:
     int m_taskNumber;
     int m_totalTaskCount;
     QStringList m_shaMissmatchPackages;
-    QHash<QString, ArchiveMetadata> m_fetchedArchive;
+    QMultiHash<QString, ArchiveMetadata> m_fetchedArchive;
     QHash<QString, Metadata> m_metaFromDefaultRepositories;
     QHash<QString, Metadata> m_metaFromArchive; //for faster lookups.
 };

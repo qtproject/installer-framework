@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -69,7 +69,7 @@ public:
     friend INSTALLER_EXPORT QDataStream &operator<<(QDataStream &ostream, const RepositoryCategory &repository);
 
 private:
-    QVariantHash m_data;
+    QMultiHash<QString, QVariant> m_data;
     QString m_displayname;
     QString m_tooltip;
     bool m_enabled;

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -229,7 +229,7 @@ public:
         : m_replacementRepos(false)
     {}
 
-    QVariantHash m_data;
+    QMultiHash<QString, QVariant> m_data;
     bool m_replacementRepos;
 
     QString absolutePathFromKey(const QString &key, const QString &suffix = QString()) const
@@ -307,7 +307,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scSaveDefaultRepositories << scRepositoryCategories;
 
     Settings s;
-    s.d->m_data.insert(scPrefix, prefix);
+    s.d->m_data.replace(scPrefix, prefix);
     while (reader.readNextStartElement()) {
         const QString name = reader.name().toString();
         if (!elementList.contains(name))
@@ -336,7 +336,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 s.setRepositoryCategoryDisplayName(repositoryCategoryName);
             }
         } else {
-            s.d->m_data.insert(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
+            s.d->m_data.replace(name, reader.readElementText(QXmlStreamReader::SkipChildElements));
         }
     }
     if (reader.error() != QXmlStreamReader::NoError) {
@@ -351,39 +351,39 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
 
     // Add some possible missing values
     if (!s.d->m_data.contains(scInstallerApplicationIcon))
-        s.d->m_data.insert(scInstallerApplicationIcon, QLatin1String(":/installer"));
+        s.d->m_data.replace(scInstallerApplicationIcon, QLatin1String(":/installer"));
     if (!s.d->m_data.contains(scInstallerWindowIcon)) {
-        s.d->m_data.insert(scInstallerWindowIcon,
+        s.d->m_data.replace(scInstallerWindowIcon,
                            QString(QLatin1String(":/installer") + s.systemIconSuffix()));
     }
     if (!s.d->m_data.contains(scRemoveTargetDir))
-        s.d->m_data.insert(scRemoveTargetDir, scTrue);
+        s.d->m_data.replace(scRemoveTargetDir, scTrue);
     if (s.d->m_data.value(scMaintenanceToolName).toString().isEmpty()) {
-        s.d->m_data.insert(scMaintenanceToolName,
+        s.d->m_data.replace(scMaintenanceToolName,
             // TODO: Remove deprecated 'UninstallerName'.
             s.d->m_data.value(QLatin1String("UninstallerName"), QLatin1String("maintenancetool"))
             .toString());
     }
     if (s.d->m_data.value(scTargetConfigurationFile).toString().isEmpty())
-        s.d->m_data.insert(scTargetConfigurationFile, QLatin1String("components.xml"));
+        s.d->m_data.replace(scTargetConfigurationFile, QLatin1String("components.xml"));
     if (s.d->m_data.value(scMaintenanceToolIniFile).toString().isEmpty()) {
-        s.d->m_data.insert(scMaintenanceToolIniFile,
+        s.d->m_data.replace(scMaintenanceToolIniFile,
             // TODO: Remove deprecated 'UninstallerIniFile'.
             s.d->m_data.value(QLatin1String("UninstallerIniFile"), QString(s.maintenanceToolName()
             + QLatin1String(".ini"))).toString());
     }
     if (!s.d->m_data.contains(scDependsOnLocalInstallerBinary))
-        s.d->m_data.insert(scDependsOnLocalInstallerBinary, false);
+        s.d->m_data.replace(scDependsOnLocalInstallerBinary, false);
     if (!s.d->m_data.contains(scRepositorySettingsPageVisible))
-        s.d->m_data.insert(scRepositorySettingsPageVisible, true);
+        s.d->m_data.replace(scRepositorySettingsPageVisible, true);
     if (!s.d->m_data.contains(scCreateLocalRepository))
-        s.d->m_data.insert(scCreateLocalRepository, false);
+        s.d->m_data.replace(scCreateLocalRepository, false);
     if (!s.d->m_data.contains(scInstallActionColumnVisible))
-        s.d->m_data.insert(scInstallActionColumnVisible, false);
+        s.d->m_data.replace(scInstallActionColumnVisible, false);
     if (!s.d->m_data.contains(scAllowUnstableComponents))
-        s.d->m_data.insert(scAllowUnstableComponents, false);
+        s.d->m_data.replace(scAllowUnstableComponents, false);
     if (!s.d->m_data.contains(scSaveDefaultRepositories))
-        s.d->m_data.insert(scSaveDefaultRepositories, true);
+        s.d->m_data.replace(scSaveDefaultRepositories, true);
     return s;
 }
 
@@ -515,7 +515,7 @@ QStringList Settings::productImages() const
 
 void Settings::setProductImages(const QStringList &images)
 {
-    d->m_data.insert(scProductImages, images);
+    d->m_data.replace(scProductImages, images);
 }
 
 QString Settings::installerApplicationIcon() const
@@ -569,7 +569,7 @@ QStringList Settings::runProgramArguments() const
 
 void Settings::setRunProgramArguments(const QStringList &arguments)
 {
-    d->m_data.insert(scRunProgramArguments, arguments);
+    d->m_data.replace(scRunProgramArguments, arguments);
 }
 
 
@@ -676,7 +676,7 @@ void Settings::setDefaultRepositories(const QSet<Repository> &repositories)
 void Settings::addDefaultRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
-        d->m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+        d->m_data.insert(scRepositories, QVariant().fromValue(repository));
 }
 
 void Settings::setRepositoryCategories(const QSet<RepositoryCategory> &repositories)
@@ -688,7 +688,7 @@ void Settings::setRepositoryCategories(const QSet<RepositoryCategory> &repositor
 void Settings::addRepositoryCategories(const QSet<RepositoryCategory> &repositories)
 {
     foreach (const RepositoryCategory &repository, repositories)
-        d->m_data.insertMulti(scRepositoryCategories, QVariant().fromValue(repository));
+        d->m_data.insert(scRepositoryCategories, QVariant().fromValue(repository));
 }
 
 Settings::Update Settings::updateRepositoryCategories(const RepoHash &updates)
@@ -786,7 +786,7 @@ void Settings::addTemporaryRepositories(const QSet<Repository> &repositories, bo
 {
     d->m_replacementRepos = replace;
     foreach (const Repository &repository, repositories)
-        d->m_data.insertMulti(scTmpRepositories, QVariant().fromValue(repository));
+        d->m_data.insert(scTmpRepositories, QVariant().fromValue(repository));
 }
 
 QSet<Repository> Settings::userRepositories() const
@@ -803,7 +803,7 @@ void Settings::setUserRepositories(const QSet<Repository> &repositories)
 void Settings::addUserRepositories(const QSet<Repository> &repositories)
 {
     foreach (const Repository &repository, repositories)
-        d->m_data.insertMulti(scUserRepositories, QVariant().fromValue(repository));
+        d->m_data.insert(scUserRepositories, QVariant().fromValue(repository));
 }
 
 Settings::Update Settings::updateUserRepositories(const RepoHash &updates)
@@ -848,7 +848,7 @@ bool Settings::repositorySettingsPageVisible() const
 
 void Settings::setRepositorySettingsPageVisible(bool visible)
 {
-    d->m_data.insert(scRepositorySettingsPageVisible, visible);
+    d->m_data.replace(scRepositorySettingsPageVisible, visible);
 }
 
 Settings::ProxyType Settings::proxyType() const
@@ -858,7 +858,7 @@ Settings::ProxyType Settings::proxyType() const
 
 void Settings::setProxyType(Settings::ProxyType type)
 {
-    d->m_data.insert(scProxyType, type);
+    d->m_data.replace(scProxyType, type);
 }
 
 QNetworkProxy Settings::ftpProxy() const
@@ -871,7 +871,7 @@ QNetworkProxy Settings::ftpProxy() const
 
 void Settings::setFtpProxy(const QNetworkProxy &proxy)
 {
-    d->m_data.insert(scFtpProxy, QVariant::fromValue(proxy));
+    d->m_data.replace(scFtpProxy, QVariant::fromValue(proxy));
 }
 
 QNetworkProxy Settings::httpProxy() const
@@ -884,7 +884,7 @@ QNetworkProxy Settings::httpProxy() const
 
 void Settings::setHttpProxy(const QNetworkProxy &proxy)
 {
-    d->m_data.insert(scHttpProxy, QVariant::fromValue(proxy));
+    d->m_data.replace(scHttpProxy, QVariant::fromValue(proxy));
 }
 
 QStringList Settings::translations() const
@@ -897,7 +897,7 @@ QStringList Settings::translations() const
 
 void Settings::setTranslations(const QStringList &translations)
 {
-    d->m_data.insert(scTranslations, translations);
+    d->m_data.replace(scTranslations, translations);
 }
 
 QString Settings::controlScript() const
@@ -917,7 +917,7 @@ bool Settings::allowUnstableComponents() const
 
 void Settings::setAllowUnstableComponents(bool allow)
 {
-    d->m_data.insert(scAllowUnstableComponents, allow);
+    d->m_data.replace(scAllowUnstableComponents, allow);
 }
 
 bool Settings::saveDefaultRepositories() const
@@ -927,7 +927,7 @@ bool Settings::saveDefaultRepositories() const
 
 void Settings::setSaveDefaultRepositories(bool save)
 {
-    d->m_data.insert(scSaveDefaultRepositories, save);
+    d->m_data.replace(scSaveDefaultRepositories, save);
 }
 
 QString Settings::repositoryCategoryDisplayName() const
@@ -938,5 +938,5 @@ QString Settings::repositoryCategoryDisplayName() const
 
 void Settings::setRepositoryCategoryDisplayName(const QString& name)
 {
-    d->m_data.insert(scRepositoryCategoryDisplayName, name);
+    d->m_data.replace(scRepositoryCategoryDisplayName, name);
 }

@@ -1,7 +1,7 @@
 
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -227,8 +227,8 @@ void Downloader::onFinished(QNetworkReply *reply)
                 QNetworkReply *const redirectReply = startDownload(taskItem);
 
                 foreach (const QUrl &redirect, redirects)
-                    m_redirects.insertMulti(redirectReply, redirect);
-                m_redirects.insertMulti(redirectReply, url);
+                    m_redirects.insert(redirectReply, redirect);
+                m_redirects.insert(redirectReply, url);
 
                 m_downloads.erase(reply);
                 m_redirects.remove(reply);

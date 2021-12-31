@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -678,7 +678,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             //Hash metadata to help checking if meta for repository is already fetched
             ArchiveMetadata archiveMetadata;
             archiveMetadata.metaData = metadata;
-            m_fetchedArchive.insertMulti(metadata.repository.categoryname(), archiveMetadata);
+            m_fetchedArchive.insert(metadata.repository.categoryname(), archiveMetadata);
 
             //Check if other categories have the same url (contains same metadata)
             //so we can speed up other category fetches
@@ -686,7 +686,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 if (category.displayname() != metadata.repository.categoryname()) {
                     foreach (Repository repository, category.repositories()) {
                         if (repository.url() == metadata.repository.url()) {
-                            m_fetchedArchive.insertMulti(category.displayname(), archiveMetadata);
+                            m_fetchedArchive.insert(category.displayname(), archiveMetadata);
                         }
                     }
                 }
@@ -789,7 +789,7 @@ bool MetadataJob::parsePackageUpdate(const QDomNodeList &c2, QString &packageNam
 QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepositories
     (const QDomNode &repositoryUpdate, const FileTaskResult &result, const Metadata &metadata)
 {
-    QHash<QString, QPair<Repository, Repository> > repositoryUpdates;
+    QMultiHash<QString, QPair<Repository, Repository> > repositoryUpdates;
     const QDomNodeList children = repositoryUpdate.toElement().childNodes();
     for (int i = 0; i < children.count(); ++i) {
         const QDomElement el = children.at(i).toElement();
@@ -802,14 +802,14 @@ QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepo
                 repository.setPassword(el.attribute(QLatin1String("password")));
                 repository.setDisplayName(el.attribute(QLatin1String("displayname")));
                 if (ProductKeyCheck::instance()->isValidRepository(repository)) {
-                    repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                    repositoryUpdates.insert(action, qMakePair(repository, Repository()));
                     qDebug() << "Repository to add:" << repository.displayname();
                 }
             } else if (action == QLatin1String("remove")) {
                 // remove possible default repositories using the given server url
                 Repository repository(resolveUrl(result, el.attribute(QLatin1String("url"))), true);
                 repository.setDisplayName(el.attribute(QLatin1String("displayname")));
-                repositoryUpdates.insertMulti(action, qMakePair(repository, Repository()));
+                repositoryUpdates.insert(action, qMakePair(repository, Repository()));
 
                 qDebug() << "Repository to remove:" << repository.displayname();
             } else if (action == QLatin1String("replace")) {
@@ -822,7 +822,7 @@ QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepo
 
                 if (ProductKeyCheck::instance()->isValidRepository(newRepository)) {
                     // store the new repository and the one old it replaces
-                    repositoryUpdates.insertMulti(action, qMakePair(newRepository, oldRepository));
+                    repositoryUpdates.insert(action, qMakePair(newRepository, oldRepository));
                     qDebug() << "Replace repository" << oldRepository.displayname() << "with"
                         << newRepository.displayname();
                 }

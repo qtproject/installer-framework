@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -108,7 +108,7 @@ public:
     QLocale::Country m_country;
     QFileInfo m_fileInfo;
     RCCFileInfo *m_parent;
-    QHash<QString, RCCFileInfo*> m_children;
+    QMultiHash<QString, RCCFileInfo*> m_children;
     int m_compressLevel;
     int m_compressThreshold;
 
@@ -583,10 +583,10 @@ bool RCCResourceLibrary::addFile(const QString &alias, const RCCFileInfo &file)
         if (!parent->m_children.contains(node)) {
             RCCFileInfo *s = new RCCFileInfo(node, QFileInfo(), QLocale::C, QLocale::AnyCountry, RCCFileInfo::Directory);
             s->m_parent = parent;
-            parent->m_children.insert(node, s);
+            parent->m_children.replace(node, s);
             parent = s;
         } else {
-            parent = parent->m_children[node];
+            parent = parent->m_children.value(node);
         }
     }
 
@@ -598,7 +598,7 @@ bool RCCResourceLibrary::addFile(const QString &alias, const RCCFileInfo &file)
             qWarning("%s: Warning: potential duplicate alias detected: '%s'",
                      qPrintable(fileName), qPrintable(filename));
         }
-    parent->m_children.insertMulti(filename, s);
+    parent->m_children.insert(filename, s);
     return true;
 }
 
@@ -894,7 +894,7 @@ bool RCCResourceLibrary::writeDataStructure()
 
         //sort by hash value for binary lookup
         QList<RCCFileInfo*> m_children = file->m_children.values();
-        qSort(m_children.begin(), m_children.end(), qt_rcc_compare_hash);
+        std::sort(m_children.begin(), m_children.end(), qt_rcc_compare_hash);
 
         //write out the actual data now
         for (int i = 0; i < m_children.size(); ++i) {
@@ -913,7 +913,7 @@ bool RCCResourceLibrary::writeDataStructure()
 
         //sort by hash value for binary lookup
         QList<RCCFileInfo*> m_children = file->m_children.values();
-        qSort(m_children.begin(), m_children.end(), qt_rcc_compare_hash);
+        std::sort(m_children.begin(), m_children.end(), qt_rcc_compare_hash);
 
         //write out the actual data now
         for (int i = 0; i < m_children.size(); ++i) {

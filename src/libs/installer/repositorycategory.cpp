@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -128,7 +128,7 @@ void RepositoryCategory::setRepositories(const QSet<Repository> repositories, co
         m_data.remove(scRepositories);
 
     foreach (const Repository &repository, repositories)
-        m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+        m_data.insert(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!
@@ -136,7 +136,7 @@ void RepositoryCategory::setRepositories(const QSet<Repository> repositories, co
 */
 void RepositoryCategory::addRepository(const Repository &repository)
 {
-    m_data.insertMulti(scRepositories, QVariant().fromValue(repository));
+    m_data.insert(scRepositories, QVariant().fromValue(repository));
 }
 
 /*!

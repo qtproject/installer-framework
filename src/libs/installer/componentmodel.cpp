@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -559,10 +559,10 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, Qt::CheckState state)
 {
     // get all parent nodes for the components we're going to update
-    QMap<QString, Component *> sortedNodesMap;
+    QMultiMap<QString, Component *> sortedNodesMap;
     foreach (Component *component, components) {
         while (component && !sortedNodesMap.values(component->treeName()).contains(component)) {
-            sortedNodesMap.insertMulti(component->treeName(), component);
+            sortedNodesMap.insert(component->treeName(), component);
             component = component->parentComponent();
         }
     }
