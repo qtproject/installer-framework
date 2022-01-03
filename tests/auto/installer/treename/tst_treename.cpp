@@ -47,6 +47,8 @@ private slots:
     void moveToExistingItemAllowUnstableComponents();
     void moveToExistingItemNoUnstableComponents();
 
+    void replaceComponentWithTreeName();
+
     void init();
     void cleanup();
 
@@ -130,6 +132,16 @@ void tst_TreeName::moveToExistingItemNoUnstableComponents()
 
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentA"));
     QVERIFY(!core->componentByName("componentB"));
+}
+
+void tst_TreeName::replaceComponentWithTreeName()
+{
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir, ":///data/repository"));
+
+    QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentF"));
+    QVERIFY(core->componentByName("componentF")->value(scTreeName).isEmpty());
+    QVERIFY(!core->componentByName("componentE"));
 }
 
 void tst_TreeName::init()

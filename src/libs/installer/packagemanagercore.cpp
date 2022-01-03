@@ -3796,13 +3796,21 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
     return true;
 }
 
-void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &components, const struct Data &data)
+void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &components,
+    const struct Data &data, QMap<QString, QString> *const treeNameComponents)
 {
     QHash<Component*, QStringList>::const_iterator it = data.replacementToExchangeables.constBegin();
     // remember all components that got a replacement, required for uninstall
     for (; it != data.replacementToExchangeables.constEnd(); ++it) {
         foreach (const QString &componentName, it.value()) {
-            Component *componentToReplace = components.take(componentName);
+            QString key = componentName;
+            if (treeNameComponents && treeNameComponents->contains(componentName)) {
+                // The exchangeable component is stored with a tree name key,
+                // remove from the list of components with tree name.
+                key = treeNameComponents->value(componentName);
+                treeNameComponents->remove(componentName);
+            }
+            Component *componentToReplace = components.take(key);
             if (!componentToReplace) {
                 // If a component replaces another component which is not existing in the
                 // installer binary or the installed component list, just ignore it. This
@@ -3905,7 +3913,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     }
 
     // store all components that got a replacement
-    storeReplacedComponents(components, data);
+    storeReplacedComponents(components, data, &treeNameComponents);
 
     if (!d->buildComponentTree(components, true))
         return false;

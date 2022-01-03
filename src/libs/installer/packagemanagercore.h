@@ -409,7 +409,8 @@ private:
     };
 
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
-    void storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data);
+    void storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data,
+                                 QMap<QString, QString> *const treeNameComponents = nullptr);
     bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
     bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
 

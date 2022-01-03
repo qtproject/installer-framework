@@ -116,4 +116,20 @@
   <DownloadableArchives>content.7z</DownloadableArchives>
   <SHA1>3ca69d6bb062c4442fdb20fe0e62bb0f04e8a419</SHA1>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentE</Name>
+  <DisplayName>Component E</DisplayName>
+  <Description>Component with tree name, is replaced by other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+  <TreeName>EToNewRoot</TreeName>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF</Name>
+  <DisplayName>Component F</DisplayName>
+  <Description>Component that replaces other component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+  <Replaces>componentE</Replaces>
+ </PackageUpdate>
 </Updates>
