@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,7 +35,7 @@
 #include "remoteclient.h"
 #include "remotefileengine.h"
 
-#include <QDomDocument>
+#include <QXmlStreamWriter>
 #include <QElapsedTimer>
 
 #include <iostream>
@@ -252,19 +252,24 @@ bool LoggingHandler::outputRedirected() const
 */
 void LoggingHandler::printUpdateInformation(const QList<Component *> components) const
 {
-    QDomDocument doc;
-    QDomElement root = doc.createElement(QLatin1String("updates"));
-    doc.appendChild(root);
+    QString output;
+    QXmlStreamWriter stream(&output);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
 
+    stream.writeStartElement(QLatin1String("updates"));
     foreach (const Component *component, components) {
-        QDomElement update = doc.createElement(QLatin1String("update"));
-        update.setAttribute(QLatin1String("name"), component->value(scDisplayName));
-        update.setAttribute(QLatin1String("version"), component->value(scVersion));
-        update.setAttribute(QLatin1String("size"), component->value(scUncompressedSize));
-        update.setAttribute(QLatin1String("id"), component->value(scName));
-        root.appendChild(update);
+        stream.writeStartElement(QLatin1String("update"));
+        stream.writeAttribute(QLatin1String("name"), component->value(scDisplayName));
+        stream.writeAttribute(QLatin1String("version"), component->value(scVersion));
+        stream.writeAttribute(QLatin1String("size"), component->value(scUncompressedSize));
+        stream.writeAttribute(QLatin1String("id"), component->value(scName));
+        stream.writeEndElement();
     }
-    std::cout << qPrintable(doc.toString(4));
+    stream.writeEndElement();
+
+    stream.writeEndDocument();
+    std::cout << qPrintable(output);
 }
 
 /*!
@@ -273,28 +278,36 @@ void LoggingHandler::printUpdateInformation(const QList<Component *> components)
 */
 void LoggingHandler::printLocalPackageInformation(const QList<KDUpdater::LocalPackage> &packages) const
 {
-    QDomDocument doc;
-    QDomElement root = doc.createElement(QLatin1String("localpackages"));
-    doc.appendChild(root);
+    QString output;
+    QXmlStreamWriter stream(&output);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+
+    stream.writeStartElement(QLatin1String("localpackages"));
     foreach (KDUpdater::LocalPackage package, packages) {
-        QDomElement update = doc.createElement(QLatin1String("package"));
-        update.setAttribute(QLatin1String("name"), package.name);
-        update.setAttribute(QLatin1String("displayname"), package.title);
-        update.setAttribute(QLatin1String("version"), package.version);
+        stream.writeStartElement(QLatin1String("package"));
+        stream.writeAttribute(QLatin1String("name"), package.name);
+        stream.writeAttribute(QLatin1String("displayname"), package.title);
+        stream.writeAttribute(QLatin1String("version"), package.version);
         if (verboseLevel() == VerbosityLevel::Detailed) {
-            update.setAttribute(QLatin1String("description"), package.description);
-            update.setAttribute(QLatin1String("dependencies"), package.dependencies.join(QLatin1Char(',')));
-            update.setAttribute(QLatin1String("autoDependencies"), package.autoDependencies.join(QLatin1Char(',')));
-            update.setAttribute(QLatin1String("virtual"), package.virtualComp);
-            update.setAttribute(QLatin1String("forcedInstallation"), package.forcedInstallation);
-            update.setAttribute(QLatin1String("checkable"), package.checkable);
-            update.setAttribute(QLatin1String("uncompressedSize"), package.uncompressedSize);
-            update.setAttribute(QLatin1String("installDate"), package.installDate.toString());
-            update.setAttribute(QLatin1String("lastUpdateDate"), package.lastUpdateDate.toString());
+            stream.writeAttribute(QLatin1String("description"), package.description);
+            stream.writeAttribute(QLatin1String("treeName"), package.treeName.first);
+            stream.writeAttribute(QLatin1String("moveChildren"), QVariant(package.treeName.second).toString());
+            stream.writeAttribute(QLatin1String("dependencies"), package.dependencies.join(QLatin1Char(',')));
+            stream.writeAttribute(QLatin1String("autoDependencies"), package.autoDependencies.join(QLatin1Char(',')));
+            stream.writeAttribute(QLatin1String("virtual"), QVariant(package.virtualComp).toString());
+            stream.writeAttribute(QLatin1String("forcedInstallation"), QVariant(package.forcedInstallation).toString());
+            stream.writeAttribute(QLatin1String("checkable"), QVariant(package.checkable).toString());
+            stream.writeAttribute(QLatin1String("uncompressedSize"), QVariant(package.uncompressedSize).toString());
+            stream.writeAttribute(QLatin1String("installDate"), package.installDate.toString());
+            stream.writeAttribute(QLatin1String("lastUpdateDate"), package.lastUpdateDate.toString());
         }
-        root.appendChild(update);
+        stream.writeEndElement();
     }
-    std::cout << qPrintable(doc.toString(4));
+    stream.writeEndElement();
+
+    stream.writeEndDocument();
+    std::cout << qPrintable(output);
 }
 
 /*!
@@ -304,41 +317,49 @@ void LoggingHandler::printLocalPackageInformation(const QList<KDUpdater::LocalPa
 */
 void LoggingHandler::printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesHash &installedPackages) const
 {
-    QDomDocument doc;
-    QDomElement root = doc.createElement(QLatin1String("availablepackages"));
-    doc.appendChild(root);
+    QString output;
+    QXmlStreamWriter stream(&output);
+    stream.setAutoFormatting(true);
+    stream.writeStartDocument();
+
+    stream.writeStartElement(QLatin1String("availablepackages"));
     foreach (Package *package, matchedPackages) {
         const QString name = package->data(scName).toString();
-        QDomElement update = doc.createElement(QLatin1String("package"));
-        update.setAttribute(QLatin1String("name"), name);
-        update.setAttribute(QLatin1String("displayname"), package->data(scDisplayName).toString());
-        update.setAttribute(QLatin1String("version"), package->data(scVersion).toString());
+        stream.writeStartElement(QLatin1String("package"));
+        stream.writeAttribute(QLatin1String("name"), name);
+        stream.writeAttribute(QLatin1String("displayname"), package->data(scDisplayName).toString());
+        stream.writeAttribute(QLatin1String("version"), package->data(scVersion).toString());
         //Check if package already installed
         if (installedPackages.contains(name))
-            update.setAttribute(QLatin1String("installedVersion"), installedPackages.value(name).version);
+            stream.writeAttribute(QLatin1String("installedVersion"), installedPackages.value(name).version);
         if (verboseLevel() == VerbosityLevel::Detailed) {
-            update.setAttribute(QLatin1String("description"), package->data(scDescription).toString());
-            update.setAttribute(QLatin1String("dependencies"), package->data(scDependencies).toString());
-            update.setAttribute(QLatin1String("autoDependencies"), package->data(scAutoDependOn).toString());
-            update.setAttribute(QLatin1String("virtual"), package->data(scVirtual).toString());
-            update.setAttribute(QLatin1String("forcedInstallation"), package->data(QLatin1String("ForcedInstallation")).toString());
-            update.setAttribute(QLatin1String("checkable"), package->data(scCheckable).toString());
-            update.setAttribute(QLatin1String("default"), package->data(scDefault).toString());
-            update.setAttribute(QLatin1String("essential"), package->data(scEssential).toString());
-            update.setAttribute(QLatin1String("forcedUpdate"), package->data(scForcedUpdate).toString());
-            update.setAttribute(QLatin1String("compressedsize"), package->data(QLatin1String("CompressedSize")).toString());
-            update.setAttribute(QLatin1String("uncompressedsize"), package->data(QLatin1String("UncompressedSize")).toString());
-            update.setAttribute(QLatin1String("releaseDate"), package->data(scReleaseDate).toString());
-            update.setAttribute(QLatin1String("downloadableArchives"), package->data(scDownloadableArchives).toString());
-            update.setAttribute(QLatin1String("licenses"), package->data(QLatin1String("Licenses")).toString());
-            update.setAttribute(QLatin1String("script"), package->data(scScript).toString());
-            update.setAttribute(QLatin1String("sortingPriority"), package->data(scSortingPriority).toString());
-            update.setAttribute(QLatin1String("replaces"), package->data(scReplaces).toString());
-            update.setAttribute(QLatin1String("requiresAdminRights"), package->data(scRequiresAdminRights).toString());
+            stream.writeAttribute(QLatin1String("description"), package->data(scDescription).toString());
+            stream.writeAttribute(QLatin1String("treeName"), package->data(scTreeName).value<QPair<QString, bool>>().first);
+            stream.writeAttribute(QLatin1String("moveChildren"), QVariant(package->data(scTreeName).value<QPair<QString, bool>>().second).toString());
+            stream.writeAttribute(QLatin1String("dependencies"), package->data(scDependencies).toString());
+            stream.writeAttribute(QLatin1String("autoDependencies"), package->data(scAutoDependOn).toString());
+            stream.writeAttribute(QLatin1String("virtual"), package->data(scVirtual).toString());
+            stream.writeAttribute(QLatin1String("forcedInstallation"), package->data(QLatin1String("ForcedInstallation")).toString());
+            stream.writeAttribute(QLatin1String("checkable"), package->data(scCheckable).toString());
+            stream.writeAttribute(QLatin1String("default"), package->data(scDefault).toString());
+            stream.writeAttribute(QLatin1String("essential"), package->data(scEssential).toString());
+            stream.writeAttribute(QLatin1String("forcedUpdate"), package->data(scForcedUpdate).toString());
+            stream.writeAttribute(QLatin1String("compressedsize"), package->data(QLatin1String("CompressedSize")).toString());
+            stream.writeAttribute(QLatin1String("uncompressedsize"), package->data(QLatin1String("UncompressedSize")).toString());
+            stream.writeAttribute(QLatin1String("releaseDate"), package->data(scReleaseDate).toString());
+            stream.writeAttribute(QLatin1String("downloadableArchives"), package->data(scDownloadableArchives).toString());
+            stream.writeAttribute(QLatin1String("licenses"), package->data(QLatin1String("Licenses")).toString());
+            stream.writeAttribute(QLatin1String("script"), package->data(scScript).toString());
+            stream.writeAttribute(QLatin1String("sortingPriority"), package->data(scSortingPriority).toString());
+            stream.writeAttribute(QLatin1String("replaces"), package->data(scReplaces).toString());
+            stream.writeAttribute(QLatin1String("requiresAdminRights"), package->data(scRequiresAdminRights).toString());
         }
-        root.appendChild(update);
+        stream.writeEndElement();
     }
-    std::cout << qPrintable(doc.toString(4));
+    stream.writeEndElement();
+
+    stream.writeEndDocument();
+    std::cout << qPrintable(output);
 }
 
 /*!

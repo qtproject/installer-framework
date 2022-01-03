@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,32 +56,38 @@ private slots:
         QLoggingCategory::setFilterRules(loggingRules);
         auto func = &PackageManagerCore::listAvailablePackages;
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("."), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<availablepackages>\n"
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^C"), QHash<QString, QString>());
 
@@ -90,14 +96,16 @@ private slots:
             { "Version", "1.0.2" },
             { "DisplayName", "A" }
         };
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+             "<availablepackages>\n"
              "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
              "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
 
         searchHash.clear();
         searchHash.insert("Default", "false");
-        verifyListPackagesMessage(core.get(), QLatin1String("<availablepackages>\n"
+        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+             "<availablepackages>\n"
              "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
 
@@ -195,12 +203,14 @@ private slots:
 
         core.setValue(scTargetDir, testDirectory);
 
-        verifyListPackagesMessage(&core, QLatin1String("<localpackages>\n"
+        verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<localpackages>\n"
             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"B\" displayname=\"B Title\" version=\"1.0.0-1\"/>\n"
             "</localpackages>\n"), func, QString());
 
-        verifyListPackagesMessage(&core, QLatin1String("<localpackages>\n"
+        verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
+            "<localpackages>\n"
             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
             "</localpackages>\n"), func, QLatin1String("A"));
 
