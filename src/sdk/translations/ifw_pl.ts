@@ -2441,7 +2441,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Another %1 instance is already running. Wait until it finishes, close it, or restart your system.</source>
-        <translation>Inna instancja %1 już działa. Poczekaj, aż zakończy działanie, i zamknij ją lub uruchom ponownie system.</translation>
+        <translation>Inna instancja %1 już działa. Poczekaj, aż zakończy działanie i zamknij ją lub uruchom ponownie system.</translation>
     </message>
     <message>
         <source>Cannot start installer binary as updater.</source>
