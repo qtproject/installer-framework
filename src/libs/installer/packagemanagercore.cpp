@@ -3787,8 +3787,8 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         foreach (const QString &componentName, componentsToReplace) {
             if (data.installedPackages->contains(componentName)) {
                 // We found a replacement that is installed.
-                if (isPackageManager()) {
-                    // Mark the replacement component as installed as well. Only do this in package manager
+                if (isUpdater()) {
+                    // Mark the replacement component as installed as well. Only do this in updater
                     // mode, otherwise it would not show up in the updaters component list.
                     component->setInstalled();
                     component->setValue(scInstalledVersion, data.installedPackages->value(componentName).version);
@@ -3826,14 +3826,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                     qCWarning(QInstaller::lcDeveloperBuild) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            if (!d->componentsToReplace().contains(componentName)) {
-                componentToReplace = new Component(this);
-                componentToReplace->setValue(scName, componentName);
-            } else {
-                // This case can happen when in installer mode as well, a component
-                // is in the installer binary and its replacement component as well.
-                d->replacementDependencyComponents().append(componentToReplace);
-            }
+            d->replacementDependencyComponents().append(componentToReplace);
             d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
         }
     }
@@ -4009,7 +4002,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             installedPackages.take(name);   // remove from local installed packages
 
             bool isValidUpdate = locals.contains(name);
-            if (!isValidUpdate && !replaces.isEmpty()) {
+            if (!replaces.isEmpty()) {
                 const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
                     Qt::SkipEmptyParts);
                 foreach (const QString &possibleName, possibleNames) {
@@ -4050,9 +4043,18 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         QInstaller::Component *component = new QInstaller::Component(this);
         component->loadDataFromPackage(installedPackages.value(key));
         d->m_updaterComponentsDeps.append(component);
+    }
+
+    foreach (const QString &key, locals.keys()) {
         // Keep a list of local components that should be replaced
-        if (replaceMes.contains(component->name()))
+        // Remove from components list - we don't want to update the component
+        // as it is replaced by other component
+        if (replaceMes.contains(key)) {
+            QInstaller::Component *component = new QInstaller::Component(this);
+            component->loadDataFromPackage(locals.value(key));
             localReplaceMes.insert(component->name(), component);
+            delete components.take(component->name());
+        }
     }
 
     // store all components that got a replacement, but do not modify the components list

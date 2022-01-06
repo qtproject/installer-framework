@@ -41,7 +41,8 @@ SUBDIRS += \
     elevatedexecuteoperation \
     treename \
     createoffline \
-    contentshaupdate
+    contentshaupdate \
+    componentreplace
 
 CONFIG(libarchive) {
     SUBDIRS += libarchivearchive

@@ -1,0 +1,45 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <UpdateFile UncompressedSize="74" CompressedSize="224" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>53892cfe4d5f5b978553d3aa172944117604ef9c</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>A.sub1</Name>
+  <DisplayName>A subcomponent 1</DisplayName>
+  <Description>Subcomponent of component A</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <UpdateFile UncompressedSize="89" CompressedSize="247" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>8bd5a1d2525cfdfb690a3c80165aeed44a17795f</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B</Name>
+  <DisplayName>B</DisplayName>
+  <Description>Example component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <UpdateFile UncompressedSize="74" CompressedSize="224" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>b2d03273f01f45878c3f5081cc8502edc0826e08</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B.sub1</Name>
+  <DisplayName>B subcomponent 1</DisplayName>
+  <Description>Subcomponent of component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2021-01-01</ReleaseDate>
+  <UpdateFile UncompressedSize="89" CompressedSize="247" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>a10463141e30ce3fede9ac84bc52a07b0c5e919e</SHA1>
+ </PackageUpdate>
+</Updates>

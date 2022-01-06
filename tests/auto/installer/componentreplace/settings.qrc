@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/installPackagesRepository/Updates.xml</file>
+        <file>data/installPackagesRepository/A/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/B/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/A.sub1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/B.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithReplace/Updates.xml</file>
+        <file>data/repositoryWithReplace/A/1.0.0content.7z</file>
+        <file>data/repositoryWithReplace/B/2.0.0content.7z</file>
+        <file>data/repositoryWithReplace/A.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithReplace/B.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithUpdateToReplaceble/Updates.xml</file>
+        <file>data/repositoryWithUpdateToReplaceble/A/2.0.0content.7z</file>
+        <file>data/repositoryWithUpdateToReplaceble/B/2.0.0content.7z</file>
+        <file>data/repositoryWithUpdateToReplaceble/A.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithUpdateToReplaceble/B.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplace/Updates.xml</file>
+        <file>data/repositoryWithMultiReplace/A/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplace/B/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplace/A.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplace/B.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/Updates.xml</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/A/2.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/B/2.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/A.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/B.sub1/1.0.0content.7z</file>
+    </qresource>
+</RCC>
