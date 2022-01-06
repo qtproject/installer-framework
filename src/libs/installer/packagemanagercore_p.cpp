@@ -474,7 +474,6 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
     } catch (const Error &error) {
         clearAllComponentLists();
-        emit m_core->finishAllComponentsReset(QList<QInstaller::Component*>());
         setStatus(PackageManagerCore::Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.

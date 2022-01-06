@@ -386,13 +386,13 @@ Component *ComponentModel::componentFromIndex(const QModelIndex &index) const
 // -- public slots
 
 /*!
-    Sets \a rootComponents to be the list of currently shown components.
+    Resets model and sets \a rootComponents to be the list of currently shown components.
 
     The model is repopulated and the individual component's checked state is used to show the check
     mark in front of the visual component representation. The modelAboutToBeReset() and
     modelReset() signals are emitted.
 */
-void ComponentModel::setRootComponents(QList<QInstaller::Component*> rootComponents)
+void ComponentModel::reset(QList<Component *> rootComponents)
 {
     beginResetModel();
 
@@ -464,7 +464,7 @@ void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag 
 void ComponentModel::onVirtualStateChanged()
 {
     // If the virtual state of a component changes, force a reset of the component model.
-    setRootComponents(m_core->components(PackageManagerCore::ComponentType::Root));
+    reset(m_core->components(PackageManagerCore::ComponentType::Root));
 }
 
 

@@ -2250,8 +2250,11 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
     }
+    connect(this, &PackageManagerCore::startAllComponentsReset, [&] {
+        d->m_defaultModel->reset();
+    });
     connect(this, &PackageManagerCore::finishAllComponentsReset, d->m_defaultModel,
-        &ComponentModel::setRootComponents);
+        &ComponentModel::reset);
     return d->m_defaultModel;
 }
 
@@ -2265,8 +2268,11 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
     }
+    connect(this, &PackageManagerCore::startUpdaterComponentsReset, [&] {
+        d->m_updaterModel->reset();
+    });
     connect(this, &PackageManagerCore::finishUpdaterComponentsReset, d->m_updaterModel,
-        &ComponentModel::setRootComponents);
+        &ComponentModel::reset);
     return d->m_updaterModel;
 }
 
@@ -4118,7 +4124,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         }
     } catch (const Error &error) {
         d->clearUpdaterComponentLists();
-        emit finishUpdaterComponentsReset(QList<QInstaller::Component*>());
         d->setStatus(Failure, error.message());
 
         // TODO: make sure we remove all message boxes inside the library at some point.

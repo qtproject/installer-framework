@@ -100,7 +100,7 @@ private slots:
         QList<Component*> rootComponents = loadComponents(core);
 
         ComponentModel *model = new ComponentModel(1, &core);
-        model->setRootComponents(rootComponents);
+        model->reset(rootComponents);
         // all names should be resolvable
         QStringList all;
         all << m_checkedComponentsWithBrokenScript << m_uncheckedComponentsWithBrokenScript << m_partiallyCheckedComponentsWithBrokenScript;
@@ -127,7 +127,7 @@ private slots:
         QTest::ignoreMessage(QtWarningMsg, re);
         invalidScriptComponent->loadComponentScript(":///data/broken_script.qs");
 
-        model->setRootComponents(components);
+        model->reset(components);
         testModelState(model, m_checkedComponentsWithBrokenScript, m_partiallyCheckedComponentsWithBrokenScript, m_uncheckedComponentsWithBrokenScript);
     }
 
@@ -146,7 +146,7 @@ private slots:
         componentDependingOnMissingDependency->addDependency("componentmissingdependency");
 
         core.componentsToInstallNeedsRecalculation();
-        model->setRootComponents(components);
+        model->reset(components);
 
         testModelState(model, m_checkedComponentsWithMissingDependency, m_partiallyCheckedComponentsWithBrokenScript, m_uncheckedComponentsWithMissingDependency);
     }

@@ -86,7 +86,7 @@ public:
     Component* componentFromIndex(const QModelIndex &index) const;
 
 public Q_SLOTS:
-    void setRootComponents(QList<QInstaller::Component*> rootComponents);
+    void reset(QList<Component *> rootComponents = QList<Component *>());
     void setCheckedState(QInstaller::ComponentModel::ModelStateFlag state);
 
 Q_SIGNALS:

@@ -92,7 +92,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
 
         // all names should be resolvable, virtual components are not indexed if they are not visible
         QStringList all;
@@ -116,7 +116,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
 
         // all names should be resolvable, including virtual components
         QStringList all;
@@ -141,7 +141,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         QCOMPARE(model.core(), &m_core);
@@ -162,7 +162,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         QCOMPARE(model.checkedState(), ComponentModel::DefaultChecked);
@@ -184,7 +184,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         QCOMPARE(model.checkedState(), ComponentModel::DefaultChecked);
@@ -204,7 +204,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         QCOMPARE(model.checkedState(), ComponentModel::DefaultChecked);
@@ -226,7 +226,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         // select all possible components.
@@ -262,7 +262,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         // select all possible components.
@@ -300,7 +300,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         // select all possible components.
@@ -335,7 +335,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         // select all possible components.
@@ -379,7 +379,7 @@ private slots:
 
             // setup the model with 1 column
             ComponentModel model(1, &m_core);
-            model.setRootComponents(rootComponents);
+            model.reset(rootComponents);
 
             const QModelIndex root = model.indexFromComponentName(vendorProduct);
             QCOMPARE(model.data(root, Qt::DisplayRole).toString(), expectedName);
@@ -397,7 +397,7 @@ private slots:
 
         // setup the model with 1 column
         ComponentModel model(1, &m_core);
-        model.setRootComponents(rootComponents);
+        model.reset(rootComponents);
         testDefaultInheritedModelBehavior(&model, 1);
 
         model.setCheckedState(ComponentModel::DefaultChecked);
