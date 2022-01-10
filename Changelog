@@ -1,3 +1,19 @@
+4.3.0
+- Update minimum required Qt version to Qt5.15.2
+- Add support for moving child components with <TreeName> (QTIFW-2380)
+- Fix replacing components with <TreeName> element (QTIFW-2455)
+- Do not block installation when there are conflicting component names (QTIFW-2444)
+- Fix wrong title text after succesfull update (QTIFW-2439)
+- Allow case insensitive CLI search and list (QTIFW-2451)
+- Fix selecting target directory when elevated server process is active (QTIFW-2383)
+- Add Korean translation
+- Libarchive: enable support for uncompressed tar archives (QTIFW-2404)
+- Enable handling 7z archives with libarchive (QTIFW-2375)
+- Libarchive: fix handling of glob pattern arguments when creating archive (QTIFW-2423)
+- Fix blocking UI when waiting start of the authorization fallback process (QTIFW-2374)
+- Fix dependencies example exception (QTIFW-2362)
+- Add possibility to search for components in ComponentSelectionPage (QTIFW-1404)
+
 4.2.0
 - Print essential component information regardless of verbosity (QTIFW-2349)
 - Update Chinese translation
