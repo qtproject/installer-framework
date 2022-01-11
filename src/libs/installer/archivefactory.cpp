@@ -142,9 +142,10 @@ ArchiveFactory::ArchiveFactory()
 #ifdef IFW_LIBARCHIVE
     registerArchive<LibArchiveWrapper>(QLatin1String("LibArchive"), QStringList()
         << QLatin1String("tar") << QLatin1String("tar.gz") << QLatin1String("tar.bz2")
-        << QLatin1String("tar.xz") << QLatin1String("zip") << QLatin1String("7z"));
+        << QLatin1String("tar.xz") << QLatin1String("zip") << QLatin1String("7z")
+        << QLatin1String("qbsp"));
 #else
     registerArchive<Lib7zArchive>(QLatin1String("Lib7z"), QStringList()
-        << QLatin1String("7z"));
+        << QLatin1String("7z") << QLatin1String("qbsp"));
 #endif
 }

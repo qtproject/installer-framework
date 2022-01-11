@@ -713,7 +713,13 @@ void LibArchiveArchive::configureReader(archive *archive)
 */
 void LibArchiveArchive::configureWriter(archive *archive)
 {
-    archive_write_set_format_filter_by_ext(archive, m_data->file.fileName().toLatin1());
+    const QString fileName = m_data->file.fileName();
+    if (fileName.endsWith(QLatin1String(".qbsp"), Qt::CaseInsensitive)) {
+        // The Qt board support package file extension is really a 7z.
+        archive_write_set_format_7zip(archive);
+    } else {
+        archive_write_set_format_filter_by_ext(archive, fileName.toLatin1());
+    }
 
     if (compressionLevel() == CompressionLevel::Normal)
         return;

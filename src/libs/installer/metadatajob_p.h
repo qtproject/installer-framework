@@ -79,12 +79,10 @@ public:
         if (!archive) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Unsupported archive \"%1\": no handler "
                 "registered for file suffix \"%2\".").arg(m_archive, QFileInfo(m_archive).suffix())));
-        }
-        if (!archive->open(QIODevice::ReadOnly)) {
+        } else if (!archive->open(QIODevice::ReadOnly)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
                 "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
-        }
-        if (!archive->extract(m_targetDir)) {
+        } else if (!archive->extract(m_targetDir)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
                 "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
         }

@@ -246,6 +246,7 @@ private:
         QTest::newRow("bzip2 compressed tar archive") << ":///data/valid.tar.bz2";
         QTest::newRow("xz compressed tar archive") << ":///data/valid.tar.xz";
         QTest::newRow("7zip archive") << ":///data/valid.7z";
+        QTest::newRow("QBSP archive (7z)") << ":///data/valid.qbsp";
     }
 
     void archiveSuffixesTestData()
@@ -257,6 +258,7 @@ private:
         QTest::newRow("bzip2 compressed tar archive") << ".tar.bz2";
         QTest::newRow("xz compressed tar archive") << ".tar.xz";
         QTest::newRow("7z archive") << ".7z";
+        QTest::newRow("QBSP archive") << ".qbsp";
     }
 
     QString tempSourceFile(const QByteArray &data, const QString &templateName = QString())
