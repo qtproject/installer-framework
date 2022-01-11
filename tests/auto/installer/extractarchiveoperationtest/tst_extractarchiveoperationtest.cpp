@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -98,7 +98,7 @@ private slots:
 
         QFile extractedFile(m_testDirectory + QDir::separator() + "FolderForContent/content.txt");
         QVERIFY(extractedFile.exists());
-
+#ifdef IFW_LIBARCHIVE
         extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForTarGzContent/content.txt");
         QVERIFY(extractedFile.exists());
 
@@ -110,7 +110,7 @@ private slots:
 
         extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForZipContent/content.txt");
         QVERIFY(extractedFile.exists());
-
+#endif
         extractedFile.setFileName(m_testDirectory + QDir::separator() + "FolderForAnotherContent/anothercontent.txt");
         QVERIFY(extractedFile.exists());
 
