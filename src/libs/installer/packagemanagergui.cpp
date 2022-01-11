@@ -1463,6 +1463,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     : PackageManagerPage(core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
+    , m_forceUpdate(false)
     , m_label(nullptr)
     , m_msgLabel(nullptr)
     , m_errorLabel(nullptr)
@@ -1570,6 +1571,8 @@ bool IntroductionPage::validatePage()
         return true;
 
     setComplete(false);
+    setErrorMessage(QString());
+
     bool isOfflineOnlyInstaller = core->isInstaller() && core->isOfflineOnly();
     // If not offline only installer, at least one valid repository needs to be available
     if (!isOfflineOnlyInstaller && !validRepositoriesAvailable()) {
@@ -1635,6 +1638,15 @@ bool IntroductionPage::validatePage()
                     // replaces the error string from packagemanagercore
                     error = tr("There is an important update available. Please select '%1' first")
                         .arg(m_updateComponents->text().remove(QLatin1Char('&')));
+
+                    m_forceUpdate = true;
+                    // Don't call these directly. Need to finish the current validation first,
+                    // because changing the selection updates the binary marker and resets the
+                    // complete -state of the page.
+                    QMetaObject::invokeMethod(m_updateComponents, "setChecked",
+                        Qt::QueuedConnection, Q_ARG(bool, true));
+                    QMetaObject::invokeMethod(this, "setErrorMessage",
+                        Qt::QueuedConnection, Q_ARG(QString, error));
                 }
                 setErrorMessage(error);
             }
@@ -1843,6 +1855,7 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 {
     m_updatesFetched = false;
     m_allPackagesFetched = false;
+    m_forceUpdate = false;
 }
 
 // -- private
@@ -1865,6 +1878,9 @@ void IntroductionPage::entering()
         showMaintenanceTools();
         setMaintenanceToolsEnabled(true);
     }
+    if (m_forceUpdate)
+        m_packageManager->setEnabled(false);
+
     setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
 }
 

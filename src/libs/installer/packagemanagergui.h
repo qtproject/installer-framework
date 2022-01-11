@@ -262,6 +262,7 @@ private:
 private:
     bool m_updatesFetched;
     bool m_allPackagesFetched;
+    bool m_forceUpdate;
 
     QLabel *m_label;
     QLabel *m_msgLabel;
