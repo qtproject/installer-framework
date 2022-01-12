@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -54,6 +54,7 @@
 #include <QtCore/QTimer>
 
 #include <QAbstractItemView>
+#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDesktopServices>
@@ -64,6 +65,8 @@
 #include <QLineEdit>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QMenuBar>
+#include <QMenu>
 #include <QMessageBox>
 #include <QProgressBar>
 #include <QPushButton>
@@ -299,7 +302,17 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
-#ifndef Q_OS_MACOS
+#ifdef Q_OS_MACOS
+    QMenuBar *menuBar = new QMenuBar(this);
+    QMenu *applicationMenu = new QMenu(menuBar);
+    menuBar->addMenu(applicationMenu);
+
+    QAction *aboutAction = new QAction(applicationMenu);
+    aboutAction->setMenuRole(QAction::AboutRole);
+    applicationMenu->addAction(aboutAction);
+
+    connect(aboutAction, &QAction::triggered, this, &PackageManagerGui::aboutApplicationClicked);
+#else
     setWindowIcon(QIcon(m_core->settings().installerWindowIcon()));
 #endif
     if (!m_core->settings().wizardShowPageList()) {

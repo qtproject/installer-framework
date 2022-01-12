@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,7 @@
 
 #include "installerbasecommons.h"
 #include "settingsdialog.h"
+#include "aboutapplicationdialog.h"
 #include "globals.h"
 
 #include <packagemanagercore.h>
@@ -118,6 +119,8 @@ int TabController::init()
         connect(d->m_gui, &QWizard::currentIdChanged, this, &TabController::onCurrentIdChanged);
         connect(d->m_gui, &PackageManagerGui::settingsButtonClicked,
                 this, &TabController::onSettingsButtonClicked);
+        connect(d->m_gui, &PackageManagerGui::aboutApplicationClicked,
+                this, &TabController::onAboutApplicationClicked);
     }
 
     IntroductionPage *page =
@@ -180,6 +183,12 @@ void TabController::onSettingsButtonClicked()
         }
         restartWizard();
     }
+}
+
+void TabController::onAboutApplicationClicked()
+{
+    AboutApplicationDialog dialog(d->m_core);
+    dialog.exec();
 }
 
 void TabController::onCurrentIdChanged(int newId)

@@ -18,10 +18,11 @@ QT += network qml xml widgets
 }
 
 CONFIG(static, static|shared) {
-  # prevent qmake from automatically linking in imageformats, bearer, qmltooling plugins
-  QTPLUGIN.imageformats = -
+  # prevent qmake from automatically linking in bearer and qmltooling plugins
   QTPLUGIN.bearer = -
   QTPLUGIN.qmltooling = -
+  # ICNS support required on macOS, prevent linking on other platforms
+  !macos:QTPLUGIN.imageformats = -
 }
 
 DESTDIR = $$IFW_APP_PATH
@@ -100,7 +101,8 @@ HEADERS += \
            settingsdialog.h \
            sdkapp.h \
            commandlineinterface.h \
-           installerbase.h
+           installerbase.h \
+           aboutapplicationdialog.h
 
 SOURCES = \
           main.cpp \
@@ -108,7 +110,8 @@ SOURCES = \
           tabcontroller.cpp \
           installerbasecommons.cpp \
           settingsdialog.cpp \
-          commandlineinterface.cpp
+          commandlineinterface.cpp \
+          aboutapplicationdialog.cpp
 
 win32 {
     # Use our own manifest file

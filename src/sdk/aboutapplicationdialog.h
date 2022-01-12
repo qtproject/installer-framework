@@ -26,47 +26,23 @@
 **
 **************************************************************************/
 
-#ifndef TABCONTROLLER_H
-#define TABCONTROLLER_H
+#ifndef ABOUTAPPLICATIONDIALOG_H
+#define ABOUTAPPLICATIONDIALOG_H
 
-#include <QtCore/QHash>
-#include <QtCore/QObject>
+#include <QDialog>
 
 namespace QInstaller {
-    class PackageManagerGui;
     class PackageManagerCore;
-    class Settings;
 }
 
-class IntroductionPageImpl;
-
-class TabController : public QObject
+class AboutApplicationDialog : public QDialog
 {
     Q_OBJECT
-    Q_DISABLE_COPY(TabController)
 
 public:
-    explicit TabController(QObject *parent = 0);
-    ~TabController();
-
-    void setGui(QInstaller::PackageManagerGui *gui);
-    void setManager(QInstaller::PackageManagerCore *core);
-
-    void setControlScript(const QString &script);
-
-public Q_SLOTS:
-    int init();
-
-private Q_SLOTS:
-    void restartWizard();
-    void onSettingsButtonClicked();
-    void onAboutApplicationClicked();
-    void onCurrentIdChanged(int newId);
-    void onNetworkSettingsChanged(const QInstaller::Settings &settings);
-
-private:
-    class Private;
-    Private *const d;
+    explicit AboutApplicationDialog(QInstaller::PackageManagerCore *core,
+                                    QWidget *parent = nullptr);
+    ~AboutApplicationDialog() = default;
 };
 
-#endif // TABCONTROLLER_H
+#endif // ABOUTAPPLICATIONDIALOG_H

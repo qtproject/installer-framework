@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -100,6 +100,7 @@ Q_SIGNALS:
     void finishButtonClicked();
     void gotRestarted();
     void settingsButtonClicked();
+    void aboutApplicationClicked();
 
 public Q_SLOTS:
     void cancelButtonClicked();
