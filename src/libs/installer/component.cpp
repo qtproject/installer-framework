@@ -727,7 +727,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
                 break;
 
             QList<QFileInfo> fileCandidates;
-            foreach (const QString &locale, QInstaller::localeCandidates(lang.toLower())) {
+            foreach (const QString &locale, QInstaller::localeCandidates(lang)) {
                 fileCandidates << QFileInfo(QString::fromLatin1("%1%2_%3.%4").arg(
                                                 directory, fileInfo.baseName(), locale,
                                                 fileInfo.completeSuffix()));
