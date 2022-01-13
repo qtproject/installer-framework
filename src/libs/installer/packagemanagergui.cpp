@@ -1334,12 +1334,8 @@ void PackageManagerPage::setComplete(bool complete)
 {
     m_complete = complete;
     if (QWizard *w = wizard()) {
-        if (QAbstractButton *cancel = w->button(QWizard::CancelButton)) {
-            if (cancel->hasFocus()) {
-                if (QAbstractButton *next = w->button(QWizard::NextButton))
-                    next->setFocus();
-            }
-        }
+        if (QAbstractButton *nextButton = w->button(QWizard::NextButton))
+            nextButton->setFocus();
     }
     emit completeChanged();
 }
