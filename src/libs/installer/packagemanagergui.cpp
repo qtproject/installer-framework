@@ -347,6 +347,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
+#ifdef Q_OS_MACOS
+    setOptions(options() & ~QWizard::NoDefaultButton);
+    if (QPushButton *nextButton = qobject_cast<QPushButton *>(button(QWizard::NextButton)))
+        nextButton->setFocusPolicy(Qt::StrongFocus);
+#endif
 
     if (m_core->settings().wizardShowPageList()) {
         QWidget *sideWidget = new QWidget(this);
