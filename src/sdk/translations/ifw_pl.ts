@@ -107,7 +107,7 @@
     <name>InstallerBase</name>
     <message>
         <source>Unable to start installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można uruchomić instalatora</translation>
     </message>
 </context>
 <context>
