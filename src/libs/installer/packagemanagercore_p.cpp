@@ -1495,14 +1495,19 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         if (m_core->isInstaller())
             registerMaintenanceTool();
         writeMaintenanceConfigFiles();
-        deferredRename(dataFile + QLatin1String(".new"), dataFile, false);
 
-        if (newBinaryWritten) {
-            const bool restart = replacementExists && isUpdater() && (!statusCanceledOrFailed()) && m_needsHardRestart;
+        QFile::remove(dataFile);
+        QFile::rename(dataFile + QLatin1String(".new"), dataFile);
+
+        const bool restart = !statusCanceledOrFailed() && m_needsHardRestart;
+        qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool hard restart:"
+            << (restart ? "true." : "false.");
+
+        if (newBinaryWritten)
             deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
-            qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool restart:"
-                << (restart ? "true." : "false.");
-        }
+        else if (restart)
+            SelfRestarter::setRestartOnQuit(true);
+
     } catch (const Error &err) {
         setStatus(PackageManagerCore::Failure);
         if (gainedAdminRights)
@@ -2222,9 +2227,11 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
 
-        if (((component->value(scEssential, scFalse) == scTrue) || (component->value(scForcedUpdate, scFalse) == scTrue))
-             && !m_core->isCommandLineInstance()) {
-            m_needsHardRestart = true;
+        if (!m_core->isCommandLineInstance()) {
+            if ((component->value(scEssential, scFalse) == scTrue) && !isInstaller())
+                m_needsHardRestart = true;
+            else if ((component->value(scForcedUpdate, scFalse) == scTrue) && isUpdater())
+                m_needsHardRestart = true;
         }
     }
 
