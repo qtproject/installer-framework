@@ -293,7 +293,7 @@ void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
 void PerformInstallationForm::setImageFromFileName(const QString &fileName)
 {
     if (!QFile::exists(fileName)) {
-        qCWarning(QInstaller::lcDeveloperBuild) << "Image file does not exist:" << fileName;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Image file does not exist:" << fileName;
         return;
     }
     QImageReader reader(fileName);
@@ -301,7 +301,7 @@ void PerformInstallationForm::setImageFromFileName(const QString &fileName)
     if (!pixmap.isNull()) {
         m_productImagesLabel->setPixmap(pixmap);
     } else {
-        qCWarning(QInstaller::lcDeveloperBuild) <<
+        qCWarning(QInstaller::lcInstallerInstallLog) <<
             QString::fromLatin1("Failed to load image '%1' : %2.").arg(fileName, reader.errorString());
     }
 }
