@@ -401,21 +401,21 @@
                 Used on Windows and Linux, no functionality on macOS.
         \row
             \li Logo
-            \li Filename for a logo used as \c QWizard::LogoPixmap.
+            \li Filename for a logo in PNG format used as \c QWizard::LogoPixmap.
         \row
             \li Watermark
-            \li Filename for a watermark used as \c QWizard::WatermarkPixmap. If
+            \li Filename for a watermark in PNG format used as \c QWizard::WatermarkPixmap. If
                 \c <WizardShowPageList> is set to \c true, the watermark is hidden.
         \row
             \li Banner
-            \li Filename for a banner used as \c QWizard::BannerPixmap (only used by ModernStyle).
+            \li Filename for a banner in PNG format used as \c QWizard::BannerPixmap (only used by ModernStyle).
         \row
             \li Background
-            \li Filename for an image used as \c QWizard::BackgroundPixmap (only used by MacStyle).
+            \li Filename for an image in PNG format used as \c QWizard::BackgroundPixmap (only used by MacStyle).
                 If \c <WizardShowPageList> is set to \c true, the background is hidden.
         \row
             \li PageListPixmap
-            \li Filename for an image shown on top of installer page list. The image is shown
+            \li Filename for an image in PNG format shown on top of installer page list. The image is shown
                 only if \c <WizardShowPageList> is also set to \c true.
         \row
             \li WizardStyle
@@ -450,7 +450,7 @@
         \row
             \li ProductImages
             \li A list of images to be shown on \c PerformInstallationPage. This element can have
-                one or several \c <Image> child elements that contain a filename for an image.
+                one or several \c <Image> child elements that contain a filename for an image in PNG format.
         \row
             \li TitleColor
             \li Set the color of the titles and subtitles (takes an HTML color code,
