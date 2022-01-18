@@ -290,7 +290,7 @@ private slots:
         QFETCH(QList<Component *> , installedComponents);
         QFETCH(QSet<Component *> , expectedResult);
 
-        UninstallerCalculator calc(installedComponents);
+        UninstallerCalculator calc(installedComponents, core);
         calc.appendComponentsToUninstall(selectedToUninstall);
         QSet<Component *> result = calc.componentsToUninstall();
 

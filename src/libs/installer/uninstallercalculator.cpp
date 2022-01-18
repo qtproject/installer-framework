@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,8 +42,9 @@ namespace QInstaller {
     \internal
 */
 
-UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents)
+UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core)
     : m_installedComponents(installedComponents)
+    , m_core(core)
 {
 }
 
@@ -60,9 +61,8 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component)
     if (!component->isInstalled())
         return;
 
-    PackageManagerCore *core = component->packageManagerCore();
     // remove all already resolved dependees
-    const QList<Component *> dependeesList = core->dependees(component);
+    const QList<Component *> dependeesList = m_core->dependees(component);
     QSet<Component *> dependees = QSet<Component *>(dependeesList.begin(),
         dependeesList.end()).subtract(m_componentsToUninstall);
 
@@ -134,17 +134,14 @@ void UninstallerCalculator::continueAppendComponentsToUninstall()
 {
     QList<Component*> unneededVirtualList;
     // Check for virtual components without dependees
-    foreach (Component *component, m_installedComponents) {
+    for (Component *component : qAsConst(m_installedComponents)) {
         if (component->isInstalled() && component->isVirtual() && !m_componentsToUninstall.contains(component)) {
             // Components with auto dependencies were handled in the previous step
-            if (!component->autoDependencies().isEmpty())
-                continue;
-            if (component->forcedInstallation())
+            if (!component->autoDependencies().isEmpty() || component->forcedInstallation())
                 continue;
 
             bool required = false;
-            PackageManagerCore *core = component->packageManagerCore();
-            foreach (Component *dependee, core->dependees(component)) {
+            for (Component *dependee : m_core->dependees(component)) {
                 if (dependee->isInstalled() && !m_componentsToUninstall.contains(dependee)) {
                     required = true;
                     break;

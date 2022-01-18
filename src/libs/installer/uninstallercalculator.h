@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,11 +38,12 @@
 namespace QInstaller {
 
 class Component;
+class PackageManagerCore;
 
 class INSTALLER_EXPORT UninstallerCalculator
 {
 public:
-    UninstallerCalculator(const QList<Component *> &installedComponents);
+    UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core);
 
     QSet<Component*> componentsToUninstall() const;
 
@@ -55,6 +56,7 @@ private:
 
     QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;
+    PackageManagerCore *m_core;
 };
 
 }

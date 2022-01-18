@@ -599,7 +599,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
             }
         }
 
-        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents);
+        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core);
     }
     return m_uninstallerCalculator;
 }
