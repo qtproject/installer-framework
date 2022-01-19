@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,8 +29,6 @@
 #ifndef REMOTESERVERCONNECTION_H
 #define REMOTESERVERCONNECTION_H
 
-#include "abstractarchive.h"
-
 #include <QPointer>
 #include <QThread>
 
@@ -44,6 +42,7 @@ QT_END_NAMESPACE
 namespace QInstaller {
 
 class PermissionSettings;
+class AbstractArchive;
 
 class QProcessSignalReceiver;
 class AbstractArchiveSignalReceiver;

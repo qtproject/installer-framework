@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,9 +29,9 @@
 #ifndef COMMANDLINEPARSER_H
 #define COMMANDLINEPARSER_H
 
-#include "commandlineparser_p.h"
-
 #include <QCommandLineParser>
+
+class CommandLineParserPrivate;
 
 class CommandLineParser
 {
@@ -59,7 +59,7 @@ public:
 
 private:
     QCommandLineParser m_parser;
-    class CommandLineParserPrivate *const d;
+    CommandLineParserPrivate *const d;
 
     QHash<QString, OptionContextFlags> m_optionContextFlagsNameHash;
 };

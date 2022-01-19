@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,17 +29,19 @@
 #ifndef SCRIPTENGINE_P_H
 #define SCRIPTENGINE_P_H
 
-#include "component.h"
-#include "packagemanagercore.h"
-#include "packagemanagergui.h"
 #include "globals.h"
 
 #include <QDebug>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QStandardPaths>
+#include <QJSValue>
 
 namespace QInstaller {
+
+class PackageManagerCore;
+class PackageManagerGui;
+class ScriptEngine;
 
 class ConsoleProxy : public QObject
 {

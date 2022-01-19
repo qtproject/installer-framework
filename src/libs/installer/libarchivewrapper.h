@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,9 +31,10 @@
 
 #include "installer_global.h"
 #include "abstractarchive.h"
-#include "libarchivewrapper_p.h"
 
 namespace QInstaller {
+
+class LibArchiveWrapperPrivate;
 
 class INSTALLER_EXPORT LibArchiveWrapper : public AbstractArchive
 {

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,8 @@
 #include "scriptengine_p.h"
 #include "systeminfo.h"
 #include "loggingutils.h"
+#include "packagemanagergui.h"
+#include "component.h"
 
 #include <QMetaEnum>
 #include <QQmlEngine>

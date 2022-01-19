@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,10 +29,7 @@
 #ifndef PERFORMINSTALLATIONFORM_H
 #define PERFORMINSTALLATIONFORM_H
 
-#include "aspectratiolabel.h"
-
 #include <QObject>
-#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 class QLabel;
@@ -42,10 +39,13 @@ class QTimer;
 class QWidget;
 class QWinTaskbarButton;
 class QScrollArea;
+class QTextEdit;
 QT_END_NAMESPACE
 
 
 namespace QInstaller {
+
+class AspectRatioLabel;
 
 class PerformInstallationForm : public QObject
 {

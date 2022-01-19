@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 
 #include "progresscoordinator.h"
 #include "globals.h"
+#include "aspectratiolabel.h"
 
 #include <QApplication>
 #include <QLabel>
@@ -39,6 +40,7 @@
 #include <QVBoxLayout>
 #include <QImageReader>
 #include <QScrollArea>
+#include <QTextEdit>
 
 #include <QtCore/QTimer>
 

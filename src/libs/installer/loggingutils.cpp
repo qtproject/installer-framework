@@ -29,7 +29,6 @@
 #include "loggingutils.h"
 
 #include "component.h"
-#include "localpackagehub.h"
 #include "globals.h"
 #include "fileutils.h"
 #include "remoteclient.h"

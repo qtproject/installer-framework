@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,11 +29,17 @@
 #ifndef LOGGINGUTILS_H
 #define LOGGINGUTILS_H
 
-#include "component.h"
+#include "qinstallerglobal.h"
+#include "localpackagehub.h"
 
 #include <QObject>
+#include <QIODevice>
+#include <QTextStream>
+#include <QBuffer>
 
 namespace QInstaller {
+
+class Component;
 
 class INSTALLER_EXPORT LoggingHandler
 {
