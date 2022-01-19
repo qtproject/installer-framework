@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,10 +41,10 @@ class INSTALLER_EXPORT InstallIconsOperation : public QObject, public Operation
 public:
     explicit InstallIconsOperation(PackageManagerCore *core);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 
 Q_SIGNALS:
     void outputTextChanged(const QString &progress);

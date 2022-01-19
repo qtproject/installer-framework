@@ -104,7 +104,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
     void cancelButtonClicked();
-    void reject();
+    void reject() override;
     void rejectWithoutPrompt();
     void showFinishedPage();
     void setModified(bool value);
@@ -130,8 +130,8 @@ private Q_SLOTS:
     void currentPageChanged(int newId);
 
 protected:
-    bool event(QEvent *event);
-    void showEvent(QShowEvent *event);
+    bool event(QEvent *event) override;
+    void showEvent(QShowEvent *event) override;
     PackageManagerCore *packageManagerCore() const { return m_core; }
     void executeControlScript(int pageId);
 
@@ -165,7 +165,7 @@ public:
     void setShowOnPageList(bool show);
     bool showOnPageList() const;
 
-    virtual bool isComplete() const;
+    virtual bool isComplete() const override;
     void setComplete(bool complete);
 
     virtual bool isInterruptible() const { return false; }
@@ -173,7 +173,7 @@ public:
 
     void setValidatePageComponent(QInstaller::Component *component);
 
-    bool validatePage();
+    bool validatePage() override;
 
     bool settingsButtonRequested() const { return m_needsSettingsButton; }
     void setSettingsButtonRequested(bool request) { m_needsSettingsButton = request; }
@@ -192,7 +192,7 @@ protected:
     virtual void insertWidget(QWidget *widget, const QString &siblingName, int offset = 1);
     virtual QWidget *findWidget(const QString &objectName) const;
 
-    virtual int nextId() const; // reimp
+    virtual int nextId() const override;
 
     // Used to support some kind of initializePage() in the case the wizard has been set
     // to QWizard::IndependentPages. If that option has been set, initializePage() would be only
@@ -226,8 +226,8 @@ public:
 
     void setText(const QString &text);
 
-    int nextId() const;
-    bool validatePage();
+    int nextId() const override;
+    bool validatePage() override;
 
     void showAll();
     void hideAll();
@@ -251,10 +251,10 @@ private Q_SLOTS:
     void setPackageManager(bool value);
 
 private:
-    void initializePage();
+    void initializePage() override;
 
-    void entering();
-    void leaving();
+    void entering() override;
+    void leaving() override;
 
     void showWidgets(bool show);
     bool validRepositoriesAvailable() const;
@@ -288,8 +288,8 @@ class INSTALLER_EXPORT LicenseAgreementPage : public PackageManagerPage
 public:
     explicit LicenseAgreementPage(PackageManagerCore *core);
 
-    void entering();
-    bool isComplete() const;
+    void entering() override;
+    bool isComplete() const override;
 
 private Q_SLOTS:
     void openLicenseUrl(const QUrl &url);
@@ -318,7 +318,7 @@ public:
     explicit ComponentSelectionPage(PackageManagerCore *core);
     ~ComponentSelectionPage();
 
-    bool isComplete() const;
+    bool isComplete() const override;
 
     Q_INVOKABLE void selectAll();
     Q_INVOKABLE void deselectAll();
@@ -329,9 +329,9 @@ public:
     Q_INVOKABLE bool addVirtualComponentToUninstall(const QString &name);
 
 protected:
-    void entering();
-    void leaving();
-    void showEvent(QShowEvent *event);
+    void entering() override;
+    void leaving() override;
+    void showEvent(QShowEvent *event) override;
 
 private Q_SLOTS:
     void setModified(bool modified);
@@ -353,13 +353,13 @@ public:
     QString targetDir() const;
     void setTargetDir(const QString &dirName);
 
-    void initializePage();
-    bool validatePage();
-    bool isComplete() const;
+    void initializePage() override;
+    bool validatePage() override;
+    bool isComplete() const override;
 
 protected:
-    void entering();
-    void leaving();
+    void entering() override;
+    void leaving() override;
 
 private Q_SLOTS:
     void dirRequested();
@@ -387,7 +387,7 @@ public:
     void setStartMenuDir(const QString &startMenuDir);
 
 protected:
-    void leaving();
+    void leaving() override;
 
 private Q_SLOTS:
     void currentItemChanged(QListWidgetItem* current);
@@ -409,8 +409,8 @@ public:
     explicit ReadyForInstallationPage(PackageManagerCore *core);
 
 protected:
-    void entering();
-    void leaving();
+    void entering() override;
+    void leaving() override;
 
 private Q_SLOTS:
     void updatePageListTitle();
@@ -433,9 +433,9 @@ public:
     bool isAutoSwitching() const;
 
 protected:
-    void entering();
-    void leaving();
-    bool isInterruptible() const { return true; }
+    void entering() override;
+    void leaving() override;
+    bool isInterruptible() const override { return true; }
 
 public Q_SLOTS:
     void setTitleMessage(const QString& title);
@@ -475,8 +475,8 @@ public Q_SLOTS:
     void cleanupChangedConnects();
 
 protected:
-    void entering();
-    void leaving();
+    void entering() override;
+    void leaving() override;
 
 private:
     QLabel *m_msgLabel;
@@ -494,11 +494,11 @@ class INSTALLER_EXPORT RestartPage : public PackageManagerPage
 public:
     explicit RestartPage(PackageManagerCore *core);
 
-    virtual int nextId() const;
+    virtual int nextId() const override;
 
 protected:
-    void entering();
-    void leaving();
+    void entering() override;
+    void leaving() override;
 
 Q_SIGNALS:
     void restart();

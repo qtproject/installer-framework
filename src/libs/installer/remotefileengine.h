@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,7 +42,7 @@ class INSTALLER_EXPORT RemoteFileEngineHandler : public QAbstractFileEngineHandl
 
 public:
     RemoteFileEngineHandler() : QAbstractFileEngineHandler() {}
-    QAbstractFileEngine* create(const QString &fileName) const Q_DECL_OVERRIDE;
+    QAbstractFileEngine* create(const QString &fileName) const override;
 };
 
 class RemoteFileEngine : public RemoteObject, public QAbstractFileEngine
@@ -53,50 +53,50 @@ public:
     RemoteFileEngine();
     ~RemoteFileEngine();
 
-    bool open(QIODevice::OpenMode mode) Q_DECL_OVERRIDE;
-    bool close() Q_DECL_OVERRIDE;
-    bool flush() Q_DECL_OVERRIDE;
-    bool syncToDisk() Q_DECL_OVERRIDE;
-    qint64 size() const Q_DECL_OVERRIDE;
-    qint64 pos() const Q_DECL_OVERRIDE;
-    bool seek(qint64 offset) Q_DECL_OVERRIDE;
-    bool isSequential() const Q_DECL_OVERRIDE;
-    bool remove() Q_DECL_OVERRIDE;
-    bool copy(const QString &newName) Q_DECL_OVERRIDE;
-    bool rename(const QString &newName) Q_DECL_OVERRIDE;
-    bool renameOverwrite(const QString &newName) Q_DECL_OVERRIDE;
-    bool link(const QString &newName) Q_DECL_OVERRIDE;
-    bool mkdir(const QString &dirName, bool createParentDirectories) const Q_DECL_OVERRIDE;
-    bool rmdir(const QString &dirName, bool recurseParentDirectories) const Q_DECL_OVERRIDE;
-    bool setSize(qint64 size) Q_DECL_OVERRIDE;
-    bool caseSensitive() const Q_DECL_OVERRIDE;
-    bool isRelativePath() const Q_DECL_OVERRIDE;
-    QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const Q_DECL_OVERRIDE;
-    FileFlags fileFlags(FileFlags type = FileInfoAll) const Q_DECL_OVERRIDE;
-    bool setPermissions(uint perms) Q_DECL_OVERRIDE;
-    QString fileName(FileName file = DefaultName) const Q_DECL_OVERRIDE;
-    uint ownerId(FileOwner owner) const Q_DECL_OVERRIDE;
-    QString owner(FileOwner owner) const Q_DECL_OVERRIDE;
-    QDateTime fileTime(FileTime time) const Q_DECL_OVERRIDE;
-    void setFileName(const QString &fileName) Q_DECL_OVERRIDE;
-    int handle() const Q_DECL_OVERRIDE;
+    bool open(QIODevice::OpenMode mode) override;
+    bool close() override;
+    bool flush() override;
+    bool syncToDisk() override;
+    qint64 size() const override;
+    qint64 pos() const override;
+    bool seek(qint64 offset) override;
+    bool isSequential() const override;
+    bool remove() override;
+    bool copy(const QString &newName) override;
+    bool rename(const QString &newName) override;
+    bool renameOverwrite(const QString &newName) override;
+    bool link(const QString &newName) override;
+    bool mkdir(const QString &dirName, bool createParentDirectories) const override;
+    bool rmdir(const QString &dirName, bool recurseParentDirectories) const override;
+    bool setSize(qint64 size) override;
+    bool caseSensitive() const override;
+    bool isRelativePath() const override;
+    QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const override;
+    FileFlags fileFlags(FileFlags type = FileInfoAll) const override;
+    bool setPermissions(uint perms) override;
+    QString fileName(FileName file = DefaultName) const override;
+    uint ownerId(FileOwner owner) const override;
+    QString owner(FileOwner owner) const override;
+    QDateTime fileTime(FileTime time) const override;
+    void setFileName(const QString &fileName) override;
+    int handle() const override;
     bool atEnd() const;
     uchar *map(qint64, qint64, QFile::MemoryMapFlags) { return 0; }
     bool unmap(uchar *) { return true; }
 
-    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames) Q_DECL_OVERRIDE;
-    Iterator *endEntryList() Q_DECL_OVERRIDE;
+    Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames) override;
+    Iterator *endEntryList() override;
 
-    qint64 read(char *data, qint64 maxlen) Q_DECL_OVERRIDE;
-    qint64 readLine(char *data, qint64 maxlen) Q_DECL_OVERRIDE;
-    qint64 write(const char *data, qint64 len) Q_DECL_OVERRIDE;
+    qint64 read(char *data, qint64 maxlen) override;
+    qint64 readLine(char *data, qint64 maxlen) override;
+    qint64 write(const char *data, qint64 len) override;
 
     QFile::FileError error() const;
     QString errorString() const;
 
     bool extension(Extension extension, const ExtensionOption *option = 0,
-        ExtensionReturn *output = 0) Q_DECL_OVERRIDE;
-    bool supportsExtension(Extension extension) const Q_DECL_OVERRIDE;
+        ExtensionReturn *output = 0) override;
+    bool supportsExtension(Extension extension) const override;
 
 private:
     QFSFileEngine m_fileEngine;

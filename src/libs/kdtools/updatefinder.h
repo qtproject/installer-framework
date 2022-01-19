@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: http://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -55,10 +55,10 @@ public:
     void setPackageSources(const QSet<QInstaller::PackageSource> &sources);
 
 private:
-    void doRun();
-    bool doStop();
-    bool doPause();
-    bool doResume();
+    void doRun() override;
+    bool doStop() override;
+    bool doPause() override;
+    bool doResume() override;
 
 private:
     Private *d;

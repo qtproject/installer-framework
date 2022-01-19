@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -45,18 +45,18 @@ public:
     explicit Lib7zArchive(QObject *parent = nullptr);
     ~Lib7zArchive();
 
-    bool open(QIODevice::OpenMode mode) Q_DECL_OVERRIDE;
-    void close() Q_DECL_OVERRIDE;
-    void setFilename(const QString &filename) Q_DECL_OVERRIDE;
+    bool open(QIODevice::OpenMode mode) override;
+    void close() override;
+    void setFilename(const QString &filename) override;
 
-    bool extract(const QString &dirPath) Q_DECL_OVERRIDE;
-    bool extract(const QString &dirPath, const quint64 totalFiles) Q_DECL_OVERRIDE;
-    bool create(const QStringList &data) Q_DECL_OVERRIDE;
-    QVector<ArchiveEntry> list() Q_DECL_OVERRIDE;
-    bool isSupported() Q_DECL_OVERRIDE;
+    bool extract(const QString &dirPath) override;
+    bool extract(const QString &dirPath, const quint64 totalFiles) override;
+    bool create(const QStringList &data) override;
+    QVector<ArchiveEntry> list() override;
+    bool isSupported() override;
 
 public Q_SLOTS:
-    void cancel() Q_DECL_OVERRIDE;
+    void cancel() override;
 
 private:
     void listenExtractCallback();
@@ -83,8 +83,8 @@ Q_SIGNALS:
     void completedChanged(quint64 completed, quint64 total);
 
 private:
-    void setCurrentFile(const QString &filename) Q_DECL_OVERRIDE;
-    HRESULT setCompleted(quint64 completed, quint64 total) Q_DECL_OVERRIDE;
+    void setCurrentFile(const QString &filename) override;
+    HRESULT setCompleted(quint64 completed, quint64 total) override;
 
 private:
     HRESULT m_state;

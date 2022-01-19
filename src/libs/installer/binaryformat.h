@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -59,10 +59,10 @@ public:
     ~Resource();
 
     bool open();
-    void close();
+    void close() override;
 
-    bool seek(qint64 pos);
-    qint64 size() const;
+    bool seek(qint64 pos) override;
+    qint64 size() const override;
 
     QByteArray name() const;
     void setName(const QByteArray &name);
@@ -74,10 +74,10 @@ public:
     static void copyData(Resource *archive, QFileDevice *out);
 
 private:
-    qint64 readData(char *data, qint64 maxSize);
-    qint64 writeData(const char *data, qint64 maxSize);
+    qint64 readData(char *data, qint64 maxSize) override;
+    qint64 writeData(const char *data, qint64 maxSize) override;
 
-    bool open(OpenMode mode) { return QIODevice::open(mode); }
+    bool open(OpenMode mode) override { return QIODevice::open(mode); }
     void setOpenMode(OpenMode mode) { QIODevice::setOpenMode(mode); }
 
 private:

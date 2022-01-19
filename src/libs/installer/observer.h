@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,14 +56,14 @@ public:
     FileTaskObserver(QCryptographicHash::Algorithm algorithm);
     ~FileTaskObserver();
 
-    int progressValue() const;
-    QString progressText() const;
+    int progressValue() const override;
+    QString progressText() const override;
 
     QByteArray checkSum() const;
     void addCheckSumData(const char *data, int length);
 
     void addSample(qint64 sample);
-    void timerEvent(QTimerEvent *event);
+    void timerEvent(QTimerEvent *event) override;
 
     void setBytesTransfered(qint64 bytesTransfered);
     void addBytesTransfered(qint64 bytesTransfered);

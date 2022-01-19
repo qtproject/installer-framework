@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,9 +46,9 @@ public:
         : m_message(message)
     {}
 
-    void raise() const { throw *this; }
+    void raise() const override { throw *this; }
     QString message() const { return m_message; }
-    UnzipArchiveException *clone() const { return new UnzipArchiveException(*this); }
+    UnzipArchiveException *clone() const override{ return new UnzipArchiveException(*this); }
 
 private:
     QString m_message;
@@ -65,7 +65,7 @@ public:
     {}
     QString target() { return m_targetDir; }
     QString archive() { return m_archive; }
-    void doTask(QFutureInterface<void> &fi)
+    void doTask(QFutureInterface<void> &fi) override
     {
         fi.reportStarted();
         fi.setExpectedResultCount(1);

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -65,9 +65,9 @@ Q_SIGNALS:
     void downloadStatusChanged(const QString &status);
 
 protected:
-    void doStart();
-    void doCancel();
-    void timerEvent(QTimerEvent *event);
+    void doStart() override;
+    void doCancel() override;
+    void timerEvent(QTimerEvent *event) override;
 
 public Q_SLOTS:
     void onDownloadStatusChanged(const QString &status);

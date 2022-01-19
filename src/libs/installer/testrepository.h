@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -52,8 +52,8 @@ public:
     void setRepository(const Repository &repository);
 
 private slots:
-    void doStart();
-    void doCancel();
+    void doStart() override;
+    void doCancel() override;
 
     void onTimeout();
     void downloadCompleted();

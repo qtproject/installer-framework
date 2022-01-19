@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,10 +47,10 @@ public:
     explicit ElevatedExecuteOperation(PackageManagerCore *core);
     ~ElevatedExecuteOperation();
 
-    void backup() Q_DECL_OVERRIDE;
-    bool performOperation() Q_DECL_OVERRIDE;
-    bool undoOperation() Q_DECL_OVERRIDE;
-    bool testOperation() Q_DECL_OVERRIDE;
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 
 Q_SIGNALS:
     void cancelProcess();

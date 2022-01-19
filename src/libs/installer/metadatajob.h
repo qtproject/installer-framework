@@ -84,8 +84,8 @@ public:
     QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
 
 private slots:
-    void doStart();
-    void doCancel();
+    void doStart() override;
+    void doCancel() override;
 
     void xmlTaskFinished();
     void unzipTaskFinished();

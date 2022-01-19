@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,12 +41,12 @@ public:
     explicit CopyOperation(QInstaller::PackageManagerCore *core = 0);
     ~CopyOperation();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 
-    QDomDocument toXml() const;
+    QDomDocument toXml() const override;
 private:
     QString sourcePath();
     QString destinationPath();
@@ -58,10 +59,10 @@ public:
     explicit MoveOperation(QInstaller::PackageManagerCore *core = 0);
     ~MoveOperation();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 };
 
 class KDTOOLS_EXPORT DeleteOperation : public UpdateOperation
@@ -71,12 +72,12 @@ public:
     explicit DeleteOperation(QInstaller::PackageManagerCore *core = 0);
     ~DeleteOperation();
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 
-    QDomDocument toXml() const;
+    QDomDocument toXml() const override;
 };
 
 class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
@@ -85,10 +86,10 @@ class KDTOOLS_EXPORT MkdirOperation : public UpdateOperation
 public:
     explicit MkdirOperation(QInstaller::PackageManagerCore *core = 0);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 };
 
 class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
@@ -97,10 +98,10 @@ class KDTOOLS_EXPORT RmdirOperation : public UpdateOperation
 public:
     RmdirOperation(QInstaller::PackageManagerCore *core = 0);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 };
 
 class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
@@ -109,10 +110,10 @@ class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
 public:
     explicit AppendFileOperation(QInstaller::PackageManagerCore *core = 0);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 };
 
 class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
@@ -121,10 +122,10 @@ class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
 public:
     explicit PrependFileOperation(QInstaller::PackageManagerCore *core = 0);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 };
 
 } // namespace KDUpdater

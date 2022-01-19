@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,8 +47,8 @@ class PackageManagerProxyFactory : public KDUpdater::FileDownloaderProxyFactory
 public:
     explicit PackageManagerProxyFactory(const PackageManagerCore *const core);
 
-    PackageManagerProxyFactory *clone() const;
-    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery());
+    PackageManagerProxyFactory *clone() const override;
+    QList<QNetworkProxy> queryProxy(const QNetworkProxyQuery &query = QNetworkProxyQuery()) override;
 
     void setProxyCredentials(const QNetworkProxy &proxy, const QString &user, const QString &password);
 

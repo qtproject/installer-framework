@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,7 +40,7 @@ public:
     UnzipTask() {}
     UnzipTask(const QString &source, const QString &target);
 
-    void doTask(QFutureInterface<QString> &fi);
+    void doTask(QFutureInterface<QString> &fi) override;
 
 private:
     void setBytesToExtract(qint64 bytes);

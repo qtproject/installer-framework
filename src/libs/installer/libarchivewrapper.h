@@ -46,22 +46,22 @@ public:
     explicit LibArchiveWrapper(QObject *parent = nullptr);
     ~LibArchiveWrapper();
 
-    bool open(QIODevice::OpenMode mode) Q_DECL_OVERRIDE;
-    void close() Q_DECL_OVERRIDE;
-    void setFilename(const QString &filename) Q_DECL_OVERRIDE;
+    bool open(QIODevice::OpenMode mode) override;
+    void close() override;
+    void setFilename(const QString &filename) override;
 
-    QString errorString() const Q_DECL_OVERRIDE;
+    QString errorString() const override;
 
-    bool extract(const QString &dirPath) Q_DECL_OVERRIDE;
-    bool extract(const QString &dirPath, const quint64 totalFiles) Q_DECL_OVERRIDE;
-    bool create(const QStringList &data) Q_DECL_OVERRIDE;
-    QVector<ArchiveEntry> list() Q_DECL_OVERRIDE;
-    bool isSupported() Q_DECL_OVERRIDE;
+    bool extract(const QString &dirPath) override;
+    bool extract(const QString &dirPath, const quint64 totalFiles) override;
+    bool create(const QStringList &data) override;
+    QVector<ArchiveEntry> list() override;
+    bool isSupported() override;
 
-    void setCompressionLevel(const AbstractArchive::CompressionLevel level) Q_DECL_OVERRIDE;
+    void setCompressionLevel(const AbstractArchive::CompressionLevel level) override;
 
 public Q_SLOTS:
-    void cancel() Q_DECL_OVERRIDE;
+    void cancel() override;
 
 private:
     LibArchiveWrapperPrivate *const d;

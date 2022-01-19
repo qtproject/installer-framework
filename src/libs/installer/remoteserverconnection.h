@@ -56,7 +56,7 @@ public:
     RemoteServerConnection(qintptr socketDescriptor, const QString &authorizationKey,
                            QObject *parent);
 
-    void run() Q_DECL_OVERRIDE;
+    void run() override;
 
 signals:
     void shutdownRequested();

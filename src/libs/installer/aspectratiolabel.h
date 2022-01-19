@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -44,12 +44,12 @@ class INSTALLER_EXPORT AspectRatioLabel : public QLabel
 public:
     explicit AspectRatioLabel(QWidget *parent = nullptr);
 
-    int heightForWidth(int w) const Q_DECL_OVERRIDE;
-    QSize sizeHint() const Q_DECL_OVERRIDE;
+    int heightForWidth(int w) const override;
+    QSize sizeHint() const override;
 
 public slots:
     void setPixmap (const QPixmap &pixmap);
-    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QPixmap scaledPixmap() const;

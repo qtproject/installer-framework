@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -52,7 +52,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface);
         futureInterface.reportFinished();
@@ -77,7 +77,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface);
         futureInterface.reportFinished();
@@ -104,7 +104,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface, arg1);
         futureInterface.reportFinished();
@@ -129,7 +129,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface, arg1);
         futureInterface.reportFinished();
@@ -156,7 +156,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface, arg1, arg2);
         futureInterface.reportFinished();
@@ -181,7 +181,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface, arg1, arg2);
         futureInterface.reportFinished();
@@ -208,7 +208,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface, arg1, arg2, arg3);
         futureInterface.reportFinished();
@@ -233,7 +233,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface, arg1, arg2, arg3);
         futureInterface.reportFinished();
@@ -260,7 +260,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface, arg1, arg2, arg3, arg4);
         futureInterface.reportFinished();
@@ -285,7 +285,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface, arg1, arg2, arg3, arg4);
         futureInterface.reportFinished();
@@ -312,7 +312,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         fn(futureInterface, arg1, arg2, arg3, arg4, arg5);
         futureInterface.reportFinished();
@@ -337,7 +337,7 @@ public:
         return future;
     }
 
-    void run()
+    void run() override
     {
         (object->*fn)(futureInterface, arg1, arg2, arg3, arg4, arg5);
         futureInterface.reportFinished();

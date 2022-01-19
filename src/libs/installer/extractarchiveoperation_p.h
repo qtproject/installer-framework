@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -52,7 +52,7 @@ public:
         setObjectName(QLatin1String("ExtractArchive"));
     }
 
-    void run()
+    void run() override
     {
         Q_ASSERT(m_op != 0);
 

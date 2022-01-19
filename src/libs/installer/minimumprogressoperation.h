@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,10 +42,10 @@ class MinimumProgressOperation : public QObject, public Operation
 public:
     explicit MinimumProgressOperation(PackageManagerCore *core);
 
-    void backup();
-    bool performOperation();
-    bool undoOperation();
-    bool testOperation();
+    void backup() override;
+    bool performOperation() override;
+    bool undoOperation() override;
+    bool testOperation() override;
 
 signals:
     void progressChanged(double progress);

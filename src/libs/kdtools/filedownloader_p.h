@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,22 +47,22 @@ public:
     explicit LocalFileDownloader(QObject *parent = 0);
     ~LocalFileDownloader();
 
-    bool canDownload() const;
-    bool isDownloaded() const;
-    QString downloadedFileName() const;
-    void setDownloadedFileName(const QString &name);
-    LocalFileDownloader *clone(QObject *parent = 0) const;
+    bool canDownload() const override;
+    bool isDownloaded() const override;
+    QString downloadedFileName() const override;
+    void setDownloadedFileName(const QString &name) override;
+    LocalFileDownloader *clone(QObject *parent = 0) const override;
 
 public Q_SLOTS:
-    void cancelDownload();
+    void cancelDownload() override;
 
 protected:
-    void timerEvent(QTimerEvent *te);
-    void onError();
-    void onSuccess();
+    void timerEvent(QTimerEvent *te) override;
+    void onError() override;
+    void onSuccess() override;
 
 private Q_SLOTS:
-    void doDownload();
+    void doDownload() override;
 
 private:
     struct Private;
@@ -76,22 +77,22 @@ public:
     explicit ResourceFileDownloader(QObject *parent = 0);
     ~ResourceFileDownloader();
 
-    bool canDownload() const;
-    bool isDownloaded() const;
-    QString downloadedFileName() const;
-    void setDownloadedFileName(const QString &name);
-    ResourceFileDownloader *clone(QObject *parent = 0) const;
+    bool canDownload() const override;
+    bool isDownloaded() const override;
+    QString downloadedFileName() const override;
+    void setDownloadedFileName(const QString &name) override;
+    ResourceFileDownloader *clone(QObject *parent = 0) const override;
 
 public Q_SLOTS:
-    void cancelDownload();
+    void cancelDownload() override;
 
 protected:
-    void timerEvent(QTimerEvent *te);
-    void onError();
-    void onSuccess();
+    void timerEvent(QTimerEvent *te) override;
+    void onError() override;
+    void onSuccess() override;
 
 private Q_SLOTS:
-    void doDownload();
+    void doDownload() override;
 
 private:
     struct Private;
@@ -106,22 +107,22 @@ public:
     explicit HttpDownloader(QObject *parent = 0);
     ~HttpDownloader();
 
-    bool canDownload() const;
-    bool isDownloaded() const;
-    QString downloadedFileName() const;
-    void setDownloadedFileName(const QString &name);
-    HttpDownloader *clone(QObject *parent = 0) const;
+    bool canDownload() const override;
+    bool isDownloaded() const override;
+    QString downloadedFileName() const override;
+    void setDownloadedFileName(const QString &name) override;
+    HttpDownloader *clone(QObject *parent = 0) const override;
 
 public Q_SLOTS:
-    void cancelDownload();
+    void cancelDownload() override;
 
 protected:
-    void onError();
-    void onSuccess();
-    void timerEvent(QTimerEvent *event);
+    void onError() override;
+    void onSuccess() override;
+    void timerEvent(QTimerEvent *event) override;
 
 private Q_SLOTS:
-    void doDownload();
+    void doDownload() override;
 
     void httpReadyRead();
     void httpReadProgress(qint64 done, qint64 total);

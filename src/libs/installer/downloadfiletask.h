@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -63,8 +63,8 @@ public:
     FileTaskItem taskItem() const { return m_fileTaskItem; }
     void setFileTaskItem(const FileTaskItem &item) { m_fileTaskItem = item; }
 
-    void raise() const { throw *this; }
-    AuthenticationRequiredException *clone() const {
+    void raise() const override { throw *this; }
+    AuthenticationRequiredException *clone() const override {
         return new AuthenticationRequiredException(*this); }
 
 private:
@@ -98,7 +98,7 @@ public:
     void setAuthenticator(const QAuthenticator &authenticator);
     void setProxyFactory(KDUpdater::FileDownloaderProxyFactory *factory);
 
-    void doTask(QFutureInterface<FileTaskResult> &fi);
+    void doTask(QFutureInterface<FileTaskResult> &fi) override;
 
 private:
     friend class Downloader;
