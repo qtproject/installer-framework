@@ -611,7 +611,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_componentsToInstallCalculated = false;
 
 #ifdef Q_OS_LINUX
-    if (m_launchedAsRoot)
+    if (m_launchedAsRoot && isInstaller())
         m_data.setValue(scTargetDir, replaceVariables(m_data.settings().adminTargetDir()));
 #endif
 
