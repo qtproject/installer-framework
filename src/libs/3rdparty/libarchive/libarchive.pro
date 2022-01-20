@@ -146,7 +146,9 @@ SOURCES += $$PWD/archive_acl.c \
     $$PWD/archive_write_set_format_ar.c \
     $$PWD/archive_write_set_format_by_name.c \
     $$PWD/archive_write_set_format_cpio.c \
+    $$PWD/archive_write_set_format_cpio_binary.c \
     $$PWD/archive_write_set_format_cpio_newc.c \
+    $$PWD/archive_write_set_format_cpio_odc.c \
     $$PWD/archive_write_set_format_filter_by_ext.c \
     $$PWD/archive_write_set_format_gnutar.c \
     $$PWD/archive_write_set_format_iso9660.c \
