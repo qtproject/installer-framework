@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Contact: http://www.qt.io/licensing/
+** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
 **
