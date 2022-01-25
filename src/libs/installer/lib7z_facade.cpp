@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -538,6 +538,7 @@ QVector<File> listArchive(QFileDevice *archive)
                 f.archiveIndex.setY(item);
                 f.path = UString2QString(s).replace(QLatin1Char('\\'), QLatin1Char('/'));
                 Archive_IsItem_Folder(arch, item, f.isDirectory);
+                Archive_GetItemBoolProp(arch, item, kpidSymLink, f.isSymbolicLink);
                 f.permissions_enum = getPermissions(arch, item, nullptr);
                 getDateTimeProperty(arch, item, kpidMTime, &(f.utcTime));
                 f.uncompressedSize = getUInt64Property(arch, item, kpidSize, 0);

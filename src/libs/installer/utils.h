@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -57,9 +57,14 @@ namespace QInstaller {
     QString INSTALLER_EXPORT replaceWindowsEnvironmentVariables(const QString &str);
     QStringList INSTALLER_EXPORT parseCommandLineArgs(int argc, char **argv);
 
+    bool INSTALLER_EXPORT canCreateSymbolicLinks();
+
 #ifdef Q_OS_WIN
     QString windowsErrorString(int errorCode);
     QString createCommandline(const QString &program, const QStringList &arguments);
+    bool setPrivilege(const wchar_t *privilege, bool enable);
+    bool checkPrivilege(const wchar_t *privilege);
+    bool developerModeEnabled();
 #endif
 
     QStringList INSTALLER_EXPORT localeCandidates(const QString &locale);

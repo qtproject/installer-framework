@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,7 @@
 #include "utils.h"
 
 #include "fileutils.h"
+#include "qsettingswrapper.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -323,6 +324,21 @@ QStringList QInstaller::parseCommandLineArgs(int argc, char **argv)
 }
 #endif
 
+/*!
+    On Windows checks if the user account has the privilege required to create a symbolic links.
+    Returns \c true if the privilege is held, \c false otherwise.
+
+    On Unix platforms always returns \c true.
+*/
+bool QInstaller::canCreateSymbolicLinks()
+{
+#ifdef Q_OS_WIN
+    return ((setPrivilege(SE_CREATE_SYMBOLIC_LINK_NAME, true)
+        && checkPrivilege(SE_CREATE_SYMBOLIC_LINK_NAME)) || developerModeEnabled());
+#endif
+    return true;
+}
+
 #ifdef Q_OS_WIN
 // taken from qprocess_win.cpp
 static QString qt_create_commandline(const QString &program, const QStringList &arguments)
@@ -399,6 +415,86 @@ QString QInstaller::windowsErrorString(int errorCode)
     ret.append(QLatin1String(")"));
 
     return ret;
+}
+
+/*!
+    \internal
+
+    Sets the enabled state of \a privilege to \a enable for this process.
+    The privilege must be held by the current login user. Returns \c true
+    on success, \c false on failure.
+*/
+bool QInstaller::setPrivilege(const wchar_t *privilege, bool enable)
+{
+    LUID luid;
+    TOKEN_PRIVILEGES privileges;
+    HANDLE token;
+    HANDLE process = GetCurrentProcess();
+
+    if (!OpenProcessToken(process, TOKEN_QUERY | TOKEN_ADJUST_PRIVILEGES, &token))
+        return false;
+
+    if (!LookupPrivilegeValue(nullptr, privilege, &luid))
+        return false;
+
+    privileges.PrivilegeCount = 1;
+    privileges.Privileges[0].Luid = luid;
+    if (enable)
+        privileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
+    else
+        privileges.Privileges[0].Attributes = 0;
+
+    if (!AdjustTokenPrivileges(token, FALSE, &privileges,
+            sizeof(TOKEN_PRIVILEGES), nullptr, nullptr)) {
+        return false;
+    }
+    if (GetLastError() == ERROR_NOT_ALL_ASSIGNED)
+        return false;
+
+    return true;
+}
+
+/*!
+    \internal
+
+    Returns \c true if the specified \a privilege is enabled for the client
+    process, \c false otherwise.
+*/
+bool QInstaller::checkPrivilege(const wchar_t *privilege)
+{
+    LUID luid;
+    PRIVILEGE_SET privileges;
+    HANDLE token;
+    HANDLE process = GetCurrentProcess();
+
+    if (!OpenProcessToken(process, TOKEN_QUERY, &token))
+        return false;
+
+    if (!LookupPrivilegeValue(nullptr, privilege, &luid))
+        return false;
+
+    privileges.PrivilegeCount = 1;
+    privileges.Control = PRIVILEGE_SET_ALL_NECESSARY;
+    privileges.Privilege[0].Luid = luid;
+    privileges.Privilege[0].Attributes = SE_PRIVILEGE_ENABLED;
+
+    BOOL result;
+    PrivilegeCheck(token, &privileges, &result);
+
+    return result;
+}
+
+/*!
+    \internal
+
+    Returns \c true if the 'Developer mode' is enabled on system.
+*/
+bool QInstaller::developerModeEnabled()
+{
+    QSettingsWrapper appModelUnlock(QLatin1String("HKLM\\SOFTWARE\\Microsoft\\Windows\\"
+        "CurrentVersion\\AppModelUnlock"), QSettingsWrapper::NativeFormat);
+
+    return appModelUnlock.value(QLatin1String("AllowDevelopmentWithoutDevLicense"), false).toBool();
 }
 
 #endif

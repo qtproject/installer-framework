@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,10 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+
+#if defined(Q_OS_WIN) && !defined(SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE)
+#define SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+#endif
 
 namespace QInstaller {
 
@@ -588,6 +592,7 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
             archiveEntry.path = QLatin1String(archive_entry_pathname(entry));
             archiveEntry.utcTime = QDateTime::fromTime_t(archive_entry_mtime(entry));
             archiveEntry.isDirectory = (archive_entry_filetype(entry) == AE_IFDIR);
+            archiveEntry.isSymbolicLink = (archive_entry_filetype(entry) == AE_IFLNK);
             archiveEntry.uncompressedSize = archive_entry_size(entry);
             archiveEntry.permissions_mode = archive_entry_perm(entry);
 
