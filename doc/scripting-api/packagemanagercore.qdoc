@@ -445,7 +445,12 @@
 
     On Unix platforms the returned string is the same as the argument.
 
+    \note Predefined variables, such as @TargetDir@, are not resolved by
+    this function. To convert the separators to predefined variables, use
+    \c installer.value() to resolve the variables first.
+
     \sa fromNativeSeparators()
+    \sa value()
 */
 
 /*!
@@ -455,7 +460,12 @@
 
     On Unix platforms the returned string is the same as the argument.
 
+    \note Predefined variables, such as @TargetDir@, are not resolved by
+    this function. To convert the separators to predefined variables, use
+    \c installer.value() to resolve the variables first.
+
     \sa toNativeSeparators()
+    \sa value()
 */
 
 /*!
