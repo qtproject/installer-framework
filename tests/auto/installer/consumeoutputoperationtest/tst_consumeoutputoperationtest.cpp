@@ -125,7 +125,7 @@ private:
         if (process.state() != QProcess::NotRunning)
             loop.exec();
 
-        return process.readAllStandardOutput();
+        return process.readAllStandardOutput().trimmed();
     }
 
 

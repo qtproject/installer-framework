@@ -122,7 +122,7 @@ bool ConsumeOutputOperation::performOperation()
         qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot get any query output from executable"
             << executable;
     }
-    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
+    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput.trimmed()));
     return true;
 }
 
