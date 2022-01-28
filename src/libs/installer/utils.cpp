@@ -714,10 +714,11 @@ void QInstaller::initializeJourneyIds()
     // If DeviceId was not found in the registry, then we use the current JourneyId
     if (deviceId.isNull())
     {
+        qDebug() << "framework | QInstaller::initializeJourneyIds | Rolling a new DeviceId";
+        deviceId = QUuid::createUuid();
         qDebug() << "DeviceId:";
-        qDebug() << "-- DeviceId: (same as JourneyId)";
-        qDebug() << "-- DeviceId (base64): (same as JourneyId (base64))";
-        deviceId = getJourneyId();
+        qDebug() << "-- DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
+        qDebug() << "-- DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
 
         // We then store the DeviceId in the registry
         qDebug() << "framework | QInstaller::initializeJourneyIds | Storing DeviceId to registry";
