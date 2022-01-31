@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -689,16 +689,24 @@ bool QInstaller::isInBundle(const QString &path, QString *bundlePath)
 /*!
     Replaces the path \a before with the path \a after at the beginning of \a path and returns
     the replaced path. If \a before cannot be found in \a path, the original value is returned.
+    If \a cleanPath is \c true, path is returned with directory separators normalized (that is,
+    platform-native separators converted to "/") and redundant ones removed, and "."s and ".."s
+    resolved (as far as possible). If \a cleanPath is \c false, path is returned as such. Default
+    value is \c true.
 */
-QString QInstaller::replacePath(const QString &path, const QString &before, const QString &after)
+QString QInstaller::replacePath(const QString &path, const QString &before, const QString &after, bool cleanPath)
 {
     if (path.isEmpty() || before.isEmpty())
         return path;
 
     QString pathToPatch = QDir::cleanPath(path);
     const QString pathToReplace = QDir::cleanPath(before);
-    if (pathToPatch.startsWith(pathToReplace))
-        return QDir::cleanPath(after) + pathToPatch.mid(pathToReplace.size());
+    if (pathToPatch.startsWith(pathToReplace)) {
+        if (cleanPath)
+            return QDir::cleanPath(after) + pathToPatch.mid(pathToReplace.size());
+        else
+            return after + path.mid(before.size());
+    }
     return path;
 }
 

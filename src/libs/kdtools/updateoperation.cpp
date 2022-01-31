@@ -475,8 +475,15 @@ QDomDocument UpdateOperation::toXml() const
     const QString target = m_core ? m_core->value(QInstaller::scTargetDir) : QString();
     Q_FOREACH (const QString &s, arguments()) {
         QDomElement arg = doc.createElement(QLatin1String("argument"));
-        arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
-            QLatin1String(QInstaller::scRelocatable))));
+        // Do not call cleanPath to Execute operations paths. The operation might require the
+        // exact separators that are set in the operation call.
+        if (name() == QLatin1String("Execute")) {
+            arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                QLatin1String(QInstaller::scRelocatable), false)));
+        } else {
+            arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                QLatin1String(QInstaller::scRelocatable))));
+        }
         args.appendChild(arg);
     }
     root.appendChild(args);
@@ -528,6 +535,7 @@ QDomDocument UpdateOperation::toXml() const
 bool UpdateOperation::fromXml(const QDomDocument &doc)
 {
     QString target = QCoreApplication::applicationDirPath();
+    static const QLatin1String relocatable = QLatin1String(QInstaller::scRelocatable);
     // Does not change target on non macOS platforms.
     if (QInstaller::isInBundle(target, &target))
         target = QDir::cleanPath(target + QLatin1String("/.."));
@@ -539,8 +547,23 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
     for (QDomNode n = argsElem.firstChild(); ! n.isNull(); n = n.nextSibling()) {
         const QDomElement e = n.toElement();
         if (!e.isNull() && e.tagName() == QLatin1String("argument")) {
-            args << QInstaller::replacePath(e.text(), QLatin1String(QInstaller::scRelocatable),
-                target);
+            // Sniff the Execute -operations file path separator. The operation might be
+            // strict with the used path separator
+            if (name() == QLatin1String("Execute")) {
+                if (e.text().startsWith(relocatable) && e.text().size() > relocatable.size()) {
+                    const QChar separator = e.text().at(relocatable.size());
+                    if (separator == QLatin1Char('\\')) {
+                        args << QInstaller::replacePath(e.text(), relocatable,
+                            QDir::toNativeSeparators(target), false);
+                    }
+                } else {
+                    args << QInstaller::replacePath(e.text(), relocatable,
+                        target);
+                }
+            } else {
+                args << QInstaller::replacePath(e.text(), relocatable,
+                    target);
+            }
         }
     }
     setArguments(args);
@@ -565,13 +588,13 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
                 QStringList list = var.toStringList();
                 for (int i = 0; i < list.count(); ++i) {
                     list[i] = QInstaller::replacePath(list.at(i),
-                        QLatin1String(QInstaller::scRelocatable), target);
+                        relocatable, target);
                 }
                 var = QVariant::fromValue(list);
             }
         } else if (t == QVariant::String) {
               const QString str = QInstaller::replacePath(value,
-                        QLatin1String(QInstaller::scRelocatable), target);
+                        relocatable, target);
               var = QVariant::fromValue(str);
         }
 
