@@ -33,6 +33,7 @@
 #include "globals.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include <QApplication>
 #include <QFileInfo>
@@ -106,7 +107,7 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
         int status = archive_read_open1(reader.get());
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(reader.get())));
+            emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
             return;
         }
 
@@ -120,7 +121,7 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
                 break;
             if (status != ARCHIVE_OK) {
                 m_status = Failure;
-                emit finished(QLatin1String(archive_error_string(reader.get())));
+                emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
                 return;
             }
             const char *current = archive_entry_pathname(entry);
@@ -228,7 +229,7 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
-        emit finished(QLatin1String(archive_error_string(writer)));
+        emit finished(LibArchiveArchive::errorStringWithCode(writer));
         return false;
     }
 
@@ -238,13 +239,13 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
             return true;
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(reader)));
+            emit finished(LibArchiveArchive::errorStringWithCode(reader));
             return false;
         }
         status = archive_write_data_block(writer, buff, size, offset);
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(writer)));
+            emit finished(LibArchiveArchive::errorStringWithCode(writer));
             return false;
         }
     }
@@ -434,7 +435,7 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
 
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
             if (m_cancelScheduled)
@@ -444,7 +445,7 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             const char *current = archive_entry_pathname(entry);
             const QString outputPath = dirPath + QDir::separator() + QString::fromLocal8Bit(current);
@@ -508,14 +509,14 @@ bool LibArchiveArchive::create(const QStringList &data)
     try {
         int status;
         if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toLocal8Bit())))
-            throw Error(QLatin1String(archive_error_string(writer.get())));
+            throw Error(errorStringWithCode(writer.get()));
 
         for (auto &dataEntry : globbedData) {
             QScopedPointer<archive, ScopedPointerReaderDeleter> reader(archive_read_disk_new());
             configureDiskReader(reader.get());
 
             if ((status = archive_read_disk_open(reader.get(), dataEntry.toLocal8Bit())))
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             QDir basePath = QFileInfo(dataEntry).dir();
             forever {
@@ -524,7 +525,7 @@ bool LibArchiveArchive::create(const QStringList &data)
                 if (status == ARCHIVE_EOF)
                     break;
                 if (status != ARCHIVE_OK)
-                    throw Error(QLatin1String(archive_error_string(reader.get())));
+                    throw Error(errorStringWithCode(reader.get()));
 
                 const QFileInfo fileOrDir(pathWithoutNamespace(QLatin1String(archive_entry_sourcepath(entry.get()))));
                 // Set new path name in archive, otherwise we add all directories from absolute path
@@ -534,7 +535,7 @@ bool LibArchiveArchive::create(const QStringList &data)
                 archive_read_disk_descend(reader.get());
                 status = archive_write_header(writer.get(), entry.get());
                 if (status < ARCHIVE_OK)
-                    throw Error(QLatin1String(archive_error_string(writer.get())));
+                    throw Error(errorStringWithCode(writer.get()));
 
                 if (fileOrDir.isDir() || archive_entry_size(entry.get()) == 0)
                     continue; // nothing to copy
@@ -579,14 +580,14 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
             status = archive_read_next_header(reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             ArchiveEntry archiveEntry;
             archiveEntry.path = QLatin1String(archive_entry_pathname(entry));
@@ -621,7 +622,7 @@ bool LibArchiveArchive::isSupported()
     try {
         const int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
     } catch (const Error &e) {
         setErrorString(e.message());
         m_data->file.seek(0);
@@ -732,7 +733,7 @@ void LibArchiveArchive::configureWriter(archive *archive)
     const QByteArray options = "compression-level=" + QString::number(compressionLevel()).toLatin1();
     if (archive_write_set_options(archive, options.constData())) { // not fatal
         qCWarning(QInstaller::lcInstallerInstallLog) << "Could not set options" << options
-            << "for archive" << m_data->file.fileName() << ":" << archive_error_string(archive);
+            << "for archive" << m_data->file.fileName() << ":" << errorStringWithCode(archive);
     }
 }
 
@@ -808,7 +809,7 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
-        setErrorString(QLatin1String(archive_error_string(writer)));
+        setErrorString(errorStringWithCode(writer));
         return false;
     }
 
@@ -817,12 +818,12 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
         if (status == ARCHIVE_EOF)
             return true;
         if (status != ARCHIVE_OK) {
-            setErrorString(QLatin1String(archive_error_string(reader)));
+            setErrorString(errorStringWithCode(reader));
             return false;
         }
         status = archive_write_data_block(writer, buff, size, offset);
         if (status != ARCHIVE_OK) {
-            setErrorString(QLatin1String(archive_error_string(writer)));
+            setErrorString(errorStringWithCode(writer));
             return false;
         }
     }
@@ -932,6 +933,21 @@ QString LibArchiveArchive::pathWithoutNamespace(const QString &path)
 }
 
 /*!
+    Returns an error message and a textual representaion of the numeric error code
+    indicating the reason for the most recent error return for the \a archive object.
+*/
+QString LibArchiveArchive::errorStringWithCode(archive *const archive)
+{
+    if (!archive)
+        return QString();
+
+    return QString::fromLatin1("%1: %2.").arg(
+        QLatin1String(archive_error_string(archive)),
+        QLatin1String(strerror(archive_errno(archive)))
+    );
+}
+
+/*!
     Returns the number of files in this archive.
 */
 quint64 LibArchiveArchive::totalFiles()
@@ -945,14 +961,14 @@ quint64 LibArchiveArchive::totalFiles()
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
             status = archive_read_next_header(reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             ++files;
         }

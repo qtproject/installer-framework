@@ -150,6 +150,7 @@ private:
     static la_int64_t seekCallback(archive *reader, void *archiveData, la_int64_t offset, int whence);
 
     static QString pathWithoutNamespace(const QString &path);
+    static QString errorStringWithCode(archive *const archive);
 
     quint64 totalFiles();
 
