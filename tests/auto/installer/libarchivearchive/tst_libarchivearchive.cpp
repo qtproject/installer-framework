@@ -99,8 +99,10 @@ private slots:
 
         const QString filename = generateTemporaryFileName() + suffix;
         LibArchiveArchive target(filename);
-        QVERIFY(target.open(QIODevice::ReadWrite));
+        QVERIFY(target.open(QIODevice::WriteOnly));
         QVERIFY(target.create(QStringList() << path1 << path2));
+        target.close();
+        QVERIFY(target.open(QIODevice::ReadOnly));
         QCOMPARE(target.list().count(), 2);
         target.close();
         QVERIFY(QFile(filename).remove());
@@ -115,7 +117,7 @@ private slots:
     {
         QFETCH(QString, suffix);
 
-        const QString baseDir(QDir::tempPath() + "/tst_libarchivearchive");
+        const QString baseDir(generateTemporaryFileName(QDir::tempPath() + "/tst_libarchivearchive.XXXXXX"));
         QVERIFY(QDir().mkpath(baseDir));
 
         const QString path1 = tempSourceFile(
@@ -129,8 +131,10 @@ private slots:
 
         const QString filename = generateTemporaryFileName() + suffix;
         LibArchiveArchive target(filename);
-        QVERIFY(target.open(QIODevice::ReadWrite));
+        QVERIFY(target.open(QIODevice::WriteOnly));
         QVERIFY(target.create(QStringList() << baseDir + "/*"));
+        target.close();
+        QVERIFY(target.open(QIODevice::ReadOnly));
         QCOMPARE(target.list().count(), 2);
         target.close();
 
@@ -159,8 +163,10 @@ private slots:
         const QString filename = QDir::tempPath() + "/target file with spaces" + suffix;
         LibArchiveArchive target(filename);
         target.setFilename(filename);
-        QVERIFY(target.open(QIODevice::ReadWrite));
+        QVERIFY(target.open(QIODevice::WriteOnly));
         QVERIFY(target.create(QStringList() << path1 << path2));
+        target.close();
+        QVERIFY(target.open(QIODevice::ReadOnly));
         QCOMPARE(target.list().count(), 2);
         target.close();
         QVERIFY(QFile(filename).remove());
@@ -211,10 +217,12 @@ private slots:
         QVERIFY(QFile::link(source.fileName(), linkName));
 
         LibArchiveArchive archive(archiveName);
-        QVERIFY(archive.open(QIODevice::ReadWrite));
+        QVERIFY(archive.open(QIODevice::WriteOnly));
         QVERIFY(archive.create(QStringList() << source.fileName() << linkName));
         QVERIFY(QFileInfo::exists(archiveName));
+        archive.close();
 
+        QVERIFY(archive.open(QIODevice::ReadOnly));
         QVERIFY(archive.extract(targetName));
         const QString sourceFilename = QFileInfo(source.fileName()).fileName();
         const QString linkFilename = QFileInfo(linkName).fileName();
@@ -235,6 +243,54 @@ private slots:
 
         removeDirectory(targetName, true);
         removeDirectory(workingDir, true);
+    }
+
+    void testCreateExtractWithUnicodePaths_data()
+    {
+        archiveSuffixesTestData();
+    }
+
+    void testCreateExtractWithUnicodePaths()
+    {
+        QFETCH(QString, suffix);
+
+        const QString targetName = generateTemporaryFileName() + QDir::separator();
+        const QString archiveName = QDir::tempPath() + "/test_archive" + suffix;
+
+        const QString path1 = tempSourceFile(
+            "Source File 1.",
+            QDir::tempPath() + QString::fromUtf8("/测试文件.XXXXXX")
+        );
+        const QString path2 = tempSourceFile(
+            "Source File 2.",
+            QDir::tempPath() + QString::fromUtf8("/тестовый файл.XXXXXX")
+        );
+        const QString path3 = tempSourceFile(
+            "Source File 3.",
+            QDir::tempPath() + QString::fromUtf8("/ملف الاختبار.XXXXXX")
+        );
+
+        LibArchiveArchive archive(archiveName);
+        archive.setFilename(archiveName);
+        QVERIFY(archive.open(QIODevice::WriteOnly));
+        QVERIFY(archive.create(QStringList() << path1 << path2 << path3));
+        archive.close();
+        QVERIFY(archive.open(QIODevice::ReadOnly));
+        QCOMPARE(archive.list().count(), 3);
+
+        QVERIFY(archive.extract(targetName));
+
+        const QString targetPath1 = targetName + QFileInfo(path1).fileName();
+        const QString targetPath2 = targetName + QFileInfo(path2).fileName();
+        const QString targetPath3 = targetName + QFileInfo(path3).fileName();
+
+        QVERIFY(QFileInfo::exists(targetPath1));
+        QVERIFY(QFileInfo::exists(targetPath2));
+        QVERIFY(QFileInfo::exists(targetPath3));
+
+        archive.close();
+        QVERIFY(QFile::remove(archiveName));
+        QVERIFY(QDir(targetName).removeRecursively());
     }
 
 private:
