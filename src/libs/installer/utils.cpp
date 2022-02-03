@@ -711,7 +711,7 @@ void QInstaller::initializeJourneyIds()
         qDebug() << "-- DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
     }
 
-    // If DeviceId was not found in the registry, then we use the current JourneyId
+    // If DeviceId was not found in the registry, we roll a new one
     if (deviceId.isNull())
     {
         qDebug() << "framework | QInstaller::initializeJourneyIds | Rolling a new DeviceId";
