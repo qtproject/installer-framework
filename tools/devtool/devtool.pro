@@ -5,6 +5,8 @@ QT = core network qml xml
 
 include(../../installerfw.pri)
 
+CONFIG -= import_plugins
+
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 

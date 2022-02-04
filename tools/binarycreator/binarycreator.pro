@@ -7,6 +7,8 @@ include(../../installerfw.pri)
 QT -= gui
 QT += qml xml
 
+CONFIG -= import_plugins
+
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 SOURCES = main.cpp
