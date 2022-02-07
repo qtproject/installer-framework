@@ -699,7 +699,7 @@ void QInstaller::initializeJourneyIds()
     qDebug() << "-- JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
     qDebug() << "-- JourneyId (base64 urlsafe):" << QLatin1String(journeyId.toRfc4122().toBase64(QByteArray::Base64UrlEncoding));
 
-    QString keyName = QLatin1String("DeviceId");
+    QString keyName = QLatin1String("DeviceIdV2");
     QUuid deviceId;
     // Try to get DeviceId from the registry
     QString value = getCCPRegistryKey(keyName);
