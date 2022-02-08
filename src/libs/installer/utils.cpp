@@ -699,7 +699,7 @@ void QInstaller::initializeJourneyIds()
     qDebug() << "-- JourneyId:" << journeyId.toString(QUuid::WithoutBraces);
     qDebug() << "-- JourneyId (base64 urlsafe):" << QLatin1String(journeyId.toRfc4122().toBase64(QByteArray::Base64UrlEncoding));
 
-    QString keyName = QLatin1String("DeviceId");
+    QString keyName = QLatin1String("DeviceIdV2");
     QUuid deviceId;
     // Try to get DeviceId from the registry
     QString value = getCCPRegistryKey(keyName);
@@ -711,13 +711,14 @@ void QInstaller::initializeJourneyIds()
         qDebug() << "-- DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
     }
 
-    // If DeviceId was not found in the registry, then we use the current JourneyId
+    // If DeviceId was not found in the registry, we roll a new one
     if (deviceId.isNull())
     {
+        qDebug() << "framework | QInstaller::initializeJourneyIds | Rolling a new DeviceId";
+        deviceId = QUuid::createUuid();
         qDebug() << "DeviceId:";
-        qDebug() << "-- DeviceId: (same as JourneyId)";
-        qDebug() << "-- DeviceId (base64): (same as JourneyId (base64))";
-        deviceId = getJourneyId();
+        qDebug() << "-- DeviceId:" << deviceId.toString(QUuid::WithoutBraces);
+        qDebug() << "-- DeviceId (base64):" << QLatin1String(deviceId.toRfc4122().toBase64());
 
         // We then store the DeviceId in the registry
         qDebug() << "framework | QInstaller::initializeJourneyIds | Storing DeviceId to registry";
