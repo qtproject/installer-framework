@@ -940,12 +940,8 @@
         <translation>无法将“%1”的输出保存为空安装程序密钥值。</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>文件“%1”不存在或不是可执行的二进制文件。</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>运行“%1”导致崩溃。</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>运行命令“%1”失败：%2</translation>
     </message>
 </context>
 <context>
@@ -1781,10 +1777,6 @@ Do you want to continue?</source>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation>需要用户输入，但输出设备并未与任何终端裝置建立关联。</translation>
-    </message>
-    <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>标识符为 %1 的组件已存在。</translation>
     </message>
     <message>
         <source>Cannot install %1. Component is a descendant of a virtual component %2.
@@ -2787,6 +2779,21 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>提取存档“%1”时出错：%2</translation>
+    </message>
+    <message>
+        <source>Could not request administrator privileges required to extract archive &quot;%1&quot;.</source>
+        <translation>无法获得提取存档“%1”所需的管理员权限。</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>关于 %1 安装程序</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>关于 %1 维护工具</translation>
     </message>
 </context>
 </TS>
