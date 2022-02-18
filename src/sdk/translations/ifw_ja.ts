@@ -920,6 +920,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>更新したい他のコンポーネントを選択する前に必須コンポーネントを更新する必要があります。</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>検索</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1081,6 +1085,10 @@
     <message>
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>アーカイブ &quot;%1&quot; を作成できません: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>&quot;%1&quot; は非サポートのアーカイブです、拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
     </message>
 </context>
 <context>
@@ -1388,6 +1396,10 @@ Error while loading %2</source>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>ディレクトリ &quot;%1&quot; を作成できません: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>バックアップのファイル &quot;%1&quot; を準備できません: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1559,6 +1571,10 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>読み取り用のファイル &quot;%1&quot; を開けません: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>&quot;%1&quot; は非サポートのアーカイブです、拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
     </message>
 </context>
 <context>

@@ -33,6 +33,10 @@
 #include "fileutils.h"
 #include "archivefactory.h"
 #include "packagemanagercore.h"
+#include "remoteclient.h"
+#include "adminauthorization.h"
+#include "utils.h"
+#include "errors.h"
 
 #include <QRunnable>
 #include <QThread>
@@ -158,7 +162,13 @@ public:
         , m_targetDir(targetDir)
         , m_canceled(false)
         , m_callback(callback)
+        , m_core(nullptr)
     {}
+
+    void setPackageManagerCore(PackageManagerCore *core)
+    {
+        m_core = core;
+    }
 
 Q_SIGNALS:
     void finished(bool success, const QString &errorString);
@@ -188,23 +198,49 @@ public Q_SLOTS:
                 m_archive->errorString()));
             return;
         }
+        const bool hasAdminRights = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
+        const bool canCreateSymLinks = QInstaller::canCreateSymbolicLinks();
+        bool needsAdminRights = false;
+
         for (auto &entry : entries) {
             QString completeFilePath = m_targetDir + QDir::separator() + entry.path;
             if (!entry.isDirectory && !m_callback->prepareForFile(completeFilePath)) {
                 emit finished(false, tr("Cannot prepare for file \"%1\"").arg(completeFilePath));
                 return;
             }
+            if (!hasAdminRights && !canCreateSymLinks && entry.isSymbolicLink)
+                needsAdminRights = true;
         }
         if (m_canceled) {
             // For large archives the reading takes some time, and the user might have
             // canceled before we start the actual extracting.
             emit finished(false, tr("Extract for archive \"%1\" canceled.").arg(m_archivePath));
+            return;
+        }
+
+        bool gainedAdminRights = false;
+        if (needsAdminRights && m_core) {
+            // This must be invoked in the main thread.
+            QMetaObject::invokeMethod(m_core, [&] {
+                try {
+                    return m_core->gainAdminRights();
+                } catch (const QInstaller::Error &) {
+                    return false;
+                }
+            }, Qt::BlockingQueuedConnection, &gainedAdminRights);
+        }
+        if (needsAdminRights && !gainedAdminRights) {
+            emit finished(false, tr("Could not request administrator privileges required to extract "
+                "archive \"%1\".").arg(m_archivePath));
         } else if (!m_archive->extract(m_targetDir, entries.size())) {
             emit finished(false, tr("Error while extracting archive \"%1\": %2").arg(m_archivePath,
                 m_archive->errorString()));
         } else {
             emit finished(true, QString());
         }
+
+        if (gainedAdminRights)
+            m_core->dropAdminRights();
     }
 
     void onStatusChanged(PackageManagerCore::Status status)
@@ -232,6 +268,7 @@ private:
     QScopedPointer<AbstractArchive> m_archive;
     bool m_canceled;
     Callback *m_callback;
+    PackageManagerCore *m_core;
 };
 
 class ExtractArchiveOperation::Receiver : public QObject

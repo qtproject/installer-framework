@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -93,7 +93,7 @@ private:
     quint64 INSTALLER_EXPORT fileSize(const QFileInfo &info);
     bool INSTALLER_EXPORT isInBundle(const QString &path, QString *bundlePath = 0);
 
-    QString replacePath(const QString &path, const QString &pathBefore, const QString &pathAfter);
+    QString replacePath(const QString &path, const QString &pathBefore, const QString &pathAfter, bool cleanPath = true);
     void replaceHighDpiImage(QString &imagePath);
 
     void INSTALLER_EXPORT trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags);

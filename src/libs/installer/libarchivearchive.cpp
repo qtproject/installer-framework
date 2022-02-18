@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -33,11 +33,16 @@
 #include "globals.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+
+#if defined(Q_OS_WIN) && !defined(SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE)
+#define SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
+#endif
 
 namespace QInstaller {
 
@@ -58,6 +63,184 @@ namespace QInstaller {
     \class QInstaller::ScopedPointerEntryDeleter
     \internal
 */
+
+namespace ArchiveEntryPaths {
+
+// TODO: it is expected that the filename handling will change in the major
+// version jump to libarchive 4.x, and the *_w methods will disappear.
+
+/*!
+    \internal
+
+    Returns the path name from the archive \a entry as a \c QString. The path is
+    stored internally in a multistring that can contain a combination of a wide
+    character or multibyte string in current locale or unicode string encoded as UTF-8.
+
+    \note The MBS version is expected to be convertable from latin-1 which might
+    not actually be the case, as the encoding depends on the current locale.
+*/
+static QString pathname(archive_entry *const entry)
+{
+    if (!entry)
+        return QString();
+#ifdef Q_OS_WIN
+    if (const wchar_t *path = archive_entry_pathname_w(entry))
+        return QString::fromWCharArray(path);
+#endif
+    if (const char *path = archive_entry_pathname_utf8(entry))
+        return QString::fromUtf8(path);
+
+    return QString::fromLatin1(archive_entry_pathname(entry));
+}
+
+/*!
+    \internal
+
+    Sets the path name for the archive \a entry to \a path. This function
+    tries to update all variants of the string in the internal multistring
+    struct.
+*/
+static void setPathname(archive_entry *const entry, const QString &path)
+{
+    if (!entry)
+        return;
+
+    // Try updating all variants at once, stops on failure
+    if (archive_entry_update_pathname_utf8(entry, path.toUtf8()))
+        return;
+
+    // If that does not work, then set them individually
+    archive_entry_set_pathname(entry, path.toLatin1());
+    archive_entry_set_pathname_utf8(entry, path.toUtf8());
+#ifdef Q_OS_WIN
+    wchar_t *wpath = new wchar_t[path.length() + 1];
+    path.toWCharArray(wpath);
+    wpath[path.length()] = '\0';
+
+    archive_entry_copy_pathname_w(entry, wpath);
+    delete[] wpath;
+#endif
+}
+
+/*!
+    \internal
+
+    Returns the source path on disk from the current archive \a entry as a \c QString.
+    The path is stored internally in a multistring that can contain a combination
+    of a wide character or multibyte string in current locale.
+
+    \note The MBS version is expected to be convertable from UTF-8.
+*/
+static QString sourcepath(archive_entry * const entry)
+{
+    if (!entry)
+        return QString();
+#ifdef Q_OS_WIN
+    if (const wchar_t *path = archive_entry_sourcepath_w(entry))
+        return QString::fromWCharArray(path);
+#endif
+    return QString::fromUtf8(archive_entry_sourcepath(entry));
+}
+
+/*!
+    \internal
+
+    Returns the hardlink path from the current archive \a entry as a \c QString.
+    The path is stored internally in a multistring that can contain a combination of a wide
+    character or multibyte string in current locale or unicode string encoded as UTF-8.
+
+    \note The MBS version is expected to be convertable from latin-1 which might
+    not actually be the case, as the encoding depends on the current locale.
+*/
+static QString hardlink(archive_entry * const entry)
+{
+    if (!entry)
+        return QString();
+#ifdef Q_OS_WIN
+    if (const wchar_t *path = archive_entry_hardlink_w(entry))
+        return QString::fromWCharArray(path);
+#endif
+    if (const char *path = archive_entry_hardlink_utf8(entry))
+        return QString::fromUtf8(path);
+
+    return QString::fromLatin1(archive_entry_hardlink(entry));
+}
+
+/*!
+    \internal
+
+    Sets the hard link path for the archive \a entry to \a path. This function
+    tries to update all variants of the string in the internal multistring
+    struct.
+*/
+static void setHardlink(archive_entry *const entry, const QString &path)
+{
+    if (!entry)
+        return;
+
+    // Try updating all variants at once, stops on failure
+    if (archive_entry_update_hardlink_utf8(entry, path.toUtf8()))
+        return;
+
+    // If that does not work, then set them individually
+    archive_entry_set_hardlink(entry, path.toLatin1());
+    archive_entry_set_hardlink_utf8(entry, path.toUtf8());
+#ifdef Q_OS_WIN
+    wchar_t *wpath = new wchar_t[path.length() + 1];
+    path.toWCharArray(wpath);
+    wpath[path.length()] = '\0';
+
+    archive_entry_copy_hardlink_w(entry, wpath);
+    delete[] wpath;
+#endif
+}
+
+/*!
+    \internal
+
+    Calls a function object or pointer \a func with any number of extra
+    arguments \a args. Returns the return value of the function of type T.
+
+    On Windows, this changes the locale category LC_CTYPE from C to system
+    locale. The original LC_CTYPE is restored after the function call.
+    Currently the locale is unchanged on other platforms.
+*/
+template <typename T, typename F, typename... Args>
+static T callWithSystemLocale(F func, Args... args)
+{
+#ifdef Q_OS_WIN
+    const QByteArray oldLocale = setlocale(LC_CTYPE, "");
+#endif
+    T returnValue = func(std::forward<Args>(args)...);
+#ifdef Q_OS_WIN
+    setlocale(LC_CTYPE, oldLocale.constData());
+#endif
+    return returnValue;
+}
+
+/*!
+    \internal
+
+    Calls a function object or pointer \a func with any number of extra
+    arguments \a args.
+
+    On Windows, this changes the locale category LC_CTYPE from C to system
+    locale. The original LC_CTYPE is restored after the function call.
+    Currently the locale is unchanged on other platforms.
+*/
+template <typename F, typename... Args>
+static void callWithSystemLocale(F func, Args... args)
+{
+#ifdef Q_OS_WIN
+    const QByteArray oldLocale = setlocale(LC_CTYPE, "");
+#endif
+    func(std::forward<Args>(args)...);
+#ifdef Q_OS_WIN
+    setlocale(LC_CTYPE, oldLocale.constData());
+#endif
+}
+
+} // namespace ArchiveEntryPaths
 
 /*!
     \inmodule QtInstallerFramework
@@ -102,7 +285,7 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
         int status = archive_read_open1(reader.get());
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(reader.get())));
+            emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
             return;
         }
 
@@ -111,22 +294,22 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
                 emit finished(QLatin1String("Extract canceled."));
                 return;
             }
-            status = archive_read_next_header(reader.get(), &entry);
+            status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK) {
                 m_status = Failure;
-                emit finished(QLatin1String(archive_error_string(reader.get())));
+                emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
                 return;
             }
-            const char *current = archive_entry_pathname(entry);
-            const QString outputPath = dirPath + QDir::separator() + QString::fromLocal8Bit(current);
-            archive_entry_set_pathname(entry, outputPath.toLocal8Bit());
+            const QString current = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
+            const QString outputPath = dirPath + QDir::separator() + current;
+            ArchiveEntryPaths::callWithSystemLocale(&ArchiveEntryPaths::setPathname, entry, outputPath);
 
-            const char *hardlink = archive_entry_hardlink(entry);
-            if (hardlink) {
-                const QString hardLinkPath = dirPath + QDir::separator() + QString::fromLocal8Bit(hardlink);
-                archive_entry_set_hardlink(entry, hardLinkPath.toLocal8Bit());
+            const QString hardlink = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::hardlink, entry);
+            if (!hardlink.isEmpty()) {
+                const QString hardLinkPath = dirPath + QDir::separator() + hardlink;
+                ArchiveEntryPaths::callWithSystemLocale(ArchiveEntryPaths::setHardlink, entry, hardLinkPath);
             }
 
             emit currentEntryChanged(outputPath);
@@ -224,7 +407,7 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
-        emit finished(QLatin1String(archive_error_string(writer)));
+        emit finished(LibArchiveArchive::errorStringWithCode(writer));
         return false;
     }
 
@@ -234,13 +417,13 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
             return true;
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(reader)));
+            emit finished(LibArchiveArchive::errorStringWithCode(reader));
             return false;
         }
         status = archive_write_data_block(writer, buff, size, offset);
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(QLatin1String(archive_error_string(writer)));
+            emit finished(LibArchiveArchive::errorStringWithCode(writer));
             return false;
         }
     }
@@ -430,26 +613,26 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
 
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
             if (m_cancelScheduled)
                 throw Error(QLatin1String("Extract canceled."));
 
-            status = archive_read_next_header(reader.get(), &entry);
+            status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
-            const char *current = archive_entry_pathname(entry);
-            const QString outputPath = dirPath + QDir::separator() + QString::fromLocal8Bit(current);
-            archive_entry_set_pathname(entry, outputPath.toLocal8Bit());
+            const QString current = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
+            const QString outputPath = dirPath + QDir::separator() + current;
+            ArchiveEntryPaths::callWithSystemLocale(ArchiveEntryPaths::setPathname, entry, outputPath);
 
-            const char *hardlink = archive_entry_hardlink(entry);
-            if (hardlink) {
-                const QString hardLinkPath = dirPath + QDir::separator() + QString::fromLocal8Bit(hardlink);
-                archive_entry_set_hardlink(entry, hardLinkPath.toLocal8Bit());
+            const QString hardlink = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::hardlink, entry);
+            if (!hardlink.isEmpty()) {
+                const QString hardLinkPath = dirPath + QDir::separator() + hardlink;
+                ArchiveEntryPaths::callWithSystemLocale(ArchiveEntryPaths::setHardlink, entry, hardLinkPath);
             }
 
             emit currentEntryChanged(outputPath);
@@ -503,39 +686,61 @@ bool LibArchiveArchive::create(const QStringList &data)
 
     try {
         int status;
-        if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toLocal8Bit())))
-            throw Error(QLatin1String(archive_error_string(writer.get())));
+#ifdef Q_OS_WIN
+        QScopedPointer<wchar_t, QScopedPointerArrayDeleter<wchar_t>> fileName_w(
+            new wchar_t[m_data->file.fileName().length() + 1]);
 
+        m_data->file.fileName().toWCharArray(fileName_w.get());
+        fileName_w.get()[m_data->file.fileName().length()] = '\0';
+
+        if ((status = archive_write_open_filename_w(writer.get(), fileName_w.get())))
+            throw Error(errorStringWithCode(writer.get()));
+#else
+        if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toUtf8())))
+            throw Error(errorStringWithCode(writer.get()));
+#endif
         for (auto &dataEntry : globbedData) {
             QScopedPointer<archive, ScopedPointerReaderDeleter> reader(archive_read_disk_new());
             configureDiskReader(reader.get());
 
-            if ((status = archive_read_disk_open(reader.get(), dataEntry.toLocal8Bit())))
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+#ifdef Q_OS_WIN
+            QScopedPointer<wchar_t, QScopedPointerArrayDeleter<wchar_t>> dataEntry_w(
+                new wchar_t[dataEntry.length() + 1]);
 
+            dataEntry.toWCharArray(dataEntry_w.get());
+            dataEntry_w.get()[dataEntry.length()] = '\0';
+
+            if ((status = archive_read_disk_open_w(reader.get(), dataEntry_w.get())))
+                throw Error(errorStringWithCode(reader.get()));
+#else
+            if ((status = archive_read_disk_open(reader.get(), dataEntry.toUtf8())))
+                throw Error(errorStringWithCode(reader.get()));
+#endif
             QDir basePath = QFileInfo(dataEntry).dir();
             forever {
                 QScopedPointer<archive_entry, ScopedPointerEntryDeleter> entry(archive_entry_new());
-                status = archive_read_next_header2(reader.get(), entry.get());
+                status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header2, reader.get(), entry.get());
                 if (status == ARCHIVE_EOF)
                     break;
                 if (status != ARCHIVE_OK)
-                    throw Error(QLatin1String(archive_error_string(reader.get())));
+                    throw Error(errorStringWithCode(reader.get()));
 
-                const QFileInfo fileOrDir(pathWithoutNamespace(QLatin1String(archive_entry_sourcepath(entry.get()))));
+                const QFileInfo fileOrDir(pathWithoutNamespace(
+                    ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::sourcepath, entry.get())));
                 // Set new path name in archive, otherwise we add all directories from absolute path
                 const QString newPath = basePath.relativeFilePath(fileOrDir.filePath());
-                archive_entry_set_pathname(entry.get(), newPath.toLocal8Bit());
+                ArchiveEntryPaths::callWithSystemLocale(ArchiveEntryPaths::setPathname, entry.get(), newPath);
 
                 archive_read_disk_descend(reader.get());
                 status = archive_write_header(writer.get(), entry.get());
                 if (status < ARCHIVE_OK)
-                    throw Error(QLatin1String(archive_error_string(writer.get())));
+                    throw Error(errorStringWithCode(writer.get()));
 
                 if (fileOrDir.isDir() || archive_entry_size(entry.get()) == 0)
                     continue; // nothing to copy
 
-                QFile file(pathWithoutNamespace(QLatin1String(archive_entry_sourcepath(entry.get()))));
+                QFile file(pathWithoutNamespace(ArchiveEntryPaths::callWithSystemLocale<QString>(
+                    ArchiveEntryPaths::sourcepath, entry.get())));
                 if (!file.open(QIODevice::ReadOnly))
                     throw Error(file.errorString());
 
@@ -575,19 +780,20 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
-            status = archive_read_next_header(reader.get(), &entry);
+            status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             ArchiveEntry archiveEntry;
-            archiveEntry.path = QLatin1String(archive_entry_pathname(entry));
+            archiveEntry.path = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
             archiveEntry.utcTime = QDateTime::fromTime_t(archive_entry_mtime(entry));
             archiveEntry.isDirectory = (archive_entry_filetype(entry) == AE_IFDIR);
+            archiveEntry.isSymbolicLink = (archive_entry_filetype(entry) == AE_IFLNK);
             archiveEntry.uncompressedSize = archive_entry_size(entry);
             archiveEntry.permissions_mode = archive_entry_perm(entry);
 
@@ -616,7 +822,7 @@ bool LibArchiveArchive::isSupported()
     try {
         const int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
     } catch (const Error &e) {
         setErrorString(e.message());
         m_data->file.seek(0);
@@ -718,16 +924,20 @@ void LibArchiveArchive::configureWriter(archive *archive)
         // The Qt board support package file extension is really a 7z.
         archive_write_set_format_7zip(archive);
     } else {
-        archive_write_set_format_filter_by_ext(archive, fileName.toLatin1());
+        archive_write_set_format_filter_by_ext(archive, fileName.toUtf8());
     }
+
+    const QByteArray charset = "hdrcharset=UTF-8";
+    // not checked as this is ignored on some archive formats like 7z
+    archive_write_set_options(archive, charset);
 
     if (compressionLevel() == CompressionLevel::Normal)
         return;
 
-    const QByteArray options = "compression-level=" + QString::number(compressionLevel()).toLatin1();
-    if (archive_write_set_options(archive, options.constData())) { // not fatal
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Could not set options" << options
-            << "for archive" << m_data->file.fileName() << ":" << archive_error_string(archive);
+    const QByteArray compression = "compression-level=" + QString::number(compressionLevel()).toLatin1();
+    if (archive_write_set_options(archive, compression.constData())) { // not fatal
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Could not set option" << compression
+            << "for archive" << m_data->file.fileName() << ":" << errorStringWithCode(archive);
     }
 }
 
@@ -803,7 +1013,7 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
-        setErrorString(QLatin1String(archive_error_string(writer)));
+        setErrorString(errorStringWithCode(writer));
         return false;
     }
 
@@ -812,12 +1022,12 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
         if (status == ARCHIVE_EOF)
             return true;
         if (status != ARCHIVE_OK) {
-            setErrorString(QLatin1String(archive_error_string(reader)));
+            setErrorString(errorStringWithCode(reader));
             return false;
         }
         status = archive_write_data_block(writer, buff, size, offset);
         if (status != ARCHIVE_OK) {
-            setErrorString(QLatin1String(archive_error_string(writer)));
+            setErrorString(errorStringWithCode(writer));
             return false;
         }
     }
@@ -927,6 +1137,21 @@ QString LibArchiveArchive::pathWithoutNamespace(const QString &path)
 }
 
 /*!
+    Returns an error message and a textual representaion of the numeric error code
+    indicating the reason for the most recent error return for the \a archive object.
+*/
+QString LibArchiveArchive::errorStringWithCode(archive *const archive)
+{
+    if (!archive)
+        return QString();
+
+    return QString::fromLatin1("%1: %2.").arg(
+        QLatin1String(archive_error_string(archive)),
+        QLatin1String(strerror(archive_errno(archive)))
+    );
+}
+
+/*!
     Returns the number of files in this archive.
 */
 quint64 LibArchiveArchive::totalFiles()
@@ -940,14 +1165,14 @@ quint64 LibArchiveArchive::totalFiles()
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
         if (status != ARCHIVE_OK)
-            throw Error(QLatin1String(archive_error_string(reader.get())));
+            throw Error(errorStringWithCode(reader.get()));
 
         forever {
-            status = archive_read_next_header(reader.get(), &entry);
+            status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
             if (status != ARCHIVE_OK)
-                throw Error(QLatin1String(archive_error_string(reader.get())));
+                throw Error(errorStringWithCode(reader.get()));
 
             ++files;
         }

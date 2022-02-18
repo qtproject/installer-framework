@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,6 +46,7 @@ struct INSTALLER_EXPORT ArchiveEntry
 {
     ArchiveEntry()
         : isDirectory(false)
+        , isSymbolicLink(false)
         , compressedSize(0)
         , uncompressedSize(0)
         , permissions_mode(0)
@@ -55,6 +56,7 @@ struct INSTALLER_EXPORT ArchiveEntry
     QDateTime utcTime;
     QPoint archiveIndex;
     bool isDirectory;
+    bool isSymbolicLink;
     quint64 compressedSize;
     quint64 uncompressedSize;
     mode_t permissions_mode;

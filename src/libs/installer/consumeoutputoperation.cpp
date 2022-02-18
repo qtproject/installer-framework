@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -81,19 +81,7 @@ bool ConsumeOutputOperation::performOperation()
         return false;
     }
 
-    QString executablePath = arguments().at(1);
-    QFileInfo executable(executablePath);
-#ifdef Q_OS_WIN
-    if (!executable.exists() && executable.suffix().isEmpty())
-        executable = QFileInfo(executablePath + QLatin1String(".exe"));
-#endif
-
-    if (!executable.exists() || !executable.isExecutable()) {
-        setError(UserDefinedError);
-        setErrorString(tr("File \"%1\" does not exist or is not an executable binary.").arg(
-            QDir::toNativeSeparators(executable.absoluteFilePath())));
-        return false;
-    }
+    QString executable = arguments().at(1);
 
     QByteArray executableOutput;
 
@@ -103,17 +91,17 @@ bool ConsumeOutputOperation::performOperation()
     int waitCount = 0;
     while (executableOutput.isEmpty() && waitCount < 3) {
         QProcess process;
-        process.start(executable.absoluteFilePath(), processArguments, QIODevice::ReadOnly);
+        process.start(executable, processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
-                qCWarning(QInstaller::lcInstallerInstallLog) << executable.absoluteFilePath()
+                qCWarning(QInstaller::lcInstallerInstallLog) << executable
                     << processArguments << "crashed with exit code"
                     << process.exitCode() << "standard output: "
                     << process.readAllStandardOutput() << "error output: "
                     << process.readAllStandardError();
                 setError(UserDefinedError);
-                setErrorString(tr("Running \"%1\" resulted in a crash.").arg(
-                    QDir::toNativeSeparators(executable.absoluteFilePath())));
+                setErrorString(tr("Failed to run command: \"%1\": %2").arg(
+                    QDir::toNativeSeparators(executable), process.errorString()));
                 return false;
             }
             executableOutput.append(process.readAllStandardOutput());
@@ -124,7 +112,7 @@ bool ConsumeOutputOperation::performOperation()
             uiDetachedWait(waitTimeInMilliSeconds);
         }
         if (process.state() > QProcess::NotRunning ) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << executable.absoluteFilePath()
+            qCWarning(QInstaller::lcInstallerInstallLog) << executable
                 << "process is still running, need to kill it.";
             process.kill();
         }
@@ -132,9 +120,9 @@ bool ConsumeOutputOperation::performOperation()
     }
     if (executableOutput.isEmpty()) {
         qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot get any query output from executable"
-            << executable.absoluteFilePath();
+            << executable;
     }
-    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput));
+    core->setValue(installerKeyName, QString::fromLocal8Bit(executableOutput.trimmed()));
     return true;
 }
 

@@ -1,8 +1,36 @@
 4.3.0
+- Fix extracting entries with file paths that contain unicode characters (QTIFW-2506)
+- Update Japanese translation file
+- Update Chinese translation file
+- Use of separators in Execute operation (QTIFW-2501)
+- Libarchive: include errno code description in error strings
+- Gain admin rights when user is missing privilege to create symlinks (QTIFW-2428)
+- Do not check file existence in ConsumeOutput operation (QTIFW-2499)
+- Update Russian translation file
+- Update libarchive sources to 3.5.2 release
+- MT: Fix setting incorrect TargetDir value when started as root (QTIFW-2486)
+- Enable 'Enter' to click Next -button in macOS (QTIFW-2409)
+- Fix hard restart of maintenance tool (QTIFW-2381)
+- Make Updater -view checkbox selection faster (QTIFW-1021)
+- MT: Disable package manager when forced updates are found (QTIFW-2437)
+- Update Arabic translation file
+- Add "about application" menu and dialog on macOS (QTIFW-2453)
+- CLI: Add <TreeName> value to 'list' and 'search' command outputs (QTIFW-2452)
+- Fix visibility of warnings when failing to read product image (QTIFW-2426)
+- Update Polish translation file
+- Use Next as default button (QTIFW-1046)
+- Update Portuguese translation file
+- ArchiveFactory: register handlers for .qbsp file extension (QTIFW-2475)
+- Fix segfaults when failing to fetch compressed repositories (QTIFW-2441)
+- Fix Replace -element beviour (QTIFW-2454)
+- Add Hungarian translation
 - Update minimum required Qt version to Qt5.15.2
 - Add support for moving child components with <TreeName> (QTIFW-2380)
+- Update German translation file
 - Fix replacing components with <TreeName> element (QTIFW-2455)
 - Do not block installation when there are conflicting component names (QTIFW-2444)
+- Update Spanish translation file
+- Update French translation file
 - Fix wrong title text after succesfull update (QTIFW-2439)
 - Allow case insensitive CLI search and list (QTIFW-2451)
 - Fix selecting target directory when elevated server process is active (QTIFW-2383)

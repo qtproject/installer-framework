@@ -217,7 +217,7 @@
     </message>
     <message>
         <source>Download canceled.</source>
-        <translation>下载已取消</translation>
+        <translation>下载已取消。</translation>
     </message>
     <message>
         <source>%1 of %2</source>
@@ -225,7 +225,7 @@
     </message>
     <message>
         <source>%1 downloaded.</source>
-        <translation>%1 已下载</translation>
+        <translation>%1 已下载。</translation>
     </message>
     <message>
         <source>(%1/sec)</source>
@@ -257,11 +257,11 @@
     </message>
     <message>
         <source> - %1%2%3%4 remaining.</source>
-        <translation>- 剩余 %1%2%3%4。</translation>
+        <translation> - 剩余 %1%2%3%4。</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation>- 剩余时间未知。</translation>
+        <translation> - 剩余时间未知。</translation>
     </message>
 </context>
 <context>
@@ -398,7 +398,7 @@
     </message>
     <message>
         <source>The directory does not exist.</source>
-        <translation>目录不存在!</translation>
+        <translation>目录不存在。</translation>
     </message>
     <message>
         <source>Cannot recreate directory &quot;%1&quot;: %2</source>
@@ -776,7 +776,7 @@
     </message>
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>加载选中组件的过程中出现错误。这个组件不会被安装。</translation>
     </message>
 </context>
 <context>
@@ -886,7 +886,7 @@
     </message>
     <message>
         <source>Filter the enabled repository categories</source>
-        <translation>过滤已启用的存储库类别以供选择。</translation>
+        <translation>过滤已启用的存储库类别</translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
@@ -920,6 +920,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>必须先更新必备组件，然后才能选择其他组件进行更新。</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -936,12 +940,8 @@
         <translation>无法将“%1”的输出保存为空安装程序密钥值。</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>文件“%1”不存在或不是可执行的二进制文件。</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>运行“%1”导致崩溃。</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>运行命令“%1”失败：%2</translation>
     </message>
 </context>
 <context>
@@ -1082,6 +1082,10 @@
         <source>Cannot create archive &quot;%1&quot;: %2</source>
         <translation>无法创建存档“%1”：%2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>不支持的存档“%1”：没有处理程序注册在文件后缀“%2”名下。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -1152,7 +1156,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>%1 downloaded.</source>
-        <translation>%1 已下载</translation>
+        <translation>%1 已下载。</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
@@ -1180,19 +1184,19 @@ Error while loading %2</source>
     </message>
     <message>
         <source> - %1%2%3%4 remaining.</source>
-        <translation>- 剩余 %1%2%3%4。</translation>
+        <translation> - 剩余 %1%2%3%4。</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation>- 剩余时间未知。</translation>
+        <translation> - 剩余时间未知。</translation>
     </message>
     <message>
         <source>Archive: </source>
-        <translation type="unfinished"></translation>
+        <translation>存档：</translation>
     </message>
     <message>
         <source>Total: </source>
-        <translation type="unfinished"></translation>
+        <translation>总计：</translation>
     </message>
 </context>
 <context>
@@ -1225,7 +1229,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Network error while downloading &apos;%1&apos;: %2.</source>
-        <translation>下载“%1”时出现网络错误：%2</translation>
+        <translation>下载“%1”时出现网络错误：%2。</translation>
     </message>
     <message>
         <source>Unknown network error while downloading &quot;%1&quot;.</source>
@@ -1322,11 +1326,11 @@ Error while loading %2</source>
     </message>
     <message>
         <source> - %1%2%3%4 remaining.</source>
-        <translation>- 剩余 %1%2%3%4。</translation>
+        <translation> - 剩余 %1%2%3%4。</translation>
     </message>
     <message>
         <source> - unknown time remaining.</source>
-        <translation>- 剩余时间未知。</translation>
+        <translation> - 剩余时间未知。</translation>
     </message>
 </context>
 <context>
@@ -1393,6 +1397,10 @@ Error while loading %2</source>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>无法创建目录“%1”：%2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation>无法为备份文件“%1”准备：%2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1438,7 +1446,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
-        <translation type="unfinished"></translation>
+        <translation>有重要的更新可供使用，请先选择“%1”</translation>
     </message>
 </context>
 <context>
@@ -1492,7 +1500,7 @@ Error while loading %2</source>
     <name>QInstaller::LineReplaceOperation</name>
     <message>
         <source>Invalid argument in %1: Empty search argument is not supported.</source>
-        <translation>不支持空搜索参数。</translation>
+        <translation>%1 中的无效参数：不支持空搜索参数。</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -1564,6 +1572,10 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>无法打开文件“%1”进行读取：%2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>不支持的存档“%1”：没有处理程序注册在文件后缀“%2”名下。</translation>
     </message>
 </context>
 <context>
@@ -1691,13 +1703,13 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
-        <translation>组件安装仅自动依赖 %2 。
+        <translation>无法安装组件 %1。组件仅作为 %2 的自动依赖时安装。
 </translation>
     </message>
     <message>
         <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
 </source>
-        <translation>不可检查组件，这意味着您必须选择其中一個子组件。
+        <translation>无法安装组件 %1。组件不可选择，这意味着您必须选择其中一个子组件。
 </translation>
     </message>
     <message>
@@ -1709,13 +1721,13 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install %1. Component is virtual.
 </source>
-        <translation>组件是虚拟的。
+        <translation>无法安装 %1。组件是虚拟的。
 </translation>
     </message>
     <message>
         <source>Cannot install %1. Component not found.
 </source>
-        <translation>未找到组件。
+        <translation>无法安装 %1。未找到组件。
 </translation>
     </message>
     <message>
@@ -1767,18 +1779,14 @@ Do you want to continue?</source>
         <translation>需要用户输入，但输出设备并未与任何终端裝置建立关联。</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>标识符为 %1 的组件已存在。</translation>
-    </message>
-    <message>
         <source>Cannot install %1. Component is a descendant of a virtual component %2.
 </source>
-        <translation>组件是虚拟组件 %2 的后代。
+        <translation>无法安装 %1。组件是虚拟组件 %2 的后代。
 </translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
-        <translation type="unfinished"></translation>
+        <translation>预估的安装程序大小 %1 可能超过被支持的可执行程序大小限制 %2。应用程序可能无法运行。</translation>
     </message>
 </context>
 <context>
@@ -1825,7 +1833,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Writing maintenance tool.</source>
-        <translation>编写维护工具</translation>
+        <translation>编写维护工具。</translation>
     </message>
     <message>
         <source>Failed to seek in file %1: %2</source>
@@ -2087,11 +2095,11 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::PerformInstallationForm</name>
     <message>
         <source>&amp;Show Details</source>
-        <translation>显示详细信息(%S)</translation>
+        <translation>显示详细信息(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Hide Details</source>
-        <translation>隐藏详细信息(%H)</translation>
+        <translation>隐藏详细信息(&amp;H)</translation>
     </message>
 </context>
 <context>
@@ -2180,7 +2188,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>U&amp;pdate</source>
-        <translation>更新(%P)</translation>
+        <translation>更新(&amp;P)</translation>
     </message>
     <message>
         <source>Ready to Update Packages</source>
@@ -2233,7 +2241,7 @@ Please copy the installer to a local drive</source>
     </message>
     <message>
         <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
-        <translation>请使用字符串或正则表达式。</translation>
+        <translation>当前使用参数“%2”的模式参数调用“%1”不被支持。请使用字符串或正则表达式。</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -2750,7 +2758,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::ExtractArchiveOperation::Worker</name>
     <message>
         <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法为存档“%1”创建处理程序对象：“%2”。</translation>
     </message>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
@@ -2758,19 +2766,34 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>读取存档“%1”内容时发生错误：%2</translation>
     </message>
     <message>
         <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>无法为文件“%1“进行准备</translation>
     </message>
     <message>
         <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation type="unfinished"></translation>
+        <translation>提取存档”%1“的操作取消了。</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>提取存档“%1”时出错：%2</translation>
+    </message>
+    <message>
+        <source>Could not request administrator privileges required to extract archive &quot;%1&quot;.</source>
+        <translation>无法获得提取存档“%1”所需的管理员权限。</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>关于 %1 安装程序</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>关于 %1 维护工具</translation>
     </message>
 </context>
 </TS>

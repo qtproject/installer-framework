@@ -1015,8 +1015,13 @@ QString PackageManagerCore::readConsoleLine(const QString &title, qint64 maxlen)
 
     On Unix platforms the returned string is the same as the argument.
 
+    \note Predefined variables, such as @TargetDir@, are not resolved by
+    this function. To convert the separators to predefined variables, use
+    \c installer.value() to resolve the variables first.
+
     \sa {installer::toNativeSeparators}{installer.toNativeSeparators}
     \sa fromNativeSeparators()
+    \sa {installer::value}{installer.value}
 */
 QString PackageManagerCore::toNativeSeparators(const QString &path)
 {
@@ -1028,8 +1033,13 @@ QString PackageManagerCore::toNativeSeparators(const QString &path)
 
     On Unix platforms the returned string is the same as the argument.
 
+    \note Predefined variables, such as @TargetDir@, are not resolved by
+    this function. To convert the separators to predefined variables, use
+    \c installer.value() to resolve the variables first.
+
     \sa {installer::fromNativeSeparators}{installer.fromNativeSeparators}
     \sa toNativeSeparators()
+    \sa {installer::value}{installer.value}
 */
 QString PackageManagerCore::fromNativeSeparators(const QString &path)
 {

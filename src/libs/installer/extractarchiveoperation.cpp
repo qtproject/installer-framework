@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -92,8 +92,10 @@ bool ExtractArchiveOperation::performOperation()
     connect(worker, &Worker::finished, &receiver, &Receiver::workerFinished,
         Qt::QueuedConnection);
 
-    if (PackageManagerCore *core = packageManager())
+    if (PackageManagerCore *core = packageManager()) {
         connect(core, &PackageManagerCore::statusChanged, worker, &Worker::onStatusChanged);
+        worker->setPackageManagerCore(core);
+    }
 
     QFileInfo fileInfo(archivePath);
     emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
