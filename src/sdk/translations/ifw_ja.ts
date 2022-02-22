@@ -1088,7 +1088,7 @@
     </message>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
-        <translation>&quot;%1&quot; は非サポートのアーカイブです、拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
+        <translation>&quot;%1&quot; は非サポートのアーカイブです。拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
     </message>
 </context>
 <context>
@@ -1574,7 +1574,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
-        <translation>&quot;%1&quot; は非サポートのアーカイブです、拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
+        <translation>&quot;%1&quot; は非サポートのアーカイブです。拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
     </message>
 </context>
 <context>

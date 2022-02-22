@@ -2702,6 +2702,8 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
 
     QString errorMessage;
     if (checkComponentsForInstallation(components, errorMessage)) {
+        if (!errorMessage.isEmpty())
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
         if (d->calculateComponentsAndRun())
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
     } else {

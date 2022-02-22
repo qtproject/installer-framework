@@ -549,21 +549,18 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
         if (!e.isNull() && e.tagName() == QLatin1String("argument")) {
             // Sniff the Execute -operations file path separator. The operation might be
             // strict with the used path separator
+            bool useCleanPath = true;
             if (name() == QLatin1String("Execute")) {
                 if (e.text().startsWith(relocatable) && e.text().size() > relocatable.size()) {
                     const QChar separator = e.text().at(relocatable.size());
                     if (separator == QLatin1Char('\\')) {
-                        args << QInstaller::replacePath(e.text(), relocatable,
-                            QDir::toNativeSeparators(target), false);
+                        target = QDir::toNativeSeparators(target);
+                        useCleanPath = false;
                     }
-                } else {
-                    args << QInstaller::replacePath(e.text(), relocatable,
-                        target);
                 }
-            } else {
-                args << QInstaller::replacePath(e.text(), relocatable,
-                    target);
             }
+            args << QInstaller::replacePath(e.text(), relocatable,
+                target, useCleanPath);
         }
     }
     setArguments(args);
