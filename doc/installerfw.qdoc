@@ -1755,6 +1755,107 @@
 
     You can use relative paths for the arguments \c url, \c oldUrl, and \c newUrl in
     the \c <Repository> element.
+
+    \section1 Promoting Updates for the Maintenance Tool
+
+    Without additional configuration, both online and offline installers install the
+    \e {maintenance tool}, that can be later used to add, update, and remove components.
+    Online installers also have an option to install the maintenance tool from an online repository.
+    This makes it possible to promote updates for the maintenance tool to take the advantage of latest
+    new features and fixes to the Qt Installer Framework.
+
+    You should download the latest release of the Installer Framework distribution that
+    includes new versions of \l{binarycreator} and \l{installerbase} tools. However, to only
+    update vendor specific configuration like \c <Name>, \c <Title>, and \c <Publisher> to the new
+    maintenance tool, you can use the tools that were used to create the original installer.
+
+    \section2 Creating the Component Directory Structure for Maintenance Tool
+
+    To make the maintenance tool update installable for end users, you need to prepare an installer
+    component for the maintenance tool and create a repository for that component.
+
+    \note If you already have a component for the maintenance tool available in a repository, you
+    can skip the instructions in this section.
+
+    A common convention is to create a \c packages directory containing the metadata and data for
+    your installer components. Inside that directory, you need to create a subdirectory for the maintenance
+    tool component with a name of your choice, for example \c org.qtproject.ifw.maintenancetool,
+    with \c meta and \c data subdirectories. These directories will be populated later.
+
+    \section2 Compiling the Update Resource
+
+    If you want to apply configuration changes, like updating the title, publisher, or product URL
+    when the end user updates the maintenance tool, you need to create an update resource file.
+    Otherwise this step is optional.
+
+    First, you need to compile the resource file that will contain the new maintenance tool
+    configuration and related files:
+
+    \code
+    binarycreator -c config/config.xml -p packages -rcc
+    \endcode
+
+    The command outputs the result into \c update.rcc in the current path.
+
+    The \c packages directory argument refers to the previously created directory for the maintenance
+    tool component. \c config.xml contains the maintenance tool configuration. This can be the same
+    file that was used for creating the online installer that is going to consume the maintenance tool
+    repository, or you could make modifications to change some configuration elements like the window
+    title and product version.
+
+    For full reference of elements supported by the configuration file, see \l{Configuration File}.
+
+    \section2 Populating the Maintenance Tool Component
+
+    The \c installerbase executable from Qt Installer Framework's install folder and \c update.rcc
+    generated in the \l{Compiling the Update Resource} step should be copied to the component's data
+    directory. The meta directory should contain a \c package.xml file with the package information
+    elements of your choice. However it is a good idea to mark the component \c <Essential> so that
+    it gets automatically installed when running the updater. You may also want to mark the component
+    \c <Virtual> to hide it from the component selection.
+
+    For further information about the \c package.xml file, see
+    \l{Summary of Package Information File Elements}.
+
+    \note If you are providing an update for an existing maintenance tool component, copy and overwrite the
+    existing files with the updated content to the package directory and increase the value of the
+    \c <Version> element in the \c package.xml file.
+
+    The meta directory should also contain an installation script that tells the installer that
+    there are replacements for the default \c installerbase and update resource files. A minimal
+    \c installscript.qs for this purpose could look like this:
+
+    \code
+    function Component()
+    {
+        installer.installationStarted.connect(this, Component.prototype.onInstallationStarted);
+    }
+
+    Component.prototype.onInstallationStarted = function()
+    {
+        if (component.updateRequested() || component.installationRequested()) {
+            if (installer.value("os") == "win")
+                component.installerbaseBinaryPath = "@TargetDir@/installerbase.exe";
+            else if (installer.value("os") == "x11" || installer.value("os") == "mac")
+                component.installerbaseBinaryPath = "@TargetDir@/installerbase";
+
+            installer.setInstallerBaseBinary(component.installerbaseBinaryPath);
+
+            var updateResourceFilePath = installer.value("TargetDir") + "/update.rcc";
+            installer.setValue("DefaultResourceReplacement", updateResourceFilePath);
+        }
+    }
+    \endcode
+
+    You must include the installation script in the \c package.xml by specifying the filename in
+    the \c <Script> element.
+
+    \section2 Publishing Maintenance Tool Updates
+
+    After preparation the component should be uploaded to an existing or a new online repository
+    to make it available for end users. The instructions on how to create repositories on
+    this page and \l{Creating Repositories} apply also for the component containing the
+    maintenance tool update.
 */
 
 /*!
