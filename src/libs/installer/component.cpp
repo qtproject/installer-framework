@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -48,6 +48,7 @@
 #include <QtCore/QRegularExpression>
 
 #include <QApplication>
+#include <QtConcurrentFilter>
 
 #include <QtUiTools/QUiLoader>
 
@@ -1053,8 +1054,10 @@ QStringList Component::stopProcessForUpdateRequests() const
 /*!
     Returns the operations needed to install this component. If autoCreateOperations() is \c true,
     createOperations() is called if no operations have been automatically created yet.
+
+    The \a mask parameter filters the returned operations by their group.
 */
-OperationList Component::operations() const
+OperationList Component::operations(const Operation::OperationGroups &mask) const
 {
     if (d->m_autoCreateOperations && !d->m_operationsCreated) {
         const_cast<Component*>(this)->createOperations();
@@ -1081,7 +1084,11 @@ OperationList Component::operations() const
             d->m_operations.append(d->m_licenseOperation);
         }
     }
-    return d->m_operations;
+    OperationList operations = d->m_operations;
+    QtConcurrent::blockingFilter(operations, [&](const Operation *op) {
+        return mask.testFlag(op->group());
+    });
+    return operations;
 }
 
 /*!

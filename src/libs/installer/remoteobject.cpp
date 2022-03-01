@@ -60,7 +60,6 @@ RemoteObject::~RemoteObject()
         if (QThread::currentThread() == m_socket->thread()) {
             if ((m_type != QLatin1String("RemoteClientPrivate"))
                     && (m_socket->state() == QLocalSocket::ConnectedState)) {
-                writeData(QLatin1String(Protocol::Destroy), m_type, dummy, dummy);
                 while (m_socket->bytesToWrite()) {
                     // QAbstractSocket::waitForBytesWritten() may fail randomly on Windows, use
                     // an event loop and the bytesWritten() signal instead as the docs suggest.

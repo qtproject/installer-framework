@@ -29,6 +29,7 @@
 #include "libarchivearchive.h"
 
 #include "directoryguard.h"
+#include "fileguard.h"
 #include "errors.h"
 #include "globals.h"
 
@@ -408,6 +409,11 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
     const void *buff;
     size_t size;
     int64_t offset;
+
+    const QString entryPath = ArchiveEntryPaths::callWithSystemLocale
+        <QString>(ArchiveEntryPaths::pathname, entry);
+
+    FileGuardLocker locker(entryPath, FileGuard::globalObject());
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
@@ -1014,6 +1020,11 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
     const void *buff;
     size_t size;
     int64_t offset;
+
+    const QString entryPath = ArchiveEntryPaths::callWithSystemLocale
+        <QString>(ArchiveEntryPaths::pathname, entry);
+
+    FileGuardLocker locker(entryPath, FileGuard::globalObject());
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {

@@ -9,7 +9,7 @@ include(../../installerfw.pri)
     include($$SQUISH_PATH/qtbuiltinhook.pri)
 }
 
-QT += network qml xml widgets
+QT += network qml xml widgets concurrent
 # add the minimal plugin in static build to be able to start the installer headless with:
 # installer-binary --platform minimal
 # using QT += qpa_minimal_plugin would result in a minimal only compiled version

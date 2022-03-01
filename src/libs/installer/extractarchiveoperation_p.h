@@ -43,6 +43,9 @@
 
 namespace QInstaller {
 
+constexpr double scBackupProgressPart = 0.1;
+constexpr double scPerformProgressPart = (1 - scBackupProgressPart);
+
 class WorkerThread : public QThread
 {
     Q_OBJECT
@@ -85,51 +88,19 @@ private:
     ExtractArchiveOperation *m_op;
 };
 
-typedef QPair<QString, QString> Backup;
-typedef QVector<Backup> BackupFiles;
-
 class ExtractArchiveOperation::Callback : public QObject
 {
     Q_OBJECT
     Q_DISABLE_COPY(Callback)
 
 public:
-    Callback() = default;
-
-    BackupFiles backupFiles() const
-    {
-        return m_backupFiles;
-    }
+    Callback()
+        : m_lastProgressPercentage(0)
+    {}
 
     QStringList extractedFiles() const
     {
         return m_extractedFiles;
-    }
-
-    static QString generateBackupName(const QString &fn)
-    {
-        const QString bfn = fn + QLatin1String(".tmpUpdate");
-        QString res = bfn;
-        int i = 0;
-        while (QFile::exists(res))
-            res = bfn + QString::fromLatin1(".%1").arg(i++);
-        return res;
-    }
-
-    bool prepareForFile(const QString &filename)
-    {
-        if (!QFile::exists(filename))
-            return true;
-        const QString backup = generateBackupName(filename);
-        QFile f(filename);
-        const bool renamed = f.rename(backup);
-        if (f.exists() && !renamed) {
-            qCritical("Cannot rename %s to %s: %s", qPrintable(filename), qPrintable(backup),
-                qPrintable(f.errorString()));
-            return false;
-        }
-        m_backupFiles.append(qMakePair(filename, backup));
-        return true;
     }
 
 Q_SIGNALS:
@@ -143,12 +114,20 @@ public Q_SLOTS:
 
     void onCompletedChanged(quint64 completed, quint64 total)
     {
-        emit progressChanged(double(completed) / total);
+        const double currentProgress = double(completed) / total
+            * scPerformProgressPart + scBackupProgressPart;
+
+        const int currentProgressPercentage = qRound(currentProgress * 100);
+        if (currentProgressPercentage > m_lastProgressPercentage) {
+            // Emit only full percentage changes
+            m_lastProgressPercentage = currentProgressPercentage;
+            emit progressChanged(currentProgress);
+        }
     }
 
 private:
-    BackupFiles m_backupFiles;
     QStringList m_extractedFiles;
+    int m_lastProgressPercentage;
 };
 
 class ExtractArchiveOperation::Worker : public QObject
@@ -157,18 +136,12 @@ class ExtractArchiveOperation::Worker : public QObject
     Q_DISABLE_COPY(Worker)
 
 public:
-    Worker(const QString &archivePath, const QString &targetDir, Callback *callback)
+    Worker(const QString &archivePath, const QString &targetDir, quint64 totalEntries, Callback *callback)
         : m_archivePath(archivePath)
         , m_targetDir(targetDir)
-        , m_canceled(false)
+        , m_totalEntries(totalEntries)
         , m_callback(callback)
-        , m_core(nullptr)
     {}
-
-    void setPackageManagerCore(PackageManagerCore *core)
-    {
-        m_core = core;
-    }
 
 Q_SIGNALS:
     void finished(bool success, const QString &errorString);
@@ -176,7 +149,6 @@ Q_SIGNALS:
 public Q_SLOTS:
     void run()
     {
-        m_canceled = false;
         m_archive.reset(ArchiveFactory::instance().create(m_archivePath));
         if (!m_archive) {
             emit finished(false, tr("Could not create handler object for archive \"%1\": \"%2\".")
@@ -187,60 +159,18 @@ public Q_SLOTS:
         connect(m_archive.get(), &AbstractArchive::currentEntryChanged, m_callback, &Callback::onCurrentEntryChanged);
         connect(m_archive.get(), &AbstractArchive::completedChanged, m_callback, &Callback::onCompletedChanged);
 
-        if (!(m_archive->open(QIODevice::ReadOnly) && m_archive->isSupported())) {
+        if (!m_archive->open(QIODevice::ReadOnly)) {
             emit finished(false, tr("Cannot open archive \"%1\" for reading: %2").arg(m_archivePath,
                 m_archive->errorString()));
             return;
         }
-        const QVector<ArchiveEntry> entries = m_archive->list();
-        if (entries.isEmpty()) {
-            emit finished(false, tr("Error while reading contents of archive \"%1\": %2").arg(m_archivePath,
-                m_archive->errorString()));
-            return;
-        }
-        const bool hasAdminRights = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
-        const bool canCreateSymLinks = QInstaller::canCreateSymbolicLinks();
-        bool needsAdminRights = false;
 
-        for (auto &entry : entries) {
-            QString completeFilePath = m_targetDir + QDir::separator() + entry.path;
-            if (!entry.isDirectory && !m_callback->prepareForFile(completeFilePath)) {
-                emit finished(false, tr("Cannot prepare for file \"%1\"").arg(completeFilePath));
-                return;
-            }
-            if (!hasAdminRights && !canCreateSymLinks && entry.isSymbolicLink)
-                needsAdminRights = true;
-        }
-        if (m_canceled) {
-            // For large archives the reading takes some time, and the user might have
-            // canceled before we start the actual extracting.
-            emit finished(false, tr("Extract for archive \"%1\" canceled.").arg(m_archivePath));
-            return;
-        }
-
-        bool gainedAdminRights = false;
-        if (needsAdminRights && m_core) {
-            // This must be invoked in the main thread.
-            QMetaObject::invokeMethod(m_core, [&] {
-                try {
-                    return m_core->gainAdminRights();
-                } catch (const QInstaller::Error &) {
-                    return false;
-                }
-            }, Qt::BlockingQueuedConnection, &gainedAdminRights);
-        }
-        if (needsAdminRights && !gainedAdminRights) {
-            emit finished(false, tr("Could not request administrator privileges required to extract "
-                "archive \"%1\".").arg(m_archivePath));
-        } else if (!m_archive->extract(m_targetDir, entries.size())) {
+        if (!m_archive->extract(m_targetDir, m_totalEntries)) {
             emit finished(false, tr("Error while extracting archive \"%1\": %2").arg(m_archivePath,
                 m_archive->errorString()));
         } else {
             emit finished(true, QString());
         }
-
-        if (gainedAdminRights)
-            m_core->dropAdminRights();
     }
 
     void onStatusChanged(PackageManagerCore::Status status)
@@ -250,11 +180,9 @@ public Q_SLOTS:
 
         switch (status) {
         case PackageManagerCore::Canceled:
-            m_canceled = true;
             m_archive->cancel();
             break;
         case PackageManagerCore::Failure:
-            m_canceled = true;
             m_archive->cancel();
             break;
         default: // ignore all other status values
@@ -265,10 +193,9 @@ public Q_SLOTS:
 private:
     QString m_archivePath;
     QString m_targetDir;
+    quint64 m_totalEntries;
     QScopedPointer<AbstractArchive> m_archive;
-    bool m_canceled;
     Callback *m_callback;
-    PackageManagerCore *m_core;
 };
 
 class ExtractArchiveOperation::Receiver : public QObject

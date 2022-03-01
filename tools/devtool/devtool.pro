@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = devtool
 
-QT = core network qml xml
+QT = core network qml xml concurrent
 
 include(../../installerfw.pri)
 

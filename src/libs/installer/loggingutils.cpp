@@ -132,6 +132,8 @@ LoggingHandler::~LoggingHandler()
 */
 void LoggingHandler::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+    QMutexLocker _(&m_mutex);
+
     // suppress warning from QPA minimal plugin
     if (msg.contains(QLatin1String("This plugin does not support propagateSizeHints")))
         return;

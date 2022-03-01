@@ -49,6 +49,7 @@
 #include "globals.h"
 #include "binarycreator.h"
 #include "loggingutils.h"
+#include "concurrentoperationrunner.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -89,8 +90,10 @@ namespace QInstaller {
 class OperationTracer
 {
 public:
-    OperationTracer(Operation *operation) : m_operation(nullptr)
+    OperationTracer(Operation *operation = nullptr) : m_operation(nullptr)
     {
+        if (!operation)
+            return;
         // don't create output for that hacky pseudo operation
         if (operation->name() != QLatin1String("MinimumProgress"))
             m_operation = operation;
@@ -116,9 +119,9 @@ private:
     Operation *m_operation;
 };
 
-static bool runOperation(Operation *operation, Operation::OperationType type)
+static bool runOperation(Operation *operation, Operation::OperationType type, const bool trace)
 {
-    OperationTracer tracer(operation);
+    OperationTracer tracer = trace ? OperationTracer(operation) : OperationTracer();
     switch (type) {
         case Operation::Backup:
             tracer.trace(QLatin1String("backup"));
@@ -365,10 +368,11 @@ bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
 }
 
 /* static */
-bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation, Operation::OperationType type)
+bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation,
+    Operation::OperationType type, bool trace)
 {
     QFutureWatcher<bool> futureWatcher;
-    const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type);
+    const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type, trace);
 
     QEventLoop loop;
     QObject::connect(&futureWatcher, &decltype(futureWatcher)::finished, &loop, &QEventLoop::quit,
@@ -1690,6 +1694,10 @@ bool PackageManagerCorePrivate::runInstaller()
             + (PackageManagerCore::createLocalRepositoryFromBinary() ? 1 : 0);
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
+        // Perform extract operations
+        unpackComponents(componentsToInstall, progressOperationSize, adminRightsGained);
+
+        // Perform rest of the operations and mark component as installed
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
@@ -1914,6 +1922,10 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
+        // Perform extract operations
+        unpackComponents(componentsToInstall, progressOperationSize, adminRightsGained);
+
+        // Perform rest of the operations and mark component as installed
         foreach (Component *component, componentsToInstall)
             installComponent(component, progressOperationSize, adminRightsGained);
 
@@ -2158,10 +2170,116 @@ bool PackageManagerCorePrivate::runOfflineGenerator()
     return success;
 }
 
+void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &components,
+    double progressOperationSize, bool adminRightsGained)
+{
+    OperationList unpackOperations;
+    bool becameAdmin = false;
+
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUnpacking components..."));
+
+    for (auto *component : components) {
+        const OperationList operations = component->operations(Operation::Unpack);
+        if (!component->operationsCreatedSuccessfully())
+            m_core->setCanceled();
+
+        for (auto &op : operations) {
+            if (statusCanceledOrFailed())
+                throw Error(tr("Installation canceled by user"));
+
+            unpackOperations.append(op);
+
+            // There's currently no way to control this on a per-operation basis, so
+            // any op requesting execution as admin means all extracts are done as admin.
+            if (!adminRightsGained && !becameAdmin && op->value(QLatin1String("admin")).toBool())
+                becameAdmin = m_core->gainAdminRights();
+
+            connectOperationToInstaller(op, progressOperationSize);
+            connectOperationCallMethodRequest(op);
+        }
+    }
+
+    ConcurrentOperationRunner runner(&unpackOperations, Operation::Backup);
+    connect(m_core, &PackageManagerCore::installationInterrupted,
+        &runner, &ConcurrentOperationRunner::cancel);
+
+    const QHash<Operation *, bool> backupResults = runner.run();
+    const OperationList backupOperations = backupResults.keys();
+
+    for (auto &operation : backupOperations) {
+        if (!backupResults.value(operation) || operation->error() != Operation::NoError) {
+            // For Extract, backup stops only on read errors. That means the perform step will
+            // also fail later on, which handles the user selection on what to do with the error.
+            qCWarning(QInstaller::lcInstallerInstallLog) << QString::fromLatin1("Backup of operation "
+                "\"%1\" with arguments \"%2\" failed: %3").arg(operation->name(), operation->arguments()
+                .join(QLatin1String("; ")), operation->errorString());
+            continue;
+        }
+        // Backup may request performing operation as admin
+        if (!adminRightsGained && !becameAdmin && operation->value(QLatin1String("admin")).toBool())
+            becameAdmin = m_core->gainAdminRights();
+    }
+
+    // TODO: Do we need to rollback backups too? For Extract op this works without,
+    // as the backup files are not used in Undo step.
+    if (statusCanceledOrFailed())
+        throw Error(tr("Installation canceled by user"));
+
+    runner.setType(Operation::Perform);
+    const QHash<Operation *, bool> results = runner.run();
+    const OperationList performedOperations = backupResults.keys();
+
+    QString error;
+    for (auto &operation : performedOperations) {
+        const QString component = operation->value(QLatin1String("component")).toString();
+
+        bool ignoreError = false;
+        bool ok = results.value(operation);
+
+        while (!ok && !ignoreError && m_core->status() != PackageManagerCore::Canceled) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << QString::fromLatin1("Operation \"%1\" with arguments "
+                "\"%2\" failed: %3").arg(operation->name(), operation->arguments()
+                .join(QLatin1String("; ")), operation->errorString());
+
+            const QMessageBox::StandardButton button =
+                MessageBoxHandler::warning(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("installationErrorWithCancel"), tr("Installer Error"),
+                tr("Error during installation process (%1):\n%2").arg(component, operation->errorString()),
+                QMessageBox::Retry | QMessageBox::Ignore | QMessageBox::Cancel, QMessageBox::Cancel);
+
+            if (button == QMessageBox::Retry)
+                ok = performOperationThreaded(operation);
+            else if (button == QMessageBox::Ignore)
+                ignoreError = true;
+            else if (button == QMessageBox::Cancel)
+                m_core->interrupt();
+        }
+
+        if (ok || operation->error() > Operation::InvalidArguments) {
+            // Remember that the operation was performed, that allows us to undo it
+            // if this operation failed but still needs an undo call to cleanup.
+            addPerformed(operation);
+        }
+
+        // Catch the error message from first failure, but throw only after all
+        // operations requiring undo step are marked as performed.
+        if (!ok && !ignoreError && error.isEmpty())
+            error = operation->errorString();
+    }
+
+    if (becameAdmin)
+        m_core->dropAdminRights();
+
+    if (!error.isEmpty())
+        throw Error(error);
+
+    ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
+}
+
 void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
     bool adminRightsGained)
 {
-    const OperationList operations = component->operations();
+    OperationList operations = component->operations(Operation::Install);
     if (!component->operationsCreatedSuccessfully())
         m_core->setCanceled();
 
@@ -2223,13 +2341,13 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
         if (!ok && !ignoreError)
             throw Error(operation->errorString());
+    }
 
-        if (!m_core->isCommandLineInstance()) {
-            if ((component->value(scEssential, scFalse) == scTrue) && !isInstaller())
-                m_needsHardRestart = true;
-            else if ((component->value(scForcedUpdate, scFalse) == scTrue) && isUpdater())
-                m_needsHardRestart = true;
-        }
+    if (!m_core->isCommandLineInstance()) {
+        if ((component->value(scEssential, scFalse) == scTrue) && !isInstaller())
+            m_needsHardRestart = true;
+        else if ((component->value(scForcedUpdate, scFalse) == scTrue) && isUpdater())
+            m_needsHardRestart = true;
     }
 
     registerPathsForUninstallation(component->pathsForUninstallation(), component->name());

@@ -29,20 +29,21 @@
 #ifndef REMOTESERVERCONNECTION_H
 #define REMOTESERVERCONNECTION_H
 
+#include "abstractarchive.h"
+
 #include <QPointer>
 #include <QThread>
+#include <QProcess>
 
 #include <QtCore/private/qfsfileengine_p.h>
 
 QT_BEGIN_NAMESPACE
-class QProcess;
 class QIODevice;
 QT_END_NAMESPACE
 
 namespace QInstaller {
 
 class PermissionSettings;
-class AbstractArchive;
 
 class QProcessSignalReceiver;
 class AbstractArchiveSignalReceiver;
@@ -72,11 +73,12 @@ private:
 
 private:
     qintptr m_socketDescriptor;
-
-    QProcess *m_process;
-    QFSFileEngine *m_engine;
-    AbstractArchive *m_archive;
     QString m_authorizationKey;
+
+    QScopedPointer<QProcess> m_process;
+    QScopedPointer<QFSFileEngine> m_engine;
+    QScopedPointer<AbstractArchive> m_archive;
+
     QProcessSignalReceiver *m_processSignalReceiver;
     AbstractArchiveSignalReceiver *m_archiveSignalReceiver;
 };

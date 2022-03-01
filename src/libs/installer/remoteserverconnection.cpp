@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -60,10 +60,10 @@ RemoteServerConnection::RemoteServerConnection(qintptr socketDescriptor, const Q
                                                QObject *parent)
     : QThread(parent)
     , m_socketDescriptor(socketDescriptor)
+    , m_authorizationKey(key)
     , m_process(nullptr)
     , m_engine(nullptr)
     , m_archive(nullptr)
-    , m_authorizationKey(key)
     , m_processSignalReceiver(nullptr)
     , m_archiveSignalReceiver(nullptr)
 {
@@ -145,49 +145,20 @@ void RemoteServerConnection::run()
                         settings.reset(new PermissionSettings(fileName.toString(), QSettings::Format(format.toInt())));
                     }
                 } else if (type == QLatin1String(Protocol::QProcess)) {
-                    if (m_process)
-                        m_process->deleteLater();
-                    m_process = new QProcess;
-                    m_processSignalReceiver = new QProcessSignalReceiver(m_process);
+                    m_process.reset(new QProcess);
+                    m_processSignalReceiver = new QProcessSignalReceiver(m_process.get());
                 } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
-                    if (m_engine)
-                        delete m_engine;
-                    m_engine = new QFSFileEngine;
+                    m_engine.reset(new QFSFileEngine);
                 } else if (type == QLatin1String(Protocol::AbstractArchive)) {
 #ifdef IFW_LIBARCHIVE
-                    if (m_archive)
-                        m_archive->deleteLater();
-                    m_archive = new LibArchiveArchive;
-                    m_archiveSignalReceiver = new AbstractArchiveSignalReceiver(static_cast<LibArchiveArchive *>(m_archive));
+                    m_archive.reset(new LibArchiveArchive);
+                    m_archiveSignalReceiver = new AbstractArchiveSignalReceiver(
+                        static_cast<LibArchiveArchive *>(m_archive.get()));
 #else
                     Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
 #endif
                 }
                 continue;
-            }
-
-            if (command == QLatin1String(Protocol::Destroy)) {
-                QString type;
-                stream >> type;
-                if (type == QLatin1String(Protocol::QSettings)) {
-                    settings.reset();
-                } else if (type == QLatin1String(Protocol::QProcess)) {
-                    m_processSignalReceiver->m_receivedSignals.clear();
-                    m_process->deleteLater();
-                    m_process = nullptr;
-                } else if (type == QLatin1String(Protocol::QAbstractFileEngine)) {
-                    delete m_engine;
-                    m_engine = nullptr;
-                } else if (type == QLatin1String(Protocol::AbstractArchive)) {
-#ifdef IFW_LIBARCHIVE
-                    m_archiveSignalReceiver->m_receivedSignals.clear();
-                    m_archive->deleteLater();
-                    m_archive = nullptr;
-#else
-                    Q_ASSERT_X(false, Q_FUNC_INFO, "No compatible archive handler exists for protocol.");
-#endif
-                }
-                return;
             }
 
             if (command == QLatin1String(Protocol::GetQProcessSignals)) {
@@ -559,7 +530,7 @@ void RemoteServerConnection::handleQFSFileEngine(QIODevice *socket, const QStrin
 void RemoteServerConnection::handleArchive(QIODevice *socket, const QString &command, QDataStream &data)
 {
 #ifdef IFW_LIBARCHIVE
-    LibArchiveArchive *archive = static_cast<LibArchiveArchive *>(m_archive);
+    LibArchiveArchive *archive = static_cast<LibArchiveArchive *>(m_archive.get());
     if (command == QLatin1String(Protocol::AbstractArchiveOpen)) {
         qint32 openMode;
         data >> openMode;

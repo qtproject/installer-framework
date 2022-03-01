@@ -5,7 +5,7 @@ INCLUDEPATH += . ..
 include(../../installerfw.pri)
 
 QT -= gui
-QT += qml xml
+QT += qml xml concurrent
 
 CONFIG -= import_plugins
 

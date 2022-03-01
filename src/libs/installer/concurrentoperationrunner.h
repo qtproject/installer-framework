@@ -26,55 +26,53 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTARCHIVEOPERATION_H
-#define EXTRACTARCHIVEOPERATION_H
+#ifndef CONCURRENTOPERATIONRUNNER_H
+#define CONCURRENTOPERATIONRUNNER_H
 
 #include "qinstallerglobal.h"
 
-#include <QtCore/QObject>
+#include <QObject>
+#include <QHash>
+#include <QFutureWatcher>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
+class INSTALLER_EXPORT ConcurrentOperationRunner : public QObject
 {
     Q_OBJECT
-    friend class WorkerThread;
+    Q_DISABLE_COPY(ConcurrentOperationRunner)
 
 public:
-    explicit ExtractArchiveOperation(PackageManagerCore *core);
+    explicit ConcurrentOperationRunner(QObject *parent = nullptr);
+    explicit ConcurrentOperationRunner(OperationList *operations,
+        const Operation::OperationType type, QObject *parent = nullptr);
+    ~ConcurrentOperationRunner();
 
-    void backup() override;
-    bool performOperation() override;
-    bool undoOperation() override;
-    bool testOperation() override;
+    void setOperations(OperationList *operations);
+    void setType(const Operation::OperationType type);
 
-    bool readDataFileContents(QString &targetDir, QStringList *resultList);
+    QHash<Operation *, bool> run();
 
-Q_SIGNALS:
-    void outputTextChanged(const QString &progress);
-    void progressChanged(double);
+signals:
+    void finished();
 
-private:
-    void startUndoProcess(const QStringList &files);
-    void deleteDataFile(const QString &fileName);
+public slots:
+    void cancel();
 
-    QString generateBackupName(const QString &fn);
-    bool prepareForFile(const QString &filename);
-
-private:
-    typedef QPair<QString, QString> Backup;
-    typedef QVector<Backup> BackupFiles;
-
-    class Callback;
-    class Worker;
-    class Receiver;
+private slots:
+    void onOperationfinished();
 
 private:
-    QString m_relocatedDataFileName;
-    BackupFiles m_backupFiles;
-    quint64 m_totalEntries;
+    void reset();
+
+private:
+    QHash<Operation *, QFutureWatcher<bool> *> m_operationWatchers;
+    QHash<Operation *, bool> m_results;
+
+    OperationList *m_operations;
+    Operation::OperationType m_type;
 };
 
-}
+} // namespace QInstaller
 
-#endif
+#endif // CONCURRENTOPERATIONRUNNER_H

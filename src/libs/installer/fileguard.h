@@ -26,55 +26,41 @@
 **
 **************************************************************************/
 
-#ifndef EXTRACTARCHIVEOPERATION_H
-#define EXTRACTARCHIVEOPERATION_H
+#ifndef FILEGUARD_H
+#define FILEGUARD_H
 
 #include "qinstallerglobal.h"
 
-#include <QtCore/QObject>
+#include <QMutex>
 
 namespace QInstaller {
 
-class INSTALLER_EXPORT ExtractArchiveOperation : public QObject, public Operation
+class INSTALLER_EXPORT FileGuard
 {
-    Q_OBJECT
-    friend class WorkerThread;
-
 public:
-    explicit ExtractArchiveOperation(PackageManagerCore *core);
+    FileGuard() = default;
 
-    void backup() override;
-    bool performOperation() override;
-    bool undoOperation() override;
-    bool testOperation() override;
+    bool tryLock(const QString &path);
+    void release(const QString &path);
 
-    bool readDataFileContents(QString &targetDir, QStringList *resultList);
-
-Q_SIGNALS:
-    void outputTextChanged(const QString &progress);
-    void progressChanged(double);
+    static FileGuard *globalObject();
 
 private:
-    void startUndoProcess(const QStringList &files);
-    void deleteDataFile(const QString &fileName);
-
-    QString generateBackupName(const QString &fn);
-    bool prepareForFile(const QString &filename);
-
-private:
-    typedef QPair<QString, QString> Backup;
-    typedef QVector<Backup> BackupFiles;
-
-    class Callback;
-    class Worker;
-    class Receiver;
-
-private:
-    QString m_relocatedDataFileName;
-    BackupFiles m_backupFiles;
-    quint64 m_totalEntries;
+    QMutex m_mutex;
+    QStringList m_paths;
 };
 
-}
+class INSTALLER_EXPORT FileGuardLocker
+{
+public:
+    explicit FileGuardLocker(const QString &path, FileGuard *guard);
+    ~FileGuardLocker();
 
-#endif
+private:
+    QString m_path;
+    FileGuard *m_guard;
+};
+
+} // namespace QInstaller
+
+#endif // FILEGUARD_H

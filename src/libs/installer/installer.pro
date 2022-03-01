@@ -44,12 +44,14 @@ win32:QT += winextras
 HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
     componentsortfilterproxymodel.h \
+    concurrentoperationrunner.h \
     loggingutils.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
     binaryformatengine.h \
     binaryformatenginehandler.h \
+    fileguard.h \
     repository.h \
     utils.h \
     errors.h \
@@ -141,7 +143,9 @@ SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
     archivefactory.cpp \
     aspectratiolabel.cpp \
+    concurrentoperationrunner.cpp \
     directoryguard.cpp \
+    fileguard.cpp \
     componentsortfilterproxymodel.cpp \
     loggingutils.cpp \
     packagemanagercore_p.cpp \

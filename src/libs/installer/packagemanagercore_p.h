@@ -75,7 +75,7 @@ public:
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
 
     static bool performOperationThreaded(Operation *op, UpdateOperation::OperationType type
-        = UpdateOperation::Perform);
+        = UpdateOperation::Perform, bool trace = true);
 
     void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;
@@ -160,6 +160,9 @@ public:
         m_performedOperationsOld += m_performedOperationsCurrentSession;
         m_performedOperationsCurrentSession.clear();
     }
+
+    void unpackComponents(const QList<Component *> &components, double progressOperationSize,
+        bool adminRightsGained = false);
 
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);

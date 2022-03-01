@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -59,11 +60,20 @@ public:
         Undo
     };
 
+    enum OperationGroup {
+        Unpack = 0x1,
+        Install = 0x2,
+        All = (Unpack | Install),
+        Default = Install
+    };
+    Q_DECLARE_FLAGS(OperationGroups, OperationGroup)
+
     explicit UpdateOperation(QInstaller::PackageManagerCore *core);
     virtual ~UpdateOperation();
 
     QString name() const;
     QString operationCommand() const;
+    OperationGroup group() const;
 
     bool hasValue(const QString &name) const;
     void clearValue(const QString &name);
@@ -92,6 +102,7 @@ public:
 
 protected:
     void setName(const QString &name);
+    void setGroup(const OperationGroup &group);
     void setErrorString(const QString &errorString);
     void setError(int error, const QString &errorString = QString());
     void registerForDelayedDeletion(const QStringList &files);
@@ -104,6 +115,7 @@ protected:
 
 private:
     QString m_name;
+    OperationGroup m_group;
     QStringList m_arguments;
     QString m_errorString;
     int m_error;

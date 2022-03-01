@@ -31,7 +31,7 @@
 #include "protocol.h"
 #include "remoteclient.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 
 namespace QInstaller {
 
@@ -48,8 +48,8 @@ QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) co
     if (!RemoteClient::instance().isActive())
         return 0;
 
-    static QRegExp re(QLatin1String("^[a-z0-9]*://.*$"));
-    if (re.exactMatch(fileName))  // stuff like installer://
+    static const QRegularExpression re(QLatin1String("^[a-z0-9]*://.*$"));
+    if (re.match(fileName).hasMatch())  // stuff like installer://
         return 0;
 
     if (fileName.isEmpty() || fileName.startsWith(QLatin1String(":")))

@@ -52,7 +52,6 @@ const char DefaultSocket[] = "ifw_srv";
 const char DefaultAuthorizationKey[] = "DefaultAuthorizationKey";
 
 const char Create[] = "Create";
-const char Destroy[] = "Destroy";
 const char Shutdown[] = "Shutdown";
 const char Authorize[] = "Authorize";
 const char Reply[] = "Reply";

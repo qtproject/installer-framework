@@ -300,4 +300,15 @@
     devtool operation <binary> DO,Copy,<source>,<target>
     \endcode
 
+    \section1 Execution Groups
+
+    The operations owned by a component belong to either of two groups: \e Unpack or \e Install.
+    The \c Extract operations are performed as part of the \e Unpack group before all other
+    operations and executed concurrently between all components that are going
+    to be installed. The rest of the operations are performed in the \e Install group and
+    executed sequentially for each component at a time.
+
+    Custom operations can define their execution group by calling the \c setGroup() method
+    in their constructor. For more information about custom operations, see
+    \l{Registering Custom Operations}.
 */

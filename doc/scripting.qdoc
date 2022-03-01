@@ -147,6 +147,7 @@
     CustomOperation()
     {
         setName( "CustomOperation" );
+        setGroup( Install );
     }
 
     void backup()

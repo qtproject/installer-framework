@@ -52,6 +52,8 @@ struct INSTALLER_EXPORT ArchiveEntry
         , permissions_mode(0)
     {}
 
+    ArchiveEntry(const ArchiveEntry &) = default;
+
     QString path;
     QDateTime utcTime;
     QPoint archiveIndex;

@@ -36,6 +36,7 @@
 #include <QIODevice>
 #include <QTextStream>
 #include <QBuffer>
+#include <QMutex>
 
 namespace QInstaller {
 
@@ -79,6 +80,8 @@ private:
 private:
     VerbosityLevel m_verbLevel;
     bool m_outputRedirected;
+
+    QMutex m_mutex;
 };
 
 class INSTALLER_EXPORT VerboseWriterOutput

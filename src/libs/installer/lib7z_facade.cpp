@@ -37,6 +37,7 @@
 #include "lib7z_guid.h"
 #include "globals.h"
 #include "directoryguard.h"
+#include "fileguard.h"
 
 #ifndef Q_OS_WIN
 #   include "StdAfx.h"
@@ -623,6 +624,11 @@ STDMETHODIMP ExtractCallback::GetStream(UInt32 index, ISequentialOutStream **out
     foreach (const QString &directory, directories)
         setCurrentFile(directory);
 
+    QScopedPointer<QInstaller::FileGuardLocker> locker(nullptr);
+    if (!isDir) {
+        locker.reset(new QInstaller::FileGuardLocker(
+            fi.absoluteFilePath(), QInstaller::FileGuard::globalObject()));
+    }
     if (!isDir && !prepareForFile(fi.absoluteFilePath()))
         return E_FAIL;
 

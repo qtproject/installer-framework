@@ -30,6 +30,7 @@
 
 #include "constants.h"
 #include "globals.h"
+#include "fileguard.h"
 
 #include <QEventLoop>
 #include <QThreadPool>
@@ -45,14 +46,14 @@ namespace QInstaller {
 */
 
 /*!
-    \typedef QInstaller::Backup
+    \typedef QInstaller::ExtractArchiveOperation::Backup
 
     Synonym for QPair<QString, QString>. Contains a pair
     of an original and a generated backup filename for a file.
 */
 
 /*!
-    \typedef QInstaller::BackupFiles
+    \typedef QInstaller::ExtractArchiveOperation::BackupFiles
 
     Synonym for QVector<Backup>.
 */
@@ -65,13 +66,64 @@ namespace QInstaller {
 
 ExtractArchiveOperation::ExtractArchiveOperation(PackageManagerCore *core)
     : UpdateOperation(core)
+    , m_totalEntries(0)
 {
     setName(QLatin1String("Extract"));
+    setGroup(OperationGroup::Unpack);
 }
 
 void ExtractArchiveOperation::backup()
 {
-    // we need to backup on the fly...
+    if (!checkArgumentCount(2))
+        return;
+
+    const QStringList args = arguments();
+    const QString archivePath = args.at(0);
+    const QString targetDir = args.at(1);
+
+    QScopedPointer<AbstractArchive> archive(ArchiveFactory::instance().create(archivePath));
+    if (!archive) {
+        setError(UserDefinedError);
+        setErrorString(tr("Unsupported archive \"%1\": no handler registered for file suffix \"%2\".")
+            .arg(archivePath, QFileInfo(archivePath).suffix()));
+        return;
+    }
+
+    if (!(archive->open(QIODevice::ReadOnly) && archive->isSupported())) {
+        setError(UserDefinedError);
+        setErrorString(tr("Cannot open archive \"%1\" for reading: %2")
+            .arg(archivePath, archive->errorString()));
+        return;
+    }
+    const QVector<ArchiveEntry> entries = archive->list();
+    if (entries.isEmpty()) {
+        setError(UserDefinedError);
+        setErrorString(tr("Error while reading contents of archive \"%1\": %2")
+            .arg(archivePath, archive->errorString()));
+        return;
+    }
+
+    const bool hasAdminRights = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
+    const bool canCreateSymLinks = QInstaller::canCreateSymbolicLinks();
+    bool needsAdminRights = false;
+
+    for (auto &entry : entries) {
+        const QString completeFilePath = targetDir + QDir::separator() + entry.path;
+        if (!entry.isDirectory) {
+            // Ignore failed backups, existing files are overwritten when extracting.
+            // Should the backups be used on rollback too, this may not be the
+            // desired behavior anymore.
+            prepareForFile(completeFilePath);
+        }
+        if (!hasAdminRights && !canCreateSymLinks && entry.isSymbolicLink)
+            needsAdminRights = true;
+    }
+    m_totalEntries = entries.size();
+    if (needsAdminRights)
+        setValue(QLatin1String("admin"), true);
+
+    // Show something was done
+    emit progressChanged(scBackupProgressPart);
 }
 
 bool ExtractArchiveOperation::performOperation()
@@ -88,16 +140,15 @@ bool ExtractArchiveOperation::performOperation()
 
     connect(&callback, &Callback::progressChanged, this, &ExtractArchiveOperation::progressChanged);
 
-    Worker *worker = new Worker(archivePath, targetDir, &callback);
+    Worker *worker = new Worker(archivePath, targetDir, m_totalEntries, &callback);
     connect(worker, &Worker::finished, &receiver, &Receiver::workerFinished,
         Qt::QueuedConnection);
 
-    if (PackageManagerCore *core = packageManager()) {
+    if (PackageManagerCore *core = packageManager())
         connect(core, &PackageManagerCore::statusChanged, worker, &Worker::onStatusChanged);
-        worker->setPackageManagerCore(core);
-    }
 
     QFileInfo fileInfo(archivePath);
+    qCDebug(lcInstallerInstallLog) << "Extracting" << fileInfo.fileName();
     emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
     {
         QEventLoop loop;
@@ -132,6 +183,7 @@ bool ExtractArchiveOperation::performOperation()
     if (packageManager())
         installDir = packageManager()->value(scTargetDir);
     const QString resourcesPath = installDir + QLatin1Char('/') + QLatin1String("installerResources");
+
     QString fileDirectory = resourcesPath + QLatin1Char('/') + archivePath.section(QLatin1Char('/'), 1, 1,
                             QString::SectionSkipEmpty) + QLatin1Char('/');
     QString archiveFileName = archivePath.section(QLatin1Char('/'), 2, 2, QString::SectionSkipEmpty);
@@ -142,10 +194,20 @@ bool ExtractArchiveOperation::performOperation()
 
     QFileInfo targetDirectoryInfo(fileDirectory);
 
-    QDir dir(targetDirectoryInfo.absolutePath());
-    if (!dir.exists()) {
-        dir.mkpath(targetDirectoryInfo.absolutePath());
-    }
+    // We need to create the directory structure step-by-step to avoid a rare race condition
+    // on Windows. QDir::mkpath() doesn't check if the leading directories were created elsewhere
+    // (like from within another thread) after the initial check that the given path requires
+    // creating also parent directories.
+    //
+    // On Unix patforms this case is handled by QFileSystemEngine though.
+    QDir resourcesDir(resourcesPath);
+    if (!resourcesDir.exists())
+        resourcesDir.mkdir(resourcesPath);
+
+    QDir resourceFileDir(targetDirectoryInfo.absolutePath());
+    if (!resourceFileDir.exists())
+        resourceFileDir.mkdir(targetDirectoryInfo.absolutePath());
+
     setDefaultFilePermissions(resourcesPath, DefaultFilePermissions::Executable);
     setDefaultFilePermissions(targetDirectoryInfo.absolutePath(), DefaultFilePermissions::Executable);
 
@@ -166,7 +228,7 @@ bool ExtractArchiveOperation::performOperation()
     // TODO: Use backups for rollback, too? Doesn't work for uninstallation though.
 
     // delete all backups we can delete right now, remember the rest
-    foreach (const QInstaller::Backup &i, callback.backupFiles())
+    foreach (const Backup &i, m_backupFiles)
         deleteFileNowOrLater(i.second);
 
     if (!receiver.success()) {
@@ -231,6 +293,35 @@ void ExtractArchiveOperation::deleteDataFile(const QString &fileName)
     } else {
         qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot remove data file" << file.fileName();
     }
+}
+
+QString ExtractArchiveOperation::generateBackupName(const QString &fn)
+{
+    const QString bfn = fn + QLatin1String(".tmpUpdate");
+    QString res = bfn;
+    int i = 0;
+    while (QFile::exists(res))
+        res = bfn + QString::fromLatin1(".%1").arg(i++);
+    return res;
+}
+
+bool ExtractArchiveOperation::prepareForFile(const QString &filename)
+{
+    if (!QFile::exists(filename))
+        return true;
+
+    FileGuardLocker locker(filename, FileGuard::globalObject());
+
+    const QString backup = generateBackupName(filename);
+    QFile f(filename);
+    const bool renamed = f.rename(backup);
+    if (f.exists() && !renamed) {
+        qCritical("Cannot rename %s to %s: %s", qPrintable(filename), qPrintable(backup),
+                  qPrintable(f.errorString()));
+        return false;
+    }
+    m_backupFiles.append(qMakePair(filename, backup));
+    return true;
 }
 
 bool ExtractArchiveOperation::testOperation()

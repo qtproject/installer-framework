@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,23 +31,21 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QString>
-
-#include <stdexcept>
+#include <QtCore/QException>
 
 namespace QInstaller {
 
-class Error : public std::exception
+class Error : public QException
 {
 public:
-    Error()
-    {}
+    Error() = default;
 
     explicit Error(const QString &message)
         : m_message(message)
     {}
 
-    virtual ~Error() throw()
-    {}
+    void raise() const override { throw *this; }
+    Error *clone() const override { return new Error(*this); }
 
     QString message() const { return m_message; }
 

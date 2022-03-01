@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -139,7 +139,7 @@ public:
     QList<QPair<QString, bool> > pathsForUninstallation() const;
     Q_INVOKABLE void registerPathForUninstallation(const QString &path, bool wipe = false);
 
-    OperationList operations() const;
+    OperationList operations(const Operation::OperationGroups &mask = Operation::All) const;
 
     void addOperation(Operation *operation);
     Q_INVOKABLE bool addOperation(QQmlV4Function *args);

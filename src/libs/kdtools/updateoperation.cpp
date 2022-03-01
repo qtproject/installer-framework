@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -80,6 +81,21 @@ using namespace KDUpdater;
             Undo operation.
 */
 
+/*!
+    \enum UpdateOperation::OperationGroup
+    This enum specifies the execution group of the operation.
+
+    \value  Unpack
+            Operation should be run in the unpacking phase. Operations in
+            this group are run concurrently between all selected components.
+    \value  Install
+            Operation should be run in the installation phase.
+    \value  All
+            All available operation groups.
+    \value  Default
+            The default group for operations, synonym for Install.
+*/
+
 /*
     \internal
     Returns a filename for a temporary file based on \a templateName.
@@ -99,7 +115,8 @@ static QString backupFileName(const QString &templateName)
     \internal
 */
 UpdateOperation::UpdateOperation(QInstaller::PackageManagerCore *core)
-    : m_error(0)
+    : m_group(OperationGroup::Default)
+    , m_error(0)
     , m_core(core)
     , m_requiresUnreplacedVariables(false)
 {
@@ -136,6 +153,16 @@ QString UpdateOperation::operationCommand() const
 {
     QString argsStr = m_arguments.join(QLatin1String( " " ));
     return QString::fromLatin1( "%1 %2" ).arg(m_name, argsStr);
+}
+
+/*!
+    Returns the execution group this operation belongs to.
+
+    \sa setGroup()
+*/
+UpdateOperation::OperationGroup UpdateOperation::group() const
+{
+    return m_group;
 }
 
 /*!
@@ -177,6 +204,17 @@ void UpdateOperation::setValue(const QString &name, const QVariant &value)
 void UpdateOperation::setName(const QString &name)
 {
     m_name = name;
+}
+
+/*!
+    Sets the execution group of the operation to \a group. Subclasses can change
+    the group to control which installation phase this operation should be run in.
+
+    The default group is \c Install.
+*/
+void UpdateOperation::setGroup(const OperationGroup &group)
+{
+    m_group = group;
 }
 
 /*!
