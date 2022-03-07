@@ -40,6 +40,10 @@
 #include <QDir>
 #include <QTimer>
 
+#ifdef Q_OS_WIN
+#include <locale.h>
+#endif
+
 #if defined(Q_OS_WIN) && !defined(SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE)
 #define SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE
 #endif
