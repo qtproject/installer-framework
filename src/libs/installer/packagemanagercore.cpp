@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -2248,6 +2248,47 @@ QList<Component*> PackageManagerCore::dependees(const Component *_component) con
         }
     }
     return dependees;
+}
+
+/*!
+    Returns a list of components that depend on \a component. The list can be
+    empty. Dependendants are calculated from components which are about to be updated,
+    if no update is requested then the dependant is calculated from installed packages.
+
+    \note Automatic dependencies are not resolved.
+*/
+QList<Component*> PackageManagerCore::installDependants(const Component *component) const
+{
+    if (!component)
+        return QList<Component *>();
+
+    const QList<QInstaller::Component *> availableComponents = components(ComponentType::All);
+    if (availableComponents.isEmpty())
+        return QList<Component *>();
+
+    QList<Component *> dependants;
+    QString name;
+    QString version;
+    foreach (Component *availableComponent, availableComponents) {
+        if (isUpdater() && availableComponent->updateRequested()) {
+            const QStringList &dependencies = availableComponent->dependencies();
+            foreach (const QString &dependency, dependencies) {
+                parseNameAndVersion(dependency, &name, &version);
+                if (componentMatches(component, name, version)) {
+                    dependants.append(availableComponent);
+                }
+            }
+        } else {
+            KDUpdater::LocalPackage localPackage = d->m_localPackageHub->packageInfo(availableComponent->name());
+            foreach (const QString &dependency, localPackage.dependencies) {
+                parseNameAndVersion(dependency, &name, &version);
+                if (componentMatches(component, name, version)) {
+                    dependants.append(availableComponent);
+                }
+            }
+        }
+    }
+    return dependants;
 }
 
 /*!

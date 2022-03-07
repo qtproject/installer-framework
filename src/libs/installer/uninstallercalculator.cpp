@@ -127,10 +127,10 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
     if (!autoDependOnList.isEmpty())
         appendComponentsToUninstall(autoDependOnList);
     else
-        continueAppendComponentsToUninstall();
+        appendVirtualComponentsToUninstall();
 }
 
-void UninstallerCalculator::continueAppendComponentsToUninstall()
+void UninstallerCalculator::appendVirtualComponentsToUninstall()
 {
     QList<Component*> unneededVirtualList;
     // Check for virtual components without dependees
@@ -141,8 +141,9 @@ void UninstallerCalculator::continueAppendComponentsToUninstall()
                 continue;
 
             bool required = false;
-            for (Component *dependee : m_core->dependees(component)) {
-                if (dependee->isInstalled() && !m_componentsToUninstall.contains(dependee)) {
+            // Check if installed or about to be updated -packages are dependant on the package
+            for (Component *dependant : m_core->installDependants(component)) {
+                if (dependant->isInstalled() && !m_componentsToUninstall.contains(dependant)) {
                     required = true;
                     break;
                 }
