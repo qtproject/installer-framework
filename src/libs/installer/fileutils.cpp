@@ -454,21 +454,31 @@ void QInstaller::mkpath(const QString &path)
 */
 QString QInstaller::generateTemporaryFileName(const QString &templ)
 {
-    static const QLatin1String staticPart("%1.tmp.XXXXXX");
-
-    QTemporaryFile f;
-    if (!templ.isEmpty())
-        f.setFileTemplate(QString(staticPart).arg(templ));
-
-    if (!f.open()) {
-        if (!templ.isEmpty()) {
-            throw Error(QCoreApplication::translate("QInstaller",
-                "Cannot open temporary file for template %1: %2").arg(templ, f.errorString()));
-        } else {
+    if (templ.isEmpty()) {
+        QTemporaryFile f;
+        if (!f.open()) {
             throw Error(QCoreApplication::translate("QInstaller",
                 "Cannot open temporary file: %1").arg(f.errorString()));
         }
+        return f.fileName();
     }
+
+    static const QString characters = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+    QString suffix;
+    for (int i = 0; i < 5; ++i)
+        suffix += characters[QRandomGenerator::global()->generate() % characters.length()];
+
+    const QString tmp = QLatin1String("%1.tmp.%2.%3");
+    int count = 1;
+    while (QFile::exists(tmp.arg(templ, suffix).arg(count)))
+        ++count;
+
+    QFile f(tmp.arg(templ, suffix).arg(count));
+    if (!f.open(QIODevice::WriteOnly)) {
+        throw Error(QCoreApplication::translate("QInstaller",
+            "Cannot open temporary file for template %1: %2").arg(templ, f.errorString()));
+    }
+    f.remove();
     return f.fileName();
 }
 
