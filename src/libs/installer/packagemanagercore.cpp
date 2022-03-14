@@ -2129,16 +2129,13 @@ bool PackageManagerCore::calculateComponents(QString *displayString)
         return false;
     }
 
-    // In case of updater mode we don't uninstall components.
-    if (!isUpdater()) {
-        QList<Component*> componentsToRemove = componentsToUninstall();
-        if (!componentsToRemove.isEmpty()) {
-            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
-                "be removed.")));
-            foreach (Component *component, componentsToRemove)
-                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
-            htmlOutput.append(QLatin1String("</ul>"));
-        }
+    QList<Component*> componentsToRemove = componentsToUninstall();
+    if (!componentsToRemove.isEmpty()) {
+        htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
+            "be removed.")));
+        foreach (Component *component, componentsToRemove)
+            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+        htmlOutput.append(QLatin1String("</ul>"));
     }
 
     foreach (Component *component, orderedComponentsToInstall()) {
