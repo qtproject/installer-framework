@@ -87,11 +87,11 @@ private slots:
         core->setPackageManager();
         setRepository(":///data/repositoryWithReplace", core);
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "B"));
-
+        QCOMPARE(core->componentsToUninstall().count(), 1);
         QVERIFY(core->componentByName("B.sub1") != 0);
         QVERIFY(core->componentByName("B") != 0);
-        QVERIFY(core->componentByName("A.sub1") != 0);
-        QVERIFY(core->componentByName("A") == 0); // B has replaced A
+        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
@@ -117,6 +117,7 @@ private slots:
         core->setUpdater();
         setRepository(":///data/repositoryWithReplace", core);
         QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList() << "B"));
+        QCOMPARE(core->componentsToUninstall().count(), 1);
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B", "2.0.0content.txt");
@@ -144,6 +145,7 @@ private slots:
         core->setUpdater();
         setRepository(":///data/repositoryWithUpdateToReplaceble", core);
         QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList() << "B"));
+        QCOMPARE(core->componentsToUninstall().count(), 1);
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
@@ -169,6 +171,7 @@ private slots:
         core->setPackageManager();
         setRepository(":///data/repositoryWithMultiReplace", core);
         QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "B"));
+        QCOMPARE(core->componentsToUninstall().count(), 2);
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B", "1.0.0content.txt");
@@ -196,12 +199,75 @@ private slots:
         core->setUpdater();
         setRepository(":///data/repositoryWithMultiReplaceInUpdate", core);
         QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList() << "B"));
+        QCOMPARE(core->componentsToUninstall().count(), 2);
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "A.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B", "2.0.0content.txt");
         VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
         VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
                 << "Bsub1.txt" << "B.txt");
+        delete core;
+    }
+
+    void installOtherComponentsWhileReplacementsExists()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository");
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "A" << "B"));
+
+        QCOMPARE(core->orderedComponentsToInstall().count(), 4);
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "Asub1.txt" << "A.txt"<< "Bsub1.txt" << "B.txt");
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        setRepository(":///data/repositoryWithMultiReplaceInUpdate", core);
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "C"));
+        QCOMPARE(core->orderedComponentsToInstall().count(), 1);
+        QCOMPARE(core->componentsToUninstall().count(), 0);
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "C", "2.0.0content.txt");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "Asub1.txt" << "A.txt"<< "Bsub1.txt" << "B.txt" << "C.txt");
+
+        delete core;
+    }
+
+    void updateOtherComponentsWhileReplacementsExists()
+    {
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository");
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "A" << "B" << "C"));
+
+        QCOMPARE(core->orderedComponentsToInstall().count(), 5);
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "Asub1.txt" << "A.txt"<< "Bsub1.txt" << "B.txt" << "C.txt");
+
+        core->commitSessionOperations();
+        core->setUpdater();
+        setRepository(":///data/repositoryWithMultiReplaceInUpdate", core);
+        QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList() << "C"));
+        QCOMPARE(core->orderedComponentsToInstall().count(), 1);
+        QCOMPARE(core->componentsToUninstall().count(), 0);
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "A.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "B.sub1", "1.0.0content.txt");
+        VerifyInstaller::verifyInstallerResources(m_installDir, "C", "2.0.0content.txt");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "Asub1.txt" << "A.txt"<< "Bsub1.txt" << "B.txt" << "C.txt");
+
         delete core;
     }
 

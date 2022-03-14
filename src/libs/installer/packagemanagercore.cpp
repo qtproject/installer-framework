@@ -570,7 +570,7 @@ void PackageManagerCore::cancelMetaInfoJob()
 void PackageManagerCore::componentsToInstallNeedsRecalculation()
 {
     d->clearInstallerCalculator();
-    d->clearUninstallerCalculator();
+
     QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
     d->m_componentsToInstallCalculated =
@@ -578,13 +578,7 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 
     QList<Component *> componentsToInstall = d->installerCalculator()->orderedComponentsToInstall();
 
-    QList<Component *> selectedComponentsToUninstall;
-    foreach (Component *component, components(ComponentType::All)) {
-        if (component->uninstallationRequested() && !selectedComponentsToInstall.contains(component))
-            selectedComponentsToUninstall.append(component);
-    }
-
-    d->uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
+    d->calculateUninstallComponents();
 
     QSet<Component *> componentsToUninstall = d->uninstallerCalculator()->componentsToUninstall();
 
@@ -2165,20 +2159,8 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 {
     emit aboutCalculateComponentsToUninstall();
     if (!isUpdater()) {
-        // hack to avoid removing needed dependencies
-        const QList<Component *> componentsToInstallList
-            = d->installerCalculator()->orderedComponentsToInstall();
-        QSet<Component*> componentsToInstall(componentsToInstallList.begin(), componentsToInstallList.end());
-
-        QList<Component*> componentsToUninstall;
-        foreach (Component *component, components(ComponentType::All)) {
-            if (component->uninstallationRequested() && !componentsToInstall.contains(component))
-                componentsToUninstall.append(component);
-        }
-
-        d->clearUninstallerCalculator();
+        d->calculateUninstallComponents();
         d->storeCheckState();
-        d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
     return true;
@@ -3873,7 +3855,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                 key = treeNameComponents->value(componentName);
                 treeNameComponents->remove(componentName);
             }
-            Component *componentToReplace = components.take(key);
+            Component *componentToReplace = components.value(key);
             if (!componentToReplace) {
                 // If a component replaces another component which is not existing in the
                 // installer binary or the installed component list, just ignore it. This
@@ -3882,8 +3864,21 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                     qCWarning(QInstaller::lcDeveloperBuild) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            d->replacementDependencyComponents().append(componentToReplace);
+            // Remove the replaced component from instal tree if
+            // 1. Running installer (component is replaced by other component)
+            // 2. Replacement is already installed but replacable is not
+            // Do not remove the replaced component from install tree
+            // in updater so that would show as an update
+            // Also do not remove the replaced component from install tree
+            // if it is already installed together with replacable component,
+            // otherwise it does not match what we have defined in components.xml
+            if (!isUpdater()
+                    && (isInstaller() || (it.key() && it.key()->isInstalled() && !componentToReplace->isInstalled()))) {
+                components.remove(key);
+                d->m_deletedReplacedComponents.append(componentToReplace);
+            }
             d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
+            d->replacementDependencyComponents().append(componentToReplace);
         }
     }
 }

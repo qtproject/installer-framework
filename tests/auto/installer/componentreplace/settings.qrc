@@ -5,6 +5,7 @@
         <file>data/installPackagesRepository/B/1.0.0content.7z</file>
         <file>data/installPackagesRepository/A.sub1/1.0.0content.7z</file>
         <file>data/installPackagesRepository/B.sub1/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/C/1.0.0content.7z</file>
         <file>data/repositoryWithReplace/Updates.xml</file>
         <file>data/repositoryWithReplace/A/1.0.0content.7z</file>
         <file>data/repositoryWithReplace/B/2.0.0content.7z</file>
@@ -25,5 +26,6 @@
         <file>data/repositoryWithMultiReplaceInUpdate/B/2.0.0content.7z</file>
         <file>data/repositoryWithMultiReplaceInUpdate/A.sub1/1.0.0content.7z</file>
         <file>data/repositoryWithMultiReplaceInUpdate/B.sub1/1.0.0content.7z</file>
+        <file>data/repositoryWithMultiReplaceInUpdate/C/2.0.0content.7z</file>
     </qresource>
 </RCC>
