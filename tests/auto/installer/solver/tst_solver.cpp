@@ -39,6 +39,9 @@
 using namespace QInstaller;
 
 typedef QMap<Component *, QStringList> ComponentToStringList;
+typedef QList<QPair<Component *, UninstallerCalculator::UninstallReasonType>> UninstallReasonList;
+
+Q_DECLARE_METATYPE(UninstallReasonList)
 
 class Data {
 public:
@@ -218,7 +221,6 @@ private slots:
                         << (QList<Component *>() << componentA)
                         << (QList<Component *>());
         }
-
     }
 
     void unresolvedDependencyVersion()
@@ -242,7 +244,9 @@ private slots:
         QTest::addColumn<QList<Component *> >("selectedToUninstall");
         QTest::addColumn<QList<Component *> >("installedComponents");
         QTest::addColumn<QSet<Component *> >("expectedResult");
+        QTest::addColumn<UninstallReasonList >("uninstallReasons");
 
+        UninstallReasonList uninstallReasonList;
         PackageManagerCore *core = new PackageManagerCore();
         core->setPackageManager();
         NamedComponent *componentA = new NamedComponent(core, QLatin1String("A"));
@@ -259,11 +263,15 @@ private slots:
         componentB->setInstalled();
         componentAB->setInstalled();
 
+        uninstallReasonList.append(qMakePair(componentAB, UninstallerCalculator::Selected));
+        uninstallReasonList.append(qMakePair(componentB, UninstallerCalculator::Dependent));
         QTest::newRow("Uninstaller resolved") << core
                     << (QList<Component *>() << componentAB)
                     << (QList<Component *>() << componentA << componentB)
-                    << (QSet<Component *>() << componentAB << componentB);
+                    << (QSet<Component *>() << componentAB << componentB)
+                    << (uninstallReasonList);
 
+        uninstallReasonList.clear();
         core = new PackageManagerCore();
         core->setPackageManager();
         NamedComponent *compA = new NamedComponent(core, QLatin1String("A"));
@@ -277,10 +285,13 @@ private slots:
         compA->setInstalled();
         compB->setInstalled();
 
+        uninstallReasonList.append(qMakePair(compA, UninstallerCalculator::Selected));
+        uninstallReasonList.append(qMakePair(compB, UninstallerCalculator::Dependent));
         QTest::newRow("Cascade dependencies") << core
                     << (QList<Component *>() << compA)
                     << (QList<Component *>() << compB)
-                    << (QSet<Component *>() << compA << compB);
+                    << (QSet<Component *>() << compA << compB)
+                    << (uninstallReasonList);
     }
 
     void resolveUninstaller()
@@ -289,16 +300,18 @@ private slots:
         QFETCH(QList<Component *> , selectedToUninstall);
         QFETCH(QList<Component *> , installedComponents);
         QFETCH(QSet<Component *> , expectedResult);
-
+        QFETCH(UninstallReasonList, uninstallReasons);
         UninstallerCalculator calc(installedComponents, core);
         calc.appendComponentsToUninstall(selectedToUninstall);
         QSet<Component *> result = calc.componentsToUninstall();
-
+        for (auto pair : uninstallReasons) {
+            UninstallerCalculator::UninstallReasonType type = calc.uninstallReasonType(pair.first);
+            QCOMPARE(pair.second, type);
+        }
         QCOMPARE(result.count(), expectedResult.count());
         QCOMPARE(result, expectedResult);
         delete core;
     }
-
 
     void checkComponent_data()
     {
@@ -342,7 +355,6 @@ private slots:
         QTest::newRow("AutoDepend and dependency")
                 << (QList<Component *>() << componentC << componentD << componentE)
                 << result;
-
     }
 
     void checkComponent()

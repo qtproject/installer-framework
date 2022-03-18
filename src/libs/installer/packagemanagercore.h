@@ -240,6 +240,7 @@ public:
 
     QString componentsToInstallError() const;
     QString installReason(Component *component) const;
+    QString uninstallReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;
     QList<Component*> installDependants(const Component *component) const;

@@ -2792,6 +2792,8 @@ void PackageManagerCorePrivate::calculateUninstallComponents()
         QPair<Component*, Component*> comp = componentsToReplace().value(component->name());
         if (comp.first) {
             if (comp.first->isSelectedForInstallation() || comp.first->updateRequested()) {
+                uninstallerCalculator()->insertUninstallReason(component,
+                    UninstallerCalculator::Replaced, comp.first->name());
                 selectedComponentsToUninstall.append(comp.second);
             }
         }

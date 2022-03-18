@@ -2107,7 +2107,6 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 bool PackageManagerCore::calculateComponents(QString *displayString)
 {
     QString htmlOutput;
-    QString lastInstallReason;
     if (!calculateComponentsToUninstall() ||
             !calculateComponentsToInstall()) {
         htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
@@ -2125,13 +2124,24 @@ bool PackageManagerCore::calculateComponents(QString *displayString)
 
     QList<Component*> componentsToRemove = componentsToUninstall();
     if (!componentsToRemove.isEmpty()) {
+        QMap<QString, QStringList> orderedUninstallReasons;
         htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
-            "be removed.")));
-        foreach (Component *component, componentsToRemove)
-            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+            "be removed:")));
+        foreach (Component *component, componentsToRemove) {
+            const QString reason = uninstallReason(component);
+            QStringList value = orderedUninstallReasons.value(reason);
+            orderedUninstallReasons.insert(reason, value << component->name());
+        }
+        for (auto &reason : orderedUninstallReasons.keys()) {
+            htmlOutput.append(QString::fromLatin1("<h4>%1</h4><ul>").arg(reason));
+            foreach (const QString componentName, orderedUninstallReasons.value(reason))
+                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(componentName));
+            htmlOutput.append(QLatin1String("</ul>"));
+        }
         htmlOutput.append(QLatin1String("</ul>"));
     }
 
+    QString lastInstallReason;
     foreach (Component *component, orderedComponentsToInstall()) {
         const QString reason = installReason(component);
         if (lastInstallReason != reason) {
@@ -2198,6 +2208,22 @@ QString PackageManagerCore::componentsToInstallError() const
 QString PackageManagerCore::installReason(Component *component) const
 {
     return d->installerCalculator()->installReason(component);
+}
+
+/*!
+    Returns the reason why \a component needs to be uninstalled:
+
+    \list
+        \li The component was scheduled for uninstallation.
+        \li The component was replaced by another component.
+        \li The component is virtual and its dependencies are uninstalled.
+        \li The components dependencies are uninstalled.
+        \li The components autodependencies are uninstalled.
+    \endlist
+*/
+QString PackageManagerCore::uninstallReason(Component *component) const
+{
+    return d->uninstallerCalculator()->uninstallReason(component);
 }
 
 /*!
