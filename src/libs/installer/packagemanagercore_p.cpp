@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -514,14 +514,11 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 {
     QList<QInstaller::Component*> toDelete;
 
-    toDelete << m_rootComponents;
+    toDelete << m_rootComponents << m_deletedReplacedComponents;
     m_rootComponents.clear();
-
     m_rootDependencyReplacements.clear();
+    m_deletedReplacedComponents.clear();
 
-    const QList<QPair<Component*, Component*> > list = m_componentsToReplaceAllMode.values();
-    for (int i = 0; i < list.count(); ++i)
-        toDelete << list.at(i).second;
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
 
@@ -2781,6 +2778,29 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         }
     }
     return false;
+}
+
+void PackageManagerCorePrivate::calculateUninstallComponents()
+{
+    clearUninstallerCalculator();
+    const QList<Component *> componentsToInstallList = installerCalculator()->orderedComponentsToInstall();
+    QSet<Component*> componentsToInstall(componentsToInstallList.begin(), componentsToInstallList.end());
+
+    QList<Component *> selectedComponentsToUninstall;
+    foreach (Component* component, m_core->components(PackageManagerCore::ComponentType::Replacements)) {
+        // Uninstall the component if replacement is selected for install or update
+        QPair<Component*, Component*> comp = componentsToReplace().value(component->name());
+        if (comp.first) {
+            if (comp.first->isSelectedForInstallation() || comp.first->updateRequested()) {
+                selectedComponentsToUninstall.append(comp.second);
+            }
+        }
+    }
+    foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::AllNoReplacements)) {
+        if (component->uninstallationRequested() && !componentsToInstallList.contains(component))
+            selectedComponentsToUninstall.append(component);
+    }
+    uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
 }
 
 bool PackageManagerCorePrivate::acceptLicenseAgreements() const

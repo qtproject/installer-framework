@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -570,7 +570,7 @@ void PackageManagerCore::cancelMetaInfoJob()
 void PackageManagerCore::componentsToInstallNeedsRecalculation()
 {
     d->clearInstallerCalculator();
-    d->clearUninstallerCalculator();
+
     QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
     d->m_componentsToInstallCalculated =
@@ -578,13 +578,7 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
 
     QList<Component *> componentsToInstall = d->installerCalculator()->orderedComponentsToInstall();
 
-    QList<Component *> selectedComponentsToUninstall;
-    foreach (Component *component, components(ComponentType::All)) {
-        if (component->uninstallationRequested() && !selectedComponentsToInstall.contains(component))
-            selectedComponentsToUninstall.append(component);
-    }
-
-    d->uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
+    d->calculateUninstallComponents();
 
     QSet<Component *> componentsToUninstall = d->uninstallerCalculator()->componentsToUninstall();
 
@@ -2129,16 +2123,13 @@ bool PackageManagerCore::calculateComponents(QString *displayString)
         return false;
     }
 
-    // In case of updater mode we don't uninstall components.
-    if (!isUpdater()) {
-        QList<Component*> componentsToRemove = componentsToUninstall();
-        if (!componentsToRemove.isEmpty()) {
-            htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
-                "be removed.")));
-            foreach (Component *component, componentsToRemove)
-                htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
-            htmlOutput.append(QLatin1String("</ul>"));
-        }
+    QList<Component*> componentsToRemove = componentsToUninstall();
+    if (!componentsToRemove.isEmpty()) {
+        htmlOutput.append(QString::fromLatin1("<h3>%1</h3><ul>").arg(tr("Components about to "
+            "be removed.")));
+        foreach (Component *component, componentsToRemove)
+            htmlOutput.append(QString::fromLatin1("<li> %1 </li>").arg(component->name()));
+        htmlOutput.append(QLatin1String("</ul>"));
     }
 
     foreach (Component *component, orderedComponentsToInstall()) {
@@ -2168,20 +2159,8 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 {
     emit aboutCalculateComponentsToUninstall();
     if (!isUpdater()) {
-        // hack to avoid removing needed dependencies
-        const QList<Component *> componentsToInstallList
-            = d->installerCalculator()->orderedComponentsToInstall();
-        QSet<Component*> componentsToInstall(componentsToInstallList.begin(), componentsToInstallList.end());
-
-        QList<Component*> componentsToUninstall;
-        foreach (Component *component, components(ComponentType::All)) {
-            if (component->uninstallationRequested() && !componentsToInstall.contains(component))
-                componentsToUninstall.append(component);
-        }
-
-        d->clearUninstallerCalculator();
+        d->calculateUninstallComponents();
         d->storeCheckState();
-        d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUninstall);
     }
     emit finishedCalculateComponentsToUninstall();
     return true;
@@ -2248,6 +2227,47 @@ QList<Component*> PackageManagerCore::dependees(const Component *_component) con
         }
     }
     return dependees;
+}
+
+/*!
+    Returns a list of components that depend on \a component. The list can be
+    empty. Dependendants are calculated from components which are about to be updated,
+    if no update is requested then the dependant is calculated from installed packages.
+
+    \note Automatic dependencies are not resolved.
+*/
+QList<Component*> PackageManagerCore::installDependants(const Component *component) const
+{
+    if (!component)
+        return QList<Component *>();
+
+    const QList<QInstaller::Component *> availableComponents = components(ComponentType::All);
+    if (availableComponents.isEmpty())
+        return QList<Component *>();
+
+    QList<Component *> dependants;
+    QString name;
+    QString version;
+    foreach (Component *availableComponent, availableComponents) {
+        if (isUpdater() && availableComponent->updateRequested()) {
+            const QStringList &dependencies = availableComponent->dependencies();
+            foreach (const QString &dependency, dependencies) {
+                parseNameAndVersion(dependency, &name, &version);
+                if (componentMatches(component, name, version)) {
+                    dependants.append(availableComponent);
+                }
+            }
+        } else {
+            KDUpdater::LocalPackage localPackage = d->m_localPackageHub->packageInfo(availableComponent->name());
+            foreach (const QString &dependency, localPackage.dependencies) {
+                parseNameAndVersion(dependency, &name, &version);
+                if (componentMatches(component, name, version)) {
+                    dependants.append(availableComponent);
+                }
+            }
+        }
+    }
+    return dependants;
 }
 
 /*!
@@ -3835,7 +3855,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                 key = treeNameComponents->value(componentName);
                 treeNameComponents->remove(componentName);
             }
-            Component *componentToReplace = components.take(key);
+            Component *componentToReplace = components.value(key);
             if (!componentToReplace) {
                 // If a component replaces another component which is not existing in the
                 // installer binary or the installed component list, just ignore it. This
@@ -3844,8 +3864,21 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                     qCWarning(QInstaller::lcDeveloperBuild) << componentName << "- Does not exist in the repositories anymore.";
                 continue;
             }
-            d->replacementDependencyComponents().append(componentToReplace);
+            // Remove the replaced component from instal tree if
+            // 1. Running installer (component is replaced by other component)
+            // 2. Replacement is already installed but replacable is not
+            // Do not remove the replaced component from install tree
+            // in updater so that would show as an update
+            // Also do not remove the replaced component from install tree
+            // if it is already installed together with replacable component,
+            // otherwise it does not match what we have defined in components.xml
+            if (!isUpdater()
+                    && (isInstaller() || (it.key() && it.key()->isInstalled() && !componentToReplace->isInstalled()))) {
+                components.remove(key);
+                d->m_deletedReplacedComponents.append(componentToReplace);
+            }
             d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
+            d->replacementDependencyComponents().append(componentToReplace);
         }
     }
 }

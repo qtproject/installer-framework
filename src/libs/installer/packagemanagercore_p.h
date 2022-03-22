@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -250,6 +250,7 @@ private:
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
     bool calculateComponentsAndRun();
+    void calculateUninstallComponents();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
     bool askUserConfirmCommand() const;
@@ -294,6 +295,7 @@ private:
     void restoreCheckState();
     void storeCheckState();
     QHash<Component*, Qt::CheckState> m_coreCheckedHash;
+    QList<Component*> m_deletedReplacedComponents;
 };
 
 } // namespace QInstaller

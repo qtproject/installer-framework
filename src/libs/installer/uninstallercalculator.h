@@ -52,7 +52,7 @@ public:
 private:
 
     void appendComponentToUninstall(Component *component);
-    void continueAppendComponentsToUninstall();
+    void appendVirtualComponentsToUninstall();
 
     QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;
