@@ -1236,6 +1236,12 @@
     specify the location in the installer configuration file when creating an
     installer for it.
 
+    Repositories contain compressed metadata that can be packaged as a separate 7z archive
+    for each component, or combined into a single 7z archive for the repository entirety.
+    By default, repogen packages the metadata in both formats for backward compatibility
+    with older installers not supporting the unified meta-format. This can be changed with
+    the \c --unite-metadata and \c --component-metadata options.
+
     You can use an existing repository to repack packages to another
     repository or offline installer.
 
@@ -1283,6 +1289,12 @@
         \row
             \li -v or --verbose
             \li Display debug output.
+        \row
+            \li --unite-metadata
+            \li Combine all metadata into one 7z. This speeds up metadata download phase.
+        \row
+            \li --component-metadata
+            \li Creates one metadata 7z per component.
          \row
             \li -s or --sha-update p1,...,pn
             \li Comma-separated list of packages to be updated based on the component sha
