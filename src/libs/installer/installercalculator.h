@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,41 +42,50 @@ class Component;
 class INSTALLER_EXPORT InstallerCalculator
 {
 public:
-    InstallerCalculator(const QList<Component *> &allComponents);
+    InstallerCalculator(const QList<Component *> &allComponents, const QHash<QString, QStringList> &autoDependencyComponentHash);
 
     enum InstallReasonType
     {
+        Selected,   // "Selected Component(s) without Dependencies"
         Automatic, // "Component(s) added as automatic dependencies"
         Dependent, // "Added as dependency for %1."
-        Resolved,  // "Component(s) that have resolved Dependencies"
-        Selected   // "Selected Component(s) without Dependencies"
+        Resolved  // "Component(s) that have resolved Dependencies"
     };
 
-    InstallReasonType installReasonType(Component *component) const;
-    QString installReasonReferencedComponent(Component *component) const;
-    QString installReason(Component *component) const;
+    InstallReasonType installReasonType(const Component *c) const;
+    QString installReason(const Component *component) const;
     QList<Component*> orderedComponentsToInstall() const;
     QString componentsToInstallError() const;
 
-    bool appendComponentsToInstall(const QList<Component*> &components);
+    bool appendComponentsToInstall(const QList<Component*> &components, bool modelReset = false, const bool revertFromInstall = false);
+    bool removeComponentsFromInstall(const QList<Component*> &components);
 
 private:
-    void insertInstallReason(Component *component,
-                             InstallReasonType installReasonType,
-                             const QString &referencedComponentName = QString());
-    void realAppendToInstallComponents(Component *component, const QString &version = QString());
-    bool appendComponentToInstall(Component *components, const QString &version = QString());
-    QString recursionError(Component *component);
+    QString installReasonReferencedComponent(const Component *component) const;
+    void insertInstallReason(const Component *component,
+                             const InstallReasonType installReason,
+                             const QString &referencedComponentName = QString(),
+                             const bool revertFromInstall = false);
+    void realAppendToInstallComponents(Component *component, const QString &version, const bool revertFromInstall);
+    bool appendComponentToInstall(Component *component, const QString &version, const bool revertFromInstall);
+    QString recursionError(const Component *component) const;
+    QSet<Component *> autodependencyComponents(const bool revertFromInstall);
 
+private:
     QList<Component*> m_allComponents;
     QHash<Component*, QSet<Component*> > m_visitedComponents;
-    QSet<QString> m_toInstallComponentIds; //for faster lookups
+    QList<const Component*> m_componentsForAutodepencencyCheck;
+    //for faster lookups.
+    QSet<QString> m_toInstallComponentIds;
+    QHash<QString, QStringList> m_referenceCount;
     QString m_componentsToInstallError;
     //calculate installation order variables
     QList<Component*> m_orderedComponentsToInstall;
     //we can't use this reason hash as component id hash, because some reasons are ready before
     //the component is added
     QHash<QString, QPair<InstallReasonType, QString> > m_toInstallComponentIdReasonHash;
+    //Helper hash for quicker search for autodependency components
+    QHash<QString, QStringList> m_autoDependencyComponentHash;
 };
 
 }

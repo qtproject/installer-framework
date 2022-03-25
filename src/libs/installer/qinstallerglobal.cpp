@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -69,4 +69,16 @@
     \typedef QInstaller::LocalPackagesHash
 
     Synonym for QHash<QString, KDUpdater::LocalPackage>.
+*/
+
+/*!
+    \typedef QInstaller::AutoDependencyHash
+
+    Synonym for QHash<QString, QStringList>.
+*/
+
+/*!
+    \typedef QInstaller::DependencyHash
+
+    Synonym for QHash<QString, QStringList>.
 */

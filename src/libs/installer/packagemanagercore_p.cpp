@@ -430,12 +430,13 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
                 m_core->appendRootComponent(component);
         }
 
-        // after everything is set up, load the scripts if needed
-        if (loadScript) {
-            foreach (QInstaller::Component *component, components)
+        // after everything is set up, load the scripts if needed and create helper hashes
+        // for autodependency and dependency components for quicker search later
+        foreach (QInstaller::Component *component, components) {
+            if (loadScript)
                 component->loadComponentScript();
+            createDependencyHashes(component);
         }
-
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
             // set the checked state for all components without child (means without tristate)
@@ -490,6 +491,10 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
+    m_componentReplaces.clear();
+    m_autoDependencyComponentHash.clear();
+    m_dependencyComponentHash.clear();
+    m_localVirtualComponents.clear();
     // clean up registered (downloaded) data
     if (m_core->isMaintainer())
         BinaryFormatEngineHandler::instance()->clear();
@@ -565,6 +570,26 @@ QHash<QString, QPair<Component*, Component*> > &PackageManagerCorePrivate::compo
     return (!isUpdater()) ? m_componentsToReplaceAllMode : m_componentsToReplaceUpdaterMode;
 }
 
+QHash<QString, QStringList> &PackageManagerCorePrivate::componentReplaces()
+{
+    return m_componentReplaces;
+}
+
+QList<Component*> PackageManagerCorePrivate::replacedComponentsByName(const QString &name)
+{
+    // Creates a list of components which are replaced by component 'name'
+    QList<Component*> replacedComponents;
+    if (m_componentReplaces.contains(name)) {
+        for (const QString &replacedComponentName : m_componentReplaces.value(name)) {
+            Component *replacedComponent = m_core->componentByName(replacedComponentName,
+                    m_core->components(PackageManagerCore::ComponentType::All));
+            if (replacedComponent)
+                replacedComponents.append(replacedComponent);
+        }
+    }
+    return replacedComponents;
+}
+
 void PackageManagerCorePrivate::clearInstallerCalculator()
 {
     delete m_installerCalculator;
@@ -576,7 +601,7 @@ InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
     if (!m_installerCalculator) {
         PackageManagerCorePrivate *const pmcp = const_cast<PackageManagerCorePrivate *> (this);
         pmcp->m_installerCalculator = new InstallerCalculator(
-            m_core->components(PackageManagerCore::ComponentType::AllNoReplacements));
+            m_core->components(PackageManagerCore::ComponentType::AllNoReplacements), pmcp->m_autoDependencyComponentHash);
     }
     return m_installerCalculator;
 }
@@ -600,7 +625,8 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
             }
         }
 
-        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core);
+        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core,
+            pmcp->m_autoDependencyComponentHash, pmcp->m_dependencyComponentHash, pmcp->m_localVirtualComponents);
     }
     return m_uninstallerCalculator;
 }
@@ -2685,8 +2711,11 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
         if (statusCanceledOrFailed())
             break;
         installedPackages.insert(package.name, package);
+        if (package.virtualComp && package.autoDependencies.isEmpty()) {
+            if (!m_localVirtualComponents.contains(package.name))
+                m_localVirtualComponents.append(package.name);
+        }
     }
-
     return installedPackages;
 }
 
@@ -2821,6 +2850,19 @@ void PackageManagerCorePrivate::storeCheckState()
        m_core->components(PackageManagerCore::ComponentType::AllNoReplacements);
     foreach (Component *component, components)
         m_coreCheckedHash.insert(component, component->checkState());
+}
+
+void PackageManagerCorePrivate::updateComponentCheckedState()
+{
+    for (Component *component : m_core->components(PackageManagerCore::ComponentType::All)) {
+        component->setInstallAction(component->isInstalled()
+              ? ComponentModelHelper::KeepInstalled
+              : ComponentModelHelper::KeepUninstalled);
+    }
+    for (Component *component : uninstallerCalculator()->componentsToUninstall())
+        component->setInstallAction(ComponentModelHelper::Uninstall);
+    for (Component *component : installerCalculator()->orderedComponentsToInstall())
+        component->setInstallAction(ComponentModelHelper::Install);
 }
 
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)
@@ -3091,6 +3133,23 @@ void PackageManagerCorePrivate::commitPendingUnstableComponents()
         component->setUnstable(unstableError.first, unstableError.second);
     }
     m_pendingUnstableComponents.clear();
+}
+
+void PackageManagerCorePrivate::createDependencyHashes(const Component* component)
+{
+    for (const QString &autodepend : component->autoDependencies()) {
+        QStringList value = m_autoDependencyComponentHash.value(autodepend);
+        if (!value.contains(component->name()))
+            value.append(component->name());
+        m_autoDependencyComponentHash.insert(autodepend, value);
+    }
+
+    for (const QString &depend : component->dependencies()) {
+        QStringList value = m_dependencyComponentHash.value(depend);
+        if (!value.contains(component->name()))
+            value.append(component->name());
+        m_dependencyComponentHash.insert(depend, value);
+    }
 }
 
 } // namespace QInstaller

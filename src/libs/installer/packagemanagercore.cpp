@@ -583,27 +583,68 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
     QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
     d->m_componentsToInstallCalculated =
-            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
-
-    QList<Component *> componentsToInstall = d->installerCalculator()->orderedComponentsToInstall();
+            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall, true);
 
     d->calculateUninstallComponents();
-
-    QSet<Component *> componentsToUninstall = d->uninstallerCalculator()->componentsToUninstall();
-
-    foreach (Component *component, components(ComponentType::All))
-        component->setInstallAction(component->isInstalled()
-                           ? ComponentModelHelper::KeepInstalled
-                           : ComponentModelHelper::KeepUninstalled);
-    foreach (Component *component, componentsToUninstall)
-        component->setInstallAction(ComponentModelHelper::Uninstall);
-    foreach (Component *component, componentsToInstall)
-        component->setInstallAction(ComponentModelHelper::Install);
+    d->updateComponentCheckedState();
 
     // update all nodes uncompressed size
     foreach (Component *const component, components(ComponentType::Root))
         component->updateUncompressedSize(); // this is a recursive call
 }
+
+/*!
+    Calculates components to install based on user selection. \a indexes
+    contains list of model indexes user has selected for install, dependencies
+    and autodependencies are resolved later.
+ */
+void PackageManagerCore::calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes)
+{
+    QList<Component*> componentsToInstall;
+    QList<Component*> componentsToUnInstall;
+    ComponentModel *model = isUpdater() ? updaterComponentModel() : defaultComponentModel();
+    for (QModelIndex index : indexes) {
+        Component *installComponent = model->componentFromIndex(index);
+        // 1. Component is selected for install
+        if (installComponent->isSelected() && !installComponent->isInstalled()) {
+            componentsToInstall.append(installComponent);
+            // Check if component has replacements that needs to be removed
+            const QList<Component*> replacedComponents = d->replacedComponentsByName(installComponent->name());
+            for (Component *replacedComponent : replacedComponents) {
+                componentsToUnInstall.append(replacedComponent);
+                d->uninstallerCalculator()->insertUninstallReason(replacedComponent,
+                                                                  UninstallerCalculator::UninstallReasonType::Replaced);
+            }
+        }
+        // 2. Component is reseleted for install (tapping checkbox off/on)
+        else if (installComponent->isSelected() && installComponent->isInstalled()
+                 && !d->installerCalculator()->orderedComponentsToInstall().contains(installComponent)) {
+            componentsToInstall.append(installComponent);
+        }
+        // 3. Component is selected for uninstall
+        else if (!isUpdater() && !installComponent->isSelected() && installComponent->isInstalled()) {
+            componentsToUnInstall.append(installComponent);
+        }
+        // 4. Component is reselected for uninstall (tapping checkbox on/off)
+        else if (!installComponent->isSelected()
+                && d->installerCalculator()->orderedComponentsToInstall().contains(installComponent)) {
+            componentsToUnInstall.append(installComponent);
+            // Check if component has replacements that needs to be readded
+            componentsToInstall.append(d->replacedComponentsByName(installComponent->name()));
+        }
+    }
+
+    d->installerCalculator()->removeComponentsFromInstall(componentsToUnInstall);
+    d->m_componentsToInstallCalculated
+        = d->installerCalculator()->appendComponentsToInstall(componentsToInstall, false);
+    if (!isUpdater()) {
+        d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUnInstall, false);
+    }
+    d->uninstallerCalculator()->removeComponentsFromUnInstall(componentsToInstall);
+
+    d->updateComponentCheckedState();
+}
+
 
 /*!
     Forces a recalculation of components to install.
@@ -2141,8 +2182,7 @@ QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 bool PackageManagerCore::calculateComponents(QString *displayString)
 {
     QString htmlOutput;
-    if (!calculateComponentsToUninstall() ||
-            !calculateComponentsToInstall()) {
+    if (!calculateComponentsToInstall()) {
         htmlOutput.append(QString::fromLatin1("<h2><font color=\"red\">%1</font></h2><ul>")
                           .arg(tr("Cannot resolve all dependencies.")));
         //if we have a missing dependency or a recursion we can display it
@@ -3942,8 +3982,12 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
                 components.remove(key);
                 d->m_deletedReplacedComponents.append(componentToReplace);
             }
-            d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
             d->replacementDependencyComponents().append(componentToReplace);
+
+            //Following hashes are created for quicker search of components
+            d->componentsToReplace().insert(componentName, qMakePair(it.key(), componentToReplace));
+            QStringList oldValue = d->componentReplaces().value(it.key()->name());
+            d->componentReplaces().insert(it.key()->name(), oldValue << componentToReplace->name());
         }
     }
 }
@@ -4205,8 +4249,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     if (!component->isUnstable())
                         component->setCheckState(Qt::Checked);
                 }
+                d->createDependencyHashes(component);
             }
-
             if (foundEssentialUpdate()) {
                 foreach (QInstaller::Component *component, components) {
                     if (d->statusCanceledOrFailed())
@@ -4379,9 +4423,10 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("Release Date"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
-    connect(model, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-        SLOT(componentsToInstallNeedsRecalculation()));
-
+    connect(model, &ComponentModel::modelCheckStateChanged,
+        this, &PackageManagerCore::componentsToInstallNeedsRecalculation);
+    connect(model, &ComponentModel::componentsCheckStateChanged,
+        this, &PackageManagerCore::calculateUserSelectedComponentsToInstall);
     return model;
 }
 

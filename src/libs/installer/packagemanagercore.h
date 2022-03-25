@@ -352,6 +352,7 @@ public Q_SLOTS:
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
+    void calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes);
     void clearComponentsToInstallCalculated();
 
 Q_SIGNALS:
@@ -437,6 +438,7 @@ private:
     PackageManagerCorePrivate *const d;
     friend class PackageManagerCorePrivate;
     QHash<QString, QString> m_fileDialogAutomaticAnswers;
+    QHash<QString, QStringList> m_localVirtualWithDependants;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

@@ -52,27 +52,34 @@ public:
         AutoDependent     // "Removed as autodependency component is removed"
     };
 
-    UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core);
+    UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core,
+                          const QHash<QString, QStringList> &autoDependencyComponentHash,
+                          const QHash<QString, QStringList> &dependencyComponentHash,
+                          const QStringList &localVirtualComponents);
 
     QSet<Component*> componentsToUninstall() const;
 
-    void appendComponentsToUninstall(const QList<Component*> &components);
+    void appendComponentsToUninstall(const QList<Component*> &components, const bool reverse = false);
+    void removeComponentsFromUnInstall(const QList<Component*> &components);
     void insertUninstallReason(Component *component,
-                               UninstallReasonType installReasonType,
+                               const UninstallReasonType uninstallReason,
                                const QString &referencedComponentName = QString());
     QString uninstallReason(Component *component) const;
     UninstallerCalculator::UninstallReasonType uninstallReasonType(Component *c) const;
     QString uninstallReasonReferencedComponent(Component *component) const;
 
 private:
-
-    void appendComponentToUninstall(Component *component);
-    void appendVirtualComponentsToUninstall();
+    void appendComponentToUninstall(Component *component, const bool reverse);
+    void appendVirtualComponentsToUninstall(const bool reverse);
 
     QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;
     PackageManagerCore *m_core;
     QHash<QString, QPair<UninstallReasonType, QString> > m_toUninstallComponentIdReasonHash;
+    QHash<QString, QStringList> m_autoDependencyComponentHash;
+    QHash<QString, QStringList> m_dependencyComponentHash;
+    QStringList m_localVirtualComponents;
+    QList<Component *> m_virtualComponentsForReverse;
 };
 
 }

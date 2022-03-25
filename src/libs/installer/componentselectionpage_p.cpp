@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -185,10 +185,16 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_stackedLayout->addWidget(progressStackedWidget);
     m_stackedLayout->setCurrentIndex(0);
 
-    connect(m_allModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)), this,
-        SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
-    connect(m_updaterModel, SIGNAL(checkStateChanged(QInstaller::ComponentModel::ModelState)),
-        this, SLOT(onModelStateChanged(QInstaller::ComponentModel::ModelState)));
+    connect(m_allModel, &ComponentModel::modelCheckStateChanged,
+        this, &ComponentSelectionPagePrivate::onModelStateChanged);
+    connect(m_updaterModel, &ComponentModel::modelCheckStateChanged,
+        this, &ComponentSelectionPagePrivate::onModelStateChanged);
+
+    connect(m_allModel, &ComponentModel::componentsCheckStateChanged, this,
+        [=]() { onModelStateChanged(m_allModel->checkedState());});
+
+    connect(m_updaterModel, &ComponentModel::componentsCheckStateChanged, this,
+        [=]() { onModelStateChanged(m_allModel->checkedState());});
 
     connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
     connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));

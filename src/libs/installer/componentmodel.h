@@ -90,17 +90,17 @@ public Q_SLOTS:
     void setCheckedState(QInstaller::ComponentModel::ModelStateFlag state);
 
 Q_SIGNALS:
-    void checkStateChanged(const QModelIndex &index);
-    void checkStateChanged(QInstaller::ComponentModel::ModelState state);
+    void componentsCheckStateChanged(const QList<QModelIndex> &indexes);
+    void modelCheckStateChanged(QInstaller::ComponentModel::ModelState state);
 
 private Q_SLOTS:
     void onVirtualStateChanged();
 
 private:
     void postModelReset();
-    void updateAndEmitModelState();
+    void updateModelState();
     void collectComponents(Component *const component, const QModelIndex &parent) const;
-    QSet<QModelIndex> updateCheckedState(const ComponentSet &components, Qt::CheckState state);
+    QList<QModelIndex> updateCheckedState(const ComponentSet &components, const Qt::CheckState state);
 
 private:
     PackageManagerCore *m_core;

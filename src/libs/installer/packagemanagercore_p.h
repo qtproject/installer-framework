@@ -111,6 +111,8 @@ public:
     void clearUpdaterComponentLists();
     QList<Component*> &replacementDependencyComponents();
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
+    QHash<QString, QStringList > &componentReplaces();
+    QList<Component*> replacedComponentsByName(const QString &name);
 
     void clearInstallerCalculator();
     InstallerCalculator *installerCalculator() const;
@@ -262,6 +264,12 @@ private:
     bool askUserConfirmCommand() const;
     bool packageNeedsUpdate(const LocalPackage &localPackage, const Package *update) const;
     void commitPendingUnstableComponents();
+    void createDependencyHashes(const Component* component);
+    void updateComponentCheckedState();
+
+    // remove once we deprecate isSelected, setSelected etc...
+    void restoreCheckState();
+    void storeCheckState();
 
 private:
     PackageManagerCore *m_core;
@@ -296,12 +304,15 @@ private:
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
     QHash<QString, QVariantMap> m_licenseItems;
 
-private:
-    // remove once we deprecate isSelected, setSelected etc...
-    void restoreCheckState();
-    void storeCheckState();
     QHash<Component*, Qt::CheckState> m_coreCheckedHash;
     QList<Component*> m_deletedReplacedComponents;
+    AutoDependencyHash m_autoDependencyComponentHash;
+    DependencyHash m_dependencyComponentHash;
+
+    QStringList m_localVirtualComponents;
+
+    // < name (component replacing others), components to replace>
+    QHash<QString, QStringList > m_componentReplaces;
 };
 
 } // namespace QInstaller

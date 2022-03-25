@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -56,6 +56,9 @@ typedef KDUpdater::Update Package;
 typedef QList<QInstaller::Package*> PackagesList;
 
 typedef QHash<QString, KDUpdater::LocalPackage> LocalPackagesHash;
+
+typedef QHash<QString, QStringList> AutoDependencyHash;
+typedef QHash<QString, QStringList> DependencyHash;
 
 } // namespace QInstaller
 
