@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -160,7 +160,6 @@ int main(int argc, char** argv)
             } else if (args.first() == QLatin1String("--update-new-components")) {
                 args.removeFirst();
                 updateExistingRepositoryWithNewComponents = true;
-                createUnifiedMetadata = false;
             } else if (args.first() == QLatin1String("-p") || args.first() == QLatin1String("--packages")) {
                 args.removeFirst();
                 if (args.isEmpty()) {
@@ -252,17 +251,6 @@ int main(int argc, char** argv)
         repoInfo.repositoryDir = QInstallerTools::makePathAbsolute(args.first());
         if (remove)
             QInstaller::removeDirectory(repoInfo.repositoryDir);
-
-        if (updateExistingRepositoryWithNewComponents) {
-            QStringList meta7z = QDir(repoInfo.repositoryDir).entryList(QStringList()
-                << QLatin1String("*_meta.7z"), QDir::Files);
-            if (!meta7z.isEmpty()) {
-                throw QInstaller::Error(QCoreApplication::translate("QInstaller",
-                    "Cannot update \"%1\" with --update-new-components. Use --update instead. "
-                    "Currently it is not possible to update partial components inside one 7z.")
-                    .arg(meta7z.join(QLatin1Char(','))));
-            }
-        }
 
         if (!update && QFile::exists(repoInfo.repositoryDir) && !QDir(repoInfo.repositoryDir).entryList(
             QDir::AllEntries | QDir::NoDotAndDotDot).isEmpty()) {

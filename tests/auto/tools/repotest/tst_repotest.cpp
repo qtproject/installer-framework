@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -357,6 +357,44 @@ private slots:
         generateRepo(true, false, true);
         verifyComponentRepository("2.0.0", "1.0.0", true);
         verifyComponentMetaUpdatesXml();
+    }
+
+    void testUpdateNewComponentsWithUniteMetadata()
+    {
+        ignoreMessagesForComponentSha(QStringList() << "A" << "B", false);
+        ignoreMessagesForUniteMeta(false);
+        generateRepo(true, true, false);
+        verifyComponentRepository("1.0.0", "1.0.0", true);
+
+        initRepoUpdate();
+        ignoreMessageForCollectingPackages("2.0.0", "1.0.0");
+        ignoreMessagesForComponentSha(QStringList() << "A", false); //Only A has update
+        ignoreMessagesForComponentHash(QStringList() << "A");
+        ignoreMessagesForCopyMetadata("A", true, true);
+        ignoreMessagesForUniteMeta(true);
+        const QString &message = "Update component \"A\" in \"%1\" .";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
+        generateRepo(true, true, true);
+        verifyComponentRepository("2.0.0", "1.0.0", true);
+        verifyUniteMetadata("2.0.0");
+    }
+
+    void testUpdateNewComponentsWithOnlyUniteMetadata()
+    {
+        ignoreMessagesForUniteMeta(false);
+        generateRepo(false, true, false);
+        verifyComponentRepository("1.0.0", "1.0.0", false);
+
+        initRepoUpdate();
+        ignoreMessageForCollectingPackages("2.0.0", "1.0.0");
+        ignoreMessagesForComponentHash(QStringList() << "A");
+        ignoreMessagesForCopyMetadata("A", true, true);
+        ignoreMessagesForUniteMeta(true);
+        const QString &message = "Update component \"A\" in \"%1\" .";
+        QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(m_repoInfo.repositoryDir)));
+        generateRepo(false, true, true);
+        verifyComponentRepository("2.0.0", "1.0.0", false);
+        verifyUniteMetadata("2.0.0");
     }
 
     void testUpdateComponents()
