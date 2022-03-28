@@ -33,6 +33,7 @@
 
 #include <QLoggingCategory>
 #include <QTest>
+#include <QRegularExpression>
 
 #include <iostream>
 #include <sstream>
@@ -130,27 +131,31 @@ private slots:
         QLoggingCategory::setFilterRules(loggingRules);
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install component A. Component is installed only as automatic dependency to autoDep.\n");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install component A. Component "
+            "is installed only as automatic dependency to autoDep.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("A")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install component AB. Component is not checkable, meaning you have to select one of the subcomponents.\n");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install component AB. Component "
+            "is not checkable, meaning you have to select one of the subcomponents.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("AB")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install B. Component is virtual.\n");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install B. Component is virtual.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install B.subcomponent. Component is a descendant of a virtual component B.\n");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install B.subcomponent. Component "
+            "is a descendant of a virtual component B.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B.subcomponent")));
 
         QTest::ignoreMessage(QtDebugMsg, "Preparing meta information download...");
-        QTest::ignoreMessage(QtDebugMsg, "Cannot install MissingComponent. Component not found.\n");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install MissingComponent. "
+            "Component not found.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("MissingComponent")));
         QCOMPARE(PackageManagerCore::Canceled, core->status());

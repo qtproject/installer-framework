@@ -2449,6 +2449,9 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 } else if (!component->isCheckable()) {
                     errorMessage.append(tr("Cannot install component %1. Component is not checkable, meaning you "
                         "have to select one of the subcomponents.\n").arg(name));
+                } else if (component->isUnstable()) {
+                    errorMessage.append(tr("Cannot install component %1. There was a problem loading this component, "
+                        "so it is marked unstable and cannot be selected.\n").arg(name));
                 }
             } else if (component->isInstalled()) {
                 errorMessage.append(tr("Component %1 already installed\n").arg(name));
@@ -2710,7 +2713,8 @@ PackageManagerCore::Status PackageManagerCore::createOfflineInstaller(const QStr
                 << "Created installer to:" << offlineBinaryName();
         }
     } else {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
+            << "\nNo components available with the current selection.";
     }
     return status();
 }
@@ -2753,7 +2757,8 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
         if (d->calculateComponentsAndRun())
             qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
     } else {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
+            << "\nNo components available for installation with the current selection.";
     }
     return status();
 }
