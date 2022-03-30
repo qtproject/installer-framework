@@ -762,7 +762,7 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
         argumentError = QString::fromLatin1("Error: No configuration file selected.");
         return EXIT_FAILURE;
     }
-    if (args.packagesDirectories.isEmpty() && args.repositoryDirectories.isEmpty()) {
+    if (args.packagesDirectories.isEmpty() && args.repositoryDirectories.isEmpty() && !args.compileResource) {
         argumentError = QString::fromLatin1("Error: Both Package directory and Repository parameters missing.");
         return EXIT_FAILURE;
     }
