@@ -640,6 +640,18 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
 }
 
 /*!
+    Returns a numerical representation of how this operation compares to
+    other operations in size, and in time it takes to perform the operation.
+
+    The default returned value is \c 1. Subclasses may override this method to
+    implement custom size hints.
+*/
+quint64 UpdateOperation::sizeHint()
+{
+    return 1;
+}
+
+/*!
     \overload
 
     Restores operation arguments and values from the XML file at path \a xml. Returns \c true on

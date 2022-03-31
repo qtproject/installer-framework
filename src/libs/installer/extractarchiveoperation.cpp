@@ -329,6 +329,24 @@ bool ExtractArchiveOperation::testOperation()
     return true;
 }
 
+quint64 ExtractArchiveOperation::sizeHint()
+{
+    if (!checkArgumentCount(2))
+        return UpdateOperation::sizeHint();
+
+    if (hasValue(QLatin1String("sizeHint")))
+        return value(QLatin1String("sizeHint")).toULongLong();
+
+    const QString archivePath = arguments().at(0);
+    const quint64 compressedSize = QFileInfo(archivePath).size();
+
+    setValue(QLatin1String("sizeHint"), QString::number(compressedSize));
+
+    // A rough estimate of how much time it takes to extract this archive. Other
+    // affecting parameters are the archive format, compression filter and -level.
+    return compressedSize;
+}
+
 bool ExtractArchiveOperation::readDataFileContents(QString &targetDir, QStringList *resultList)
 {
     const QString filePath = value(QLatin1String("files")).toString();

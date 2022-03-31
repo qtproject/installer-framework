@@ -48,6 +48,8 @@ public:
     bool undoOperation() override;
     bool testOperation() override;
 
+    quint64 sizeHint() override;
+
     bool readDataFileContents(QString &targetDir, QStringList *resultList);
 
 Q_SIGNALS:

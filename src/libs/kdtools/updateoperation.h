@@ -100,6 +100,8 @@ public:
     virtual bool fromXml(const QString &xml);
     virtual bool fromXml(const QDomDocument &doc);
 
+    virtual quint64 sizeHint();
+
 protected:
     void setName(const QString &name);
     void setGroup(const OperationGroup &group);

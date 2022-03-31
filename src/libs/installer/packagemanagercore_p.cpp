@@ -2178,6 +2178,8 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
 
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUnpacking components..."));
 
+    // 1. Collect operations
+    quint64 totalOperationsSizeHint = 0;
     for (auto *component : components) {
         const OperationList operations = component->operations(Operation::Unpack);
         if (!component->operationsCreatedSuccessfully())
@@ -2188,17 +2190,26 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
                 throw Error(tr("Installation canceled by user"));
 
             unpackOperations.append(op);
+            totalOperationsSizeHint += op->sizeHint();
 
             // There's currently no way to control this on a per-operation basis, so
             // any op requesting execution as admin means all extracts are done as admin.
             if (!adminRightsGained && !becameAdmin && op->value(QLatin1String("admin")).toBool())
                 becameAdmin = m_core->gainAdminRights();
-
-            connectOperationToInstaller(op, progressOperationSize);
-            connectOperationCallMethodRequest(op);
         }
     }
 
+    // 2. Calculate proportional progress sizes
+    const double totalOperationsSize = progressOperationSize * unpackOperations.size();
+    for (auto *op : unpackOperations) {
+        const double ratio = static_cast<double>(op->sizeHint()) / totalOperationsSizeHint;
+        const double proportionalProgressOperationSize = totalOperationsSize * ratio;
+
+        connectOperationToInstaller(op, proportionalProgressOperationSize);
+        connectOperationCallMethodRequest(op);
+    }
+
+    // 3. Backup operations
     ConcurrentOperationRunner runner(&unpackOperations, Operation::Backup);
     connect(m_core, &PackageManagerCore::installationInterrupted,
         &runner, &ConcurrentOperationRunner::cancel);
@@ -2224,6 +2235,12 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     // as the backup files are not used in Undo step.
     if (statusCanceledOrFailed())
         throw Error(tr("Installation canceled by user"));
+
+    // 4. Perform operations
+    std::sort(unpackOperations.begin(), unpackOperations.end(), [](Operation *lhs, Operation *rhs) {
+        // We want to run the longest taking operations first
+        return lhs->sizeHint() > rhs->sizeHint();
+    });
 
     runner.setType(Operation::Perform);
     const QHash<Operation *, bool> results = runner.run();
