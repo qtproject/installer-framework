@@ -76,7 +76,7 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: INCLUDE
-    variableValue: "C:\\Utils\\bzip2-1.0.8;C:\\Utils\\zlib-1.2.12;C:\\Utils\\xz-5.2.5\\src\\liblzma\\api;"
+    variableValue: "C:\\Utils\\bzip2-1.0.8-x64;C:\\Utils\\zlib-1.2.12-x64;C:\\Utils\\xz-5.2.5-x64\\src\\liblzma\\api;"
     enable_if:
       condition: property
       property: host.os
@@ -84,11 +84,11 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: LIB
-    variableValue: "C:\\Utils\\bzip2-1.0.8;C:\\Utils\\zlib-1.2.12;C:\\Utils\\xz-5.2.5\\windows\\vs2015\\ReleaseMT\\Win32\\liblzma;"
+    variableValue: "C:\\Utils\\bzip2-1.0.8-x64;C:\\Utils\\zlib-1.2.12-x64;C:\\Utils\\xz-5.2.5-x64\\windows\\vs2019\\ReleaseMT\\x64\\liblzma;"
     enable_if:
       condition: property
       property: target.compiler
-      equals_value: MSVC2015
+      equals_value: MSVC2019
 
   - type: Group
     instructions:
