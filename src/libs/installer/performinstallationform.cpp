@@ -87,7 +87,7 @@ PerformInstallationForm::PerformInstallationForm(PackageManagerCore *core, QObje
     : QObject(parent)
     , m_progressBar(nullptr)
     , m_progressLabel(nullptr)
-    , m_downloadStatus(nullptr)
+    , m_additionalProgressStatus(nullptr)
     , m_productImagesScrollArea(nullptr)
     , m_productImagesLabel(nullptr)
     , m_detailsButton(nullptr)
@@ -126,14 +126,14 @@ void PerformInstallationForm::setupUi(QWidget *widget)
     m_progressLabel->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
     topLayout->addWidget(m_progressLabel);
 
-    m_downloadStatus = new QLabel(widget);
-    m_downloadStatus->setObjectName(QLatin1String("DownloadStatus"));
-    m_downloadStatus->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    m_downloadStatus->setWordWrap(true);
-    m_downloadStatus->setTextFormat(Qt::TextFormat::RichText);
-    topLayout->addWidget(m_downloadStatus);
-    connect(ProgressCoordinator::instance(), &ProgressCoordinator::downloadStatusChanged, this,
-        &PerformInstallationForm::onDownloadStatusChanged);
+    m_additionalProgressStatus = new QLabel(widget);
+    m_additionalProgressStatus->setObjectName(QLatin1String("DownloadStatus"));
+    m_additionalProgressStatus->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+    m_additionalProgressStatus->setWordWrap(true);
+    m_additionalProgressStatus->setTextFormat(Qt::TextFormat::RichText);
+    topLayout->addWidget(m_additionalProgressStatus);
+    connect(ProgressCoordinator::instance(), &ProgressCoordinator::additionalProgressStatusChanged, this,
+        &PerformInstallationForm::onAdditionalProgressStatusChanged);
 
     m_detailsButton = new QPushButton(tr("&Show Details"), widget);
     m_detailsButton->setObjectName(QLatin1String("DetailsButton"));
@@ -290,9 +290,9 @@ bool PerformInstallationForm::isShowingDetails() const
     Changes the label text according to the changes in the download status
     specified by \a status.
 */
-void PerformInstallationForm::onDownloadStatusChanged(const QString &status)
+void PerformInstallationForm::onAdditionalProgressStatusChanged(const QString &status)
 {
-    m_downloadStatus->setText(status);
+    m_additionalProgressStatus->setText(status);
 }
 
 /*!

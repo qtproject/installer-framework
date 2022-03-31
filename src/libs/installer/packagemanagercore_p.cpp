@@ -1694,12 +1694,8 @@ bool PackageManagerCorePrivate::runInstaller()
             + (PackageManagerCore::createLocalRepositoryFromBinary() ? 1 : 0);
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        // Perform extract operations
-        unpackComponents(componentsToInstall, progressOperationSize, adminRightsGained);
-
-        // Perform rest of the operations and mark component as installed
-        foreach (Component *component, componentsToInstall)
-            installComponent(component, progressOperationSize, adminRightsGained);
+        // Now install the requested components
+        unpackAndInstallComponents(componentsToInstall, progressOperationSize, adminRightsGained);
 
         if (m_core->isOfflineOnly() && PackageManagerCore::createLocalRepositoryFromBinary()) {
             emit m_core->titleMessageChanged(tr("Creating local repository"));
@@ -1922,12 +1918,8 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         const double progressOperationCount = countProgressOperations(componentsToInstall);
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
-        // Perform extract operations
-        unpackComponents(componentsToInstall, progressOperationSize, adminRightsGained);
-
-        // Perform rest of the operations and mark component as installed
-        foreach (Component *component, componentsToInstall)
-            installComponent(component, progressOperationSize, adminRightsGained);
+        // Now install the requested new components
+        unpackAndInstallComponents(componentsToInstall, progressOperationSize, adminRightsGained);
 
         emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
@@ -2176,7 +2168,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     OperationList unpackOperations;
     bool becameAdmin = false;
 
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUnpacking components..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nPreparing to unpack components..."));
 
     // 1. Collect operations
     quint64 totalOperationsSizeHint = 0;
@@ -2214,6 +2206,16 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     connect(m_core, &PackageManagerCore::installationInterrupted,
         &runner, &ConcurrentOperationRunner::cancel);
 
+    connect(&runner, &ConcurrentOperationRunner::progressChanged, [](const int completed, const int total) {
+        const QString statusText = tr("%1 of %2 operations completed.")
+            .arg(QString::number(completed), QString::number(total));
+        ProgressCoordinator::instance()->emitAdditionalProgressStatus(statusText);
+    });
+    connect(&runner, &ConcurrentOperationRunner::finished, [] {
+        // Clear the status text to not cause confusion when installations begin.
+        ProgressCoordinator::instance()->emitAdditionalProgressStatus(QLatin1String(""));
+    });
+
     const QHash<Operation *, bool> backupResults = runner.run();
     const OperationList backupOperations = backupResults.keys();
 
@@ -2241,6 +2243,8 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
         // We want to run the longest taking operations first
         return lhs->sizeHint() > rhs->sizeHint();
     });
+
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUnpacking components..."));
 
     runner.setType(Operation::Perform);
     const QHash<Operation *, bool> results = runner.run();
@@ -2558,6 +2562,9 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
     bool adminRightsGained, bool deleteOperation)
 {
     try {
+        const int operationsCount = undoOperations.size();
+        int rolledBackOperations = 0;
+
         foreach (Operation *undoOperation, undoOperations) {
             if (statusCanceledOrFailed())
                 throw Error(tr("Installation canceled by user"));
@@ -2596,6 +2603,10 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 }
             }
 
+            ++rolledBackOperations;
+            ProgressCoordinator::instance()->emitAdditionalProgressStatus(tr("%1 of %2 operations rolled back.")
+                .arg(QString::number(rolledBackOperations), QString::number(operationsCount)));
+
             if (becameAdmin)
                 m_core->dropAdminRights();
 
@@ -2610,6 +2621,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
         throw Error(tr("Unknown error"));
     }
     m_localPackageHub->writeToDisk();
+    ProgressCoordinator::instance()->emitAdditionalProgressStatus(tr("Rollbacks complete."));
 }
 
 PackagesList PackageManagerCorePrivate::remotePackages()
@@ -2854,6 +2866,25 @@ void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &inv
     QObject *obj = QObject::sender();
     if (obj != nullptr)
         QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
+}
+
+void PackageManagerCorePrivate::unpackAndInstallComponents(const QList<Component *> &components,
+    const double progressOperationSize, const bool adminRightsGained)
+{
+    // Perform extract operations
+    unpackComponents(components, progressOperationSize, adminRightsGained);
+
+    // Perform rest of the operations and mark component as installed
+    const int componentsToInstallCount = components.size();
+    int installedComponents = 0;
+    foreach (Component *component, components) {
+        installComponent(component, progressOperationSize, adminRightsGained);
+
+        ++installedComponents;
+        ProgressCoordinator::instance()->emitAdditionalProgressStatus(tr("%1 of %2 components installed.")
+            .arg(QString::number(installedComponents), QString::number(componentsToInstallCount)));
+    }
+    ProgressCoordinator::instance()->emitAdditionalProgressStatus(tr("All components installed."));
 }
 
 void PackageManagerCorePrivate::processFilesForDelayedDeletion()

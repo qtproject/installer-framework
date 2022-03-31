@@ -54,6 +54,7 @@ public:
     QHash<Operation *, bool> run();
 
 signals:
+    void progressChanged(const int completed, const int total);
     void finished();
 
 public slots:
@@ -66,6 +67,9 @@ private:
     void reset();
 
 private:
+    int m_completedOperations;
+    int m_totalOperations;
+
     QHash<Operation *, QFutureWatcher<bool> *> m_operationWatchers;
     QHash<Operation *, bool> m_results;
 

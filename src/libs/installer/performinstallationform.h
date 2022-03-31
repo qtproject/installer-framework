@@ -71,13 +71,13 @@ public slots:
     void updateProgress();
     void toggleDetails();
     void clearDetailsBrowser();
-    void onDownloadStatusChanged(const QString &status);
+    void onAdditionalProgressStatusChanged(const QString &status);
     void setImageFromFileName(const QString &fileName, const QString &url);
 
 private:
     QProgressBar *m_progressBar;
     QLabel *m_progressLabel;
-    QLabel *m_downloadStatus;
+    QLabel *m_additionalProgressStatus;
     QScrollArea *m_productImagesScrollArea;
     AspectRatioLabel *m_productImagesLabel;
     QPushButton *m_detailsButton;

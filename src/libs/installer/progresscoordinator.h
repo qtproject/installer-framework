@@ -72,14 +72,14 @@ public slots:
     void emitDetailTextChanged(const QString &text);
     void emitLabelAndDetailTextChanged(const QString &text);
 
-    void emitDownloadStatus(const QString &status);
+    void emitAdditionalProgressStatus(const QString &status);
     void printProgressPercentage(int progress);
     void printProgressMessage(const QString &message);
 
 signals:
     void detailTextChanged(const QString &text);
     void detailTextResetNeeded();
-    void downloadStatusChanged(const QString &status);
+    void additionalProgressStatusChanged(const QString &status);
 
 protected:
     explicit ProgressCoordinator(QObject *parent);

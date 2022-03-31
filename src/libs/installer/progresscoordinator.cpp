@@ -306,9 +306,9 @@ double ProgressCoordinator::allPendingCalculatedPartPercentages(QObject *exclude
     return result;
 }
 
-void ProgressCoordinator::emitDownloadStatus(const QString &status)
+void ProgressCoordinator::emitAdditionalProgressStatus(const QString &status)
 {
-    emit downloadStatusChanged(status);
+    emit additionalProgressStatusChanged(status);
 }
 
 void ProgressCoordinator::printProgressPercentage(int progress)

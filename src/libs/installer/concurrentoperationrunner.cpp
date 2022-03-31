@@ -53,10 +53,18 @@ using namespace QInstaller;
 */
 
 /*!
+    \fn QInstaller::ConcurrentOperationRunner::progressChanged(const int completed, const int total)
+
+    Emitted when the count of \c completed of the \c total operations changes.
+*/
+
+/*!
     Constructs an operation runner with \a parent as the parent object.
 */
 ConcurrentOperationRunner::ConcurrentOperationRunner(QObject *parent)
     : QObject(parent)
+    , m_completedOperations(0)
+    , m_totalOperations(0)
     , m_operations(nullptr)
     , m_type(Operation::OperationType::Perform)
 {
@@ -69,9 +77,12 @@ ConcurrentOperationRunner::ConcurrentOperationRunner(QObject *parent)
 ConcurrentOperationRunner::ConcurrentOperationRunner(OperationList *operations,
         const Operation::OperationType type, QObject *parent)
     : QObject(parent)
+    , m_completedOperations(0)
+    , m_totalOperations(0)
     , m_operations(operations)
     , m_type(type)
 {
+    m_totalOperations = m_operations->size();
 }
 
 /*!
@@ -88,6 +99,7 @@ ConcurrentOperationRunner::~ConcurrentOperationRunner()
 void ConcurrentOperationRunner::setOperations(OperationList *operations)
 {
     m_operations = operations;
+    m_totalOperations = m_operations->size();
 }
 
 /*!
@@ -181,6 +193,9 @@ void ConcurrentOperationRunner::onOperationfinished()
             qCritical() << "Caught unhandled exception in:" << Q_FUNC_INFO;
             m_results.insert(op, false);
         }
+        ++m_completedOperations;
+        emit progressChanged(m_completedOperations, m_totalOperations);
+
     } else {
         // Remember also operations canceled before execution
         m_results.insert(op, false);
@@ -203,4 +218,6 @@ void ConcurrentOperationRunner::reset()
     qDeleteAll(m_operationWatchers);
     m_operationWatchers.clear();
     m_results.clear();
+
+    m_completedOperations = 0;
 }

@@ -234,6 +234,9 @@ private slots:
     void handleMethodInvocationRequest(const QString &invokableMethodName);
 
 private:
+    void unpackAndInstallComponents(const QList<Component *> &components,
+        const double progressOperationSize, const bool adminRightsGained);
+
     void deleteMaintenanceTool();
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
