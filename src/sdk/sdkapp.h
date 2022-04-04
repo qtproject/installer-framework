@@ -344,6 +344,16 @@ public:
             .isSet(CommandLineOptions::scCreateLocalRepositoryLong)
             || m_core->settings().createLocalRepository());
 
+        if (m_parser.isSet(CommandLineOptions::scMaxConcurrentOperationsLong)) {
+            bool isValid;
+            const int count = m_parser.value(CommandLineOptions::scMaxConcurrentOperationsLong).toInt(&isValid);
+            if (!isValid) {
+                errorMessage = QObject::tr("Invalid value for 'max-concurrent-operations'.");
+                return false;
+            }
+            QInstaller::PackageManagerCore::setMaxConcurrentOperations(count);
+        }
+
         if (m_parser.isSet(CommandLineOptions::scAcceptLicensesLong))
             m_core->setAutoAcceptLicenses();
 

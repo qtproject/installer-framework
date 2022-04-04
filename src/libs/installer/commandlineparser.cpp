@@ -225,6 +225,13 @@ CommandLineParser::CommandLineParser()
                       "parameter where SQUISH_PATH is pointing to your Squish installation folder: "
                       "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
         QLatin1String("port number")));
+    addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scMaxConcurrentOperationsShort << CommandLineOptions::scMaxConcurrentOperationsLong,
+        QLatin1String("Specifies the maximum number of threads used to perform concurrent operations "
+                      "in the unpacking phase of components. Set to a positive number, or 0 (default) "
+                      "to let the application determine the ideal thread count from the amount of logical "
+                      "processor cores in the system."),
+        QLatin1String("threads")));
 
     // Deprecated options
     QCommandLineOption deprecatedUpdater(CommandLineOptions::scDeprecatedUpdater);

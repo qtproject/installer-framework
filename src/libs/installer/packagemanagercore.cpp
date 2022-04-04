@@ -459,6 +459,7 @@ static bool sNoForceInstallation = false;
 static bool sNoDefaultInstallation = false;
 static bool sVirtualComponentsVisible = false;
 static bool sCreateLocalRepositoryFromBinary = false;
+static int sMaxConcurrentOperations = 0;
 
 static bool componentMatches(const Component *component, const QString &name,
     const QString &version = QString())
@@ -1403,6 +1404,30 @@ bool PackageManagerCore::createLocalRepositoryFromBinary()
 void PackageManagerCore::setCreateLocalRepositoryFromBinary(bool create)
 {
     sCreateLocalRepositoryFromBinary = create;
+}
+
+/* static */
+/*!
+    Returns the maximum count of operations that should be run concurrently
+    at the given time.
+
+    Currently this affects only operations in the unpacking phase.
+*/
+int PackageManagerCore::maxConcurrentOperations()
+{
+    return sMaxConcurrentOperations;
+}
+
+/* static */
+/*!
+    Sets the maximum \a count of operations that should be run concurrently
+    at the given time. A value of \c 0 is synonym for automatic count.
+
+    Currently this affects only operations in the unpacking phase.
+*/
+void PackageManagerCore::setMaxConcurrentOperations(int count)
+{
+    sMaxConcurrentOperations = count;
 }
 
 /*!

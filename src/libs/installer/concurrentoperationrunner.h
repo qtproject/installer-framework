@@ -50,6 +50,7 @@ public:
 
     void setOperations(OperationList *operations);
     void setType(const Operation::OperationType type);
+    void setMaxThreadCount(int count);
 
     QHash<Operation *, bool> run();
 
@@ -75,6 +76,8 @@ private:
 
     OperationList *m_operations;
     Operation::OperationType m_type;
+
+    QThreadPool *const m_threadPool;
 };
 
 } // namespace QInstaller

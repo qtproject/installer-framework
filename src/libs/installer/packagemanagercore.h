@@ -119,6 +119,9 @@ public:
     static bool createLocalRepositoryFromBinary();
     static void setCreateLocalRepositoryFromBinary(bool create);
 
+    static int maxConcurrentOperations();
+    static void setMaxConcurrentOperations(int count);
+
     static Component *componentByName(const QString &name, const QList<Component *> &components);
 
     bool directoryWritable(const QString &path) const;

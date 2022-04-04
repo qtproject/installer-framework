@@ -295,6 +295,12 @@
                 Note: To enable Squish support, you first need to build IFW with SQUISH_PATH parameter
                 where SQUISH_PATH is pointing to your Squish installation folder:
                 \c{<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>}.
+        \row
+            \li --mco, --max-concurrent-operations <threads>
+            \li Specifies the maximum number of threads used to perform concurrent operations in the
+                unpacking phase of components. Set to a positive number, or 0 (default) to let the
+                application determine the ideal thread count from the amount of logical processor
+                cores in the system.
     \endtable
 
     \section1 Summary of Commands

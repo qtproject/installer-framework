@@ -217,6 +217,8 @@ static const QLatin1String scStartClientShort("sc");
 static const QLatin1String scStartClientLong("start-client");
 static const QLatin1String scSquishPortShort("q");
 static const QLatin1String scSquishPortLong("squish-port");
+static const QLatin1String scMaxConcurrentOperationsShort("mco");
+static const QLatin1String scMaxConcurrentOperationsLong("max-concurrent-operations");
 
 // Deprecated options, provided only for backward compatibility
 static const QLatin1String scDeprecatedUpdater("updater");

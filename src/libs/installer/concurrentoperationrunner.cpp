@@ -42,8 +42,9 @@ using namespace QInstaller;
 
     The class accepts an operation list of any registered operation type. It can be
     used to execute the \c Backup, \c Perform, or \c Undo steps of the operations. The
-    operations are run in the global thread pool, which by default limits the maximum
-    number of threads to the ideal number of logical processor cores in the system.
+    operations are run in a separate thread pool of this class, which by default limits
+    the maximum number of threads to the ideal number of logical processor cores in the
+    system.
 */
 
 /*!
@@ -67,6 +68,7 @@ ConcurrentOperationRunner::ConcurrentOperationRunner(QObject *parent)
     , m_totalOperations(0)
     , m_operations(nullptr)
     , m_type(Operation::OperationType::Perform)
+    , m_threadPool(new QThreadPool(this))
 {
 }
 
@@ -81,6 +83,7 @@ ConcurrentOperationRunner::ConcurrentOperationRunner(OperationList *operations,
     , m_totalOperations(0)
     , m_operations(operations)
     , m_type(type)
+    , m_threadPool(new QThreadPool(this))
 {
     m_totalOperations = m_operations->size();
 }
@@ -109,6 +112,19 @@ void ConcurrentOperationRunner::setOperations(OperationList *operations)
 void ConcurrentOperationRunner::setType(const Operation::OperationType type)
 {
     m_type = type;
+}
+
+/*!
+    Sets the maximum \a count of threads used by the thread pool of this class.
+    A value of \c 0 sets the count automatically to ideal number of threads.
+*/
+void ConcurrentOperationRunner::setMaxThreadCount(int count)
+{
+    if (count == 0) {
+        m_threadPool->setMaxThreadCount(QThread::idealThreadCount());
+        return;
+    }
+    m_threadPool->setMaxThreadCount(count);
 }
 
 /*!
@@ -148,7 +164,7 @@ QHash<Operation *, bool> ConcurrentOperationRunner::run()
         connect(futureWatcher, &QFutureWatcher<bool>::finished,
             this, &ConcurrentOperationRunner::onOperationfinished);
 
-        futureWatcher->setFuture(QtConcurrent::run(&runOperation, operation, m_type));
+        futureWatcher->setFuture(QtConcurrent::run(m_threadPool, &runOperation, operation, m_type));
     }
 
     if (!m_operationWatchers.isEmpty()) {

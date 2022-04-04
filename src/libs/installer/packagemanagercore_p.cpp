@@ -2203,6 +2203,8 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
 
     // 3. Backup operations
     ConcurrentOperationRunner runner(&unpackOperations, Operation::Backup);
+    runner.setMaxThreadCount(m_core->maxConcurrentOperations());
+
     connect(m_core, &PackageManagerCore::installationInterrupted,
         &runner, &ConcurrentOperationRunner::cancel);
 
