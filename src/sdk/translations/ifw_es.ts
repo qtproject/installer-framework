@@ -2089,7 +2089,7 @@ Instalando componente %1</translation>
         <translation>%1 pregunta</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Configuración</translation>
     </message>
     <message>

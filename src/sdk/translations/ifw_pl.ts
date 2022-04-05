@@ -2088,7 +2088,7 @@ Trwa instalowanie elementu %1</translation>
         <translation>Pytanie: %1</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Parametry</translation>
     </message>
     <message>

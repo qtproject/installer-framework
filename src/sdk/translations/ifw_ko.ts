@@ -1889,7 +1889,7 @@ Installing component %1</source>
         <translation>%1 질문</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>설정</translation>
     </message>
     <message>

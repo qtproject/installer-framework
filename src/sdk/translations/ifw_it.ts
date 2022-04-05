@@ -2025,7 +2025,7 @@ Installazione componente %1</translation>
         <translation>%1 Domanda</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Impostazioni</translation>
     </message>
     <message>

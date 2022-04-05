@@ -2076,7 +2076,7 @@ Installing component %1</source>
         <translation>%1 質問</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>設定</translation>
     </message>
     <message>

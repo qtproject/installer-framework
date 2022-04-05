@@ -1936,7 +1936,7 @@ Installing component %1</source>
         <translation>سؤال %1</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>الإعدادات</translation>
     </message>
     <message>

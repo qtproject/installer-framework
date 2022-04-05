@@ -1774,7 +1774,7 @@ A instalar o componente %1</translation>
         <translation>Pergunta %1</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Configurações</translation>
     </message>
     <message>

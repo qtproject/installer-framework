@@ -2096,7 +2096,7 @@ Installing component %1</source>
         <translation>%1 kérdés</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Beállítások</translation>
     </message>
     <message>

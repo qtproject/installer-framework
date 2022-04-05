@@ -2112,7 +2112,7 @@ Komponente %1 wird installiert</translation>
         <translation>%1 Frage</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>

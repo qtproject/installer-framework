@@ -2113,7 +2113,7 @@ Installing component %1</source>
         <translation>Выйти из приложения обслуживания?</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Настройки</translation>
     </message>
     <message>

@@ -2047,7 +2047,7 @@ S&apos;instal·la el component %1</translation>
         <translation>Pregunta %1</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Ajustaments</translation>
     </message>
     <message>

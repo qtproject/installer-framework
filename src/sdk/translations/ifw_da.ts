@@ -2025,7 +2025,7 @@ Installerer komponenten %1</translation>
         <translation>%1 spørgsmål</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Indstillinger</translation>
     </message>
     <message>

@@ -1033,7 +1033,7 @@ void PackageManagerGui::showSettingsButton(bool show)
 
     d->m_showSettingsButton = show;
     setOption(QWizard::HaveCustomButton1, show);
-    setButtonText(QWizard::CustomButton1, tr("Settings"));
+    setButtonText(QWizard::CustomButton1, tr("&Settings"));
     button(QWizard::CustomButton1)->setToolTip(
         PackageManagerGui::tr("Specify proxy settings and configure repositories for add-on components."));
 

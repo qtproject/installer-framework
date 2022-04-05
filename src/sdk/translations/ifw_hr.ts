@@ -1731,7 +1731,7 @@ Instaliranje komponente %1</translation>
         <translation>%1 Pitanje</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>Postavke</translation>
     </message>
     <message>

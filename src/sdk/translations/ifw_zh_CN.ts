@@ -2073,7 +2073,7 @@ Installing component %1</source>
         <translation>%1 问题</translation>
     </message>
     <message>
-        <source>Settings</source>
+        <source>&amp;Settings</source>
         <translation>设置</translation>
     </message>
     <message>
