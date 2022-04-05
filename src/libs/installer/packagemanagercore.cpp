@@ -346,6 +346,14 @@ using namespace QInstaller;
 */
 
 /*!
+    \fn QInstaller::PackageManagerCore::downloadArchivesFinished()
+
+    Emitted when all data archives for components have been downloaded successfully.
+
+    \sa {installer::downloadArchivesFinished}{installer.downloadArchivesFinished}
+*/
+
+/*!
     \fn QInstaller::PackageManagerCore::wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page)
 
     Emitted when a custom \a widget is about to be inserted into \a page by
@@ -808,6 +816,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
         throw Error(tr("Installation canceled by user."));
 
     ProgressCoordinator::instance()->emitDownloadStatus(tr("All downloads finished."));
+    emit downloadArchivesFinished();
 
     return archivesJob.numberOfDownloads();
 }

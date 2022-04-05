@@ -235,6 +235,12 @@
 */
 
 /*!
+    \qmlsignal installer::downloadArchivesFinished()
+
+    Emitted when all data archives for components have been downloaded successfully.
+*/
+
+/*!
     \qmlsignal installer::wizardPageInsertionRequested(Widget widget, WizardPage page)
 
     Emitted when a custom \a widget is about to be inserted into \a page by addWizardPage.

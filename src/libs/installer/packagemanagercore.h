@@ -384,6 +384,7 @@ Q_SIGNALS:
     void offlineGenerationStarted();
     void offlineGenerationFinished();
     void titleMessageChanged(const QString &title);
+    void downloadArchivesFinished();
 
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
     void wizardPageRemovalRequested(QWidget *widget);
