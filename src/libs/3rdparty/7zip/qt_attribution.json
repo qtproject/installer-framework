@@ -1,0 +1,13 @@
+{
+    "Id": "lzmasdk",
+    "Name": "LZMA SDK",
+    "QDocModule": "ifw",
+    "Description": "Tools to develop applications that use LZMA compression.",
+    "QtUsage": "Used for reading and writing 7z archives in Qt Installer Framework",
+    "Homepage": "https://www.7-zip.org/sdk.html",
+    "Version": "9.38.beta",
+    "License": "Public Domain",
+    "LicenseId": "public-domain",
+    "LicenseFile": "COPYING",
+    "Copyright": "Copyright (c) 2015 Igor Pavlov"
+}

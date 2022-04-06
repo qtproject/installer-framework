@@ -241,7 +241,7 @@ CONFIG(libarchive) {
 }
 
 CONFIG(lzmasdk) {
-    include(../7zip/7zip.pri)
+    include(../3rdparty/7zip/7zip.pri)
 
     HEADERS += lib7z_facade.h \
         lib7z_guid.h \
