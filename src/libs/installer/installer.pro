@@ -4,7 +4,6 @@ INCLUDEPATH += . ..
 
 CONFIG += staticlib
 
-include(../7zip/7zip.pri)
 include(../kdtools/kdtools.pri)
 include(../ifwtools/ifwtools.pri)
 include(../../../installerfw.pri)
@@ -91,7 +90,6 @@ HEADERS += packagemanagercore.h \
     constants.h \
     packagemanagerproxyfactory.h \
     createlocalrepositoryoperation.h \
-    lib7z_facade.h \
     link.h \
     createlinkoperation.h \
     packagemanagercoredata.h \
@@ -105,7 +103,6 @@ HEADERS += packagemanagercore.h \
     copyfiletask.h \
     downloadfiletask.h \
     downloadfiletask_p.h \
-    unziptask.h \
     observer.h \
     runextensions.h \
     metadatajob.h \
@@ -132,17 +129,12 @@ HEADERS += packagemanagercore.h \
     keepaliveobject.h \
     systeminfo.h \
     packagesource.h \
-    lib7z_guid.h \
-    lib7z_create.h \
-    lib7z_extract.h \
-    lib7z_list.h \
     repositorycategory.h \
     componentselectionpage_p.h \
     commandlineparser.h \
     commandlineparser_p.h \
     abstractarchive.h \
     directoryguard.h \
-    lib7zarchive.h \
     archivefactory.h
 
 SOURCES += packagemanagercore.cpp \
@@ -150,7 +142,6 @@ SOURCES += packagemanagercore.cpp \
     archivefactory.cpp \
     aspectratiolabel.cpp \
     directoryguard.cpp \
-    lib7zarchive.cpp \
     componentsortfilterproxymodel.cpp \
     loggingutils.cpp \
     packagemanagercore_p.cpp \
@@ -194,7 +185,6 @@ SOURCES += packagemanagercore.cpp \
     permissionsettings.cpp \
     packagemanagerproxyfactory.cpp \
     createlocalrepositoryoperation.cpp \
-    lib7z_facade.cpp \
     link.cpp \
     createlinkoperation.cpp \
     packagemanagercoredata.cpp \
@@ -205,7 +195,6 @@ SOURCES += packagemanagercore.cpp \
     abstractfiletask.cpp \
     copyfiletask.cpp \
     downloadfiletask.cpp \
-    unziptask.cpp \
     observer.cpp \
     metadatajob.cpp \
     protocol.cpp \
@@ -251,11 +240,26 @@ CONFIG(libarchive) {
     LIBS += -llibarchive
 }
 
-LIBS += -l7z
+CONFIG(lzmasdk) {
+    include(../7zip/7zip.pri)
+
+    HEADERS += lib7z_facade.h \
+        lib7z_guid.h \
+        lib7z_create.h \
+        lib7z_extract.h \
+        lib7z_list.h \
+        lib7zarchive.h
+
+    SOURCES += lib7z_facade.cpp \
+        lib7zarchive.cpp
+
+    LIBS += -l7z
+    win32:LIBS += -loleaut32 -luser32
+}
+
 win32 {
     SOURCES += adminauthorization_win.cpp sysinfo_win.cpp
 
-    LIBS += -loleaut32 -luser32     # 7zip
     LIBS += -ladvapi32 -lpsapi      # kdtools
     LIBS += -lole32 -lshell32       # createshortcutoperation
 

@@ -10,7 +10,6 @@ SUBDIRS += \
     fakestopprocessforupdateoperation \
     messageboxhandler \
     extractarchiveoperationtest \
-    lib7zarchive \
     fileutils \
     unicodeexecutable \
     scriptengine \
@@ -46,6 +45,10 @@ SUBDIRS += \
 
 CONFIG(libarchive) {
     SUBDIRS += libarchivearchive
+}
+
+CONFIG(lzmasdk) {
+    SUBDIRS += lib7zarchive
 }
 
 win32 {

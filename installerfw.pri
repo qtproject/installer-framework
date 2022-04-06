@@ -17,6 +17,17 @@ isEqual(IFW_DISABLE_TRANSLATIONS, 1) {
     DEFINES += IFW_DISABLE_TRANSLATIONS
 }
 
+# Still default to LZMA SDK if nothing is defined by user
+!contains(CONFIG, libarchive|lzmasdk): CONFIG += lzmasdk
+
+CONFIG(lzmasdk) {
+    LZMA_WARNING_MSG = "LZMA SDK as an archive handler in IFW is deprecated. Consider" \
+        "switching to libarchive by appending 'libarchive' to your 'CONFIG' variable." \
+        "This requires linking against additional external libraries, see the" \
+        "'INSTALL' file for more details."
+    !build_pass:warning($$LZMA_WARNING_MSG)
+}
+
 defineTest(minQtVersion) {
     maj = $$1
     min = $$2
@@ -90,13 +101,17 @@ win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
 macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 INCLUDEPATH += \
-    $$IFW_SOURCE_TREE/src/libs/7zip \
     $$IFW_SOURCE_TREE/src/libs/kdtools \
     $$IFW_SOURCE_TREE/src/libs/ifwtools \
     $$IFW_SOURCE_TREE/src/libs/installer
-win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/win/CPP
-unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
+
 CONFIG(libarchive): INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/libarchive
+
+CONFIG(lzmasdk) {
+    INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip
+    win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/win/CPP
+    unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/7zip/unix/CPP
+}
 
 LIBS += -L$$IFW_LIB_PATH
 # The order is important. The linker needs to parse archives in reversed dependency order.
@@ -142,7 +157,6 @@ DEFINES += NOMINMAX QT_NO_CAST_FROM_ASCII QT_STRICT_ITERATORS QT_USE_QSTRINGBUIL
            IFW_VERSION_WIN32=$$IFW_VERSION_WIN32
 DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
-LIBS += -l7z
 win32-g++*: LIBS += -lmpr -luuid
 
 CONFIG(libarchive):equals(TEMPLATE, app) {
@@ -172,16 +186,16 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
             LIBS += -liconv
         }
     }
+
+    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/libarchive.lib
+    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/liblibarchive.a
+    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/liblibarchive.a
 }
 
-equals(TEMPLATE, app) {
+CONFIG(lzmasdk):equals(TEMPLATE, app) {
+    LIBS += -l7z
+
     msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
     win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
     unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
-
-    CONFIG(libarchive) {
-        msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/libarchive.lib
-        win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/liblibarchive.a
-        unix:POST_TARGETDEPS += $$IFW_LIB_PATH/liblibarchive.a
-    }
 }

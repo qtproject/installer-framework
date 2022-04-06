@@ -49,7 +49,9 @@
 #include "consumeoutputoperation.h"
 #include "loggingutils.h"
 
+#ifdef IFW_LIB7Z
 #include "lib7z_facade.h"
+#endif
 
 #include "updateoperationfactory.h"
 #include "filedownloaderfactory.h"
@@ -72,8 +74,9 @@ static void initResources()
 */
 void QInstaller::init()
 {
+#ifdef IFW_LIB7Z
     Lib7z::initSevenZ();
-
+#endif
 #if defined(QT_STATIC)
     ::initResources();
 #endif

@@ -56,7 +56,7 @@ The Qt Installer Framework sources contain a redistribution of parts of the
 libarchive compression and archive library, which requires you to link against
 additional libraries; liblzma, zlib, libbzip2, and on macOS, libiconv.
 
-The usage of libarchive is optional and can be enabled by adding the libarchive
+The usage of libarchive is recommended and can be enabled by adding the libarchive
 configuration feature to the list of values specified by the CONFIG variable. Installers
 created with this configuration support the (de)compression of 7zip, zip, and tar archive
 files, with gzip, bzip2, and xz as available compression methods.
@@ -64,8 +64,10 @@ files, with gzip, bzip2, and xz as available compression methods.
 The IFW_ZLIB_LIBRARY, IFW_BZIP2_LIBRARY, IFW_LZMA_LIBRARY, and IFW_ICONV_LIBRARY variables
 can be used to specify the exact library files if required.
 
-If you omit the feature, the installation of the additional dependencies can be skipped,
-but created installers will only support the 7zip format.
+If you omit the feature, the builtin LZMA SDK library will be used as a fallback and
+installation of the additional dependencies can be skipped, but created installers will
+only support the 7zip format. Note that building IFW with LZMA SDK is deprecated and may not
+be available in future versions.
 
 ### Windows
 

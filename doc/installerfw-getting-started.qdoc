@@ -112,26 +112,29 @@
     make module-qtbase module-qtdeclarative module-qttools module-qttranslations
     \endcode
 
-    \section2 Configuring Support for Archive File Formats
+    \section2 Third Party Dependencies
 
     The Qt Installer Framework sources contain a redistribution of parts of the
     libarchive compression and archive library, which requires you to link against
     additional libraries; \c liblzma, \c zlib, \c libbzip2, and on macOS, \c libiconv.
 
-    The usage of libarchive is optional and can be enabled by adding the libarchive
+    The usage of libarchive is recommended and can be enabled by adding the libarchive
     configuration feature to the list of values specified by the \c CONFIG variable. Installers
     created with this configuration support the (de)compression of 7zip, zip, and tar archive
     files, with gzip, bzip2, and xz as available compression methods.
 
-    The \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
-    variables can be used to specify the exact library files if required.
-
-    If you omit the feature, the installation of the additional dependencies can be skipped,
-    but created installers will only support the 7zip format.
-
     \code
     qmake CONFIG+=libarchive
     \endcode
+
+    The \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
+    variables can be used to specify the exact library files if required.
+
+    If you omit the feature, the builtin LZMA SDK library will be used as a fallback and
+    installation of the additional dependencies can be skipped, but created installers will
+    only support the 7zip format.
+
+    \note Building IFW with LZMA SDK is deprecated and may not be available in future versions.
 
     \section3 Installing Dependencies for Windows
 

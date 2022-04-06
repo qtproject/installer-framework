@@ -29,7 +29,7 @@
 #include "archivefactory.h"
 #ifdef IFW_LIBARCHIVE
 #include "libarchivewrapper.h"
-#else
+#elif defined(IFW_LIB7Z)
 #include "lib7zarchive.h"
 #endif
 
@@ -144,7 +144,7 @@ ArchiveFactory::ArchiveFactory()
         << QLatin1String("tar") << QLatin1String("tar.gz") << QLatin1String("tar.bz2")
         << QLatin1String("tar.xz") << QLatin1String("zip") << QLatin1String("7z")
         << QLatin1String("qbsp"));
-#else
+#elif defined(IFW_LIB7Z)
     registerArchive<Lib7zArchive>(QLatin1String("Lib7z"), QStringList()
         << QLatin1String("7z") << QLatin1String("qbsp"));
 #endif

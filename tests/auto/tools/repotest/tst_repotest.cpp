@@ -30,8 +30,11 @@
 #include <repositorygen.h>
 #include <repositorygen.cpp>
 #include <init.h>
+#include <archivefactory.h>
+
+#ifdef IFW_LIB7Z
 #include <lib7z_facade.h>
-#include <lib7zarchive.h>
+#endif
 
 #include <QFile>
 #include <QTest>
@@ -94,12 +97,13 @@ private:
         QString existingUniteMeta7z = QInstallerTools::existingUniteMeta7z(m_repoInfo.repositoryDir);
         QCOMPARE(2, matches.count());
         QCOMPARE(existingUniteMeta7z, matches.at(1));
-        Lib7zArchive file(m_repoInfo.repositoryDir + QDir::separator() + matches.at(1));
-        QVERIFY(file.open(QIODevice::ReadOnly));
+        QScopedPointer<AbstractArchive> file(ArchiveFactory::instance()
+            .create(m_repoInfo.repositoryDir + QDir::separator() + matches.at(1)));
+        QVERIFY(file->open(QIODevice::ReadOnly));
 
         //We have script<version>.qs for package A in the unite metadata
         QVector<ArchiveEntry>::const_iterator fileIt;
-        const QVector<ArchiveEntry> files = file.list();
+        const QVector<ArchiveEntry> files = file->list();
         for (fileIt = files.begin(); fileIt != files.end(); ++fileIt) {
             if (fileIt->isDirectory)
                 continue;
@@ -288,7 +292,9 @@ private slots:
 
     void initTestCase()
     {
+#ifdef IFW_LIB7Z
         Lib7z::initSevenZ();
+#endif
     }
 
     void testWithComponentMeta()

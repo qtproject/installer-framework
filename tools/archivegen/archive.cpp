@@ -28,8 +28,11 @@
 
 #include <errors.h>
 #include <archivefactory.h>
-#include <lib7z_facade.h>
 #include <utils.h>
+
+#ifdef IFW_LIB7Z
+#include <lib7z_facade.h>
+#endif
 
 #include <QCoreApplication>
 #include <QCommandLineParser>
@@ -105,8 +108,9 @@ int main(int argc, char *argv[])
             throw QInstaller::Error(QCoreApplication::translate("archivegen",
                 "Unknown compression level \"%1\". See 'archivgen --help'.").arg(value));
         }
-
+#ifdef IFW_LIB7Z
         Lib7z::initSevenZ();
+#endif
         QString archiveFilename = args[0];
         // Check if filename already has a supported suffix
         if (!ArchiveFactory::isSupportedType(archiveFilename))

@@ -91,7 +91,7 @@ private slots:
         QTest::newRow("LibArchive")
             << "LibArchive" << "myfile.zip"
             << (QStringList() << "tar" << "tar.gz" << "tar.bz2" << "tar.xz" << "zip" << "7z" << "qbsp");
-#else
+#elif defined(IFW_LIB7Z)
         QTest::newRow("Lib7z")
             << "Lib7z" << "myfile.7z" << (QStringList() << "7z" << "qbsp");
 #endif
