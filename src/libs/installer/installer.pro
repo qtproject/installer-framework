@@ -222,6 +222,8 @@ SOURCES += packagemanagercore.cpp \
     componentselectionpage_p.cpp \
     commandlineparser.cpp
 
+macos:SOURCES += fileutils_mac.mm
+
 FORMS += proxycredentialsdialog.ui \
     serverauthenticationdialog.ui
 

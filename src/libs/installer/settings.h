@@ -110,6 +110,7 @@ public:
     QString removeTargetDir() const;
     QString maintenanceToolName() const;
     QString maintenanceToolIniFile() const;
+    QString maintenanceToolAlias() const;
 
     QString configurationFileName() const;
 

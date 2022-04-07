@@ -66,6 +66,7 @@ static const QLatin1String scMaintenanceToolName("MaintenanceToolName");
 static const QLatin1String scUserRepositories("UserRepositories");
 static const QLatin1String scTmpRepositories("TemporaryRepositories");
 static const QLatin1String scMaintenanceToolIniFile("MaintenanceToolIniFile");
+static const QLatin1String scMaintenanceToolAlias("MaintenanceToolAlias");
 static const QLatin1String scDependsOnLocalInstallerBinary("DependsOnLocalInstallerBinary");
 static const QLatin1String scTranslations("Translations");
 static const QLatin1String scCreateLocalRepository("CreateLocalRepository");
@@ -313,7 +314,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scTargetDir << scAdminTargetDir
                 << scInstallerApplicationIcon << scInstallerWindowIcon
                 << scLogo << scWatermark << scBanner << scBackground << scPageListPixmap
-                << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scRemoveTargetDir
+                << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scMaintenanceToolAlias
+                << scRemoveTargetDir
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
@@ -384,6 +386,9 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             s.d->m_data.value(QLatin1String("UninstallerName"), QLatin1String("maintenancetool"))
             .toString());
     }
+    if (s.d->m_data.value(scMaintenanceToolAlias).toString().isEmpty())
+        s.d->m_data.replace(scMaintenanceToolAlias, s.d->m_data.value(scMaintenanceToolName));
+
     if (s.d->m_data.value(scTargetConfigurationFile).toString().isEmpty())
         s.d->m_data.replace(scTargetConfigurationFile, QLatin1String("components.xml"));
     if (s.d->m_data.value(scMaintenanceToolIniFile).toString().isEmpty()) {
@@ -565,6 +570,11 @@ QString Settings::maintenanceToolName() const
 QString Settings::maintenanceToolIniFile() const
 {
     return d->m_data.value(scMaintenanceToolIniFile).toString();
+}
+
+QString Settings::maintenanceToolAlias() const
+{
+    return d->m_data.value(scMaintenanceToolAlias).toString();
 }
 
 QString Settings::runProgram() const

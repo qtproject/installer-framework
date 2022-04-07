@@ -512,6 +512,10 @@
             \li Filename for the configuration of the generated maintenance tool. Defaults to
                 \e {MaintenanceToolName}.ini.
         \row
+            \li MaintenanceToolAlias
+            \li Filename for an alias of the maintenance tool that will be created to the
+                Applications directory. Defaults to \e {MaintenanceToolName}. Only used on macOS.
+        \row
             \li RemoveTargetDir
             \li Set to \c false if the target directory should not be deleted when uninstalling.
         \row

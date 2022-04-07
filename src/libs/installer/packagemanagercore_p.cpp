@@ -50,6 +50,7 @@
 #include "binarycreator.h"
 #include "loggingutils.h"
 #include "concurrentoperationrunner.h"
+#include "remoteclient.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -810,6 +811,23 @@ QString PackageManagerCorePrivate::maintenanceToolName() const
     return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
 }
 
+QString PackageManagerCorePrivate::maintenanceToolAliasPath() const
+{
+#ifdef Q_OS_MACOS
+    const bool isRoot = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
+    const QString applicationsDir = m_core->value(
+        isRoot ? QLatin1String("ApplicationsDir") : QLatin1String("ApplicationsDirUser")
+    );
+    QString maintenanceToolAlias = QString::fromLatin1("%1/%2")
+        .arg(applicationsDir, m_data.settings().maintenanceToolAlias());
+    if (!maintenanceToolAlias.endsWith(QLatin1String(".app")))
+        maintenanceToolAlias += QLatin1String(".app");
+
+    return maintenanceToolAlias;
+#endif
+    return QString();
+}
+
 QString PackageManagerCorePrivate::offlineBinaryName() const
 {
     QString filename = m_core->value(scOfflineBinaryName, qApp->applicationName()
@@ -1521,6 +1539,15 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         input.close();
         if (m_core->isInstaller())
             registerMaintenanceTool();
+#ifdef Q_OS_MACOS
+        if (newBinaryWritten) {
+            // Remove old alias as the name may have changed.
+            deleteMaintenanceToolAlias();
+            // The new alias file is created after the maintenance too binary is renamed,
+            // but we need to set the value before the variables get written to disk.
+            m_core->setValue(QLatin1String("CreatedMaintenanceToolAlias"), maintenanceToolAliasPath());
+        }
+#endif
         writeMaintenanceConfigFiles();
 
         QFile::remove(dataFile);
@@ -1530,11 +1557,12 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool hard restart:"
             << (restart ? "true." : "false.");
 
-        if (newBinaryWritten)
+        if (newBinaryWritten) {
             deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
-        else if (restart)
+            writeMaintenanceToolAlias();
+        } else if (restart) {
             SelfRestarter::setRestartOnQuit(true);
-
+        }
     } catch (const Error &err) {
         setStatus(PackageManagerCore::Failure);
         if (gainedAdminRights)
@@ -1601,6 +1629,24 @@ void PackageManagerCorePrivate::writeOfflineBaseBinary()
         qCWarning(QInstaller::lcInstallerInstallLog) << tr("Cannot remove temporary file \"%1\": %2")
             .arg(out.fileName(), out.errorString());
     }
+}
+
+void PackageManagerCorePrivate::writeMaintenanceToolAlias()
+{
+#ifdef Q_OS_MACOS
+    QString maintenanceToolBundle = QString::fromLatin1("%1/%2")
+        .arg(targetDir(), m_data.settings().maintenanceToolName());
+    if (!maintenanceToolBundle.endsWith(QLatin1String(".app")))
+        maintenanceToolBundle += QLatin1String(".app");
+
+    const QString aliasPath = maintenanceToolAliasPath();
+    const QDir targetDir(QFileInfo(aliasPath).absolutePath());
+
+    if (!targetDir.exists())
+        targetDir.mkpath(targetDir.absolutePath());
+
+    mkalias(maintenanceToolBundle, aliasPath);
+#endif
 }
 
 QString PackageManagerCorePrivate::registerPath()
@@ -2023,6 +2069,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
         deleteMaintenanceTool();    // this will also delete the TargetDir on Windows
+        deleteMaintenanceToolAlias();
 
         // If not on Windows, we need to remove TargetDir manually.
 #ifndef Q_OS_WIN
@@ -2535,6 +2582,19 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
         QFile::remove(QFileInfo(installerBinaryPath()).absolutePath() + QLatin1String("/")
             + configurationFileName());
     }
+}
+
+void PackageManagerCorePrivate::deleteMaintenanceToolAlias()
+{
+#ifdef Q_OS_MACOS
+    const QString maintenanceToolAlias = m_core->value(QLatin1String("CreatedMaintenanceToolAlias"));
+    QFile aliasFile(maintenanceToolAlias);
+    if (!maintenanceToolAlias.isEmpty() && !aliasFile.remove()) {
+        // Not fatal
+        qWarning(lcInstallerInstallLog) << "Cannot remove alias file"
+            << maintenanceToolAlias << "for maintenance tool:" << aliasFile.errorString();
+    }
+#endif
 }
 
 void PackageManagerCorePrivate::registerMaintenanceTool()

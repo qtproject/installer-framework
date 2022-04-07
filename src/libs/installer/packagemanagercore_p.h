@@ -89,6 +89,7 @@ public:
     bool directoryWritable(const QString &path) const;
 
     QString maintenanceToolName() const;
+    QString maintenanceToolAliasPath() const;
     QString installerBinaryPath() const;
     QString offlineBinaryName() const;
 
@@ -97,6 +98,8 @@ public:
 
     void writeMaintenanceTool(OperationList performedOperations);
     void writeOfflineBaseBinary();
+
+    void writeMaintenanceToolAlias();
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -240,6 +243,7 @@ private:
         const double progressOperationSize, const bool adminRightsGained);
 
     void deleteMaintenanceTool();
+    void deleteMaintenanceToolAlias();
     void registerMaintenanceTool();
     void unregisterMaintenanceTool();
 
