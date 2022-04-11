@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,6 +37,13 @@
 #include <remoteserver.h>
 #include <utils.h>
 #include <loggingutils.h>
+
+#ifdef IFW_LIB7Z
+#include <7zVersion.h>
+#endif
+#ifdef IFW_LIBARCHIVE
+#include <archive.h>
+#endif
 
 #include <QCommandLineParser>
 #include <QDateTime>
@@ -132,6 +139,12 @@ int main(int argc, char *argv[])
 
         if (parser.isSet(CommandLineOptions::scVersionLong)) {
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;
+#ifdef IFW_LIB7Z
+            std::cout << "LZMA SDK version: " << MY_VERSION << std::endl;
+#endif
+#ifdef IFW_LIBARCHIVE
+            std::cout << "Libarchive version: " << archive_version_details() << std::endl;
+#endif
             const QDateTime dateTime = QDateTime::fromString(QLatin1String(PLACEHOLDER),
                 QLatin1String("yyyy-MM-dd - HH:mm:ss"));
             if (dateTime.isValid())

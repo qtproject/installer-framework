@@ -109,8 +109,10 @@ CONFIG(libarchive): INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/libarchiv
 
 CONFIG(lzmasdk) {
     INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip
-    win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/win/CPP
-    unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/unix/CPP
+    win32:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/win/CPP \
+        $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/win/C
+    unix:INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/unix/CPP \
+        $$IFW_SOURCE_TREE/src/libs/3rdparty/7zip/unix/C
 }
 
 LIBS += -L$$IFW_LIB_PATH
