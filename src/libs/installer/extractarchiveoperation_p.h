@@ -63,6 +63,8 @@ public:
     {
         Q_ASSERT(m_op != 0);
 
+        QStringList directories;
+
         int removedCounter = 0;
         foreach (const QString &file, m_files) {
             removedCounter++;
@@ -73,9 +75,27 @@ public:
             if (fi.isFile() || fi.isSymLink()) {
                 m_op->deleteFileNowOrLater(fi.absoluteFilePath());
             } else if (fi.isDir()) {
-                removeSystemGeneratedFiles(file);
-                fi.dir().rmdir(file); // directory may not exist
+                directories.append(file);
             }
+        }
+
+        std::sort(directories.begin(), directories.end(), [](const QString &lhs, const QString &rhs) {
+            // Doesn't match the original creation order, nor will the sorted list be a logical
+            // directory tree. Only requirement is that subdirectories get removed first.
+            const int lhsParts = QDir::fromNativeSeparators(lhs)
+                .split(QLatin1Char('/'), Qt::SkipEmptyParts).size();
+            const int rhsParts = QDir::fromNativeSeparators(rhs)
+                .split(QLatin1Char('/'), Qt::SkipEmptyParts).size();
+
+            if (lhsParts == rhsParts)
+                return lhs < rhs;
+
+            return lhsParts > rhsParts;
+        });
+
+        for (auto &directory : qAsConst(directories)) {
+            removeSystemGeneratedFiles(directory);
+            QDir(directory).rmdir(directory); // directory may not exist
         }
     }
 
