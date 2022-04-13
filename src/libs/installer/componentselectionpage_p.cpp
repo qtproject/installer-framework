@@ -195,10 +195,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_core, &PackageManagerCore::metaJobTotalProgress, this,
             &ComponentSelectionPagePrivate::setTotalProgress);
 
-    // force a recalculation of components to install to keep the state correct
-    connect(q, &ComponentSelectionPage::left,
-            m_core, &PackageManagerCore::clearComponentsToInstallCalculated);
-
 #ifdef INSTALLCOMPRESSED
     allowCompressedRepositoryInstall();
 #endif

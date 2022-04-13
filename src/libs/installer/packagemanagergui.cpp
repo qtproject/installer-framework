@@ -1895,6 +1895,9 @@ void IntroductionPage::entering()
 */
 void IntroductionPage::leaving()
 {
+    // force a recalculation of components to install to keep the state correct
+    if (!packageManagerCore()->isUninstaller())
+        packageManagerCore()->componentsToInstallNeedsRecalculation();
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
