@@ -88,5 +88,6 @@ doc-build
 .rcc
 .pch
 .metadata
+*.qtc_clangd
 
 /src/sdk/translations/untranslated.ts
