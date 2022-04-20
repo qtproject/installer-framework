@@ -129,7 +129,9 @@ void PackageManagerCoreData::addDynamicPredefinedVariables()
     SHGetFolderPath(nullptr, CSIDL_PROGRAM_FILES, nullptr, 0, buffer);
     dir = QString::fromWCharArray(buffer);
 #elif defined (Q_OS_MACOS)
-    dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
+    dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(1);
+    if (dir.isEmpty())
+        dir = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation).value(0);
 #endif
     addNewVariable(QLatin1String("ApplicationsDir"), dir);
 
