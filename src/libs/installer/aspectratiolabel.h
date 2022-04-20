@@ -48,7 +48,8 @@ public:
     QSize sizeHint() const override;
 
 public slots:
-    void setPixmapAndUrl (const QPixmap &pixmap, const QString &url = QString());
+    void setPixmap(const QPixmap &pixmap);
+    void setPixmapAndUrl (const QPixmap &pixmap, const QString &url);
     void resizeEvent(QResizeEvent *event) override;
 
 protected:

@@ -52,7 +52,20 @@ AspectRatioLabel::AspectRatioLabel(QWidget *parent)
 }
 
 /*!
-    Sets the \a pixmap shown on the label and an optional \a url. Setting a new
+    Sets the \a pixmap shown on the label. Setting a new pixmap clears
+    the previous content.
+
+    \note This redefines the non-virtual slot of the same signature from the
+    QLabel base class, which results in non polymorphic behavior when
+    called via a base class pointer.
+*/
+void AspectRatioLabel::setPixmap(const QPixmap &pixmap)
+{
+    setPixmapAndUrl(pixmap, QString());
+}
+
+/*!
+    Sets the \a pixmap shown on the label and an \a url. Setting a new
     pixmap clears the previous content. When clicking the \a pixmap, \a url
     is opened in a browser. If the \a url is a reference to a file, it will
     be opened with a suitable application instead of a Web browser.
