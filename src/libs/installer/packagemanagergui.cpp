@@ -74,6 +74,7 @@
 #include <QSplitter>
 #include <QStringListModel>
 #include <QTextBrowser>
+#include <QFontDatabase>
 
 #include <QVBoxLayout>
 #include <QShowEvent>
@@ -1982,6 +1983,7 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     m_textBrowser->setReadOnly(true);
     m_textBrowser->setOpenLinks(false);
     m_textBrowser->setOpenExternalLinks(true);
+    m_textBrowser->setFont(QFontDatabase::systemFont(QFontDatabase::FixedFont));
     m_textBrowser->setObjectName(QLatin1String("LicenseTextBrowser"));
     connect(m_textBrowser, &QTextBrowser::anchorClicked, this, &LicenseAgreementPage::openLicenseUrl);
 
