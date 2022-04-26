@@ -37,6 +37,7 @@
 #include "adminauthorization.h"
 #include "utils.h"
 #include "errors.h"
+#include "loggingutils.h"
 
 #include <QRunnable>
 #include <QThread>
@@ -70,7 +71,8 @@ public:
             removedCounter++;
 
             const QFileInfo fi(file);
-            emit currentFileChanged(QDir::toNativeSeparators(file));
+            if (LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed)
+                emit currentFileChanged(QDir::toNativeSeparators(file));
             emit progressChanged(double(removedCounter) / m_files.count());
             if (fi.isFile() || fi.isSymLink()) {
                 m_op->deleteFileNowOrLater(fi.absoluteFilePath());

@@ -271,6 +271,9 @@ void ExtractArchiveOperation::startUndoProcess(const QStringList &files)
     connect(thread, &WorkerThread::progressChanged, this,
         &ExtractArchiveOperation::progressChanged);
 
+    const QFileInfo archive(arguments().at(0));
+    emit outputTextChanged(tr("Removing files extracted from \"%1\"").arg(archive.fileName()));
+
     QEventLoop loop;
     connect(thread, &QThread::finished, &loop, &QEventLoop::quit, Qt::QueuedConnection);
     thread->start();
