@@ -2222,6 +2222,9 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     const OperationList backupOperations = backupResults.keys();
 
     for (auto &operation : backupOperations) {
+        if (m_core->status() == PackageManagerCore::Canceled)
+            break; // User canceled, no need to print warnings
+
         if (!backupResults.value(operation) || operation->error() != Operation::NoError) {
             // For Extract, backup stops only on read errors. That means the perform step will
             // also fail later on, which handles the user selection on what to do with the error.
