@@ -290,7 +290,8 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
         int status = archive_read_open1(reader.get());
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
+            emit finished(tr("Cannot open archive for reading: %1")
+                .arg(LibArchiveArchive::errorStringWithCode(reader.get())));
             return;
         }
 
@@ -304,7 +305,8 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
                 break;
             if (status != ARCHIVE_OK) {
                 m_status = Failure;
-                emit finished(LibArchiveArchive::errorStringWithCode(reader.get()));
+                emit finished(tr("Cannot read entry header: %1")
+                    .arg(LibArchiveArchive::errorStringWithCode(reader.get())));
                 return;
             }
             const QString current = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
@@ -417,7 +419,8 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
 
     status = archive_write_header(writer, entry);
     if (status != ARCHIVE_OK) {
-        emit finished(LibArchiveArchive::errorStringWithCode(writer));
+        emit finished(tr("Cannot write entry \"%1\" to disk: %2")
+            .arg(entryPath, LibArchiveArchive::errorStringWithCode(writer)));
         return false;
     }
 
@@ -427,13 +430,15 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
             return true;
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(LibArchiveArchive::errorStringWithCode(reader));
+            emit finished(tr("Cannot write entry \"%1\" to disk: %2")
+                .arg(entryPath, LibArchiveArchive::errorStringWithCode(reader)));
             return false;
         }
         status = archive_write_data_block(writer, buff, size, offset);
         if (status != ARCHIVE_OK) {
             m_status = Failure;
-            emit finished(LibArchiveArchive::errorStringWithCode(writer));
+            emit finished(tr("Cannot write entry \"%1\" to disk: %2")
+                .arg(entryPath, LibArchiveArchive::errorStringWithCode(writer)));
             return false;
         }
     }
@@ -622,8 +627,10 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
             emit currentEntryChanged(directory);
 
         int status = archiveReadOpenWithCallbacks(reader.get());
-        if (status != ARCHIVE_OK)
-            throw Error(errorStringWithCode(reader.get()));
+        if (status != ARCHIVE_OK) {
+            throw Error(tr("Cannot open archive for reading: %1")
+                .arg(errorStringWithCode(reader.get())));
+        }
 
         forever {
             if (m_cancelScheduled)
@@ -632,8 +639,10 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
             status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
-            if (status != ARCHIVE_OK)
-                throw Error(errorStringWithCode(reader.get()));
+            if (status != ARCHIVE_OK) {
+                throw Error(tr("Cannot read entry header: %1")
+                    .arg(errorStringWithCode(reader.get())));
+            }
 
             const QString current = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
             const QString outputPath = dirPath + QDir::separator() + current;
@@ -646,8 +655,10 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
             }
 
             emit currentEntryChanged(outputPath);
-            if (!writeEntry(reader.get(), writer.get(), entry))
-                throw Error(errorString()); // appropriate error string set in writeEntry()
+            if (!writeEntry(reader.get(), writer.get(), entry)) {
+                throw Error(tr("Cannot write entry \"%1\" to disk: %2")
+                    .arg(outputPath, errorString())); // appropriate error string set in writeEntry()
+            }
 
             ++completed;
             emit completedChanged(completed, totalFiles);
@@ -703,11 +714,15 @@ bool LibArchiveArchive::create(const QStringList &data)
         m_data->file.fileName().toWCharArray(fileName_w.get());
         fileName_w.get()[m_data->file.fileName().length()] = '\0';
 
-        if ((status = archive_write_open_filename_w(writer.get(), fileName_w.get())))
-            throw Error(errorStringWithCode(writer.get()));
+        if ((status = archive_write_open_filename_w(writer.get(), fileName_w.get()))) {
+            throw Error(tr("Cannot open file \"%1\" for writing: %2")
+                .arg(m_data->file.fileName(), errorStringWithCode(writer.get())));
+        }
 #else
-        if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toUtf8())))
-            throw Error(errorStringWithCode(writer.get()));
+        if ((status = archive_write_open_filename(writer.get(), m_data->file.fileName().toUtf8()))) {
+            throw Error(tr("Cannot open file \"%1\" for writing: %2")
+                .arg(m_data->file.fileName(), errorStringWithCode(writer.get())));
+        }
 #endif
         for (auto &dataEntry : globbedData) {
             QScopedPointer<archive, ScopedPointerReaderDeleter> reader(archive_read_disk_new());
@@ -720,11 +735,15 @@ bool LibArchiveArchive::create(const QStringList &data)
             dataEntry.toWCharArray(dataEntry_w.get());
             dataEntry_w.get()[dataEntry.length()] = '\0';
 
-            if ((status = archive_read_disk_open_w(reader.get(), dataEntry_w.get())))
-                throw Error(errorStringWithCode(reader.get()));
+            if ((status = archive_read_disk_open_w(reader.get(), dataEntry_w.get()))) {
+                throw Error(tr("Cannot open file \"%1\"for reading: %2")
+                    .arg(dataEntry, errorStringWithCode(reader.get())));
+            }
 #else
-            if ((status = archive_read_disk_open(reader.get(), dataEntry.toUtf8())))
-                throw Error(errorStringWithCode(reader.get()));
+            if ((status = archive_read_disk_open(reader.get(), dataEntry.toUtf8()))) {
+                throw Error(tr("Cannot open file \"%1\" for reading: %2")
+                    .arg(dataEntry, errorStringWithCode(reader.get())));
+            }
 #endif
             QDir basePath = QFileInfo(dataEntry).dir();
             forever {
@@ -732,8 +751,10 @@ bool LibArchiveArchive::create(const QStringList &data)
                 status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header2, reader.get(), entry.get());
                 if (status == ARCHIVE_EOF)
                     break;
-                if (status != ARCHIVE_OK)
-                    throw Error(errorStringWithCode(reader.get()));
+                if (status != ARCHIVE_OK) {
+                    throw Error(tr("Cannot read entry header: %1")
+                        .arg(errorStringWithCode(reader.get())));
+                }
 
                 const QFileInfo fileOrDir(pathWithoutNamespace(
                     ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::sourcepath, entry.get())));
@@ -743,16 +764,19 @@ bool LibArchiveArchive::create(const QStringList &data)
 
                 archive_read_disk_descend(reader.get());
                 status = archive_write_header(writer.get(), entry.get());
-                if (status < ARCHIVE_OK)
-                    throw Error(errorStringWithCode(writer.get()));
-
+                if (status < ARCHIVE_OK) {
+                    throw Error(tr("Cannot write entry header for \"%1\": %2")
+                        .arg(fileOrDir.filePath(), errorStringWithCode(writer.get())));
+                }
                 if (fileOrDir.isDir() || archive_entry_size(entry.get()) == 0)
                     continue; // nothing to copy
 
                 QFile file(pathWithoutNamespace(ArchiveEntryPaths::callWithSystemLocale<QString>(
                     ArchiveEntryPaths::sourcepath, entry.get())));
-                if (!file.open(QIODevice::ReadOnly))
-                    throw Error(file.errorString());
+                if (!file.open(QIODevice::ReadOnly)) {
+                    throw Error(tr("Cannot open file \"%1\" for reading: %2")
+                        .arg(file.fileName(), file.errorString()));
+                }
 
                 QByteArray buffer;
                 constexpr qint64 blockSize = 4 * 1024;
@@ -789,15 +813,19 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
     QVector<ArchiveEntry> entries;
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
-        if (status != ARCHIVE_OK)
-            throw Error(errorStringWithCode(reader.get()));
+        if (status != ARCHIVE_OK) {
+            throw Error(tr("Cannot open archive for reading: %1")
+                .arg(errorStringWithCode(reader.get())));
+        }
 
         forever {
             status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
-            if (status != ARCHIVE_OK)
-                throw Error(errorStringWithCode(reader.get()));
+            if (status != ARCHIVE_OK) {
+                throw Error(tr("Cannot read entry header: %1")
+                    .arg(errorStringWithCode(reader.get())));
+            }
 
             ArchiveEntry archiveEntry;
             archiveEntry.path = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
@@ -831,8 +859,10 @@ bool LibArchiveArchive::isSupported()
 
     try {
         const int status = archiveReadOpenWithCallbacks(reader.get());
-        if (status != ARCHIVE_OK)
-            throw Error(errorStringWithCode(reader.get()));
+        if (status != ARCHIVE_OK) {
+            throw Error(tr("Cannot open archive for reading: %1")
+                .arg(errorStringWithCode(reader.get())));
+        }
     } catch (const Error &e) {
         setErrorString(e.message());
         m_data->file.seek(0);
@@ -1179,15 +1209,19 @@ quint64 LibArchiveArchive::totalFiles()
 
     try {
         int status = archiveReadOpenWithCallbacks(reader.get());
-        if (status != ARCHIVE_OK)
-            throw Error(errorStringWithCode(reader.get()));
+        if (status != ARCHIVE_OK) {
+            throw Error(tr("Cannot open archive for reading: %1")
+                .arg(errorStringWithCode(reader.get())));
+        }
 
         forever {
             status = ArchiveEntryPaths::callWithSystemLocale<int>(archive_read_next_header, reader.get(), &entry);
             if (status == ARCHIVE_EOF)
                 break;
-            if (status != ARCHIVE_OK)
-                throw Error(errorStringWithCode(reader.get()));
+            if (status != ARCHIVE_OK) {
+                throw Error(tr("Cannot read entry header: %1")
+                    .arg(errorStringWithCode(reader.get())));
+            }
 
             ++files;
         }
