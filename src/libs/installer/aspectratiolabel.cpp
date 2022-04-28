@@ -49,6 +49,7 @@ AspectRatioLabel::AspectRatioLabel(QWidget *parent)
 {
     setMinimumSize(1, 1);
     setScaledContents(false);
+    setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
 }
 
 /*!
