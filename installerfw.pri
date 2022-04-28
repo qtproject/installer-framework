@@ -161,6 +161,12 @@ DEFINES += IFW_REPOSITORY_FORMAT_VERSION=$$IFW_REPOSITORY_FORMAT_VERSION
 
 win32-g++*: LIBS += -lmpr -luuid
 
+equals(TEMPLATE, app) {
+    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib
+    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
+    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a
+}
+
 CONFIG(libarchive):equals(TEMPLATE, app) {
     LIBS += -llibarchive
     !isEmpty(IFW_ZLIB_LIBRARY) {
@@ -197,7 +203,7 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
 CONFIG(lzmasdk):equals(TEMPLATE, app) {
     LIBS += -l7z
 
-    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/installer.lib $$IFW_LIB_PATH/7z.lib
-    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
-    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/libinstaller.a $$IFW_LIB_PATH/lib7z.a
+    msvc:POST_TARGETDEPS += $$IFW_LIB_PATH/7z.lib
+    win32-g++*:POST_TARGETDEPS += $$IFW_LIB_PATH/lib7z.a
+    unix:POST_TARGETDEPS += $$IFW_LIB_PATH/lib7z.a
 }
