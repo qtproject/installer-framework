@@ -426,8 +426,11 @@ bool ExtractWorker::writeEntry(archive *reader, archive *writer, archive_entry *
 
     forever {
         status = archive_read_data_block(reader, &buff, &size, &offset);
-        if (status == ARCHIVE_EOF)
-            return true;
+        if (status == ARCHIVE_EOF) {
+            status = archive_write_finish_entry(writer);
+            if (status == ARCHIVE_OK)
+                return true;
+        }
         if (status != ARCHIVE_OK) {
             m_status = Failure;
             emit finished(tr("Cannot write entry \"%1\" to disk: %2")
@@ -1064,8 +1067,11 @@ bool LibArchiveArchive::writeEntry(archive *reader, archive *writer, archive_ent
 
     forever {
         status = archive_read_data_block(reader, &buff, &size, &offset);
-        if (status == ARCHIVE_EOF)
-            return true;
+        if (status == ARCHIVE_EOF) {
+            status = archive_write_finish_entry(writer);
+            if (status == ARCHIVE_OK)
+                return true;
+        }
         if (status != ARCHIVE_OK) {
             setErrorString(errorStringWithCode(reader));
             return false;
