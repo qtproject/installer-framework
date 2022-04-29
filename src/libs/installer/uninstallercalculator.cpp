@@ -44,8 +44,8 @@ namespace QInstaller {
 
 UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents
          , PackageManagerCore *core
-         , const QHash<QString, QStringList> &autoDependencyComponentHash
-         , const QHash<QString, QStringList> &dependencyComponentHash
+         , const AutoDependencyHash &autoDependencyComponentHash
+         , const DependencyHash &dependencyComponentHash
          , const QStringList &localVirtualComponents)
     : m_installedComponents(installedComponents)
     , m_core(core)

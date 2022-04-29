@@ -29,6 +29,7 @@
 #define INSTALLERCALCULATOR_H
 
 #include "installer_global.h"
+#include "qinstallerglobal.h"
 
 #include <QHash>
 #include <QList>
@@ -42,7 +43,7 @@ class Component;
 class INSTALLER_EXPORT InstallerCalculator
 {
 public:
-    InstallerCalculator(const QList<Component *> &allComponents, const QHash<QString, QStringList> &autoDependencyComponentHash);
+    InstallerCalculator(const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash);
 
     enum InstallReasonType
     {
@@ -85,7 +86,7 @@ private:
     //the component is added
     QHash<QString, QPair<InstallReasonType, QString> > m_toInstallComponentIdReasonHash;
     //Helper hash for quicker search for autodependency components
-    QHash<QString, QStringList> m_autoDependencyComponentHash;
+    AutoDependencyHash m_autoDependencyComponentHash;
 };
 
 }

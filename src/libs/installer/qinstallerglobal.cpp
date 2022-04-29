@@ -74,11 +74,24 @@
 /*!
     \typedef QInstaller::AutoDependencyHash
 
-    Synonym for QHash<QString, QStringList>.
+    Synonym for QHash<QString, QStringList>. The hash key is component name,
+    that other components automatically depend on. The value can contain
+    several component names, which are installed as an automatic dependency.
+    For example:
+    \badcode
+    <Name>A</Name> //Hash value
+    <AutoDependOn>B</AutoDependOn> //Hash key
+    \endcode
 */
 
 /*!
     \typedef QInstaller::DependencyHash
 
-    Synonym for QHash<QString, QStringList>.
+    Synonym for QHash<QString, QStringList>. The hash key is component name,
+    which other components depend on. The value can contain several component
+    names, which depend on the key. For example:
+    \badcode
+    <Name>A</Name> //Hash value
+    <Dependencies>B</Dependencies> //Hash key
+    \endcode
 */

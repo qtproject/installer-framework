@@ -41,7 +41,7 @@ namespace QInstaller {
     \internal
 */
 
-InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents, const QHash<QString, QStringList> &autoDependencyComponentHash)
+InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash)
     : m_allComponents(allComponents)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
 {

@@ -29,6 +29,7 @@
 #define UNINSTALLERCALCULATOR_H
 
 #include "installer_global.h"
+#include "qinstallerglobal.h"
 
 #include <QHash>
 #include <QList>
@@ -53,8 +54,8 @@ public:
     };
 
     UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core,
-                          const QHash<QString, QStringList> &autoDependencyComponentHash,
-                          const QHash<QString, QStringList> &dependencyComponentHash,
+                          const AutoDependencyHash &autoDependencyComponentHash,
+                          const DependencyHash &dependencyComponentHash,
                           const QStringList &localVirtualComponents);
 
     QSet<Component*> componentsToUninstall() const;
@@ -76,8 +77,8 @@ private:
     QSet<Component *> m_componentsToUninstall;
     PackageManagerCore *m_core;
     QHash<QString, QPair<UninstallReasonType, QString> > m_toUninstallComponentIdReasonHash;
-    QHash<QString, QStringList> m_autoDependencyComponentHash;
-    QHash<QString, QStringList> m_dependencyComponentHash;
+    AutoDependencyHash m_autoDependencyComponentHash;
+    DependencyHash m_dependencyComponentHash;
     QStringList m_localVirtualComponents;
     QList<Component *> m_virtualComponentsForReverse;
 };
