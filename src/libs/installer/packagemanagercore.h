@@ -127,7 +127,7 @@ public:
     bool directoryWritable(const QString &path) const;
 
     bool fetchLocalPackagesTree();
-    LocalPackagesHash localInstalledPackages();
+    LocalPackagesMap localInstalledPackages();
 
     void networkSettingsChanged();
     PackageManagerProxyFactory *proxyFactory() const;
@@ -411,15 +411,15 @@ private:
     struct Data {
         Package *package;
         QHash<QString, Component*> *components;
-        const LocalPackagesHash *installedPackages;
+        const LocalPackagesMap *installedPackages;
         QHash<Component*, QStringList> replacementToExchangeables;
     };
 
     bool updateComponentData(struct Data &data, QInstaller::Component *component);
     void storeReplacedComponents(QHash<QString, Component*> &components, const struct Data &data,
                                  QMap<QString, QString> *const treeNameComponents = nullptr);
-    bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
-    bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesHash &localPackages);
+    bool fetchAllPackages(const PackagesList &remotePackages, const LocalPackagesMap &localPackages);
+    bool fetchUpdaterPackages(const PackagesList &remotePackages, const LocalPackagesMap &localPackages);
 
     void createAutoTreeNames(QHash<QString, Component *> &components,
                              const QMap<QString, QString> &treeNameComponents);
@@ -430,7 +430,7 @@ private:
     ComponentModel *componentModel(PackageManagerCore *core, const QString &objectName) const;
     QList<Component *> componentsMarkedForInstallation() const;
 
-    bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages);
+    bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesMap installedPackages);
     bool componentUninstallableFromCommandLine(const QString &componentName);
     bool checkComponentsForInstallation(const QStringList &components, QString &errorMessage);
 

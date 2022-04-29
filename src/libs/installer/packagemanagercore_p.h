@@ -255,7 +255,7 @@ private:
         bool adminRightsGained, bool deleteOperation);
 
     PackagesList remotePackages();
-    LocalPackagesHash localInstalledPackages();
+    LocalPackagesMap localInstalledPackages();
     bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
     bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
     void processFilesForDelayedDeletion();

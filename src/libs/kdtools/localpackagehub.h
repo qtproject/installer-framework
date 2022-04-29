@@ -77,6 +77,8 @@ public:
     };
 
     bool isValid() const;
+
+    QMap<QString, LocalPackage> localPackages() const;
     QStringList packageNames() const;
 
     Error error() const;

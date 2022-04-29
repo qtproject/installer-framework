@@ -2744,12 +2744,12 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     the application is running in installer mode or the local components file could not be parsed, the
     hash is empty.
 */
-LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
+LocalPackagesMap PackageManagerCorePrivate::localInstalledPackages()
 {
     if (isInstaller())
-        return LocalPackagesHash();
+        return LocalPackagesMap();
 
-    LocalPackagesHash installedPackages;
+
     if (m_localPackageHub->error() != LocalPackageHub::NoError) {
         if (m_localPackageHub->fileName().isEmpty())
             m_localPackageHub->setFileName(componentsXmlPath());
@@ -2766,17 +2766,7 @@ LocalPackagesHash PackageManagerCorePrivate::localInstalledPackages()
         setStatus(PackageManagerCore::Failure, tr("Failure to read packages from %1.")
             .arg(componentsXmlPath()));
     }
-
-    foreach (const LocalPackage &package, m_localPackageHub->packageInfos()) {
-        if (statusCanceledOrFailed())
-            break;
-        installedPackages.insert(package.name, package);
-        if (package.virtualComp && package.autoDependencies.isEmpty()) {
-            if (!m_localVirtualComponents.contains(package.name))
-                m_localVirtualComponents.append(package.name);
-        }
-    }
-    return installedPackages;
+    return m_localPackageHub->localPackages();
 }
 
 bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadType type)

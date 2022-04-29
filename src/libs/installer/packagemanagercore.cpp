@@ -1484,7 +1484,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
         return false;
     }
 
-    LocalPackagesHash installedPackages = d->localInstalledPackages();
+    LocalPackagesMap installedPackages = d->localInstalledPackages();
     if (installedPackages.isEmpty()) {
         if (status() != Failure)
             d->setStatus(Failure, tr("No installed packages found."));
@@ -1564,7 +1564,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
 /*!
     Returns a list of local installed packages. The list can be empty.
 */
-LocalPackagesHash PackageManagerCore::localInstalledPackages()
+LocalPackagesMap PackageManagerCore::localInstalledPackages()
 {
     return d->localInstalledPackages();
 }
@@ -1635,7 +1635,7 @@ PackagesList PackageManagerCore::remotePackages()
 */
 bool PackageManagerCore::fetchCompressedPackagesTree()
 {
-    const LocalPackagesHash installedPackages = d->localInstalledPackages();
+    const LocalPackagesMap installedPackages = d->localInstalledPackages();
     if (!isInstaller() && status() == Failure)
         return false;
 
@@ -1671,7 +1671,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
     }
 
-    const LocalPackagesHash installedPackages = d->localInstalledPackages();
+    const LocalPackagesMap installedPackages = d->localInstalledPackages();
     if (!isInstaller() && status() == Failure)
         return false;
 
@@ -1687,11 +1687,10 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     const PackagesList &packages = d->remotePackages();
     if (packages.isEmpty())
         return false;
-
     return fetchPackagesTree(packages, installedPackages);
 }
 
-bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const LocalPackagesHash installedPackages) {
+bool PackageManagerCore::fetchPackagesTree(const PackagesList &packages, const LocalPackagesMap installedPackages) {
 
     bool success = false;
     if (!isUpdater()) {
@@ -2427,7 +2426,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
     QRegularExpression re(regexp);
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     const PackagesList &packages = d->remotePackages();
-    if (!fetchAllPackages(packages, LocalPackagesHash())) {
+    if (!fetchAllPackages(packages, LocalPackagesMap())) {
         qCWarning(QInstaller::lcInstallerInstallLog)
             << "There was a problem with loading the package data.";
         return;
@@ -2567,7 +2566,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
 void PackageManagerCore::listInstalledPackages(const QString &regexp)
 {
     setPackageViewer();
-    LocalPackagesHash installedPackages = this->localInstalledPackages();
+    LocalPackagesMap installedPackages = this->localInstalledPackages();
 
     if (!regexp.isEmpty()) {
         qCDebug(QInstaller::lcInstallerInstallLog)
@@ -2808,7 +2807,7 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
         setPackageManager();
 
         //Check that packages are not already installed
-        const LocalPackagesHash installedPackages = this->localInstalledPackages();
+        const LocalPackagesMap installedPackages = this->localInstalledPackages();
         QStringList helperStrList;
         helperStrList << components << installedPackages.keys();
         helperStrList.removeDuplicates();
@@ -3992,7 +3991,7 @@ void PackageManagerCore::storeReplacedComponents(QHash<QString, Component *> &co
     }
 }
 
-bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const LocalPackagesHash &locals)
+bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const LocalPackagesMap &locals)
 {
     emit startAllComponentsReset();
 
@@ -4051,6 +4050,11 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     allTreeNameComponents = remoteTreeNameComponents;
 
     foreach (auto &package, locals) {
+        if (package.virtualComp && package.autoDependencies.isEmpty()) {
+              if (!d->m_localVirtualComponents.contains(package.name))
+                  d->m_localVirtualComponents.append(package.name);
+        }
+
         QScopedPointer<QInstaller::Component> localComponent(new QInstaller::Component(this));
         localComponent->loadDataFromPackage(package);
         const QString name = localComponent->treeName();
@@ -4124,7 +4128,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
     return true;
 }
 
-bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const LocalPackagesHash &locals)
+bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const LocalPackagesMap &locals)
 {
     emit startUpdaterComponentsReset();
 
@@ -4136,7 +4140,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     data.installedPackages = &locals;
 
     setFoundEssentialUpdate(false);
-    LocalPackagesHash installedPackages = locals;
+    LocalPackagesMap installedPackages = locals;
     QStringList replaceMes;
 
     foreach (Package *const update, remotes) {
@@ -4206,6 +4210,11 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
     }
 
     foreach (const QString &key, locals.keys()) {
+        LocalPackage package = locals.value(key);
+        if (package.virtualComp && package.autoDependencies.isEmpty()) {
+              if (!d->m_localVirtualComponents.contains(package.name))
+                  d->m_localVirtualComponents.append(package.name);
+        }
         // Keep a list of local components that should be replaced
         // Remove from components list - we don't want to update the component
         // as it is replaced by other component

@@ -316,7 +316,7 @@ void LoggingHandler::printLocalPackageInformation(const QList<KDUpdater::LocalPa
     depending on the current verbosity level. If a package is also present in \a installedPackages,
     the installed version will be included in printed information.
 */
-void LoggingHandler::printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesHash &installedPackages) const
+void LoggingHandler::printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesMap &installedPackages) const
 {
     QString output;
     QXmlStreamWriter stream(&output);

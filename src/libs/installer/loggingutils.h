@@ -66,7 +66,7 @@ public:
 
     void printUpdateInformation(const QList<Component *> components) const;
     void printLocalPackageInformation(const QList<KDUpdater::LocalPackage> &packages) const;
-    void printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesHash &installedPackages) const;
+    void printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesMap &installedPackages) const;
 
     friend VerbosityLevel &operator++(VerbosityLevel &level, int);
     friend VerbosityLevel &operator--(VerbosityLevel &level, int);

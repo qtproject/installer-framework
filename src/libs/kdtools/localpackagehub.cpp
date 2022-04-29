@@ -124,6 +124,13 @@ bool LocalPackageHub::isValid() const
 }
 
 /*!
+    Returns a map of all local installed packages. Map key is the package name.
+*/
+QMap<QString, LocalPackage> LocalPackageHub::localPackages() const
+{
+    return d->m_packageInfoMap;
+}
+/*!
     Returns a list of all local installed packages.
 */
 QStringList LocalPackageHub::packageNames() const

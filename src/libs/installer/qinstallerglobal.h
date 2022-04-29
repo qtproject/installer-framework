@@ -55,7 +55,7 @@ typedef QList<QInstaller::Operation*> OperationList;
 typedef KDUpdater::Update Package;
 typedef QList<QInstaller::Package*> PackagesList;
 
-typedef QHash<QString, KDUpdater::LocalPackage> LocalPackagesHash;
+typedef QMap<QString, KDUpdater::LocalPackage> LocalPackagesMap;
 
 typedef QHash<QString, QStringList> AutoDependencyHash;
 typedef QHash<QString, QStringList> DependencyHash;
