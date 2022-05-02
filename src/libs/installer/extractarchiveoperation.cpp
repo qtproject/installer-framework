@@ -148,7 +148,6 @@ bool ExtractArchiveOperation::performOperation()
         connect(core, &PackageManagerCore::statusChanged, worker, &Worker::onStatusChanged);
 
     QFileInfo fileInfo(archivePath);
-    qCDebug(lcInstallerInstallLog) << "Extracting" << fileInfo.fileName();
     emit outputTextChanged(tr("Extracting \"%1\"").arg(fileInfo.fileName()));
     {
         QEventLoop loop;

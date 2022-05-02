@@ -51,6 +51,7 @@
 #include "loggingutils.h"
 #include "concurrentoperationrunner.h"
 #include "remoteclient.h"
+#include "operationtracer.h"
 
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
@@ -88,41 +89,9 @@ namespace QInstaller {
     \internal
 */
 
-class OperationTracer
+static bool runOperation(Operation *operation, Operation::OperationType type)
 {
-public:
-    OperationTracer(Operation *operation = nullptr) : m_operation(nullptr)
-    {
-        if (!operation)
-            return;
-        // don't create output for that hacky pseudo operation
-        if (operation->name() != QLatin1String("MinimumProgress"))
-            m_operation = operation;
-    }
-    void trace(const QString &state)
-    {
-        if (!m_operation)
-            return;
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("%1 %2 operation: %3")
-            .arg(state, m_operation->value(QLatin1String("component")).toString(), m_operation->name());
-        QStringList args = m_operation->arguments();
-        if (m_operation->requiresUnreplacedVariables())
-            args = m_operation->packageManager()->replaceVariables(m_operation->arguments());
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("\t- arguments: %1")
-            .arg(args.join(QLatin1String(", ")));
-    }
-    ~OperationTracer() {
-        if (!m_operation)
-            return;
-        qCDebug(QInstaller::lcInstallerInstallLog) << "Done";
-    }
-private:
-    Operation *m_operation;
-};
-
-static bool runOperation(Operation *operation, Operation::OperationType type, const bool trace)
-{
-    OperationTracer tracer = trace ? OperationTracer(operation) : OperationTracer();
+    OperationTracer tracer(operation);
     switch (type) {
         case Operation::Backup:
             tracer.trace(QLatin1String("backup"));
@@ -370,10 +339,10 @@ bool PackageManagerCorePrivate::isProcessRunning(const QString &name,
 
 /* static */
 bool PackageManagerCorePrivate::performOperationThreaded(Operation *operation,
-    Operation::OperationType type, bool trace)
+    Operation::OperationType type)
 {
     QFutureWatcher<bool> futureWatcher;
-    const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type, trace);
+    const QFuture<bool> future = QtConcurrent::run(runOperation, operation, type);
 
     QEventLoop loop;
     QObject::connect(&futureWatcher, &decltype(futureWatcher)::finished, &loop, &QEventLoop::quit,

@@ -29,6 +29,7 @@
 #include "concurrentoperationrunner.h"
 
 #include "errors.h"
+#include "operationtracer.h"
 
 #include <QtConcurrent>
 
@@ -45,6 +46,12 @@ using namespace QInstaller;
     operations are run in a separate thread pool of this class, which by default limits
     the maximum number of threads to the ideal number of logical processor cores in the
     system.
+*/
+
+/*!
+    \fn QInstaller::ConcurrentOperationRunner::operationStarted(QInstaller::Operation *operation)
+
+    Emitted when the execution of \a operation is started.
 */
 
 /*!
@@ -70,6 +77,8 @@ ConcurrentOperationRunner::ConcurrentOperationRunner(QObject *parent)
     , m_type(Operation::OperationType::Perform)
     , m_threadPool(new QThreadPool(this))
 {
+    connect(this, &ConcurrentOperationRunner::operationStarted,
+        this, &ConcurrentOperationRunner::onOperationStarted);
 }
 
 /*!
@@ -86,6 +95,9 @@ ConcurrentOperationRunner::ConcurrentOperationRunner(OperationList *operations,
     , m_threadPool(new QThreadPool(this))
 {
     m_totalOperations = m_operations->size();
+
+    connect(this, &ConcurrentOperationRunner::operationStarted,
+        this, &ConcurrentOperationRunner::onOperationStarted);
 }
 
 /*!
@@ -128,27 +140,6 @@ void ConcurrentOperationRunner::setMaxThreadCount(int count)
 }
 
 /*!
-    \internal
-
-    Runs \a operation in mode of \a type. Returns \c true on success, \c false otherwise.
-*/
-static bool runOperation(Operation *const operation, const Operation::OperationType type)
-{
-    switch (type) {
-    case Operation::Backup:
-        operation->backup();
-        return true;
-    case Operation::Perform:
-        return operation->performOperation();
-    case Operation::Undo:
-        return operation->undoOperation();
-    default:
-        Q_ASSERT(!"Unexpected operation type");
-    }
-    return false;
-}
-
-/*!
     Performs the current operations. Returns a hash of pointers to the performed operation
     objects and their results. The result is a boolean value.
 */
@@ -164,7 +155,8 @@ QHash<Operation *, bool> ConcurrentOperationRunner::run()
         connect(futureWatcher, &QFutureWatcher<bool>::finished,
             this, &ConcurrentOperationRunner::onOperationfinished);
 
-        futureWatcher->setFuture(QtConcurrent::run(m_threadPool, &runOperation, operation, m_type));
+        futureWatcher->setFuture(QtConcurrent::run(m_threadPool,
+            this, &ConcurrentOperationRunner::runOperation, operation));
     }
 
     if (!m_operationWatchers.isEmpty()) {
@@ -185,6 +177,31 @@ void ConcurrentOperationRunner::cancel()
 {
     for (auto &watcher : m_operationWatchers)
         watcher->cancel();
+}
+
+/*!
+    \internal
+
+    Invoked when the execution of the \a operation has started. Adds console
+    output trace for the operation.
+*/
+void ConcurrentOperationRunner::onOperationStarted(Operation *operation)
+{
+    ConcurrentOperationTracer tracer(operation);
+
+    switch (m_type) {
+    case Operation::Backup:
+        tracer.trace(QLatin1String("backup"));
+        break;
+    case Operation::Perform:
+        tracer.trace(QLatin1String("perform"));
+        break;
+    case Operation::Undo:
+        tracer.trace(QLatin1String("undo"));
+        break;
+    default:
+        Q_ASSERT(!"Unexpected operation type");
+    }
 }
 
 /*!
@@ -222,6 +239,29 @@ void ConcurrentOperationRunner::onOperationfinished()
     // All finished
     if (m_operationWatchers.isEmpty())
         emit finished();
+}
+
+/*!
+    \internal
+
+    Runs \a operation. Returns \c true on success, \c false otherwise.
+*/
+bool ConcurrentOperationRunner::runOperation(Operation *const operation)
+{
+    emit operationStarted(operation);
+
+    switch (m_type) {
+    case Operation::Backup:
+        operation->backup();
+        return true;
+    case Operation::Perform:
+        return operation->performOperation();
+    case Operation::Undo:
+        return operation->undoOperation();
+    default:
+        Q_ASSERT(!"Unexpected operation type");
+    }
+    return false;
 }
 
 /*!

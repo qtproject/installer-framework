@@ -120,6 +120,8 @@ UpdateOperation::UpdateOperation(QInstaller::PackageManagerCore *core)
     , m_core(core)
     , m_requiresUnreplacedVariables(false)
 {
+    qRegisterMetaType<UpdateOperation *>();
+
     // Store the value for compatibility reasons.
     m_values[QLatin1String("installer")] = QVariant::fromValue(core);
 }

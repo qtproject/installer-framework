@@ -129,4 +129,6 @@ private:
 
 } // namespace KDUpdater
 
+Q_DECLARE_METATYPE(KDUpdater::UpdateOperation *)
+
 #endif // UPDATEOPERATION_H

@@ -55,6 +55,7 @@ public:
     QHash<Operation *, bool> run();
 
 signals:
+    void operationStarted(QInstaller::Operation *operation);
     void progressChanged(const int completed, const int total);
     void finished();
 
@@ -62,9 +63,11 @@ public slots:
     void cancel();
 
 private slots:
+    void onOperationStarted(QInstaller::Operation *operation);
     void onOperationfinished();
 
 private:
+    bool runOperation(Operation *const operation);
     void reset();
 
 private:

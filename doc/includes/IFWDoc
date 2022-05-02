@@ -59,6 +59,7 @@
 #include "metadatajob.h"
 #include "minimumprogressoperation.h"
 #include "observer.h"
+#include "operationtracer.h"
 #include "packagemanagercoredata.h"
 #include "packagemanagercore.h"
 #include "packagemanagergui.h"

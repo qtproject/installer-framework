@@ -75,7 +75,7 @@ public:
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
 
     static bool performOperationThreaded(Operation *op, UpdateOperation::OperationType type
-        = UpdateOperation::Perform, bool trace = true);
+        = UpdateOperation::Perform);
 
     void initialize(const QHash<QString, QString> &params);
     bool isOfflineOnly() const;

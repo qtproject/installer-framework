@@ -137,7 +137,8 @@ HEADERS += packagemanagercore.h \
     commandlineparser_p.h \
     abstractarchive.h \
     directoryguard.h \
-    archivefactory.h
+    archivefactory.h \
+    operationtracer.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -148,6 +149,7 @@ SOURCES += packagemanagercore.cpp \
     fileguard.cpp \
     componentsortfilterproxymodel.cpp \
     loggingutils.cpp \
+    operationtracer.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \
     binaryformat.cpp \
