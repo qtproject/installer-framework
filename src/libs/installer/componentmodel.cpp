@@ -426,34 +426,25 @@ void ComponentModel::reset(QList<Component *> rootComponents)
     Sets the checked state of every component in the model to be \a state.
 
     The ComponentModel::PartiallyChecked flag is ignored by this function. Note that components
-    are not changed if they are not checkable. The dataChanged() and componentsCheckStateChanged() signals
-    are emitted.
+    are not changed if they are not checkable. The modelCheckStateChanged() signal
+    is emitted.
 */
 void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag state)
 {
-    QList<QModelIndex> changed;
     switch (state) {
         case AllChecked:
-            changed = updateCheckedState(m_currentCheckedState[Qt::Unchecked], Qt::Checked);
+            updateCheckedState(m_currentCheckedState[Qt::Unchecked], Qt::Checked);
         break;
         case AllUnchecked:
-            changed = updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
+            updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
         break;
         case DefaultChecked:
             // record all changes, to be able to update the UI properly
-            changed = updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
-            changed += updateCheckedState(m_initialCheckedState[Qt::Checked], Qt::Checked);
+            updateCheckedState(m_currentCheckedState[Qt::Checked], Qt::Unchecked);
+            updateCheckedState(m_initialCheckedState[Qt::Checked], Qt::Checked);
         break;
         default:
             break;
-    }
-
-    if (changed.isEmpty())
-        return;
-
-    // notify about changes done to the model
-    foreach (const QModelIndex &index, changed) {
-        emit dataChanged(index, index);
     }
     updateModelState();
     emit modelCheckStateChanged(m_modelState);
