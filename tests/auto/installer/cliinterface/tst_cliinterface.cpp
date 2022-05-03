@@ -413,6 +413,45 @@ private slots:
                             << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
     }
 
+    void testInstallPackagesWithChangedRepository()
+    {
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepository"));
+        core->setNoDefaultInstallation(true);
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
+                << QLatin1String("componentC")));
+
+        QCOMPARE(PackageManagerCore::Success, core->status());
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt"); //Dependency to componentC
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt"); //Dependency to componentC
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentC", "1.0.0content.txt"); //Selected
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt"); //Autodepend on componentA,componentB
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //AutodependOn componentC
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentI", "1.0.0content.txt"); //Virtual dependency to componentC
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
+                << "installcontentC.txt" << "installcontentD.txt" << "installcontentE.txt"
+                << "installcontentI.txt");
+
+        core->reset();
+        core->cancelMetaInfoJob(); //Call cancel to reset metadata so that update repositories are fetched
+
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/installPackagesDependencyChanged");
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
+                << QLatin1String("componentH")));
+        // New dependency is added in repository from componentA to componentF, check that it is not installed
+        VerifyInstaller::verifyInstallerResourcesDeletion(m_installDir, "componentF");
+        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
+                << "installcontent.txt" << "installcontentA.txt" << "installcontentB.txt"
+                << "installcontentC.txt" << "installcontentD.txt" << "installcontentE.txt"
+                << "installcontentI.txt" << "installcontentH.txt");
+        core->setNoDefaultInstallation(false);
+    }
+
     void testUnInstallDefaultPackagesSilently()
     {
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit

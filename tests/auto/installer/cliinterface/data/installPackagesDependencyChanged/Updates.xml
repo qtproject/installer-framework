@@ -1,0 +1,72 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>New dependency added</Description>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="299" UncompressedSize="158"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>92b02a74d0886bc1569ff8b3a7edd1f9d828e56c</SHA1>
+  <Dependencies>componentF</Dependencies>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentB</Name>
+  <DisplayName>Component B</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>90</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="281" UncompressedSize="99"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>aedfaef53cdc0f52353a8680009be405fa767811</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentC</Name>
+  <DisplayName>Component C. Dependencies removed</DisplayName>
+  <Description>This component dependencies on Component A and Component B are removed in update.</Description>
+  <Dependencies></Dependencies>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="281" UncompressedSize="99"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>20b9463a5e06f373182b3c7c4cf879806d429409</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentD</Name>
+  <DisplayName>Component D (auto depends on A and B)</DisplayName>
+  <Description>This component has an automatic dependency on Component A and Component B. If both A and B are marked for installation, this component is also installed.</Description>
+  <AutoDependOn>componentA, componentB</AutoDependOn>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>70</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="281" UncompressedSize="99"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>99cf24c71559c75dfae9933826ed16051fca6ea1</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentF</Name>
+  <DisplayName>Component F</DisplayName>
+  <Description>This component contains 2 subcomponents.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>40</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="281" UncompressedSize="99"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>e6443a8b5a5651f63c0604cae6d32431ca617f1a</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentH</Name>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Virtual>false</Virtual>
+ </PackageUpdate>
+</Updates>

@@ -3922,6 +3922,8 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             // a possible component to replace that might be installed (to mark the replacement as installed).
             component->setInstalled();
             component->setValue(scInstalledVersion, data.installedPackages->value(name).version);
+            component->setValue(scLocalDependencies, data.installedPackages->value(name).
+                                dependencies.join(QLatin1String(",")));
             return true;
         }
 

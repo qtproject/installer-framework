@@ -308,6 +308,10 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 
     setValue(scTreeName, package.treeName.first);
     d->m_treeNameMoveChildren = package.treeName.second;
+
+    // scDependencies might be updated from repository later,
+    // keep the local dependencies as well.
+    setValue(scLocalDependencies, value(scDependencies));
 }
 
 /*!
@@ -1354,9 +1358,20 @@ void Component::addDependency(const QString &newDependency)
         setValue(scDependencies, oldDependencies + QLatin1String(", ") + newDependency);
 }
 
+/*!
+    Returns a list of dependencies defined in the the repository or in the package.xml.
+*/
 QStringList Component::dependencies() const
 {
     return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+}
+
+/*!
+    Returns a list of installed components dependencies defined in the components.xml.
+*/
+QStringList Component::localDependencies() const
+{
+    return d->m_vars.value(scLocalDependencies).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
 }
 
 /*!
@@ -1380,6 +1395,24 @@ void Component::addAutoDependOn(const QString &newDependOn)
 QStringList Component::autoDependencies() const
 {
     return d->m_vars.value(scAutoDependOn).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+}
+
+/*!
+    Returns a list of dependencies that the component currently has. The
+    dependencies can vary when component is already installed with different
+    dependency list than what is introduced in the repository. If component is
+    not installed, or update is requested to an installed component,
+    current dependencies are read from repository so that correct dependencies
+    are calculated for the component when it is installed or updated.
+*/
+QStringList Component::currentDependencies() const
+{
+    QStringList dependenciesList;
+    if (isInstalled() && !updateRequested())
+        dependenciesList = localDependencies();
+    else
+        dependenciesList = dependencies();
+    return dependenciesList;
 }
 
 /*!
@@ -1519,7 +1552,7 @@ bool Component::isUpdateAvailable() const
 
     \sa {component::updateRequested}{component.updateRequested}
 */
-bool Component::updateRequested()
+bool Component::updateRequested() const
 {
     return d->m_updateIsAvailable && isSelected() && !isUnstable();
 }

@@ -311,7 +311,7 @@ private:
     QHash<Component*, Qt::CheckState> m_coreCheckedHash;
     QList<Component*> m_deletedReplacedComponents;
     AutoDependencyHash m_autoDependencyComponentHash;
-    DependencyHash m_dependencyComponentHash;
+    LocalDependencyHash m_localDependencyComponentHash;
 
     QStringList m_localVirtualComponents;
 

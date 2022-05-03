@@ -252,7 +252,7 @@ private slots:
         QTest::addColumn<QList<Component *> >("installedComponents");
         QTest::addColumn<QSet<Component *> >("expectedResult");
         QTest::addColumn<UninstallReasonList >("uninstallReasons");
-        QTest::addColumn<DependencyHash >("dependencyHash");
+        QTest::addColumn<LocalDependencyHash >("dependencyHash");
 
         UninstallReasonList uninstallReasonList;
         PackageManagerCore *core = new PackageManagerCore();
@@ -317,7 +317,7 @@ private slots:
         QFETCH(QList<Component *> , installedComponents);
         QFETCH(QSet<Component *> , expectedResult);
         QFETCH(UninstallReasonList, uninstallReasons);
-        QFETCH(DependencyHash, dependencyHash);
+        QFETCH(LocalDependencyHash, dependencyHash);
 
         UninstallerCalculator calc(installedComponents, core, QHash<QString, QStringList>(), dependencyHash, QStringList());
         calc.appendComponentsToUninstall(selectedToUninstall);

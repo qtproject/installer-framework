@@ -109,7 +109,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
             }
         }
 
-        if (component->dependencies().isEmpty())
+        if (component->currentDependencies().isEmpty())
             realAppendToInstallComponents(component, QString(), revertFromInstall);
         else
             notAppendedComponents.append(component);
@@ -177,7 +177,7 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component, co
 
 bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version, bool revertFromInstall)
 {
-    const QStringList dependenciesList = component->dependencies();
+    const QStringList dependenciesList = component->currentDependencies();
     QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
     QString requiredDependencyVersion = version;
     foreach (const QString &dependencyComponentName, allDependencies) {

@@ -170,8 +170,10 @@ public:
 
     Q_INVOKABLE void addDependency(const QString &newDependency);
     QStringList dependencies() const;
+    QStringList localDependencies() const;
     Q_INVOKABLE void addAutoDependOn(const QString &newDependOn);
     QStringList autoDependencies() const;
+    QStringList currentDependencies() const;
 
     void languageChanged();
     QString localTempPath() const;
@@ -195,7 +197,7 @@ public:
 
     Q_INVOKABLE void setUpdateAvailable(bool isUpdateAvailable);
     Q_INVOKABLE bool isUpdateAvailable() const;
-    Q_INVOKABLE bool updateRequested();
+    Q_INVOKABLE bool updateRequested() const;
 
     Q_INVOKABLE bool componentChangeRequested();
     Q_INVOKABLE bool isForcedUpdate();

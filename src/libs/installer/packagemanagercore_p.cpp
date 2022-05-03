@@ -463,7 +463,7 @@ void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
     m_componentReplaces.clear();
     m_autoDependencyComponentHash.clear();
-    m_dependencyComponentHash.clear();
+    m_localDependencyComponentHash.clear();
     m_localVirtualComponents.clear();
     // clean up registered (downloaded) data
     if (m_core->isMaintainer())
@@ -596,7 +596,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
         }
 
         pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core,
-            pmcp->m_autoDependencyComponentHash, pmcp->m_dependencyComponentHash, pmcp->m_localVirtualComponents);
+            pmcp->m_autoDependencyComponentHash, pmcp->m_localDependencyComponentHash, pmcp->m_localVirtualComponents);
     }
     return m_uninstallerCalculator;
 }
@@ -3164,11 +3164,11 @@ void PackageManagerCorePrivate::createDependencyHashes(const Component* componen
         m_autoDependencyComponentHash.insert(autodepend, value);
     }
 
-    for (const QString &depend : component->dependencies()) {
-        QStringList value = m_dependencyComponentHash.value(depend);
+    for (const QString &depend : component->localDependencies()) {
+        QStringList value = m_localDependencyComponentHash.value(depend);
         if (!value.contains(component->name()))
             value.append(component->name());
-        m_dependencyComponentHash.insert(depend, value);
+        m_localDependencyComponentHash.insert(depend, value);
     }
 }
 

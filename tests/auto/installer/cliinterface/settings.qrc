@@ -21,6 +21,13 @@
         <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/Updates.xml</file>
+        <file>data/installPackagesDependencyChanged/componentA/2.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/componentB/1.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/componentC/1.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/componentD/1.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/componentF/1.0.0content.7z</file>
+        <file>data/installPackagesDependencyChanged/componentH/1.0.0content.7z</file>
         <file>data/filequeryrepository/Updates.xml</file>
         <file>data/filequeryrepository/A/1.0.2-1meta.7z</file>
         <file>data/componentsFromInstallPackagesRepository.xml</file>

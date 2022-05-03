@@ -45,12 +45,12 @@ namespace QInstaller {
 UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents
          , PackageManagerCore *core
          , const AutoDependencyHash &autoDependencyComponentHash
-         , const DependencyHash &dependencyComponentHash
+         , const LocalDependencyHash &localDependencyComponentHash
          , const QStringList &localVirtualComponents)
     : m_installedComponents(installedComponents)
     , m_core(core)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
-    , m_dependencyComponentHash(dependencyComponentHash)
+    , m_localDependencyComponentHash(localDependencyComponentHash)
     , m_localVirtualComponents(localVirtualComponents)
 {
 }
@@ -68,8 +68,8 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component, con
     if (!component->isInstalled())
         return;
 
-    if (m_dependencyComponentHash.contains(component->name())) {
-        const QStringList &dependencies = PackageManagerCore::parseNames(m_dependencyComponentHash.value(component->name()));
+    if (m_localDependencyComponentHash.contains(component->name())) {
+        const QStringList &dependencies = PackageManagerCore::parseNames(m_localDependencyComponentHash.value(component->name()));
         for (const QString &dependencyComponent : dependencies) {
             Component *depComponent = m_core->componentByName(dependencyComponent);
              if (depComponent && depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)) {

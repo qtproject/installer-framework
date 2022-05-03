@@ -58,7 +58,7 @@ typedef QList<QInstaller::Package*> PackagesList;
 typedef QMap<QString, KDUpdater::LocalPackage> LocalPackagesMap;
 
 typedef QHash<QString, QStringList> AutoDependencyHash;
-typedef QHash<QString, QStringList> DependencyHash;
+typedef QHash<QString, QStringList> LocalDependencyHash;
 
 } // namespace QInstaller
 

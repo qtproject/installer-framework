@@ -55,7 +55,7 @@ public:
 
     UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core,
                           const AutoDependencyHash &autoDependencyComponentHash,
-                          const DependencyHash &dependencyComponentHash,
+                          const LocalDependencyHash &localDependencyComponentHash,
                           const QStringList &localVirtualComponents);
 
     QSet<Component*> componentsToUninstall() const;
@@ -78,7 +78,7 @@ private:
     PackageManagerCore *m_core;
     QHash<QString, QPair<UninstallReasonType, QString> > m_toUninstallComponentIdReasonHash;
     AutoDependencyHash m_autoDependencyComponentHash;
-    DependencyHash m_dependencyComponentHash;
+    LocalDependencyHash m_localDependencyComponentHash;
     QStringList m_localVirtualComponents;
     QList<Component *> m_virtualComponentsForReverse;
 };
