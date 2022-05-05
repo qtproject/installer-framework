@@ -56,7 +56,7 @@ using namespace QInstaller;
 /*!
     \fn QInstaller::ConcurrentOperationRunner::progressChanged(const int completed, const int total)
 
-    Emitted when the count of \c completed of the \c total operations changes.
+    Emitted when the count of \a completed of the \a total operations changes.
 */
 
 /*!
