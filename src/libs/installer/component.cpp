@@ -611,17 +611,6 @@ void Component::loadComponentScript(const QString &fileName)
         d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
             QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
             .arg(name()));
-        if (packageManagerCore()->settings().allowUnstableComponents()) {
-            // Check if component has dependency to a broken component. Dependencies to broken
-            // components are checked if error is thrown but if dependency to a broken
-            // component is added in script, the script might not be loaded yet
-            foreach (QString dependency, dependencies()) {
-                Component *dependencyComponent = packageManagerCore()->componentByName
-                        (PackageManagerCore::checkableName(dependency));
-                if (dependencyComponent && dependencyComponent->isUnstable())
-                    setUnstable(Component::UnstableError::DepencyToUnstable, QLatin1String("Dependent on unstable component"));
-            }
-        }
     } catch (const Error &error) {
         if (packageManagerCore()->settings().allowUnstableComponents()) {
             setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
@@ -1177,7 +1166,7 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
     return operation;
 }
 
-void Component::markComponentUnstable()
+void Component::markComponentUnstable(Component::UnstableError error, const QString &errorMessage)
 {
     setValue(scDefault, scFalse);
     // Mark unstable component unchecked if:
@@ -1190,6 +1179,8 @@ void Component::markComponentUnstable()
     if (d->m_core->isInstaller() || !isInstalled() || d->m_core->isUpdater())
         setCheckState(Qt::Unchecked);
     setValue(scUnstable, scTrue);
+    QMetaEnum metaEnum = QMetaEnum::fromType<Component::UnstableError>();
+    emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 
 namespace {
@@ -1579,22 +1570,23 @@ void Component::setUnstable(Component::UnstableError error, const QString &error
 {
     QList<Component*> dependencies = d->m_core->dependees(this);
     // Mark this component unstable
-    markComponentUnstable();
+    markComponentUnstable(error, errorMessage);
 
     // Marks all components unstable that depend on the unstable component
     foreach (Component *dependency, dependencies) {
-        dependency->markComponentUnstable();
+        dependency->markComponentUnstable(UnstableError::DepencyToUnstable,
+               QLatin1String("Dependent on unstable component"));
         foreach (Component *descendant, dependency->descendantComponents()) {
-            descendant->markComponentUnstable();
+            descendant->markComponentUnstable(UnstableError::DescendantOfUnstable,
+                    QLatin1String("Descendant of unstable component"));
         }
     }
 
     // Marks all child components unstable
     foreach (Component *descendant, this->descendantComponents()) {
-        descendant->markComponentUnstable();
+        descendant->markComponentUnstable(UnstableError::DescendantOfUnstable,
+                QLatin1String("Descendant of unstable component"));
     }
-    QMetaEnum metaEnum = QMetaEnum::fromType<Component::UnstableError>();
-    emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 
 /*!

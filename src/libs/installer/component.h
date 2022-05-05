@@ -73,7 +73,8 @@ public:
         ShaMismatch,
         ScriptLoadingFailed,
         MissingDependency,
-        InvalidTreeName
+        InvalidTreeName,
+        DescendantOfUnstable
     };
     Q_ENUM(UnstableError)
 
@@ -230,7 +231,7 @@ private:
         const QString &parameter8 = QString(), const QString &parameter9 = QString(),
         const QString &parameter10 = QString());
     Operation *createOperation(const QString &operationName, const QStringList &parameters);
-    void markComponentUnstable();
+    void markComponentUnstable(const Component::UnstableError error, const QString &errorMessage);
 
 private:
     QString validatorCallbackName;
