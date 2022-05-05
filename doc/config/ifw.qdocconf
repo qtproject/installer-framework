@@ -6,8 +6,9 @@ moduleheader  = IFWDoc
 includepaths += -I ./includes \
                 -I ../src/libs/installer \
                 -I ../src/libs/kdtools \
-                -I ../src/libs/7zip/unix/CPP \
-                -I ../src/libs/7zip/win/CPP
+                -I ../src/libs/3rdparty/7zip/unix/CPP \
+                -I ../src/libs/3rdparty/7zip/win/CPP \
+                -I ../src/libs/3rdparty/libarchive
 
 language    = Cpp
 project     = "QtInstallerFramework"
