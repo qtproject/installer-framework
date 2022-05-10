@@ -194,6 +194,7 @@ public:
     Q_INVOKABLE bool isFromOnlineRepository() const;
 
     Q_INVOKABLE void setUpdateAvailable(bool isUpdateAvailable);
+    Q_INVOKABLE bool isUpdateAvailable() const;
     Q_INVOKABLE bool updateRequested();
 
     Q_INVOKABLE bool componentChangeRequested();

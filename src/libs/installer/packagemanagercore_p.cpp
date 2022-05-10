@@ -570,7 +570,7 @@ InstallerCalculator *PackageManagerCorePrivate::installerCalculator() const
 {
     if (!m_installerCalculator) {
         PackageManagerCorePrivate *const pmcp = const_cast<PackageManagerCorePrivate *> (this);
-        pmcp->m_installerCalculator = new InstallerCalculator(
+        pmcp->m_installerCalculator = new InstallerCalculator(m_core,
             m_core->components(PackageManagerCore::ComponentType::AllNoReplacements), pmcp->m_autoDependencyComponentHash);
     }
     return m_installerCalculator;

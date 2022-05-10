@@ -41,8 +41,9 @@ namespace QInstaller {
     \internal
 */
 
-InstallerCalculator::InstallerCalculator(const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash)
-    : m_allComponents(allComponents)
+InstallerCalculator::InstallerCalculator(PackageManagerCore *core, const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash)
+    : m_core(core)
+    , m_allComponents(allComponents)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
 {
 }
@@ -166,7 +167,8 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component, co
             }
         }
     } else {
-        if (!component->isInstalled(version) || component->updateRequested()) {
+        if (!component->isInstalled(version)
+                || (m_core->isUpdater() && component->isUpdateAvailable())) {
             m_toInstallComponentIds.insert(component->name());
             m_orderedComponentsToInstall.append(component);
         }
@@ -305,7 +307,8 @@ QSet<Component *> InstallerCalculator::autodependencyComponents(const bool rever
             Component *autoDependComponent = PackageManagerCore::componentByName(autoDependency, m_allComponents);
             if (!autoDependComponent)
                 continue;
-            if ((!autoDependComponent->isInstalled() || autoDependComponent->updateRequested())
+            if ((!autoDependComponent->isInstalled()
+                 || (m_core->isUpdater() && autoDependComponent->isUpdateAvailable()))
                 && !m_toInstallComponentIds.contains(autoDependComponent->name())) {
                 // One of the components autodependons is requested for install, check if there
                 // are other autodependencies as well

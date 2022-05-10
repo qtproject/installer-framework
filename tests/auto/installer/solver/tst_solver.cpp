@@ -192,7 +192,8 @@ private slots:
         QFETCH(QList<int>, installReason);
         QFETCH(AutoDependencyHash, autodependencyHash);
 
-        InstallerCalculator calc(core->components(PackageManagerCore::ComponentType::AllNoReplacements), autodependencyHash);
+        InstallerCalculator calc(core, core->components(PackageManagerCore::ComponentType::AllNoReplacements)
+                                 , autodependencyHash);
         calc.appendComponentsToInstall(selectedComponents);
         QList<Component *> result = calc.orderedComponentsToInstall();
 
@@ -235,7 +236,7 @@ private slots:
         QFETCH(QList<Component *> , selectedComponents);
         QFETCH(QList<Component *> , expectedResult);
 
-        InstallerCalculator calc(core->components(PackageManagerCore::ComponentType::AllNoReplacements), QHash<QString, QStringList>());
+        InstallerCalculator calc(core, core->components(PackageManagerCore::ComponentType::AllNoReplacements), QHash<QString, QStringList>());
         QTest::ignoreMessage(QtWarningMsg, "Cannot find missing dependency \"B->=2.0.0\" for \"A\".");
         calc.appendComponentsToInstall(selectedComponents);
 

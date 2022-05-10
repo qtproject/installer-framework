@@ -216,12 +216,11 @@ private slots:
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "1.0.0content.txt"));
-        componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentD", "1.0.0content.txt"));//AutodepenOn componentA,componentB
         componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentG", "2.0.0content.txt"));
 
         deletedComponentResources.clear();
-        deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
         deletedComponentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
         deletedComponentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
 
@@ -240,7 +239,7 @@ private slots:
                 << PackageManagerCore::Success
                 << componentResourcesAfterUpdate
                 << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
-                        << "installcontentD_update.txt" << "installcontentB.txt"
+                        << "installcontentD.txt" << "installcontentB.txt"
                         << "installcontentE_update.txt" << "installcontentG_update.txt")
                 << deletedComponentResources;
 
@@ -309,6 +308,46 @@ private slots:
                         << "installcontentE_update.txt" << "installcontentF_update.txt" << "installcontentF_1.txt" << "installcontentF_1_1.txt"
                         << "installcontentF_1_2.txt"  << "installcontentF_2_update.txt" << "installcontentF_2_1.txt" << "installcontentF_2_2.txt"
                         << "installcontentG_update.txt" << "installcontentH.txt")
+                << deletedComponentResources;
+
+        /*********** Update packages with AutoDependOn **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
+
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));//AutodepenOn componentA,componentB
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));//ForcedInstall
+        componentResourcesAfterUpdate.append(ComponentResource("componentG", "1.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+
+        QTest::newRow("Update packages with AutoDependOn")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList()<< "componentA"  << "componentB" << "componentE" << "componentG")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentD.txt" << "installcontentB.txt" << "installcontentE.txt"
+                        << "installcontentG.txt")
+                << ":///data/installPackagesRepositoryUpdate"
+                << (QStringList() << "componentB")
+                << PackageManagerCore::Success
+                << componentResourcesAfterUpdate
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentD_update.txt" << "installcontentB_update.txt"
+                        << "installcontentE_update.txt" << "installcontentG.txt")
                 << deletedComponentResources;
     }
 

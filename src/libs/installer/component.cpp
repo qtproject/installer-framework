@@ -1505,6 +1505,16 @@ void Component::setUpdateAvailable(bool isUpdateAvailable)
 }
 
 /*!
+    Returns whether update is available for this component.
+
+    \sa {component::isUpdateAvailable}{component.isUpdateAvailable}
+*/
+bool Component::isUpdateAvailable() const
+{
+    return d->m_updateIsAvailable && !isUnstable();
+}
+
+/*!
     Returns whether the user wants to install the update for this component.
 
     \sa {component::updateRequested}{component.updateRequested}

@@ -4242,8 +4242,9 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     return false;
 
                 component->loadComponentScript();
-                if (!component->isUnstable())
+                if (!component->isUnstable() && component->autoDependencies().isEmpty())
                     component->setCheckState(Qt::Checked);
+                d->createDependencyHashes(component);
             }
 
             // after everything is set up, check installed components
@@ -4252,7 +4253,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     return false;
                 // even for possible dependency we need to load the script for example to get archives
                 component->loadComponentScript();
-                if (component->isInstalled()) {
+                if (component->isInstalled() && !component->autoDependencies().isEmpty()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourselves
                     if (!component->isUnstable())

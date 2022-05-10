@@ -422,6 +422,12 @@
 */
 
 /*!
+    \qmlmethod boolean component::isUpdateAvailable()
+
+    Determines whether update is available for component.
+*/
+
+/*!
     \qmlmethod boolean component::componentChangeRequested()
 
     Returns \c true if this component will be changed (update, installation, or

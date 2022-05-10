@@ -875,8 +875,9 @@
                 be selected for installation only when all components
                 from this list are also selected for installation.
                 If the component was already installed, it will
-                be selected for uninstallation when at least one of the components
-                from this list is also selected for uninstallation.
+                be selected for uninstallation or for update when at least one
+                of the components from this list is also selected for
+                uninstallation or for update.
                 For more information, see \l{Component Dependencies}.
         \row
             \li Virtual
