@@ -783,10 +783,6 @@
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>There was an error loading the selected component. This component cannot be updated.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::ComponentModel</name>
@@ -929,6 +925,10 @@
         <source>Filter the enabled repository categories</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -945,12 +945,8 @@
         <translation>Kan ikke gemme outputtet fra &quot;%1&quot; til en tom installer-nøgleværdi.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>Filen &quot;%1&quot; findes ikke eller er ikke en eksekverbar binær.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>Kørsel af &quot;%1&quot; resulterede i at det holdt op med at virke.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1087,6 +1083,14 @@
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
         <translation>Kan ikke fjerne mappen &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>Kan ikke oprette arkivet &quot;%1&quot;: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -1150,6 +1154,58 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>Cannot find component for %1.</source>
         <translation>Kan ikke finde komponent til %1.</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation>%1 af %2</translation>
+    </message>
+    <message>
+        <source>%1 downloaded.</source>
+        <translation>%1 downloadet.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n dag, </numerusform>
+            <numerusform>%n dage, </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation>
+            <numerusform>%n time, </numerusform>
+            <numerusform>%n timer, </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n minut</numerusform>
+            <numerusform>%n minutter</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation>
+            <numerusform>%n sekund</numerusform>
+            <numerusform>%n sekunder</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation> - %1%2%3%4 tilbage.</translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation> - ukendt tid tilbage.</translation>
+    </message>
+    <message>
+        <source>Archive: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1217,21 +1273,6 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>Execution failed (Unexpected exit code: %1): &quot;%2&quot;</source>
         <translation>Eksekvering mislykkedes (uventet afslutningskode: %1): &quot;%2&quot;</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation::Runnable</name>
-    <message>
-        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
-        <translation>Kan ikke åbne arkivet &quot;%1&quot; til læsning: %2</translation>
-    </message>
-    <message>
-        <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>Fejl under udpakning af arkivet &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
-        <translation>Ukendt undtagelse fanget under udpakning af &quot;%1&quot;.</translation>
     </message>
 </context>
 <context>
@@ -1364,6 +1405,10 @@ Fejl under indlæsning af %2</translation>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>Kan ikke oprette mappen &quot;%1&quot;: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1406,6 +1451,10 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>&amp;Quit</source>
         <translation>&amp;Afslut</translation>
+    </message>
+    <message>
+        <source>There is an important update available. Please select &apos;%1&apos; first</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1509,10 +1558,6 @@ Fejl under indlæsning af %2</translation>
         <translation>Fejl under udpakning af arkivet &quot;%1&quot;: %2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
-        <translation>Ukendt undtagelse fanget under udpakning af arkivet &quot;%1&quot;.</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
     </message>
@@ -1534,6 +1579,10 @@ Fejl under indlæsning af %2</translation>
     </message>
     <message>
         <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1652,10 +1701,6 @@ Vil du fortsætte?</translation>
         <translation>Kan ikke løse alle afhængigheder.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Komponenter som er ved at blive fjernet.</translation>
-    </message>
-    <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
         <translation type="unfinished"></translation>
@@ -1708,10 +1753,6 @@ Vil du fortsætte?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1743,6 +1784,15 @@ Vil du fortsætte?</translation>
     </message>
     <message>
         <source>Invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1991,6 +2041,36 @@ Installerer komponenten %1</translation>
     <message>
         <source>Error during removal process:
 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2449,6 +2529,10 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2701,11 +2785,122 @@ or accept the elevation of access rights if being asked.</source>
         <source>Extracting &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Kan ikke åbne arkivet &quot;%1&quot; til læsning: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation::Worker</name>
+    <message>
+        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Kan ikke åbne arkivet &quot;%1&quot; til læsning: %2</translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Fejl under udpakning af arkivet &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Kan ikke åbne filen &quot;%1&quot; til skrivning: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
