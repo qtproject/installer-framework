@@ -960,12 +960,8 @@
         <translation>Konnte die Ausgabe von &quot;%1&quot; nicht in einen leeren Schlüsselwert des Installers speichern.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>Datei &apos;%1&apos; existiert nicht oder ist keine ausführbare Binärdatei.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>Ausführen von &apos;%1&apos; führte zu einem Absturz.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>Das Kommando  &quot;%1&quot; konnte nicht ausgeführt werden: %2</translation>
     </message>
 </context>
 <context>
@@ -1299,6 +1295,22 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Extracting &quot;%1&quot;</source>
         <translation>&quot;%1&quot; wird extrahiert</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Nicht unterstütztes Archivformat: &quot;%1&quot;: Für die Dateiendung &quot;%2&quot; ist keine Behandlungsroutine registriert.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Archiv &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>Fehler beim Lesen des Inhaltes des Archivs &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>Lösche von &quot;%1&quot; ausgepackte Dateien</translation>
     </message>
 </context>
 <context>
@@ -1724,10 +1736,6 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Keine installierten Pakete gefunden.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>Komponente kann nicht registriert werden! Die Komponente mit dem Bezeichner %1 existiert bereits.</translation>
-    </message>
-    <message>
         <source>Application running in Uninstaller mode.</source>
         <translation>Die Anwendung läuft im Deinstallationsmodus.</translation>
     </message>
@@ -1738,10 +1746,6 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>Cannot resolve all dependencies.</source>
         <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
-    </message>
-    <message>
-        <source>Components about to be removed.</source>
-        <translation>Komponenten, die entfernt werden.</translation>
     </message>
     <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
@@ -1826,6 +1830,16 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation>Die geschätzte Größe des Installers von %1 würde die unterstützte maximale Größe ausführbarer Dateien überschreiten. Die Anwendung könnte möglicherweise nicht ausgeführt werden.</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>Zu löschende Komponenten:</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>Komponente %1 kann nicht installiert werden. Es gab ein Problem beim Laden, daher wird sie als instabil gekennzeichnet und kann nicht ausgewählt werden.
+</translation>
     </message>
 </context>
 <context>
@@ -2075,6 +2089,38 @@ Komponente %1 wird installiert</translation>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Zyklische Abhängigkeit zwischen Komponenten entdeckt: &apos;%1&apos; und &apos;%2&apos;.</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>
+Bereite Auspacken der Komponenten vor...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>%1 von %2 Schritten fertiggestellt.</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>
+Packe Komponenten aus...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%1 von %2 Schritten rückgängig gemacht.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>Rückgängigmachen erfolgreich abgeschlossen.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%1 von %2 Komponenten  installiert.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>Alle Komponenten installiert.</translation>
     </message>
 </context>
 <context>
@@ -2540,6 +2586,10 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>Bitte stellen Sie sicher, dass der aktuelle Benutzer Lesezugriff auf die Datei &quot;%1&quot; hat oder versuchen Sie, %2 als Administrator auszuführen.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>Ungültiger Wert für &apos;max-concurrent-operations&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2782,20 +2832,88 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Konnte Archiv &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>Fehler beim Lesen des Inhaltes des Archivs &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Datei &quot;%1&quot; konnte nicht vorbereitet werden</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>Auspacken des Archives &quot;%1&quot; abgebrochen.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Fehler beim Auspacken von &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Archiv konnte nicht zum Lesen geöffnet werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Der Kopf des Eintrages konnte nicht gelesen werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Der Eintrag &quot;%1&quot; konnte nicht auf die Festplatte geschrieben werden: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Archiv konnte nicht zum Lesen geöffnet werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Der Kopf des Eintrages konnte nicht gelesen werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Der Eintrag &quot;%1&quot; konnte nicht auf die Festplatte geschrieben werden: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>Der Kopf des Eintrags &quot;%1&quot; konnte nicht auf die Festplatte geschrieben werden: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>Abgewählte Komponenten</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>Durch &quot;%1&quot; ersetzte Komponenten:</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>Entferne virtuelle Komponenten ohne existierende Abhängigkeiten:</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>Abhängigkeit der Komponente &apos;%1&apos; entfernt:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>Automatische Abhängigkeit der Komponente &apos;%1&apos; entfernt:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>Über %1 Installationswerkzeug</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>Über %1 Verwaltungswerkzeug</translation>
     </message>
 </context>
 </TS>
