@@ -1714,10 +1714,6 @@ Czy chcesz kontynuować?</translation>
         <translation>Nie można rozwiązać wszystkich zależności.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Elementy mają zostać usunięte.</translation>
-    </message>
-    <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
         <translation>Nie można zainstalować komponentu %1. Komponent jest instalowany tylko jako automatyczna zależność od %2.
@@ -1806,6 +1802,15 @@ Czy chcesz kontynuować?</translation>
     <message>
         <source>Invalid</source>
         <translation>Nieprawidłowy</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>Komponenty do usunięcia</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>Nie można zainstalować komponentu %1. Wystąpił problem z jego załadowaniem, został oznaczony jako niestabilny i nie można go wybrać</translation>
     </message>
 </context>
 <context>
@@ -2055,6 +2060,36 @@ Trwa instalowanie elementu %1</translation>
 %1</source>
         <translation>Błąd podczas procesu usuwania:
 %1</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>Przygotowanie do usunięcia komponentów...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>Ukończono %1 z %2 operacji.</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>Rozpakowywanie komponentów...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>Wycofano %1 z %2 operacji.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>Wycofywanie zakończone.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>Zainstalowano %1 z %2 komponentów.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>Wszystkie komponenty zostały zainstalowane</translation>
     </message>
 </context>
 <context>
@@ -2512,6 +2547,10 @@ Please copy the installer to a local drive</source>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>Upewnij się, że bieżący użytkownik ma uprawnienia do odczytu pliku &quot;%1&quot; lub spróbuj uruchomić %2 jako administrator.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>Nieprawidłowa wartość dla &apos;max-concurrent-operations&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2769,6 +2808,22 @@ or accept the elevation of access rights if being asked.</source>
         <source>Extracting &quot;%1&quot;</source>
         <translation>Rozpakowywanie &quot;%1&quot;</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Niewspierane archiwum &quot;%1&quot;: nie zarejestrowano obsługi pliku: &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Nie można otworzyć archiwum &quot;%1&quot; do odczytu: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>Błąd podczas odczytu archiwum &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>Usuwanie plików wypakowanych z &quot;%1&quot;</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
@@ -2788,24 +2843,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Nie można otworzyć archiwum &quot;%1&quot; do odczytu: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>Błąd podczas odczytu archiwum &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Nie można przygotować pliku &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>Rozpakowywanie archiwum &quot;%1&quot; anulowane.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Błąd podczas rozpakowywania archiwum &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Could not request administrator privileges required to extract archive &quot;%1&quot;.</source>
-        <translation>Nie można uzyskać uprawnień administratora wymaganych do rozpakowania archiwum &quot;%1&quot;..</translation>
     </message>
 </context>
 <context>
@@ -2817,6 +2856,75 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>O narzędziu do konserwacji %1</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Nie można otworzyć archiwum: %1 do odczytu</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Nie można odczytać nagłówka: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Nie można utworzyć wpisu  &quot;%1&quot; na dysku: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Nie można otworzyć archiwum: %1 do odczytu</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Nie można odczytać nagłówka: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Nie można utworzyć wpisu &quot;%1&quot; na dysku: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Nie można otworzyć pliku &quot;%1&quot; do zapisu: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>Nie można otworzyć pliku &quot;%1&quot;do odczytu: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Nie można otworzyć pliku &quot;%1&quot; do odczytu: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>Nie można zapisać nagłówka dla &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>Odznaczone komponenty:</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>Komponenty zastąpione przez &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>Usuwanie wirtualnych komponentów nie posiadających zależności:</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>Usunięte zależności komponentu &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>Usunięte automatyczne zależności komponentu &quot;%1&quot;:</translation>
     </message>
 </context>
 </TS>
