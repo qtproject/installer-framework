@@ -940,12 +940,8 @@
         <translation>&quot;%1&quot; の出力を空のインストーラー キー値に保存できません。</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>ファイル &quot;%1&quot; は存在しないか、実行可能なバイナリ ファイルではありません。</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>&quot;%1&quot; を実行した結果、クラッシュが発生しました。</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>コマンド&quot;%1&quot;の実行に失敗しました。: %2</translation>
     </message>
 </context>
 <context>
@@ -1696,10 +1692,6 @@ Do you want to continue?</source>
         <translation>一部の依存関係を解決できません。</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>コンポーネントを削除しようとしています。</translation>
-    </message>
-    <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
         <translation>コンポーネント %1 をインストールできません。コンポーネントは %2 への自動依存性としてのみインストールされます。
@@ -1778,10 +1770,6 @@ Do you want to continue?</source>
         <translation>ユーザー入力が必要ですが、出力デバイスが端末に関連づけられていません。</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>コンポーネントを登録できません！識別子 %1 のコンポーネントはすでに存在します。</translation>
-    </message>
-    <message>
         <source>Cannot install %1. Component is a descendant of a virtual component %2.
 </source>
         <translation>%1 をインストールできません。コンポーネントは仮想コンポーネント %2 を継承しています。
@@ -1790,6 +1778,15 @@ Do you want to continue?</source>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>削除されるコンポーネント: </translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>コンポーネント %1をインストールできません。このコンポーネントのロードに問題があったため、不安定と記され、選択できません。</translation>
     </message>
 </context>
 <context>
@@ -2039,6 +2036,36 @@ Installing component %1</source>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>コンポーネント &quot;%1&quot; と &quot;%2&quot; との依存サイクルが検出されました。</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>コンポーネントを開梱する準備をしています。</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>%2 中 %1 の操作が完了しました。</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>コンポーネントを開梱しています。</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%2 中 %1 の操作がロールバックされました。</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>ロールバックが完了しました。</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%2 中 %1のコンポーネントがインストールされました。</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>すべてのコンポーネントがインストールされました。</translation>
     </message>
 </context>
 <context>
@@ -2496,6 +2523,10 @@ Please copy the installer to a local drive</source>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>現在のユーザーがファイル &amp;quot;%1&amp;quot; への読み取りアクセス権限を持っていることを確認するか、管理者として %2 を実行してください。</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>&apos;max-concurrent-operations&apos;の値が無効です。</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2749,6 +2780,22 @@ or accept the elevation of access rights if being asked.</source>
         <source>Extracting &quot;%1&quot;</source>
         <translation>&quot;%1&quot; を抽出しています</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>&quot;%1&quot; は非サポートのアーカイブです。拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません。</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>読み取り用のアーカイブ &quot;%1&quot; を開けません。: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>アーカイブ&quot;%1&quot;のコンテンツを読みこんでいる際にエラーが発生しました。:　%2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>&quot;%1&quot;から解凍されたファイルを削除します。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
@@ -2768,20 +2815,88 @@ or accept the elevation of access rights if being asked.</source>
         <translation>読み取り用のアーカイブ &quot;%1&quot; を開けません: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>アーカイブ &quot;%1&quot; の抽出中にエラーが発生しました: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>読み取り用のアーカイブを開くことができません。: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>エントリヘッダーを読み取れません。: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>エントリ＆quot;％1＆quot;をディスクに書き込めません。: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>読み取り用にアーカイブを開くことができません。: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>エントリヘッダーを読み取れません。: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>エントリ＆quot;％1＆quot;をディスクへ書き込めません。: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用のファイル &quot;%1&quot; を開けません。: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>読み取り用のファイル &quot;%1&quot; を開けません。: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>読み取り用のファイル &quot;%1&quot; を開けません。: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot;のエントリーヘッダーを書き込めません。: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>選択解除されたコンポーネント：</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>コンポーネントが&quot;%1&quot;に置き換えられました。：</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>既存の依存関係のない仮想コンポーネントの削除：</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>コンポーネントの依存関係&quot;%1&quot;削除：</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>コンポーネントの自動依存性&quot;%1&quot;削除:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>%1 インストーラについて</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>%1メンテナンスツールについて</translation>
     </message>
 </context>
 </TS>
