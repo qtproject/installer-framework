@@ -920,6 +920,10 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>A kötelező összetevőket először frissíteni kell, mielőtt kiválaszthatja a frissítendő egyéb összetevőket.</translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -951,12 +955,8 @@
         <translation>Nem lehet menteni &quot;%1&quot; kimenetét üres telepítőkulcs értékre.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>&quot;%1&quot; fájl nem létezik, vagy nem futtatható.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>&quot;%1&quot; fájl futtatása összeomlást eredményezett.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1096,6 +1096,10 @@
     <message>
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
         <translation>Nem sikerült eltávolítani &quot;%1&quot; könyvtárat: %2</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1283,12 +1287,9 @@ Hiba %2 betöltése közben</translation>
         <source>Extracting &quot;%1&quot;</source>
         <translation>&quot;%1&quot; kibontása</translation>
     </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation::Worker</name>
     <message>
-        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
-        <translation>Nem sikerült létrehozni kezelő objektumot &quot;%1&quot; archívumhoz: &quot;%2&quot;. </translation>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
@@ -1299,12 +1300,19 @@ Hiba %2 betöltése közben</translation>
         <translation>Hiba a &quot;%1&quot; archívum olvasása közben: %2 </translation>
     </message>
     <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Nem lehet előkészülni &quot;%1&quot; fájlra</translation>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation::Worker</name>
+    <message>
+        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
+        <translation>Nem sikerült létrehozni kezelő objektumot &quot;%1&quot; archívumhoz: &quot;%2&quot;. </translation>
     </message>
     <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>&quot;%1&quot; archívum kibontása megszakítva. </translation>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Nem sikerült megnyitni &quot;%1&quot; archívumot olvasásra: %2</translation>
     </message>
     <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
@@ -1436,6 +1444,10 @@ Hiba %2 betöltése közben</translation>
     <message>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>Nem sikerült létrehozni &quot;%1&quot; könyvtárat: %2</translation>
+    </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1609,6 +1621,10 @@ Hiba %2 betöltése közben</translation>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Hiba &quot;%1&quot; archívum kibontása közben: %2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1725,10 +1741,6 @@ Kívánja folytatni?</translation>
         <translation>Nem található telepített csomag.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>Nem lehet regisztrálni a komponenst! %1 azonosítójú komponens már létezik.</translation>
-    </message>
-    <message>
         <source>Application running in Uninstaller mode.</source>
         <translation>Az alkalmazás eltávolítás (uninstall) módban fut.</translation>
     </message>
@@ -1739,10 +1751,6 @@ Kívánja folytatni?</translation>
     <message>
         <source>Cannot resolve all dependencies.</source>
         <translation>Nem lehet minden függőséget feloldani.</translation>
-    </message>
-    <message>
-        <source>Components about to be removed.</source>
-        <translation>Eltávolítandó komponensek.</translation>
     </message>
     <message>
         <source>Cannot install %1. Component not found.
@@ -1817,6 +1825,15 @@ Kívánja folytatni?</translation>
     <message>
         <source>Invalid</source>
         <translation>Érvénytelen</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2059,6 +2076,36 @@ Installing component %1</source>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Függőségi ciklus észlelve &quot;%1&quot; és &quot;%2&quot; összetevők között.</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2523,6 +2570,10 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <source>Incorrect arguments for %1</source>
         <translation>Hibás argumentumok %1-hez</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2753,6 +2804,86 @@ a megfelelő jogokkal rendelkező felhasználóként, majd kattintson az OK gomb
     <message>
         <source>Renaming file &quot;%1&quot; to &quot;%2&quot; failed: %3</source>
         <translation>&quot;%1&quot; fájl átnevezése &quot;%2&quot; fájlra nem sikerült: %3</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Nem sikerült megnyitni &quot;%1&quot; fájlt írásra: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Nem sikerült megnyitni &quot;%1&quot; fájlt olvasásra: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
