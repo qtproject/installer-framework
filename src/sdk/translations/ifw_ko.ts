@@ -382,6 +382,10 @@
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>현재 사용자가 &amp;quot;%1&amp;quot; 파일에 대한 접근 권한이 있는지 확인하거나 관리자 권한으로 %2 파일을 실행해 보십시오.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>&apos;최대 동시 작업&apos;값이 올바르지 않습니다.</translation>
+    </message>
 </context>
 <context>
     <name>BinaryLayout</name>
@@ -650,12 +654,8 @@
         <translation>빈 설치 관리자 키 값에 &quot;%1&quot;의 출력을 저장할 수 없습니다.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>&quot;%1&quot; 파일이 없거나 실행 가능한 바이너리가 아닙니다.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>&quot;%1&quot; 실행 중에 충돌이 발생했습니다.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>명령을 수행할 수 없습니다.: &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1043,6 +1043,22 @@ Error while loading %2</source>
     <message>
         <source>Extracting &quot;%1&quot;</source>
         <translation>&quot;%1&quot; 추출 중</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>지원되지 않는 &quot;%1&quot; 아카이브: &quot;%2&quot; 파일을 위해 등록된 핸들러가 없습니다.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>&quot;%1&quot; 아카이브를 읽기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 아카이브의 내용을 읽는 중 오류 발생: %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; 로부터 추출된 파일들을 삭제 중입니다.</translation>
     </message>
 </context>
 <context>
@@ -1505,10 +1521,6 @@ Do you want to continue?</source>
         <translation>설치된 패키지를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>구성요소를 등록할 수 없습니다! %1 식별자가 있는 구성 요소가 이미 존재합니다.</translation>
-    </message>
-    <message>
         <source>Application running in Uninstaller mode.</source>
         <translation>애플리케이션이 설치 제거 관리자 모드로 실행 중입니다.</translation>
     </message>
@@ -1519,10 +1531,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot resolve all dependencies.</source>
         <translation>모든 종속성을 해결할 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>Components about to be removed.</source>
-        <translation>구성요소가 제거됩니다.</translation>
     </message>
     <message>
         <source>Cannot install %1. Component not found.
@@ -1603,6 +1611,15 @@ Do you want to continue?</source>
     <message>
         <source>Invalid</source>
         <translation>유효하지 않음</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>구성요소들이 제거됩니다.</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>%1 구성요소를 설치할 수 없습니다. 해당 구성요소를 불러오는 중 문제가 발생했으므로 불안정한 것으로 표시되었으며 선택할 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -1852,6 +1869,38 @@ Installing component %1</source>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>구성요소 &quot;%1&quot; 및 &quot;%2&quot; 간의 종속성 사이클이 감지되었습니다.</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>
+구성요소들의 압축해제를 준비합니다.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>%2 의 %1 작업들을 완료했습니다.</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>
+구성요소들의 압축해제를 준비합니다.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%2 의 %1 작업들을 되돌렸습니다.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>롤백(되돌리기) 작업들을 완료했습니다.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%2 의 %1 구성요소들을 설치했습니다.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>모든 구성요소들을 설치했습니다.</translation>
     </message>
 </context>
 <context>
@@ -2768,20 +2817,88 @@ or accept the elevation of access rights if being asked.</source>
         <translation>&quot;%1&quot; 아카이브를 읽기 위해 열 수 없음: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>&quot;%1&quot; 아카이브의 내용을 읽는 중 오류 발생: %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; 파일을 준비할 수 없음</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>&quot;%1&quot; 아카이브 추출 취소됨.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>아카이브 &quot;%1&quot; 추출 중에 오류 발생: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>아카이브를 읽기 위해 열 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>항목 헤더를 읽을 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>&quot;%1&quot; 항목을 디스크에 쓸 수 없음: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation >아카이브를 읽기 위해 열 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>항목 헤더를 읽을 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>&quot;%1&quot; 항목을 디스크에 쓸 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>&quot;%1&quot; 파일을 쓰기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot;에 대한 항목 헤더를 쓸 수 없음: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>선택 해제된 구성요소들</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>&quot;%1&quot; 에 의해 대체된 구성요소들</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>의존성이 존재하지 않는 가상 구성요소들을 삭제하는 중</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>삭제된 &quot;%1&quot; 구성요소 종속성</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>삭제된 &quot;%1&quot; 구성요소 자동 종속성</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>%1 설치 관리자에 대하여</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>%1 유지 보수 도구에 대하여</translation>
     </message>
 </context>
 </TS>
