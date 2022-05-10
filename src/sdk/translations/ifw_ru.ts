@@ -965,12 +965,8 @@
         <translation>Невозможно сохранить вывод «%1» в пустое значение ключа установщика.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>Файл «%1» не существует или не является исполняемым.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>Запуск «%1» завершился крахом.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>Не удалось запустить команду: &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1308,6 +1304,22 @@ Error while loading %2</source>
     <message>
         <source>Extracting &quot;%1&quot;</source>
         <translation>Извлечение «%1»</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Неподдерживаемый архив &quot;%1&quot;: нет зарегестрированного обработчика для файла с расширением &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть архив «%1» для чтения: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>Ошибка при чтении содержимого архива &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>Удаление файлов, извлеченных из &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -1792,16 +1804,8 @@ Do you want to continue?</source>
         <translation>Не удалось разрешить все зависимости.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Удаляемые компоненты.</translation>
-    </message>
-    <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
         <translation>Требуется ввод данных пользователем, но устройство вывода не связано с терминалом.</translation>
-    </message>
-    <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>Не удалось зарегистрировать компонент! Компонент с идентификатором %1 уже существует.</translation>
     </message>
     <message>
         <source>Canceling the Installer</source>
@@ -1836,6 +1840,15 @@ Do you want to continue?</source>
     <message>
         <source>Invalid</source>
         <translation>недопустимая версия</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>Компонент практически удален:</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>Невозможно установить компонент %1. Произошла ошибка загрузки этого компонента, он был помечен нестабильным и не может быть выбран.</translation>
     </message>
 </context>
 <context>
@@ -2084,6 +2097,36 @@ Installing component %1</source>
 %1</source>
         <translation>Ошибка в процессе установки:
 %1</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>Подготовка к распаковке компонента...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>1 из %2 операции завершены</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>Распаковка компонентов...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%1 из %2 были возвращены в предыдущее состояние.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>Возврат в предыдущее состояние завершен.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%1 из %2 компонентов установлены</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>Все компоненты установлены.</translation>
     </message>
 </context>
 <context>
@@ -2541,6 +2584,10 @@ Please copy the installer to a local drive</source>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>Убедитесь, что текущий пользователь имеет разрешение на чтение файла «%1», или попробуйте запустить %2 от имени администратора.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>Неверное значение for &apos;max-concurrent-operations&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2795,20 +2842,88 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Не удалось открыть архив «%1» для чтения: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>Ошибка при чтении содержимого архива &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Невозможно подготовить файл &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>Распаковка для архива &quot;%1&quot; отменена.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Ошибка извлечения из архива «%1»: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Не удалось открыть архив для чтения: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Не удалось прочесть заголовок записи: %1 </translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Не удалось записать &quot;%1&quot; на диск: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Не удалось открыть архив для чтения: %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Не удалось прочесть заголовок записи: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Не удалось записать &quot;%1&quot; на диск: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Не удалось открыть файл &quot;%1&quot; для записи: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>Не удалось открыть файл &quot;%1&quot;для чтения: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Не удалось открыть файл «%1» для чтения: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>Не удалось записать заголовок записи для &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>Выбранные компоненты:</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>Компоненты заменены на &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>Удаление виртуальных компонентов без существующих зависимостей:</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>Компоненты зависимостей &quot;%1&quot; удалены:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>Компоненты автозависимостей &quot;%1&quot; удалены:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>Об %1 установщике</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>Об %1 Maintenance Tool</translation>
     </message>
 </context>
 </TS>
