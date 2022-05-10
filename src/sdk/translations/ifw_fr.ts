@@ -945,12 +945,8 @@
         <translation>Impossible d’enregistrer la sortie de &quot;%1&quot; dans une valeur clé du programme d’installation vide.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>Le fichier &quot;%1&quot; n’existe pas ou n’est pas un objet binaire exécutable.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>L’exécution de &quot;%1&quot; a entraîné un blocage.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>Echec d'exécution de la commande : &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1709,10 +1705,6 @@ Souhaitez-vous continuer ?</translation>
         <translation>Impossible de résoudre toutes les dépendances.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Les composants vont être supprimés.</translation>
-    </message>
-    <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
         <translation>Impossible d&apos;installer le composant %1. Le composant est installé uniquement en tant que dépendance automatique à %2.
@@ -1791,10 +1783,6 @@ Souhaitez-vous continuer ?</translation>
         <translation>Une saisie par l’utilisateur est requise mais le périphérique de sortie n&apos;est pas associé à un terminal.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>Impossible d&apos;enregistrer le composant&#xa0;! Le composant avec l&apos;identifiant %1 existe déjà.</translation>
-    </message>
-    <message>
         <source>Cannot install %1. Component is a descendant of a virtual component %2.
 </source>
         <translation>Impossible d&apos;installer le composant %1. Le composant est le descendant d&apos;un composant virtuel %2.
@@ -1802,7 +1790,16 @@ Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
-        <translation>La taille estimée de l installeur %1 dépasserait la taille limite de l'exécutable prise en charge %2. L'application pourrait ne pas pouvoir s'exécuter.</translation>
+        <translation>La taille estimée de l installeur %1 dépasserait la taille limite de l&apos;exécutable prise en charge %2. L&apos;application pourrait ne pas pouvoir s&apos;exécuter.</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>Composants sur le point d'être supprimés :</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>Impossible d'installer le composant %1. Un problème est survenu lors du chargement de ce composant, il est donc marqué comme instable et ne peut pas être sélectionné.</translation>
     </message>
 </context>
 <context>
@@ -2052,6 +2049,36 @@ Installation du composant %1</translation>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Cycle de dépendance entre les composants &quot;%1&quot; et &quot;%2&quot; détecté.</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>Préparation du déballage des composants...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>%1 opérations sur %2 terminées.</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>Déballage des composants...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%1 des %2 opérations annulées.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>Annulations terminées.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%1 des %2 composants installés.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>Tous les composants sont installés.</translation>
     </message>
 </context>
 <context>
@@ -2509,6 +2536,10 @@ Copiez le programme d’installation sur un disque local</translation>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>Veuillez veiller à ce que l’utilisateur actuel dispose d’un accès en lecture au fichier &amp;quot;%1&amp;quot; ou essayez d’exécuter %2 en tant qu’administrateur.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>Valeur non valide pour &apos;max-concurrent-operations&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2766,6 +2797,22 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <source>Extracting &quot;%1&quot;</source>
         <translation>Extraction de &quot;%1&quot;</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>Archive non prise en charge &quot;%1&quot;: pas de gestionnaire enregistré pour les fichiers avec suffixe  &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Impossible d’ouvrir l’archive &quot;%1&quot; en lecture : %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>Erreur lors de la lecture des contenus de l&apos;archive &quot;%1&quot; : %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>Suppression des fichiers extraits de &quot;%1&quot;</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
@@ -2785,20 +2832,88 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <translation>Impossible d’ouvrir l’archive &quot;%1&quot; en lecture : %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>Erreur lors de la lecture des contenus de l'archive &quot;%1&quot; : %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Impossible de préparer le fichier &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>Extraction pour l'archive &quot;%1&quot; annulée.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Erreur lors de l’extraction de l’archive &quot;%1&quot; : %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Impossible d'ouvrir l'archive en lecture : %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Impossible de lire l'en-tête de l'entrée : %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Impossible d'écrire l'entrée &quot;%1&quot; sur disque : %</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Impossible d'ouvrir l'archive en lecture : %1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Impossible de lire l'en-tête de l'entrée : %1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Impossible d'écrire l'entrée &quot;%1&quot; sur le disque : %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Impossible d'ouvrir le fichier &quot;%1&quot; pour l'écriture : %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>Impossible d'ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Impossible d'ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>Impossible d'écrire l'en-tête d'entrée pour &quot;%1&quot; : %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>Composants désélectionnés :</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>Composants remplacés par &quot;%1&quot; :</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>Suppression de composants virtuels sans dépendances existantes :</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>Dépendance des composants &quot;%1&quot; supprimé:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>Autodépendance des composants &quot;%1&quot; supprimé:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>À propos du programme d'installation %1</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>À propos de l'outil de maintenance %1</translation>
     </message>
 </context>
 </TS>
