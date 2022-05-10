@@ -271,6 +271,10 @@
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>الرجاء التأكد من أن المستخدم الحالي لديه حق قراءة الملف &amp;quot;%1&amp;quot; أو حاول تشغيل%2 كمسؤول.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>قيمة غير صالحة لـ &apos;max-concurrent-operations&apos;</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller</name>
@@ -650,12 +654,8 @@
         <translation>لا يمكن حفظ إخراج &quot;%1&quot; إلى قيمة مفتاح تثبيت فارغة.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>الملف &quot;%1&quot; غير موجود أو ليس قابلاً للتنفيذ.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>تشغيل &quot;%1&quot; تسبب في إنهيار.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>فشل تشغيل الأمر: &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1073,6 +1073,22 @@ Error while loading %2</source>
     <message>
         <source>Extracting &quot;%1&quot;</source>
         <translation>استخراج &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>أرشيف غير مدعوم &quot;%1&quot;: لم يتم تسجيل أي معالج للاحقة الملف &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>لا يمكن فتح الأرشيف &quot;%1&quot; للقراءة: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>حدث خطأ أثناء قراءة محتويات الأرشيف &quot;%1&quot;: %2.</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>إزالة الملفات المستخرجة من &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -1551,10 +1567,6 @@ Do you want to continue?</source>
         <translation>لم يُعثر على حزم مثبتة.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>المكون ذو المعرف %1 موجود بالفعل.</translation>
-    </message>
-    <message>
         <source>Application running in Uninstaller mode.</source>
         <translation>يعمل التطبيق في وضع إزالة التثبيت.</translation>
     </message>
@@ -1565,10 +1577,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot resolve all dependencies.</source>
         <translation>لا يمكن الحصول على كافة الاعتماديات.</translation>
-    </message>
-    <message>
-        <source>Components about to be removed.</source>
-        <translation>المكونات على وشك الحذف.</translation>
     </message>
     <message>
         <source>Cannot install %1. Component not found.
@@ -1652,7 +1660,16 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
-        <translation type="unfinished"></translation>
+        <translation>قد يتجاوز الحجم المقدر للمثبّت 1% حد الحجم القابل للتنفيذ المعتمد وهو %2. قد لا يكون التطبيق قادرًا على التشغيل.</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>المكونات التالية على وشك الإزالة:</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>لا يمكن تثبيت المكون%1. حدثت مشكلة أثناء تحميل هذا المكون، لذلك تم وضع علامة "غير مستقر" عليه ولا يمكن اختياره.</translation>
     </message>
 </context>
 <context>
@@ -1899,6 +1916,36 @@ Installing component %1</source>
 
 %1</source>
         <translation>يجب إيقاف هذه العمليات للمتابعة:%1</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>جاري التحضير لتفريغ المكونات ...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>اكتملت%1 من%2 عملية.</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>جاري تفريغ المكونات ...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>تم التراجع عن1% من2% عملية.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>تم إكمال التراجع.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>تم تثبيت1% من2% مكونات.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>تم تثبيت جميع المكونات.</translation>
     </message>
 </context>
 <context>
@@ -2839,20 +2886,88 @@ or accept the elevation of access rights if being asked.</source>
         <translation>لا يمكن فتح الأرشيف &quot;%1&quot; للقراءة: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>حدث خطأ أثناء قراءة محتويات الأرشيف &quot;%1&quot;: %2.</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>لا يمكن التحضير للملف &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>تم إلغاء استخراج الارشيف &quot;%1&quot;.</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>حدث خطأ أثناء إستخراج الأرشيف &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>لا يمكن فتح الأرشيف للقراءة: 1%</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>لا يمكن قراءة الإدخال 1%.</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>لا يمكن كتابة الإدخال &quot;%1&quot; إلى القرص: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>لا يمكن فتح الأرشيف للقراءة: 1%</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>لا يمكن قراءة الإدخال 1%.</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>لا يمكن كتابة الإدخال &quot;%1&quot; إلى القرص: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>لا يمكن فتح الملف &quot;%1&quot; للكتابة: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: 2%</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>لا يمكن كتابة الإدخال لـ &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>إلغاء اختيار المكونات:</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>تم استبدال المكونات بـ &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>إزالة المكونات الافتراضية الغير محتوية على تبعيات:</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>تم إزالة تبعيات المكونات &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>تم إزالة الاعتماد الذاتي لالمكونات &quot;%1&quot;:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>حول مثبّت %1</translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>حول أداة الصيانة %1</translation>
     </message>
 </context>
 </TS>
