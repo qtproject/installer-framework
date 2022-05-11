@@ -43,6 +43,7 @@ struct KDTOOLS_EXPORT LocalPackage
     QString name;
     QString title;
     QString description;
+    int sortingPriority;
     QPair<QString, bool> treeName;
     QString version;
     QString inheritVersionFrom;
@@ -104,6 +105,7 @@ public:
                     const QString &title,
                     const QPair<QString, bool> &treeName,
                     const QString &description,
+                    const int sortingPriority,
                     const QStringList &dependencies,
                     const QStringList &autoDependencies,
                     bool forcedInstallation,

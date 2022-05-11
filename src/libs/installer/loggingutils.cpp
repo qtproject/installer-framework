@@ -292,6 +292,7 @@ void LoggingHandler::printLocalPackageInformation(const QList<KDUpdater::LocalPa
         stream.writeAttribute(QLatin1String("version"), package.version);
         if (verboseLevel() == VerbosityLevel::Detailed) {
             stream.writeAttribute(QLatin1String("description"), package.description);
+            stream.writeAttribute(QLatin1String("sortingPriority"), QVariant(package.sortingPriority).toString());
             stream.writeAttribute(QLatin1String("treeName"), package.treeName.first);
             stream.writeAttribute(QLatin1String("moveChildren"), QVariant(package.treeName.second).toString());
             stream.writeAttribute(QLatin1String("dependencies"), package.dependencies.join(QLatin1Char(',')));

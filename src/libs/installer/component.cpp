@@ -297,6 +297,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scUncompressedSize, QString::number(package.uncompressedSize));
     setValue(scDependencies, package.dependencies.join(QLatin1String(",")));
     setValue(scAutoDependOn, package.autoDependencies.join(QLatin1String(",")));
+    setValue(scSortingPriority, QString::number(package.sortingPriority));
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);

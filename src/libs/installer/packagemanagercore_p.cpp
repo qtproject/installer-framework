@@ -2436,6 +2436,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
                                   QPair<QString, bool>(component->value(scTreeName),
                                                        component->treeNameMoveChildren()),
                                   component->value(scDescription),
+                                  component->value(scSortingPriority).toInt(),
                                   component->dependencies(),
                                   component->autoDependencies(),
                                   component->forcedInstallation(),

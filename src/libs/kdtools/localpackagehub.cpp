@@ -328,6 +328,7 @@ void LocalPackageHub::addPackage(const QString &name,
                                  const QString &title,
                                  const QPair<QString, bool> &treeName,
                                  const QString &description,
+                                 const int sortingPriority,
                                  const QStringList &dependencies,
                                  const QStringList &autoDependencies,
                                  bool forcedInstallation,
@@ -352,6 +353,7 @@ void LocalPackageHub::addPackage(const QString &name,
         info.title = title;
         info.treeName = treeName;
         info.description = description;
+        info.sortingPriority = sortingPriority;
         info.dependencies = dependencies;
         info.autoDependencies = autoDependencies;
         info.forcedInstallation = forcedInstallation;
@@ -411,6 +413,7 @@ void LocalPackageHub::writeToDisk()
             addTextChildHelper(&package, QLatin1String("Name"), info.name);
             addTextChildHelper(&package, QLatin1String("Title"), info.title);
             addTextChildHelper(&package, QLatin1String("Description"), info.description);
+            addTextChildHelper(&package, QLatin1String("SortingPriority"), QString::number(info.sortingPriority));
             addTextChildHelper(&package, scTreeName, info.treeName.first, QLatin1String("moveChildren"),
                                QVariant(info.treeName.second).toString());
             if (info.inheritVersionFrom.isEmpty())
@@ -485,6 +488,8 @@ void LocalPackageHub::PackagesInfoData::addPackageFrom(const QDomElement &packag
             info.title = childNodeE.text();
         else if (childNodeE.tagName() == QLatin1String("Description"))
             info.description = childNodeE.text();
+        else if (childNodeE.tagName() == QLatin1String("SortingPriority"))
+            info.sortingPriority = childNodeE.text().toInt();
         else if (childNodeE.tagName() == scTreeName) {
             info.treeName.first = childNodeE.text();
             info.treeName.second = QVariant(childNodeE.attribute(QLatin1String("moveChildren"))).toBool();
