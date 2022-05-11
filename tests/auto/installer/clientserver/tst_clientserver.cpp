@@ -312,8 +312,17 @@ private slots:
         delete object;
     }
 
+    void testQSettingsWrapper_data()
+    {
+        QTest::addColumn<QSettings::Format>("format");
+        QTest::newRow("Native format") << QSettings::NativeFormat;
+        QTest::newRow("INI format") << QSettings::IniFormat;
+    }
+
     void testQSettingsWrapper()
     {
+        QFETCH(QSettings::Format, format);
+
         RemoteServer server;
         QString socketName = QUuid::createUuid().toString();
         server.init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Production);
@@ -322,14 +331,16 @@ private slots:
         RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
                                       Protocol::StartAs::User);
 
-        QSettingsWrapper wrapper("digia", "clientserver");
+        QSettingsWrapper wrapper(static_cast<QSettingsWrapper::Format>(format),
+                                 QSettingsWrapper::UserScope, "digia", "clientserver");
+
         QCOMPARE(wrapper.isConnectedToServer(), false);
         wrapper.clear();
         QCOMPARE(wrapper.isConnectedToServer(), true);
         wrapper.sync();
         wrapper.setFallbacksEnabled(false);
 
-        QSettings settings("digia", "clientserver");
+        QSettings settings(format, QSettings::UserScope, "digia", "clientserver");
         settings.setFallbacksEnabled(false);
 
         QCOMPARE(settings.fileName(), wrapper.fileName());
@@ -357,6 +368,30 @@ private slots:
         wrapper.sync();
         QCOMPARE(wrapper.contains("key"), false);
         QCOMPARE(settings.contains("key"), false);
+
+        const QDateTime dateTime = QDateTime::currentDateTimeUtc();
+        QCOMPARE(settings.iniCodec(), nullptr);
+        // The wrapper does not support this method, but assume:
+        // QCOMPARE(wrapper.iniCodec(), QTextCodec::codecForName("UTF-8"));
+        wrapper.setValue("dateTime", dateTime);
+        wrapper.sync();
+        QCOMPARE(wrapper.value("dateTime").toDateTime(), dateTime);
+        QCOMPARE(settings.value("dateTime").toDateTime(), dateTime);
+
+        wrapper.remove("dateTime");
+        wrapper.sync();
+        QCOMPARE(wrapper.contains("dateTime"), false);
+        QCOMPARE(settings.contains("dateTime"), false);
+
+        settings.setValue("dateTime", dateTime);
+        settings.sync();
+        QCOMPARE(wrapper.value("dateTime").toDateTime(), dateTime);
+        QCOMPARE(settings.value("dateTime").toDateTime(), dateTime);
+
+        settings.remove("dateTime");
+        settings.sync();
+        QCOMPARE(wrapper.contains("dateTime"), false);
+        QCOMPARE(settings.contains("dateTime"), false);
 
         wrapper.beginGroup("group");
         wrapper.setValue("key", "value");
