@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -41,16 +41,17 @@ struct VerifyInstaller
     static void verifyInstallerResources(const QString &installDir, const QString &componentName, const QString &fileName)
     {
         QDir dir(installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
-        QVERIFY(dir.exists());
+        QVERIFY2(dir.exists(), qPrintable(QLatin1String("Directory: \"%1\" does not exist").arg(dir.absolutePath())));
         QFileInfo fileInfo;
         fileInfo.setFile(dir, fileName);
-        QVERIFY(fileInfo.exists());
+        QVERIFY2(fileInfo.exists(), qPrintable(QLatin1String("File: \"%1\" does not exist for \"%2\".")
+                .arg(fileName).arg(componentName)));
     }
 
     static void verifyInstallerResourcesDeletion(const QString &installDir, const QString &componentName)
     {
         QDir dir(installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
-        QVERIFY(!dir.exists());
+        QVERIFY2(!dir.exists(), qPrintable(QLatin1String("Directory: \"%1\" is not deleted.").arg(dir.absolutePath())));
     }
 
     static void verifyInstallerResourceFileDeletion(const QString &installDir, const QString &componentName, const QString &fileName)
@@ -58,7 +59,8 @@ struct VerifyInstaller
         QDir dir(installDir + QDir::separator() + "installerResources" + QDir::separator() + componentName);
         QFileInfo fileInfo;
         fileInfo.setFile(dir, fileName);
-        QVERIFY(!fileInfo.exists());
+        QVERIFY2(!fileInfo.exists(), qPrintable(QLatin1String("File: \"%1\" still exists for \"%2\".")
+                                               .arg(fileName).arg(componentName)));
     }
 
     static void verifyFileExistence(const QString &installDir, const QStringList &fileList)
