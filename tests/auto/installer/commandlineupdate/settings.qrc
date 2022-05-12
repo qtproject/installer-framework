@@ -18,7 +18,7 @@
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/Updates.xml</file>
-        <file>data/installPackagesRepositoryUpdate/componentA/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentA/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentB/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentC/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentD/2.0.0content.7z</file>
@@ -26,13 +26,29 @@
         <file>data/installPackagesRepositoryUpdate/componentF/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentG/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentG/2.0.0meta.7z</file>
-        <file>data/installPackagesRepositoryUpdate/componentH/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdate/componentH/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2/2.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/Updates.xml</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentA/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentB/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentC/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentD/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentE/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentG/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentG/2.0.0meta.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentH/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent2/2.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent1.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
+        <file>data/installPackagesRepositoryUpdateWithEssential/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
         <file>data/repositoryWithDependencyToEssential/Updates.xml</file>
         <file>data/repositoryWithDependencyToEssential/componentAutoDependOnA/1.0content.7z</file>
         <file>data/repositoryWithDependencyToEssential/componentA/3.0.0content.7z</file>

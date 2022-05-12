@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -37,12 +37,15 @@
 
 using namespace QInstaller;
 
+typedef QList<QPair<QString, QString> > ComponentResourceHash;
+typedef QPair<QString, QString> ComponentResource;
+
 class tst_CommandLineUpdate : public QObject
 {
     Q_OBJECT
 
 private:
-    void setRepository(const QString &repository)
+    void setRepository(const QString &repository, PackageManagerCore *core)
     {
         core->reset();
         core->cancelMetaInfoJob(); //Call cancel to reset metadata so that update repositories are fetched
@@ -54,168 +57,309 @@ private:
     }
 
 private slots:
-    void initTestCase()
+
+    void testUpdate_data()
     {
-        m_installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(m_installDir);
+        QTest::addColumn<QString>("installDir");
+        QTest::addColumn<PackageManagerCore *>("core");
+        QTest::addColumn<QString>("repository");
+        QTest::addColumn<QStringList>("installComponents");
+        QTest::addColumn<PackageManagerCore::Status>("status");
+        QTest::addColumn<ComponentResourceHash>("componentResources");
+        QTest::addColumn<QStringList >("installedFiles");
+        QTest::addColumn<QString>("updateRepository");
+        QTest::addColumn<QStringList>("updateComponents");
+        QTest::addColumn<PackageManagerCore::Status>("updateStatus");
+        QTest::addColumn<ComponentResourceHash>("componentResourcesAfterUpdate");
+        QTest::addColumn<QStringList >("installedFilesAfterUpdate");
+        QTest::addColumn<ComponentResourceHash >("deletedComponentResources");
+
+        /*********** Update essential packages **********/
+        ComponentResourceHash componentResources;
+        componentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        ComponentResourceHash componentResourcesAfterUpdate;
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        ComponentResourceHash deletedComponentResources;
+        deletedComponentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir);
+
+        QTest::newRow("Update essential packages")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList() << "componentA")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt"
+                        << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt")
+                << ":///data/installPackagesRepositoryUpdateWithEssential"
+                << (QStringList() << "componentB")
+                << PackageManagerCore::EssentialUpdated
+                << componentResourcesAfterUpdate
+                << (QStringList() << "components.xml"
+                    << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt")
+                << deletedComponentResources;
+
+        /*********** Update essential with autodependon**********/
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "3.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentAutoDependOnA", "1.0content.txt"));
+
+        QTest::newRow("Update essential with autodependon")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList() << "componentA")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt"
+                        << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt")
+                << ":///data/repositoryWithDependencyToEssential"
+                << (QStringList())
+                << PackageManagerCore::EssentialUpdated
+                << componentResourcesAfterUpdate
+                << (QStringList() << "components.xml"
+                    << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
+                    << "installContentAutoDependOnA.txt")
+                << deletedComponentResources;
+
+
+        /*********** Update force update packages **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentH", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
+
+        QTest::newRow("Update force update packages")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList() << "componentH")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt"
+                        << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
+                        << "installcontentH.txt")
+                << ":///data/installPackagesRepositoryUpdateWithEssential"
+                << (QStringList())
+                << PackageManagerCore::EssentialUpdated
+                << componentResourcesAfterUpdate
+                << (QStringList() <<  "components.xml" << "installcontentA_update.txt"
+                        << "installcontentE.txt" << "installcontentG.txt"
+                        << "installcontentH_update.txt")
+                << deletedComponentResources;
+
+        /*********** Update packages **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        QTest::newRow("Update packages")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList() << "componentC" << "componentH")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt"
+                        << "installcontentA.txt" << "installcontentB.txt" << "installcontentC.txt" << "installcontentD.txt"
+                        << "installcontentE.txt" << "installcontentG.txt" << "installcontentH.txt")
+                << ":///data/installPackagesRepositoryUpdate"
+                << (QStringList())
+                << PackageManagerCore::Success
+                << componentResourcesAfterUpdate
+                << (QStringList() <<  "components.xml" << "installcontent.txt"
+                    << "installcontentA.txt" << "installcontentB_update.txt" << "installcontentC_update.txt" << "installcontentD_update.txt"
+                    << "installcontentE_update.txt" << "installcontentG_update.txt" << "installcontentH.txt")
+                << deletedComponentResources;
+
+        /*********** Update two packages **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
+
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentB", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentG", "2.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
+
+        QTest::newRow("Update two packages")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList()<< "componentA"  << "componentB" << "componentE" << "componentG")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentD.txt" << "installcontentB.txt" << "installcontentE.txt"
+                        << "installcontentG.txt")
+                << ":///data/installPackagesRepositoryUpdate"
+                << (QStringList() << "componentE" << "componentG")
+                << PackageManagerCore::Success
+                << componentResourcesAfterUpdate
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentD_update.txt" << "installcontentB.txt"
+                        << "installcontentE_update.txt" << "installcontentG_update.txt")
+                << deletedComponentResources;
+
+        /*********** Update all packages **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentC", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent1", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent1.subsubcomponent1", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent1.subsubcomponent2", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent2", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent2.subsubcomponent1", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentF.subcomponent2.subsubcomponent2", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
+
+        installDir = QInstaller::generateTemporaryFileName();
+        core = PackageManager::getPackageManagerWithInit(installDir);
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentC", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent1", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent1.subsubcomponent1", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent1.subsubcomponent2", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent2", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent2.subsubcomponent1", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentF.subcomponent2.subsubcomponent2", "1.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentG", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentH", "1.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentF", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentF.subcomponent2", "1.0.0content.txt"));
+        deletedComponentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
+
+        QTest::newRow("Update all packages")
+                << installDir
+                << core
+                << ":///data/installPackagesRepository"
+                << (QStringList() << "componentA"  << "componentB" << "componentC" << "componentD" << "componentE"
+                        << "componentF"  << "componentG" << "componentH")
+                << PackageManagerCore::Success
+                << componentResources
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentB.txt" << "installcontentC.txt" << "installcontentD.txt"
+                        << "installcontentE.txt" << "installcontentF.txt" << "installcontentF_1.txt" << "installcontentF_1_1.txt"
+                        << "installcontentF_1_2.txt"  << "installcontentF_2.txt" << "installcontentF_2_1.txt" << "installcontentF_2_2.txt"
+                        << "installcontentG.txt" << "installcontentH.txt")
+                << ":///data/installPackagesRepositoryUpdate"
+                << (QStringList())
+                << PackageManagerCore::Success
+                << componentResourcesAfterUpdate
+                << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
+                        << "installcontentB_update.txt" << "installcontentC_update.txt" << "installcontentD_update.txt"
+                        << "installcontentE_update.txt" << "installcontentF_update.txt" << "installcontentF_1.txt" << "installcontentF_1_1.txt"
+                        << "installcontentF_1_2.txt"  << "installcontentF_2_update.txt" << "installcontentF_2_1.txt" << "installcontentF_2_2.txt"
+                        << "installcontentG_update.txt" << "installcontentH.txt")
+                << deletedComponentResources;
     }
 
-    void testInstallWhenEssentialUpdate()
+    void testUpdate()
     {
-        setRepository(":///data/installPackagesRepository");
-        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
-                << "componentA"));
-        QCOMPARE(PackageManagerCore::Success, core->status());
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontent.txt"
-                           << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
+        QFETCH(QString, installDir);
+        QFETCH(PackageManagerCore *, core);
+        QFETCH(QString, repository);
+        QFETCH(QStringList, installComponents);
+        QFETCH(PackageManagerCore::Status, status);
+        QFETCH(ComponentResourceHash, componentResources);
+        QFETCH(QStringList, installedFiles);
+        QFETCH(QString, updateRepository);
+        QFETCH(QStringList, updateComponents);
+        QFETCH(PackageManagerCore::Status, updateStatus);
+        QFETCH(ComponentResourceHash, componentResourcesAfterUpdate);
+        QFETCH(QStringList, installedFilesAfterUpdate);
+        QFETCH(ComponentResourceHash, deletedComponentResources);
+
+        setRepository(repository, core);
+        QCOMPARE(status, core->installSelectedComponentsSilently(QStringList() << installComponents));
+        for (const ComponentResource &resource : componentResources) {
+            VerifyInstaller::verifyInstallerResources(installDir, resource.first, resource.second);
+        }
+        VerifyInstaller::verifyFileExistence(installDir, installedFiles);
+
         core->commitSessionOperations();
         core->setPackageManager();
-        setRepository(":///data/installPackagesRepositoryUpdate");
-        QCOMPARE(PackageManagerCore::ForceUpdate, core->installSelectedComponentsSilently(QStringList()
-                << "componentB"));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontent.txt"
-                           << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt");
-    }
+        setRepository(updateRepository, core);
+        QCOMPARE(updateStatus, core->updateComponentsSilently(updateComponents));
 
-    void testUpdateEssentialPackageSilently()
-    {
-        QCOMPARE(PackageManagerCore::EssentialUpdated, core->updateComponentsSilently(QStringList()));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentA", "1.0.0content.txt");
-        //As we are using the same core in tests, clean the essentalupdate value
-        core->setFoundEssentialUpdate(false);
-    }
-
-    void testUpdateEssentialWithAutodependOnSilently()
-    {
-        setRepository(":///data/repositoryWithDependencyToEssential");
-        QCOMPARE(PackageManagerCore::EssentialUpdated, core->updateComponentsSilently(QStringList()));
-
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                << "installContentAutoDependOnA.txt");
-
-        //As we are using the same core in tests, clean the essentalupdate value
-        core->setFoundEssentialUpdate(false);
-    }
-
-    void testUpdateForceUpdatePackagesSilently()
-    {
-        setRepository(":///data/installPackagesRepository");
-        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
-                << "componentH"));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentH", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                << "installContentAutoDependOnA.txt" << "installcontentH.txt");
-        core->commitSessionOperations();
-
-        setRepository(":///data/installPackagesRepositoryUpdate");
-        QCOMPARE(PackageManagerCore::EssentialUpdated, core->updateComponentsSilently(QStringList()));
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentH", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentH", "2.0.0content.txt");
-        //Verify that no other installed components got update
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                << "installContentAutoDependOnA.txt" << "installcontentH_update.txt");
-        core->setFoundEssentialUpdate(false);
-    }
-
-    void testUpdatePackageSilently()
-    {
-        setRepository(":///data/installPackagesRepository");
-        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
-                << "componentB"));
-        QCOMPARE(PackageManagerCore::Success, core->status());
-
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml"
-                           << "installcontentA_update.txt" << "installcontentE.txt" << "installcontentG.txt"
-                           << "installcontentB.txt" << "installcontentD.txt"
-                           << "installContentAutoDependOnA.txt" << "installcontentH_update.txt");
-        core->commitSessionOperations();
-
-        setRepository(":///data/installPackagesRepositoryUpdate");
-        QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList()
-                << "componentB"));
-        // componentD is autodependent and cannot be deselected
-        // componentE is a forced component and thus will be updated
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "3.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentD", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentAutoDependOnA", "1.0content.txt");
-
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentD", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentE", "1.0.0content.txt");
-        VerifyInstaller::verifyFileExistence(m_installDir, QStringList() << "components.xml" << "installcontentA_update.txt"
-                           << "installcontentE_update.txt" << "installcontentG.txt"
-                           << "installcontentB_update.txt" << "installcontentD_update.txt"
-                           << "installContentAutoDependOnA.txt" << "installcontentH_update.txt");
+        for (const ComponentResource &resource : componentResourcesAfterUpdate) {
+            VerifyInstaller::verifyInstallerResources(installDir, resource.first, resource.second);
+        }
+        for (const ComponentResource &resource : deletedComponentResources) {
+            VerifyInstaller::verifyInstallerResourceFileDeletion(installDir, resource.first, resource.second);
+        }
+        VerifyInstaller::verifyFileExistence(installDir, installedFilesAfterUpdate);
+        delete core;
     }
 
     void testUpdateNoUpdatesForSelectedPackage()
     {
-        setRepository(":///data/installPackagesRepositoryUpdate");
+        QString installDir = QInstaller::generateTemporaryFileName();
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir);
+        setRepository(":///data/installPackagesRepositoryUpdate", core);
         // No updates available for component so nothing to do
         QCOMPARE(PackageManagerCore::Canceled, core->updateComponentsSilently(QStringList()
                 << "componentInvalid"));
-    }
-
-    void testUpdateTwoPackageSilently()
-    {
-        setRepository(":///data/installPackagesRepositoryUpdate");
-        QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList()
-                << "componentB" << "componentG"));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentB", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentB", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentG", "1.0.0content.txt");
-    }
-
-    void testUpdateAllPackagesSilently()
-    {
-        setRepository(":///data/installPackagesRepository");
-        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList()
-                << "componentA" << "componentB" << "componentG" << "componentF"));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF.subcomponent1", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF.subcomponent1.subsubcomponent1", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF.subcomponent2", "1.0.0content.txt");
-        core->commitSessionOperations();
-
-        setRepository(":///data/installPackagesRepositoryUpdate");
-        QCOMPARE(PackageManagerCore::Success, core->updateComponentsSilently(QStringList()));
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResources(m_installDir, "componentF.subcomponent2", "2.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentF", "1.0.0content.txt");
-        VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, "componentF.subcomponent2", "1.0.0content.txt");
-    }
-
-    void cleanupTestCase()
-    {
-        QDir dir(m_installDir);
-        QVERIFY(dir.removeRecursively());
         delete core;
     }
-
-private:
-    QString m_installDir;
-    PackageManagerCore *core;
 };
 
 
