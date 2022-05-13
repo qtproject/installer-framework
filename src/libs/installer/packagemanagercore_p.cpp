@@ -405,7 +405,6 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
         foreach (QInstaller::Component *component, components) {
             if (loadScript)
                 component->loadComponentScript();
-            createDependencyHashes(component);
         }
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
@@ -3155,20 +3154,38 @@ void PackageManagerCorePrivate::commitPendingUnstableComponents()
     m_pendingUnstableComponents.clear();
 }
 
-void PackageManagerCorePrivate::createDependencyHashes(const Component* component)
+void PackageManagerCorePrivate::createAutoDependencyHash(const QString &component, const QString &oldDependencies, const QString &newDependencies)
 {
-    for (const QString &autodepend : component->autoDependencies()) {
-        QStringList value = m_autoDependencyComponentHash.value(autodepend);
-        if (!value.contains(component->name()))
-            value.append(component->name());
-        m_autoDependencyComponentHash.insert(autodepend, value);
+    // User might have changed autodependencies with setValue. Remove the old values.
+    const QStringList oldDependencyList = oldDependencies.split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    for (const QString &removedDependency : oldDependencyList) {
+        QStringList value = m_autoDependencyComponentHash.value(removedDependency);
+        value.removeAll(component);
+        if (value.isEmpty())
+            m_autoDependencyComponentHash.remove(removedDependency);
+        else
+            m_autoDependencyComponentHash.insert(removedDependency, value);
     }
 
-    for (const QString &depend : component->localDependencies()) {
+    const QStringList newDependencyList = newDependencies.split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    for (const QString &autodepend : newDependencyList) {
+        QStringList value = m_autoDependencyComponentHash.value(autodepend);
+        if (!value.contains(component)) {
+            value.append(component);
+            m_autoDependencyComponentHash.insert(autodepend, value);
+        }
+    }
+}
+
+void PackageManagerCorePrivate::createLocalDependencyHash(const QString &component, const QString &dependencies)
+{
+    const QStringList localDependencies = dependencies.split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    for (const QString &depend : localDependencies) {
         QStringList value = m_localDependencyComponentHash.value(depend);
-        if (!value.contains(component->name()))
-            value.append(component->name());
-        m_localDependencyComponentHash.insert(depend, value);
+        if (!value.contains(component)) {
+            value.append(component);
+            m_localDependencyComponentHash.insert(depend, value);
+        }
     }
 }
 

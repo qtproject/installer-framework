@@ -268,7 +268,8 @@ private:
     bool askUserConfirmCommand() const;
     bool packageNeedsUpdate(const LocalPackage &localPackage, const Package *update) const;
     void commitPendingUnstableComponents();
-    void createDependencyHashes(const Component* component);
+    void createAutoDependencyHash(const QString &componentName, const QString &oldValue, const QString &newValue);
+    void createLocalDependencyHash(const QString &componentName, const QString &dependencies);
     void updateComponentCheckedState();
 
     // remove once we deprecate isSelected, setSelected etc...

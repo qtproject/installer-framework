@@ -473,6 +473,10 @@ void Component::setValue(const QString &key, const QString &value)
             setCheckState(Qt::Checked);
         }
     }
+    if (key == scAutoDependOn)
+        packageManagerCore()->createAutoDependencyHash(name(), d->m_vars[key], normalizedValue);
+    if (key == scLocalDependencies)
+        packageManagerCore()->createLocalDependencyHash(name(), normalizedValue);
 
     d->m_vars[key] = normalizedValue;
     emit valueChanged(key, normalizedValue);

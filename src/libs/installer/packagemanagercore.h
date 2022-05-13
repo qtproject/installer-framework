@@ -340,6 +340,8 @@ public:
     void clearLicenses();
     QHash<QString, QMap<QString, QString>> sortedLicenses();
     void addLicenseItem(const QHash<QString, QVariantMap> &licenses);
+    void createLocalDependencyHash(const QString &component, const QString &dependencies) const;
+    void createAutoDependencyHash(const QString &component, const QString &oldDependencies, const QString &newDependencies) const;
 
 public Q_SLOTS:
     bool runInstaller();

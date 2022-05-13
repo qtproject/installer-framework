@@ -2704,6 +2704,24 @@ void PackageManagerCore::addLicenseItem(const QHash<QString, QVariantMap> &licen
 }
 
 /*!
+ * Adds \a component local \a dependencies to a hash table for quicker search for
+ * uninstall dependency components.
+ */
+void PackageManagerCore::createLocalDependencyHash(const QString &component, const QString &dependencies) const
+{
+    d->createLocalDependencyHash(component, dependencies);
+}
+
+/*!
+ * Adds \a component \a newDependencies to a hash table for quicker search for
+ * install and uninstall autodependency components. Removes \a oldDependencies
+ * from the hash table if dependencies have changed.
+ */
+void PackageManagerCore::createAutoDependencyHash(const QString &component, const QString &oldDependencies, const QString &newDependencies) const
+{
+    d->createAutoDependencyHash(component, oldDependencies, newDependencies);
+}
+/*!
     Uninstalls the selected components \a components without GUI.
     Returns PackageManagerCore installation status.
 */
@@ -4246,7 +4264,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 component->loadComponentScript();
                 if (!component->isUnstable() && component->autoDependencies().isEmpty())
                     component->setCheckState(Qt::Checked);
-                d->createDependencyHashes(component);
             }
 
             // after everything is set up, check installed components
@@ -4261,7 +4278,6 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                     if (!component->isUnstable())
                         component->setCheckState(Qt::Checked);
                 }
-                d->createDependencyHashes(component);
             }
             if (foundEssentialUpdate()) {
                 foreach (QInstaller::Component *component, components) {
