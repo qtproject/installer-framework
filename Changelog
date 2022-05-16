@@ -1,3 +1,40 @@
+4.4.0-beta
+- Build Windows installer with 64bit MSVC2019 (QTIFW-2544)
+- Workaround QSettings / QDateTime incompatibility with Qt 6 applications (QTIFW-2610)
+- Swap priority of remote and binary resource package sources (QTIFW-2242)
+- Do not install new dependencies for installed components (QTIFW-2624)
+- Fix updating autodependency components (QTIFW-2595)
+- Save sorting priority of components to local package hub (QTIFW-2631)
+- Do not recalculate local installed components (QTIFW-2522)
+- Remove unnecessary unstable calculation (QTIFW-2626)
+- Do not emit dataChanged when model check state changes (QTIFW-2623)
+- macOS: Create alias of maintenance tool to Applications directory (QTIFW-2535, QTIFW-2478)
+- AspectRatioLabel: center the pixmap by default
+- Speed up component selection in component selection pages (QTIFW-2522)
+- Print uninstallation progress on archive level with normal verbosity (QTIFW-2615)
+- Use fixed width font for the license text browser (QTIFW-2613)
+- Fix rollback of extract when archive lists file entries first (QTIFW-2594)
+- Add option for specifying maximum concurrent unpack operations (QTIFW-2586)
+- Show additional progress information on PerformInstallationPage (QTIFW-2513)
+- Use archive sizes for sorting and calculating progress of Extract ops (QTIFW-2431)
+- Add support for parallel extraction of component archives (QTIFW-2566)
+- Speed up Next button click in tree view (QTIFW-2598, QTIFW-694)
+- AspectRatioLabel: prevent setting non-scaled pixmaps (QTIFW-2612)
+- Fix wrong ApplicationsDir value on macOS (QTIFW-1011)
+- Add missing mnemonic for the "Settings" button (QTIFW-2206)
+- Update libarchive sources to 3.6.1 release
+- Print archive and compression library versions with --version option (QTIFW-2507)
+- 3rdparty: deprecate usage of LZMA SDK
+- Add a signal which is emitted when the downloads are finished (QTIFW-2269)
+- binarycreator: do not require -p option when -rcc option is used
+- Repogen: allow usage of --update-new-components with unified metadata (QTIFW-2558)
+- Doc: Add instructions for promoting maintenance tool updates (QTIFW-2440)
+- CLI: Add error message for trying to install unstable components (QTIFW-2591)
+- Doc: Remove -qt-xcb from recommended configure options (QTIFW-2557)
+- Add install reason why component is uninstalled (QTIFW-2581)
+- Add click option for product image (QTIFW-2361)
+- Build commandline tools without plugins
+
 4.3.0
 - Fix extracting entries with file paths that contain unicode characters (QTIFW-2506)
 - Update Japanese translation file
