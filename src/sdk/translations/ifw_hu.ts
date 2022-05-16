@@ -2244,7 +2244,7 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <translation>Eltávolításra kész</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>A telepítő készen áll %1 eltávolítására a számítógépről.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 programkönyvtár teljesen törlődik&lt;/font&gt;, beleértve a könyvtár teljes tartalmát!</translation>
     </message>
     <message>
@@ -2256,7 +2256,7 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <translation>Készen áll a csomagok frissítésére</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>A telepítő készen áll a telepítés frissítésére.</translation>
     </message>
     <message>
@@ -2268,7 +2268,7 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <translation>Telepítésre készen</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>Telepítő készen áll %1 számítógépre történő telepítésére.</translation>
     </message>
     <message>

@@ -2100,7 +2100,7 @@ Please copy the installer to a local drive</source>
         <translation>جاهز لإزالة التثبيت</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>الإعداد جاهز الآن لبدأ حذف %1 من حاسوبك. .&lt;br&gt;&lt;font color=&quot;red&quot;&gt;مجلد البرنامج %2 سيُحذف تماماً&lt;/font&gt; مع كل المحتوى فيه!</translation>
     </message>
     <message>
@@ -2112,7 +2112,7 @@ Please copy the installer to a local drive</source>
         <translation>جاهز لتحديث الحزم</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>الإعداد جاهز لبدأ تحديث تثبيتك.</translation>
     </message>
     <message>
@@ -2124,7 +2124,7 @@ Please copy the installer to a local drive</source>
         <translation>جاهز للتثبيت</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>الإعداد جاهز الآن لبدأ تثبيت %1 على حاسوبك.</translation>
     </message>
     <message>

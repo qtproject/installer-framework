@@ -2052,7 +2052,7 @@ Please copy the installer to a local drive</source>
         <translation>설치 제거 준비 완료</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>컴퓨터에 %1 제거를 시작할 준비가 되었습니다.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;%2 프로그램 디렉터리는 모두 삭제되며&lt;/font&gt;, 해당 디렉토리에 포함된 모든 콘텐츠도 삭제됩니다!</translation>
     </message>
     <message>
@@ -2064,7 +2064,7 @@ Please copy the installer to a local drive</source>
         <translation>패키지 업데이트 준비 완료</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>이제 설치 업데이트를 시작할 준비가 되었습니다.</translation>
     </message>
     <message>
@@ -2076,7 +2076,7 @@ Please copy the installer to a local drive</source>
         <translation>설치 준비 완료</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>컴퓨터에 %1 설치를 시작할 준비가 되었습니다.</translation>
     </message>
     <message>

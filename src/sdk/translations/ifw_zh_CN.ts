@@ -2191,7 +2191,7 @@ Please copy the installer to a local drive</source>
         <translation>准备卸载</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>安装程序现已准备好从您的计算机中移除 %1。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;将彻底删除程序目录 %2&lt;/font&gt;，目录内所有内容也将被删除!</translation>
     </message>
     <message>
@@ -2203,7 +2203,7 @@ Please copy the installer to a local drive</source>
         <translation>准备更新包</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>安装程序现已准备好安装您的更新。</translation>
     </message>
     <message>
@@ -2215,7 +2215,7 @@ Please copy the installer to a local drive</source>
         <translation>准备安装</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>安装程序现已准备好在您的计算器中安装 %1。</translation>
     </message>
     <message>

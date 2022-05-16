@@ -2646,7 +2646,7 @@ void ReadyForInstallationPage::entering()
         m_taskDetailsBrowser->setVisible(false);
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Ready to Uninstall"));
-        m_msgLabel->setText(tr("Setup is now ready to begin removing %1 from your computer.<br>"
+        m_msgLabel->setText(tr("All required information is now available to begin removing %1 from your computer.<br>"
             "<font color=\"red\">The program directory %2 will be deleted completely</font>, "
             "including all content in that directory!")
             .arg(productName(),
@@ -2657,12 +2657,12 @@ void ReadyForInstallationPage::entering()
     } else if (packageManagerCore()->isMaintainer()) {
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
         setColoredTitle(tr("Ready to Update Packages"));
-        m_msgLabel->setText(tr("Setup is now ready to begin updating your installation."));
+        m_msgLabel->setText(tr("All required information is now available to begin updating your installation."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Ready to Install"));
-        m_msgLabel->setText(tr("Setup is now ready to begin installing %1 on your computer.")
+        m_msgLabel->setText(tr("All required information is now available to begin installing %1 on your computer.")
             .arg(productName()));
     }
 

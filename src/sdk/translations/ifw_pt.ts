@@ -2024,7 +2024,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Pronto para Desinstalar</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>O assistente de configuração está pronto para remover %1 do seu computador.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;O diretório do programa %2 será excluído completamente&lt;/font&gt;, incluindo todo o conteúdo nesse diretório!</translation>
     </message>
     <message>
@@ -2036,7 +2036,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Pronto para Atualizar Pacotes</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>O assistente de configuração está pronto para iniciar a atualização da sua instalação.</translation>
     </message>
     <message>
@@ -2048,7 +2048,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Pronto para Instalar</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>O assistente de configuração está pronto para iniciar a instalação de %1.</translation>
     </message>
     <message>

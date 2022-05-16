@@ -2198,7 +2198,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Klar til afinstallation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Opsætningen er nu klar til at begynde fjernelsen af %1 fra din computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Programmappen %2 slettes fuldstændigt&lt;/font&gt;, inklusiv alt indhold i mappen!</translation>
     </message>
     <message>
@@ -2210,7 +2210,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Klar til opdateringspakker</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>Opsætningen er nu klar til at begynde opdateringen af din installation.</translation>
     </message>
     <message>
@@ -2222,7 +2222,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>Klar til installation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>Opsætningen er nu klar til at begynde installationen af %1 på din computer.</translation>
     </message>
     <message>

@@ -2186,7 +2186,7 @@ Please copy the installer to a local drive</source>
         <translation>アンインストールの準備ができました</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>コンピューターから %1 を削除する準備が整っています。&lt;br&gt;&lt;font color=&quot;red&quot;&gt;プログラム ディレクトリ %2 が完全に削除されます&lt;/font&gt;。このディレクトリ内のコンテンツもすべて削除されます。</translation>
     </message>
     <message>
@@ -2198,7 +2198,7 @@ Please copy the installer to a local drive</source>
         <translation>パッケージを更新する準備ができました</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>インストールを更新する準備が整っています。</translation>
     </message>
     <message>
@@ -2210,7 +2210,7 @@ Please copy the installer to a local drive</source>
         <translation>インストールの準備ができました</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>コンピューターに %1 をインストールする準備が整っています。</translation>
     </message>
     <message>

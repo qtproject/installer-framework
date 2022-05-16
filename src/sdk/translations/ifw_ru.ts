@@ -2249,7 +2249,7 @@ Please copy the installer to a local drive</source>
         <translation>Всё готово к удалению</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Программа установки готова начать удаление %1 с вашего компьютера. &lt;br&gt;&lt;font color=&quot;red&quot;&gt;Директория с программой %2 будет полностью удалена&lt;/font&gt;, включая содержимое этой директории!</translation>
     </message>
     <message>
@@ -2261,7 +2261,7 @@ Please copy the installer to a local drive</source>
         <translation>Готов к обновлению пакетов</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>Программа установки готова к обновлению файлов.</translation>
     </message>
     <message>
@@ -2273,7 +2273,7 @@ Please copy the installer to a local drive</source>
         <translation>Всё готово к установке</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>Программа установки готова начать установку %1 на ваш компьютер.</translation>
     </message>
     <message>

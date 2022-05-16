@@ -2236,7 +2236,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Llest per a desinstal·lar</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>El programa d&apos;instal·lació està preparat per a començar a eliminar %1 de l&apos;ordinador.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directori del programa %2 se suprimirà completament&lt;/font&gt;, incloent tot el contingut d&apos;aquest directori.</translation>
     </message>
     <message>
@@ -2248,7 +2248,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Llest per a actualitzar els paquets</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>El programa d&apos;instal·lació està preparat per a començar a actualitzar la vostra instal·lació.</translation>
     </message>
     <message>
@@ -2260,7 +2260,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>Llest per a instal·lar</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>El programa d&apos;instal·lació està preparat per a començar a instal·lar %1 en el vostre ordinador.</translation>
     </message>
     <message>

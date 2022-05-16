@@ -2199,7 +2199,7 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>Prêt pour la désinstallation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Le programme d’installation est maintenant prêt à supprimer %1 de votre ordinateur.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Le répertoire du programme %2 va être entièrement supprimé&lt;/font&gt;, y compris tout son contenu !</translation>
     </message>
     <message>
@@ -2211,7 +2211,7 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>Prêt à mettre à jour les paquetages</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation>Le programme d’installation est maintenant prêt à mettre à jour votre installation.</translation>
     </message>
     <message>
@@ -2223,7 +2223,7 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>Prêt pour l’installation</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>Le programme d’installation est maintenant prêt à installer %1 sur votre ordinateur.</translation>
     </message>
     <message>

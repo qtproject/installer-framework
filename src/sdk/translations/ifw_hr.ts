@@ -2056,7 +2056,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Spremno za deinstaliranje</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
+        <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
         <translation>Postavljanje je sad spremno za uklanjanje %1 s računala.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;Mapa programa %2 će se potpuno izbrisati&lt;/font&gt;, uključujući sav sadržaj mape!</translation>
     </message>
     <message>
@@ -2068,7 +2068,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Spremno za aktualiziranje paketa</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin updating your installation.</source>
+        <source>All required information is now available to begin updating your installation..</source>
         <translation>Postavljanje je sad spremno za aktualiziranje tvoje instalacije.</translation>
     </message>
     <message>
@@ -2080,7 +2080,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Spremno za instaliranje</translation>
     </message>
     <message>
-        <source>Setup is now ready to begin installing %1 on your computer.</source>
+        <source>All required information is now available to begin installing %1 on your computer.</source>
         <translation>Postavljanje je sad spremno za instaliranje %1 na tvoje računalo.</translation>
     </message>
     <message>
