@@ -662,7 +662,7 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
         m_localPackageHub->setApplicationVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
 
     if (isInstaller())
-        m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
+        m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 1));
 
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
@@ -2786,7 +2786,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         m_updates = false;
         m_updateSourcesAdded = false;
         if (isInstaller())
-            m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 0));
+            m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 1));
     }
 
     foreach (const Metadata &data, metadata) {
@@ -2830,7 +2830,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         if (data.repository.isCompressed())
             m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 2));
         else
-            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 1));
+            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 0));
 
         ProductKeyCheck::instance()->addPackagesFromXml(data.directory + QLatin1String("/Updates.xml"));
     }
