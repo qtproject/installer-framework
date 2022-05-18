@@ -127,10 +127,10 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
     // Check if .vbs extension can be used for running renaming script. If not, create own extension
     QString extension = QLatin1String(".vbs");
-    QSettingsWrapper settingRoot(QLatin1String("HKEY_CLASSES_ROOT\\.vbs"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper settingRoot(QLatin1String("HKEY_CLASSES_ROOT\\.vbs"), QSettings::NativeFormat);
     if (settingRoot.value(QLatin1String(".")).toString() != QLatin1String("VBSFile")) {
         extension = QLatin1String(".qtInstaller");
-        QSettingsWrapper settingsUser(QLatin1String("HKEY_CURRENT_USER\\Software\\Classes"), QSettingsWrapper::NativeFormat);
+        QSettingsWrapper settingsUser(QLatin1String("HKEY_CURRENT_USER\\Software\\Classes"), QSettings::NativeFormat);
         QString value = settingsUser.value(extension).toString();
         if (value != QLatin1String("VBSFile"))
             settingsUser.setValue(extension, QLatin1String("VBSFile"));
@@ -861,7 +861,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 
     QVariantHash variables; // Do not change to QVariantMap! Breaks existing .ini files,
     // cause the variant types do not match while restoring the variables from the file.
-    QSettingsWrapper cfg(iniPath, QSettingsWrapper::IniFormat);
+    QSettingsWrapper cfg(iniPath, QSettings::IniFormat);
     foreach (const QString &key, m_data.keys()) {
         if (key == scRunProgramDescription || key == scRunProgram || key == scRunProgramArguments)
             continue;
@@ -930,7 +930,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &targetDir)
 {
     QSettingsWrapper cfg(targetDir + QLatin1Char('/') + m_data.settings().maintenanceToolIniFile(),
-        QSettingsWrapper::IniFormat);
+        QSettings::IniFormat);
     const QVariantHash v = cfg.value(QLatin1String("Variables")).toHash(); // Do not change to
     // QVariantMap! Breaks reading from existing .ini files, cause the variant types do not match.
     for (QVariantHash::const_iterator it = v.constBegin(); it != v.constEnd(); ++it) {
@@ -2569,7 +2569,7 @@ void PackageManagerCorePrivate::deleteMaintenanceToolAlias()
 void PackageManagerCorePrivate::registerMaintenanceTool()
 {
 #ifdef Q_OS_WIN
-    QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper settings(registerPath(), QSettings::NativeFormat);
     settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
     const QString maintenanceTool = QDir::toNativeSeparators(maintenanceToolName());
@@ -2613,7 +2613,7 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
 void PackageManagerCorePrivate::unregisterMaintenanceTool()
 {
 #ifdef Q_OS_WIN
-    QSettingsWrapper settings(registerPath(), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper settings(registerPath(), QSettings::NativeFormat);
     settings.remove(QString());
 #endif
 }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -120,7 +120,7 @@ bool SettingsOperation::performOperation()
     }
     setValue(QLatin1String("createddir"), mkDirOperation.value(QLatin1String("createddir")));
 
-    QSettingsWrapper settings(path, QSettingsWrapper::IniFormat);
+    QSettingsWrapper settings(path, QSettings::IniFormat);
     if (method == QLatin1String("set"))
         settings.setValue(key, aValue);
     else if (method == QLatin1String("remove"))
@@ -162,7 +162,7 @@ bool SettingsOperation::undoOperation()
 
     bool cleanUp = false;
     { // kill the scope to kill settings object, else remove file will not work
-        QSettingsWrapper settings(path, QSettingsWrapper::IniFormat);
+        QSettingsWrapper settings(path, QSettings::IniFormat);
         if (method == QLatin1String("set")) {
             settings.remove(key);
         } else if (method == QLatin1String("add_array_value")) {

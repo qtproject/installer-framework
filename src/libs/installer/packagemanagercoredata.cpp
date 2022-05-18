@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,6 +35,7 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QRegExp>
+#include <QSettings>
 
 #ifdef Q_OS_WIN
 # include <windows.h>
@@ -145,7 +146,7 @@ void PackageManagerCoreData::addDynamicPredefinedVariables()
     QString dirX64 = dir;
 #ifdef Q_OS_WIN
     QSettingsWrapper current(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion")
-                          , QSettingsWrapper::NativeFormat);
+                          , QSettings::NativeFormat);
     BOOL onWow64Or64bit = TRUE;
 #ifndef Q_OS_WIN64
     IsWow64Process(GetCurrentProcess(), &onWow64Or64bit);
@@ -167,9 +168,9 @@ void PackageManagerCoreData::addDynamicPredefinedVariables()
 
 #ifdef Q_OS_WIN
     QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
-        "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
+        "CurrentVersion\\Explorer\\User Shell Folders"), QSettings::NativeFormat);
     QSettingsWrapper system(QLatin1String("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\"
-        "CurrentVersion\\Explorer\\Shell Folders"), QSettingsWrapper::NativeFormat);
+        "CurrentVersion\\Explorer\\Shell Folders"), QSettings::NativeFormat);
 
     const QString programs = user.value(QLatin1String("Programs"), QString()).toString();
     const QString allPrograms = system.value(QLatin1String("Common Programs"), QString())
@@ -252,7 +253,7 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         static const QRegExp regex(QLatin1String("\\\\|/"));
         const QString filename = key.section(regex, 0, -2);
         const QString regKey = key.section(regex, -1);
-        const QSettingsWrapper registry(filename, QSettingsWrapper::NativeFormat);
+        const QSettingsWrapper registry(filename, QSettings::NativeFormat);
         if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
             return registry.value(regKey).toString();
     }

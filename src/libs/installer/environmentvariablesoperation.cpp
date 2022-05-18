@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -122,7 +122,7 @@ UpdateOperation::Error writeSetting(const QString &regPath,
                                     QString *oldValue)
 {
     oldValue->clear();
-    SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
+    SettingsType registry(regPath, QSettings::NativeFormat);
     if (!registry.isWritable()) {
         *errorString = UpdateOperation::tr("Registry path %1 is not writable.").arg(regPath);
         return UpdateOperation::UserDefinedError;
@@ -156,7 +156,7 @@ UpdateOperation::Error undoSetting(const QString &regPath,
 {
     QString actual;
     {
-        SettingsType registry(regPath, QSettingsWrapper::NativeFormat);
+        SettingsType registry(regPath, QSettings::NativeFormat);
         actual = registry.value(name).toString();
     }
 

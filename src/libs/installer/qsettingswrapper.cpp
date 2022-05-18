@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -107,18 +107,18 @@ QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Scope scope, const QString 
 {
 }
 
-QSettingsWrapper::QSettingsWrapper(QSettingsWrapper::Format format, QSettingsWrapper::Scope scope,
+QSettingsWrapper::QSettingsWrapper(QSettings::Format format, QSettingsWrapper::Scope scope,
         const QString &organization, const QString &application, QObject *parent)
     : RemoteObject(QLatin1String(Protocol::QSettings), parent)
-    , d(new Private(static_cast<QSettings::Format>(format), static_cast<QSettings::Scope> (scope),
+    , d(new Private(format, static_cast<QSettings::Scope> (scope),
         organization, application))
 {
 }
 
-QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettingsWrapper::Format format,
+QSettingsWrapper::QSettingsWrapper(const QString &fileName, QSettings::Format format,
         QObject *parent)
     : RemoteObject(QLatin1String(Protocol::QSettings), parent)
-    , d(new Private(fileName, static_cast<QSettings::Format>(format)))
+    , d(new Private(fileName, format))
 {
 }
 
@@ -222,10 +222,10 @@ QString QSettingsWrapper::fileName() const
     return d->settings.fileName();
 }
 
-QSettingsWrapper::Format QSettingsWrapper::format() const
+QSettings::Format QSettingsWrapper::format() const
 {
     // No need to talk to the server, we've setup the local settings object the same way.
-    return static_cast<QSettingsWrapper::Format>(d->settings.format());
+    return d->settings.format();
 }
 
 QString QSettingsWrapper::group() const
@@ -316,10 +316,6 @@ QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) 
 
 bool QSettingsWrapper::createSocket() const
 {
-    if ((d->m_format != QSettings::NativeFormat) && (d->m_format != QSettings::IniFormat)) {
-        Q_ASSERT_X(false, Q_FUNC_INFO, "Settings wrapper only supports QSettingsWrapper::NativeFormat"
-                   " and QSettingsWrapper::IniFormat.");
-    }
     return (const_cast<QSettingsWrapper *>(this))->connectToServer(QVariantList()
         << d->m_application << d->m_organization << d->m_scope << d->m_format << d->m_filename);
 }

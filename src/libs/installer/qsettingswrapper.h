@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,6 +34,8 @@
 
 #include <QVariant>
 
+#include <QSettings>
+
 namespace QInstaller {
 
 class INSTALLER_EXPORT QSettingsWrapper : public RemoteObject
@@ -48,12 +50,6 @@ public:
         FormatError
     };
 
-    enum Format {
-        NativeFormat,
-        IniFormat,
-        InvalidFormat = 16
-    };
-
     enum Scope {
         UserScope,
         SystemScope
@@ -63,9 +59,9 @@ public:
         const QString &application = QString(), QObject *parent = 0);
     QSettingsWrapper(Scope scope, const QString &organization,
         const QString &application = QString(), QObject *parent = 0);
-    QSettingsWrapper(Format format, Scope scope, const QString &organization,
+    QSettingsWrapper(QSettings::Format format, Scope scope, const QString &organization,
         const QString &application = QString(), QObject *parent = 0);
-    QSettingsWrapper(const QString &fileName, Format format, QObject *parent = 0);
+    QSettingsWrapper(const QString &fileName, QSettings::Format format, QObject *parent = 0);
     ~QSettingsWrapper();
 
     void clear();
@@ -96,7 +92,7 @@ public:
     bool fallbacksEnabled() const;
 
     QString fileName() const;
-    Format format() const;
+    QSettings::Format format() const;
     Scope scope() const;
     QString organizationName() const;
     QString applicationName() const;
@@ -113,24 +109,24 @@ private: // we cannot support the following functionality
     void setIniCodec(const char * /*codecName*/);
     QTextCodec *iniCodec() const { return 0; }
 
-    static void setDefaultFormat(Format /*format*/);
-    static Format defaultFormat() { return NativeFormat; }
+    static void setDefaultFormat(QSettings::Format /*format*/);
+    static QSettings::Format defaultFormat() { return QSettings::NativeFormat; }
     static void setSystemIniPath(const QString & /*dir*/);
     static void setUserIniPath(const QString & /*dir*/);
-    static void setPath(Format /*format*/, Scope /*scope*/, const QString & /*path*/);
+    static void setPath(QSettings::Format /*format*/, Scope /*scope*/, const QString & /*path*/);
 
     typedef QMap<QString, QVariant> SettingsMap;
     typedef bool(*ReadFunc)(QIODevice &device, SettingsMap &map);
     typedef bool(*WriteFunc)(QIODevice &device, const SettingsMap &map);
 
-    static Format registerFormat(const QString &extension, ReadFunc readFunc, WriteFunc writeFunc,
+    static QSettings::Format registerFormat(const QString &extension, ReadFunc readFunc, WriteFunc writeFunc,
         Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive)
     {
         Q_UNUSED(extension)
         Q_UNUSED(readFunc)
         Q_UNUSED(writeFunc)
         Q_UNUSED(caseSensitivity)
-        return NativeFormat;
+        return QSettings::NativeFormat;
     }
 
 private:

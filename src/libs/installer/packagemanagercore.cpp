@@ -981,7 +981,7 @@ void PackageManagerCore::rollBackInstallation()
  */
 bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) const
 {
-    QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettings::NativeFormat);
     return settings.value(QString::fromLatin1(".%1/Default").arg(extension)).isValid();
 }
 
