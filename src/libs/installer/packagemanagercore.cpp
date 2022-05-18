@@ -3420,14 +3420,18 @@ void PackageManagerCore::addResourcesForOfflineGeneration(const QString &rcPath)
 
 /*!
     Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
-    returned. Additionally, on Windows, \a key can be a registry key.
+    returned. Additionally, on Windows, \a key can be a registry key. Optionally, you can specify the
+    \a format of the registry key. By default the \a format is QSettings::NativeFormat.
+    For accessing the 32-bit system registry from a 64-bit application running on 64-bit Windows,
+    use QSettings::Registry32Format. For accessing the 64-bit system registry from a 32-bit
+    application running on 64-bit Windows, use QSettings::Registry64Format.
 
     \sa {installer::value}{installer.value}
     \sa setValue(), containsValue(), valueChanged()
 */
-QString PackageManagerCore::value(const QString &key, const QString &defaultValue) const
+QString PackageManagerCore::value(const QString &key, const QString &defaultValue, const QSettings::Format &format) const
 {
-    return d->m_data.value(key, defaultValue).toString();
+    return d->m_data.value(key, defaultValue, format).toString();
 }
 
 /*!

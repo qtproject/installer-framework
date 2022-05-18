@@ -233,7 +233,7 @@ bool PackageManagerCoreData::setValue(const QString &key, const QString &normali
     return true;
 }
 
-QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_default) const
+QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_default, const QSettings::Format &format) const
 {
     if (key == scTargetDir) {
         QString dir = m_variables.value(key);
@@ -253,7 +253,7 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         static const QRegExp regex(QLatin1String("\\\\|/"));
         const QString filename = key.section(regex, 0, -2);
         const QString regKey = key.section(regex, -1);
-        const QSettingsWrapper registry(filename, QSettings::NativeFormat);
+        const QSettingsWrapper registry(filename, format);
         if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
             return registry.value(regKey).toString();
     }

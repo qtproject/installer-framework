@@ -754,10 +754,16 @@
 */
 
 /*!
-    \qmlmethod string installer::value(string key, string defaultValue = "")
+    \qmlmethod string installer::value(string key, string defaultValue = "", int format = 0)
 
-    Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
-    returned. Additionally, on Windows, \a key can be a registry key.
+    Returns the installer value for \a key. If \a key is not known to the system,
+    \a defaultValue is returned. Additionally, on Windows, \a key can be a
+    registry key. Optionally, you can specify the \a format of the registry key.
+    By default the \a format is QSettings::NativeFormat. For accessing
+    the 32-bit system registry from a 64-bit application running on 64-bit
+    Windows, use QSettings::Registry32Format. For accessing the 64-bit system
+    registry from a 32-bit application running on 64-bit Windows, use
+    QSettings::Registry64Format.
 
     \sa setValue, containsValue, valueChanged
 */
