@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -50,6 +50,7 @@ enum struct StartAs {
 
 const char DefaultSocket[] = "ifw_srv";
 const char DefaultAuthorizationKey[] = "DefaultAuthorizationKey";
+const char DefaultReply[] = "DefaultReply";
 
 const char Create[] = "Create";
 const char Shutdown[] = "Shutdown";
