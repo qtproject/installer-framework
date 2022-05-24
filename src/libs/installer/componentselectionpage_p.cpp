@@ -307,7 +307,6 @@ void ComponentSelectionPagePrivate::updateTreeView()
             this, &ComponentSelectionPagePrivate::currentSelectedChanged);
     }
 
-    m_searchLineEdit->setVisible(!m_core->isUpdater());
     m_currentModel = m_core->isUpdater() ? m_updaterModel : m_allModel;
     m_proxyModel->setSourceModel(m_currentModel);
     m_treeView->setModel(m_proxyModel);
