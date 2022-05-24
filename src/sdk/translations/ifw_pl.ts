@@ -1426,8 +1426,8 @@ Błąd podczas wczytywania %2</translation>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <source>Setup - %1</source>
-        <translation>Konfiguracja - %1</translation>
+        <source>Welcome</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>

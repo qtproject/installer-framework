@@ -1871,8 +1871,8 @@ Kopiraj program za instaliranje na računalo</translation>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <source>Setup - %1</source>
-        <translation>Postavljanje – %1</translation>
+        <source>Welcome</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>

@@ -1503,7 +1503,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_removeAllComponents(nullptr)
 {
     setObjectName(QLatin1String("IntroductionPage"));
-    setColoredTitle(tr("Setup - %1").arg(productName()));
+    setColoredTitle(tr("Welcome"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);

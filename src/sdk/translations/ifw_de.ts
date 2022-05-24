@@ -1431,8 +1431,8 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <source>Setup - %1</source>
-        <translation>Einrichten - %1</translation>
+        <source>Welcome</source>
+        <translation>Willkommen</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>

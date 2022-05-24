@@ -2001,8 +2001,8 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <source>Setup - %1</source>
-        <translation>الإعداد - %1</translation>
+        <source>Welcome</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>

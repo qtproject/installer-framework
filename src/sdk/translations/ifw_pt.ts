@@ -1838,8 +1838,8 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::IntroductionPage</name>
     <message>
-        <source>Setup - %1</source>
-        <translation>%1 - Configuração</translation>
+        <source>Welcome</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
