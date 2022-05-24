@@ -2638,6 +2638,7 @@ void ReadyForInstallationPage::entering()
 
     QString htmlOutput;
     bool componentsOk = packageManagerCore()->calculateComponents(&htmlOutput);
+    qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
     m_taskDetailsBrowser->setVisible(!componentsOk || LoggingHandler::instance().isVerbose());
     setComplete(componentsOk);
