@@ -1697,10 +1697,6 @@ Do you want to continue?</source>
         <translation>无法解析所有依赖项。</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>即将被移除的组件。</translation>
-    </message>
-    <message>
         <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
 </source>
         <translation>无法安装组件 %1。组件仅作为 %2 的自动依赖时安装。
@@ -1787,6 +1783,16 @@ Do you want to continue?</source>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation>预估的安装程序大小 %1 可能超过被支持的可执行程序大小限制 %2。应用程序可能无法运行。</translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>即将要移除的组件：</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
+</source>
+        <translation>无法安装组件 %1。加载这个组件时发生错误，所以它被标记为不稳定并且不能被选择。
+</translation>
     </message>
 </context>
 <context>
@@ -2036,6 +2042,38 @@ Installing component %1</source>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>检测到组件“%1”和“%2”之间的依赖项循环。</translation>
+    </message>
+    <message>
+        <source>
+Preparing to unpack components...</source>
+        <translation>
+正在准备解压组件......</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>%2 个操作中的 %1 个已经完成。</translation>
+    </message>
+    <message>
+        <source>
+Unpacking components...</source>
+        <translation>
+正在解压组件......</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>%2 个操作中的 %1 个已经回滚。</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>回滚完成。</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>%2 个组件中的 %1 个已经安装。</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>所有组件已安装。</translation>
     </message>
 </context>
 <context>
@@ -2493,6 +2531,10 @@ Please copy the installer to a local drive</source>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>请确保当前用户拥有文件“%1”的读取权限，或尝试以管理员身份运行 %2。</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>“max-concurrent-operations”的值无效。</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2746,6 +2788,22 @@ or accept the elevation of access rights if being asked.</source>
         <source>Extracting &quot;%1&quot;</source>
         <translation>正在提取“%1”</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>不支持的存档“%1”：没有处理程序注册在文件后缀名“%2”下。</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>无法打开存档“%1”进行读取：%2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>读取存档“%1”内容时发生错误：%2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>正在移除从“%1”中提取的文件</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
@@ -2765,24 +2823,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>无法打开存档“%1”进行读取：%2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>读取存档“%1”内容时发生错误：%2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>无法为文件“%1“进行准备</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>提取存档”%1“的操作取消了。</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>提取存档“%1”时出错：%2</translation>
-    </message>
-    <message>
-        <source>Could not request administrator privileges required to extract archive &quot;%1&quot;.</source>
-        <translation>无法获得提取存档“%1”所需的管理员权限。</translation>
     </message>
 </context>
 <context>
@@ -2794,6 +2836,75 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>关于 %1 维护工具</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>无法打开存档进行读取：%1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>无法读取条目头部：%1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>无法将条目“%1”写入磁盘：%2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>无法打开存档进行读取：%1</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>无法读取条目头部：%1</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>无法将条目“%1”写入磁盘：%2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>无法打开文件“%1”进行写入：%2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
+        <translation>无法打开文件“%1”进行读取：%2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>无法打开文件“%1”进行读取：%2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>无法为“%1”写入条目头部：%2</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>取消组件选择：</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>组件被替换为“%1”：</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>正在移除没有现存依赖的虚拟组件：</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>组件依赖“%1”已移除：</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>组件自动依赖“%1”已移除：</translation>
     </message>
 </context>
 </TS>
