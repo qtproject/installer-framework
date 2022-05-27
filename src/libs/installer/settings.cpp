@@ -386,8 +386,6 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
             s.d->m_data.value(QLatin1String("UninstallerName"), QLatin1String("maintenancetool"))
             .toString());
     }
-    if (s.d->m_data.value(scMaintenanceToolAlias).toString().isEmpty())
-        s.d->m_data.replace(scMaintenanceToolAlias, s.d->m_data.value(scMaintenanceToolName));
 
     if (s.d->m_data.value(scTargetConfigurationFile).toString().isEmpty())
         s.d->m_data.replace(scTargetConfigurationFile, QLatin1String("components.xml"));
