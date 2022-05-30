@@ -3429,9 +3429,9 @@ void PackageManagerCore::addResourcesForOfflineGeneration(const QString &rcPath)
     \sa {installer::value}{installer.value}
     \sa setValue(), containsValue(), valueChanged()
 */
-QString PackageManagerCore::value(const QString &key, const QString &defaultValue, const QSettings::Format &format) const
+QString PackageManagerCore::value(const QString &key, const QString &defaultValue, const int &format) const
 {
-    return d->m_data.value(key, defaultValue, format).toString();
+    return d->m_data.value(key, defaultValue, static_cast<QSettings::Format>(format)).toString();
 }
 
 /*!
