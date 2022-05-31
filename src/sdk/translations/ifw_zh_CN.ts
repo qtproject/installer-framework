@@ -1585,10 +1585,8 @@ Error while loading %2</source>
         <translation>编写维护工具时出错</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-正在下载包...</translation>
+        <source>Downloading packages...</source>
+        <translation>正在下载包...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1697,34 +1695,24 @@ Do you want to continue?</source>
         <translation>无法解析所有依赖项。</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>无法安装组件 %1。组件仅作为 %2 的自动依赖时安装。
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>无法安装组件 %1。组件仅作为 %2 的自动依赖时安装。</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>无法安装组件 %1。组件不可选择，这意味着您必须选择其中一个子组件。
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>无法安装组件 %1。组件不可选择，这意味着您必须选择其中一个子组件。</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>组件 %1 已安装
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>组件 %1 已安装</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>无法安装 %1。组件是虚拟的。
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>无法安装 %1。组件是虚拟的。</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>无法安装 %1。未找到组件。
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>无法安装 %1。未找到组件。</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1775,10 +1763,8 @@ Do you want to continue?</source>
         <translation>需要用户输入，但输出设备并未与任何终端裝置建立关联。</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>无法安装 %1。组件是虚拟组件 %2 的后代。
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>无法安装 %1。组件是虚拟组件 %2 的后代。</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1789,10 +1775,8 @@ Do you want to continue?</source>
         <translation>即将要移除的组件：</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
-        <translation>无法安装组件 %1。加载这个组件时发生错误，所以它被标记为不稳定并且不能被选择。
-</translation>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
+        <translation>无法安装组件 %1。加载这个组件时发生错误，所以它被标记为不稳定并且不能被选择。</translation>
     </message>
 </context>
 <context>
@@ -1910,16 +1894,12 @@ Do you want to continue?</source>
         <translation>正在创建维护工具</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-安装已完成!</translation>
+        <source>Installation finished!</source>
+        <translation>安装已完成!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-安装已中止!</translation>
+        <source>Installation aborted!</source>
+        <translation>安装已中止!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1930,16 +1910,12 @@ Installation aborted!</source>
         <translation>正在移除未选中的组件...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-更新已完成!</translation>
+        <source>Update finished!</source>
+        <translation>更新已完成!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-更新已中止!</translation>
+        <source>Update aborted!</source>
+        <translation>更新已中止!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1982,10 +1958,8 @@ Update aborted!</source>
         <translation>已放弃离线生成！</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-正在安装组件 %1</translation>
+        <source>Installing component %1</source>
+        <translation>正在安装组件 %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2044,20 +2018,16 @@ Installing component %1</source>
         <translation>检测到组件“%1”和“%2”之间的依赖项循环。</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
-        <translation>
-正在准备解压组件......</translation>
+        <source>Preparing to unpack components...</source>
+        <translation>正在准备解压组件......</translation>
     </message>
     <message>
         <source>%1 of %2 operations completed.</source>
         <translation>%2 个操作中的 %1 个已经完成。</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
-        <translation>
-正在解压组件......</translation>
+        <source>Unpacking components...</source>
+        <translation>正在解压组件......</translation>
     </message>
     <message>
         <source>%1 of %2 operations rolled back.</source>

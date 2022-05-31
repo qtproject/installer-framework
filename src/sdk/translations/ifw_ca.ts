@@ -1631,10 +1631,8 @@ Error en descarregar %2</translation>
         <translation>Error en escriure a l&apos;Eina de manteniment</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-S&apos;estan descarregant els paquets...</translation>
+        <source>Downloading packages...</source>
+        <translation>S&apos;estan descarregant els paquets...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1739,23 +1737,19 @@ Voleu continuar?</translation>
         <translation>No s&apos;han pogut resoldre totes les dependències.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
+        <source>Component %1 already installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
+        <source>Cannot install %1. Component is virtual.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
+        <source>Cannot install %1. Component not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1799,13 +1793,11 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1829,8 +1821,7 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1949,16 +1940,12 @@ Voleu continuar?</translation>
         <translation>S&apos;està creant l&apos;Eina de manteniment</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-S&apos;ha finalitzat la instal·lació!</translation>
+        <source>Installation finished!</source>
+        <translation>S&apos;ha finalitzat la instal·lació!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-S&apos;ha interromput la instal·lació!</translation>
+        <source>Installation aborted!</source>
+        <translation>S&apos;ha interromput la instal·lació!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1969,16 +1956,12 @@ S&apos;ha interromput la instal·lació!</translation>
         <translation>S&apos;estan eliminant els components desseleccionats...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Ha finalitzat l&apos;actualització!</translation>
+        <source>Update finished!</source>
+        <translation>Ha finalitzat l&apos;actualització!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-S&apos;ha interromput l&apos;actualització!</translation>
+        <source>Update aborted!</source>
+        <translation>S&apos;ha interromput l&apos;actualització!</translation>
     </message>
     <message>
         <source>Cannot create target directory for installer.</source>
@@ -2013,10 +1996,8 @@ S&apos;ha interromput l&apos;actualització!</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-S&apos;instal·la el component %1</translation>
+        <source>Installing component %1</source>
+        <translation>S&apos;instal·la el component %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2082,8 +2063,7 @@ S&apos;instal·la el component %1</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2091,8 +2071,7 @@ Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

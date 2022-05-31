@@ -1593,10 +1593,8 @@ Error al descargar %2</translation>
         <translation>Error al escribir la herramienta de mantenimiento</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Descargando paquetes...</translation>
+        <source>Downloading packages...</source>
+        <translation>Descargando paquetes...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1705,34 +1703,24 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <translation>No se pueden resolver todas las dependencias.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>No se puede instalar el componente %1. El componente se instala sólo como dependencia automática de %2.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>No se puede instalar el componente %1. El componente se instala sólo como dependencia automática de %2.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>No se puede instalar el componente %1. El componente no es seleccionable, lo que significa que tiene que seleccionar uno de los subcomponentes.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>No se puede instalar el componente %1. El componente no es seleccionable, lo que significa que tiene que seleccionar uno de los subcomponentes.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>El componente %1 ya está instalado
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>El componente %1 ya está instalado</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>No se puede instalar %1. El componente es virtual.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>No se puede instalar %1. El componente es virtual.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>No se puede instalar %1. No se encuentra el componente.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>No se puede instalar %1. No se encuentra el componente.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1783,10 +1771,8 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <translation>Se requiere la entrada del usuario pero el dispositivo de salida no está asociado a un terminal.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>No se puede instalar %1. El componente es descendiente de un componente virtual %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>No se puede instalar %1. El componente es descendiente de un componente virtual %2.</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1797,8 +1783,7 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <translation>Componentes a punto de ser removidos:</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>No se puede instalar el componente %1. Hubo un problema al cargar este componente, por lo que está marcado como inestable y no se puede seleccionar.</translation>
     </message>
 </context>
@@ -1917,16 +1902,12 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <translation>Creando herramienta de mantenimiento</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Instalación completada.</translation>
+        <source>Installation finished!</source>
+        <translation>Instalación completada.</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Instalación cancelada.</translation>
+        <source>Installation aborted!</source>
+        <translation>Instalación cancelada.</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1937,16 +1918,12 @@ Instalación cancelada.</translation>
         <translation>Eliminando componentes anulados de la selección...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Actualización completada.</translation>
+        <source>Update finished!</source>
+        <translation>Actualización completada.</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Actualización cancelada.</translation>
+        <source>Update aborted!</source>
+        <translation>Actualización cancelada.</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1989,10 +1966,8 @@ Actualización cancelada.</translation>
         <translation>¡Generación fuera de línea cancelada!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-Instalando componente %1</translation>
+        <source>Installing component %1</source>
+        <translation>Instalando componente %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2051,8 +2026,7 @@ Instalando componente %1</translation>
         <translation>Se ha detectado un ciclo de dependencia entre componentes los &quot;%1&quot; y &quot;%2&quot;.</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>Preparándose para desempaquetar componentes...</translation>
     </message>
     <message>
@@ -2060,8 +2034,7 @@ Preparing to unpack components...</source>
         <translation>%1 de %2 operaciones completadas.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>Desempaquetando componentes...</translation>
     </message>
     <message>

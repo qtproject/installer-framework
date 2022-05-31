@@ -1282,10 +1282,8 @@ Erro ao carregar %2</translation>
         <translation>Erro ao guardar a Ferramenta de Manutenção</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-A descarregar pacotes...</translation>
+        <source>Downloading packages...</source>
+        <translation>A descarregar pacotes...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1394,34 +1392,24 @@ De certeza que deseja continuar?</translation>
         <translation>Não é possível obter todas as dependências.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>Não é possível instalar o componente %1. O componente é instalado apenas como dependência automática de %2.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>Não é possível instalar o componente %1. O componente é instalado apenas como dependência automática de %2.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>Não é possível instalar o componente %1. O componente não é verificável, o que significa que um dos subcomponentes deve ser selecionado.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>Não é possível instalar o componente %1. O componente não é verificável, o que significa que um dos subcomponentes deve ser selecionado.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>Componente %1 já foi instalado
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>Componente %1 já foi instalado</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>Não é possível instalar %1. É um componente virtual.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>Não é possível instalar %1. É um componente virtual.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>Não é possível instalar %1. O componente não foi encontrado.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>Não é possível instalar %1. O componente não foi encontrado.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1472,10 +1460,8 @@ De certeza que deseja continuar?</translation>
         <translation>É necessário a interação com o utilizador, mas o dispositivo de saída não está associado a uma linha de comandos.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>Não é possível instalar %1. O componente é descendente de um componente virtual %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>Não é possível instalar %1. O componente é descendente de um componente virtual %2.</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1486,8 +1472,7 @@ De certeza que deseja continuar?</translation>
         <translation>Os seguintes componentes irão ser removidos:</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Não é possível instalar o componente %1. Ocorreu um problema ao carregar o componente, este foi sinalizado como instável e não pode ser selecionado.</translation>
     </message>
 </context>
@@ -1606,16 +1591,12 @@ De certeza que deseja continuar?</translation>
         <translation>A criar Ferramenta de Manutenção</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Instalação concluída!</translation>
+        <source>Installation finished!</source>
+        <translation>Instalação concluída!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Instalação cancelada!</translation>
+        <source>Installation aborted!</source>
+        <translation>Instalação cancelada!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1626,16 +1607,12 @@ Instalação cancelada!</translation>
         <translation>A remover componentes deselecionados...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Atualização concluída!</translation>
+        <source>Update finished!</source>
+        <translation>Atualização concluída!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Atualização cancelada!</translation>
+        <source>Update aborted!</source>
+        <translation>Atualização cancelada!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1678,10 +1655,8 @@ Atualização cancelada!</translation>
         <translation>A geração offline foi cancelada!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-A instalar o componente %1</translation>
+        <source>Installing component %1</source>
+        <translation>A instalar o componente %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -1740,8 +1715,7 @@ A instalar o componente %1</translation>
         <translation>Ciclo de inter-dependência entre os componentes &quot;%1&quot; e &quot;%2&quot; detectados.</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>A preparar para descompactar componentes...</translation>
     </message>
     <message>
@@ -1749,8 +1723,7 @@ Preparing to unpack components...</source>
         <translation>Concluídas %1 de %2 operações.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>A descompactar componentes...</translation>
     </message>
     <message>

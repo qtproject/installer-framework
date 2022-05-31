@@ -1794,7 +1794,8 @@ bool PackageManagerCorePrivate::runInstaller()
         if (progress < 100)
             ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
 
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation finished!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+            + tr("Installation finished!"));
 
         if (adminRightsGained)
             m_core->dropAdminRights();
@@ -1812,7 +1813,9 @@ bool PackageManagerCorePrivate::runInstaller()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstallation aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+            + tr("Installation aborted!"));
+
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -1971,7 +1974,8 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         // usually this should be only the reserved one from the beginning
         if (progress < 100)
             ProgressCoordinator::instance()->addManualPercentagePoints(100 - progress);
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate finished!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+            + tr("Update finished!"));
 
         if (adminRightsGained)
             m_core->dropAdminRights();
@@ -1991,7 +1995,9 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
         m_core->rollBackInstallation();
 
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUpdate aborted!"));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+            + tr("Update aborted!"));
+
         if (adminRightsGained)
             m_core->dropAdminRights();
         emit installationFinished();
@@ -2209,7 +2215,8 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     OperationList unpackOperations;
     bool becameAdmin = false;
 
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nPreparing to unpack components..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+        + tr("Preparing to unpack components..."));
 
     // 1. Collect operations
     quint64 totalOperationsSizeHint = 0;
@@ -2290,7 +2297,8 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
         return lhs->sizeHint() > rhs->sizeHint();
     });
 
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nUnpacking components..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+        + tr("Unpacking components..."));
 
     runner.setType(Operation::Perform);
     const QHash<Operation *, bool> results = runner.run();
@@ -2354,8 +2362,8 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
     // show only components which do something, MinimumProgress is only for progress calculation safeness
     bool showDetailsLog = false;
     if (opCount > 1 || (opCount == 1 && operations.at(0)->name() != QLatin1String("MinimumProgress"))) {
-        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nInstalling component %1")
-            .arg(component->displayName()));
+        ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+            + tr("Installing component %1").arg(component->displayName()));
         showDetailsLog = true;
     }
 

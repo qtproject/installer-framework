@@ -1463,10 +1463,8 @@ Error while loading %2</source>
         <translation>خطأ في كتابة أداة الصيانة</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-جارٍ تنزيل الحزم...</translation>
+        <source>Downloading packages...</source>
+        <translation>جارٍ تنزيل الحزم...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1579,34 +1577,24 @@ Do you want to continue?</source>
         <translation>لا يمكن الحصول على كافة الاعتماديات.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>المكون غير موجود.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>المكون غير موجود.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>تم تثبيت المكون فقط كتبعية تلقائية لـ %2.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>تم تثبيت المكون فقط كتبعية تلقائية لـ %2.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>المكون غير قابل للتحقق مما يعني أنه يجب عليك تحديد أحد المكونات الفرعية.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>المكون غير قابل للتحقق مما يعني أنه يجب عليك تحديد أحد المكونات الفرعية.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>المكون %1 مثبت بالفعل
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>المكون %1 مثبت بالفعل</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>المكون افتراضي.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>المكون افتراضي.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1653,10 +1641,8 @@ Do you want to continue?</source>
         <translation>غير صالح</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>المكون تابع لمكون ظاهري %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>المكون تابع لمكون ظاهري %2.</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1667,8 +1653,7 @@ Do you want to continue?</source>
         <translation>المكونات التالية على وشك الإزالة:</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>لا يمكن تثبيت المكون%1. حدثت مشكلة أثناء تحميل هذا المكون، لذلك تم وضع علامة "غير مستقر" عليه ولا يمكن اختياره.</translation>
     </message>
 </context>
@@ -1779,16 +1764,12 @@ Do you want to continue?</source>
         <translation>إنشاء أداة الصيانة</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-انتهى التثبيت!</translation>
+        <source>Installation finished!</source>
+        <translation>انتهى التثبيت!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-أُلغي التثبيت!</translation>
+        <source>Installation aborted!</source>
+        <translation>أُلغي التثبيت!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1799,16 +1780,12 @@ Installation aborted!</source>
         <translation>جارٍ حذف المكونات الغير محددة...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-انتهى التحديث!</translation>
+        <source>Update finished!</source>
+        <translation>انتهى التحديث!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-أُلغي التحديث!</translation>
+        <source>Update aborted!</source>
+        <translation>أُلغي التحديث!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1851,8 +1828,7 @@ Update aborted!</source>
         <translation>تم إحباط الجيل غير المتصل!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
+        <source>Installing component %1</source>
         <translation>لا يمكن تثبيت المكون %1</translation>
     </message>
     <message>
@@ -1918,8 +1894,7 @@ Installing component %1</source>
         <translation>يجب إيقاف هذه العمليات للمتابعة:%1</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>جاري التحضير لتفريغ المكونات ...</translation>
     </message>
     <message>
@@ -1927,8 +1902,7 @@ Preparing to unpack components...</source>
         <translation>اكتملت%1 من%2 عملية.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>جاري تفريغ المكونات ...</translation>
     </message>
     <message>

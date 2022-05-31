@@ -1593,10 +1593,8 @@ Errore durante il caricamento di %2</translation>
         <translation>Errore durante la scrittura dello strumento di manutenzione</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Download pacchetti in corso...</translation>
+        <source>Downloading packages...</source>
+        <translation>Download pacchetti in corso...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1701,23 +1699,19 @@ Continuare?</translation>
         <translation>Impossibile risolvere tutte le dipendenze.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
+        <source>Component %1 already installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
+        <source>Cannot install %1. Component is virtual.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
+        <source>Cannot install %1. Component not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1761,13 +1755,11 @@ Continuare?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1791,8 +1783,7 @@ Continuare?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1911,16 +1902,12 @@ Continuare?</translation>
         <translation>Creazione strumento di manutenzione</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Installazione completata.</translation>
+        <source>Installation finished!</source>
+        <translation>Installazione completata.</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Installazione annullata.</translation>
+        <source>Installation aborted!</source>
+        <translation>Installazione annullata.</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1931,16 +1918,12 @@ Installazione annullata.</translation>
         <translation>Rimozione dei componenti deselezionati in corso...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Aggiornamento completato.</translation>
+        <source>Update finished!</source>
+        <translation>Aggiornamento completato.</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Aggiornamento annullato.</translation>
+        <source>Update aborted!</source>
+        <translation>Aggiornamento annullato.</translation>
     </message>
     <message>
         <source>Cannot create target directory for installer.</source>
@@ -1975,10 +1958,8 @@ Aggiornamento annullato.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-Installazione componente %1</translation>
+        <source>Installing component %1</source>
+        <translation>Installazione componente %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2044,8 +2025,7 @@ Installazione componente %1</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2053,8 +2033,7 @@ Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

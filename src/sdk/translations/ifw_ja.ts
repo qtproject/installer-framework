@@ -1580,10 +1580,8 @@ Error while loading %2</source>
         <translation>保守ツールへの書き込み中にエラーが発生しました</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-パッケージをダウンロードしています...</translation>
+        <source>Downloading packages...</source>
+        <translation>パッケージをダウンロードしています...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1692,34 +1690,24 @@ Do you want to continue?</source>
         <translation>一部の依存関係を解決できません。</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>コンポーネント %1 をインストールできません。コンポーネントは %2 への自動依存性としてのみインストールされます。
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>コンポーネント %1 をインストールできません。コンポーネントは %2 への自動依存性としてのみインストールされます。</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>コンポーネント %1 をインストールできません。コンポーネントはチェックできないため、サブコンポーネントの一つを選択する必要があります。
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>コンポーネント %1 をインストールできません。コンポーネントはチェックできないため、サブコンポーネントの一つを選択する必要があります。</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>コンポーネント %1 はすでにインストールされています
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>コンポーネント %1 はすでにインストールされています</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>%1 をインストールできません。コンポーネントは仮想です。
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>%1 をインストールできません。コンポーネントは仮想です。</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>%1 をインストールできません。コンポーネントが見つかりません。
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>%1 をインストールできません。コンポーネントが見つかりません。</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1770,10 +1758,8 @@ Do you want to continue?</source>
         <translation>ユーザー入力が必要ですが、出力デバイスが端末に関連づけられていません。</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>%1 をインストールできません。コンポーネントは仮想コンポーネント %2 を継承しています。
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>%1 をインストールできません。コンポーネントは仮想コンポーネント %2 を継承しています。</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1784,8 +1770,7 @@ Do you want to continue?</source>
         <translation>削除されるコンポーネント: </translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>コンポーネント %1をインストールできません。このコンポーネントのロードに問題があったため、不安定と記され、選択できません。</translation>
     </message>
 </context>
@@ -1904,16 +1889,12 @@ Do you want to continue?</source>
         <translation>保守ツールを作成しています</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-インストールが終了しました。</translation>
+        <source>Installation finished!</source>
+        <translation>インストールが終了しました。</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-インストールが中止されました。</translation>
+        <source>Installation aborted!</source>
+        <translation>インストールが中止されました。</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1924,16 +1905,12 @@ Installation aborted!</source>
         <translation>選択解除したコンポーネントを削除しています...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-更新が終了しました。</translation>
+        <source>Update finished!</source>
+        <translation>更新が終了しました。</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-更新が中止されました。</translation>
+        <source>Update aborted!</source>
+        <translation>更新が中止されました。</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1976,10 +1953,8 @@ Update aborted!</source>
         <translation>オフライン生成が中止されました！</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-コンポーネント %1 をインストールしています</translation>
+        <source>Installing component %1</source>
+        <translation>コンポーネント %1 をインストールしています</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2038,8 +2013,7 @@ Installing component %1</source>
         <translation>コンポーネント &quot;%1&quot; と &quot;%2&quot; との依存サイクルが検出されました。</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>コンポーネントを開梱する準備をしています。</translation>
     </message>
     <message>
@@ -2047,8 +2021,7 @@ Preparing to unpack components...</source>
         <translation>%2 中 %1 の操作が完了しました。</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>コンポーネントを開梱しています。</translation>
     </message>
     <message>

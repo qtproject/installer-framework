@@ -1644,10 +1644,8 @@ Error while loading %2</source>
         <translation>Ошибка записи Maintenance Tool</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Загрузка пакетов...</translation>
+        <source>Downloading packages...</source>
+        <translation>Загрузка пакетов...</translation>
     </message>
     <message>
         <source>All downloads finished.</source>
@@ -1732,28 +1730,20 @@ Do you want to continue?</source>
         <translation>Доступно важное исправление, сначала запустите программу обновления.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>Не удалось установить компонент %1. Компонент устанавливается только как автоматическая зависимость для %2.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>Не удалось установить компонент %1. Компонент устанавливается только как автоматическая зависимость для %2.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>Компонент %1 уже установлен
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>Компонент %1 уже установлен</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>Не удалось установить %1. Компонент является виртуальным.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>Не удалось установить %1. Компонент является виртуальным.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>Не удалось установить %1. Компонент не найден.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>Не удалось установить %1. Компонент не найден.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1812,13 +1802,11 @@ Do you want to continue?</source>
         <translation>Отмена программы установки</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
         <translation>Не удалось установить компонент %1. Компонент не является проверяемым, и это означает, что необходимо выбрать один из подкомпонентов.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
         <translation>Не удалось установить %1. Компонент является производным от виртуального компонента %2.</translation>
     </message>
     <message>
@@ -1846,8 +1834,7 @@ Do you want to continue?</source>
         <translation>Компонент практически удален:</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Невозможно установить компонент %1. Произошла ошибка загрузки этого компонента, он был помечен нестабильным и не может быть выбран.</translation>
     </message>
 </context>
@@ -1902,16 +1889,12 @@ Do you want to continue?</source>
         <translation>Создаётся локальное хранилище</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Установка завершена!</translation>
+        <source>Installation finished!</source>
+        <translation>Установка завершена!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Установка прервана!</translation>
+        <source>Installation aborted!</source>
+        <translation>Установка прервана!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1922,16 +1905,12 @@ Installation aborted!</source>
         <translation>Удаление компонентов...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Обновление завершено!</translation>
+        <source>Update finished!</source>
+        <translation>Обновление завершено!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Обновление прервано!</translation>
+        <source>Update aborted!</source>
+        <translation>Обновление прервано!</translation>
     </message>
     <message>
         <source>Unresolved dependencies</source>
@@ -2022,10 +2001,8 @@ Update aborted!</source>
         <translation>Создание автономного экземпляра прервано!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-Установка компонента %1</translation>
+        <source>Installing component %1</source>
+        <translation>Установка компонента %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2099,8 +2076,7 @@ Installing component %1</source>
 %1</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>Подготовка к распаковке компонента...</translation>
     </message>
     <message>
@@ -2108,8 +2084,7 @@ Preparing to unpack components...</source>
         <translation>1 из %2 операции завершены</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>Распаковка компонентов...</translation>
     </message>
     <message>

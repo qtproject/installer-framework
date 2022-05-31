@@ -1633,10 +1633,8 @@ Hiba %2 betöltése közben</translation>
         <translation>Hiba a karbantartó eszköz írásakor</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Csomagok letöltése...</translation>
+        <source>Downloading packages...</source>
+        <translation>Csomagok letöltése...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1753,33 +1751,27 @@ Kívánja folytatni?</translation>
         <translation>Nem lehet minden függőséget feloldani.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
+        <source>Cannot install %1. Component not found.</source>
         <translation>%1 telepítése nem sikerült. A komponens nem található.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
         <translation>Nem sikerült telepíteni %1 komponenst. A komponens csak %2 automatikus függőségeként van telepítve. </translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
         <translation>Nem sikerült telepíteni %1 komponenst. A komponens nem válaszható ki, vagyis kell választania az egyik alkomponenst.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
+        <source>Component %1 already installed</source>
         <translation>%1 komponens már telepítve van.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
         <translation>%1 telepítése nem sikerült. A komponens %2 virtuális komponens leszármazottja. </translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
+        <source>Cannot install %1. Component is virtual.</source>
         <translation>%1 telepítése nem sikerült. A komponens virtuális.</translation>
     </message>
     <message>
@@ -1831,8 +1823,7 @@ Kívánja folytatni?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1949,13 +1940,11 @@ Kívánja folytatni?</translation>
         <translation>Karbantartó eszköz létrehozása</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
+        <source>Installation finished!</source>
         <translation>Telepítés befejeződött!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
+        <source>Installation aborted!</source>
         <translation>Telepítés megszakítva!</translation>
     </message>
     <message>
@@ -1967,13 +1956,11 @@ Installation aborted!</source>
         <translation>Kijelölt összetevők eltávolítása...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
+        <source>Update finished!</source>
         <translation>Frissítés befejeződött!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
+        <source>Update aborted!</source>
         <translation>Frissítés megszakítva!</translation>
     </message>
     <message>
@@ -2017,8 +2004,7 @@ Update aborted!</source>
         <translation>Offline generáció megszakítva!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
+        <source>Installing component %1</source>
         <translation>%1 összetevő telepítése</translation>
     </message>
     <message>
@@ -2078,8 +2064,7 @@ Installing component %1</source>
         <translation>Függőségi ciklus észlelve &quot;%1&quot; és &quot;%2&quot; összetevők között.</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2087,8 +2072,7 @@ Preparing to unpack components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

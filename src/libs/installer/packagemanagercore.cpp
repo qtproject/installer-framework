@@ -831,7 +831,8 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     if (archivesToDownload.isEmpty())
         return 0;
 
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+        + tr("Downloading packages..."));
 
     DownloadArchivesJob archivesJob(this);
     archivesJob.setAutoDelete(false);
@@ -2509,7 +2510,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
     foreach (const QString &name, components) {
         Component *component = componentByName(name);
         if (!component) {
-            errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+            errorMessage.append(tr("Cannot install %1. Component not found.").arg(name) + QLatin1Char('\n'));
             continue;
         }
         const QModelIndex &idx = model->indexFromComponentName(component->treeName());
@@ -2518,16 +2519,16 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 // User cannot select the component, check why
                 if (component->autoDependencies().count() > 0) {
                     errorMessage.append(tr("Cannot install component %1. Component is installed only as automatic "
-                        "dependency to %2.\n").arg(name, component->autoDependencies().join(QLatin1Char(','))));
+                        "dependency to %2.").arg(name, component->autoDependencies().join(QLatin1Char(','))) + QLatin1Char('\n'));
                 } else if (!component->isCheckable()) {
                     errorMessage.append(tr("Cannot install component %1. Component is not checkable, meaning you "
-                        "have to select one of the subcomponents.\n").arg(name));
+                        "have to select one of the subcomponents.").arg(name) + QLatin1Char('\n'));
                 } else if (component->isUnstable()) {
                     errorMessage.append(tr("Cannot install component %1. There was a problem loading this component, "
-                        "so it is marked unstable and cannot be selected.\n").arg(name));
+                        "so it is marked unstable and cannot be selected.").arg(name) + QLatin1Char('\n'));
                 }
             } else if (component->isInstalled()) {
-                errorMessage.append(tr("Component %1 already installed\n").arg(name));
+                errorMessage.append(tr("Component %1 already installed").arg(name) + QLatin1Char('\n'));
             } else {
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 installComponentsFound = true;
@@ -2542,16 +2543,16 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                         return false;
                     } else if (trace->isVirtual()) {
                         errorMessage.append(tr("Cannot install %1. Component is a descendant "
-                            "of a virtual component %2.\n").arg(name, trace->name()));
+                            "of a virtual component %2.").arg(name, trace->name()) + QLatin1Char('\n'));
                         return true;
                     }
                 }
             };
             // idx is invalid and component valid when we have invisible virtual component
             if (component->isVirtual())
-                errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name));
+                errorMessage.append(tr("Cannot install %1. Component is virtual.").arg(name) + QLatin1Char('\n'));
             else if (!isDescendantOfVirtual())
-                errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+                errorMessage.append(tr("Cannot install %1. Component not found.").arg(name) + QLatin1Char('\n'));
         }
     }
     if (!installComponentsFound)

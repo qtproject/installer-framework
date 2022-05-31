@@ -1606,10 +1606,8 @@ Błąd podczas wczytywania %2</translation>
         <translation>Błąd zapisu w narzędziu konserwacji</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Pobieranie pakietów...</translation>
+        <source>Downloading packages...</source>
+        <translation>Pobieranie pakietów...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1714,25 +1712,19 @@ Czy chcesz kontynuować?</translation>
         <translation>Nie można rozwiązać wszystkich zależności.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>Nie można zainstalować komponentu %1. Komponent jest instalowany tylko jako automatyczna zależność od %2.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>Nie można zainstalować komponentu %1. Komponent jest instalowany tylko jako automatyczna zależność od %2.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
+        <source>Component %1 already installed</source>
         <translation>Komponent %1 jest już zainstalowany</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>Nie można zainstalować %1. Komponent jest wirtualny.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>Nie można zainstalować %1. Komponent jest wirtualny.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
+        <source>Cannot install %1. Component not found.</source>
         <translation>Nie można zainstalować %1. Komponent nieznaleziony.</translation>
     </message>
     <message>
@@ -1776,16 +1768,12 @@ Czy chcesz kontynuować?</translation>
         <translation>Anulowanie instalacji</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>Nie można zainstalować składnika %1. Komponent nie jest dostępny, co oznacza, że ​​musisz wybrać jeden z podkomponentów.
- </translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>Nie można zainstalować składnika %1. Komponent nie jest dostępny, co oznacza, że ​​musisz wybrać jeden z podkomponentów.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>Nie można zainstalować %1. Komponent jest potomkiem komponentu wirtualnego %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>Nie można zainstalować %1. Komponent jest potomkiem komponentu wirtualnego %2.</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files and the installation. %1 are available, while the minimum required is %2.</source>
@@ -1808,8 +1796,7 @@ Czy chcesz kontynuować?</translation>
         <translation>Komponenty do usunięcia</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Nie można zainstalować komponentu %1. Wystąpił problem z jego załadowaniem, został oznaczony jako niestabilny i nie można go wybrać</translation>
     </message>
 </context>
@@ -1928,16 +1915,12 @@ Czy chcesz kontynuować?</translation>
         <translation>Tworzenie narzędzia konserwacji</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Ukończono instalację!</translation>
+        <source>Installation finished!</source>
+        <translation>Ukończono instalację!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Przerwano instalację!</translation>
+        <source>Installation aborted!</source>
+        <translation>Przerwano instalację!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1948,16 +1931,12 @@ Przerwano instalację!</translation>
         <translation>Trwa usuwanie elementów, których zaznaczenie wyłączono...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Aktualizacja zakończona!</translation>
+        <source>Update finished!</source>
+        <translation>Aktualizacja zakończona!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Aktualizację przerwano!</translation>
+        <source>Update aborted!</source>
+        <translation>Aktualizację przerwano!</translation>
     </message>
     <message>
         <source>Cannot create target directory for installer.</source>
@@ -1992,10 +1971,8 @@ Aktualizację przerwano!</translation>
         <translation>Przerwano generowanie instalatora offline</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-Trwa instalowanie elementu %1</translation>
+        <source>Installing component %1</source>
+        <translation>Trwa instalowanie elementu %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2062,8 +2039,7 @@ Trwa instalowanie elementu %1</translation>
 %1</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
+        <source>Preparing to unpack components...</source>
         <translation>Przygotowanie do usunięcia komponentów...</translation>
     </message>
     <message>
@@ -2071,8 +2047,7 @@ Preparing to unpack components...</source>
         <translation>Ukończono %1 z %2 operacji.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
+        <source>Unpacking components...</source>
         <translation>Rozpakowywanie komponentów...</translation>
     </message>
     <message>
