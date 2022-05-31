@@ -946,7 +946,7 @@
     </message>
     <message>
         <source>Failed to run command: &quot;%1&quot;: %2</source>
-        <translation>Echec d'exécution de la commande : &quot;%1&quot;: %2</translation>
+        <translation>Echec d&apos;exécution de la commande : &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1780,11 +1780,11 @@ Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>Components about to be removed:</source>
-        <translation>Composants sur le point d'être supprimés :</translation>
+        <translation>Composants sur le point d&apos;être supprimés :</translation>
     </message>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
-        <translation>Impossible d'installer le composant %1. Un problème est survenu lors du chargement de ce composant, il est donc marqué comme instable et ne peut pas être sélectionné.</translation>
+        <translation>Impossible d&apos;installer le composant %1. Un problème est survenu lors du chargement de ce composant, il est donc marqué comme instable et ne peut pas être sélectionné.</translation>
     </message>
 </context>
 <context>
@@ -2813,46 +2813,46 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     <name>QInstaller::ExtractWorker</name>
     <message>
         <source>Cannot open archive for reading: %1</source>
-        <translation>Impossible d'ouvrir l'archive en lecture : %1</translation>
+        <translation>Impossible d&apos;ouvrir l&apos;archive en lecture : %1</translation>
     </message>
     <message>
         <source>Cannot read entry header: %1</source>
-        <translation>Impossible de lire l'en-tête de l'entrée : %1</translation>
+        <translation>Impossible de lire l&apos;en-tête de l&apos;entrée : %1</translation>
     </message>
     <message>
         <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
-        <translation>Impossible d'écrire l'entrée &quot;%1&quot; sur disque : %</translation>
+        <translation>Impossible d&apos;écrire l&apos;entrée &quot;%1&quot; sur disque : %</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::LibArchiveArchive</name>
     <message>
         <source>Cannot open archive for reading: %1</source>
-        <translation>Impossible d'ouvrir l'archive en lecture : %1</translation>
+        <translation>Impossible d&apos;ouvrir l&apos;archive en lecture : %1</translation>
     </message>
     <message>
         <source>Cannot read entry header: %1</source>
-        <translation>Impossible de lire l'en-tête de l'entrée : %1</translation>
+        <translation>Impossible de lire l&apos;en-tête de l&apos;entrée : %1</translation>
     </message>
     <message>
         <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
-        <translation>Impossible d'écrire l'entrée &quot;%1&quot; sur le disque : %2</translation>
+        <translation>Impossible d&apos;écrire l&apos;entrée &quot;%1&quot; sur le disque : %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
-        <translation>Impossible d'ouvrir le fichier &quot;%1&quot; pour l'écriture : %2</translation>
+        <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot; pour l&apos;écriture : %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>Impossible d'ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
+        <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
-        <translation>Impossible d'ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
+        <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
     </message>
     <message>
         <source>Cannot write entry header for &quot;%1&quot;: %2</source>
-        <translation>Impossible d'écrire l'en-tête d'entrée pour &quot;%1&quot; : %2</translation>
+        <translation>Impossible d&apos;écrire l&apos;en-tête d&apos;entrée pour &quot;%1&quot; : %2</translation>
     </message>
 </context>
 <context>
@@ -2882,11 +2882,11 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     <name>AboutApplicationDialog</name>
     <message>
         <source>About %1 installer</source>
-        <translation>À propos du programme d'installation %1</translation>
+        <translation>À propos du programme d&apos;installation %1</translation>
     </message>
     <message>
         <source>About %1 Maintenance Tool</source>
-        <translation>À propos de l'outil de maintenance %1</translation>
+        <translation>À propos de l&apos;outil de maintenance %1</translation>
     </message>
 </context>
 </TS>

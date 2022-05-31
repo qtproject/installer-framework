@@ -1654,7 +1654,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
-        <translation>لا يمكن تثبيت المكون%1. حدثت مشكلة أثناء تحميل هذا المكون، لذلك تم وضع علامة "غير مستقر" عليه ولا يمكن اختياره.</translation>
+        <translation>لا يمكن تثبيت المكون%1. حدثت مشكلة أثناء تحميل هذا المكون، لذلك تم وضع علامة &quot;غير مستقر&quot; عليه ولا يمكن اختياره.</translation>
     </message>
 </context>
 <context>

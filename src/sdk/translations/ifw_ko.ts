@@ -2811,7 +2811,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::LibArchiveArchive</name>
     <message>
         <source>Cannot open archive for reading: %1</source>
-        <translation >아카이브를 읽기 위해 열 수 없음: %1</translation>
+        <translation>아카이브를 읽기 위해 열 수 없음: %1</translation>
     </message>
     <message>
         <source>Cannot read entry header: %1</source>

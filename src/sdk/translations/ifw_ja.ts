@@ -2763,7 +2763,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>アーカイブ&quot;%1&quot;のコンテンツを読みこんでいる際にエラーが発生しました。:　%2</translation>
+        <translation>アーカイブ&quot;%1&quot;のコンテンツを読みこんでいる際にエラーが発生しました。:&#x3000;%2</translation>
     </message>
     <message>
         <source>Removing files extracted from &quot;%1&quot;</source>

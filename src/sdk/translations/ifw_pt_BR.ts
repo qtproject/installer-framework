@@ -2196,7 +2196,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Current mode argument calling &quot;%1&quot; with arguments &quot;%2&quot; is not supported. Please use string or regex.</source>
-        <translation>A pesquisa atual &quot;%1&quot; com os argumentos &quot;%2&quot; não são suportados. Use "string" ou "regex".</translation>
+        <translation>A pesquisa atual &quot;%1&quot; com os argumentos &quot;%2&quot; não são suportados. Use &quot;string&quot; ou &quot;regex&quot;.</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
@@ -2750,7 +2750,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
         <source>Filter</source>
-        <translation >Filtro</translation>
+        <translation>Filtro</translation>
     </message>
     <message>
         <source>Error</source>
