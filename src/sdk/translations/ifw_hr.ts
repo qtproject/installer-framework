@@ -2852,10 +2852,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Nije moguće otvoriti datoteku &quot;%1&quot; za zapisivanje: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Nije moguće otvoriti datoteku &quot;%1&quot; za učitavanje: %2</translation>
     </message>

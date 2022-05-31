@@ -2838,10 +2838,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a escriptura: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
     </message>

@@ -2840,10 +2840,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation type="unfinished">Não é possível abrir o arquivo &quot;%1&quot; para gravação: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation type="unfinished">Não é possível abrir o arquivo &quot;%1&quot; para leitura: %2</translation>
     </message>

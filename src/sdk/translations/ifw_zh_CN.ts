@@ -2842,10 +2842,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>无法打开文件“%1”进行写入：%2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>无法打开文件“%1”进行读取：%2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>无法打开文件“%1”进行读取：%2</translation>
     </message>

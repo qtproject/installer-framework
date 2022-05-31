@@ -2841,10 +2841,6 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
         <translation>No se puede abrir el archivo &apos;%1&apos; para la escritura: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>No se puede abrir el archivo &quot;%1&quot; para la lectura: %2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>No se puede abrir el archivo &quot;%1&quot; para la lectura: %2</translation>
     </message>

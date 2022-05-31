@@ -2826,10 +2826,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>書き込み用のファイル &quot;%1&quot; を開けません。: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>読み取り用のファイル &quot;%1&quot; を開けません。: %2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>読み取り用のファイル &quot;%1&quot; を開けません。: %2</translation>
     </message>

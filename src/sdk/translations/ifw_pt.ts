@@ -2841,10 +2841,6 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <translation>Não é possível abrir o ficheiro &quot;%1&quot; para escrita: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>Não é possível abrir o ficheiro &quot;%1&quot; para leitura: %2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Não é possível abrir o ficheiro &quot;%1&quot; para leitura: %2</translation>
     </message>

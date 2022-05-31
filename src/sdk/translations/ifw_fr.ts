@@ -2843,10 +2843,6 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot; pour l&apos;écriture : %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Impossible d&apos;ouvrir le fichier &quot;%1&quot;en lecture &quot;%2</translation>
     </message>

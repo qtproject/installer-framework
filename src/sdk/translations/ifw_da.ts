@@ -2837,10 +2837,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til skrivning: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kan ikke åbne filen &quot;%1&quot; til læsning: %2</translation>
     </message>

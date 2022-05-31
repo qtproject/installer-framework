@@ -2824,10 +2824,6 @@ a megfelelő jogokkal rendelkező felhasználóként, majd kattintson az OK gomb
         <translation>Nem sikerült megnyitni &quot;%1&quot; fájlt írásra: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Nem sikerült megnyitni &quot;%1&quot; fájlt olvasásra: %2</translation>
     </message>

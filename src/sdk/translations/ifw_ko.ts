@@ -2826,10 +2826,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>&quot;%1&quot; 파일을 쓰기 위해 열 수 없음: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
     </message>

@@ -2840,10 +2840,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>

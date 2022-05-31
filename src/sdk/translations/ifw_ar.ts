@@ -2898,10 +2898,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>لا يمكن فتح الملف &quot;%1&quot; للكتابة: %2</translation>
     </message>
     <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: 2%</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>لا يمكن فتح الملف &quot;%1&quot; للقراءة: %2</translation>
     </message>
