@@ -25,7 +25,7 @@ SUBDIRS += \
     factory \
     replaceoperation \
     brokeninstaller \
-    cliinterface \
+    commandlineinstall \
     linereplaceoperation \
     metadatajob \
     appendfileoperation \
