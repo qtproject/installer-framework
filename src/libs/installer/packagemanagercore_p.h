@@ -106,6 +106,9 @@ public:
 
     bool buildComponentTree(QHash<QString, Component*> &components, bool loadScript);
 
+    template <typename T>
+    bool loadComponentScripts(const T &components);
+
     void cleanUpComponentEnvironment();
     ScriptEngine *componentScriptEngine() const;
     ScriptEngine *controlScriptEngine() const;
