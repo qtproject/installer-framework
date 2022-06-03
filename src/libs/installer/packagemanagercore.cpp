@@ -4262,21 +4262,25 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             }
 
             // after everything is set up, load the scripts
+            if (!d->loadComponentScripts(components))
+                return false;
+
             foreach (QInstaller::Component *component, components) {
                 if (d->statusCanceledOrFailed())
                     return false;
 
-                component->loadComponentScript();
                 if (!component->isUnstable() && component->autoDependencies().isEmpty())
                     component->setCheckState(Qt::Checked);
             }
+
+            // even for possible dependencies we need to load the scripts for example to get archives
+            if (!d->loadComponentScripts(d->m_updaterComponentsDeps))
+                return false;
 
             // after everything is set up, check installed components
             foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
                 if (d->statusCanceledOrFailed())
                     return false;
-                // even for possible dependency we need to load the script for example to get archives
-                component->loadComponentScript();
                 if (component->isInstalled() && !component->autoDependencies().isEmpty()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourselves
