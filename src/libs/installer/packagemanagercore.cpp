@@ -831,7 +831,8 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     if (archivesToDownload.isEmpty())
         return 0;
 
-    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("\nDownloading packages..."));
+    ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
+        + tr("Downloading packages..."));
 
     DownloadArchivesJob archivesJob(this);
     archivesJob.setAutoDelete(false);
@@ -981,7 +982,7 @@ void PackageManagerCore::rollBackInstallation()
  */
 bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) const
 {
-    QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettingsWrapper::NativeFormat);
+    QSettingsWrapper settings(QLatin1String("HKEY_CLASSES_ROOT"), QSettings::NativeFormat);
     return settings.value(QString::fromLatin1(".%1/Default").arg(extension)).isValid();
 }
 
@@ -2509,7 +2510,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
     foreach (const QString &name, components) {
         Component *component = componentByName(name);
         if (!component) {
-            errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+            errorMessage.append(tr("Cannot install %1. Component not found.").arg(name) + QLatin1Char('\n'));
             continue;
         }
         const QModelIndex &idx = model->indexFromComponentName(component->treeName());
@@ -2518,16 +2519,16 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                 // User cannot select the component, check why
                 if (component->autoDependencies().count() > 0) {
                     errorMessage.append(tr("Cannot install component %1. Component is installed only as automatic "
-                        "dependency to %2.\n").arg(name, component->autoDependencies().join(QLatin1Char(','))));
+                        "dependency to %2.").arg(name, component->autoDependencies().join(QLatin1Char(','))) + QLatin1Char('\n'));
                 } else if (!component->isCheckable()) {
                     errorMessage.append(tr("Cannot install component %1. Component is not checkable, meaning you "
-                        "have to select one of the subcomponents.\n").arg(name));
+                        "have to select one of the subcomponents.").arg(name) + QLatin1Char('\n'));
                 } else if (component->isUnstable()) {
                     errorMessage.append(tr("Cannot install component %1. There was a problem loading this component, "
-                        "so it is marked unstable and cannot be selected.\n").arg(name));
+                        "so it is marked unstable and cannot be selected.").arg(name) + QLatin1Char('\n'));
                 }
             } else if (component->isInstalled()) {
-                errorMessage.append(tr("Component %1 already installed\n").arg(name));
+                errorMessage.append(tr("Component %1 already installed").arg(name) + QLatin1Char('\n'));
             } else {
                 model->setData(idx, Qt::Checked, Qt::CheckStateRole);
                 installComponentsFound = true;
@@ -2542,16 +2543,16 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
                         return false;
                     } else if (trace->isVirtual()) {
                         errorMessage.append(tr("Cannot install %1. Component is a descendant "
-                            "of a virtual component %2.\n").arg(name, trace->name()));
+                            "of a virtual component %2.").arg(name, trace->name()) + QLatin1Char('\n'));
                         return true;
                     }
                 }
             };
             // idx is invalid and component valid when we have invisible virtual component
             if (component->isVirtual())
-                errorMessage.append(tr("Cannot install %1. Component is virtual.\n").arg(name));
+                errorMessage.append(tr("Cannot install %1. Component is virtual.").arg(name) + QLatin1Char('\n'));
             else if (!isDescendantOfVirtual())
-                errorMessage.append(tr("Cannot install %1. Component not found.\n").arg(name));
+                errorMessage.append(tr("Cannot install %1. Component not found.").arg(name) + QLatin1Char('\n'));
         }
     }
     if (!installComponentsFound)
@@ -3420,14 +3421,18 @@ void PackageManagerCore::addResourcesForOfflineGeneration(const QString &rcPath)
 
 /*!
     Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
-    returned. Additionally, on Windows, \a key can be a registry key.
+    returned. Additionally, on Windows, \a key can be a registry key. Optionally, you can specify the
+    \a format of the registry key. By default the \a format is QSettings::NativeFormat.
+    For accessing the 32-bit system registry from a 64-bit application running on 64-bit Windows,
+    use QSettings::Registry32Format. For accessing the 64-bit system registry from a 32-bit
+    application running on 64-bit Windows, use QSettings::Registry64Format.
 
     \sa {installer::value}{installer.value}
     \sa setValue(), containsValue(), valueChanged()
 */
-QString PackageManagerCore::value(const QString &key, const QString &defaultValue) const
+QString PackageManagerCore::value(const QString &key, const QString &defaultValue, const int &format) const
 {
-    return d->m_data.value(key, defaultValue).toString();
+    return d->m_data.value(key, defaultValue, static_cast<QSettings::Format>(format)).toString();
 }
 
 /*!

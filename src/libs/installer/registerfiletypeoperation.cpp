@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -105,7 +105,7 @@ bool RegisterFileTypeOperation::performOperation()
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
-        , QSettingsWrapper::NativeFormat);
+        , QSettings::NativeFormat);
 
     const QString classesProgId = QString::fromLatin1("Software/Classes/") + m_progId;
     const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(args.at(0));
@@ -166,7 +166,7 @@ bool RegisterFileTypeOperation::undoOperation()
         allUsers = true;
 
     QSettingsWrapper settings(QLatin1String(allUsers ? "HKEY_LOCAL_MACHINE" : "HKEY_CURRENT_USER")
-        , QSettingsWrapper::NativeFormat);
+        , QSettings::NativeFormat);
 
     const QString classesProgId = QString::fromLatin1("Software/Classes/") + m_progId;
     const QString classesFileType = QString::fromLatin1("Software/Classes/.%2").arg(args.at(0));

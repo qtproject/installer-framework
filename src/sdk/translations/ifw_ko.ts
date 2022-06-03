@@ -1413,10 +1413,8 @@ Error while loading %2</source>
         <translation>유지 보수 도구를 쓰는 중에 오류 발생</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-패키지 다운로드 중...</translation>
+        <source>Downloading packages...</source>
+        <translation>패키지 다운로드 중...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1533,40 +1531,28 @@ Do you want to continue?</source>
         <translation>모든 종속성을 해결할 수 없습니다.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>%1을(를) 설치할 수 없습니다. 구성요소를 찾을 수 없습니다.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>%1을(를) 설치할 수 없습니다. 구성요소를 찾을 수 없습니다.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>%1 구성요소를 설치할 수 없습니다. %2에 대한 자동 종속성으로만 구성요소가 설치됩니다.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>%1 구성요소를 설치할 수 없습니다. %2에 대한 자동 종속성으로만 구성요소가 설치됩니다.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>%1 구성요소를 설치할 수 없습니다. 구성요소를 확인할 수 없어 하위 구성요소 중 하나를 설치해야 합니다.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>%1 구성요소를 설치할 수 없습니다. 구성요소를 확인할 수 없어 하위 구성요소 중 하나를 설치해야 합니다.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>%1 구성요소가 이미 설치됨
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>%1 구성요소가 이미 설치됨</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>%1을(를) 설치할 수 없습니다. 구성요소가 가상 구성요소 %2의 하위 항목입니다.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>%1을(를) 설치할 수 없습니다. 구성요소가 가상 구성요소 %2의 하위 항목입니다.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>%1을(를) 설치할 수 없습니다. 가상 구성요소입니다.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>%1을(를) 설치할 수 없습니다. 가상 구성요소입니다.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1617,8 +1603,7 @@ Do you want to continue?</source>
         <translation>구성요소들이 제거됩니다.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>%1 구성요소를 설치할 수 없습니다. 해당 구성요소를 불러오는 중 문제가 발생했으므로 불안정한 것으로 표시되었으며 선택할 수 없습니다.</translation>
     </message>
 </context>
@@ -1737,16 +1722,12 @@ Do you want to continue?</source>
         <translation>유지 보수 도구 생성 중</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-설치가 완료되었습니다!</translation>
+        <source>Installation finished!</source>
+        <translation>설치가 완료되었습니다!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-설치가 중단되었습니다!</translation>
+        <source>Installation aborted!</source>
+        <translation>설치가 중단되었습니다!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1757,16 +1738,12 @@ Installation aborted!</source>
         <translation>선택 취소한 구성요소 제거 중...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-업데이트가 완료되었습니다!</translation>
+        <source>Update finished!</source>
+        <translation>업데이트가 완료되었습니다!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-업데이트가 중단되었습니다!</translation>
+        <source>Update aborted!</source>
+        <translation>업데이트가 중단되었습니다!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1809,10 +1786,8 @@ Update aborted!</source>
         <translation>오프라인 생성이 중단되었습니다!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-구성요소 %1 설치 중</translation>
+        <source>Installing component %1</source>
+        <translation>구성요소 %1 설치 중</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -1871,20 +1846,16 @@ Installing component %1</source>
         <translation>구성요소 &quot;%1&quot; 및 &quot;%2&quot; 간의 종속성 사이클이 감지되었습니다.</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
-        <translation>
-구성요소들의 압축해제를 준비합니다.</translation>
+        <source>Preparing to unpack components...</source>
+        <translation>구성요소들의 압축해제를 준비합니다.</translation>
     </message>
     <message>
         <source>%1 of %2 operations completed.</source>
         <translation>%2 의 %1 작업들을 완료했습니다.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
-        <translation>
-구성요소들의 압축해제를 준비합니다.</translation>
+        <source>Unpacking components...</source>
+        <translation>구성요소들의 압축해제를 준비합니다.</translation>
     </message>
     <message>
         <source>%1 of %2 operations rolled back.</source>
@@ -2840,7 +2811,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::LibArchiveArchive</name>
     <message>
         <source>Cannot open archive for reading: %1</source>
-        <translation >아카이브를 읽기 위해 열 수 없음: %1</translation>
+        <translation>아카이브를 읽기 위해 열 수 없음: %1</translation>
     </message>
     <message>
         <source>Cannot read entry header: %1</source>
@@ -2853,10 +2824,6 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>&quot;%1&quot; 파일을 쓰기 위해 열 수 없음: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>

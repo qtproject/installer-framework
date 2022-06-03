@@ -70,7 +70,7 @@ private:
         core->installDefaultComponentsSilently();
 
         QSettingsWrapper user(QLatin1String("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\"
-            "CurrentVersion\\Explorer\\User Shell Folders"), QSettingsWrapper::NativeFormat);
+            "CurrentVersion\\Explorer\\User Shell Folders"), QSettings::NativeFormat);
         //Replace %USERS% from "Programs"
         const QString programs = replaceWindowsEnvironmentVariables(user.value(QLatin1String("Programs"), QString()).toString());
         const QString startMenuDir = programs + QDir::separator() + "Qt Installer Framework Unit Test";

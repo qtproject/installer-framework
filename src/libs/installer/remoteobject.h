@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -55,59 +55,39 @@ public:
     template<typename T1, typename T2>
     void callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2)
     {
-        writeData(name, arg, arg2, dummy);
+        const QString reply = sendReceivePacket<QString>(name, arg, arg2, dummy);
+        Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
     }
 
     template<typename T1, typename T2, typename T3>
     void callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 & arg3)
     {
-        writeData(name, arg, arg2, arg3);
+        const QString reply = sendReceivePacket<QString>(name, arg, arg2, arg3);
+        Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
     }
 
     template<typename T>
     T callRemoteMethod(const QString &name) const
     {
-        return callRemoteMethod<T>(name, dummy, dummy, dummy);
+        return sendReceivePacket<T>(name, dummy, dummy, dummy);
     }
 
     template<typename T, typename T1>
     T callRemoteMethod(const QString &name, const T1 &arg) const
     {
-        return callRemoteMethod<T>(name, arg, dummy, dummy);
+        return sendReceivePacket<T>(name, arg, dummy, dummy);
     }
 
     template<typename T, typename T1, typename T2>
     T callRemoteMethod(const QString &name, const T1 & arg, const T2 &arg2) const
     {
-        return callRemoteMethod<T>(name, arg, arg2, dummy);
+        return sendReceivePacket<T>(name, arg, arg2, dummy);
     }
 
     template<typename T, typename T1, typename T2, typename T3>
     T callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
     {
-        writeData(name, arg, arg2, arg3);
-        while (m_socket->bytesToWrite())
-            m_socket->waitForBytesWritten();
-
-        QByteArray command;
-        QByteArray data;
-        while (!receivePacket(m_socket, &command, &data)) {
-            if (!m_socket->waitForReadyRead(-1)) {
-                throw Error(tr("Cannot read all data after sending command: %1. "
-                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
-                    .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
-            }
-        }
-
-        Q_ASSERT(command == Protocol::Reply);
-
-        QDataStream stream(&data, QIODevice::ReadOnly);
-
-        T result;
-        stream >> result;
-        Q_ASSERT(stream.status() == QDataStream::Ok);
-        Q_ASSERT(stream.atEnd());
-        return result;
+        return sendReceivePacket<T>(name, arg, arg2, arg3);
     }
 
 protected:
@@ -133,6 +113,17 @@ private:
         return false;
     }
 
+    template<typename T, typename T1, typename T2, typename T3>
+    T sendReceivePacket(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
+    {
+        writeData(name, arg, arg2, arg3);
+        while (m_socket->bytesToWrite())
+            m_socket->waitForBytesWritten();
+
+        return readData<T>(name);
+    }
+
+
     template<typename T1, typename T2, typename T3>
     void writeData(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
     {
@@ -148,6 +139,30 @@ private:
 
         sendPacket(m_socket, name.toLatin1(), data);
         m_socket->flush();
+    }
+
+    template<typename T>
+    T readData(const QString &name) const
+    {
+        QByteArray command;
+        QByteArray data;
+        while (!receivePacket(m_socket, &command, &data)) {
+            if (!m_socket->waitForReadyRead(-1)) {
+                throw Error(tr("Cannot read all data after sending command: %1. "
+                    "Bytes expected: %2, Bytes received: %3. Error: %4").arg(name).arg(0)
+                    .arg(m_socket->bytesAvailable()).arg(m_socket->errorString()));
+            }
+        }
+
+        Q_ASSERT(command == Protocol::Reply);
+
+        QDataStream stream(&data, QIODevice::ReadOnly);
+
+        T result;
+        stream >> result;
+        Q_ASSERT(stream.status() == QDataStream::Ok);
+        Q_ASSERT(stream.atEnd());
+        return result;
     }
 
 private:

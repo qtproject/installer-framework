@@ -783,10 +783,6 @@
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>There was an error loading the selected component. This component cannot be updated.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QInstaller::ComponentModel</name>
@@ -929,6 +925,10 @@
         <source>Filter the enabled repository categories</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Search</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -960,12 +960,8 @@
         <translation>No s&apos;ha pogut desar la sortida de «%1» a un valor de clau buit de l&apos;instal·lador.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>El fitxer «%1» no existeix o no és un binari executable.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>L&apos;execució de «%1» ha resultat en una fallada.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1102,6 +1098,14 @@
         <source>Cannot remove directory &quot;%1&quot;: %2</source>
         <translation>No s&apos;ha pogut eliminar el directori «%1»: %2</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create archive &quot;%1&quot;: %2</source>
+        <translation>No s&apos;ha pogut crear l&apos;arxiu «%1»: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::CreateShortcutOperation</name>
@@ -1165,6 +1169,58 @@ Error en descarregar %2</translation>
     <message>
         <source>Cannot find component for %1.</source>
         <translation>No s&apos;ha pogut trobar el component per a %1.</translation>
+    </message>
+    <message>
+        <source>%1 of %2</source>
+        <translation type="unfinished">%1 de %2</translation>
+    </message>
+    <message>
+        <source>%1 downloaded.</source>
+        <translation>S&apos;ha descarregat %1.</translation>
+    </message>
+    <message numerus="yes">
+        <source>%n day(s), </source>
+        <translation>
+            <numerusform>%n dia, </numerusform>
+            <numerusform>%n dies, </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n hour(s), </source>
+        <translation>
+            <numerusform>%n hora, </numerusform>
+            <numerusform>%n hores, </numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n minute(s)</source>
+        <translation>
+            <numerusform>%n minut</numerusform>
+            <numerusform>%n minuts</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <source>%n second(s)</source>
+        <translation>
+            <numerusform>%n segon</numerusform>
+            <numerusform>%n segons</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source> - %1%2%3%4 remaining.</source>
+        <translation> - resta %1%2%3%4.</translation>
+    </message>
+    <message>
+        <source> - unknown time remaining.</source>
+        <translation> - temps restant desconegut.</translation>
+    </message>
+    <message>
+        <source>Archive: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1240,20 +1296,21 @@ Error en descarregar %2</translation>
         <source>Extracting &quot;%1&quot;</source>
         <translation>S&apos;està extraient «%1»</translation>
     </message>
-</context>
-<context>
-    <name>QInstaller::ExtractArchiveOperation::Runnable</name>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
     </message>
     <message>
-        <source>Error while extracting archive &quot;%1&quot;: %2</source>
-        <translation>Error en extreure l&apos;arxiu «%1»: %2</translation>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting &quot;%1&quot;.</source>
-        <translation>S&apos;ha produït una excepció desconeguda en extreure «%1».</translation>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1386,6 +1443,10 @@ Error en descarregar %2</translation>
         <source>Cannot create directory &quot;%1&quot;: %2</source>
         <translation>No s&apos;ha pogut crear el directori «%1»: %2</translation>
     </message>
+    <message>
+        <source>Cannot prepare to backup file &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::IntroductionPage</name>
@@ -1428,6 +1489,10 @@ Error en descarregar %2</translation>
     <message>
         <source>&amp;Quit</source>
         <translation>Su&amp;rt</translation>
+    </message>
+    <message>
+        <source>There is an important update available. Please select &apos;%1&apos; first</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1547,15 +1612,15 @@ Error en descarregar %2</translation>
         <translation>Error en extreure l&apos;arxiu «%1»: %2</translation>
     </message>
     <message>
-        <source>Unknown exception caught while extracting archive &quot;%1&quot;.</source>
-        <translation>S&apos;ha produït una excepció desconeguda en extreure l&apos;arxiu «%1».</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
     </message>
     <message>
         <source>Metadata download canceled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1566,10 +1631,8 @@ Error en descarregar %2</translation>
         <translation>Error en escriure a l&apos;Eina de manteniment</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-S&apos;estan descarregant els paquets...</translation>
+        <source>Downloading packages...</source>
+        <translation>S&apos;estan descarregant els paquets...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1674,27 +1737,19 @@ Voleu continuar?</translation>
         <translation>No s&apos;han pogut resoldre totes les dependències.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Components que estan a punt d&apos;eliminar-se.</translation>
-    </message>
-    <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
+        <source>Component %1 already installed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
+        <source>Cannot install %1. Component is virtual.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
+        <source>Cannot install %1. Component not found.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1730,10 +1785,6 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1742,13 +1793,11 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1765,6 +1814,14 @@ Voleu continuar?</translation>
     </message>
     <message>
         <source>Invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1883,16 +1940,12 @@ Voleu continuar?</translation>
         <translation>S&apos;està creant l&apos;Eina de manteniment</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-S&apos;ha finalitzat la instal·lació!</translation>
+        <source>Installation finished!</source>
+        <translation>S&apos;ha finalitzat la instal·lació!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-S&apos;ha interromput la instal·lació!</translation>
+        <source>Installation aborted!</source>
+        <translation>S&apos;ha interromput la instal·lació!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1903,16 +1956,12 @@ S&apos;ha interromput la instal·lació!</translation>
         <translation>S&apos;estan eliminant els components desseleccionats...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Ha finalitzat l&apos;actualització!</translation>
+        <source>Update finished!</source>
+        <translation>Ha finalitzat l&apos;actualització!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-S&apos;ha interromput l&apos;actualització!</translation>
+        <source>Update aborted!</source>
+        <translation>S&apos;ha interromput l&apos;actualització!</translation>
     </message>
     <message>
         <source>Cannot create target directory for installer.</source>
@@ -1947,10 +1996,8 @@ S&apos;ha interromput l&apos;actualització!</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-S&apos;instal·la el component %1</translation>
+        <source>Installing component %1</source>
+        <translation>S&apos;instal·la el component %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2013,6 +2060,34 @@ S&apos;instal·la el component %1</translation>
     <message>
         <source>Error during removal process:
 %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preparing to unpack components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unpacking components...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2471,6 +2546,10 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2707,6 +2786,97 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::QFileDialogProxy</name>
     <message>
         <source>User input is required but the output device is not associated with a terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractArchiveOperation::Worker</name>
+    <message>
+        <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
+    </message>
+    <message>
+        <source>Error while extracting archive &quot;%1&quot;: %2</source>
+        <translation>Error en extreure l&apos;arxiu «%1»: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>No s&apos;ha pogut obrir el fitxer «%1» per a escriptura: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>No s&apos;ha pogut obrir el fitxer «%1» per a lectura: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

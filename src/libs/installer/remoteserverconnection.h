@@ -38,7 +38,7 @@
 #include <QtCore/private/qfsfileengine_p.h>
 
 QT_BEGIN_NAMESPACE
-class QIODevice;
+class QLocalSocket;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -47,6 +47,20 @@ class PermissionSettings;
 
 class QProcessSignalReceiver;
 class AbstractArchiveSignalReceiver;
+
+class RemoteServerReply
+{
+public:
+    explicit RemoteServerReply(QLocalSocket *socket);
+    ~RemoteServerReply();
+
+    template <typename T>
+    void send(const T &data);
+
+private:
+    QLocalSocket *m_socket;
+    bool m_sent;
+};
 
 class RemoteServerConnection : public QThread
 {
@@ -63,13 +77,11 @@ signals:
     void shutdownRequested();
 
 private:
-    template <typename T>
-    void sendData(QIODevice *device, const T &arg);
-    void handleQProcess(QIODevice *device, const QString &command, QDataStream &data);
-    void handleQSettings(QIODevice *device, const QString &command, QDataStream &data,
+    void handleQProcess(RemoteServerReply *reply, const QString &command, QDataStream &data);
+    void handleQSettings(RemoteServerReply *reply, const QString &command, QDataStream &data,
                          PermissionSettings *settings);
-    void handleQFSFileEngine(QIODevice *device, const QString &command, QDataStream &data);
-    void handleArchive(QIODevice *device, const QString &command, QDataStream &data);
+    void handleQFSFileEngine(RemoteServerReply *reply, const QString &command, QDataStream &data);
+    void handleArchive(RemoteServerReply *reply, const QString &command, QDataStream &data);
 
 private:
     qintptr m_socketDescriptor;

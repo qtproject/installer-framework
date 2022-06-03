@@ -122,6 +122,11 @@ bool RemoteObject::connectToServer(const QVariantList &arguments)
 
     sendPacket(m_socket, Protocol::Create, data);
     m_socket->flush();
+    while (m_socket->bytesToWrite())
+        m_socket->waitForBytesWritten();
+
+    const QString reply = readData<QString>(QLatin1String(Protocol::Create));
+    Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
 
     return true;
 }
@@ -137,7 +142,8 @@ bool RemoteObject::isConnectedToServer() const
 
 void RemoteObject::callRemoteMethod(const QString &name)
 {
-    writeData(name, dummy, dummy, dummy);
+    const QString reply = sendReceivePacket<QString>(name, dummy, dummy, dummy);
+    Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
 }
 
 } // namespace QInstaller

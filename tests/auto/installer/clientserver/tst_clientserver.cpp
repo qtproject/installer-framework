@@ -331,8 +331,7 @@ private slots:
         RemoteClient::instance().init(socketName, QLatin1String("SomeKey"), Protocol::Mode::Debug,
                                       Protocol::StartAs::User);
 
-        QSettingsWrapper wrapper(static_cast<QSettingsWrapper::Format>(format),
-                                 QSettingsWrapper::UserScope, "digia", "clientserver");
+        QSettingsWrapper wrapper(format, QSettingsWrapper::UserScope, "digia", "clientserver");
 
         QCOMPARE(wrapper.isConnectedToServer(), false);
         wrapper.clear();

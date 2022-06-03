@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -128,7 +128,7 @@ QSettingsWrapper *GlobalSettingsOperation::setup(QString *key, QString *value, c
         const QString &filename = arguments.at(0);
         *key = arguments.at(1);
         *value = arguments.at(2);
-        return new QSettingsWrapper(filename, QSettingsWrapper::NativeFormat);
+        return new QSettingsWrapper(filename, QSettings::NativeFormat);
     }
 
     return nullptr;

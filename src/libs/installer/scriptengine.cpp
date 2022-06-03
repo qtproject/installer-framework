@@ -395,6 +395,9 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
     global.setProperty(QLatin1String("buttons"), generateWizardButtonsObject());
     global.setProperty(QLatin1String("QMessageBox"), generateMessageBoxObject());
     global.setProperty(QLatin1String("QDesktopServices"), generateDesktopServicesObject());
+#ifdef Q_OS_WIN
+    global.setProperty(QLatin1String("QSettings"), generateSettingsObject());
+#endif
 
     if (core) {
         setGuiQObject(core->guiObject());
@@ -664,6 +667,19 @@ QJSValue ScriptEngine::generateDesktopServicesObject()
     object.setPrototype(desktopServices);   // attach the properties
     return object;
 }
+
+#ifdef Q_OS_WIN
+QJSValue ScriptEngine::generateSettingsObject()
+{
+    QJSValue settingsObject = m_engine.newArray();
+    SETPROPERTY(settingsObject, NativeFormat, QSettings)
+    SETPROPERTY(settingsObject, IniFormat, QSettings)
+    SETPROPERTY(settingsObject, Registry32Format, QSettings)
+    SETPROPERTY(settingsObject, Registry64Format, QSettings)
+    SETPROPERTY(settingsObject, InvalidFormat, QSettings)
+    return settingsObject;
+}
+#endif
 
 QJSValue ScriptEngine::generateQInstallerObject()
 {

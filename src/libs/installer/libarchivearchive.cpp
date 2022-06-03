@@ -739,7 +739,7 @@ bool LibArchiveArchive::create(const QStringList &data)
             dataEntry_w.get()[dataEntry.length()] = '\0';
 
             if ((status = archive_read_disk_open_w(reader.get(), dataEntry_w.get()))) {
-                throw Error(tr("Cannot open file \"%1\"for reading: %2")
+                throw Error(tr("Cannot open file \"%1\" for reading: %2")
                     .arg(dataEntry, errorStringWithCode(reader.get())));
             }
 #else

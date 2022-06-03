@@ -271,6 +271,10 @@
         <source>Please make sure that the current user has read access to file &quot;%1&quot; or try running %2 as an administrator.</source>
         <translation>Por favor verique que o utilizador atual tem permissões de leitura ao ficheiro &amp;quot;%1&amp;quot; ou execute %2 como administrador.</translation>
     </message>
+    <message>
+        <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation>O valor de &apos;max-concurrent-operations&apos; não é válido.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller</name>
@@ -292,7 +296,7 @@
     </message>
     <message>
         <source>Copy failed: %1</source>
-        <translation>Ocorreu um erro na cópia: %1</translation>
+        <translation>Ocorreu um erro a copiar: %1</translation>
     </message>
     <message>
         <source>Write failed after %1 bytes: %2</source>
@@ -532,12 +536,8 @@
         <translation>Não é possível guardar o retorno de &quot;%1&quot; numa chave de instalação vazia.</translation>
     </message>
     <message>
-        <source>File &quot;%1&quot; does not exist or is not an executable binary.</source>
-        <translation>O ficheiro &quot;%1&quot; não existe ou não é executável.</translation>
-    </message>
-    <message>
-        <source>Running &quot;%1&quot; resulted in a crash.</source>
-        <translation>Ocorreu uma saida abrupta durante a execução de &quot;%1&quot;.</translation>
+        <source>Failed to run command: &quot;%1&quot;: %2</source>
+        <translation>Não é possível executar o comando:  &quot;%1&quot;: %2</translation>
     </message>
 </context>
 <context>
@@ -1282,10 +1282,8 @@ Erro ao carregar %2</translation>
         <translation>Erro ao guardar a Ferramenta de Manutenção</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-A descarregar pacotes...</translation>
+        <source>Downloading packages...</source>
+        <translation>A descarregar pacotes...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1394,38 +1392,24 @@ De certeza que deseja continuar?</translation>
         <translation>Não é possível obter todas as dependências.</translation>
     </message>
     <message>
-        <source>Components about to be removed.</source>
-        <translation>Componentes a serem removidos.</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>Não é possível instalar o componente %1. O componente é instalado apenas como dependência automática de %2.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>Não é possível instalar o componente %1. O componente é instalado apenas como dependência automática de %2.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>Não é possível instalar o componente %1. O componente não é verificável, o que significa que um dos subcomponentes deve ser selecionado.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>Não é possível instalar o componente %1. O componente não é verificável, o que significa que um dos subcomponentes deve ser selecionado.
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>Componente %1 já foi instalado</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>Componente %1 já foi instalado
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>Não é possível instalar %1. É um componente virtual.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>Não é possível instalar %1. É um componente virtual.
-</translation>
-    </message>
-    <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>Não é possível instalar %1. O componente não foi encontrado.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>Não é possível instalar %1. O componente não foi encontrado.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1476,18 +1460,20 @@ De certeza que deseja continuar?</translation>
         <translation>É necessário a interação com o utilizador, mas o dispositivo de saída não está associado a uma linha de comandos.</translation>
     </message>
     <message>
-        <source>Cannot register component! Component with identifier %1 already exists.</source>
-        <translation>Não é possível registar o componente! Já existe um componente com o identificador %1.</translation>
-    </message>
-    <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>Não é possível instalar %1. O componente é descendente de um componente virtual %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>Não é possível instalar %1. O componente é descendente de um componente virtual %2.</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation>O tamanho estimado do instalador é %1 e irá exceder o limite de tamanho executável de %2. A aplicação pode não iniciar. </translation>
+    </message>
+    <message>
+        <source>Components about to be removed:</source>
+        <translation>Os seguintes componentes irão ser removidos:</translation>
+    </message>
+    <message>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
+        <translation>Não é possível instalar o componente %1. Ocorreu um problema ao carregar o componente, este foi sinalizado como instável e não pode ser selecionado.</translation>
     </message>
 </context>
 <context>
@@ -1605,16 +1591,12 @@ De certeza que deseja continuar?</translation>
         <translation>A criar Ferramenta de Manutenção</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Instalação concluída!</translation>
+        <source>Installation finished!</source>
+        <translation>Instalação concluída!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Instalação cancelada!</translation>
+        <source>Installation aborted!</source>
+        <translation>Instalação cancelada!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1625,16 +1607,12 @@ Instalação cancelada!</translation>
         <translation>A remover componentes deselecionados...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Atualização concluída!</translation>
+        <source>Update finished!</source>
+        <translation>Atualização concluída!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Atualização cancelada!</translation>
+        <source>Update aborted!</source>
+        <translation>Atualização cancelada!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -1677,10 +1655,8 @@ Atualização cancelada!</translation>
         <translation>A geração offline foi cancelada!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-A instalar o componente %1</translation>
+        <source>Installing component %1</source>
+        <translation>A instalar o componente %1</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -1737,6 +1713,34 @@ A instalar o componente %1</translation>
     <message>
         <source>Dependency cycle between components &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation>Ciclo de inter-dependência entre os componentes &quot;%1&quot; e &quot;%2&quot; detectados.</translation>
+    </message>
+    <message>
+        <source>Preparing to unpack components...</source>
+        <translation>A preparar para descompactar componentes...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations completed.</source>
+        <translation>Concluídas %1 de %2 operações.</translation>
+    </message>
+    <message>
+        <source>Unpacking components...</source>
+        <translation>A descompactar componentes...</translation>
+    </message>
+    <message>
+        <source>%1 of %2 operations rolled back.</source>
+        <translation>Revertidos %1 de %2 operações.</translation>
+    </message>
+    <message>
+        <source>Rollbacks complete.</source>
+        <translation>As operações foram revertidas.</translation>
+    </message>
+    <message>
+        <source>%1 of %2 components installed.</source>
+        <translation>Instalados %1 de %2 componentes.</translation>
+    </message>
+    <message>
+        <source>All components installed.</source>
+        <translation>Todos os componentes foram instalados.</translation>
     </message>
 </context>
 <context>
@@ -2084,7 +2088,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     </message>
     <message>
         <source>Updating</source>
-        <translation>>A atualizar</translation>
+        <translation>&gt;A atualizar</translation>
     </message>
     <message>
         <source>Uninstalling</source>
@@ -2764,6 +2768,22 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <source>Extracting &quot;%1&quot;</source>
         <translation>A descomprimir &quot;%1&quot;</translation>
     </message>
+    <message>
+        <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation>O ficheiro &quot;%1&quot; não é suportado. Não está registado um programa para a extensão &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
+        <translation>Não é possível abrir o ficheiro comprimido &quot;%1&quot; para leitura: %2</translation>
+    </message>
+    <message>
+        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
+        <translation>Ocorreu um erro a obter o conteudo do ficheiro comprimido &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Removing files extracted from &quot;%1&quot;</source>
+        <translation>A remover ficheiros descomprimidos de &quot;%1&quot;</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::QFileDialogProxy</name>
@@ -2783,20 +2803,84 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <translation>Não é possível abrir o ficheiro comprimido &quot;%1&quot; para leitura: %2</translation>
     </message>
     <message>
-        <source>Error while reading contents of archive &quot;%1&quot;: %2</source>
-        <translation>Ocorreu um erro a obter o conteudo do ficheiro comprimido &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot prepare for file &quot;%1&quot;</source>
-        <translation>Ocorreu um erro ao preparar para o ficheiro &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Extract for archive &quot;%1&quot; canceled.</source>
-        <translation>A descompressão do ficheiro comprimido &quot;%1&quot; foi cancelada</translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Ocorreu um erro ao descomprimir o ficheiro comprimido &quot;%1&quot;: %2</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::ExtractWorker</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Não é possível abrir o ficheiro comprimido &quot;%1&quot; para leitura.</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Não é possível abrir o cabeçalho de entrada &quot;%1&quot; para leitura.</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Ocorreu um erro a escrever entrada &quot;%1&quot; para disco: %2.</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::LibArchiveArchive</name>
+    <message>
+        <source>Cannot open archive for reading: %1</source>
+        <translation>Não é possível abrir o ficheiro comprimido &quot;%1&quot; para leitura</translation>
+    </message>
+    <message>
+        <source>Cannot read entry header: %1</source>
+        <translation>Não é possível abrir o cabeçalho de entrada &quot;%1&quot; para leitura.</translation>
+    </message>
+    <message>
+        <source>Cannot write entry &quot;%1&quot; to disk: %2</source>
+        <translation>Ocorreu um erro a escrever entrada &quot;%1&quot; para disco: %2.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Não é possível abrir o ficheiro &quot;%1&quot; para escrita: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for reading: %2</source>
+        <translation>Não é possível abrir o ficheiro &quot;%1&quot; para leitura: %2</translation>
+    </message>
+    <message>
+        <source>Cannot write entry header for &quot;%1&quot;: %2</source>
+        <translation>Ocorreu um erro a escrever o cabeçalho de entrada &quot;%1&quot;: %2.</translation>
+    </message>
+</context>
+<context>
+    <name>UninstallerCalculator</name>
+    <message>
+        <source>Deselected Components:</source>
+        <translation>Componentes desselecionados:</translation>
+    </message>
+    <message>
+        <source>Components replaced by &quot;%1&quot;:</source>
+        <translation>Componentes substituídos por &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Removing virtual components without existing dependencies:</source>
+        <translation>Irão ser removidos os seguintes componentes virtuais sem dependências:</translation>
+    </message>
+    <message>
+        <source>Components dependency &quot;%1&quot; removed:</source>
+        <translation>As dependências de &quot;%1&quot; foram removidas:</translation>
+    </message>
+    <message>
+        <source>Components autodependency &quot;%1&quot; removed:</source>
+        <translation>As autodependências de &quot;%1&quot; foram removidas:</translation>
+    </message>
+</context>
+<context>
+    <name>AboutApplicationDialog</name>
+    <message>
+        <source>About %1 installer</source>
+        <translation>Acerca do instalador %1 </translation>
+    </message>
+    <message>
+        <source>About %1 Maintenance Tool</source>
+        <translation>Acerca da ferramenta de manutenção %1 </translation>
     </message>
 </context>
 </TS>

@@ -492,7 +492,7 @@ bool QInstaller::checkPrivilege(const wchar_t *privilege)
 bool QInstaller::developerModeEnabled()
 {
     QSettingsWrapper appModelUnlock(QLatin1String("HKLM\\SOFTWARE\\Microsoft\\Windows\\"
-        "CurrentVersion\\AppModelUnlock"), QSettingsWrapper::NativeFormat);
+        "CurrentVersion\\AppModelUnlock"), QSettings::NativeFormat);
 
     return appModelUnlock.value(QLatin1String("AllowDevelopmentWithoutDevLicense"), false).toBool();
 }

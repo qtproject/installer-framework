@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -69,6 +69,9 @@ private:
     QJSValue generateQInstallerObject();
     QJSValue generateWizardButtonsObject();
     QJSValue generateDesktopServicesObject();
+#ifdef Q_OS_WIN
+    QJSValue generateSettingsObject();
+#endif
 
 private:
     QJSEngine m_engine;

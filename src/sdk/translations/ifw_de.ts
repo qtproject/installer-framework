@@ -1632,10 +1632,8 @@ Fehler beim Laden von %2</translation>
         <translation>Fehler beim Schreiben des Verwaltungswerkzeugs</translation>
     </message>
     <message>
-        <source>
-Downloading packages...</source>
-        <translation>
-Pakete werden heruntergeladen ...</translation>
+        <source>Downloading packages...</source>
+        <translation>Pakete werden heruntergeladen ...</translation>
     </message>
     <message>
         <source>Installation canceled by user.</source>
@@ -1748,34 +1746,24 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Konnte nicht alle Abhängigkeiten auflösen.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.
-</source>
-        <translation>Komponente %1 kann nicht installiert werden. Die Komponente wird nur als automatische Abhängigkeit von %2 installiert.
-</translation>
+        <source>Cannot install component %1. Component is installed only as automatic dependency to %2.</source>
+        <translation>Komponente %1 kann nicht installiert werden. Die Komponente wird nur als automatische Abhängigkeit von %2 installiert.</translation>
     </message>
     <message>
-        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.
-</source>
-        <translation>Komponente %1 kann nicht installiert werden. Die Komponente kann nicht ausgewählt werden, d.&#xa0;h., Sie müssen eine der Unterkomponenten auswählen.
-</translation>
+        <source>Cannot install component %1. Component is not checkable, meaning you have to select one of the subcomponents.</source>
+        <translation>Komponente %1 kann nicht installiert werden. Die Komponente kann nicht ausgewählt werden, d.&#xa0;h., Sie müssen eine der Unterkomponenten auswählen.</translation>
     </message>
     <message>
-        <source>Component %1 already installed
-</source>
-        <translation>Komponente %1 ist bereits installiert
-</translation>
+        <source>Component %1 already installed</source>
+        <translation>Komponente %1 ist bereits installiert</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is virtual.
-</source>
-        <translation>%1 kann nicht installiert werden. Die Komponente ist virtuell.
-</translation>
+        <source>Cannot install %1. Component is virtual.</source>
+        <translation>%1 kann nicht installiert werden. Die Komponente ist virtuell.</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component not found.
-</source>
-        <translation>%1 kann nicht installiert werden. Komponente nicht gefunden.
-</translation>
+        <source>Cannot install %1. Component not found.</source>
+        <translation>%1 kann nicht installiert werden. Komponente nicht gefunden.</translation>
     </message>
     <message>
         <source>Running processes found.</source>
@@ -1822,10 +1810,8 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>ungültig</translation>
     </message>
     <message>
-        <source>Cannot install %1. Component is a descendant of a virtual component %2.
-</source>
-        <translation>%1 kann nicht installiert werden. Die Komponente ist Nachkomme einer virtuellen Komponente %2.
-</translation>
+        <source>Cannot install %1. Component is a descendant of a virtual component %2.</source>
+        <translation>%1 kann nicht installiert werden. Die Komponente ist Nachkomme einer virtuellen Komponente %2.</translation>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
@@ -1836,10 +1822,8 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Zu löschende Komponenten:</translation>
     </message>
     <message>
-        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.
-</source>
-        <translation>Komponente %1 kann nicht installiert werden. Es gab ein Problem beim Laden, daher wird sie als instabil gekennzeichnet und kann nicht ausgewählt werden.
-</translation>
+        <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
+        <translation>Komponente %1 kann nicht installiert werden. Es gab ein Problem beim Laden, daher wird sie als instabil gekennzeichnet und kann nicht ausgewählt werden.</translation>
     </message>
 </context>
 <context>
@@ -1957,16 +1941,12 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Temporäre Datei &quot;%1&quot; konnte nicht entfernt werden: %2</translation>
     </message>
     <message>
-        <source>
-Installation finished!</source>
-        <translation>
-Installation abgeschlossen!</translation>
+        <source>Installation finished!</source>
+        <translation>Installation abgeschlossen!</translation>
     </message>
     <message>
-        <source>
-Installation aborted!</source>
-        <translation>
-Installation abgebrochen!</translation>
+        <source>Installation aborted!</source>
+        <translation>Installation abgebrochen!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1977,16 +1957,12 @@ Installation abgebrochen!</translation>
         <translation>Abgewählte Komponenten werden entfernt ...</translation>
     </message>
     <message>
-        <source>
-Update finished!</source>
-        <translation>
-Aktualisierung beendet!</translation>
+        <source>Update finished!</source>
+        <translation>Aktualisierung beendet!</translation>
     </message>
     <message>
-        <source>
-Update aborted!</source>
-        <translation>
-Aktualisierung abgebrochen!</translation>
+        <source>Update aborted!</source>
+        <translation>Aktualisierung abgebrochen!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -2029,10 +2005,8 @@ Aktualisierung abgebrochen!</translation>
         <translation>Offline-Generierung abgebrochen!</translation>
     </message>
     <message>
-        <source>
-Installing component %1</source>
-        <translation>
-Komponente %1 wird installiert</translation>
+        <source>Installing component %1</source>
+        <translation>Komponente %1 wird installiert</translation>
     </message>
     <message>
         <source>Installer Error</source>
@@ -2091,20 +2065,16 @@ Komponente %1 wird installiert</translation>
         <translation>Zyklische Abhängigkeit zwischen Komponenten entdeckt: &apos;%1&apos; und &apos;%2&apos;.</translation>
     </message>
     <message>
-        <source>
-Preparing to unpack components...</source>
-        <translation>
-Bereite Auspacken der Komponenten vor...</translation>
+        <source>Preparing to unpack components...</source>
+        <translation>Bereite Auspacken der Komponenten vor...</translation>
     </message>
     <message>
         <source>%1 of %2 operations completed.</source>
         <translation>%1 von %2 Schritten fertiggestellt.</translation>
     </message>
     <message>
-        <source>
-Unpacking components...</source>
-        <translation>
-Packe Komponenten aus...</translation>
+        <source>Unpacking components...</source>
+        <translation>Packe Komponenten aus...</translation>
     </message>
     <message>
         <source>%1 of %2 operations rolled back.</source>
@@ -2868,10 +2838,6 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Konnte Datei &quot;%1&quot; nicht zum Schreiben öffnen: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open file &quot;%1&quot;for reading: %2</source>
-        <translation>Konnte Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
