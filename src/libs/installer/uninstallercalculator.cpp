@@ -192,7 +192,10 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool revers
         }
     } else {
         for (const QString &componentName : qAsConst(m_localVirtualComponents)) {
-            Component *virtualComponent = m_core->componentByName(componentName);
+            Component *virtualComponent = m_core->componentByName(componentName, m_core->components(PackageManagerCore::ComponentType::All));
+            if (!virtualComponent)
+                continue;
+
             if (virtualComponent->isInstalled() && !m_componentsToUninstall.contains(virtualComponent)) {
                // Components with auto dependencies were handled in the previous step
                if (!virtualComponent->autoDependencies().isEmpty() || virtualComponent->forcedInstallation())
