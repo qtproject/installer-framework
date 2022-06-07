@@ -60,8 +60,6 @@ private slots:
 
     void testUpdate_data()
     {
-        QTest::addColumn<QString>("installDir");
-        QTest::addColumn<PackageManagerCore *>("core");
         QTest::addColumn<QString>("repository");
         QTest::addColumn<QStringList>("installComponents");
         QTest::addColumn<PackageManagerCore::Status>("status");
@@ -86,12 +84,7 @@ private slots:
         ComponentResourceHash deletedComponentResources;
         deletedComponentResources.append(ComponentResource("componentA", "1.0.0content.txt"));
 
-        QString installDir = QInstaller::generateTemporaryFileName();
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir);
-
         QTest::newRow("Update essential packages")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList() << "componentA")
                 << PackageManagerCore::Success
@@ -107,15 +100,11 @@ private slots:
                 << deletedComponentResources;
 
         /*********** Update essential with autodependon**********/
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "3.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentAutoDependOnA", "1.0content.txt"));
 
         QTest::newRow("Update essential with autodependon")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList() << "componentA")
                 << PackageManagerCore::Success
@@ -137,8 +126,6 @@ private slots:
         componentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
         componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
 
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentH", "2.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentE", "1.0.0content.txt"));
@@ -147,8 +134,6 @@ private slots:
         deletedComponentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
 
         QTest::newRow("Update force update packages")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList() << "componentH")
                 << PackageManagerCore::Success
@@ -171,8 +156,6 @@ private slots:
         componentResources.append(ComponentResource("componentB", "1.0.0content.txt"));
         componentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
 
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
@@ -185,8 +168,6 @@ private slots:
         deletedComponentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
 
         QTest::newRow("Update packages")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList() << "componentC" << "componentH")
                 << PackageManagerCore::Success
@@ -211,8 +192,6 @@ private slots:
         componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
         componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
 
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "1.0.0content.txt"));
@@ -225,8 +204,6 @@ private slots:
         deletedComponentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
 
         QTest::newRow("Update two packages")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList()<< "componentA"  << "componentB" << "componentE" << "componentG")
                 << PackageManagerCore::Success
@@ -260,8 +237,6 @@ private slots:
         componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
         componentResources.append(ComponentResource("componentH", "1.0.0content.txt"));
 
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
@@ -287,8 +262,6 @@ private slots:
         deletedComponentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
 
         QTest::newRow("Update all packages")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList() << "componentA"  << "componentB" << "componentC" << "componentD" << "componentE"
                         << "componentF"  << "componentG" << "componentH")
@@ -318,8 +291,6 @@ private slots:
         componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
         componentResources.append(ComponentResource("componentG", "1.0.0content.txt"));
 
-        installDir = QInstaller::generateTemporaryFileName();
-        core = PackageManager::getPackageManagerWithInit(installDir);
         componentResourcesAfterUpdate.clear();
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
@@ -332,8 +303,6 @@ private slots:
         deletedComponentResources.append(ComponentResource("componentD", "1.0.0content.txt"));
 
         QTest::newRow("Update packages with AutoDependOn")
-                << installDir
-                << core
                 << ":///data/installPackagesRepository"
                 << (QStringList()<< "componentA"  << "componentB" << "componentE" << "componentG")
                 << PackageManagerCore::Success
@@ -353,8 +322,6 @@ private slots:
 
     void testUpdate()
     {
-        QFETCH(QString, installDir);
-        QFETCH(PackageManagerCore *, core);
         QFETCH(QString, repository);
         QFETCH(QStringList, installComponents);
         QFETCH(PackageManagerCore::Status, status);
@@ -367,12 +334,13 @@ private slots:
         QFETCH(QStringList, installedFilesAfterUpdate);
         QFETCH(ComponentResourceHash, deletedComponentResources);
 
-        setRepository(repository, core);
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(m_installDir, repository);
+
         QCOMPARE(status, core->installSelectedComponentsSilently(QStringList() << installComponents));
         for (const ComponentResource &resource : componentResources) {
-            VerifyInstaller::verifyInstallerResources(installDir, resource.first, resource.second);
+            VerifyInstaller::verifyInstallerResources(m_installDir, resource.first, resource.second);
         }
-        VerifyInstaller::verifyFileExistence(installDir, installedFiles);
+        VerifyInstaller::verifyFileExistence(m_installDir, installedFiles);
 
         core->commitSessionOperations();
         core->setPackageManager();
@@ -380,25 +348,38 @@ private slots:
         QCOMPARE(updateStatus, core->updateComponentsSilently(updateComponents));
 
         for (const ComponentResource &resource : componentResourcesAfterUpdate) {
-            VerifyInstaller::verifyInstallerResources(installDir, resource.first, resource.second);
+            VerifyInstaller::verifyInstallerResources(m_installDir, resource.first, resource.second);
         }
         for (const ComponentResource &resource : deletedComponentResources) {
-            VerifyInstaller::verifyInstallerResourceFileDeletion(installDir, resource.first, resource.second);
+            VerifyInstaller::verifyInstallerResourceFileDeletion(m_installDir, resource.first, resource.second);
         }
-        VerifyInstaller::verifyFileExistence(installDir, installedFilesAfterUpdate);
+        VerifyInstaller::verifyFileExistence(m_installDir, installedFilesAfterUpdate);
         delete core;
     }
 
     void testUpdateNoUpdatesForSelectedPackage()
     {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit(installDir);
-        setRepository(":///data/installPackagesRepositoryUpdate", core);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                (m_installDir, ":///data/installPackagesRepositoryUpdate"));
         // No updates available for component so nothing to do
         QCOMPARE(PackageManagerCore::Canceled, core->updateComponentsSilently(QStringList()
                 << "componentInvalid"));
-        delete core;
     }
+
+    void init()
+    {
+        m_installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(m_installDir));
+    }
+
+    void cleanup()
+    {
+        QDir dir(m_installDir);
+        QVERIFY(dir.removeRecursively());
+    }
+
+private:
+    QString m_installDir;
 };
 
 

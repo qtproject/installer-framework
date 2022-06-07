@@ -1,3 +1,11 @@
+4.4.0
+- Fix installer crash if already installed virtual components are replaced (QTIFW-2672)
+- macOS: make creating maintenance tool alias optional (QTIFW-2665)
+- Updated translation files (QTIFW-2622)
+- RemoteObject: require server reply for all client commands (QTIFW-999)
+- Allow plugin import in binarycreator (QTIFW-266)
+- Windows: Allow asking installer value with different formats (QTIFW-2657)
+
 4.4.0-beta
 - Build Windows installer with 64bit MSVC2019 (QTIFW-2544)
 - Workaround QSettings / QDateTime incompatibility with Qt 6 applications (QTIFW-2610)

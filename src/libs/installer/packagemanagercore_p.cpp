@@ -782,12 +782,16 @@ QString PackageManagerCorePrivate::maintenanceToolName() const
 QString PackageManagerCorePrivate::maintenanceToolAliasPath() const
 {
 #ifdef Q_OS_MACOS
+    const QString aliasName = m_data.settings().maintenanceToolAlias();
+    if (aliasName.isEmpty())
+        return QString();
+
     const bool isRoot = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
     const QString applicationsDir = m_core->value(
         isRoot ? QLatin1String("ApplicationsDir") : QLatin1String("ApplicationsDirUser")
     );
     QString maintenanceToolAlias = QString::fromLatin1("%1/%2")
-        .arg(applicationsDir, m_data.settings().maintenanceToolAlias());
+        .arg(applicationsDir, aliasName);
     if (!maintenanceToolAlias.endsWith(QLatin1String(".app")))
         maintenanceToolAlias += QLatin1String(".app");
 
@@ -1511,9 +1515,12 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         if (newBinaryWritten) {
             // Remove old alias as the name may have changed.
             deleteMaintenanceToolAlias();
-            // The new alias file is created after the maintenance too binary is renamed,
-            // but we need to set the value before the variables get written to disk.
-            m_core->setValue(QLatin1String("CreatedMaintenanceToolAlias"), maintenanceToolAliasPath());
+            const QString aliasPath = maintenanceToolAliasPath();
+            if (!aliasPath.isEmpty()) {
+                // The new alias file is created after the maintenance too binary is renamed,
+                // but we need to set the value before the variables get written to disk.
+                m_core->setValue(QLatin1String("CreatedMaintenanceToolAlias"), aliasPath);
+            }
         }
 #endif
         writeMaintenanceConfigFiles();
@@ -1602,14 +1609,16 @@ void PackageManagerCorePrivate::writeOfflineBaseBinary()
 void PackageManagerCorePrivate::writeMaintenanceToolAlias()
 {
 #ifdef Q_OS_MACOS
+    const QString aliasPath = maintenanceToolAliasPath();
+    if (aliasPath.isEmpty())
+        return;
+
     QString maintenanceToolBundle = QString::fromLatin1("%1/%2")
         .arg(targetDir(), m_data.settings().maintenanceToolName());
     if (!maintenanceToolBundle.endsWith(QLatin1String(".app")))
         maintenanceToolBundle += QLatin1String(".app");
 
-    const QString aliasPath = maintenanceToolAliasPath();
     const QDir targetDir(QFileInfo(aliasPath).absolutePath());
-
     if (!targetDir.exists())
         targetDir.mkpath(targetDir.absolutePath());
 

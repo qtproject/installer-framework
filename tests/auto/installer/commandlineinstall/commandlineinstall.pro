@@ -2,7 +2,7 @@ include(../../qttest.pri)
 
 QT += qml
 
-SOURCES += tst_cliinterface.cpp
+SOURCES += tst_commandlineinstall.cpp
 
 RESOURCES += \
     settings.qrc \

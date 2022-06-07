@@ -151,6 +151,7 @@
  </PackageUpdate>
  <PackageUpdate>
   <Name>componentH</Name>
+  <DisplayName>component H</DisplayName>
   <Description>This component does not depend on any other component.</Description>
   <Version>1.0.0</Version>
   <ReleaseDate>2014-08-25</ReleaseDate>
@@ -160,6 +161,7 @@
  </PackageUpdate>
  <PackageUpdate>
   <Name>componentI</Name>
+  <DisplayName>component I</DisplayName>
   <Description>This component has an automatic dependency on Component C. If C is marked for installation, this component is also installed.</Description>
   <Version>1.0.0</Version>
   <ReleaseDate>2014-08-25</ReleaseDate>
