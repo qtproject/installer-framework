@@ -153,7 +153,7 @@ bool pathIsOnLocalDevice(const QString &path)
     if (!QFileInfo(path).exists())
         return false;
 
-    if (path.startsWith(QLatin1String("\\\\")))
+    if (path.startsWith(QLatin1String("//")))
         return false;
 
     QDir dir(path);
