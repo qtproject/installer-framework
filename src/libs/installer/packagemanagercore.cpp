@@ -3001,9 +3001,15 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         }
 
         if (tempVolumeAvailableSize < tempRequired) {
+#ifdef Q_OS_WIN
+            static const QLatin1String scTmpVariable("\"TEMP\" or \"TMP\"");
+#elif defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
+            static const QLatin1String scTmpVariable("\"TMPDIR\"");
+#endif
             message = tr("Not enough disk space to store temporary files! %1 are available, "
-                "while the minimum required is %2.").arg(humanReadableSize(tempVolumeAvailableSize),
-                humanReadableSize(tempRequired));
+                "while the minimum required is %2. You may select another location for the "
+                "temporary files by modifying the %3 environment variable and restarting the application.")
+                .arg(humanReadableSize(tempVolumeAvailableSize), humanReadableSize(tempRequired), scTmpVariable);
             return false;
         }
 
