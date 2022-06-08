@@ -219,13 +219,20 @@ public:
                         bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
                         if (!ifwLoaded)
                             ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
-                        if (ifwLoaded)
+                        if (ifwLoaded) {
                             QCoreApplication::instance()->installTranslator(ifwTranslator.take());
+                        } else {
+                            qCWarning(QInstaller::lcDeveloperBuild) << "Could not load IFW translation for language"
+                                << QLocale::languageToString(locale.language());
+                        }
 
                         // To stop loading other translations it's sufficient that
                         // qt was loaded successfully or we hit English as system language
                         lang = locale;
                         break;
+                    } else {
+                        qCWarning(QInstaller::lcDeveloperBuild) << "Could not load Qt translation for language"
+                            << QLocale::languageToString(locale.language());
                     }
                 }
             } else {
