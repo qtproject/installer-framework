@@ -763,6 +763,26 @@
     it to a custom resource called \c :/translations_new. This custom resource can be added to
     the installer using \c binarycreator option \c -r. For more information, see
     \l{Summary of binarycreator Parameters}.
+
+    If the translated language is not already part of the existing translations
+    of Qt Installer Framework, you need to also include the Qt Base translation for that language
+    in the resource file. For this you need to point to the \c qtbase_*.qm for your language from
+    the location of \c QT_INSTALL_TRANSLATIONS and alias it in the resource file.
+
+    For example, for the Czech translation a custom \c translations_new.qrc should look
+    like this:
+
+    \code
+    <!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations_new">
+        <file>ifw_cs.qm</file>
+        <file alias="qt_cs.qm">%QT_INSTALL_TRANSLATIONS%/qtbase_cs.qm</file>
+    </qresource>
+    </RCC>
+    \endcode
+
+    The path for replacing \c QT_INSTALL_TRANSLATIONS can be retrieved from the
+    output of \c{qmake -query} of your Qt installation.
 */
 
 /*!
