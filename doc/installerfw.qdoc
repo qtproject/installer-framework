@@ -901,8 +901,9 @@
                 For more information, see \l{Component Dependencies}.
         \row
             \li Virtual
-            \li Set to \c true to hide the component from the installer.
-                Note that setting this on a root component does not work.
+            \li Set to \c true to hide the component from the installer. This also
+                hides any child components this component may have, including their
+                descendants. Note that setting this on a root component does not work.
         \row
             \li SortingPriority
             \li Priority of the component in the tree. The tree is sorted from
