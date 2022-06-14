@@ -2586,6 +2586,10 @@ void PackageManagerCorePrivate::deleteMaintenanceToolAlias()
 void PackageManagerCorePrivate::registerMaintenanceTool()
 {
 #ifdef Q_OS_WIN
+    auto quoted = [](const QString &s) {
+        return QString::fromLatin1("\"%1\"").arg(s);
+    };
+
     QSettingsWrapper settings(registerPath(), QSettings::NativeFormat);
     settings.setValue(scDisplayName, m_data.value(QLatin1String("ProductName")));
     settings.setValue(QLatin1String("DisplayVersion"), m_data.value(QLatin1String("ProductVersion")));
@@ -2596,8 +2600,8 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
-    settings.setValue(QLatin1String("UninstallString"), maintenanceTool);
-    settings.setValue(QLatin1String("ModifyPath"), QString(maintenanceTool
+    settings.setValue(QLatin1String("UninstallString"), quoted(maintenanceTool));
+    settings.setValue(QLatin1String("ModifyPath"), QString(quoted(maintenanceTool)
         + QLatin1String(" --manage-packages")));
     // required disk space of the installed components
     quint64 estimatedSizeKB = m_core->requiredDiskSpace() / 1024;
