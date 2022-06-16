@@ -239,9 +239,12 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
                 else
                     m_referenceCount.insert(dependencyComponentName, value);
             }
-            insertInstallReason(dependencyComponent, InstallerCalculator::Dependent, component->name(), true);
-            if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion, revertFromInstall))
-                return false;
+            if (!m_referenceCount.contains(dependencyComponentName)) {
+                insertInstallReason(dependencyComponent, InstallerCalculator::Dependent,
+                    component->name(), true);
+                if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion, revertFromInstall))
+                    return false;
+            }
             m_visitedComponents.remove(component);
         }
 
