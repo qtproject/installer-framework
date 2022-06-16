@@ -402,9 +402,10 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
         // after everything is set up, load the scripts if needed and create helper hashes
         // for autodependency and dependency components for quicker search later
-        if (loadScript && !loadComponentScripts(components))
-            return false;
-
+        foreach (QInstaller::Component *component, components) {
+            if (loadScript)
+                component->loadComponentScript();
+        }
         // now we can preselect components in the tree
         foreach (QInstaller::Component *component, components) {
             // set the checked state for all components without child (means without tristate)
@@ -456,29 +457,6 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
     }
     return true;
 }
-
-template <typename T>
-bool PackageManagerCorePrivate::loadComponentScripts(const T &components)
-{
-    infoMessage(nullptr, tr("Loading component scripts..."));
-
-    quint64 loadedComponents = 0;
-    for (auto *component : components) {
-        if (statusCanceledOrFailed())
-            return false;
-
-        component->loadComponentScript();
-        ++loadedComponents;
-
-        const int currentProgress = qRound(double(loadedComponents) / components.count() * 100);
-        infoProgress(nullptr, currentProgress, 100);
-        qApp->processEvents();
-    }
-    return true;
-}
-
-template bool PackageManagerCorePrivate::loadComponentScripts<QList<Component *>>(const QList<Component *> &);
-template bool PackageManagerCorePrivate::loadComponentScripts<QHash<QString, Component *>>(const QHash<QString, Component *> &);
 
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
