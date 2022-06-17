@@ -1344,7 +1344,7 @@ Error al descargar %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Completando el Asistente de %1</translation>
     </message>
     <message>
@@ -1364,7 +1364,7 @@ Error al descargar %2</translation>
         <translation>Ejecute %1 ahora.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Error del Asistente de %1.</translation>
     </message>
 </context>
@@ -1417,7 +1417,7 @@ Error al descargar %2</translation>
         <translation>Programa de instalación - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Bienvenido al Asistente de instalación de %1.</translation>
     </message>
     <message>
@@ -2286,7 +2286,7 @@ Copie el instalador en una unidad local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Completando el Asistente de instalación de %1</translation>
     </message>
 </context>

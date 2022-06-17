@@ -1934,7 +1934,7 @@ Please copy the installer to a local drive</source>
         <translation>설정 - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>%1 설정 마법사에 오신 것을 환영합니다.</translation>
     </message>
     <message>
@@ -2126,7 +2126,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>%1 마법사 완료 중</translation>
     </message>
     <message>
@@ -2146,14 +2146,14 @@ Please copy the installer to a local drive</source>
         <translation>지금 %1을(를) 실행하십시오.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>%1 마법사가 실패했습니다.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>%1 설정 마법사 완료 중</translation>
     </message>
 </context>

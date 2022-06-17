@@ -1331,7 +1331,7 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>%1 ウィザードを完了しています</translation>
     </message>
     <message>
@@ -1351,7 +1351,7 @@ Error while loading %2</source>
         <translation>今すぐ %1 を実行します。</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>%1 ウィザードが正常に実行されませんでした。</translation>
     </message>
 </context>
@@ -1404,7 +1404,7 @@ Error while loading %2</source>
         <translation>設定 - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>%1 設定ウィザードへようこそ。</translation>
     </message>
     <message>
@@ -2273,7 +2273,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>%1 設定ウィザードを完了しています</translation>
     </message>
 </context>

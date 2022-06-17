@@ -1835,7 +1835,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Postavljanje – %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Dobrodošli u čarobnjak postavaka za %1.</translation>
     </message>
     <message>
@@ -2130,7 +2130,7 @@ Kopiraj program za instaliranje na računalo</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Dovršavanje čarobnjaka %1</translation>
     </message>
     <message>
@@ -2150,14 +2150,14 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Sad pokreni %1.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Neuspješno pokretanje čarobnjaka %1.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Dovršavanje čarobnjaka postavaka %1</translation>
     </message>
 </context>

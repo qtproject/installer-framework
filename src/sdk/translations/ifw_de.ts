@@ -1382,7 +1382,7 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Den %1-Assistent abschließen</translation>
     </message>
     <message>
@@ -1402,7 +1402,7 @@ Fehler beim Laden von %2</translation>
         <translation>Starte jetzt %1.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Der %1-Assistent ist fehlgeschlagen.</translation>
     </message>
 </context>
@@ -1455,7 +1455,7 @@ Fehler beim Laden von %2</translation>
         <translation>Einrichten - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Willkommen zum %1-Einrichtungsassistenten.</translation>
     </message>
     <message>
@@ -2332,7 +2332,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Der %1-Assistent wird abgeschlossen</translation>
     </message>
 </context>

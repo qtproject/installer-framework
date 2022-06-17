@@ -1803,7 +1803,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>%1 - Configuração</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Bem-vindo ao Assistente de Configuração %1.</translation>
     </message>
     <message>
@@ -2098,7 +2098,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>A concluir o Assistente %1</translation>
     </message>
     <message>
@@ -2118,14 +2118,14 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Executar %1 agora.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Ocorreu um erro no assistente %1.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>A concluir o Assistente de Configuração %1</translation>
     </message>
 </context>

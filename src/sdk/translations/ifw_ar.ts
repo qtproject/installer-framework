@@ -1982,7 +1982,7 @@ Please copy the installer to a local drive</source>
         <translation>الإعداد - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>مرحباً بك في إعداد %1.</translation>
     </message>
     <message>
@@ -2174,7 +2174,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>إكمال معالج %1</translation>
     </message>
     <message>
@@ -2194,14 +2194,14 @@ Please copy the installer to a local drive</source>
         <translation>شغل %1 الآن.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>فشل معالج %1.</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>إكمال معالج إعداد %1</translation>
     </message>
 </context>

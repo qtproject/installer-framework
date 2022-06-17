@@ -1344,7 +1344,7 @@ Fejl under indlæsning af %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Fuldfører %1-assistenten</translation>
     </message>
     <message>
@@ -1364,7 +1364,7 @@ Fejl under indlæsning af %2</translation>
         <translation>Kør %1 nu.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>%1-assistenten mislykkedes.</translation>
     </message>
 </context>
@@ -1417,7 +1417,7 @@ Fejl under indlæsning af %2</translation>
         <translation>Opsætning - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Velkommen til opsætningsassistenten for %1.</translation>
     </message>
     <message>
@@ -2285,7 +2285,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Fuldfører opsætningsassistenten for %1</translation>
     </message>
 </context>

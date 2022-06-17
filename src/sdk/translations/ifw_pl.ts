@@ -1357,7 +1357,7 @@ Błąd podczas wczytywania %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Wykonywanie Kreatora %1</translation>
     </message>
     <message>
@@ -1377,7 +1377,7 @@ Błąd podczas wczytywania %2</translation>
         <translation>Uruchom %1 teraz.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Działanie Kreatora %1 nie powiodło się.</translation>
     </message>
 </context>
@@ -1430,7 +1430,7 @@ Błąd podczas wczytywania %2</translation>
         <translation>Konfiguracja - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Witamy w Kreatorze konfiguracji %1.</translation>
     </message>
     <message>
@@ -1831,7 +1831,7 @@ Czy chcesz kontynuować?</translation>
 
 %1</source>
         <translation>Poniższe procesy powinny być zatrzymane, aby kontynuować:
- 
+
  %1</translation>
     </message>
     <message>
@@ -2299,7 +2299,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Wykonywanie Kreatora instalacji %1</translation>
     </message>
 </context>

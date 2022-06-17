@@ -1487,7 +1487,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    m_msgLabel->setText(tr("Welcome to the %1 Setup Wizard.").arg(productName()));
+    m_msgLabel->setText(tr("Welcome to the %1 Setup.").arg(productName()));
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
@@ -2922,7 +2922,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(nullptr)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setColoredTitle(tr("Completing the %1 Wizard").arg(productName()));
+    setColoredTitle(tr("Completing the %1 Setup").arg(productName()));
     setPageListTitle(tr("Finished"));
 
     m_msgLabel = new QLabel(this);
@@ -3009,7 +3009,7 @@ void FinishedPage::entering()
         }
     } else {
         // TODO: how to handle this using the config.xml
-        setColoredTitle(tr("The %1 Wizard failed.").arg(productName()));
+        setColoredTitle(tr("The %1 Setup failed.").arg(productName()));
     }
 
     m_runItCheckBox->hide();
@@ -3094,7 +3094,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setColoredTitle(tr("Completing the %1 Setup Wizard").arg(productName()));
+    setColoredTitle(tr("Completing the %1 Setup").arg(productName()));
 
     // Never show this page on the page list
     setShowOnPageList(false);

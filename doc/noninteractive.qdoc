@@ -126,7 +126,7 @@
         \row
         \li \c MessageLabel
         \li Displays a message. By default, it displays the
-            "Welcome to the \l{ProductNameTarget}{<Name>} Setup Wizard" message.
+            "Welcome to the \l{ProductNameTarget}{<Name>} Setup" message.
 
         \row
         \li \c InformationLabel

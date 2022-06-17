@@ -1344,7 +1344,7 @@ Errore durante il caricamento di %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Completamento della procedura guidata %1</translation>
     </message>
     <message>
@@ -1364,7 +1364,7 @@ Errore durante il caricamento di %2</translation>
         <translation>Eseguire %1 ora.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Procedura guidata %1 non riuscita.</translation>
     </message>
 </context>
@@ -1417,7 +1417,7 @@ Errore durante il caricamento di %2</translation>
         <translation>Installazione - %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Installazione guidata di %1.</translation>
     </message>
     <message>
@@ -2285,7 +2285,7 @@ Copiare il programma di installazione in un&apos;unità locale</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>Completamento dell&apos;installazione guidata di %1</translation>
     </message>
 </context>

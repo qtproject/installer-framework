@@ -1382,7 +1382,7 @@ Error en descarregar %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>S&apos;ha completat l&apos;Assistent de %1</translation>
     </message>
     <message>
@@ -1402,7 +1402,7 @@ Error en descarregar %2</translation>
         <translation>Executa %1 ara.</translation>
     </message>
     <message>
-        <source>The %1 Wizard failed.</source>
+        <source>The %1 Setup failed.</source>
         <translation>Ha fallat l&apos;Assistent de %1.</translation>
     </message>
 </context>
@@ -1455,7 +1455,7 @@ Error en descarregar %2</translation>
         <translation>Programa d&apos;instal·lació: %1</translation>
     </message>
     <message>
-        <source>Welcome to the %1 Setup Wizard.</source>
+        <source>Welcome to the %1 Setup.</source>
         <translation>Us donem la benvinguda a l&apos;Assistent de configuració de %1.</translation>
     </message>
     <message>
@@ -2323,7 +2323,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup Wizard</source>
+        <source>Completing the %1 Setup</source>
         <translation>S&apos;està completant l&apos;Assistent d&apos;instal·lació de %1</translation>
     </message>
 </context>
