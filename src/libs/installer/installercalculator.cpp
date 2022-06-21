@@ -107,9 +107,7 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
                 // user explicitly selects it to install. Increase the references to
                 // know when the component should be removed from install
                 const QStringList dependenciesList = component->currentDependencies();
-                QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
-
-                foreach (const QString &dependencyComponentName, allDependencies)
+                for (const QString &dependencyComponentName : dependenciesList)
                     calculateComponentDependencyReferences(dependencyComponentName, component);
                 continue;
             }
@@ -184,9 +182,8 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component, co
 bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version, bool revertFromInstall)
 {
     const QStringList dependenciesList = component->currentDependencies();
-    const QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
     QString requiredDependencyVersion = version;
-    foreach (const QString &dependencyComponentName, allDependencies) {
+    for (const QString &dependencyComponentName : dependenciesList) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a
         // version which is not available
         Component *dependencyComponent =
@@ -345,8 +342,7 @@ void InstallerCalculator::calculateComponentDependencyReferences(const QString d
     m_referenceCount.insert(dependencyComponentName, value);
 
     const QStringList dependenciesList = dependencyComponent->currentDependencies();
-    QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
-    for (const QString &depComponentName : allDependencies) {
+    for (const QString &depComponentName : dependenciesList) {
         Component *dependencyComponent =
             PackageManagerCore::componentByName(depComponentName, m_allComponents);
         calculateComponentDependencyReferences(depComponentName, dependencyComponent);
