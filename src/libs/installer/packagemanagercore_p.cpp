@@ -2508,6 +2508,14 @@ void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::Che
 
 void PackageManagerCorePrivate::deleteMaintenanceTool()
 {
+    QDir resourcePath(QFileInfo(maintenanceToolName()).dir());
+    resourcePath.remove(QLatin1String("installer.dat"));
+    QDir installDir(targetDir());
+    installDir.remove(m_data.settings().maintenanceToolName() + QLatin1String(".dat"));
+    installDir.remove(QLatin1String("network.xml"));
+    installDir.remove(m_data.settings().maintenanceToolIniFile());
+    QInstaller::VerboseWriter::instance()->setFileName(QString());
+    installDir.remove(m_core->value(QLatin1String("LogFileName"), QLatin1String("InstallationLog.txt")));
 #ifdef Q_OS_WIN
     // Since Windows does not support that the maintenance tool deletes itself we have to go with a rather dirty
     // hack. What we do is to create a batchfile that will try to remove the maintenance tool once per second. Then
