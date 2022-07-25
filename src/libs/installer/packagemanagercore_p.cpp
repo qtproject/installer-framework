@@ -2528,6 +2528,7 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     if (!f.open(QIODevice::WriteOnly | QIODevice::Text))
         throw Error(tr("Cannot prepare removal"));
 
+    const bool removeTargetDir = QVariant(m_core->value(scRemoveTargetDir)).toBool();
     QTextStream batch(&f);
     batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
     batch << "file = WScript.Arguments.Item(0)\n";
@@ -2539,10 +2540,12 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     batch << "    fso.DeleteFile(file)\n";
     batch << "    WScript.Sleep(1000)\n";
     batch << "wend\n";
-//    batch << "if folder.SubFolders.Count = 0 and folder.Files.Count = 0 then\n";
+    if (!removeTargetDir)
+        batch << "if folder.SubFolders.Count = 0 and folder.Files.Count = 0 then\n";
     batch << "    Set folder = Nothing\n";
     batch << "    fso.DeleteFolder folderpath, true\n";
-//    batch << "end if\n";
+    if (!removeTargetDir)
+        batch << "end if\n";
     batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
 
     f.close();
@@ -2550,11 +2553,7 @@ void PackageManagerCorePrivate::deleteMaintenanceTool()
     QStringList arguments;
     arguments << QLatin1String("//Nologo") << batchfile; // execute the batchfile
     arguments << QDir::toNativeSeparators(QFileInfo(installerBinaryPath()).absoluteFilePath());
-    if (!m_performedOperationsOld.isEmpty()) {
-        const Operation *const op = m_performedOperationsOld.first();
-        if (op->name() == QLatin1String("Mkdir")) // the target directory name
-            arguments << QDir::toNativeSeparators(QFileInfo(op->arguments().first()).absoluteFilePath());
-    }
+    arguments << targetDir();
 
     if (!QProcessWrapper::startDetached(QLatin1String("cscript"), arguments, QDir::rootPath()))
         throw Error(tr("Cannot start removal"));
