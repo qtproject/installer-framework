@@ -234,6 +234,7 @@ public:
     void showMetaInfoUpdate();
     void showMaintenanceTools();
     void setMaintenanceToolsEnabled(bool enable);
+    void setMaintainerToolsEnabled(bool enable);
 
 public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
@@ -263,6 +264,7 @@ private:
     bool m_updatesFetched;
     bool m_allPackagesFetched;
     bool m_forceUpdate;
+    bool m_offlineMaintenanceTool;
 
     QLabel *m_label;
     QLabel *m_msgLabel;

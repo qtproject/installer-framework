@@ -1470,6 +1470,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_updatesFetched(false)
     , m_allPackagesFetched(false)
     , m_forceUpdate(false)
+    , m_offlineMaintenanceTool(false)
     , m_label(nullptr)
     , m_msgLabel(nullptr)
     , m_errorLabel(nullptr)
@@ -1540,7 +1541,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     connect(core, &PackageManagerCore::coreNetworkSettingsChanged,
             this, &IntroductionPage::onCoreNetworkSettingsChanged);
 
-    m_updateComponents->setEnabled(ProductKeyCheck::instance()->hasValidKey());
+    m_updateComponents->setEnabled(!m_offlineMaintenanceTool && ProductKeyCheck::instance()->hasValidKey());
 
 #ifdef Q_OS_WIN
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
@@ -1715,13 +1716,28 @@ void IntroductionPage::showMaintenanceTools()
 
 /*!
     Sets \a enable to \c true to enable the options to install, add, and
-    uninstall components on the page.
+    uninstall components on the page. For a maintenance tool without any enabled
+    repositories, the package manager and updater stay disabled regardless of
+    the value of \a enable.
 */
 void IntroductionPage::setMaintenanceToolsEnabled(bool enable)
 {
-    m_packageManager->setEnabled(enable);
-    m_updateComponents->setEnabled(enable && ProductKeyCheck::instance()->hasValidKey());
+    m_packageManager->setEnabled(enable && !m_offlineMaintenanceTool);
+    m_updateComponents->setEnabled(enable && !m_offlineMaintenanceTool
+        && ProductKeyCheck::instance()->hasValidKey());
     m_removeAllComponents->setEnabled(enable);
+}
+
+/*!
+    Enables or disables the options to add or update components based on the
+    value of \a enable. For a maintenance tool without any enabled repositories,
+    the package manager and updater stay disabled regardless of the value of \a enable.
+*/
+void IntroductionPage::setMaintainerToolsEnabled(bool enable)
+{
+    m_packageManager->setEnabled(enable && !m_offlineMaintenanceTool);
+    m_updateComponents->setEnabled(enable && !m_offlineMaintenanceTool
+        && ProductKeyCheck::instance()->hasValidKey());
 }
 
 // -- public slots
@@ -1810,7 +1826,7 @@ void IntroductionPage::setUninstaller(bool value)
 {
     if (value) {
         entering();
-        gui()->showSettingsButton(false);
+        gui()->showSettingsButton(true);
         packageManagerCore()->setUninstaller();
         emit packageManagerCoreTypeChanged();
 
@@ -1834,6 +1850,8 @@ void IntroductionPage::setPackageManager(bool value)
 */
 void IntroductionPage::initializePage()
 {
+    const bool repositoriesAvailable = validRepositoriesAvailable();
+
     PackageManagerCore *core = packageManagerCore();
     if (core->isPackageManager()) {
         m_packageManager->setChecked(true);
@@ -1843,25 +1861,37 @@ void IntroductionPage::initializePage()
         // If we are running maintenance tool and the default uninstaller
         // marker is not overridden, set the default checked radio button
         // based on if we have valid repositories available.
-        if (!core->isUserSetBinaryMarker() && validRepositoriesAvailable()) {
+        if (!core->isUserSetBinaryMarker() && repositoriesAvailable) {
             m_packageManager->setChecked(true);
         } else {
             // No repositories available, default to complete uninstallation.
             m_removeAllComponents->setChecked(true);
             core->setCompleteUninstallation(true);
         }
+        // Disable options that are unusable without repositories
+        m_offlineMaintenanceTool = !repositoriesAvailable;
+        setMaintainerToolsEnabled(repositoriesAvailable);
     }
 }
 
 /*!
     Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
-    fetched again.
+    fetched again. For maintenance tool, enables or disables options requiring enabled repositories
+    based on the current repository settings.
 */
 void IntroductionPage::onCoreNetworkSettingsChanged()
 {
     m_updatesFetched = false;
     m_allPackagesFetched = false;
     m_forceUpdate = false;
+
+    PackageManagerCore *core = packageManagerCore();
+    if (core->isUninstaller() || core->isMaintainer()) {
+        m_offlineMaintenanceTool = !validRepositoriesAvailable();
+
+        setMaintainerToolsEnabled(!m_offlineMaintenanceTool);
+        m_removeAllComponents->setChecked(m_offlineMaintenanceTool);
+    }
 }
 
 // -- private
@@ -1887,7 +1917,7 @@ void IntroductionPage::entering()
     if (m_forceUpdate)
         m_packageManager->setEnabled(false);
 
-    setSettingsButtonRequested((!core->isOfflineOnly()) && (!core->isUninstaller()));
+    setSettingsButtonRequested((!core->isOfflineOnly()));
 }
 
 /*!
