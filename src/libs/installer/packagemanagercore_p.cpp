@@ -123,54 +123,27 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
 static void deferredRename(const QString &oldName, const QString &newName, bool restart = false)
 {
 #ifdef Q_OS_WIN
+    const QString currentExecutable = QCoreApplication::applicationFilePath();
+    const QString tmpExecutable = generateTemporaryFileName(currentExecutable);
+
+    QFile::rename(currentExecutable, tmpExecutable);
+    QFile::rename(oldName, newName);
+
     QStringList arguments;
-
-    // Check if .vbs extension can be used for running renaming script. If not, create own extension
-    QString extension = QLatin1String(".vbs");
-    QSettingsWrapper settingRoot(QLatin1String("HKEY_CLASSES_ROOT\\.vbs"), QSettings::NativeFormat);
-    if (settingRoot.value(QLatin1String(".")).toString() != QLatin1String("VBSFile")) {
-        extension = QLatin1String(".qtInstaller");
-        QSettingsWrapper settingsUser(QLatin1String("HKEY_CURRENT_USER\\Software\\Classes"), QSettings::NativeFormat);
-        QString value = settingsUser.value(extension).toString();
-        if (value != QLatin1String("VBSFile"))
-            settingsUser.setValue(extension, QLatin1String("VBSFile"));
-    }
-    QTemporaryFile f(QDir::temp().absoluteFilePath(QLatin1String("deferredrenameXXXXXX%1")).arg(extension));
-
-    QInstaller::openForWrite(&f);
-    f.setAutoRemove(false);
-
-    arguments << QDir::toNativeSeparators(f.fileName()) << QDir::toNativeSeparators(oldName)
-        << QDir::toNativeSeparators(QFileInfo(oldName).dir().absoluteFilePath(QFileInfo(newName)
-        .fileName()));
-
-    QTextStream batch(&f);
-    batch.setCodec("UTF-16");
-    batch << "Set fso = WScript.CreateObject(\"Scripting.FileSystemObject\")\n";
-    batch << "Set tmp = WScript.CreateObject(\"WScript.Shell\")\n";
-    batch << QString::fromLatin1("file = \"%1\"\n").arg(arguments[2]);
-    batch << "on error resume next\n";
-
-    batch << "while fso.FileExists(file)\n";
-    batch << "    fso.DeleteFile(file)\n";
-    batch << "    WScript.Sleep(1000)\n";
-    batch << "wend\n";
-    batch << QString::fromLatin1("fso.MoveFile \"%1\", file\n").arg(arguments[1]);
     if (restart) {
-        //Restart with same command line arguments as first executable
-        QStringList commandLineArguments = QCoreApplication::arguments();
-        batch <<  QString::fromLatin1("tmp.exec \"%1 --%2")
-                  .arg(arguments[2]).arg(CommandLineOptions::scStartUpdaterLong);
-        //Skip the first argument as that is executable itself
-        for (int i = 1; i < commandLineArguments.count(); i++) {
-            batch << QString::fromLatin1(" %1").arg(commandLineArguments.at(i));
-        }
-        batch << QString::fromLatin1("\"\n");
+        // Restart with same command line arguments as first executable
+        arguments = QCoreApplication::arguments();
+        arguments.removeFirst(); // Remove program name
+        arguments.prepend(tmpExecutable);
+        arguments.prepend(QLatin1String("--")
+                          + CommandLineOptions::scCleanupUpdate);
+    } else {
+        arguments.append(QLatin1String("--")
+                         + CommandLineOptions::scCleanupUpdateOnly);
+        arguments.append(tmpExecutable);
     }
-    batch << "fso.DeleteFile(WScript.ScriptFullName)\n";
+    QProcessWrapper::startDetached2(newName, arguments);
 
-    QProcessWrapper::startDetached(QLatin1String("cscript"), QStringList() << QLatin1String("//Nologo")
-        << arguments[0]);
 #else
         QFile::remove(newName);
         QFile::rename(oldName, newName);
@@ -1555,7 +1528,11 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             << (restart ? "true." : "false.");
 
         if (newBinaryWritten) {
-            deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
+            if (isInstaller())
+                QFile::rename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName());
+            else
+                deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
+
             writeMaintenanceToolAlias();
         } else if (restart) {
             SelfRestarter::setRestartOnQuit(true);

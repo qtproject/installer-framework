@@ -277,6 +277,17 @@ void RemoteServerConnection::handleQProcess(RemoteServerReply *reply, const QStr
         qint64 pid = -1;
         bool success = QInstaller::startDetached(program, arguments, workingDirectory, &pid);
         reply->send(qMakePair< bool, qint64>(success, pid));
+    } else if (command == QLatin1String(Protocol::QProcessStartDetached2)) {
+        QString program;
+        QStringList arguments;
+        QString workingDirectory;
+        data >> program;
+        data >> arguments;
+        data >> workingDirectory;
+
+        qint64 pid = -1;
+        bool success = QProcess::startDetached(program, arguments, workingDirectory, &pid);
+        reply->send(qMakePair< bool, qint64>(success, pid));
     } else if (command == QLatin1String(Protocol::QProcessSetWorkingDirectory)) {
         QString dir;
         data >> dir;

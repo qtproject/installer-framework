@@ -48,6 +48,8 @@
 #include <QCommandLineParser>
 #include <QDateTime>
 #include <QNetworkProxyFactory>
+#include <QThread>
+#include <QDeadlineTimer>
 
 #include <iostream>
 
@@ -62,6 +64,44 @@
 #define BUILDDATE "Build date: " __DATE__
 #define SHA "Installer Framework SHA1: " QUOTE(_GIT_SHA1_)
 static const char PLACEHOLDER[32] = "MY_InstallerCreateDateTime_MY";
+
+#ifdef Q_OS_WIN
+static void cleanupUpdate(const CommandLineParser &parser, bool *exit)
+{
+    QString cleanupPath;
+    QString cleanupOption;
+    *exit = false;
+
+    if (parser.isSet(CommandLineOptions::scCleanupUpdate)) {
+        cleanupPath = parser.value(CommandLineOptions::scCleanupUpdate);
+        cleanupOption = CommandLineOptions::scCleanupUpdate;
+    } else if (parser.isSet(CommandLineOptions::scCleanupUpdateOnly)) {
+        cleanupPath = parser.value(CommandLineOptions::scCleanupUpdateOnly);
+        cleanupOption = CommandLineOptions::scCleanupUpdateOnly;
+        *exit = true;
+    }
+
+    if (cleanupOption.isEmpty())
+        return;
+
+    // Since Windows does not support that the maintenance tool deletes itself we
+    // remove the old executable here after update (as the new maintenance tool).
+    if (!cleanupPath.isEmpty()) {
+        QFile fileToRemove(cleanupPath);
+        // Give up after 120 seconds if the old process has not exited and released the file
+        QDeadlineTimer deadline(120000);
+        while (fileToRemove.exists() && !deadline.hasExpired()) {
+            if (fileToRemove.remove()) {
+                std::cout << "Removed leftover file: " << qPrintable(cleanupPath)
+                          << " after update." << std::endl;
+            }
+            QThread::msleep(1000);
+        }
+    } else {
+        std::cout << "Invalid value for option " << qPrintable(cleanupOption);
+    }
+}
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -158,6 +198,15 @@ int main(int argc, char *argv[])
         }
         return help ? EXIT_SUCCESS : EXIT_FAILURE;
     }
+
+#ifdef Q_OS_WIN
+    {
+        bool exit = false;
+        cleanupUpdate(parser, &exit);
+        if (exit)
+            return EXIT_SUCCESS;
+    }
+#endif
 
     if (parser.isSet(CommandLineOptions::scStartServerLong)) {
         const QStringList arguments = parser.value(CommandLineOptions::scStartServerLong)

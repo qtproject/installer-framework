@@ -107,6 +107,11 @@ void QProcessWrapper::processSignals()
     m_lock.unlock();
 }
 
+/*!
+    Starts the \a program with \a arguments in the working directory \a workingDirectory as a detached
+    process. The process id can be retrieved with the \a pid parameter. Compared to the QProcess
+    implementation of the same method this does not show a window for the started process on Windows.
+*/
 bool QProcessWrapper::startDetached(const QString &program, const QStringList &arguments,
     const QString &workingDirectory, qint64 *pid)
 {
@@ -123,14 +128,62 @@ bool QProcessWrapper::startDetached(const QString &program, const QStringList &a
     return QInstaller::startDetached(program, arguments, workingDirectory, pid);
 }
 
+/*!
+    Starts the \a program with \a arguments as a detached process. Compared to the QProcess
+    implementation of the same method this does not show a window for the started process on Windows.
+*/
 bool QProcessWrapper::startDetached(const QString &program, const QStringList &arguments)
 {
     return startDetached(program, arguments, QDir::currentPath());
 }
 
+/*!
+    Starts the \a program as a detached process. Compared to the QProcess implementation of the same
+    method this does not show a window for the started process on Windows.
+*/
 bool QProcessWrapper::startDetached(const QString &program)
 {
     return startDetached(program, QStringList());
+}
+
+/*!
+    Starts the \a program as a detached process. The variants of the function suffixed with \c 2
+    use the base \c QProcess::startDetached implementation internally to start the process.
+*/
+bool QProcessWrapper::startDetached2(const QString &program)
+{
+    return startDetached2(program, QStringList());
+}
+
+/*!
+    Starts the \a program with \a arguments as a detached process. The variants of the function
+    suffixed with \c 2 use the base \c QProcess::startDetached implementation internally to
+    start the process.
+*/
+bool QProcessWrapper::startDetached2(const QString &program, const QStringList &arguments)
+{
+    return startDetached2(program, arguments, QDir::currentPath());
+}
+
+/*!
+    Starts the \a program with \a arguments in the working directory \a workingDirectory as a detached
+    process. The process id can be retrieved with the \a pid parameter. The variants
+    of the function suffixed with \c 2 use the base \c QProcess::startDetached implementation
+    internally to start the process.
+*/
+bool QProcessWrapper::startDetached2(const QString &program, const QStringList &arguments, const QString &workingDirectory, qint64 *pid)
+{
+    QProcessWrapper w;
+    if (w.connectToServer()) {
+        const QPair<bool, qint64> result =
+            w.callRemoteMethod<QPair<bool, qint64> >(QLatin1String(Protocol::QProcessStartDetached2),
+                program, arguments, workingDirectory);
+        if (pid != nullptr)
+            *pid = result.second;
+        w.processSignals();
+        return result.first;
+    }
+    return QProcess::startDetached(program, arguments, workingDirectory, pid);
 }
 
 void QProcessWrapper::setProcessChannelMode(QProcessWrapper::ProcessChannelMode mode)

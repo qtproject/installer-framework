@@ -67,6 +67,7 @@ const char QProcessReadAll[] = "QProcess::readAll";
 const char QProcessReadAllStandardOutput[] = "QProcess::readAllStandardOutput";
 const char QProcessReadAllStandardError[] = "QProcess::readAllStandardError";
 const char QProcessStartDetached[] = "QProcess::startDetached";
+const char QProcessStartDetached2[] = "QProcess::startDetached2";
 const char QProcessSetWorkingDirectory[] = "QProcess::setWorkingDirectory";
 const char QProcessSetEnvironment[] = "QProcess::setEnvironment";
 const char QProcessEnvironment[] = "QProcess::environment";

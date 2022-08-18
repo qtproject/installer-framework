@@ -48,7 +48,7 @@ public:
     bool addOptionWithContext(const QCommandLineOption &option, OptionContextFlags flags);
 
     QString helpText() const { return m_parser.helpText(); }
-    bool isSet(const QString &option) { return m_parser.isSet(option); }
+    bool isSet(const QString &option) const { return m_parser.isSet(option); }
     QStringList unknownOptionNames() const { return m_parser.unknownOptionNames(); }
     QStringList positionalArguments() const { return m_parser.positionalArguments(); }
     bool parse(const QStringList &argumens) { return m_parser.parse(argumens); }

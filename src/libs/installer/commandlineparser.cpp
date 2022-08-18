@@ -233,6 +233,16 @@ CommandLineParser::CommandLineParser()
                       "processor cores in the system."),
         QLatin1String("threads")));
 
+    QCommandLineOption cleanupUpdate(CommandLineOptions::scCleanupUpdate);
+    cleanupUpdate.setValueName(QLatin1String("path"));
+    cleanupUpdate.setFlags(QCommandLineOption::HiddenFromHelp);
+    addOption(cleanupUpdate);
+
+    QCommandLineOption cleanupUpdateOnly(CommandLineOptions::scCleanupUpdateOnly);
+    cleanupUpdateOnly.setValueName(QLatin1String("path"));
+    cleanupUpdateOnly.setFlags(QCommandLineOption::HiddenFromHelp);
+    addOption(cleanupUpdateOnly);
+
     // Deprecated options
     QCommandLineOption deprecatedUpdater(CommandLineOptions::scDeprecatedUpdater);
     deprecatedUpdater.setHidden(true);

@@ -104,6 +104,11 @@ public:
     static bool startDetached(const QString &program, const QStringList &arguments,
         const QString &workingDirectory, qint64 *pid = 0);
 
+    static bool startDetached2(const QString &program);
+    static bool startDetached2(const QString &program, const QStringList &arguments);
+    static bool startDetached2(const QString &program, const QStringList &arguments,
+        const QString &workingDirectory, qint64 *pid = 0);
+
     QString errorString() const;
     qint64 write(const QByteArray &byteArray);
 #ifdef Q_OS_WIN
