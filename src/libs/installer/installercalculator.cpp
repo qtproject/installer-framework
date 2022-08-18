@@ -102,10 +102,14 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
                     qPrintable(errorMessage));
                 return false;
             }
-            if (!revertFromInstall) {
-              // We can end up here if component is already added as dependency and
-              // user explicitly selects it to install
-              continue;
+            if (!revertFromInstall && !modelReset) {
+                // We can end up here if component is already added as dependency and
+                // user explicitly selects it to install. Increase the references to
+                // know when the component should be removed from install
+                const QStringList dependenciesList = component->currentDependencies();
+                for (const QString &dependencyComponentName : dependenciesList)
+                    calculateComponentDependencyReferences(dependencyComponentName, component);
+                continue;
             }
         }
 
@@ -178,9 +182,8 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component, co
 bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version, bool revertFromInstall)
 {
     const QStringList dependenciesList = component->currentDependencies();
-    QSet<QString> allDependencies(dependenciesList.begin(), dependenciesList.end());
     QString requiredDependencyVersion = version;
-    foreach (const QString &dependencyComponentName, allDependencies) {
+    for (const QString &dependencyComponentName : dependenciesList) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a
         // version which is not available
         Component *dependencyComponent =
@@ -220,52 +223,53 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
         }
 
         // Component can be requested for install by several component (as a dependency).
-        // Keep the reference count to a component, so we know when component needs to be
-        // removed from install.
-        if (!revertFromInstall && m_toInstallComponentIds.contains(dependencyComponentName)) {
-            QStringList value = m_referenceCount.value(dependencyComponentName, QStringList());
-            if (!value.contains(component->name()))
-                value << component->name();
-            m_referenceCount.insert(dependencyComponentName, value);
-        }
+        // Keep the reference count to a dependency component, so we know when component
+        // needs to be removed from install. Do not increase the reference count when
+        // the dependency is also autodependency as the component is removed anyway only
+        // when there are no references to the dependency.
         if (revertFromInstall) {
             if (m_toInstallComponentIds.contains(dependencyComponentName)
                     && m_referenceCount.contains(dependencyComponentName)) {
-                QStringList value = m_referenceCount.value(dependencyComponentName);
-                if (value.contains(component->name()))
-                    value.removeOne(component->name());
-                if (value.isEmpty())
-                    m_referenceCount.remove(dependencyComponentName);
-                else
-                    m_referenceCount.insert(dependencyComponentName, value);
+                if (!component->autoDependencies().contains(dependencyComponentName)) {
+                    QStringList value = m_referenceCount.value(dependencyComponentName);
+                    if (value.contains(component->name())) {
+                        value.removeOne(component->name());
+                        if (value.isEmpty())
+                            m_referenceCount.remove(dependencyComponentName);
+                        else
+                            m_referenceCount.insert(dependencyComponentName, value);
+                    }
+                }
             }
-            insertInstallReason(dependencyComponent, InstallerCalculator::Dependent, component->name(), true);
+            insertInstallReason(dependencyComponent, InstallerCalculator::Dependent,
+                component->name(), true);
             if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion, revertFromInstall))
                 return false;
             m_visitedComponents.remove(component);
-        }
-
-        //Check dependencies only if
-        //- Dependency is not installed or update requested, nor newer version of dependency component required
-        //- And dependency component is not already added for install
-        //- And component is not already added for install, then dependencies are already resolved
-        if (!revertFromInstall && ((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
-                || isUpdateRequired) && (!m_toInstallComponentIds.contains(dependencyComponent->name())
-                && !m_toInstallComponentIds.contains(component->name()))) {
-            if (m_visitedComponents.value(component).contains(dependencyComponent)) {
-                const QString errorMessage = recursionError(component);
-                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
-                m_componentsToInstallError = errorMessage;
-                Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
-                    Q_FUNC_INFO, qPrintable(errorMessage));
-                return false;
+        } else {
+            //Check dependencies only if
+            //- Dependency is not installed or update requested, nor newer version of dependency component required
+            //- And dependency component is not already added for install
+            //- And component is not already added for install, then dependencies are already resolved
+            if (((!dependencyComponent->isInstalled() || dependencyComponent->updateRequested())
+                    || isUpdateRequired) && (!m_toInstallComponentIds.contains(dependencyComponent->name())
+                    && !m_toInstallComponentIds.contains(component->name()))) {
+                if (m_visitedComponents.value(component).contains(dependencyComponent)) {
+                    const QString errorMessage = recursionError(component);
+                    qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
+                    m_componentsToInstallError = errorMessage;
+                    Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
+                        Q_FUNC_INFO, qPrintable(errorMessage));
+                    return false;
+                }
+                m_visitedComponents[component].insert(dependencyComponent);
             }
-            m_visitedComponents[component].insert(dependencyComponent);
-
-            QStringList value = m_referenceCount.value(dependencyComponentName, QStringList());
-            if (!value.contains(component->name()))
+            if (!component->autoDependencies().contains(dependencyComponentName)) {
+                QStringList value = m_referenceCount.value(dependencyComponentName, QStringList());
                 value << component->name();
-            m_referenceCount.insert(dependencyComponentName, value);
+                m_referenceCount.insert(dependencyComponentName, value);
+            }
+
             insertInstallReason(dependencyComponent, InstallerCalculator::Dependent, component->name());
             if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion, revertFromInstall))
                 return false;
@@ -295,7 +299,8 @@ QSet<Component *> InstallerCalculator::autodependencyComponents(const bool rever
     // dependency components based on that list.
     QSet<Component *> foundAutoDependOnList;
     for (const Component *component : qAsConst(m_componentsForAutodepencencyCheck)) {
-        if (!m_autoDependencyComponentHash.contains(component->name()))
+        if (!m_autoDependencyComponentHash.contains(component->name())
+                || (!revertFromInstall && m_core->isUpdater() && !component->updateRequested()))
             continue;
         for (const QString& autoDependency : m_autoDependencyComponentHash.value(component->name())) {
             // If a components is already installed or is scheduled for installation, no need to check
@@ -316,13 +321,32 @@ QSet<Component *> InstallerCalculator::autodependencyComponents(const bool rever
                     foundAutoDependOnList.insert(autoDependComponent);
                     insertInstallReason(autoDependComponent, InstallerCalculator::Automatic);
                 }
-            } else if (revertFromInstall && m_toInstallComponentIds.contains(autoDependComponent->name())) {
+            } else if (revertFromInstall
+                       && m_toInstallComponentIds.contains(autoDependComponent->name())
+                       && !m_toInstallComponentIds.contains(component->name())) {
                 foundAutoDependOnList.insert(autoDependComponent);
             }
         }
     }
     m_componentsForAutodepencencyCheck.clear();
     return foundAutoDependOnList;
+}
+
+void InstallerCalculator::calculateComponentDependencyReferences(const QString dependencyComponentName, const Component *component)
+{
+    Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
+    if (!dependencyComponent || component->autoDependencies().contains(dependencyComponentName))
+        return;
+    QStringList value = m_referenceCount.value(dependencyComponentName, QStringList());
+    value << component->name();
+    m_referenceCount.insert(dependencyComponentName, value);
+
+    const QStringList dependenciesList = dependencyComponent->currentDependencies();
+    for (const QString &depComponentName : dependenciesList) {
+        Component *dependencyComponent =
+            PackageManagerCore::componentByName(depComponentName, m_allComponents);
+        calculateComponentDependencyReferences(depComponentName, dependencyComponent);
+    }
 }
 
 } // namespace QInstaller

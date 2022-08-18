@@ -1,3 +1,6 @@
+4.4.1
+- Fix bug when all requested packages are not installed (QTIFW-2708)
+
 4.4.0
 - Fix installer crash if already installed virtual components are replaced (QTIFW-2672)
 - macOS: make creating maintenance tool alias optional (QTIFW-2665)

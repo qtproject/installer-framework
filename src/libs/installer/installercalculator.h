@@ -71,6 +71,7 @@ private:
     bool appendComponentToInstall(Component *component, const QString &version, const bool revertFromInstall);
     QString recursionError(const Component *component) const;
     QSet<Component *> autodependencyComponents(const bool revertFromInstall);
+    void calculateComponentDependencyReferences(const QString dependencyComponentName, const Component *component);
 
 private:
     PackageManagerCore *m_core;
