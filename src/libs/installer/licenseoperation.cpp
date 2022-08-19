@@ -80,7 +80,7 @@ bool LicenseOperation::performOperation()
 
     for (QVariantMap::const_iterator it = licenses.constBegin(); it != licenses.constEnd(); ++it) {
         QFile file(targetDir + QLatin1Char('/') + it.key());
-        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             setError(UserDefinedError);
             setErrorString(tr("Can not write license file \"%1\".").arg(QDir::toNativeSeparators(file.fileName())));
             return false;
