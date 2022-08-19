@@ -87,6 +87,7 @@ bool LicenseOperation::performOperation()
         }
 
         QTextStream stream(&file);
+        stream.setCodec("UTF-8");
         stream << it.value().toString();
     }
 
