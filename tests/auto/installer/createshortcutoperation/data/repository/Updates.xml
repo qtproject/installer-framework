@@ -5,7 +5,7 @@
  <PackageUpdate>
   <Name>A</Name>
   <DisplayName>A</DisplayName>
-  <Description>Example component A</Description>
+  <Description>Example component for CreateShortcutOperation</Description>
   <Version>1.0.2-1</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
   <Default>true</Default>

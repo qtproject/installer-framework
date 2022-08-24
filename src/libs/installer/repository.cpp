@@ -50,7 +50,6 @@ Repository::Repository()
     , m_enabled(false)
     , m_compressed(false)
 {
-    registerMetaType();
 }
 
 /*!
@@ -66,7 +65,6 @@ Repository::Repository(const Repository &other)
     , m_compressed(other.m_compressed)
     , m_categoryname(other.m_categoryname)
 {
-    registerMetaType();
 }
 
 /*!
@@ -79,7 +77,6 @@ Repository::Repository(const QUrl &url, bool isDefault, bool compressed)
     , m_enabled(true)
     , m_compressed(compressed)
 {
-    registerMetaType();
 }
 
 /*!

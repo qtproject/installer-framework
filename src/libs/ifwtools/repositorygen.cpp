@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,6 +34,7 @@
 #include "errors.h"
 #include "globals.h"
 #include "archivefactory.h"
+#include "metadata.h"
 #include "settings.h"
 #include "qinstallerglobal.h"
 #include "utils.h"
@@ -126,6 +127,75 @@ static QStringList copyFilesFromNode(const QString &parentNode, const QString &c
         }
     }
     return copiedFiles;
+}
+
+/*
+    Returns \c true if the \a file is an archive or an SHA1 checksum
+    file for an archive, /c false otherwise.
+*/
+static bool isArchiveOrChecksum(const QString &file)
+{
+    if (file.endsWith(QLatin1String(".sha1")))
+        return true;
+
+    for (auto &supportedSuffix : ArchiveFactory::supportedTypes()) {
+        if (file.endsWith(supportedSuffix))
+            return true;
+    }
+    return false;
+}
+
+/*
+    Fills the package \a info with the name of the metadata archive when applicable. Returns
+    \c true if the component has metadata compressed in an archive or uncompressed to cache, or
+    if the metadata archive is redundant. Returns \c false if the component should have metadata
+    but none was found.
+*/
+static bool findMetaFile(const QString &repositoryDir, const QDomElement &packageUpdate, PackageInfo &info)
+{
+    // Note: the order here is important, when updating from an existing
+    // repository we shouldn't drop the empty metadata archives.
+
+    // 1. First, try with normal repository structure
+    QString metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
+        QString::fromLatin1("meta.7z"), info.version);
+
+    if (QFileInfo::exists(metaFile)) {
+        info.metaFile = metaFile;
+        return true;
+    }
+
+    // 2. If that does not work, check for fetched temporary repository structure
+    metaFile = QString::fromLatin1("%1/%2-%3-%4").arg(repositoryDir,
+        info.name, info.version, QString::fromLatin1("meta.7z"));
+
+    if (QFileInfo::exists(metaFile)) {
+        info.metaFile = metaFile;
+        return true;
+    }
+
+    // 3. Try with the cached metadata directory structure
+    const QDir packageDir(info.directory);
+    const QStringList cachedMetaFiles = packageDir.entryList(QDir::Files);
+    for (auto &file : cachedMetaFiles) {
+        if (!isArchiveOrChecksum(file))
+            return true; // Return for first non-archive file
+    }
+
+    // 4. The meta archive may be redundant, skip in that case (cached item from a
+    // repository that has empty meta archive)
+    bool metaElementFound = false;
+    const QDomNodeList c1 = packageUpdate.childNodes();
+    for (int i = 0; i < c1.count(); ++i) {
+        const QDomElement e1 = c1.at(i).toElement();
+        for (const QString &meta : *scMetaElements) {
+            if (e1.tagName() == meta) {
+                metaElementFound = true;
+                break;
+            }
+        }
+    }
+    return !metaElementFound;
 }
 
 void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &metaDataDir,
@@ -398,6 +468,19 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     throw Error(QString::fromLatin1("Could not extract archive \"%1\": %2").arg(
                         QDir::toNativeSeparators(info.metaFile), metaFile->errorString()));
                 }
+            } else {
+                // The metadata may have been already extracted, i.e. when reading from a
+                // local repository cache.
+                const QDir packageDir(info.directory);
+                const QStringList metaFiles = packageDir.entryList(QDir::Files);
+                for (auto &file : metaFiles) {
+                    if (isArchiveOrChecksum(file))
+                        continue; // Skip data archives
+
+                    const QString source(QString::fromLatin1("%1/%2").arg(info.directory, file));
+                    const QString target(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, file));
+                    copyWithException(source, target, QLatin1String("cached metadata"));
+                }
             }
 
             // Restore "PackageUpdate" node;
@@ -639,22 +722,9 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
                 info.directory = QString::fromLatin1("%1/%2").arg(it->filePath(), info.name);
                 if (!hasUnifiedMetaFile) {
                     const QDomElement sha1 = el.firstChildElement(QInstaller::scSHA1);
-                    if (!sha1.isNull()) {
-                        // 1. First, try with normal repository structure
-                        QString metaFile = QString::fromLatin1("%1/%3%2").arg(info.directory,
-                            QString::fromLatin1("meta.7z"), info.version);
-
-                        if (!QFileInfo(metaFile).exists()) {
-                            // 2. If that does not work, check for fetched temporary repository structure
-                            metaFile = QString::fromLatin1("%1/%2-%3-%4").arg(it->filePath(),
-                                info.name, info.version, QString::fromLatin1("meta.7z"));
-
-                            if (!QFileInfo(metaFile).exists()) {
-                                throw QInstaller::Error(QString::fromLatin1("Could not find meta archive for component "
-                                    "%1 %2 in repository %3.").arg(info.name, info.version, it->filePath()));
-                            }
-                        }
-                        info.metaFile = metaFile;
+                    if (!sha1.isNull() && !findMetaFile(it->filePath(), el, info)) {
+                        throw QInstaller::Error(QString::fromLatin1("Could not find metadata archive for component "
+                            "%1 %2 in repository %3.").arg(info.name, info.version, it->filePath()));
                     }
                 }
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -194,6 +194,7 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     , m_ui(new Ui::SettingsDialog)
     , m_core(core)
     , m_showPasswords(false)
+    , m_cacheCleared(false)
 {
     m_ui->setupUi(this);
     setupRepositoriesTreeWidget();
@@ -238,6 +239,12 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
             this, &SettingsDialog::selectAll);
     connect(m_ui->m_deselectAll, &QAbstractButton::clicked,
             this, &SettingsDialog::deselectAll);
+
+    connect(m_ui->m_clearPushButton, &QAbstractButton::clicked,
+            this, &SettingsDialog::clearLocalCacheClicked);
+    connect(m_ui->m_clearPushButton, &QAbstractButton::clicked,
+            this, [&] { m_cacheCleared = true; });
+
     useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setEnabled(settings.hasReplacementRepos());
@@ -248,6 +255,8 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
         m_ui->m_repositories->setParent(this);
         m_ui->m_repositories->setVisible(settings.repositorySettingsPageVisible());
     }
+
+   m_ui->m_cachePathLineEdit->setText(settings.localCachePath());
 }
 
 void SettingsDialog::accept()
@@ -289,6 +298,14 @@ void SettingsDialog::accept()
             m_ui->m_httpProxyPort->value()));
         settingsChanged |= (settings.httpProxy() != newSettings.httpProxy());
     }
+
+    // need to fetch metadata again
+    settingsChanged |= m_cacheCleared;
+    m_cacheCleared = false;
+
+    // update cache path
+    newSettings.setLocalCachePath(m_ui->m_cachePathLineEdit->text());
+    settingsChanged |= (settings.localCachePath() != newSettings.localCachePath());
 
     if (settingsChanged)
         emit networkSettingsChanged(newSettings);

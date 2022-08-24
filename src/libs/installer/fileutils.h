@@ -49,12 +49,12 @@ enum DefaultFilePermissions {
     Executable = 0x7755
 };
 
-class INSTALLER_EXPORT TempDirDeleter
+class INSTALLER_EXPORT TempPathDeleter
 {
 public:
-    explicit TempDirDeleter(const QString &path);
-    explicit TempDirDeleter(const QStringList &paths = QStringList());
-    ~TempDirDeleter();
+    explicit TempPathDeleter(const QString &path);
+    explicit TempPathDeleter(const QStringList &paths = QStringList());
+    ~TempPathDeleter();
 
     QStringList paths() const;
 
@@ -65,7 +65,7 @@ public:
     void releaseAndDelete(const QString &path);
 
 private:
-    Q_DISABLE_COPY(TempDirDeleter)
+    Q_DISABLE_COPY(TempPathDeleter)
     QSet<QString> m_paths;
 };
 

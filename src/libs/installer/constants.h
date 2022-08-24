@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -70,6 +70,7 @@ static const QLatin1String scUncompressedSizeSum("UncompressedSizeSum");
 static const QLatin1String scRequiresAdminRights("RequiresAdminRights");
 static const QLatin1String scOfflineBinaryName("OfflineBinaryName");
 static const QLatin1String scSHA1("SHA1");
+static const QLatin1String scMetadataName("MetadataName");
 static const QLatin1String scContentSha1("ContentSha1");
 
 // constants used throughout the components class
@@ -84,6 +85,8 @@ static const QLatin1String scRunProgram("RunProgram");
 static const QLatin1String scRunProgramArguments("RunProgramArguments");
 static const QLatin1String scStartMenuDir("StartMenuDir");
 static const QLatin1String scRemoveTargetDir("RemoveTargetDir");
+static const QLatin1String scLocalCacheDir("LocalCacheDir");
+static const QLatin1String scPersistentLocalCache("PersistentLocalCache");
 static const QLatin1String scRunProgramDescription("RunProgramDescription");
 static const QLatin1String scTargetConfigurationFile("TargetConfigurationFile");
 static const QLatin1String scAllowNonAsciiCharacters("AllowNonAsciiCharacters");

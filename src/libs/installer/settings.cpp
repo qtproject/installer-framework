@@ -34,8 +34,11 @@
 #include "globals.h"
 #include "fileutils.h"
 
+#include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QStringList>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QUuid>
 #include <QtGui/QFontMetrics>
 #include <QtWidgets/QApplication>
 
@@ -75,6 +78,8 @@ static const QLatin1String scInstallActionColumnVisible("InstallActionColumnVisi
 static const QLatin1String scFtpProxy("FtpProxy");
 static const QLatin1String scHttpProxy("HttpProxy");
 static const QLatin1String scProxyType("ProxyType");
+
+static const QLatin1String scLocalCachePath("LocalCachePath");
 
 const char scControlScript[] = "ControlScript";
 
@@ -315,7 +320,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scInstallerApplicationIcon << scInstallerWindowIcon
                 << scLogo << scWatermark << scBanner << scBackground << scPageListPixmap
                 << scStartMenuDir << scMaintenanceToolName << scMaintenanceToolIniFile << scMaintenanceToolAlias
-                << scRemoveTargetDir
+                << scRemoveTargetDir << scLocalCacheDir << scPersistentLocalCache
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
@@ -870,6 +875,40 @@ bool Settings::repositorySettingsPageVisible() const
 void Settings::setRepositorySettingsPageVisible(bool visible)
 {
     d->m_data.replace(scRepositorySettingsPageVisible, visible);
+}
+
+bool Settings::persistentLocalCache() const
+{
+    return d->m_data.value(scPersistentLocalCache, true).toBool();
+}
+
+void Settings::setPersistentLocalCache(bool enable)
+{
+    d->m_data.replace(scPersistentLocalCache, enable);
+}
+
+QString Settings::localCacheDir() const
+{
+    const QString fallback = QLatin1String("qt-installer-framework") + QDir::separator()
+        + QUuid::createUuidV3(QUuid(), applicationName()).toString(QUuid::WithoutBraces);
+    return d->m_data.value(scLocalCacheDir, fallback).toString();
+}
+
+void Settings::setLocalCacheDir(const QString &dir)
+{
+    d->m_data.replace(scLocalCacheDir, dir);
+}
+
+QString Settings::localCachePath() const
+{
+    const QString fallback = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation)
+        + QDir::separator() + localCacheDir();
+    return d->m_data.value(scLocalCachePath, fallback).toString();
+}
+
+void Settings::setLocalCachePath(const QString &path)
+{
+    d->m_data.replace(scLocalCachePath, path);
 }
 
 Settings::ProxyType Settings::proxyType() const

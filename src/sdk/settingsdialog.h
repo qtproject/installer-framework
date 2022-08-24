@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -109,6 +109,7 @@ public slots:
 
 signals:
     void networkSettingsChanged(const QInstaller::Settings &settings);
+    void clearLocalCacheClicked();
 
 private slots:
     void addRepository();
@@ -131,6 +132,7 @@ private:
     QInstaller::PackageManagerCore *m_core;
 
     bool m_showPasswords;
+    bool m_cacheCleared;
     QList<QTreeWidgetItem*> m_rootItems;
 };
 

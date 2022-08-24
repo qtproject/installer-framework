@@ -574,7 +574,7 @@ private slots:
 private:
     QInstallerTools::RepositoryInfo m_repoInfo;
     QInstallerTools::PackageInfoVector m_packages;
-    TempDirDeleter m_tempDirDeleter;
+    TempPathDeleter m_tempDirDeleter;
 };
 
 QTEST_MAIN(tst_repotest)

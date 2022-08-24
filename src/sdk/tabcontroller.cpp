@@ -154,6 +154,8 @@ void TabController::restartWizard()
         d->m_core->settings().setDefaultRepositories(d->m_settings.defaultRepositories());
         d->m_core->settings().setTemporaryRepositories(d->m_settings.temporaryRepositories(),
             d->m_settings.hasReplacementRepos());
+        d->m_core->settings().setLocalCachePath(d->m_settings.localCachePath());
+
         d->m_core->networkSettingsChanged();
     }
 
@@ -171,6 +173,8 @@ void TabController::onSettingsButtonClicked()
     SettingsDialog dialog(d->m_core);
     connect(&dialog, &SettingsDialog::networkSettingsChanged,
             this, &TabController::onNetworkSettingsChanged);
+    connect(&dialog, &SettingsDialog::clearLocalCacheClicked,
+            this, [&] { d->m_core->clearLocalCache(); });
     dialog.exec();
 
     if (d->m_networkSettingsChanged) {

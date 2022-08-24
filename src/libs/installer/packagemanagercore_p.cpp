@@ -662,6 +662,8 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
     m_metadataJob.setPackageManagerCore(m_core);
+    m_metadataJob.resetCache(true);
+
     connect(&m_metadataJob, &Job::infoMessage, this, &PackageManagerCorePrivate::infoMessage);
     connect(&m_metadataJob, &Job::progress, this, &PackageManagerCorePrivate::infoProgress);
     connect(&m_metadataJob, &Job::totalProgress, this, &PackageManagerCorePrivate::totalProgress);
@@ -2800,7 +2802,7 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
     if (!compressedRepository && m_updateSourcesAdded)
         return m_updateSourcesAdded;
 
-    const QList<Metadata> metadata = m_metadataJob.metadata();
+    const QList<Metadata *> metadata = m_metadataJob.metadata();
     if (metadata.isEmpty()) {
         m_updateSourcesAdded = true;
         return m_updateSourcesAdded;
@@ -2816,18 +2818,18 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 1));
     }
 
-    foreach (const Metadata &data, metadata) {
-        if (compressedRepository && !data.repository.isCompressed()) {
+    foreach (const Metadata *data, metadata) {
+        if (compressedRepository && !data->repository().isCompressed()) {
             continue;
         }
         if (statusCanceledOrFailed())
             return false;
 
-        if (data.directory.isEmpty())
+        if (data->path().isEmpty())
             continue;
 
         if (parseChecksum) {
-            const QString updatesXmlPath = data.directory + QLatin1String("/Updates.xml");
+            const QString updatesXmlPath = data->path() + QLatin1String("/Updates.xml");
             QFile updatesFile(updatesXmlPath);
             try {
                 QInstaller::openForRead(&updatesFile);
@@ -2854,12 +2856,12 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
             if (!checksum.isNull())
                 m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
         }
-        if (data.repository.isCompressed())
-            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 2));
+        if (data->repository().isCompressed())
+            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 2));
         else
-            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data.directory), 0));
+            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 0));
 
-        ProductKeyCheck::instance()->addPackagesFromXml(data.directory + QLatin1String("/Updates.xml"));
+        ProductKeyCheck::instance()->addPackagesFromXml(data->path() + QLatin1String("/Updates.xml"));
     }
     if ((compressedRepository && m_compressedPackageSources.count() == 0 ) ||
          (!compressedRepository && m_packageSources.count() == 0)) {
@@ -2959,6 +2961,15 @@ void PackageManagerCorePrivate::handleMethodInvocationRequest(const QString &inv
     QObject *obj = QObject::sender();
     if (obj != nullptr)
         QMetaObject::invokeMethod(obj, qPrintable(invokableMethodName));
+}
+
+/*
+    Adds the \a path for deletetion. Unlike files for delayed deletion, which are deleted
+    on the start of next installer run, these paths are deleted on exit.
+*/
+void PackageManagerCorePrivate::addPathForDeletion(const QString &path)
+{
+    m_tmpPathDeleter.add(path);
 }
 
 void PackageManagerCorePrivate::unpackAndInstallComponents(const QList<Component *> &components,

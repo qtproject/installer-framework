@@ -64,6 +64,9 @@ Q_SIGNALS:
     void outputTextChanged(const QString &progress);
     void downloadStatusChanged(const QString &status);
 
+    void hashDownloadReady(const QString &localPath);
+    void fileDownloadReady(const QString &localPath);
+
 protected:
     void doStart() override;
     void doCancel() override;

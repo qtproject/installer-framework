@@ -32,6 +32,7 @@
 #include "archivefactory.h"
 #include "metadatajob.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 
@@ -86,6 +87,9 @@ public:
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
                 "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
         }
+        // Don't need the archive anymore
+        archive->close();
+        QFile::remove(m_archive);
 
         fi.reportFinished();
     }

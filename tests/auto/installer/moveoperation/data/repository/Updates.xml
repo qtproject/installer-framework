@@ -10,5 +10,6 @@
   <ReleaseDate>2015-01-01</ReleaseDate>
   <Default>true</Default>
   <Script>script.qs</Script>
+  <SHA1>badc75810d399a35bae6f6b2cd8acfc1d5b1ccd2</SHA1>
  </PackageUpdate>
 </Updates>

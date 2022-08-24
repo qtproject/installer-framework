@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -146,6 +146,7 @@ void DownloadArchivesJob::finishedHashDownload()
 
     QFile sha1HashFile(m_downloader->downloadedFileName());
     if (sha1HashFile.open(QFile::ReadOnly)) {
+        emit hashDownloadReady(m_downloader->downloadedFileName());
         m_currentHash = sha1HashFile.readAll();
         fetchNextArchive();
     } else {
@@ -310,6 +311,8 @@ void DownloadArchivesJob::registerFile()
         const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
         BinaryFormatEngineHandler::instance()->registerResource(pair.first,
             m_downloader->downloadedFileName());
+
+        emit fileDownloadReady(m_downloader->downloadedFileName());
     }
     fetchNextArchiveHash();
 }

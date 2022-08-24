@@ -494,6 +494,18 @@
                 rights. Only available on Linux, where you usually do not want
                 to install in the administrator user's home directory.
         \row
+            \li LocalCacheDir
+            \li Directory name for storing the metadata cache. This does not include
+                the leading directories, which are determined automatically based on a suitable
+                platform specific location for storing cache files. The user may override the path
+                from the installer settings. The default value is a UUID generated from the
+                name of the product being installed.
+        \row
+            \li PersistentLocalCache
+            \li Set to \c false if the fetched metadata should be removed from the local cache when
+                the installer exits. Otherwise the contents of the cache are kept to speed up
+                subsequent fetches. Defaults to \c true.
+        \row
             \li RemoteRepositories
             \li List of remote repositories. This element can contain several \c <Repository> child
                 elements that each contain the \c <Url> child element that specifies the URL to

@@ -1,6 +1,7 @@
 <Updates>
  <ApplicationName>{AnyApplication}</ApplicationName>
  <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
  <PackageUpdate>
   <Name>A</Name>
   <DisplayName>A</DisplayName>
@@ -8,6 +9,7 @@
   <Version>1.0.2-1</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
   <Default>true</Default>
+  <SHA1>4fd4dd023111fcbbdd1221032c2984d249f4cad1</SHA1>
   <DownloadableArchives>content.7z</DownloadableArchives>
   <Operations>
     <Operation name="Mkdir">

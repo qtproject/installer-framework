@@ -26,41 +26,56 @@
 **
 **************************************************************************/
 
-#ifndef QINSTALLER_GLOBAL_H
-#define QINSTALLER_GLOBAL_H
+#ifndef METADATA_H
+#define METADATA_H
 
-#include <installer_global.h>
+#include "installer_global.h"
+#include "genericdatacache.h"
+#include "repository.h"
 
-#include "update.h"
-#include "updateoperation.h"
-#include "localpackagehub.h"
+#include <QDomDocument>
 
 namespace QInstaller {
 
-enum INSTALLER_EXPORT JobError
+class INSTALLER_EXPORT Metadata : public CacheableItem
 {
-    InvalidUrl = 0x24B04,
-    Timeout,
-    DownloadError,
-    InvalidUpdatesXml,
-    InvalidMetaInfo,
-    ExtractionError,
-    UserIgnoreError,
-    RepositoryUpdatesReceived,
-    CacheError
+public:
+    Metadata();
+    explicit Metadata(const QString &path);
+    ~Metadata() {}
+
+    QByteArray checksum() const override;
+    void setChecksum(const QByteArray &checksum);
+    QDomDocument updatesDocument() const;
+
+    bool isValid() const override;
+    bool isActive() const override;
+    bool obsoletes(CacheableItem *other) override;
+
+    Repository repository() const;
+    void setRepository(Repository repository);
+
+    bool isAvailableFromDefaultRepository() const;
+    void setAvailableFromDefaultRepository(bool defaultRepository);
+
+    void setPersistentRepositoryPath(const QUrl &url);
+    QString persistentRepositoryPath();
+
+private:
+    Repository m_repository;
+    QString m_persistentRepositoryPath;
+    mutable QByteArray m_checksum;
+
+    bool m_fromDefaultRepository;
 };
 
-typedef KDUpdater::UpdateOperation Operation;
-typedef QList<QInstaller::Operation*> OperationList;
-
-typedef KDUpdater::Update Package;
-typedef QList<QInstaller::Package*> PackagesList;
-
-typedef QMap<QString, KDUpdater::LocalPackage> LocalPackagesMap;
-
-typedef QHash<QString, QStringList> AutoDependencyHash;
-typedef QHash<QString, QStringList> LocalDependencyHash;
+Q_GLOBAL_STATIC_WITH_ARGS(QStringList, scMetaElements, (QStringList(
+    QLatin1String("Script")) <<
+    QLatin1String("Licenses") <<
+    QLatin1String("UserInterfaces") <<
+    QLatin1String("Translations")
+));
 
 } // namespace QInstaller
 
-#endif // QINSTALLER_GLOBAL_H
+#endif // METADATA_H

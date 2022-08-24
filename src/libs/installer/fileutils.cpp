@@ -66,54 +66,62 @@ using namespace QInstaller;
 
 /*!
     \inmodule QtInstallerFramework
-    \class QInstaller::TempDirDeleter
+    \class QInstaller::TempPathDeleter
     \internal
 */
 
 // -- TempDirDeleter
 
-TempDirDeleter::TempDirDeleter(const QString &path)
+TempPathDeleter::TempPathDeleter(const QString &path)
 {
     m_paths.insert(path);
 }
 
-TempDirDeleter::TempDirDeleter(const QStringList &paths)
+TempPathDeleter::TempPathDeleter(const QStringList &paths)
     : m_paths(QSet<QString>(paths.begin(), paths.end()))
 {
 }
 
-TempDirDeleter::~TempDirDeleter()
+TempPathDeleter::~TempPathDeleter()
 {
     releaseAndDeleteAll();
 }
 
-QStringList TempDirDeleter::paths() const
+QStringList TempPathDeleter::paths() const
 {
     return m_paths.toList();
 }
 
-void TempDirDeleter::add(const QString &path)
+void TempPathDeleter::add(const QString &path)
 {
     m_paths.insert(path);
 }
 
-void TempDirDeleter::add(const QStringList &paths)
+void TempPathDeleter::add(const QStringList &paths)
 {
     m_paths += QSet<QString>(paths.begin(), paths.end());
 }
 
-void TempDirDeleter::releaseAndDeleteAll()
+void TempPathDeleter::releaseAndDeleteAll()
 {
     foreach (const QString &path, m_paths)
         releaseAndDelete(path);
 }
 
-void TempDirDeleter::releaseAndDelete(const QString &path)
+void TempPathDeleter::releaseAndDelete(const QString &path)
 {
     if (m_paths.contains(path)) {
         try {
             m_paths.remove(path);
-            removeDirectory(path);
+            if (QFileInfo(path).isDir()) {
+                removeDirectory(path);
+                return;
+            }
+            QFile file(path);
+            if (file.exists() && !file.remove()) {
+                throw Error(QCoreApplication::translate("QInstaller",
+                    "Cannot remove file \"%1\": %3").arg(file.fileName(), file.errorString()));
+            }
         } catch (const Error &e) {
             qCritical() << Q_FUNC_INFO << "Exception caught:" << e.message();
         } catch (...) {

@@ -32,6 +32,8 @@
 #include "downloadfiletask.h"
 #include "fileutils.h"
 #include "job.h"
+#include "metadata.h"
+#include "genericdatacache.h"
 #include "repository.h"
 
 #include <QFutureWatcher>
@@ -42,18 +44,6 @@ class QDomNode;
 namespace QInstaller {
 
 class PackageManagerCore;
-
-struct Metadata
-{
-    QString directory;
-    Repository repository;
-};
-
-struct ArchiveMetadata
-{
-    QString archive;
-    Metadata metaData;
-};
 
 enum DownloadType
 {
@@ -77,11 +67,14 @@ public:
     explicit MetadataJob(QObject *parent = 0);
     ~MetadataJob();
 
-    QList<Metadata> metadata() const;
-    Repository repositoryForDirectory(const QString &directory) const;
+    QList<Metadata *> metadata() const;
+    Repository repositoryForCacheDirectory(const QString &directory) const;
     void setPackageManagerCore(PackageManagerCore *core) { m_core = core; }
     void addDownloadType(DownloadType downloadType) { m_downloadType = downloadType;}
     QStringList shaMismatchPackages() const { return m_shaMissmatchPackages; }
+
+    bool resetCache(bool init = false);
+    bool clearCache();
 
 private slots:
     void doStart() override;
@@ -98,13 +91,16 @@ private slots:
 private:
     bool fetchMetaDataPackages();
     void startUnzipRepositoryTask(const Repository &repo);
+    bool updateCache();
+    void resetCacheRepositories();
     void reset();
     void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
+    Status parseRepositoryUpdates(const QDomElement &root, const FileTaskResult &result, Metadata *metadata);
     QSet<Repository> getRepositories();
-    void addFileTaskItem(const QString &source, const QString &target, const Metadata &metadata,
+    void addFileTaskItem(const QString &source, const QString &target, Metadata *metadata,
                          const QString &sha1, const QString &packageName);
-    bool parsePackageUpdate(const QDomNodeList &c2, QString &packageName, QString &packageVersion,
+    static bool parsePackageUpdate(const QDomNodeList &c2, QString &packageName, QString &packageVersion,
                             QString &packageHash, bool online, bool testCheckSum);
     QHash<QString, QPair<Repository, Repository> > searchAdditionalRepositories(const QDomNode &repositoryUpdate,
                             const FileTaskResult &result, const Metadata &metadata);
@@ -112,10 +108,13 @@ private:
                             const FileTaskResult &result, const Metadata& metadata);
 
 private:
+    friend class Metadata;
+
+private:
     PackageManagerCore *m_core;
 
     QList<FileTaskItem> m_packages;
-    TempDirDeleter m_tempDirDeleter;
+    TempPathDeleter m_tempDirDeleter;
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
@@ -127,9 +126,11 @@ private:
     int m_taskNumber;
     int m_totalTaskCount;
     QStringList m_shaMissmatchPackages;
-    QMultiHash<QString, ArchiveMetadata> m_fetchedArchive;
-    QHash<QString, Metadata> m_metaFromDefaultRepositories;
-    QHash<QString, Metadata> m_metaFromArchive; //for faster lookups.
+    bool m_defaultRepositoriesFetched;
+
+    QSet<Repository> m_fetchedCategorizedRepositories;
+    QHash<QString, Metadata *> m_fetchedMetadata;
+    GenericDataCache<Metadata> m_metaFromCache;
 };
 
 }   // namespace QInstaller

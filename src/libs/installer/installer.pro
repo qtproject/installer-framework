@@ -45,7 +45,9 @@ HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
     componentsortfilterproxymodel.h \
     concurrentoperationrunner.h \
+    genericdatacache.h \
     loggingutils.h \
+    metadata.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -148,7 +150,9 @@ SOURCES += packagemanagercore.cpp \
     directoryguard.cpp \
     fileguard.cpp \
     componentsortfilterproxymodel.cpp \
+    genericdatacache.cpp \
     loggingutils.cpp \
+    metadata.cpp \
     operationtracer.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \

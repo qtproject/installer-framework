@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -152,6 +152,15 @@ public:
 
     bool repositorySettingsPageVisible() const;
     void setRepositorySettingsPageVisible(bool visible);
+
+    bool persistentLocalCache() const;
+    void setPersistentLocalCache(bool enable);
+
+    QString localCacheDir() const;
+    void setLocalCacheDir(const QString &dir);
+
+    QString localCachePath() const;
+    void setLocalCachePath(const QString &path);
 
     Settings::ProxyType proxyType() const;
     void setProxyType(Settings::ProxyType type);

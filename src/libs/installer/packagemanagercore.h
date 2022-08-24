@@ -354,6 +354,7 @@ public Q_SLOTS:
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
+    void clearLocalCache();
     void componentsToInstallNeedsRecalculation();
     void calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes);
     void clearComponentsToInstallCalculated();

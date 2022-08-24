@@ -36,6 +36,7 @@
 #include "packagesource.h"
 #include "qinstallerglobal.h"
 #include "component.h"
+#include "fileutils.h"
 
 #include "sysinfo.h"
 #include "updatefinder.h"
@@ -55,7 +56,6 @@ namespace QInstaller {
 struct BinaryLayout;
 class ScriptEngine;
 class ComponentModel;
-class TempDirDeleter;
 class InstallerCalculator;
 class UninstallerCalculator;
 class RemoteFileEngineHandler;
@@ -240,6 +240,7 @@ private slots:
     }
 
     void handleMethodInvocationRequest(const QString &invokableMethodName);
+    void addPathForDeletion(const QString &path);
 
 private:
     void unpackAndInstallComponents(const QList<Component *> &components,
@@ -282,6 +283,7 @@ private:
 private:
     PackageManagerCore *m_core;
     MetadataJob m_metadataJob;
+    TempPathDeleter m_tmpPathDeleter;
 
     bool m_updates;
     bool m_repoFetched;

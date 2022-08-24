@@ -574,6 +574,16 @@ void PackageManagerCore::cancelMetaInfoJob()
 }
 
 /*!
+    Clears the contents of the cache used to store downloaded metadata.
+
+    \sa {installer::clearLocalCache}{installer.clearLocalCache}
+*/
+void PackageManagerCore::clearLocalCache()
+{
+    d->m_metadataJob.clearCache();
+}
+
+/*!
     \sa {installer::componentsToInstallNeedsRecalculation}{installer.componentsToInstallNeedsRecalculation}
  */
 void PackageManagerCore::componentsToInstallNeedsRecalculation()
@@ -843,6 +853,11 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
             ProgressCoordinator::instance(), &ProgressCoordinator::emitLabelAndDetailTextChanged);
     connect(&archivesJob, &DownloadArchivesJob::downloadStatusChanged,
             ProgressCoordinator::instance(), &ProgressCoordinator::additionalProgressStatusChanged);
+
+    connect(&archivesJob, &DownloadArchivesJob::fileDownloadReady,
+            d, &PackageManagerCorePrivate::addPathForDeletion);
+    connect(&archivesJob, &DownloadArchivesJob::hashDownloadReady,
+            d, &PackageManagerCorePrivate::addPathForDeletion);
 
     ProgressCoordinator::instance()->registerPartProgress(&archivesJob,
         SIGNAL(progressChanged(double)), partProgressSize);
@@ -3946,7 +3961,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         }
 
 
-        const Repository repo = d->m_metadataJob.repositoryForDirectory(localPath);
+        const Repository repo = d->m_metadataJob.repositoryForCacheDirectory(localPath);
         if (repo.isValid()) {
             component->setRepositoryUrl(repo.url());
             component->setValue(QLatin1String("username"), repo.username());
