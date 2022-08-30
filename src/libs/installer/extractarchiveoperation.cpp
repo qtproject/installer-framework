@@ -259,6 +259,9 @@ bool ExtractArchiveOperation::undoOperation()
     if (!useStringListType)
         deleteDataFile(m_relocatedDataFileName);
 
+    // Remove the installerResources directory if it is empty.
+    QDir(targetDir).rmdir(QLatin1String("installerResources"));
+
     return true;
 }
 
