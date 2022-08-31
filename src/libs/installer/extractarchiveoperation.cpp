@@ -193,20 +193,7 @@ bool ExtractArchiveOperation::performOperation()
 
     QFileInfo targetDirectoryInfo(fileDirectory);
 
-    // We need to create the directory structure step-by-step to avoid a rare race condition
-    // on Windows. QDir::mkpath() doesn't check if the leading directories were created elsewhere
-    // (like from within another thread) after the initial check that the given path requires
-    // creating also parent directories.
-    //
-    // On Unix patforms this case is handled by QFileSystemEngine though.
-    QDir resourcesDir(resourcesPath);
-    if (!resourcesDir.exists())
-        resourcesDir.mkdir(resourcesPath);
-
-    QDir resourceFileDir(targetDirectoryInfo.absolutePath());
-    if (!resourceFileDir.exists())
-        resourceFileDir.mkdir(targetDirectoryInfo.absolutePath());
-
+    QInstaller::createDirectoryWithParents(targetDirectoryInfo.absolutePath());
     setDefaultFilePermissions(resourcesPath, DefaultFilePermissions::Executable);
     setDefaultFilePermissions(targetDirectoryInfo.absolutePath(), DefaultFilePermissions::Executable);
 
