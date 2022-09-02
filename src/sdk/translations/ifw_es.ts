@@ -2458,7 +2458,7 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
     <name>QInstaller::ExtractArchiveOperation</name>
     <message>
         <source>Extracting &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrayendo «%1»</translation>
     </message>
 </context>
 <!--
@@ -2484,7 +2484,7 @@ como usuario con los derechos adecuados y, luego, haga clic en Aceptar.</transla
     </message>
     <message>
         <source>%1 Required, %2 Available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Requerido: %1, disponible: %2.</translation>
     </message>
 </context>
 <!--
@@ -2535,11 +2535,11 @@ Instalando componente %1...</translation>
     <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>EVE Online Launcher Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Instalación del iniciador de EVE Online</translation>
     </message>
     <message>
         <source>EVE Online Uninstaller</source>
-        <translation type="unfinished"></translation>
+        <translation>Desinstalador de EVE Online</translation>
     </message>
 </context>
 <!--
@@ -2669,7 +2669,7 @@ Instalando componente %1...</translation>
     </message>
     <message>
         <source>Install location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ubicación de la instalación:</translation>
     </message>
     <message>
         <source>Alt+R</source>
@@ -2678,7 +2678,7 @@ Instalando componente %1...</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiar...</translation>
     </message>
     <message>
         <source>The directory you selected already exists and contains an installation. Choose a different target for installation.</source>
@@ -2748,7 +2748,7 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     </message>
     <message>
         <source>Update for Universal C Runtime in Windows will be installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se va a instalar la actualización para Universal C Runtime en Windows.</translation>
     </message>
 </context>
 <!--
