@@ -282,7 +282,7 @@ int InstallerBase::run()
     const bool isChinaInstaller = QInstaller::isChina();
     const bool isCustomInstaller = m_core->isCustomInstaller();
     QStringList uiLanguages = QLocale().uiLanguages();
-    int allowedLanguages [6] = { QLocale::English, QLocale::German, QLocale::French, QLocale::Russian, QLocale::Japanese, QLocale::Chinese };
+    int allowedLanguages [7] = { QLocale::English, QLocale::German, QLocale::French, QLocale::Russian, QLocale::Japanese, QLocale::Chinese, QLocale::Spanish };
 
     if (isChinaInstaller) {
         QLocale locale = QLocale::Chinese;
