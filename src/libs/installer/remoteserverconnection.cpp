@@ -79,6 +79,8 @@ RemoteServerReply::~RemoteServerReply()
 }
 
 /*!
+    \fn template <typename T> QInstaller::RemoteServerReply::send(const T &data)
+
     Sends a reply packet with \a¸ data to the socket. If a reply
     has been already sent, this function does not send another.
 */
