@@ -220,8 +220,8 @@ CommandLineParser::CommandLineParser()
         QLatin1String("socketname, key")));
     addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scSquishPortShort << CommandLineOptions::scSquishPortLong,
-        QLatin1String("Give a port where Squish can connect to. If no port is given, default port 11233 is "
-                      "used. Note: To enable Squish support you first need to build IFW with SQUISH_PATH "
+        QLatin1String("Give a port where Squish can connect to. If no port is given, attach to squish "
+                      "not done. Note: To enable Squish support you first need to build IFW with SQUISH_PATH "
                       "parameter where SQUISH_PATH is pointing to your Squish installation folder: "
                       "<path_to_qt>/bin/qmake -r SQUISH_PATH=<pat_to_squish>"),
         QLatin1String("port number")));
