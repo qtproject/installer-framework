@@ -1082,10 +1082,12 @@ OperationList Component::operations(const Operation::OperationGroups &mask) cons
             d->m_operations.append(d->m_licenseOperation);
         }
     }
-    OperationList operations = d->m_operations;
-    QtConcurrent::blockingFilter(operations, [&](const Operation *op) {
-        return mask.testFlag(op->group());
-    });
+    OperationList operations;
+    std::copy_if(d->m_operations.begin(), d->m_operations.end(), std::back_inserter(operations),
+        [&](const Operation *op) {
+            return mask.testFlag(op->group());
+        }
+    );
     return operations;
 }
 
