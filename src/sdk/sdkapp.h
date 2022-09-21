@@ -161,7 +161,7 @@ public:
         }
         QLoggingCategory::setFilterRules(loggingRules);
         qCDebug(QInstaller::lcInstallerInstallLog).noquote() << "Arguments:" <<
-                QCoreApplication::arguments().join(QLatin1String(", "));
+                m_parser.arguments().join(QLatin1String(", "));
 
         for (auto &optionName : m_parser.optionNames()) {
             if (isCommandLineInterface)

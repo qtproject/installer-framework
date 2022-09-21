@@ -37,7 +37,8 @@ class CommandLineParser
 {
 public:
     enum OptionContextFlag {
-        CommandLineOnly = 0x1
+        CommandLineOnly = 0x1,
+        NoEchoValue = 0x2
     };
     Q_DECLARE_FLAGS(OptionContextFlags, OptionContextFlag)
 
@@ -56,6 +57,7 @@ public:
     QStringList optionNames() const { return m_parser.optionNames(); }
 
     OptionContextFlags optionContextFlags(const QString &option) const;
+    QStringList arguments() const;
 
 private:
     QCommandLineParser m_parser;
@@ -63,5 +65,7 @@ private:
 
     QHash<QString, OptionContextFlags> m_optionContextFlagsNameHash;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(CommandLineParser::OptionContextFlags)
 
 #endif // COMMANDLINEPARSER_H

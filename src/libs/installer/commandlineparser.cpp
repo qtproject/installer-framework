@@ -287,3 +287,42 @@ CommandLineParser::OptionContextFlags CommandLineParser::optionContextFlags(cons
 {
     return m_optionContextFlagsNameHash.value(option);
 }
+
+/*
+    Returns the command line arguments of the application. The returned list
+    is context-aware, i.e. options that are set on the parser with
+    \c OptionContextFlag::NoEchoValue are returned with their value hidden.
+*/
+QStringList CommandLineParser::arguments() const
+{
+    const QStringList arguments = QCoreApplication::arguments();
+    QStringList returnArguments;
+    bool skipNext = false;
+    for (const QString &arg : arguments) {
+        if (skipNext) {
+            skipNext = false;
+            continue;
+        }
+        returnArguments << arg;
+        // Append positional arguments as-is
+        if (!arg.startsWith(QLatin1String("--")) && !arg.startsWith(QLatin1Char('-')))
+            continue;
+
+        QString normalizedOption = arg;
+        while (normalizedOption.startsWith(QLatin1Char('-')))
+            normalizedOption.remove(QLatin1Char('-'));
+
+        const OptionContextFlags flags = optionContextFlags(normalizedOption);
+        if (!flags.testFlag(OptionContextFlag::NoEchoValue))
+            continue;
+
+        QString nextArg = arguments.value(arguments.indexOf(arg) + 1);
+        if (!nextArg.isEmpty() && !nextArg.startsWith(QLatin1String("--"))
+                && !nextArg.startsWith(QLatin1Char('-'))) {
+            nextArg = QLatin1String("******");
+            returnArguments << nextArg;
+            skipNext = true;
+        }
+    }
+    return returnArguments;
+}
