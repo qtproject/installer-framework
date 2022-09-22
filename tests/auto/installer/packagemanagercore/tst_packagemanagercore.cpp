@@ -339,7 +339,7 @@ private slots:
         QHash<QString, QString> userValues;
 
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
-                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          QString(), QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                                           userValues, true);
         QCOMPARE(core->value("AllUsers"), QLatin1String(""));
         QCOMPARE(core->value("ProductName"), QLatin1String("Unit Test Application"));
@@ -361,7 +361,7 @@ private slots:
         userValues.insert("RootDir", "Overwritten RootDir");
 
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
-                                                          QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                                          QString(), QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                                           userValues, true);
         QCOMPARE(core->value("AllUsers"), QLatin1String("true"));
         QCOMPARE(core->value("ProductName"), QLatin1String("Overwritten ProductName"));

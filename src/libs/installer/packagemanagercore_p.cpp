@@ -188,11 +188,12 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
+    , m_datFileName(QString())
 {
 }
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const QList<OperationBlob> &performedOperations)
+        const QList<OperationBlob> &performedOperations, const QString &datFileName)
     : m_updateFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
@@ -226,6 +227,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_autoAcceptLicenses(false)
     , m_disableWriteMaintenanceTool(false)
     , m_autoConfirmCommand(false)
+    , m_datFileName(datFileName)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -766,7 +768,12 @@ Operation *PackageManagerCorePrivate::takeOwnedOperation(Operation *operation)
 
 QString PackageManagerCorePrivate::maintenanceToolName() const
 {
-    QString filename = m_data.settings().maintenanceToolName();
+    QString filename;
+    if (isInstaller())
+        filename = m_data.settings().maintenanceToolName();
+    else
+        filename = QCoreApplication::applicationName();
+
 #if defined(Q_OS_MACOS)
     if (QInstaller::isInBundle(QCoreApplication::applicationDirPath()))
         filename += QLatin1String(".app/Contents/MacOS/") + filename;
@@ -807,6 +814,13 @@ QString PackageManagerCorePrivate::offlineBinaryName() const
         filename += suffix;
 #endif
     return QString::fromLatin1("%1/%2").arg(targetDir()).arg(filename);
+}
+
+QString PackageManagerCorePrivate::datFileName()
+{
+    if (m_datFileName.isEmpty())
+        m_datFileName = targetDir() + QLatin1Char('/') + m_data.settings().maintenanceToolName() + QLatin1String(".dat");
+    return m_datFileName;
 }
 
 static QNetworkProxy readProxy(QXmlStreamReader &reader)
@@ -1153,12 +1167,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinary(QFile *const input, q
         // other code a lot (since installers don't have any appended data either)
         QFile dataOut(generateTemporaryFileName());
         QInstaller::openForWrite(&dataOut);
-        QInstaller::appendInt64(&dataOut, 0);   // operations start
-        QInstaller::appendInt64(&dataOut, 0);   // operations end
-        QInstaller::appendInt64(&dataOut, 0);   // resource count
-        QInstaller::appendInt64(&dataOut, 4 * sizeof(qint64));   // data block size
-        QInstaller::appendInt64(&dataOut, BinaryContent::MagicUninstallerMarker);
-        QInstaller::appendInt64(&dataOut, BinaryContent::MagicCookie);
+        QInstallerTools::createMTDatFile(dataOut);
 
         {
             QFile dummy(resourcePath.filePath(QLatin1String("installer.dat")));
@@ -1263,19 +1272,9 @@ void PackageManagerCorePrivate::writeMaintenanceToolBinaryData(QFileDevice *outp
     QInstaller::appendInt64(output, BinaryContent::MagicUninstallerMarker);
 }
 
-void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
+void PackageManagerCorePrivate::writeMaintenanceToolAppBundle(OperationList &performedOperations)
 {
-    if (m_disableWriteMaintenanceTool) {
-        qCDebug(QInstaller::lcInstallerInstallLog()) << "Maintenance tool writing disabled.";
-        return;
-    }
-
-    bool gainedAdminRights = false;
-    if (!directoryWritable(targetDir())) {
-        m_core->gainAdminRights();
-        gainedAdminRights = true;
-    }
-
+#ifdef Q_OS_MACOS
     const QString targetAppDirPath = QFileInfo(maintenanceToolName()).path();
     if (!QDir().exists(targetAppDirPath)) {
         // create the directory containing the maintenance tool (like a bundle structure on macOS...)
@@ -1285,8 +1284,6 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         performOperationThreaded(op);
         performedOperations.append(takeOwnedOperation(op));
     }
-
-#ifdef Q_OS_MACOS
     // if it is a bundle, we need some stuff in it...
     const QString sourceAppDirPath = QCoreApplication::applicationDirPath();
     if (isInstaller() && QInstaller::isInBundle(sourceAppDirPath)) {
@@ -1357,6 +1354,20 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         performOperationThreaded(op);
     }
 #endif
+}
+
+void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOperations)
+{
+    if (m_disableWriteMaintenanceTool) {
+        qCDebug(QInstaller::lcInstallerInstallLog()) << "Maintenance tool writing disabled.";
+        return;
+    }
+
+    bool gainedAdminRights = false;
+    if (!directoryWritable(targetDir())) {
+        m_core->gainAdminRights();
+        gainedAdminRights = true;
+    }
 
     try {
         // 1 - check if we have a installer base replacement
@@ -1392,45 +1403,70 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         // 5.1 - this will only happen -if- we wrote out a new binary
 
         bool newBinaryWritten = false;
-        bool replacementExists = false;
+        QString mtName = maintenanceToolName();
         const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
         if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << installerBaseBinary;
+            if (QInstaller::isInBundle(installerBaseBinary)) {
+                // In macOS the installerbase is a whole app bundle. We do not modify the maintenancetool name in app bundle
+                // so that possible signing and notarization will remain. Therefore, the actual maintenance tool name might
+                // differ from the one defined in the settings.
+                try {
+                    const QString maintenanceToolRenamedName = installerBaseBinary + QLatin1String(".new");
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Writing maintenance tool " << maintenanceToolRenamedName;
+                    QInstaller::copyDirectoryContents(installerBaseBinary, maintenanceToolRenamedName);
 
-            QFile replacementBinary(installerBaseBinary);
-            try {
-                QInstaller::openForRead(&replacementBinary);
-                writeMaintenanceToolBinary(&replacementBinary, replacementBinary.size(), true);
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Wrote the binary with the new replacement.";
-
-                newBinaryWritten = true;
-                replacementExists = true;
-            } catch (const Error &error) {
-                qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
-            }
-
-            if (!replacementBinary.remove()) {
-                // Is there anything more sensible we can do with this error? I think not. It's not serious
-                // enough for throwing / aborting the process.
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
-                    << installerBaseBinary << "after updating the maintenance tool:"
-                    << replacementBinary.errorString();
+                    newBinaryWritten = true;
+                    mtName = installerBaseBinary;
+                } catch (const Error &error) {
+                    qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
+                }
+                try {
+                    QInstaller::removeDirectory(installerBaseBinary);
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
+                        << installerBaseBinary << "after updating the maintenance tool.";
+                } catch (const Error &error) {
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
+                        << installerBaseBinary << "after updating the maintenance tool:"
+                        << error.message();
+                }
             } else {
-                qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
-                    << installerBaseBinary << "after updating the maintenance tool.";
+                QFile replacementBinary(installerBaseBinary);
+                try {
+                    QInstaller::openForRead(&replacementBinary);
+                    writeMaintenanceToolBinary(&replacementBinary, replacementBinary.size(), true);
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Wrote the binary with the new replacement.";
+
+                    newBinaryWritten = true;
+                } catch (const Error &error) {
+                    qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
+                }
+
+                if (!replacementBinary.remove()) {
+                    // Is there anything more sensible we can do with this error? I think not. It's not serious
+                    // enough for throwing / aborting the process.
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
+                        << installerBaseBinary << "after updating the maintenance tool:"
+                        << replacementBinary.errorString();
+                } else {
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
+                        << installerBaseBinary << "after updating the maintenance tool.";
+                }
             }
             m_installerBaseBinaryUnreplaced.clear();
         } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
             qCWarning(QInstaller::lcInstallerInstallLog) << "The current maintenance tool could not be updated."
                 << installerBaseBinary << "does not exist. Please fix the \"setInstallerBaseBinary"
                 "(<temp_installer_base_binary_path>)\" call in your script.";
+            writeMaintenanceToolAppBundle(performedOperations);
+        } else {
+            writeMaintenanceToolAppBundle(performedOperations);
         }
 
         QFile input;
         BinaryLayout layout;
-        const QString dataFile = targetDir() + QLatin1Char('/') + m_data.settings().maintenanceToolName()
-            + QLatin1String(".dat");
+        const QString dataFile = datFileName();
         try {
             if (isInstaller()) {
                 if (QFile::exists(dataFile)) {
@@ -1526,7 +1562,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         writeMaintenanceConfigFiles();
 
         QFile::remove(dataFile);
-        QFile::rename(dataFile + QLatin1String(".new"), dataFile);
+        QFileInfo fi(mtName);
+        //Rename the dat file according to maintenancetool name
+        QFile::rename(dataFile + QLatin1String(".new"), targetDir() + QLatin1Char('/') + fi.baseName() + QLatin1String(".dat"));
 
         const bool restart = !statusCanceledOrFailed() && m_needsHardRestart;
         qCDebug(QInstaller::lcInstallerInstallLog) << "Maintenance tool hard restart:"
@@ -1534,11 +1572,11 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
 
         if (newBinaryWritten) {
             if (isInstaller())
-                QFile::rename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName());
+                QFile::rename(mtName + QLatin1String(".new"), mtName);
             else
-                deferredRename(maintenanceToolName() + QLatin1String(".new"), maintenanceToolName(), restart);
-
-            writeMaintenanceToolAlias();
+                deferredRename(mtName + QLatin1String(".new"), mtName, restart);
+            QFileInfo mtFileName(mtName);
+            writeMaintenanceToolAlias(mtFileName.fileName());
         } else if (restart) {
             SelfRestarter::setRestartOnQuit(true);
         }
@@ -1610,7 +1648,7 @@ void PackageManagerCorePrivate::writeOfflineBaseBinary()
     }
 }
 
-void PackageManagerCorePrivate::writeMaintenanceToolAlias()
+void PackageManagerCorePrivate::writeMaintenanceToolAlias(const QString &maintenanceToolName)
 {
 #ifdef Q_OS_MACOS
     const QString aliasPath = maintenanceToolAliasPath();
@@ -1618,7 +1656,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolAlias()
         return;
 
     QString maintenanceToolBundle = QString::fromLatin1("%1/%2")
-        .arg(targetDir(), m_data.settings().maintenanceToolName());
+        .arg(targetDir(), maintenanceToolName);
     if (!maintenanceToolBundle.endsWith(QLatin1String(".app")))
         maintenanceToolBundle += QLatin1String(".app");
 
@@ -1627,6 +1665,8 @@ void PackageManagerCorePrivate::writeMaintenanceToolAlias()
         targetDir.mkpath(targetDir.absolutePath());
 
     mkalias(maintenanceToolBundle, aliasPath);
+#else
+    Q_UNUSED(maintenanceToolName)
 #endif
 }
 

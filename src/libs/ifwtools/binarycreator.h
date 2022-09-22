@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -68,6 +68,7 @@ struct IFWTOOLS_EXPORT BinaryCreatorArgs
     FilterType ftype = QInstallerTools::Exclude;
     bool compileResource = false;
     QString signingIdentity;
+    bool createMaintenanceTool = false;
 };
 
 class BundleBackup
@@ -124,6 +125,7 @@ void copyConfigData(const QString &configFile, const QString &targetDir);
 void copyHighDPIImage(const QFileInfo &childFileInfo, const QString &childName, const QString &targetFile);
 
 int IFWTOOLS_EXPORT createBinary(BinaryCreatorArgs args, QString &argumentError);
+void IFWTOOLS_EXPORT createMTDatFile(QFile &datFile);
 
 } // namespace QInstallerTools
 

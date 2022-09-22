@@ -1861,13 +1861,30 @@
 
     For full reference of elements supported by the configuration file, see \l{Configuration File}.
 
+    \section2 Getting the Maintenance Tool
+
+    The maintenance tool for Linux and Windows is the same as the \c installerbase
+    executable located in your Qt Installer Framework's \c installation bin folder.
+    For macOS the maintenance tool app bundle can be created using the \c binarycreator
+    tool with the command line switch \c --mt or \c --create-maintenancetool. The
+    name of the macOS app bundle can be configured in config.xml using
+    the \c <MaintenanceToolName> element. The app bundle can be later signed and
+    notarized if needed.
+
+    \code
+    binarycreator -c config/config.xml --mt
+    \endcode
+
     \section2 Populating the Maintenance Tool Component
 
-    The \c installerbase executable from Qt Installer Framework's install folder and \c update.rcc
-    generated in the \l{Compiling the Update Resource} step should be copied to the component's data
-    directory. The meta directory should contain a \c package.xml file with the package information
-    elements of your choice. However it is a good idea to mark the component \c <Essential> so that
-    it gets automatically installed when running the updater. You may also want to mark the component
+    In Linux and in Windows the \c installerbase executable from Qt Installer
+    Framework's installation folder, or in macOS the maintenance tool app bundle,
+    should be copied to the component's data directory. If you generated the
+    \c update.rcc in the \l{Compiling the Update Resource} step, copy that to
+    the data directory as well. The meta directory should contain a \c package.xml
+    file with the package information elements of your choice. However, it is a
+    good idea to mark the component \c <Essential> so that it gets automatically
+    installed when running the updater. You may also want to mark the component
     \c <Virtual> to hide it from the component selection.
 
     For further information about the \c package.xml file, see
@@ -1890,11 +1907,21 @@
     Component.prototype.onInstallationStarted = function()
     {
         if (component.updateRequested() || component.installationRequested()) {
-            if (installer.value("os") == "win")
+            if (installer.value("os") == "win") {
                 component.installerbaseBinaryPath = "@TargetDir@/installerbase.exe";
-            else if (installer.value("os") == "x11" || installer.value("os") == "mac")
+            } else if (installer.value("os") == "x11") {
                 component.installerbaseBinaryPath = "@TargetDir@/installerbase";
+            } else if (installer.value("os") == "mac") {
+                // In macOs maintenance tool can be either installerbase from Qt Installer
+                // Framework's install folder, or app bundle created by binarycreator
+                // with --create-maintenancetool switch. "MaintenanceTool.app" -name
+                // may differ depending on what has been defined in config.xml while
+                // creating the maintenance tool.
+                // Use either of the following (not both):
 
+                // component.installerbaseBinaryPath = "@TargetDir@/installerbase";
+                component.installerbaseBinaryPath = "@TargetDir@/MaintenanceTool.app";
+            }
             installer.setInstallerBaseBinary(component.installerbaseBinaryPath);
 
             var updateResourceFilePath = installer.value("TargetDir") + "/update.rcc";

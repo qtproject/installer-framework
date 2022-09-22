@@ -63,6 +63,7 @@ class INSTALLER_EXPORT PackageManagerCore : public QObject
 public:
     PackageManagerCore();
     PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &ops,
+        const QString &datFilename = QString(),
         const QString &socketName = QString(),
         const QString &key = QLatin1String(Protocol::DefaultAuthorizationKey),
         Protocol::Mode mode = Protocol::Mode::Production,

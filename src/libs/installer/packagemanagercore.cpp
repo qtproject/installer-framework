@@ -1289,9 +1289,10 @@ PackageManagerCore::PackageManagerCore()
     and \a mode to set the server side authorization key.
 */
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
+        const QString &datFileName,
         const QString &socketName, const QString &key, Protocol::Mode mode,
         const QHash<QString, QString> &params, const bool commandLineInstance)
-    : d(new PackageManagerCorePrivate(this, magicmaker, operations))
+    : d(new PackageManagerCorePrivate(this, magicmaker, operations, datFileName))
 {
     setCommandLineInstance(commandLineInstance);
     Repository::registerMetaType(); // register, cause we stream the type as QVariant

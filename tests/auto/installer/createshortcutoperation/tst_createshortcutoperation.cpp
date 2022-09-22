@@ -53,7 +53,7 @@ private:
     {
         QInstaller::init();
         QScopedPointer<PackageManagerCore> core(new PackageManagerCore(BinaryContent::MagicInstallerMarker,
-            QList<OperationBlob> (), QString(), Protocol::DefaultAuthorizationKey,
+            QList<OperationBlob> (), QString(), QString(), Protocol::DefaultAuthorizationKey,
             Protocol::Mode::Production, QHash<QString, QString>(), true));
 
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());

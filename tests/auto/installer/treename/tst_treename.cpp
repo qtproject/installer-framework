@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -394,7 +394,7 @@ void tst_TreeName::remotePackageConflictsLocal()
     QHash<QString, QString> params;
     params.insert(scTargetDir, qApp->applicationDirPath());
     PackageManagerCore core(BinaryContent::MagicPackageManagerMarker, QList<OperationBlob>(),
-        QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production, params);
+        QString(), QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production, params);
 
     core.settings().setAllowUnstableComponents(true);
     core.settings().setDefaultRepositories(QSet<Repository>()

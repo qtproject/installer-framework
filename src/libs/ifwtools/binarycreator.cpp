@@ -223,7 +223,7 @@ static QVersionNumber readMachOMinimumSystemVersion(QIODevice *device)
 }
 #endif
 
-static int assemble(Input input, const QInstaller::Settings &settings, const QString &signingIdentity)
+static int assemble(Input input, const QInstaller::Settings &settings, const BinaryCreatorArgs &args)
 {
 #ifdef Q_OS_MACOS
     if (QInstaller::isInBundle(input.installerExePath)) {
@@ -405,22 +405,26 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         QInstaller::appendData(&out, &exe, exe.size());
 #endif
 
-        foreach (const QInstallerTools::PackageInfo &info, input.packages) {
-            QInstaller::ResourceCollection collection;
-            collection.setName(info.name.toUtf8());
-
-            qDebug() << "Creating resource archive for" << info.name;
-            foreach (const QString &copiedFile, info.copiedFiles) {
-                const QSharedPointer<Resource> resource(new Resource(copiedFile));
-                qDebug().nospace() << "Appending " << copiedFile << " (" << humanReadableSize(resource->size()) << ")";
-                collection.appendResource(resource);
+        if (!args.createMaintenanceTool) {
+            foreach (const QInstallerTools::PackageInfo &info, input.packages) {
+                QInstaller::ResourceCollection collection;
+                collection.setName(info.name.toUtf8());
+                qDebug() << "Creating resource archive for" << info.name;
+                foreach (const QString &copiedFile, info.copiedFiles) {
+                    const QSharedPointer<Resource> resource(new Resource(copiedFile));
+                    qDebug().nospace() << "Appending " << copiedFile << " (" << humanReadableSize(resource->size()) << ")";
+                    collection.appendResource(resource);
+                }
+                input.manager.insertCollection(collection);
             }
-            input.manager.insertCollection(collection);
+
+            const QList<QInstaller::OperationBlob> operations;
+            BinaryContent::writeBinaryContent(&out, operations, input.manager,
+                BinaryContent::MagicInstallerMarker, BinaryContent::MagicCookie);
+        } else {
+            createMTDatFile(out);
         }
 
-        const QList<QInstaller::OperationBlob> operations;
-        BinaryContent::writeBinaryContent(&out, operations, input.manager,
-            BinaryContent::MagicInstallerMarker, BinaryContent::MagicCookie);
     } catch (const Error &e) {
         qCritical("Error occurred while assembling the installer: %s", qPrintable(e.message()));
         QFile::remove(tempFile);
@@ -445,14 +449,14 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
     QFile::remove(tempFile);
 
 #ifdef Q_OS_MACOS
-    if (isBundle && !signingIdentity.isEmpty()) {
+    if (isBundle && !args.signingIdentity.isEmpty()) {
         qDebug() << "Signing .app bundle...";
 
         QProcess p;
         p.start(QLatin1String("codesign"),
                 QStringList() << QLatin1String("--force")
                               << QLatin1String("--deep")
-                              << QLatin1String("--sign") << signingIdentity
+                              << QLatin1String("--sign") << args.signingIdentity
                               << bundle);
 
         if (!p.waitForFinished(-1)) {
@@ -503,8 +507,6 @@ static int assemble(Input input, const QInstaller::Settings &settings, const QSt
         QDir(bundle).removeRecursively();
         qDebug() <<  "done.";
     }
-#else
-    Q_UNUSED(signingIdentity)
 #endif
     return EXIT_SUCCESS;
 }
@@ -754,7 +756,7 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             "--offline-only at the same time.");
         return EXIT_FAILURE;
     }
-    if (args.target.isEmpty() && !args.compileResource) {
+    if (args.target.isEmpty() && !args.compileResource && !args.createMaintenanceTool) {
         argumentError = QString::fromLatin1("Error: Target parameter missing.");
         return EXIT_FAILURE;
     }
@@ -762,7 +764,9 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
         argumentError = QString::fromLatin1("Error: No configuration file selected.");
         return EXIT_FAILURE;
     }
-    if (args.packagesDirectories.isEmpty() && args.repositoryDirectories.isEmpty() && !args.compileResource) {
+    if (args.packagesDirectories.isEmpty() && args.repositoryDirectories.isEmpty()
+            && !args.compileResource
+            && !args.createMaintenanceTool) {
         argumentError = QString::fromLatin1("Error: Both Package directory and Repository parameters missing.");
         return EXIT_FAILURE;
     }
@@ -838,11 +842,6 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             confInternal.setValue(QLatin1String("offlineOnly"), args.offlineOnly);
         }
 
-#ifdef Q_OS_MACOS
-        // on mac, we enforce building a bundle
-        if (!args.target.endsWith(QLatin1String(".app")) && !args.target.endsWith(QLatin1String(".dmg")))
-            args.target += QLatin1String(".app");
-#endif
         if (!args.compileResource) {
             // 5; put the copied resources into a resource file
             ResourceCollection metaCollection("QResources");
@@ -852,11 +851,20 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             input.manager.insertCollection(metaCollection);
 
             input.packages = packages;
-            input.outputPath = args.target;
+            if (args.createMaintenanceTool)
+                input.outputPath = settings.maintenanceToolName();
+            else
+                input.outputPath = args.target;
             input.installerExePath = args.templateBinary;
 
+#ifdef Q_OS_MACOS
+        // on mac, we enforce building a bundle
+        if (!input.outputPath.endsWith(QLatin1String(".app")) && !input.outputPath.endsWith(QLatin1String(".dmg")))
+            input.outputPath += QLatin1String(".app");
+#endif
+
             qDebug() << "Creating the binary";
-            exitCode = assemble(input, settings, args.signingIdentity);
+            exitCode = assemble(input, settings, args);
         } else {
             createDefaultResourceFile(tmpMetaDir, QDir::currentPath() + QLatin1String("/update.rcc"));
             exitCode = EXIT_SUCCESS;
@@ -877,4 +885,14 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
     QInstaller::removeDirectory(tmpRepoDir, true);
 
     return exitCode;
+}
+
+void QInstallerTools::createMTDatFile(QFile &datFile)
+{
+    QInstaller::appendInt64(&datFile, 0);   // operations start
+    QInstaller::appendInt64(&datFile, 0);   // operations end
+    QInstaller::appendInt64(&datFile, 0);   // resource count
+    QInstaller::appendInt64(&datFile, 4 * sizeof(qint64));   // data block size
+    QInstaller::appendInt64(&datFile, BinaryContent::MagicUninstallerMarker);
+    QInstaller::appendInt64(&datFile, BinaryContent::MagicCookie);
 }

@@ -93,7 +93,7 @@ private slots:
         QInstaller::init(); //This will eat debug output
 
         core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
-                                      QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
+                                      QString(), QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                       QHash<QString, QString>(), true);
         core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();

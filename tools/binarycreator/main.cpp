@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -72,6 +72,9 @@ static void printUsage()
         << std::endl;
     std::cout << "                            'update.rcc' in the current path." << std::endl;
 #ifdef Q_OS_MACOS
+    std::cout << "  --mt|--create-maintenancetool " << std::endl;
+    std::cout << "                            Creates maintenance tool app bundle. Target option is omitted, bundle name "<<std::endl;
+    std::cout << "                            can be configured in the config.xml using element <MaintenanceToolName>." << std::endl;
     std::cout << "  -s|--sign identity        Sign generated app bundle using the given code " << std::endl;
     std::cout << "                            signing identity" << std::endl;
 #endif
@@ -99,6 +102,11 @@ static void printUsage()
     std::cout << "Example update.rcc:" << std::endl;
     std::cout << "  " << appName << " -c installer-config" << sep << "config.xml -p packages-directory "
         "-rcc" << std::endl;
+#ifdef Q_OS_MACOS
+    std::cout << "Example (maintenance tool bundle):" << std::endl;
+    std::cout << "  " << appName << " -c installer-config" << sep << "config.xml" << " --mt" << std::endl;
+    std::cout << std::endl;
+#endif
 }
 
 static int printErrorAndUsageAndExit(const QString &err)
@@ -206,6 +214,9 @@ int main(int argc, char **argv)
             }
             parsedArgs.compression = static_cast<AbstractArchive::CompressionLevel>(value);
 #ifdef Q_OS_MACOS
+        } else if (*it == QLatin1String("--mt") || *it == QLatin1String("--create-maintenancetool")) {
+            parsedArgs.createMaintenanceTool = true;
+
         } else if (*it == QLatin1String("-s") || *it == QLatin1String("--sign")) {
             ++it;
             if (it == args.end() || it->startsWith(QLatin1String("-")))

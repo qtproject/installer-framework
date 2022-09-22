@@ -109,14 +109,9 @@ public:
         }
         binary.close();
     #endif
-        QString fileName = datFile(binaryFile());
-        quint64 cookie = QInstaller::BinaryContent::MagicCookieDat;
-        if (fileName.isEmpty()) {
-            fileName = binaryFile();
-            cookie = QInstaller::BinaryContent::MagicCookie;
-        }
-
-        binary.setFileName(fileName);
+        QString datFileName = datFile(binaryFile());
+        quint64 cookie = datFileName.isEmpty() ? QInstaller::BinaryContent::MagicCookie : QInstaller::BinaryContent::MagicCookieDat;
+        binary.setFileName(!datFileName.isEmpty() ? datFileName : binaryFile());
         QInstaller::openForRead(&binary);
 
         qint64 magicMarker;
@@ -185,12 +180,12 @@ public:
             const QStringList arguments = m_parser.value(CommandLineOptions::scStartClientLong)
                 .split(QLatin1Char(','), Qt::SkipEmptyParts);
             m_core = new QInstaller::PackageManagerCore(
-                magicMarker, oldOperations,
+                magicMarker, oldOperations, datFileName,
                 arguments.value(0, QLatin1String(QInstaller::Protocol::DefaultSocket)),
                 arguments.value(1, QLatin1String(QInstaller::Protocol::DefaultAuthorizationKey)),
                 QInstaller::Protocol::Mode::Debug, userArgs, isCommandLineInterface);
         } else {
-            m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations,
+            m_core = new QInstaller::PackageManagerCore(magicMarker, oldOperations, datFileName,
                 QUuid::createUuid().toString(), QUuid::createUuid().toString(),
                 QInstaller::Protocol::Mode::Production, userArgs, isCommandLineInterface);
         }
@@ -469,13 +464,39 @@ public:
         if (magicMarker == QInstaller::BinaryContent::MagicUninstallerMarker) {
             QFileInfo fi(binaryFile);
             QString bundlePath;
+            QString datFileName;
             if (QInstaller::isInBundle(fi.absoluteFilePath(), &bundlePath))
                 fi.setFile(bundlePath);
 #ifdef Q_OS_MACOS
-            return fi.absoluteDir().filePath(fi.baseName() + QLatin1String(".dat"));
+                datFileName = fi.absoluteDir().filePath(fi.baseName() + QLatin1String(".dat"));
 #else
-            return fi.absoluteDir().filePath(qApp->applicationName() + QLatin1String(".dat"));
+                datFileName = fi.absoluteDir().filePath(qApp->applicationName() + QLatin1String(".dat"));
 #endif
+            // When running maintenance tool, datFile name should be the same as the application name.
+            // In case we have updated maintenance tool in previous maintenance tool run, the datFile
+            // name may not match if the maintenance tool name has changed. In that case try to
+            // look for the dat file from the root folder of the install.
+            if (!QFileInfo::exists(datFileName)) {
+                QFileInfo fi(datFileName);
+                QDirIterator it(fi.absolutePath(),
+                        QStringList() << QLatin1String("*.dat"),
+                        QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+                while (it.hasNext()) {
+                    try {
+                        QFile f(it.next());
+                        f.open(QIODevice::ReadOnly);
+                        if (f.fileName().endsWith(QLatin1String("installer.dat")))
+                             continue;
+                        QInstaller::BinaryContent::findMagicCookie(&f, magicMarker);
+                        datFileName = f.fileName();
+                        break;
+                    } catch (const QInstaller::Error &error) {
+                        Q_UNUSED(error)
+                        continue;
+                    }
+                }
+            }
+            return datFileName;
         }
         return QString();
     }

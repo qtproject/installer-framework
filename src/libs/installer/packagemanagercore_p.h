@@ -69,7 +69,7 @@ class PackageManagerCorePrivate : public QObject
 public:
     explicit PackageManagerCorePrivate(PackageManagerCore *core);
     explicit PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
-        const QList<OperationBlob> &performedOperations);
+        const QList<OperationBlob> &performedOperations, const QString &datFileName);
     ~PackageManagerCorePrivate();
 
     static bool isProcessRunning(const QString &name, const QList<ProcessInfo> &processes);
@@ -92,6 +92,7 @@ public:
     QString maintenanceToolAliasPath() const;
     QString installerBinaryPath() const;
     QString offlineBinaryName() const;
+    QString datFileName();
 
     void writeMaintenanceConfigFiles();
     void readMaintenanceConfigFiles(const QString &targetDir);
@@ -99,7 +100,7 @@ public:
     void writeMaintenanceTool(OperationList performedOperations);
     void writeOfflineBaseBinary();
 
-    void writeMaintenanceToolAlias();
+    void writeMaintenanceToolAlias(const QString &maintenanceToolName);
 
     QString componentsXmlPath() const;
     QString configurationFileName() const;
@@ -254,6 +255,7 @@ private:
     void writeMaintenanceToolBinary(QFile *const input, qint64 size, bool writeBinaryLayout);
     void writeMaintenanceToolBinaryData(QFileDevice *output, QFile *const input,
         const OperationList &performed, const BinaryLayout &layout);
+    void writeMaintenanceToolAppBundle(OperationList &performedOperations);
 
     void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
         bool adminRightsGained, bool deleteOperation);
@@ -324,6 +326,8 @@ private:
 
     // < name (component replacing others), components to replace>
     QHash<QString, QStringList > m_componentReplaces;
+
+    QString m_datFileName;
 };
 
 } // namespace QInstaller
