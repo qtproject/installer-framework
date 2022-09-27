@@ -77,7 +77,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
 
     // fill the variables defined in the settings
     addNewVariable(QLatin1String("ProductName"), m_settings.applicationName());
-    addNewVariable(QLatin1String("ProductVersion"), m_settings.version());
+    addNewVariable(QLatin1String("ProductVersion"), replaceVariables(m_settings.version()));
     addNewVariable(scTitle, replaceVariables(m_settings.title()));
     addNewVariable(scPublisher, m_settings.publisher());
     addNewVariable(QLatin1String("Url"), m_settings.url());
