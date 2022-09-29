@@ -245,11 +245,11 @@ CommandLineParser::CommandLineParser()
 
     // Deprecated options
     QCommandLineOption deprecatedUpdater(CommandLineOptions::scDeprecatedUpdater);
-    deprecatedUpdater.setHidden(true);
+    deprecatedUpdater.setFlags(QCommandLineOption::HiddenFromHelp);
     addOption(deprecatedUpdater);
 
     QCommandLineOption deprecatedCheckUpdates(CommandLineOptions::scDeprecatedCheckUpdates);
-    deprecatedCheckUpdates.setHidden(true);
+    deprecatedCheckUpdates.setFlags(QCommandLineOption::HiddenFromHelp);
     addOption(deprecatedCheckUpdates); // Behaves like check-updates but does not default to verbose output
 
     // Custom extension options
