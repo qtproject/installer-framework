@@ -41,9 +41,8 @@ namespace QInstaller {
     \internal
 */
 
-InstallerCalculator::InstallerCalculator(PackageManagerCore *core, const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash)
+InstallerCalculator::InstallerCalculator(PackageManagerCore *core, const AutoDependencyHash &autoDependencyComponentHash)
     : m_core(core)
-    , m_allComponents(allComponents)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
 {
 }
@@ -186,8 +185,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
     for (const QString &dependencyComponentName : dependenciesList) {
         // PackageManagerCore::componentByName returns 0 if dependencyComponentName contains a
         // version which is not available
-        Component *dependencyComponent =
-            PackageManagerCore::componentByName(dependencyComponentName, m_allComponents);
+        Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
         if (!dependencyComponent) {
             const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
                 "Cannot find missing dependency \"%1\" for \"%2\".").arg(dependencyComponentName,
@@ -309,7 +307,7 @@ QSet<Component *> InstallerCalculator::autodependencyComponents(const bool rever
                 || (revertFromInstall && !m_toInstallComponentIds.contains(autoDependency))) {
                 continue;
             }
-            Component *autoDependComponent = PackageManagerCore::componentByName(autoDependency, m_allComponents);
+            Component *autoDependComponent = m_core->componentByName(autoDependency);
             if (!autoDependComponent)
                 continue;
             if ((!autoDependComponent->isInstalled()
@@ -343,8 +341,7 @@ void InstallerCalculator::calculateComponentDependencyReferences(const QString d
 
     const QStringList dependenciesList = dependencyComponent->currentDependencies();
     for (const QString &depComponentName : dependenciesList) {
-        Component *dependencyComponent =
-            PackageManagerCore::componentByName(depComponentName, m_allComponents);
+        Component *dependencyComponent = m_core->componentByName(depComponentName);
         calculateComponentDependencyReferences(depComponentName, dependencyComponent);
     }
 }

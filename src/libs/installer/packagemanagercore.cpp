@@ -1982,6 +1982,10 @@ ScriptEngine *PackageManagerCore::controlScriptEngine() const
 */
 void PackageManagerCore::appendRootComponent(Component *component)
 {
+    // For normal installer runs components aren't appended after model reset
+    if (Q_UNLIKELY(!d->m_componentByNameHash.isEmpty()))
+        d->m_componentByNameHash.clear();
+
     d->m_rootComponents.append(component);
     emit componentAdded(component);
 }
@@ -2063,6 +2067,10 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask, const QSt
 */
 void PackageManagerCore::appendUpdaterComponent(Component *component)
 {
+    // For normal installer runs components aren't appended after model reset
+    if (Q_UNLIKELY(!d->m_componentByNameHash.isEmpty()))
+        d->m_componentByNameHash.clear();
+
     component->setUpdateAvailable(true);
     d->m_updaterComponents.append(component);
     emit componentAdded(component);
@@ -2076,7 +2084,30 @@ void PackageManagerCore::appendUpdaterComponent(Component *component)
 */
 Component *PackageManagerCore::componentByName(const QString &name) const
 {
-    return componentByName(name, components(ComponentType::AllNoReplacements));
+    if (name.isEmpty())
+        return nullptr;
+
+    if (d->m_componentByNameHash.isEmpty()) {
+        // We can avoid the linear lookups from the component list by creating
+        // a <name,component> hash once, and reusing it on subsequent calls.
+        const QList<Component *> componentsList = components(ComponentType::AllNoReplacements);
+        for (Component *component : componentsList)
+            d->m_componentByNameHash.insert(component->name(), component);
+    }
+
+    QString fixedVersion;
+    QString fixedName;
+
+    parseNameAndVersion(name, &fixedName, &fixedVersion);
+
+    Component *component = d->m_componentByNameHash.value(fixedName);
+    if (!component)
+        return nullptr;
+
+    if (componentMatches(component, fixedName, fixedVersion))
+        return component;
+
+    return nullptr;
 }
 
 /*!

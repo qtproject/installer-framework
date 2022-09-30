@@ -316,6 +316,7 @@ private:
     QList<Component*> m_deletedReplacedComponents;
     AutoDependencyHash m_autoDependencyComponentHash;
     LocalDependencyHash m_localDependencyComponentHash;
+    QHash<QString, Component *> m_componentByNameHash;
 
     QStringList m_localVirtualComponents;
 

@@ -43,7 +43,7 @@ class Component;
 class INSTALLER_EXPORT InstallerCalculator
 {
 public:
-    InstallerCalculator(PackageManagerCore *core, const QList<Component *> &allComponents, const AutoDependencyHash &autoDependencyComponentHash);
+    InstallerCalculator(PackageManagerCore *core, const AutoDependencyHash &autoDependencyComponentHash);
 
     enum InstallReasonType
     {
@@ -75,7 +75,6 @@ private:
 
 private:
     PackageManagerCore *m_core;
-    QList<Component*> m_allComponents;
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QList<const Component*> m_componentsForAutodepencencyCheck;
     //for faster lookups.
