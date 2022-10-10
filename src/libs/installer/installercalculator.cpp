@@ -229,13 +229,11 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             if (m_toInstallComponentIds.contains(dependencyComponentName)
                     && m_referenceCount.contains(dependencyComponentName)) {
                 if (!component->autoDependencies().contains(dependencyComponentName)) {
-                    QStringList value = m_referenceCount.value(dependencyComponentName);
+                    QStringList &value = m_referenceCount[dependencyComponentName];
                     if (value.contains(component->name())) {
                         value.removeOne(component->name());
                         if (value.isEmpty())
                             m_referenceCount.remove(dependencyComponentName);
-                        else
-                            m_referenceCount.insert(dependencyComponentName, value);
                     }
                 }
             }
@@ -262,11 +260,8 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
                 }
                 m_visitedComponents[component].insert(dependencyComponent);
             }
-            if (!component->autoDependencies().contains(dependencyComponentName)) {
-                QStringList value = m_referenceCount.value(dependencyComponentName, QStringList());
-                value << component->name();
-                m_referenceCount.insert(dependencyComponentName, value);
-            }
+            if (!component->autoDependencies().contains(dependencyComponentName))
+                m_referenceCount[dependencyComponentName] << component->name();
 
             insertInstallReason(dependencyComponent, InstallerCalculator::Dependent, component->name());
             if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion, revertFromInstall))
