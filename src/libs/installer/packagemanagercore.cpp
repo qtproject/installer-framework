@@ -4080,134 +4080,145 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
 {
     emit startAllComponentsReset();
 
-    d->clearAllComponentLists();
-    QHash<QString, QInstaller::Component*> allComponents;
+    try {
+        d->clearAllComponentLists();
+        QHash<QString, QInstaller::Component*> allComponents;
 
-    Data data;
-    data.components = &allComponents;
-    data.installedPackages = &locals;
+        Data data;
+        data.components = &allComponents;
+        data.installedPackages = &locals;
 
-    QMap<QString, QString> remoteTreeNameComponents;
-    QMap<QString, QString> allTreeNameComponents;
+        QMap<QString, QString> remoteTreeNameComponents;
+        QMap<QString, QString> allTreeNameComponents;
 
-    std::function<bool(PackagesList *, bool)> loadRemotePackages;
-    loadRemotePackages = [&](PackagesList *treeNamePackages, bool firstRun) -> bool {
-        foreach (Package *const package, (firstRun ? remotes : *treeNamePackages)) {
-            if (d->statusCanceledOrFailed())
+        std::function<bool(PackagesList *, bool)> loadRemotePackages;
+        loadRemotePackages = [&](PackagesList *treeNamePackages, bool firstRun) -> bool {
+            foreach (Package *const package, (firstRun ? remotes : *treeNamePackages)) {
+                if (d->statusCanceledOrFailed())
+                    return false;
+
+                if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
+                    continue;
+
+                if (firstRun && !package->data(scTreeName)
+                        .value<QPair<QString, bool>>().first.isEmpty()) {
+                    // Package has a tree name, leave for later
+                    treeNamePackages->append(package);
+                    continue;
+                }
+
+                QScopedPointer<QInstaller::Component> remoteComponent(new QInstaller::Component(this));
+                data.package = package;
+                remoteComponent->loadDataFromPackage(*package);
+                if (updateComponentData(data, remoteComponent.data())) {
+                    // Create a list where is name and treename. Repo can contain a package with
+                    // a different treename of component which is already installed. We don't want
+                    // to move already installed local packages.
+                    const QString treeName = remoteComponent->value(scTreeName);
+                    if (!treeName.isEmpty())
+                        remoteTreeNameComponents.insert(remoteComponent->name(), treeName);
+                    const QString name = remoteComponent->treeName();
+                    allComponents.insert(name, remoteComponent.take());
+                }
+            }
+            // Second pass with leftover packages
+            return firstRun ? loadRemotePackages(treeNamePackages, false) : true;
+        };
+
+        {
+            // Loading remote package data is performed in two steps: first, components without
+            // - and then components with tree names. This is to ensure components with tree
+            // names do not replace other components when registering fails to a name conflict.
+            PackagesList treeNamePackagesTmp;
+            if (!loadRemotePackages(&treeNamePackagesTmp, true))
                 return false;
-
-            if (!ProductKeyCheck::instance()->isValidPackage(package->data(scName).toString()))
-                continue;
-
-            if (firstRun && !package->data(scTreeName)
-                    .value<QPair<QString, bool>>().first.isEmpty()) {
-                // Package has a tree name, leave for later
-                treeNamePackages->append(package);
-                continue;
-            }
-
-            QScopedPointer<QInstaller::Component> remoteComponent(new QInstaller::Component(this));
-            data.package = package;
-            remoteComponent->loadDataFromPackage(*package);
-            if (updateComponentData(data, remoteComponent.data())) {
-                // Create a list where is name and treename. Repo can contain a package with
-                // a different treename of component which is already installed. We don't want
-                // to move already installed local packages.
-                const QString treeName = remoteComponent->value(scTreeName);
-                if (!treeName.isEmpty())
-                    remoteTreeNameComponents.insert(remoteComponent->name(), treeName);
-                const QString name = remoteComponent->treeName();
-                allComponents.insert(name, remoteComponent.take());
-            }
         }
-        // Second pass with leftover packages
-        return firstRun ? loadRemotePackages(treeNamePackages, false) : true;
-    };
+        allTreeNameComponents = remoteTreeNameComponents;
 
-    {
-        // Loading remote package data is performed in two steps: first, components without
-        // - and then components with tree names. This is to ensure components with tree
-        // names do not replace other components when registering fails to a name conflict.
-        PackagesList treeNamePackagesTmp;
-        if (!loadRemotePackages(&treeNamePackagesTmp, true))
+        foreach (auto &package, locals) {
+            if (package.virtualComp && package.autoDependencies.isEmpty()) {
+                  if (!d->m_localVirtualComponents.contains(package.name))
+                      d->m_localVirtualComponents.append(package.name);
+            }
+
+            QScopedPointer<QInstaller::Component> localComponent(new QInstaller::Component(this));
+            localComponent->loadDataFromPackage(package);
+            const QString name = localComponent->treeName();
+
+            // 1. Component has a treename in local but not in remote, add with local treename
+            if (!remoteTreeNameComponents.contains(localComponent->name()) && !localComponent->value(scTreeName).isEmpty()) {
+                delete allComponents.take(localComponent->name());
+            // 2. Component has different treename in local and remote, add with local treename
+            } else if (remoteTreeNameComponents.contains(localComponent->name())) {
+                const QString remoteTreeName = remoteTreeNameComponents.value(localComponent->name());
+                const QString localTreeName = localComponent->value(scTreeName);
+                if (remoteTreeName != localTreeName) {
+                    delete allComponents.take(remoteTreeNameComponents.value(localComponent->name()));
+                } else {
+                    // 3. Component has same treename in local and remote, don't add the component again.
+                    continue;
+                }
+            // 4. Component does not have treename in local or remote, don't add the component again.
+            } else if (allComponents.contains(localComponent->name())) {
+                Component *const component = allComponents.value(localComponent->name());
+                if (component->value(scTreeName).isEmpty() && localComponent->value(scTreeName).isEmpty())
+                    continue;
+            }
+            // 5. Remote has treename for a different component that is already reserved
+            //    by this local component, Or, remote adds component without treename
+            //    but it conflicts with a local treename.
+            if (allComponents.contains(name)) {
+                const QString key = remoteTreeNameComponents.key(name);
+                qCritical() << "Cannot register component" << (key.isEmpty() ? name : key)
+                            << "with name" << name << "! Component with identifier" << name
+                            << "already exists.";
+
+                if (!key.isEmpty())
+                    allTreeNameComponents.remove(key);
+
+                // Try to re-add the remote component as unstable
+                if (!key.isEmpty() && !allComponents.contains(key) && settings().allowUnstableComponents()) {
+                    qCDebug(lcInstallerInstallLog)
+                        << "Registering component with the original indetifier:" << key;
+
+                    Component *component = allComponents.take(name);
+                    component->removeValue(scTreeName);
+                    const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
+                    d->m_pendingUnstableComponents.insert(component->name(),
+                        QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
+
+                    allComponents.insert(key, component);
+                } else {
+                    delete allComponents.take(name);
+                }
+            }
+
+            const QString treeName = localComponent->value(scTreeName);
+            if (!treeName.isEmpty())
+                allTreeNameComponents.insert(localComponent->name(), treeName);
+            allComponents.insert(name, localComponent.take());
+        }
+
+        // store all components that got a replacement
+        storeReplacedComponents(allComponents, data, &allTreeNameComponents);
+
+        // Move children of treename components
+        createAutoTreeNames(allComponents, allTreeNameComponents);
+
+        if (!d->buildComponentTree(allComponents, true))
             return false;
-    }
-    allTreeNameComponents = remoteTreeNameComponents;
 
-    foreach (auto &package, locals) {
-        if (package.virtualComp && package.autoDependencies.isEmpty()) {
-              if (!d->m_localVirtualComponents.contains(package.name))
-                  d->m_localVirtualComponents.append(package.name);
-        }
+        d->commitPendingUnstableComponents();
 
-        QScopedPointer<QInstaller::Component> localComponent(new QInstaller::Component(this));
-        localComponent->loadDataFromPackage(package);
-        const QString name = localComponent->treeName();
+    } catch (const Error &error) {
+        d->clearAllComponentLists();
+        d->setStatus(PackageManagerCore::Failure, error.message());
 
-        // 1. Component has a treename in local but not in remote, add with local treename
-        if (!remoteTreeNameComponents.contains(localComponent->name()) && !localComponent->value(scTreeName).isEmpty()) {
-            delete allComponents.take(localComponent->name());
-        // 2. Component has different treename in local and remote, add with local treename
-        } else if (remoteTreeNameComponents.contains(localComponent->name())) {
-            const QString remoteTreeName = remoteTreeNameComponents.value(localComponent->name());
-            const QString localTreeName = localComponent->value(scTreeName);
-            if (remoteTreeName != localTreeName) {
-                delete allComponents.take(remoteTreeNameComponents.value(localComponent->name()));
-            } else {
-                // 3. Component has same treename in local and remote, don't add the component again.
-                continue;
-            }
-        // 4. Component does not have treename in local or remote, don't add the component again.
-        } else if (allComponents.contains(localComponent->name())) {
-            Component *const component = allComponents.value(localComponent->name());
-            if (component->value(scTreeName).isEmpty() && localComponent->value(scTreeName).isEmpty())
-                continue;
-        }
-        // 5. Remote has treename for a different component that is already reserved
-        //    by this local component, Or, remote adds component without treename
-        //    but it conflicts with a local treename.
-        if (allComponents.contains(name)) {
-            const QString key = remoteTreeNameComponents.key(name);
-            qCritical() << "Cannot register component" << (key.isEmpty() ? name : key)
-                        << "with name" << name << "! Component with identifier" << name
-                        << "already exists.";
-
-            if (!key.isEmpty())
-                allTreeNameComponents.remove(key);
-
-            // Try to re-add the remote component as unstable
-            if (!key.isEmpty() && !allComponents.contains(key) && settings().allowUnstableComponents()) {
-                qCDebug(lcInstallerInstallLog)
-                    << "Registering component with the original indetifier:" << key;
-
-                Component *component = allComponents.take(name);
-                component->removeValue(scTreeName);
-                const QString errorString = QLatin1String("Tree name conflicts with an existing indentifier");
-                d->m_pendingUnstableComponents.insert(component->name(),
-                    QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
-
-                allComponents.insert(key, component);
-            } else {
-                delete allComponents.take(name);
-            }
-        }
-
-        const QString treeName = localComponent->value(scTreeName);
-        if (!treeName.isEmpty())
-            allTreeNameComponents.insert(localComponent->name(), treeName);
-        allComponents.insert(name, localComponent.take());
-    }
-
-    // store all components that got a replacement
-    storeReplacedComponents(allComponents, data, &allTreeNameComponents);
-
-    // Move children of treename components
-    createAutoTreeNames(allComponents, allTreeNameComponents);
-
-    if (!d->buildComponentTree(allComponents, true))
+        // TODO: make sure we remove all message boxes inside the library at some point.
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Error"), error.message());
         return false;
-
-    d->commitPendingUnstableComponents();
+    }
 
     emit finishAllComponentsReset(d->m_rootComponents);
     return true;
@@ -4217,104 +4228,104 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
 {
     emit startUpdaterComponentsReset();
 
-    d->clearUpdaterComponentLists();
-    QHash<QString, QInstaller::Component *> components;
+    try {
+        d->clearUpdaterComponentLists();
+        QHash<QString, QInstaller::Component *> components;
 
-    Data data;
-    data.components = &components;
-    data.installedPackages = &locals;
+        Data data;
+        data.components = &components;
+        data.installedPackages = &locals;
 
-    setFoundEssentialUpdate(false);
-    LocalPackagesMap installedPackages = locals;
-    QStringList replaceMes;
+        setFoundEssentialUpdate(false);
+        LocalPackagesMap installedPackages = locals;
+        QStringList replaceMes;
 
-    foreach (Package *const update, remotes) {
-        if (d->statusCanceledOrFailed())
-            return false;
+        foreach (Package *const update, remotes) {
+            if (d->statusCanceledOrFailed())
+                return false;
 
-        if (!ProductKeyCheck::instance()->isValidPackage(update->data(scName).toString()))
-            continue;
+            if (!ProductKeyCheck::instance()->isValidPackage(update->data(scName).toString()))
+                continue;
 
-        QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
-        data.package = update;
-        component->loadDataFromPackage(*update);
-        if (updateComponentData(data, component.data())) {
-            // Keep a reference so we can resolve dependencies during update.
-            d->m_updaterComponentsDeps.append(component.take());
+            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            data.package = update;
+            component->loadDataFromPackage(*update);
+            if (updateComponentData(data, component.data())) {
+                // Keep a reference so we can resolve dependencies during update.
+                d->m_updaterComponentsDeps.append(component.take());
 
-//            const QString isNew = update->data(scNewComponent).toString();
-//            if (isNew.toLower() != scTrue)
-//                continue;
+    //            const QString isNew = update->data(scNewComponent).toString();
+    //            if (isNew.toLower() != scTrue)
+    //                continue;
 
-            const QString &name = d->m_updaterComponentsDeps.last()->name();
-            const QString replaces = data.package->data(scReplaces).toString();
-            installedPackages.take(name);   // remove from local installed packages
+                const QString &name = d->m_updaterComponentsDeps.last()->name();
+                const QString replaces = data.package->data(scReplaces).toString();
+                installedPackages.take(name);   // remove from local installed packages
 
-            bool isValidUpdate = locals.contains(name);
-            if (!replaces.isEmpty()) {
-                const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
-                    Qt::SkipEmptyParts);
-                foreach (const QString &possibleName, possibleNames) {
-                    if (locals.contains(possibleName)) {
-                        isValidUpdate = true;
-                        replaceMes << possibleName;
+                bool isValidUpdate = locals.contains(name);
+                if (!replaces.isEmpty()) {
+                    const QStringList possibleNames = replaces.split(QInstaller::commaRegExp(),
+                        Qt::SkipEmptyParts);
+                    foreach (const QString &possibleName, possibleNames) {
+                        if (locals.contains(possibleName)) {
+                            isValidUpdate = true;
+                            replaceMes << possibleName;
+                        }
                     }
                 }
+
+                // break if the update is not valid and if it's not the maintenance tool (we might get an update
+                // for the maintenance tool even if it's not currently installed - possible offline installation)
+                if (!isValidUpdate && (update->data(scEssential, scFalse).toString().toLower() == scFalse))
+                    continue;   // Update for not installed package found, skip it.
+
+                const LocalPackage &localPackage = locals.value(name);
+                if (!d->packageNeedsUpdate(localPackage, update))
+                    continue;
+                // It is quite possible that we may have already installed the update. Lets check the last
+                // update date of the package and the release date of the update. This way we can compare and
+                // figure out if the update has been installed or not.
+                const QDate updateDate = update->data(scReleaseDate).toDate();
+                if (localPackage.lastUpdateDate > updateDate)
+                    continue;
+
+                if (update->data(scEssential, scFalse).toString().toLower() == scTrue ||
+                        update->data(scForcedUpdate, scFalse).toString().toLower() == scTrue) {
+                    setFoundEssentialUpdate(true);
+                }
+
+                // this is not a dependency, it is a real update
+                components.insert(name, d->m_updaterComponentsDeps.takeLast());
             }
-
-            // break if the update is not valid and if it's not the maintenance tool (we might get an update
-            // for the maintenance tool even if it's not currently installed - possible offline installation)
-            if (!isValidUpdate && (update->data(scEssential, scFalse).toString().toLower() == scFalse))
-                continue;   // Update for not installed package found, skip it.
-
-            const LocalPackage &localPackage = locals.value(name);
-            if (!d->packageNeedsUpdate(localPackage, update))
-                continue;
-            // It is quite possible that we may have already installed the update. Lets check the last
-            // update date of the package and the release date of the update. This way we can compare and
-            // figure out if the update has been installed or not.
-            const QDate updateDate = update->data(scReleaseDate).toDate();
-            if (localPackage.lastUpdateDate > updateDate)
-                continue;
-
-            if (update->data(scEssential, scFalse).toString().toLower() == scTrue ||
-                    update->data(scForcedUpdate, scFalse).toString().toLower() == scTrue) {
-                setFoundEssentialUpdate(true);
-            }
-
-            // this is not a dependency, it is a real update
-            components.insert(name, d->m_updaterComponentsDeps.takeLast());
         }
-    }
 
-    QHash<QString, QInstaller::Component *> localReplaceMes;
-    foreach (const QString &key, installedPackages.keys()) {
-        QInstaller::Component *component = new QInstaller::Component(this);
-        component->loadDataFromPackage(installedPackages.value(key));
-        d->m_updaterComponentsDeps.append(component);
-    }
-
-    foreach (const QString &key, locals.keys()) {
-        LocalPackage package = locals.value(key);
-        if (package.virtualComp && package.autoDependencies.isEmpty()) {
-              if (!d->m_localVirtualComponents.contains(package.name))
-                  d->m_localVirtualComponents.append(package.name);
-        }
-        // Keep a list of local components that should be replaced
-        // Remove from components list - we don't want to update the component
-        // as it is replaced by other component
-        if (replaceMes.contains(key)) {
+        QHash<QString, QInstaller::Component *> localReplaceMes;
+        foreach (const QString &key, installedPackages.keys()) {
             QInstaller::Component *component = new QInstaller::Component(this);
-            component->loadDataFromPackage(locals.value(key));
-            localReplaceMes.insert(component->name(), component);
-            delete components.take(component->name());
+            component->loadDataFromPackage(installedPackages.value(key));
+            d->m_updaterComponentsDeps.append(component);
         }
-    }
 
-    // store all components that got a replacement, but do not modify the components list
-    storeReplacedComponents(localReplaceMes.unite(components), data);
+        foreach (const QString &key, locals.keys()) {
+            LocalPackage package = locals.value(key);
+            if (package.virtualComp && package.autoDependencies.isEmpty()) {
+                  if (!d->m_localVirtualComponents.contains(package.name))
+                      d->m_localVirtualComponents.append(package.name);
+            }
+            // Keep a list of local components that should be replaced
+            // Remove from components list - we don't want to update the component
+            // as it is replaced by other component
+            if (replaceMes.contains(key)) {
+                QInstaller::Component *component = new QInstaller::Component(this);
+                component->loadDataFromPackage(locals.value(key));
+                localReplaceMes.insert(component->name(), component);
+                delete components.take(component->name());
+            }
+        }
 
-    try {
+        // store all components that got a replacement, but do not modify the components list
+        storeReplacedComponents(localReplaceMes.unite(components), data);
+
         if (!components.isEmpty()) {
             // append all components w/o parent to the direct list
             foreach (QInstaller::Component *component, components) {
