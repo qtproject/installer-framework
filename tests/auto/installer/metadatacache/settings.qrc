@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/local-temp-repository/Updates.xml</file>
+        <file>data/local-temp-repository/A/example-license.txt</file>
+        <file>data/existing-cache/manifest.json</file>
+        <file>data/existing-cache/placeholder_sha1/repository.txt</file>
+        <file>data/existing-cache/placeholder_sha1/Updates.xml</file>
+    </qresource>
+</RCC>

@@ -41,7 +41,8 @@ SUBDIRS += \
     treename \
     createoffline \
     contentshaupdate \
-    componentreplace
+    componentreplace \
+    metadatacache
 
 CONFIG(libarchive) {
     SUBDIRS += libarchivearchive

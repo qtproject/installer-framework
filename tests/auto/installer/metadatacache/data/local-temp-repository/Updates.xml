@@ -1,0 +1,17 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <SHA1>f46c677db8bc779d70d0c72fae264a321caea6f8</SHA1>
+  <Licenses>
+    <License name="Example license" file="example-license.txt"/>
+  </Licenses>
+ </PackageUpdate>
+</Updates>
