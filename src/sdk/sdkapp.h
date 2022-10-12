@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -83,6 +83,8 @@ public:
     {
         try {
             return T::notify(receiver, event);
+        } catch (QInstaller::Error &e) {
+            qFatal("Exception thrown: %s", qPrintable(e.message()));
         } catch (std::exception &e) {
             qFatal("Exception thrown: %s", e.what());
         } catch (...) {
