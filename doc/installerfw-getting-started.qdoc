@@ -130,7 +130,11 @@
     The \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
     variables can be used to specify the exact library files if required.
 
-    If you omit the feature, the builtin LZMA SDK library will be used as a fallback and
+    If the Qt version used to build the Qt Installer Framework was configured with \c{-qt-zlib} and
+    \c IFW_ZLIB_LIBRARY variable is empty, libarchive will attempt to use the \c zlib library compiled
+    into the QtCore module, which removes the need for an external library.
+
+    If you do not enable libarchive support, the builtin LZMA SDK library will be used as a fallback and
     installation of the additional dependencies can be skipped, but created installers will
     only support the 7zip format.
 

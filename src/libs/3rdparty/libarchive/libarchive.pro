@@ -166,6 +166,10 @@ SOURCES += $$PWD/archive_acl.c \
     $$PWD/filter_fork_posix.c \
     $$PWD/xxhash.c
 
+if (isEmpty(IFW_ZLIB_LIBRARY):contains(QT_MODULES, zlib)) {
+    INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtZlib
+}
+
 linux {
     INCLUDEPATH += ./config/linux
     HEADERS += $$PWD/config/linux/config.h

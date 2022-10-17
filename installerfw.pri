@@ -171,7 +171,7 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
     LIBS += -llibarchive
     !isEmpty(IFW_ZLIB_LIBRARY) {
         LIBS += $$IFW_ZLIB_LIBRARY
-    } else {
+    } else:!contains(QT_MODULES, zlib) {
         unix:LIBS += -lz
         win32:LIBS += -lzlib
     }
