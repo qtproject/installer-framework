@@ -331,7 +331,7 @@ bool MetadataJob::updateCache()
     // Register items from current run to cache
     QStringList registeredKeys;
     for (auto *meta : qAsConst(m_fetchedMetadata)) {
-        if (!m_metaFromCache.registerItem(meta)) {
+        if (!m_metaFromCache.registerItem(meta, true)) {
             emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString()
                 + tr(" Clearing the cache directory and restarting the application may solve this."));
             return false;
