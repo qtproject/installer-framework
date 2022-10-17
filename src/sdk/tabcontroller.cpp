@@ -37,6 +37,7 @@
 #include <productkeycheck.h>
 
 #include <QtCore/QTimer>
+#include <QtWidgets/QMessageBox>
 
 using namespace QInstaller;
 
@@ -174,7 +175,7 @@ void TabController::onSettingsButtonClicked()
     connect(&dialog, &SettingsDialog::networkSettingsChanged,
             this, &TabController::onNetworkSettingsChanged);
     connect(&dialog, &SettingsDialog::clearLocalCacheClicked,
-            this, [&] { d->m_core->clearLocalCache(); });
+            this, &TabController::onClearCacheClicked);
     dialog.exec();
 
     if (d->m_networkSettingsChanged) {
@@ -193,6 +194,28 @@ void TabController::onAboutApplicationClicked()
 {
     AboutApplicationDialog dialog(d->m_core);
     dialog.exec();
+}
+
+void TabController::onClearCacheClicked()
+{
+    QDialog *settingsDialog = static_cast<QDialog *>(sender());
+
+    QString errorMessage;
+    const bool success = d->m_core->clearLocalCache(&errorMessage);
+
+    QMessageBox msgBox(settingsDialog);
+    msgBox.setWindowModality(Qt::WindowModal);
+    msgBox.setStandardButtons(QMessageBox::Close);
+
+    msgBox.setIcon(success
+        ? QMessageBox::Information
+        : QMessageBox::Critical);
+
+    msgBox.setText(success
+        ? tr("Cache cleared successfully!")
+        : errorMessage);
+
+    msgBox.exec();
 }
 
 void TabController::onCurrentIdChanged(int newId)

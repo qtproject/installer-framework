@@ -61,6 +61,7 @@ private Q_SLOTS:
     void restartWizard();
     void onSettingsButtonClicked();
     void onAboutApplicationClicked();
+    void onClearCacheClicked();
     void onCurrentIdChanged(int newId);
     void onNetworkSettingsChanged(const QInstaller::Settings &settings);
 

@@ -575,12 +575,20 @@ void PackageManagerCore::cancelMetaInfoJob()
 
 /*!
     Clears the contents of the cache used to store downloaded metadata.
+    Returns \c true on success, \c false otherwise. An error string can
+    be retrieved with \a error.
 
     \sa {installer::clearLocalCache}{installer.clearLocalCache}
 */
-void PackageManagerCore::clearLocalCache()
+bool PackageManagerCore::clearLocalCache(QString *error)
 {
-    d->m_metadataJob.clearCache();
+    if (d->m_metadataJob.clearCache())
+        return true;
+
+    if (error)
+        *error = d->m_metadataJob.errorString();
+
+    return false;
 }
 
 /*!

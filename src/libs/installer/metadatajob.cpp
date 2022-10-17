@@ -199,7 +199,12 @@ bool MetadataJob::resetCache(bool init)
 
 bool MetadataJob::clearCache()
 {
-    return m_metaFromCache.clear();
+    if (m_metaFromCache.clear())
+        return true;
+
+    setError(JobError::CacheError);
+    setErrorString(m_metaFromCache.errorString());
+    return false;
 }
 
 // -- private slots

@@ -256,18 +256,20 @@ bool GenericDataCache<T>::clear()
         return false;
     }
 
+    bool success = true;
     for (T *item : qAsConst(m_items)) {
         try {
             QInstaller::removeDirectory(item->path());
         } catch (const Error &e) {
             setErrorString(QCoreApplication::translate("GenericDataCache",
                 "Error while clearing cache: %1").arg(e.message()));
+            success = false;
         }
     }
 
     invalidate();
     QDir().rmdir(m_path);
-    return true;
+    return success;
 }
 
 /*!
