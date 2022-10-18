@@ -120,7 +120,7 @@ void TempPathDeleter::releaseAndDelete(const QString &path)
             QFile file(path);
             if (file.exists() && !file.remove()) {
                 throw Error(QCoreApplication::translate("QInstaller",
-                    "Cannot remove file \"%1\": %3").arg(file.fileName(), file.errorString()));
+                    "Cannot remove file \"%1\": %2").arg(file.fileName(), file.errorString()));
             }
         } catch (const Error &e) {
             qCritical() << Q_FUNC_INFO << "Exception caught:" << e.message();

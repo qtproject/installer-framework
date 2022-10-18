@@ -331,14 +331,16 @@ bool MetadataJob::updateCache()
 {
     const int toRegisterCount = m_fetchedMetadata.count();
     if (toRegisterCount > 0)
-        emit infoMessage(this, tr("Updating local cache with %1 new items...").arg(toRegisterCount));
+        emit infoMessage(this, tr("Updating local cache with %n new items...",
+                                  nullptr, toRegisterCount));
 
     // Register items from current run to cache
     QStringList registeredKeys;
     for (auto *meta : qAsConst(m_fetchedMetadata)) {
         if (!m_metaFromCache.registerItem(meta, true)) {
             emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString()
-                + tr(" Clearing the cache directory and restarting the application may solve this."));
+                + u' '
+                + tr("Clearing the cache directory and restarting the application may solve this."));
             return false;
         }
         meta->setPersistentRepositoryPath(meta->repository().url());
