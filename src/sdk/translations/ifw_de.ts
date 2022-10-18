@@ -1565,10 +1565,6 @@ Fehler beim Laden von %2</translation>
         <translation>Fehlende Paketmanager-Kernkomponente.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Herunterladen der Metainformationen wird vorbereitet ...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Entpacken des komprimierten Repository, Das könnte eine Weile dauern...</translation>
     </message>
@@ -1623,6 +1619,21 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Kann die Datei &quot;%1&quot; nicht zum Lesen öffnen: %2</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>Hole neue Update-Information...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>%n Element im lokalen Cache erneuert...</numerusform>
+            <numerusform>%n Elemente im lokalen Cache erneuert...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>Das Löschen des Cache-Verzeichnisses and Neustarten der Anwendung kann das beheben.</translation>
     </message>
 </context>
 <context>
@@ -1790,10 +1801,6 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>Nicht genügend Festplattenplatz für alle ausgewählten Komponenten! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>Nicht genügend Festplattenplatz für temporäre Dateien! Verfügbarer Platz: %1, mindestens benötigt: %2.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>Das für die Installation ausgewählte Laufwerk scheint über genügend Speicherplatz für die Installation zu verfügen, aber anschließend ist weniger als 1% des Speicherplatzes verfügbar.</translation>
     </message>
@@ -1824,6 +1831,10 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Komponente %1 kann nicht installiert werden. Es gab ein Problem beim Laden, daher wird sie als instabil gekennzeichnet und kann nicht ausgewählt werden.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>Es gibt nicht ausreichend Plattenplatz, um die temporären Dateien zu speichern! %1 sind verfügbar, aber das erforderliche Minimum ist %2. Sie können einen anderen Speicherort für die temporären Dateien auswählen, indem Sie den lokalen Cache-Pfad in den Installationseinstellungen ändern.</translation>
     </message>
 </context>
 <context>
@@ -2091,6 +2102,10 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>All components installed.</source>
         <translation>Alle Komponenten installiert.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>Lade Komponenten-Skripte...</translation>
     </message>
 </context>
 <context>
@@ -2560,6 +2575,10 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>Ungültiger Wert für &apos;max-concurrent-operations&apos;.</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>Leerer Wert für Option &apos;Cache-Pfad&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2741,6 +2760,26 @@ or accept the elevation of access rights if being asked.</source>
         <source>Deselect All</source>
         <translation>Alle abwählen</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>Lokaler Cache</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>Die Meta-Information der entfernten Repositories wird auf der Festplatte zwischengespeichert, um die Ladezeiten zu verbessern. Sie können ein anderes Verzeichnis für diesen Cache festlegen oder den Inhalt des aktuellen Caches löschen.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>Pfad für Cache:</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>Löscht den Inhalt des Cache-Verzeichnisses</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Cache löschen</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2880,6 +2919,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>Über %1 Verwaltungswerkzeug</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>Der Cache kann nicht mit einem leeren Pfad initialisiert werden.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>Das Verzeichnis %1 für den Cache konnte nicht angelegt werden.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>Cache kann nicht initialisiert werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>Ungültiger Cache kann nicht gelöscht werden.</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>Manifest-Datei kann nicht gelöscht werden: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>Fehler beim Löschen des Caches: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>Es können keine Elemente vom ungültigem Cache geholt werden.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>Es kann kein Element vom ungültigem Cache geholt werden.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>Es kann kein Element im ungültigem Cache registriert werden.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>Leeres Element kann nicht registriert werden.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>Ungültiges Element mit Prüfsumme %1 kann nicht registriert werden.</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>Das Element mit der Prüfsumme %1 kann nicht registriert werden. Es existiert bereits ein Element mit der gleichen Prüfsumme im Cache.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>Fehler beim Kopieren eines Elements in das Verzeichnis &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>Es kann kein Element aus dem ungültigem Cache entfernt werden.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>Das Element mit der Prüfsumme %1 kann nicht gelöscht werden: Das Element existiert nicht.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>Fehler beim Löschen des Verzeichnisses &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>Fehler beim Markieren des Caches als ungültig: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>Manifest-Datei kann nicht geöffnet werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>Der Inhalt der Manifest-Datei konnte nicht geschrieben werden: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>Ungültiger Cache kann nicht synchronisiert werden.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>Cache wurde erfolgreich gelöscht!</translation>
     </message>
 </context>
 </TS>

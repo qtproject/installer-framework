@@ -1526,10 +1526,6 @@ Error al descargar %2</translation>
         <translation>Falta el motor de componente básico del administrador de paquetes.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Preparando la descarga de la información de metadatos...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Desempaquetando los repositorios comprimidos. Esta operación puede tardar...</translation>
     </message>
@@ -1584,6 +1580,21 @@ Error al descargar %2</translation>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>Archivo &quot;%1&quot; no soportado: ningún controlador registrado para el sufijo de archivo &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>Obteniendo la información de la última actualización...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>Actualizando caché local con %n elemento nuevo...</numerusform>
+            <numerusform>Actualizando caché local con %n elementos nuevos...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>Borrando el directorio de caché y reiniciando la aplicación puede resolver esto.</translation>
     </message>
 </context>
 <context>
@@ -1747,10 +1758,6 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <translation>No hay suficiente espacio en disco para almacenar todos los componentes seleccionados. Se dispone de %1 y se requiere al menos un espacio de %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>No hay suficiente espacio en disco para almacenar los archivos temporales. Se dispone de %1 y se requiere al menos un espacio de %2.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>El volumen seleccionado para la instalación parece tener espacio suficiente para la instalación, pero después habrá menos del 1% del espacio del volumen disponible.</translation>
     </message>
@@ -1785,6 +1792,10 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>No se puede instalar el componente %1. Hubo un problema al cargar este componente, por lo que está marcado como inestable y no se puede seleccionar.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>¡No hay suficiente espacio en disco para almacenar archivos temporales! %1 están disponibles, mientras que el mínimo requerido es %2. Puede seleccionar otra ubicación para los archivos temporales modificando la ruta de caché local desde la configuración del instalador.</translation>
     </message>
 </context>
 <context>
@@ -2052,6 +2063,10 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     <message>
         <source>All components installed.</source>
         <translation>Todos los componentes fueron instalados.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>Cargando scripts de componentes...</translation>
     </message>
 </context>
 <context>
@@ -2513,6 +2528,10 @@ Copie el instalador en una unidad local</translation>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>Valor inválido para &apos;max-concurrent-operations&apos;.</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>Valor vacío para la opción &apos;cache-path&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2696,6 +2715,26 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
     <message>
         <source>Deselect All</source>
         <translation>Anular seleccionar todo</translation>
+    </message>
+    <message>
+        <source>Local cache</source>
+        <translation>Caché local</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>La metainformación de los repositorios remotos se almacena en caché en el disco para mejorar los tiempos de carga. Puede seleccionar otro directorio para almacenar el caché o borrar el contenido del caché actual.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>Ruta para el caché:</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>Elimina el contenido del directorio de caché</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Limpiar cache</translation>
     </message>
 </context>
 <context>
@@ -2881,6 +2920,96 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>Acerca herramienta de mantención %1</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>No se puede inicializar el caché con la ruta vacía.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>No se puede crear el directorio &quot;%1&quot; para la memoria caché.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>No se puede inicializar el caché: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>No se puede borrar el caché invalidado.</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>No se puede eliminar el archivo de manifiesto: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>Error al borrar el caché: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>No se pueden recuperar elementos de la memoria caché invalidada.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>No se puede recuperar el elemento de la memoria caché invalidada.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>No se puede registrar el elemento en la memoria caché invalidada.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>No se puede registrar un artículo nulo.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>No se puede registrar un artículo no válido con la suma de verificación %1</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>No se puede registrar el elemento con la suma de verificación %1. Ya existe un elemento con la misma suma de comprobación en la memoria caché.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>Error al copiar el elemento a la ruta &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>No se puede eliminar el elemento de la memoria caché invalidada.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>No se puede eliminar el elemento especificado por la suma de comprobación %1: no existe tal elemento.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>Error al eliminar el directorio &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>Error al invalidar caché: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>No se puede abrir el archivo de manifiesto: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>No se puede escribir el contenido del archivo de manifiesto: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>No se puede sincronizar el caché invalidado.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>¡Caché borrada con éxito!</translation>
     </message>
 </context>
 </TS>

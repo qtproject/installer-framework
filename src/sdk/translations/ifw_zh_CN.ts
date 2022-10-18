@@ -1518,10 +1518,6 @@ Error while loading %2</source>
         <translation>缺少包管理器核心引擎。</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>正在准备下载元信息...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>解压压缩资料档案库。 这可能需要一些时间...</translation>
     </message>
@@ -1576,6 +1572,20 @@ Error while loading %2</source>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>不支持的存档“%1”：没有处理程序注册在文件后缀“%2”名下。</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>正在获取最新更新信息……</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>正在更新本地缓存中的%n个新项目……</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>正在清空缓存目录并且重启应用程序也许可以解决这个问题。</translation>
     </message>
 </context>
 <context>
@@ -1739,10 +1749,6 @@ Do you want to continue?</source>
         <translation>没有足够的磁盘空间来存储所有选定的组件! %1 可用，但至少需要 %2。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>没有足够的磁盘空间来存储临时文件! %1 可用，但至少需要 %2。</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>您选择安装的容量似乎有足够的安装空间，但之后的可用空间将不到该容量的 1%。</translation>
     </message>
@@ -1777,6 +1783,10 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>无法安装组件 %1。加载这个组件时发生错误，所以它被标记为不稳定并且不能被选择。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation type="unfinished">没有足够的硬盘空间存储临时文件！有%1可用，但是最少需要%2。您可以通过修改安装程序设置中的本地缓存路径来为这些临时文件指定另外一个存储位置。</translation>
     </message>
 </context>
 <context>
@@ -2044,6 +2054,10 @@ Do you want to continue?</source>
     <message>
         <source>All components installed.</source>
         <translation>所有组件已安装。</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>正在加载组件脚本……</translation>
     </message>
 </context>
 <context>
@@ -2505,6 +2519,10 @@ Please copy the installer to a local drive</source>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>“max-concurrent-operations”的值无效。</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>“cache-path”选项的值为空。</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2689,6 +2707,26 @@ or accept the elevation of access rights if being asked.</source>
         <source>Deselect All</source>
         <translation>取消全选</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>本地缓存</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>为了缩短加载时间，远程仓库的元信息被缓存到硬盘。您可以选择另外一个目录来存储缓存，或者清空当前缓存的内容。</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>缓存的路径：</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>删除缓存目录中的内容</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>清空缓存</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2871,6 +2909,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Components autodependency &quot;%1&quot; removed:</source>
         <translation>组件自动依赖“%1”已移除：</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>无法使用空白路径初始化缓存。</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>无法为缓存创建“%1”目录。</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>无法初始化缓存：%1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>无法清空失效的缓存。</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>无法移除清单(manifest)文件：%1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>清空缓存时发生错误：%1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>无法从失效的缓存中获取项目。</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>无法从失效的缓存中获取项目。</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>无法向失效的缓存中注册项目。</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>无法注册空项目。</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>无法注册校验和为%1的无效项目</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>无法注册校验和为%1的项目。缓存中已经存在一个相同校验和的项目。</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>复制项目到“%1”路径时发生错误：%2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>无法从失效缓存中移除项目。</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>无法移除通过校验和%1指定的项目：查无此项。</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>移除“%1”目录时发生错误：%2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>使缓存失效时发生错误：%1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>无法打开清单(manifest)文件：%1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>无法写入清单(manifest)文件的内容：%1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>无法同步失效的缓存。</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>缓存清空成功！</translation>
     </message>
 </context>
 </TS>

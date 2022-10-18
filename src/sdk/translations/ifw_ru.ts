@@ -1577,10 +1577,6 @@ Error while loading %2</source>
         <translation>Отсутствует менеджер пакетов.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Подготовка к загрузке метаданных...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Распаковка сжатых хранилищ. Это может занять некоторое время...</translation>
     </message>
@@ -1635,6 +1631,22 @@ Error while loading %2</source>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>Неподдерживаемый архив &quot;%1&quot;: нет зарегестрированного обработчика для файла с расширением &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>Получение информации о последнем обновлении</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>Обновление локального кэша с добавлением %n нового файла</numerusform>
+            <numerusform>Обновление локального кэша с добавлением %n новых файлов</numerusform>
+            <numerusform>Обновление локального кэша с добавлением %n новых файлов</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>Очистка кэш-директории и перезапуск приложения может исправить это.</translation>
     </message>
 </context>
 <context>
@@ -1818,10 +1830,6 @@ Do you want to continue?</source>
         <translation>Недостаточно места на диске для сохранения всех выбранных компонентов. Доступно %1, а требуется минимум: %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>Недостаточно места на диске для временных файлов. Доступно %1, а требуется минимум %2.</translation>
-    </message>
-    <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
         <translation>Приблизительный размер установочника %1 превысит поддерживаемый предел размера исполняемого файла %2. Возможно, приложение не сможет быть запущено. </translation>
     </message>
@@ -1836,6 +1844,10 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Невозможно установить компонент %1. Произошла ошибка загрузки этого компонента, он был помечен нестабильным и не может быть выбран.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>Недостаточно места на диске для хранения временных файлов! %1 доступно, минимально необходимо %2. Вы можете выбрать другое место для временных файлов, изменив путь к локальному кэшу в настройках установщика.</translation>
     </message>
 </context>
 <context>
@@ -2102,6 +2114,10 @@ Do you want to continue?</source>
     <message>
         <source>All components installed.</source>
         <translation>Все компоненты установлены.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>Загрузка скриптов компонента...</translation>
     </message>
 </context>
 <context>
@@ -2563,6 +2579,10 @@ Please copy the installer to a local drive</source>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>Неверное значение for &apos;max-concurrent-operations&apos;.</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>Пустое значение параметра &apos;cache-path&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2747,6 +2767,26 @@ or accept the elevation of access rights if being asked.</source>
         <source>The server&apos;s URL that contains a valid repository.</source>
         <translation>Адреса серверов, которые содержат рабочие хранилища.</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>Локальный кэш</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>Мета информация с удаленных репозиториев кэшируется на диске для ускорения загрузочного процесса. Вы можете выбрать другую папку для хранения кэша или удалить содержимое существующего кэша.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>Путь для кэша:</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>Удаление содержимого существующей кэш-директории.</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Очистить кэш</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2895,6 +2935,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>Об %1 Maintenance Tool</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>Невозможно инициализировать кэш с пустым путем.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>Невозможно создать директорию &quot;%1&quot; для кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>Невозможно инициализировать кэш: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>Невозможно очистить недействительный кэш. </translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>Невозможно удалить файл-манифест: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>Ошибка во время очистки кэша: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>Невозможно получить файлы из недействительного кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>Невозможно получить файл из недействительного кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>Невозможно зарегестрировать файл для недействительного кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>Невозможно зарегестрировать недействительный файл.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>Невозможно зарегестрировать файл с контрольной суммой %1. Файл с идентичной контрольной суммой уже существует в кэше.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>Ошибка при копировании файла в &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>Невозможно удалить файл из недействительного кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>Невозможно удалить файл с контрольной суммой %1: файла не существует.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>Ошибка при удалении директории &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>Ошибка при аннулировании кэша: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>Невозможно открыть файл-манифест: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>Невозможно записать содержимое для файл-манифеста: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>Не удается синхронизировать недействительный кеш.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>Кэш успешно очищен!</translation>
     </message>
 </context>
 </TS>

@@ -1539,10 +1539,6 @@ Błąd podczas wczytywania %2</translation>
         <translation>Brak podstawowego mechanizmu menedżera pakietów.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Przygotowanie metainformacji do pobrania...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Rozpakowywanie skompresowanych repozytoriów. Może to chwilę potrwać...</translation>
     </message>
@@ -1597,6 +1593,22 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>Nieznane archiwum &quot;%1&quot;: brak zarejestrowanego uchwytu dla pliku z rozszerzeniem &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1784,10 +1796,6 @@ Czy chcesz kontynuować?</translation>
         <translation>Za mało miejsca na dysku do zapisu wszystkich wybranych komponentów! %1 jest dostępnych, podczas gdy wymagane minimum to %2.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>Za mało miejsca na dysku do zapisu plików tymczasowych! %1 jest dostępnych, podczas gdy wymagane minimum to %2.</translation>
-    </message>
-    <message>
         <source>Invalid</source>
         <translation>Nieprawidłowy</translation>
     </message>
@@ -1798,6 +1806,10 @@ Czy chcesz kontynuować?</translation>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Nie można zainstalować komponentu %1. Wystąpił problem z jego załadowaniem, został oznaczony jako niestabilny i nie można go wybrać</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2065,6 +2077,10 @@ Czy chcesz kontynuować?</translation>
     <message>
         <source>All components installed.</source>
         <translation>Wszystkie komponenty zostały zainstalowane</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2526,6 +2542,10 @@ Please copy the installer to a local drive</source>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>Nieprawidłowa wartość dla &apos;max-concurrent-operations&apos;.</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2709,6 +2729,26 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>The server&apos;s URL that contains a valid repository.</source>
         <translation>Adres URL serwera, który zawiera prawidłowe repozytorium.</translation>
+    </message>
+    <message>
+        <source>Local cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2896,6 +2936,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Components autodependency &quot;%1&quot; removed:</source>
         <translation>Usunięte automatyczne zależności komponentu &quot;%1&quot;:</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

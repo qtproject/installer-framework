@@ -1513,10 +1513,6 @@ Error while loading %2</source>
         <translation>パッケージ マネージャー コア エンジンが見つかりません。</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>メタ情報のダウンロードを準備しています...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>圧縮されたリポジトリを解凍しています。 しばらくお待ちください...</translation>
     </message>
@@ -1571,6 +1567,20 @@ Error while loading %2</source>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>&quot;%1&quot; は非サポートのアーカイブです。拡張子 &quot;%2&quot; ファイルのハンドラが登録されていません</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>最新の更新情報を取得しています...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>%n 個の新しいアイテムでローカル キャッシュを更新しています...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>キャッシュディレクトリを空にしてアプリケーションを再起動すると、この問題が解決する場合があります。</translation>
     </message>
 </context>
 <context>
@@ -1734,10 +1744,6 @@ Do you want to continue?</source>
         <translation>十分なディスク空き容量がないため、選択された一部のコンポーネントを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>十分なディスク空き容量がないため、一時ファイルを格納できません。 %2 が最低限必要な場合は、%1 を利用できます。</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>インストール用に選択されたボリュームにはインストールに十分な空き容量があるようですが、後から使用可能な空き容量はボリュームの 1% 未満です。</translation>
     </message>
@@ -1772,6 +1778,10 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>コンポーネント %1をインストールできません。このコンポーネントのロードに問題があったため、不安定と記され、選択できません。</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>時ファイルを保存するのに十分なディスク容量がありません!&#x3000;%1 が利用可能ですが、必要な最小値は %2 です。 インストーラー設定からローカル キャッシュ パスを変更することにより、一時ファイルの別の場所を選択できます。</translation>
     </message>
 </context>
 <context>
@@ -2039,6 +2049,10 @@ Do you want to continue?</source>
     <message>
         <source>All components installed.</source>
         <translation>すべてのコンポーネントがインストールされました。</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>コンポーネント スクリプトを読み込んでいます...</translation>
     </message>
 </context>
 <context>
@@ -2500,6 +2514,10 @@ Please copy the installer to a local drive</source>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>&apos;max-concurrent-operations&apos;の値が無効です。</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>オプション &apos;cache-path&apos; の値が空です。</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2684,6 +2702,26 @@ or accept the elevation of access rights if being asked.</source>
         <source>Deselect All</source>
         <translation>すべての選択を解除</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>ローカル キャッシュ</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>読み込み時間を改善するために、リモートリポジトリからのメタ情報がディスクにキャッシュされます。別のディレクトリを選択してキャッシュを保存する、または現在のキャッシュの内容を消去することができます。</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>キャッシュのパス:</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>キャッシュ ディレクトリの内容を削除します</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>キャッシュの消去</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2866,6 +2904,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>%1メンテナンスツールについて</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>空のパスでキャッシュを初期化できません。</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>キャッシュ用のディレクトリ &quot;%1&quot; を作成できません。</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>キャッシュを初期化できません: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>無効化されたキャッシュを消去できません。</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>マニフェストファイルを削除できません: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>キャッシュを空にしている際にエラーが発生しました: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>無効化されたキャッシュからアイテムを取得できません。</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>無効化されたキャッシュからアイテムを取得できません。</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>無効化されたキャッシュにアイテムを登録できません。</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>空のアイテムは登録できません。</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>チェックサム %1 で無効なアイテムを登録できません</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>チェックサム %1 でアイテムを登録できません。同じチェックサムを持つアイテムが既にキャッシュに存在します。</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>アイテムをパス &quot;%1&quot; にコピー中にエラーが発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>無効化されたキャッシュからアイテムを削除できません。</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>チェックサム %1 で指定されたアイテムを削除できません: そのようなアイテムは存在しません。</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>ディレクトリ &quot;%1&quot; の削除中にエラーが発生しました: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>キャッシュの無効化中にエラーが発生しました: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>マニフェストファイルを開けません: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>マニフェストファイルの内容を書き込めません: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>無効化されたキャッシュを同期できません。</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>キャッシュが正常に消去されました!</translation>
     </message>
 </context>
 </TS>
