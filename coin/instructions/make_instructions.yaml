@@ -104,13 +104,25 @@ instructions:
       - type: EnvironmentVariable
         variableName: QT_CODESIGN_IDENTITY_KEY
         variableValue: "A5GTH44LYL"
+      - type: ChangeDirectory
+        directory: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools"
       - type: ExecuteCommand
-        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.5.0.app"
+        command: "python3 -m pip install pipenv==2022.4.8 --user"
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed to install Pipenv"
+      - type: ExecuteCommand
+        command: "python3 -m pipenv install --skip-lock"
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "Failed to install Pipenv requirements"
+      - type: ExecuteCommand
+        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.5.0.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to sign the ifw installer"
       - type: ExecuteCommand
-        command: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools/notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.5.0.dmg"
+        command: "python3 -m pipenv run python notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.5.0.dmg"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to notarize the ifw installer"
