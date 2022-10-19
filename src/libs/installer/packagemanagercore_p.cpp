@@ -923,6 +923,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
                 writer.writeEndElement();
             }
             writer.writeEndElement();
+            writer.writeTextElement(QLatin1String("LocalCachePath"), m_data.settings().localCachePath());
         writer.writeEndElement();
     }
     setDefaultFilePermissions(&file, DefaultFilePermissions::NonExecutable);
@@ -972,6 +973,8 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
                             m_data.settings().addUserRepositories(readRepositories(reader, false));
                         } else if (name == QLatin1String("ProxyType")) {
                             m_data.settings().setProxyType(Settings::ProxyType(reader.readElementText().toInt()));
+                        } else if (name == QLatin1String("LocalCachePath")) {
+                            m_data.settings().setLocalCachePath(reader.readElementText());
                         } else {
                             reader.skipCurrentElement();
                         }
