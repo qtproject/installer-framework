@@ -112,6 +112,11 @@ CacheableItem::~CacheableItem()
     methods declared in the \l{CacheableItem} interface. The GenericDataCache\<T\> class can
     still be explicitly specialized to use the derived type as a template argument, to
     allow retrieving items as the derived type without casting.
+
+    Each cache has a manifest file in its root directory, which lists the version
+    and wrapped type of the cache, and all its items. The file is updated automatically
+    when the cache object is destructed, or it can be updated periodically by
+    calling \l{sync()}.
 */
 
 /*!
@@ -270,6 +275,23 @@ bool GenericDataCache<T>::clear()
     invalidate();
     QDir().rmdir(m_path);
     return success;
+}
+
+/*!
+   \fn template <typename T> QInstaller::GenericDataCache<T>::sync()
+
+    Synchronizes the contents of the cache to its manifest file. Returns \c true
+    if the manifest file was updates successfully, \c false otherwise.
+*/
+template<typename T>
+bool GenericDataCache<T>::sync()
+{
+    if (m_invalidated) {
+        setErrorString(QCoreApplication::translate("GenericDataCache",
+            "Cannot synchronize invalidated cache."));
+        return false;
+    }
+    return toDisk();
 }
 
 /*!

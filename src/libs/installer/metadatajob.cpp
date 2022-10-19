@@ -346,12 +346,11 @@ bool MetadataJob::updateCache()
 
     // Register items from current run to cache
     QStringList registeredKeys;
+    bool success = true;
     for (auto *meta : qAsConst(m_fetchedMetadata)) {
         if (!m_metaFromCache.registerItem(meta, true)) {
-            emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString()
-                + u' '
-                + tr("Clearing the cache directory and restarting the application may solve this."));
-            return false;
+            success = false;
+            break;
         }
         meta->setPersistentRepositoryPath(meta->repository().url());
         registeredKeys.append(m_fetchedMetadata.key(meta));
@@ -360,11 +359,24 @@ bool MetadataJob::updateCache()
     for (auto &key : qAsConst(registeredKeys))
         m_fetchedMetadata.remove(key);
 
+    // Bail out if there was error while registering items
+    if (!success) {
+        emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString() + u' '
+            + tr("Clearing the cache directory and restarting the application may solve this."));
+        m_metaFromCache.sync();
+        return false;
+    }
+
     // ...and clean up obsolete cached items
     const QList<Metadata *> obsolete = m_metaFromCache.obsoleteItems();
     for (auto *meta : obsolete)
         m_metaFromCache.removeItem(meta->checksum());
 
+    if (!m_metaFromCache.sync()) {
+        emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString() + u' '
+            + tr("Clearing the cache directory and restarting the application may solve this."));
+        return false;
+    }
     return true;
 }
 
