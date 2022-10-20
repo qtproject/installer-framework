@@ -574,11 +574,21 @@ void PackageManagerCore::cancelMetaInfoJob()
 }
 
 /*!
+    Resets the cache used to store downloaded metadata, if one was previously
+    initialized. If \a init is set to \c true, the cache is reinitialized for
+    the path configured in installer's settings.
+
+    Returns \c true on success, \c false otherwise.
+*/
+bool PackageManagerCore::resetLocalCache(bool init)
+{
+    return d->m_metadataJob.resetCache(init);
+}
+
+/*!
     Clears the contents of the cache used to store downloaded metadata.
     Returns \c true on success, \c false otherwise. An error string can
     be retrieved with \a error.
-
-    \sa {installer::clearLocalCache}{installer.clearLocalCache}
 */
 bool PackageManagerCore::clearLocalCache(QString *error)
 {

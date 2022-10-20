@@ -213,6 +213,8 @@ static const QLatin1String scNoDefaultInstallationShort("nd");
 static const QLatin1String scNoDefaultInstallationLong("no-default-installations");
 static const QLatin1String scFilterPackagesShort("fp");
 static const QLatin1String scFilterPackagesLong("filter-packages");
+static const QLatin1String scLocalCachePathShort("cp");
+static const QLatin1String scLocalCachePathLong("cache-path");
 
 // Developer options
 static const QLatin1String scScriptShort("s");
