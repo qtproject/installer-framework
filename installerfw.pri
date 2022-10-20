@@ -136,8 +136,9 @@ macx:LIBS += -framework Carbon -framework Security
 
 QT += uitools core-private
 CONFIG(static, static|shared) {
-    win32:QT += winextras
+    win32:lessThan(QT_MAJOR_VERSION, 6):QT += winextras
     QT += concurrent network qml xml
+    greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 }
 CONFIG += depend_includepath no_private_qt_headers_warning c++11
 win32:CONFIG += console

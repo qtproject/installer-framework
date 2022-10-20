@@ -39,7 +39,10 @@ QT += \
     widgets \
     core-private \
     qml-private
-win32:QT += winextras
+
+win32:lessThan(QT_MAJOR_VERSION, 6):QT += winextras
+
+greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 
 HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
