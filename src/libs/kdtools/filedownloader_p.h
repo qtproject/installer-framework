@@ -130,7 +130,11 @@ private Q_SLOTS:
     void httpDone(bool error);
     void httpReqFinished();
     void onAuthenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     void onNetworkAccessibleChanged(QNetworkAccessManager::NetworkAccessibility accessible);
+#else
+    void onReachabilityChanged(QNetworkInformation::Reachability newReachability);
+#endif
 #ifndef QT_NO_SSL
     void onSslErrors(QNetworkReply* reply, const QList<QSslError> &errors);
 #endif

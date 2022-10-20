@@ -60,6 +60,10 @@
 #include <QMetaEnum>
 #include <QTranslator>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QNetworkInformation>
+#endif
+
 template<class T>
 class SDKApp : public T
 {
@@ -71,6 +75,9 @@ public:
         , m_core(nullptr)
     {
         m_parser.parse(QCoreApplication::arguments());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QNetworkInformation::loadDefaultBackend();
+#endif
     }
 
     virtual ~SDKApp()
