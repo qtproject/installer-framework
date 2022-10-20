@@ -303,7 +303,7 @@ QHash<QString, QString> CommandLineInterface::parsePackageFilters()
             const QString element = filter.left(i).trimmed();
             const QString value = filter.mid(i + 1).trimmed();
 
-            if ((i == -1) || (filter.count(QLatin1Char('=') > 1))
+            if ((i == -1) || (filter.count(QLatin1Char('=')) > 1)
                     || element.isEmpty() || value.isEmpty()) {
                 qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Ignoring unknown entry "
                     << filter << "in package filter arguments. Please use syntax \"element=regex,...\".";
