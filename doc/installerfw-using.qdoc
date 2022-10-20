@@ -479,6 +479,19 @@
     installer.exe --root "C:\TargetFolder" --offline-installer-name "MyInstaller" create-offline componentA componentB
     \endcode
 
+    \section1 Clearing the Local Cache
+
+    Online installers and maintenance tools created with the Qt Installer Framework cache the
+    meta information downloaded from remote repositories to local disk. This improves loading
+    times for subsequent metadata downloads.
+
+    The cache may grow in size over time. To clear the contents of the entire cache,
+    use the \c clear-cache command:
+
+    \code
+    maintenancetool.exe clear-cache
+    \endcode
+
     \section1 Unattended Usage
 
     By default, the generated installers may ask for additional information during installation,

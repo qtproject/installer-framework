@@ -334,6 +334,9 @@
             \li co, create-offline <pkg ...>
             \li Create offline installer from selected packages.
         \row
+            \li cc, clear-cache
+            \li Clear contents of the local metadata cache.
+        \row
             \li pr, purge
             \li Uninstall all packages and remove the program directory.
     \endtable

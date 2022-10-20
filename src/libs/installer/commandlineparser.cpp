@@ -65,6 +65,8 @@ CommandLineParser::CommandLineParser()
         + indent + indent + QLatin1String("additional filters for the search operation\n")
         + indent + QString::fromLatin1("%1, %2 - create offline installer from selected packages - <pkg ...>\n")
             .arg(CommandLineOptions::scCreateOfflineShort, CommandLineOptions::scCreateOfflineLong)
+        + indent + QString::fromLatin1("%1, %2 - clear contents of the local metadata cache\n")
+            .arg(CommandLineOptions::scClearCacheShort, CommandLineOptions::scClearCacheLong)
         + indent + QString::fromLatin1("%1, %2 - uninstall all packages and remove entire program directory")
             .arg(CommandLineOptions::scPurgeShort, CommandLineOptions::scPurgeLong);
 

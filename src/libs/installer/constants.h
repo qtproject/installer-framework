@@ -150,6 +150,8 @@ static const QLatin1String scSearchShort("se");
 static const QLatin1String scSearchLong("search");
 static const QLatin1String scCreateOfflineShort("co");
 static const QLatin1String scCreateOfflineLong("create-offline");
+static const QLatin1String scClearCacheShort("cc");
+static const QLatin1String scClearCacheLong("clear-cache");
 static const QLatin1String scPurgeShort("pr");
 static const QLatin1String scPurgeLong("purge");
 
@@ -247,7 +249,9 @@ static const QStringList scCommandLineInterfaceOptions = {
     scCreateOfflineShort,
     scCreateOfflineLong,
     scPurgeShort,
-    scPurgeLong
+    scPurgeLong,
+    scClearCacheShort,
+    scClearCacheLong
 };
 
 } // namespace CommandLineOptions
