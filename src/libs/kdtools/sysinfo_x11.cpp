@@ -40,7 +40,7 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 
 namespace KDUpdater {
 
@@ -124,9 +124,9 @@ QList<ProcessInfo> runningProcesses()
     QList<ProcessInfo> processes;
     QDir procDir(QLatin1String("/proc"));
     const QFileInfoList procCont = procDir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Readable);
-    QRegExp validator(QLatin1String("[0-9]+"));
-    Q_FOREACH (const QFileInfo &info, procCont) {
-        if (validator.exactMatch(info.fileName())) {
+    static const QRegularExpression validator(QLatin1String("^[0-9]+$"));
+    for (const QFileInfo &info : procCont) {
+        if (validator.match(info.fileName()).hasMatch()) {
             const QString linkPath = QDir(info.absoluteFilePath()).absoluteFilePath(QLatin1String("exe"));
             const QFileInfo linkInfo(linkPath);
             if (linkInfo.exists()) {

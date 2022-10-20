@@ -39,7 +39,7 @@
 
 #include <QCoreApplication>
 #include <QFileInfo>
-#include <QRegExp>
+#include <QRegularExpression>
 
 using namespace KDUpdater;
 using namespace QInstaller;
@@ -589,8 +589,8 @@ int KDUpdater::compareVersion(const QString &v1, const QString &v2)
         return 0;
 
     // Split version components across ".", "-" or "_"
-    QStringList v1_comps = v1.split(QRegExp(QLatin1String( "\\.|-|_")));
-    QStringList v2_comps = v2.split(QRegExp(QLatin1String( "\\.|-|_")));
+    QStringList v1_comps = v1.split(QRegularExpression(QLatin1String( "\\.|-|_")));
+    QStringList v2_comps = v2.split(QRegularExpression(QLatin1String( "\\.|-|_")));
 
     // Check each component of the version
     int index = 0;

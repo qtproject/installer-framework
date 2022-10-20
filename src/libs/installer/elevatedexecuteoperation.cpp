@@ -35,7 +35,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QProcessEnvironment>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 #include <QtCore/QThread>
 
 using namespace QInstaller;
@@ -137,9 +137,10 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
 
     QList< int > allowedExitCodes;
 
-    QRegExp re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
-    if (re.exactMatch(args.first())) {
-        const QStringList numbers = re.cap(1).split(QLatin1Char(','));
+    static const QRegularExpression re(QLatin1String("^\\{((-?\\d+,)*-?\\d+)\\}$"));
+    const QRegularExpressionMatch match = re.match(args.first());
+    if (match.hasMatch()) {
+        const QStringList numbers = match.captured(1).split(QLatin1Char(','));
         for(QStringList::const_iterator it = numbers.constBegin(); it != numbers.constEnd(); ++it)
             allowedExitCodes.push_back(it->toInt());
         args.pop_front();

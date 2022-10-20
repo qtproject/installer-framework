@@ -30,7 +30,7 @@
 
 #include "installer_global.h"
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QLoggingCategory>
 
 namespace QInstaller {
@@ -43,7 +43,7 @@ INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcDeveloperBuild)
 
 QStringList INSTALLER_EXPORT loggingCategories();
 
-QRegExp INSTALLER_EXPORT commaRegExp();
+QRegularExpression INSTALLER_EXPORT commaRegExp();
 
 QString htmlToString(const QString &html);
 QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);

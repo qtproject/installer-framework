@@ -818,8 +818,8 @@ void QInstaller::copyConfigChildElements(QDomDocument &dom, const QDomNodeList &
 
         // Filename may also contain a path relative to source directory but we
         // copy it strictly into target directory without extra paths
-        const QString newName = domElement.text()
-            .replace(QRegExp(QLatin1String("\\\\|/|\\.|:")), QLatin1String("_"));
+        static const QRegularExpression regex(QLatin1String("\\\\|/|\\.|:"));
+        const QString newName = domElement.text().replace(regex, QLatin1String("_"));
 
         const QString targetFile = targetDir + QDir::separator() + newName;
         const QFileInfo elementFileInfo = QFileInfo(sourceDir, domElement.text());

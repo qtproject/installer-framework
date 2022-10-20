@@ -36,7 +36,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QIODevice>
 #include <QtCore/QLocale>
-#include <QtCore/QRegExp>
+#include <QtCore/QRegularExpression>
 #include <QtCore/QStack>
 
 #include <QXmlStreamReader>
@@ -958,7 +958,7 @@ bool RCCResourceLibrary::writeInitializer()
         QString initName = m_initName;
         if (!initName.isEmpty()) {
             initName.prepend(QLatin1Char('_'));
-            initName.replace(QRegExp(QLatin1String("[^a-zA-Z0-9_]")), QLatin1String("_"));
+            initName.replace(QRegularExpression(QLatin1String("[^a-zA-Z0-9_]")), QLatin1String("_"));
         }
 
         //init

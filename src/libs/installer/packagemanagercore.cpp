@@ -54,7 +54,6 @@
 #include <QtConcurrentRun>
 
 #include <QtCore/QMutex>
-#include <QtCore/QRegExp>
 #include <QtCore/QSettings>
 #include <QtCore/QTemporaryFile>
 #include <QtCore/QTextCodec>
@@ -2075,7 +2074,7 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask, const QSt
         QRegularExpression re(regexp);
         QList<Component*>::iterator iter = components.begin();
         while (iter != components.end()) {
-            if (!re.match(iter.i->t()->name()).hasMatch())
+            if (!re.match((*iter)->name()).hasMatch())
                 iter = components.erase(iter);
             else
                 iter++;
@@ -3362,9 +3361,10 @@ bool PackageManagerCore::performOperation(const QString &name, const QStringList
 */
 bool PackageManagerCore::versionMatches(const QString &version, const QString &requirement)
 {
-    QRegExp compEx(QLatin1String("([<=>]+)(.*)"));
-    const QString comparator = compEx.exactMatch(requirement) ? compEx.cap(1) : QLatin1String("=");
-    const QString ver = compEx.exactMatch(requirement) ? compEx.cap(2) : requirement;
+    static const QRegularExpression compEx(QLatin1String("^([<=>]+)(.*)$"));
+    const QRegularExpressionMatch match = compEx.match(requirement);
+    const QString comparator = match.hasMatch() ? match.captured(1) : QLatin1String("=");
+    const QString ver = match.hasMatch() ? match.captured(2) : requirement;
 
     const bool allowEqual = comparator.contains(QLatin1Char('='));
     const bool allowLess = comparator.contains(QLatin1Char('<'));

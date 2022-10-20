@@ -43,7 +43,7 @@
 #include <QDirIterator>
 #include <QDomDocument>
 #include <QProcess>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QTemporaryFile>
 #include <QTemporaryDir>
@@ -637,8 +637,8 @@ void QInstallerTools::copyConfigData(const QString &configFile, const QString &t
             continue;
         }
 
-        QString newName = domElement.text().replace(QRegExp(QLatin1String("\\\\|/|\\.|:")),
-            QLatin1String("_"));
+        static const QRegularExpression regex(QLatin1String("\\\\|/|\\.|:"));
+        QString newName = domElement.text().replace(regex, QLatin1String("_"));
 
         QString targetFile;
         QFileInfo elementFileInfo;

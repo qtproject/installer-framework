@@ -34,7 +34,7 @@
 
 #include <QDesktopServices>
 #include <QDir>
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QSettings>
 
 #ifdef Q_OS_WIN
@@ -250,7 +250,7 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
 
 #ifdef Q_OS_WIN
     if (!m_variables.contains(key)) {
-        static const QRegExp regex(QLatin1String("\\\\|/"));
+        static const QRegularExpression regex(QLatin1String("\\\\|/"));
         const QString filename = key.section(regex, 0, -2);
         const QString regKey = key.section(regex, -1);
         const QSettingsWrapper registry(filename, format);

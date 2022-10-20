@@ -77,12 +77,12 @@ QStringList loggingCategories()
 
 }
 
-Q_GLOBAL_STATIC_WITH_ARGS(QRegExp, staticCommaRegExp, (QLatin1String("(, |,)")));
+Q_GLOBAL_STATIC_WITH_ARGS(QRegularExpression, staticCommaRegExp, (QLatin1String("(, |,)")));
 
 /*!
     \internal
 */
-QRegExp commaRegExp()
+QRegularExpression commaRegExp()
 {
     return *staticCommaRegExp();
 }
