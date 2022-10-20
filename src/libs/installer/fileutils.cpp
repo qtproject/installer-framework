@@ -89,7 +89,7 @@ TempPathDeleter::~TempPathDeleter()
 
 QStringList TempPathDeleter::paths() const
 {
-    return m_paths.toList();
+    return m_paths.values();
 }
 
 void TempPathDeleter::add(const QString &path)

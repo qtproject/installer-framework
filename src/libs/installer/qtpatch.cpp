@@ -67,11 +67,11 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
         QFileInfo qmake(qmakePath);
 
         if (!qmake.exists()) {
-            qmakeOutput->append(QString::fromLatin1("%1 is not existing").arg(qmakePath));
+            qmakeOutput->append(QString::fromLatin1("%1 is not existing").arg(qmakePath).toUtf8());
             return qmakeValueHash;
         }
         if (!qmake.isExecutable()) {
-            qmakeOutput->append(QString::fromLatin1("%1 is not executable").arg(qmakePath));
+            qmakeOutput->append(QString::fromLatin1("%1 is not executable").arg(qmakePath).toUtf8());
             return qmakeValueHash;
         }
 
@@ -88,7 +88,7 @@ QHash<QString, QByteArray> QtPatch::qmakeValues(const QString &qmakePath, QByteA
                     , QString::fromLatin1("Standard output: \"%1\".").arg(QLatin1String(output))
                     , QString::fromLatin1("Error output: \"%1\".").arg(QLatin1String(process.readAllStandardError()))
                 };
-                qmakeOutput->append(detailedOutput.join(QLatin1Char('\n')));
+                qmakeOutput->append(detailedOutput.join(QLatin1Char('\n')).toUtf8());
                 return qmakeValueHash;
             }
             qmakeOutput->append(output);

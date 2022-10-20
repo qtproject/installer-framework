@@ -4325,7 +4325,8 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
         }
 
         // store all components that got a replacement, but do not modify the components list
-        storeReplacedComponents(localReplaceMes.unite(components), data);
+        localReplaceMes.insert(components);
+        storeReplacedComponents(localReplaceMes, data);
 
         if (!components.isEmpty()) {
             // append all components w/o parent to the direct list

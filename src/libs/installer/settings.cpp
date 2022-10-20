@@ -745,7 +745,7 @@ Settings::Update Settings::updateRepositoryCategories(const RepoHash &updates)
     return update ? Settings::UpdatesApplied : Settings::NoUpdatesApplied;
 }
 
-static bool apply(const RepoHash &updates, QHash<QUrl, Repository> *reposToUpdate)
+static bool apply(const RepoHash &updates, QMultiHash<QUrl, Repository> *reposToUpdate)
 {
     bool update = false;
     QList<QPair<Repository, Repository> > values = updates.values(QLatin1String("replace"));
@@ -783,7 +783,7 @@ Settings::Update Settings::updateDefaultRepositories(const RepoHash &updates)
     if (updates.isEmpty())
         return Settings::NoUpdatesApplied;
 
-    QHash <QUrl, Repository> defaultRepos;
+    QMultiHash <QUrl, Repository> defaultRepos;
     foreach (const QVariant &variant, d->m_data.values(scRepositories)) {
         const Repository repository = variant.value<Repository>();
         defaultRepos.insert(repository.url(), repository);
@@ -837,7 +837,7 @@ Settings::Update Settings::updateUserRepositories(const RepoHash &updates)
     if (updates.isEmpty())
         return Settings::NoUpdatesApplied;
 
-    QHash <QUrl, Repository> reposToUpdate;
+    QMultiHash <QUrl, Repository> reposToUpdate;
     foreach (const QVariant &variant, d->m_data.values(scUserRepositories)) {
         const Repository repository = variant.value<Repository>();
         reposToUpdate.insert(repository.url(), repository);

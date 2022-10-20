@@ -42,7 +42,7 @@
 
 namespace QInstaller {
 class Repository;
-typedef QHash<QString, QPair<Repository, Repository> > RepoHash;
+typedef QMultiHash<QString, QPair<Repository, Repository> > RepoHash;
 
 class INSTALLER_EXPORT Settings
 {

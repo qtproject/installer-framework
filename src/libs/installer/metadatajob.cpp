@@ -468,7 +468,7 @@ void MetadataJob::xmlTaskFinished()
                     temporaries.insert(replacement);
                     s.addTemporaryRepositories(temporaries, true);
                 } else {
-                    QHash<QString, QPair<Repository, Repository> > update;
+                    QMultiHash<QString, QPair<Repository, Repository> > update;
                     update.insert(QLatin1String("replace"), qMakePair(original, replacement));
 
                     if (s.updateRepositoryCategories(update) == Settings::UpdatesApplied)
@@ -891,7 +891,7 @@ MetadataJob::Status MetadataJob::parseRepositoryUpdates(const QDomElement &root,
     MetadataJob::Status status = XmlDownloadSuccess;
     const QDomNode repositoryUpdate = root.firstChildElement(QLatin1String("RepositoryUpdate"));
     if (!repositoryUpdate.isNull()) {
-        const QHash<QString, QPair<Repository, Repository> > repositoryUpdates
+        const QMultiHash<QString, QPair<Repository, Repository> > repositoryUpdates
             = searchAdditionalRepositories(repositoryUpdate, result, *metadata);
         if (!repositoryUpdates.isEmpty())
             status = setAdditionalRepositories(repositoryUpdates, result, *metadata);
@@ -964,7 +964,7 @@ bool MetadataJob::parsePackageUpdate(const QDomNodeList &c2, QString &packageNam
     return metaFound;
 }
 
-QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepositories
+QMultiHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepositories
     (const QDomNode &repositoryUpdate, const FileTaskResult &result, const Metadata &metadata)
 {
     QMultiHash<QString, QPair<Repository, Repository> > repositoryUpdates;
@@ -1013,7 +1013,7 @@ QHash<QString, QPair<Repository, Repository> > MetadataJob::searchAdditionalRepo
     return repositoryUpdates;
 }
 
-MetadataJob::Status MetadataJob::setAdditionalRepositories(QHash<QString, QPair<Repository, Repository> > repositoryUpdates,
+MetadataJob::Status MetadataJob::setAdditionalRepositories(QMultiHash<QString, QPair<Repository, Repository> > repositoryUpdates,
                                             const FileTaskResult &result, const Metadata& metadata)
 {
     MetadataJob::Status status = XmlDownloadSuccess;

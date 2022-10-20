@@ -505,8 +505,10 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 
 void PackageManagerCorePrivate::clearUpdaterComponentLists()
 {
-    QSet<Component*> usedComponents =
-        QSet<Component*>::fromList(m_updaterComponents + m_updaterComponentsDeps);
+
+    QSet<Component*> usedComponents(m_updaterComponents.begin(), m_updaterComponents.end());
+    usedComponents.unite(QSet<Component*>(m_updaterComponentsDeps.begin(),
+                                          m_updaterComponentsDeps.end()));
 
     const QList<QPair<Component*, Component*> > list = m_componentsToReplaceUpdaterMode.values();
     for (int i = 0; i < list.count(); ++i) {
