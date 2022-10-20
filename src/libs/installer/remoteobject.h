@@ -85,7 +85,15 @@ private:
     template <class T> int writeObject(QDataStream& out, const T& t) const
     {
         static_assert(!std::is_pointer<T>::value, "Pointer passed to remote server");
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         out << t;
+#else
+        if constexpr (std::is_same<T, QAnyStringView>::value)
+            out << t.toString();
+        else
+            out << t;
+#endif
+
         return 0;
     }
 

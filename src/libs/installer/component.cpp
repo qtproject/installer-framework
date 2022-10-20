@@ -46,6 +46,9 @@
 #include <QtCore/QDirIterator>
 #include <QtCore/QTranslator>
 #include <QtCore/QRegularExpression>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#include <QtCore/QTextCodec>
+#endif
 
 #include <QApplication>
 #include <QtConcurrentFilter>
@@ -748,7 +751,9 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
                             file.fileName(), file.errorString(), tr(scClearCacheHint), packageManagerCore()->settings().localCachePath()));
         }
         QTextStream stream(&file);
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         stream.setCodec("UTF-8");
+#endif
         license.insert(scContent, stream.readAll());
         d->m_licenses.insert(it.key(), license);
     }

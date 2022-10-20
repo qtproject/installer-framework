@@ -892,8 +892,8 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
 
     QFile file(targetDir() + QLatin1Char('/') + QLatin1String("network.xml"));
     if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        QXmlStreamWriter writer(&file);
-        writer.setCodec("UTF-8");
+        QString outputStr;
+        QXmlStreamWriter writer(&outputStr);
         writer.setAutoFormatting(true);
         writer.writeStartDocument();
 
@@ -926,6 +926,8 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
             writer.writeEndElement();
             writer.writeTextElement(QLatin1String("LocalCachePath"), m_data.settings().localCachePath());
         writer.writeEndElement();
+
+        file.write(outputStr.toUtf8());
     }
     setDefaultFilePermissions(&file, DefaultFilePermissions::NonExecutable);
 }

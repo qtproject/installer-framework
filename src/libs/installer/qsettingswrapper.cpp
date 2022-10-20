@@ -141,27 +141,39 @@ QString QSettingsWrapper::applicationName() const
     return d->settings.applicationName();
 }
 
-void QSettingsWrapper::beginGroup(const QString &param1)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void QSettingsWrapper::beginGroup(const QString &prefix)
+#else
+    void QSettingsWrapper::beginGroup(QAnyStringView prefix)
+#endif
 {
     if (createSocket())
-        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsBeginGroup), param1);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsBeginGroup), prefix);
     else
-        d->settings.beginGroup(param1);
+        d->settings.beginGroup(prefix);
 }
 
-int QSettingsWrapper::beginReadArray(const QString &param1)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    int QSettingsWrapper::beginReadArray(const QString &prefix)
+#else
+    int QSettingsWrapper::beginReadArray(QAnyStringView prefix)
+#endif
 {
     if (createSocket())
-        return callRemoteMethod<qint32>(QLatin1String(Protocol::QSettingsBeginReadArray), param1);
-    return d->settings.beginReadArray(param1);
+        return callRemoteMethod<qint32>(QLatin1String(Protocol::QSettingsBeginReadArray), prefix);
+    return d->settings.beginReadArray(prefix);
 }
 
-void QSettingsWrapper::beginWriteArray(const QString &param1, int param2)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void QSettingsWrapper::beginWriteArray(const QString &prefix, int size)
+#else
+    void QSettingsWrapper::beginWriteArray(QAnyStringView prefix, int size)
+#endif
 {
     if (createSocket())
-        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsBeginWriteArray), param1, qint32(param2));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsBeginWriteArray), prefix, qint32(size));
     else
-        d->settings.beginWriteArray(param1, param2);
+        d->settings.beginWriteArray(prefix, size);
 }
 
 QStringList QSettingsWrapper::childGroups() const
@@ -185,11 +197,15 @@ void QSettingsWrapper::clear()
     else d->settings.clear();
 }
 
-bool QSettingsWrapper::contains(const QString &param1) const
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    bool QSettingsWrapper::contains(const QString &key) const
+#else
+    bool QSettingsWrapper::contains(QAnyStringView key) const
+#endif
 {
     if (createSocket())
-        return callRemoteMethod<bool>(QLatin1String(Protocol::QSettingsContains), param1);
-    return d->settings.contains(param1);
+        return callRemoteMethod<bool>(QLatin1String(Protocol::QSettingsContains), key);
+    return d->settings.contains(key);
 }
 
 void QSettingsWrapper::endArray()
@@ -249,12 +265,16 @@ QString QSettingsWrapper::organizationName() const
     return d->settings.organizationName();
 }
 
-void QSettingsWrapper::remove(const QString &param1)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    void QSettingsWrapper::remove(const QString &key)
+#else
+    void QSettingsWrapper::remove(QAnyStringView key)
+#endif
 {
     if (createSocket())
-        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsRemove), param1);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsRemove), key);
     else
-        d->settings.remove(param1);
+        d->settings.remove(key);
 }
 
 QSettingsWrapper::Scope QSettingsWrapper::scope() const
@@ -278,13 +298,16 @@ void QSettingsWrapper::setFallbacksEnabled(bool param1)
     else
         d->settings.setFallbacksEnabled(param1);
 }
-
-void QSettingsWrapper::setValue(const QString &param1, const QVariant &param2)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+void QSettingsWrapper::setValue(const QString &key, const QVariant &value)
+#else
+void QSettingsWrapper::setValue(QAnyStringView key, const QVariant &value)
+#endif
 {
     if (createSocket())
-        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsSetValue), param1, param2);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QSettingsSetValue), key, value);
     else
-        d->settings.setValue(param1, param2);
+        d->settings.setValue(key, value);
 }
 
 QSettingsWrapper::Status QSettingsWrapper::status() const
@@ -304,12 +327,25 @@ void QSettingsWrapper::sync()
         d->settings.sync();
 }
 
-QVariant QSettingsWrapper::value(const QString &param1, const QVariant &param2) const
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+QVariant QSettingsWrapper::value(const QString &key, const QVariant &value) const
+#else
+QVariant QSettingsWrapper::value(QAnyStringView key, const QVariant &value) const
+#endif
 {
     if (createSocket())
-        return callRemoteMethod<QVariant>(QLatin1String(Protocol::QSettingsValue), param1, param2);
-    return d->settings.value(param1, param2);
+        return callRemoteMethod<QVariant>(QLatin1String(Protocol::QSettingsValue), key, value);
+    return d->settings.value(key, value);
 }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+QVariant QSettingsWrapper::value(QAnyStringView key) const
+{
+    if (createSocket())
+        return callRemoteMethod<QVariant>(QLatin1String(Protocol::QSettingsValue), key);
+    return d->settings.value(key);
+}
+#endif
 
 
 // -- private

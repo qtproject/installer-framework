@@ -152,15 +152,16 @@ bool CreateDesktopEntryOperation::performOperation()
 
     setDefaultFilePermissions(filename, DefaultFilePermissions::Executable);
 
-    QTextStream stream(&file);
-    stream.setCodec("UTF-8");
-    stream << QLatin1String("[Desktop Entry]") << endl;
+    QString outString;
+    QTextStream stream(&outString);
+    stream << QLatin1String("[Desktop Entry]") << Qt::endl;
 
     // Type=Application\nExec=qtcreator\nPath=...
     const QStringList pairs = values.split(QLatin1Char('\n'));
     for (QStringList::const_iterator it = pairs.begin(); it != pairs.end(); ++it)
         stream << *it << Qt::endl;
 
+    file.write(outString.toUtf8());
     return true;
 }
 

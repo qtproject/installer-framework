@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,38 +36,6 @@ using namespace QInstaller;
     \class QInstaller::PermissionSettings
     \internal
 */
-
-PermissionSettings::PermissionSettings(const QString &organization, const QString &application, QObject *parent)
-    : QSettings(organization, application, parent)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    setIniCodec("UTF-8"); // to workaround QTBUG-102334
-#endif
-}
-
-PermissionSettings::PermissionSettings(Scope scope, const QString &organization, const QString &application, QObject *parent)
-    : QSettings(scope, organization, application, parent)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    setIniCodec("UTF-8"); // QTBUG-102334
-#endif
-}
-
-PermissionSettings::PermissionSettings(Format format, Scope scope, const QString &organization, const QString &application, QObject *parent)
-    : QSettings(format, scope, organization, application, parent)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    setIniCodec("UTF-8"); // QTBUG-102334
-#endif
-}
-
-PermissionSettings::PermissionSettings(const QString &fileName, Format format, QObject *parent)
-    : QSettings(fileName, format, parent)
-{
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    setIniCodec("UTF-8"); // QTBUG-102334
-#endif
-}
 
 PermissionSettings::~PermissionSettings()
 {
