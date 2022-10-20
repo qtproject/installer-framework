@@ -339,9 +339,9 @@
 
     \title Specifying Settings
 
-    Settings pages enable end users to specify proxy settings or install add-on
-    components. End users select \gui Settings on the introduction page to
-    specify the settings.
+    Settings pages enable end users to specify proxy settings, install add-on
+    components, and modify local cache parameters. End users select \gui Settings
+    on the introduction page to specify the settings.
 
     \section1 Specifying Proxy Settings
 
@@ -366,6 +366,14 @@
     After the installation, only default and user-defined repositories will be
     available.
 
+    \section1 Specifying Local Cache Settings
+
+    The installers use a local cache for the meta information fetched from remote
+    repositories. This improves loading times when the same metadata is accessed
+    multiple times. End users can configure the location of the metadata cache and
+    clear the contents of an existing cache.
+
+    \image ifw-settings-cache.png "Local Cache tab on Settings page"
 */
 
 /*!
