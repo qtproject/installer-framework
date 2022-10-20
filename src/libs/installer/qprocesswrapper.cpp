@@ -32,6 +32,7 @@
 #include "utils.h"
 
 #include <QDir>
+#include <QVariant>
 
 namespace QInstaller {
 

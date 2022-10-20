@@ -31,6 +31,7 @@
 #include "component.h"
 #include "globals.h"
 #include "fileutils.h"
+#include "packagemanagercore.h"
 #include "remoteclient.h"
 #include "remotefileengine.h"
 

@@ -31,6 +31,8 @@
 
 #include "qinstallerglobal.h"
 
+#include "component.h"
+
 #include <QtCore/QAbstractItemModel>
 #include <QtCore/QList>
 #include <QtCore/QSet>
@@ -38,7 +40,6 @@
 
 namespace QInstaller {
 
-class Component;
 class PackageManagerCore;
 
 class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel

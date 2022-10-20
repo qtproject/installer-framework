@@ -35,8 +35,10 @@
 
 #include <QCoreApplication>
 #include <QDataStream>
-#include <QObject>
 #include <QLocalSocket>
+#include <QObject>
+#include <QVariant>
+
 
 namespace QInstaller {
 

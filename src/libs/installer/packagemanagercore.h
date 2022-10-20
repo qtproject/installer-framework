@@ -29,6 +29,7 @@
 #define PACKAGEMANAGERCORE_H
 
 #include "binaryformat.h"
+#include "component.h"
 #include "protocol.h"
 #include "repository.h"
 #include "qinstallerglobal.h"
@@ -38,12 +39,12 @@
 #include <QtCore/QHash>
 #include <QtCore/QObject>
 #include <QtCore/QStringList>
-#include <QtCore/QVector>
+#include <QtCore/QList>
 #include <QSettings>
+#include <QModelIndex>
 
 namespace QInstaller {
 
-class Component;
 class ComponentModel;
 class ScriptEngine;
 class PackageManagerCorePrivate;
