@@ -200,7 +200,8 @@ public:
             const QStringList translations = m_core->settings().translations();
 
             if (translations.isEmpty()) {
-                foreach (const QLocale locale, QLocale().uiLanguages()) {
+                for (const QString &language : QLocale().uiLanguages()) {
+                    const QLocale locale(language);
                     QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
                     bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
                                                       QLatin1String("_"), newDirectory);
