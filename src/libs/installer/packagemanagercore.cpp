@@ -4425,8 +4425,8 @@ void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &compon
             if (!(parent && parent->treeNameMoveChildren()))
                 continue; // TreeName only applied to parent
 
-            if (newName.split(QLatin1Char('.'), QString::SkipEmptyParts).count()
-                    > name.split(QLatin1Char('.'), QString::SkipEmptyParts).count()) {
+            if (newName.split(QLatin1Char('.'), Qt::SkipEmptyParts).count()
+                    > name.split(QLatin1Char('.'), Qt::SkipEmptyParts).count()) {
                 continue;
             }
             newName = name;

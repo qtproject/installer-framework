@@ -153,7 +153,7 @@ void ComponentModelHelper::setEnabled(bool enabled)
 */
 bool ComponentModelHelper::isTristate() const
 {
-    return (flags() & Qt::ItemIsTristate) != 0;
+    return (flags() & Qt::ItemIsAutoTristate) != 0;
 }
 
 /*!
@@ -164,7 +164,7 @@ bool ComponentModelHelper::isTristate() const
 */
 void ComponentModelHelper::setTristate(bool tristate)
 {
-    changeFlags(tristate, Qt::ItemIsTristate);
+    changeFlags(tristate, Qt::ItemIsAutoTristate);
 }
 
 /*!

@@ -964,7 +964,7 @@ void PackageManagerCorePrivate::readMaintenanceConfigFiles(const QString &target
             case QXmlStreamReader::StartElement: {
                 if (reader.name() == QLatin1String("Network")) {
                     while (reader.readNextStartElement()) {
-                        const QStringRef name = reader.name();
+                        const QStringView name = reader.name();
                         if (name == QLatin1String("Ftp")) {
                             m_data.settings().setFtpProxy(readProxy(reader));
                         } else if (name == QLatin1String("Http")) {

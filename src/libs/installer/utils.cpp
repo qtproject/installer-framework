@@ -57,7 +57,7 @@
 */
 void QInstaller::uiDetachedWait(int ms)
 {
-    QTime timer;
+    QElapsedTimer timer;
     timer.start();
     do {
         QCoreApplication::processEvents(QEventLoop::AllEvents, ms);

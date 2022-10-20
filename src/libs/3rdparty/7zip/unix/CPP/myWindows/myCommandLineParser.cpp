@@ -37,7 +37,7 @@ void SplitCommandLine(const UString &s, UStringVector &parts)
     parts.Clear();
 
     const QString cmdLine = QString::fromStdWString(static_cast<const wchar_t*>(s));
-    const QStringList args = cmdLine.simplified().split(QLatin1Char(' '), QString::SkipEmptyParts);
+    const QStringList args = cmdLine.simplified().split(QLatin1Char(' '), Qt::SkipEmptyParts);
     foreach (const QString &arg, args)
         parts.Add(arg.toStdWString().c_str());
 }

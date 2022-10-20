@@ -158,7 +158,7 @@ bool CreateDesktopEntryOperation::performOperation()
     // Type=Application\nExec=qtcreator\nPath=...
     const QStringList pairs = values.split(QLatin1Char('\n'));
     for (QStringList::const_iterator it = pairs.begin(); it != pairs.end(); ++it)
-        stream << *it << endl;
+        stream << *it << Qt::endl;
 
     return true;
 }

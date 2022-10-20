@@ -293,7 +293,7 @@ QString PackageManagerCoreData::replaceVariables(const QString &str) const
 
 QByteArray PackageManagerCoreData::replaceVariables(const QByteArray &ba) const
 {
-    static const QChar at = QLatin1Char('@');
+    static const char at = '@';
     QByteArray res;
     int pos = 0;
     while (true) {

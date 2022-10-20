@@ -442,7 +442,7 @@ VerboseWriter *VerboseWriter::instance()
 */
 void VerboseWriter::appendLine(const QString &msg)
 {
-    m_stream << msg << endl;
+    m_stream << msg << Qt::endl;
 }
 
 /*!

@@ -356,7 +356,7 @@ void QProcessWrapper::start(const QString &param1, QIODevice::OpenMode param2)
         callRemoteMethod(QLatin1String(Protocol::QProcessStart2Arg), param1, param2);
         m_lock.unlock();
     } else {
-        process.start(param1, param2);
+        process.start(param1, {}, param2);
     }
 }
 
