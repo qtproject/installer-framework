@@ -106,6 +106,12 @@ MetadataJob::~MetadataJob()
 {
     resetCompressedFetch();
     reset();
+
+    if (!m_core)
+        return;
+
+    if (m_metaFromCache.isValid() && !m_core->settings().persistentLocalCache())
+        m_metaFromCache.clear();
 }
 
 /*
@@ -180,6 +186,10 @@ bool MetadataJob::resetCache(bool init)
             "missing package manager core engine.";
         return false;
     }
+
+    if (m_metaFromCache.isValid() && !m_core->settings().persistentLocalCache())
+        m_metaFromCache.clear();
+
     m_metaFromCache.setPath(m_core->settings().localCachePath());
     m_metaFromCache.setType(QLatin1String("Metadata"));
     m_metaFromCache.setVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
@@ -344,9 +354,6 @@ bool MetadataJob::updateCache()
             return false;
         }
         meta->setPersistentRepositoryPath(meta->repository().url());
-        if (!m_core->settings().persistentLocalCache())
-            m_tempDirDeleter.add(meta->path());
-
         registeredKeys.append(m_fetchedMetadata.key(meta));
     }
     // Remove items whose ownership was transferred to cache
