@@ -263,7 +263,7 @@ QString Link::targetPath() const
 #ifdef Q_OS_WIN
     return readWindowsSymLink(m_path);
 #else
-    return QFileInfo(m_path).readLink();
+    return QFileInfo(m_path).symLinkTarget();
 #endif
 }
 

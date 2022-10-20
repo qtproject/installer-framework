@@ -66,7 +66,13 @@ QList<ProcessInfo> runningProcesses()
     QStringList deviceList;
     const DWORD bufferSize = 1024;
     char buffer[bufferSize + 1] = { 0 };
-    if (QSysInfo::windowsVersion() <= QSysInfo::WV_5_2) {
+
+    // Qt6 does not support Win before 10
+    bool winVerLessEqual5_2 = false;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    winVerLessEqual5_2 = QSysInfo::windowsVersion() <= QSysInfo::WV_5_2;
+#endif
+    if (winVerLessEqual5_2) {
         const DWORD size = GetLogicalDriveStringsA(bufferSize, buffer);
         deviceList = QString::fromLatin1(buffer, size).split(QLatin1Char(char(0)), Qt::SkipEmptyParts);
     }
@@ -85,7 +91,7 @@ QList<ProcessInfo> runningProcesses()
     processStruct.dwSize = sizeof(PROCESSENTRY32);
     bool foundProcess = Process32First(snapshot, &processStruct);
     while (foundProcess) {
-        HANDLE procHandle = OpenProcess(QSysInfo::windowsVersion() > QSysInfo::WV_5_2
+        HANDLE procHandle = OpenProcess(!winVerLessEqual5_2
             ? KDSYSINFO_PROCESS_QUERY_LIMITED_INFORMATION : PROCESS_QUERY_INFORMATION, false, processStruct
                 .th32ProcessID);
 
@@ -93,7 +99,7 @@ QList<ProcessInfo> runningProcesses()
         QString executablePath;
         DWORD bufferSize = 1024;
 
-        if (QSysInfo::windowsVersion() > QSysInfo::WV_5_2) {
+        if (!winVerLessEqual5_2) {
             succ = pQueryFullProcessImageNamePtr(procHandle, 0, buffer, &bufferSize);
             executablePath = QString::fromLatin1(buffer);
         } else if (pGetProcessImageFileNamePtr) {

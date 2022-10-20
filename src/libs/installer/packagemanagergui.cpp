@@ -80,12 +80,14 @@
 #include <QShowEvent>
 #include <QFileDialog>
 #include <QGroupBox>
-#include <QDesktopWidget>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 # include <QWinTaskbarButton>
 # include <QWinTaskbarProgress>
+#endif
 #endif
 
 using namespace KDUpdater;
@@ -451,7 +453,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 */
 void PackageManagerGui::setMaxSize()
 {
-    QSize size = qApp->desktop()->availableGeometry(this).size();
+    QSize size = this->screen()->availableGeometry().size();
     int windowFrameHeight = frameGeometry().height() - geometry().height();
     int availableHeight = size.height() - windowFrameHeight;
 
@@ -1549,6 +1551,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_updateComponents->setEnabled(!m_offlineMaintenanceTool && ProductKeyCheck::instance()->hasValidKey());
 
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
         m_taskButton = new QWinTaskbarButton(this);
         connect(core, &PackageManagerCore::metaJobProgress,
@@ -1556,6 +1559,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     } else {
         m_taskButton = nullptr;
     }
+#endif
 #endif
 }
 
@@ -1602,6 +1606,7 @@ bool IntroductionPage::validatePage()
     }
 
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0 ,0)
     if (m_taskButton) {
         if (!m_taskButton->window()) {
             if (QWidget *widget = QApplication::activeWindow())
@@ -1612,6 +1617,7 @@ bool IntroductionPage::validatePage()
         m_taskButton->progress()->resume();
         m_taskButton->progress()->setVisible(true);
     }
+#endif
 #endif
 
     // fetch updater packages
@@ -1677,8 +1683,10 @@ bool IntroductionPage::validatePage()
     gui()->setSettingsButtonEnabled(true);
 
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (m_taskButton)
         m_taskButton->progress()->setVisible(!isComplete());
+#endif
 #endif
     return isComplete();
 }
@@ -1800,10 +1808,12 @@ void IntroductionPage::setErrorMessage(const QString &error)
     m_errorLabel->setPalette(palette);
 
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (m_taskButton) {
         m_taskButton->progress()->stop();
         m_taskButton->progress()->setValue(100);
     }
+#endif
 #endif
 }
 

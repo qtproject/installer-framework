@@ -54,7 +54,7 @@
 
 #include <iostream>
 
-#if defined(Q_OS_MACOS) or defined(Q_OS_UNIX)
+#if defined(Q_OS_MACOS) || defined(Q_OS_UNIX)
 #  include <unistd.h>
 #  include <sys/types.h>
 #endif
@@ -112,7 +112,9 @@ int main(int argc, char *argv[])
         QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     }
 #if defined(Q_OS_WIN)
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_DisableWindowContextHelpButton);
+#endif
 #endif
     // increase maximum numbers of file descriptors
 #if defined(Q_OS_MACOS)

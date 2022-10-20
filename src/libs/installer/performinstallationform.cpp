@@ -49,8 +49,10 @@
 #include <QtCore/QTimer>
 
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 # include <QWinTaskbarButton>
 # include <QWinTaskbarProgress>
+#endif
 #endif
 
 using namespace QInstaller;
@@ -96,12 +98,14 @@ PerformInstallationForm::PerformInstallationForm(PackageManagerCore *core, QObje
     , m_core(core)
 {
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (QSysInfo::windowsVersion() >= QSysInfo::WV_WINDOWS7) {
         m_taskButton = new QWinTaskbarButton(this);
         m_taskButton->progress()->setVisible(true);
     } else {
         m_taskButton = nullptr;
     }
+#endif
 #endif
 }
 
@@ -204,11 +208,13 @@ void PerformInstallationForm::updateProgress()
 
     m_progressBar->setValue(progressPercentage);
 #ifdef Q_OS_WIN
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (m_taskButton) {
         if (!m_taskButton->window() && QApplication::activeWindow())
             m_taskButton->setWindow(QApplication::activeWindow()->windowHandle());
         m_taskButton->progress()->setValue(progressPercentage);
     }
+#endif
 #endif
 
     static QString lastLabelText;
