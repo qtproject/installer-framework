@@ -40,8 +40,8 @@
 
 #include <QCoreApplication>
 #include <QDeadlineTimer>
+#include <QRecursiveMutex>
 #include <QTimer>
-#include <QMutex>
 #include <QThread>
 
 namespace QInstaller {
@@ -55,7 +55,6 @@ public:
     RemoteClientPrivate(RemoteClient *parent)
         : RemoteObject(QLatin1String("RemoteClientPrivate"))
         , q_ptr(parent)
-        , m_mutex(QMutex::Recursive)
         , m_startServerAs(Protocol::StartAs::User)
         , m_serverStarted(false)
         , m_active(false)
@@ -201,7 +200,7 @@ public:
 
 private:
     RemoteClient *q_ptr;
-    QMutex m_mutex;
+    QRecursiveMutex m_mutex;
     QString m_socketName;
     Protocol::StartAs m_startServerAs;
     bool m_serverStarted;
