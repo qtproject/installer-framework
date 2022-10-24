@@ -150,6 +150,8 @@ static const QLatin1String scSearchShort("se");
 static const QLatin1String scSearchLong("search");
 static const QLatin1String scCreateOfflineShort("co");
 static const QLatin1String scCreateOfflineLong("create-offline");
+static const QLatin1String scClearCacheShort("cc");
+static const QLatin1String scClearCacheLong("clear-cache");
 static const QLatin1String scPurgeShort("pr");
 static const QLatin1String scPurgeLong("purge");
 
@@ -211,6 +213,8 @@ static const QLatin1String scNoDefaultInstallationShort("nd");
 static const QLatin1String scNoDefaultInstallationLong("no-default-installations");
 static const QLatin1String scFilterPackagesShort("fp");
 static const QLatin1String scFilterPackagesLong("filter-packages");
+static const QLatin1String scLocalCachePathShort("cp");
+static const QLatin1String scLocalCachePathLong("cache-path");
 
 // Developer options
 static const QLatin1String scScriptShort("s");
@@ -247,7 +251,9 @@ static const QStringList scCommandLineInterfaceOptions = {
     scCreateOfflineShort,
     scCreateOfflineLong,
     scPurgeShort,
-    scPurgeLong
+    scPurgeLong,
+    scClearCacheShort,
+    scClearCacheLong
 };
 
 } // namespace CommandLineOptions

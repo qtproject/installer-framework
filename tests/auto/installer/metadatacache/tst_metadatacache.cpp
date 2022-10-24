@@ -86,6 +86,24 @@ private:
         }
     }
 
+    QStringList itemsFromManifest(const QString &manifestPath)
+    {
+        QFile manifestFile(manifestPath);
+        if (!manifestFile.open(QIODevice::ReadOnly))
+            return QStringList();
+
+        const QByteArray manifestData = manifestFile.readAll();
+        const QJsonDocument manifestJsonDoc(QJsonDocument::fromJson(manifestData));
+        const QJsonObject docJsonObject = manifestJsonDoc.object();
+        const QJsonArray itemsJsonArray = docJsonObject.value(QLatin1String("items")).toArray();
+
+        QStringList items;
+        for (const auto &itemJsonValue : itemsJsonArray)
+            items << itemJsonValue.toString();
+
+        return items;
+    }
+
     QByteArray checksumFromUpdateFile(const QString &directory)
     {
         QFile updateFile(directory + QDir::separator() + QLatin1String("Updates.xml"));
@@ -130,6 +148,9 @@ private slots:
         metadata = cache.itemByChecksum(m_newMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
+        QVERIFY(!QFileInfo::exists(m_cachePath + "/manifest.json"));
+        QVERIFY(cache.sync());
+        QVERIFY(itemsFromManifest(m_cachePath + "/manifest.json").contains(QLatin1String(m_newMetadataItemChecksum)));
 
         QVERIFY(cache.clear());
         QVERIFY(!QFileInfo::exists(m_cachePath));
@@ -141,11 +162,16 @@ private slots:
 
         GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
+        QVERIFY(itemsFromManifest(m_cachePath + "/manifest.json").contains(QLatin1String(m_oldMetadataItemChecksum)));
 
         QVERIFY(cache.registerItem(metadata));
         metadata = cache.itemByChecksum(m_newMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
+        QVERIFY(cache.sync());
+        const QStringList manifestItems = itemsFromManifest(m_cachePath + "/manifest.json");
+        QVERIFY(manifestItems.contains(QLatin1String(m_oldMetadataItemChecksum)));
+        QVERIFY(manifestItems.contains(QLatin1String(m_newMetadataItemChecksum)));
 
         QVERIFY(cache.clear());
         QVERIFY(!QFileInfo::exists(m_cachePath));

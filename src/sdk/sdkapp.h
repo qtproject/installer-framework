@@ -266,6 +266,16 @@ public:
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         }
 
+        if (m_parser.isSet(CommandLineOptions::scLocalCachePathLong)) {
+            const QString cachePath = m_parser.value(CommandLineOptions::scLocalCachePathLong);
+            if (cachePath.isEmpty()) {
+                errorMessage = QObject::tr("Empty value for option 'cache-path'.");
+                return false;
+            }
+            m_core->settings().setLocalCachePath(cachePath);
+        }
+        m_core->resetLocalCache(true);
+
         if (m_parser.isSet(CommandLineOptions::scShowVirtualComponentsLong))
             QInstaller::PackageManagerCore::setVirtualComponentsVisible(true);
 
