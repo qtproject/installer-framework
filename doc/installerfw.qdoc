@@ -945,6 +945,15 @@
         \row
             \li Script
             \li File name of a script being loaded. Optional.
+                Specifying the \c {postLoad="True"} attribute will cause the script
+                to be loaded only to the component that is selected for update or
+                install. With the attribute, the script is loaded right before the
+                component installation starts. This will speed up the installer
+                if there are large amounts of components with install scripts in the
+                repository. Make sure the script does not contain anything that needs
+                to be evaluated before the install tree is shown, like setting \c
+                <Default> to \c true. Both \c <Script postLoad="True"> and
+                \c <Script> tags can be used at the same time.
                 For more information, see \l{Adding Operations}.
         \row
             \li UserInterfaces

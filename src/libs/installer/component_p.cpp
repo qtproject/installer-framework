@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -55,6 +55,9 @@ ComponentPrivate::ComponentPrivate(PackageManagerCore *core, Component *qq)
     , m_operationsCreatedSuccessfully(true)
     , m_updateIsAvailable(false)
     , m_treeNameMoveChildren(false)
+    , m_postLoadScript(false)
+    , m_scriptContext(QJSValue::UndefinedValue)
+    , m_postScriptContext(QJSValue::UndefinedValue)
 {
 }
 

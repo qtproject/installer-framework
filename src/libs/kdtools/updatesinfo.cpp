@@ -115,6 +115,7 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
 
     UpdateInfo info;
     QMap<QString, QString> localizedDescriptions;
+    QHash<QString, QVariant> scriptHash;
     for (int i = 0; i < updateE.childNodes().count(); i++) {
         QDomElement childE = updateE.childNodes().at(i).toElement();
         if (childE.isNull())
@@ -162,10 +163,18 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
             const QDomNodeList operationNodes = childE.childNodes();
             QVariant operationListVariant = parseOperations(childE.childNodes());
             info.data.insert(QLatin1String("Operations"), operationListVariant);
+        } else if (childE.tagName() == QLatin1String("Script")) {
+            const bool postLoad = QVariant(childE.attribute(QLatin1String("postLoad"))).toBool();
+            if (postLoad)
+                scriptHash.insert(QLatin1String("postLoadScript"), childE.text());
+            else
+                scriptHash.insert(QLatin1String("installScript"), childE.text());
         } else {
             info.data[childE.tagName()] = childE.text();
         }
     }
+    if (!scriptHash.isEmpty())
+        info.data.insert(QLatin1String("Script"), scriptHash);
 
     QStringList candidates;
     foreach (const QString &lang, QLocale().uiLanguages())

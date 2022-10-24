@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -125,7 +125,7 @@ private slots:
         const QString debugMessage =  QString("Exception while loading the component script");
         const QRegularExpression re(debugMessage);
         QTest::ignoreMessage(QtWarningMsg, re);
-        invalidScriptComponent->loadComponentScript(":///data/broken_script.qs");
+        invalidScriptComponent->evaluateComponentScript(":///data/broken_script.qs");
 
         model->reset(components);
         testModelState(model, m_checkedComponentsWithBrokenScript, m_partiallyCheckedComponentsWithBrokenScript, m_uncheckedComponentsWithBrokenScript);

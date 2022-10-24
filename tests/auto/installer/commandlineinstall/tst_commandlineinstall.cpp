@@ -729,6 +729,21 @@ private slots:
         QVERIFY(file.remove());
     }
 
+    void testPostScript()
+    {
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                                                (m_installDir, ":///data/installPackagesRepository"));
+        QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << QLatin1String("componentJ")));
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentJ", "1.0.0content.txt"); //Selected
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentA", "1.0.0content.txt"); //Dependency for componentG
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentE", "1.0.0content.txt"); //ForcedInstall
+        VerifyInstaller::verifyInstallerResources(m_installDir, "componentG", "1.0.0content.txt"); //Default
+
+        //componentJ is extracted to "extractToAnotherPath" -folder in post install script
+        bool fileExists = QFileInfo::exists(m_installDir + QDir::separator() + "extractToAnotherPath" + QDir::separator() + "installcontentJ.txt");
+        QVERIFY2(fileExists, QString("File \"%1\" does not exist.").arg("installcontentJ.txt").toLatin1());
+    }
+
     void init()
     {
         m_installDir = QInstaller::generateTemporaryFileName();

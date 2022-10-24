@@ -433,7 +433,7 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 }
 
 template <typename T>
-bool PackageManagerCorePrivate::loadComponentScripts(const T &components)
+bool PackageManagerCorePrivate::loadComponentScripts(const T &components, const bool postScript)
 {
     infoMessage(nullptr, tr("Loading component scripts..."));
 
@@ -442,7 +442,7 @@ bool PackageManagerCorePrivate::loadComponentScripts(const T &components)
         if (statusCanceledOrFailed())
             return false;
 
-        component->loadComponentScript();
+        component->loadComponentScript(postScript);
         ++loadedComponents;
 
         const int currentProgress = qRound(double(loadedComponents) / components.count() * 100);
@@ -452,8 +452,8 @@ bool PackageManagerCorePrivate::loadComponentScripts(const T &components)
     return true;
 }
 
-template bool PackageManagerCorePrivate::loadComponentScripts<QList<Component *>>(const QList<Component *> &);
-template bool PackageManagerCorePrivate::loadComponentScripts<QHash<QString, Component *>>(const QHash<QString, Component *> &);
+template bool PackageManagerCorePrivate::loadComponentScripts<QList<Component *>>(const QList<Component *> &, const bool);
+template bool PackageManagerCorePrivate::loadComponentScripts<QHash<QString, Component *>>(const QHash<QString, Component *> &, const bool);
 
 void PackageManagerCorePrivate::cleanUpComponentEnvironment()
 {
@@ -3073,6 +3073,14 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
 {
     QString htmlOutput;
     bool componentsOk = m_core->calculateComponents(&htmlOutput);
+
+    try {
+        loadComponentScripts(installerCalculator()->orderedComponentsToInstall(), true);
+    }  catch (const Error &error) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
+        return false;
+    }
+
     if (statusCanceledOrFailed()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {

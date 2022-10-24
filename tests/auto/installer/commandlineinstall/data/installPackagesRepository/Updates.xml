@@ -170,4 +170,14 @@
   <DownloadableArchives>content.7z</DownloadableArchives>
   <Virtual>true</Virtual>
  </PackageUpdate>
+  <PackageUpdate>
+  <Name>componentJ</Name>
+  <DisplayName>component J</DisplayName>
+  <Description>This component has post install script.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>50</SortingPriority>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Script postLoad="True">postLoadscript.js</Script>
+ </PackageUpdate>
 </Updates>

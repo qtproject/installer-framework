@@ -334,6 +334,7 @@ protected:
     void entering() override;
     void leaving() override;
     void showEvent(QShowEvent *event) override;
+    bool validatePage() override;
 
 private Q_SLOTS:
     void setModified(bool modified);

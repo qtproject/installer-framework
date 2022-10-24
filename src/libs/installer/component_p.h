@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -64,17 +64,20 @@ public:
     bool m_operationsCreatedSuccessfully;
     bool m_updateIsAvailable;
     bool m_treeNameMoveChildren;
+    bool m_postLoadScript;
 
     QString m_componentName;
     QUrl m_repositoryUrl;
     QString m_localTempPath;
     QJSValue m_scriptContext;
+    QJSValue m_postScriptContext;
     QHash<QString, QString> m_vars;
     QList<Component*> m_childComponents;
     QList<Component*> m_allChildComponents;
     QStringList m_downloadableArchives;
     QStringList m_stopProcessForUpdateRequests;
     QHash<QString, QPointer<QWidget> > m_userInterfaces;
+    QHash<QString, QVariant> m_scriptHash;
 
     // < display name, < file name, file content > >
     QHash<QString, QVariantMap> m_licenses;

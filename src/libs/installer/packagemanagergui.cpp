@@ -2227,6 +2227,24 @@ void ComponentSelectionPage::showEvent(QShowEvent *event)
     QWizardPage::showEvent(event);
 }
 
+bool ComponentSelectionPage::validatePage()
+{
+    PackageManagerCore *core = packageManagerCore();
+    try {
+        core->loadComponentScripts(core->orderedComponentsToInstall(), true);
+    } catch (const Error &error) {
+        // As component script loading failed, there is error in the script and component is
+        // marked as unselected. Recalculate so that unselected component is removed from install.
+        // User is then able to select other components for install.
+        core->clearComponentsToInstallCalculated();
+        core->calculateComponentsToInstall();
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+                                    tr("Error"), error.message());
+        return false;
+    }
+    return true;
+}
+
 /*!
     Selects all components in the component tree.
 */

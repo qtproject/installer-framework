@@ -118,10 +118,9 @@ public:
     void removeComponent(Component *component);
     QList<Component*> descendantComponents() const;
 
-    void loadComponentScript();
+    void loadComponentScript(const bool postLoad = false);
+    void evaluateComponentScript(const QString &fileName, const bool postScriptContext = false);
 
-    //move this to private
-    void loadComponentScript(const QString &fileName);
     void loadTranslations(const QDir &directory, const QStringList &qms);
     void loadUserInterfaces(const QDir &directory, const QStringList &uis);
     void loadLicenses(const QString &directory, const QHash<QString, QVariant> &hash);
@@ -235,6 +234,8 @@ private:
         const QString &parameter10 = QString());
     Operation *createOperation(const QString &operationName, const QStringList &parameters);
     void markComponentUnstable(const Component::UnstableError error, const QString &errorMessage);
+
+    QJSValue callScriptMethod(const QString &methodName, const QJSValueList &arguments = QJSValueList()) const;
 
 private:
     QString validatorCallbackName;

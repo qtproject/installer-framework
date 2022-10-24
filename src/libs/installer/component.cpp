@@ -342,8 +342,7 @@ void Component::loadDataFromPackage(const Package &package)
     setValue(scUpdateText, package.data(scUpdateText).toString());
     setValue(scNewComponent, package.data(scNewComponent).toString());
     setValue(scRequiresAdminRights, package.data(scRequiresAdminRights).toString());
-
-    setValue(scScriptTag, package.data(scScriptTag).toString());
+    d->m_scriptHash = package.data(QLatin1String(scScriptTag)).toHash();
     setValue(scReplaces, package.data(scReplaces).toString());
     setValue(scReleaseDate, package.data(scReleaseDate).toString());
     setValue(scCheckable, package.data(scCheckable).toString());
@@ -594,38 +593,47 @@ bool Component::treeNameMoveChildren() const
 }
 
 /*!
-    Loads the component script into the script engine.
+    Loads the component script into the script engine. Call this method with
+    \c postLoad \c true to a list of components that are updated or installed
+    to improve performance if the amount of components is huge and there are no script
+    functions that needs to be called before the installation starts.
 */
-void Component::loadComponentScript()
+void Component::loadComponentScript(const bool postLoad)
 {
-    const QString script = d->m_vars.value(scScriptTag);
-    if (!localTempPath().isEmpty() && !script.isEmpty())
-        loadComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name(), script));
+    const QString installScript(!postLoad ? d->m_scriptHash.value(QLatin1String("installScript")).toString()
+                                      : d->m_scriptHash.value(QLatin1String("postLoadScript")).toString());
+
+    if (!localTempPath().isEmpty() && !installScript.isEmpty()) {
+        evaluateComponentScript(QString::fromLatin1("%1/%2/%3").arg(localTempPath(), name()
+                        , installScript), postLoad);
+    }
 }
 
 /*!
-    Loads the script at \a fileName into the script engine. The installer and all its
-    components as well as other useful things are being exported into the script.
-    For more information, see \l{Component Scripting}.
-
-    Throws an error when either the script at \a fileName could not be opened, or QScriptEngine
-    could not evaluate the script.
+    \internal
 */
-void Component::loadComponentScript(const QString &fileName)
+void Component::evaluateComponentScript(const QString &fileName, const bool postScriptContent)
 {
     // introduce the component object as javascript value and call the name to check that it
     // was successful
     try {
-        d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
-            QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
-            .arg(name()));
-    } catch (const Error &error) {
-        if (packageManagerCore()->settings().allowUnstableComponents()) {
-            setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
-            qCWarning(QInstaller::lcDeveloperBuild) << error.message();
+        if (postScriptContent) {
+            d->m_postScriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
+                QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
+                .arg(name()));
         } else {
-            throw error;
+            d->m_scriptContext = d->scriptEngine()->loadInContext(QLatin1String("Component"), fileName,
+                QString::fromLatin1("var component = installer.componentByName('%1'); component.name;")
+                .arg(name()));
         }
+    } catch (const Error &error) {
+        qCWarning(QInstaller::lcDeveloperBuild) << error.message();
+        setUnstable(Component::UnstableError::ScriptLoadingFailed, error.message());
+        // evaluateComponentScript is called with postScriptContent after we have selected components
+        // and are about to install. Do not allow install if unstable components are allowed
+        // as we then end up installing a component which has invalid script.
+        if (!packageManagerCore()->settings().allowUnstableComponents() || postScriptContent)
+            throw error;
     }
 
     emit loaded();
@@ -639,7 +647,7 @@ void Component::loadComponentScript(const QString &fileName)
 */
 void Component::languageChanged()
 {
-    d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("retranslateUi"));
+    callScriptMethod(QLatin1String("retranslateUi"));
 }
 
 /*!
@@ -840,10 +848,8 @@ void Component::createOperationsForPath(const QString &path)
         return;
 
     // the script can override this method
-    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("createOperationsForPath"), QJSValueList() << path).isUndefined()) {
-            return;
-    }
+    if (!callScriptMethod(QLatin1String("createOperationsForPath"), QJSValueList() << path).isUndefined())
+        return;
 
     QString target;
     static const QString prefix = QString::fromLatin1("installer://");
@@ -886,10 +892,8 @@ void Component::createOperationsForArchive(const QString &archive)
         return;
 
     // the script can override this method
-    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-        QLatin1String("createOperationsForArchive"), QJSValueList() << archive).isUndefined()) {
-            return;
-    }
+    if (!callScriptMethod(QLatin1String("createOperationsForArchive"), QJSValueList() << archive).isUndefined())
+        return;
 
     QScopedPointer<AbstractArchive> archiveFile(ArchiveFactory::instance().create(archive));
     const bool isZip = (archiveFile && archiveFile->open(QIODevice::ReadOnly) && archiveFile->isSupported());
@@ -911,7 +915,7 @@ void Component::createOperationsForArchive(const QString &archive)
 void Component::beginInstallation()
 {
     // the script can override this method
-    d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("beginInstallation"));
+    callScriptMethod(QLatin1String("beginInstallation"));
 }
 
 /*!
@@ -921,10 +925,9 @@ void Component::beginInstallation()
 void Component::createOperations()
 {
     // the script can override this method
-    if (!d->scriptEngine()->callScriptMethod(d->m_scriptContext, QLatin1String("createOperations"))
-        .isUndefined()) {
-            d->m_operationsCreated = true;
-            return;
+    if (!callScriptMethod(QLatin1String("createOperations")).isUndefined()) {
+        d->m_operationsCreated = true;
+        return;
     }
     loadXMLExtractOperations();
     foreach (const QString &archive, archives())
@@ -1193,6 +1196,17 @@ void Component::markComponentUnstable(Component::UnstableError error, const QStr
     emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
 }
 
+QJSValue Component::callScriptMethod(const QString &methodName, const QJSValueList &arguments) const
+{
+    QJSValue scriptContext;
+    if (!d->m_postScriptContext.isUndefined() && d->m_postScriptContext.property(methodName).isCallable())
+        scriptContext = d->m_postScriptContext;
+    else
+        scriptContext = d->m_scriptContext;
+    return d->scriptEngine()->callScriptMethod(scriptContext,
+            methodName, arguments);
+}
+
 namespace {
 
 inline bool convert(QQmlV4Function *func, QStringList *toArgs)
@@ -1341,7 +1355,7 @@ void Component::setValidatorCallbackName(const QString &name)
 bool Component::validatePage()
 {
     if (!validatorCallbackName.isEmpty())
-        return d->scriptEngine()->callScriptMethod(d->m_scriptContext, validatorCallbackName).toBool();
+        return callScriptMethod(validatorCallbackName).toBool();
     return true;
 }
 
@@ -1486,8 +1500,7 @@ bool Component::isDefault() const
     if (d->m_vars.value(scDefault).compare(scScript, Qt::CaseInsensitive) == 0) {
         QJSValue valueFromScript;
         try {
-            valueFromScript = d->scriptEngine()->callScriptMethod(d->m_scriptContext,
-                QLatin1String("isDefault"));
+            valueFromScript = callScriptMethod(QLatin1String("isDefault"));
         } catch (const Error &error) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("isDefaultError"), tr("Cannot resolve isDefault in %1").arg(name()),

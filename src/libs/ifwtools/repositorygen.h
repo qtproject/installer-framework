@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -88,6 +88,7 @@ void IFWTOOLS_EXPORT compressMetaDirectories(const QString &repoDir, const QStri
 QStringList unifyMetadata(const QString &repoDir, const QString &existingRepoDir, QDomDocument doc);
 void splitMetadata(const QStringList &entryList, const QString &repoDir, QDomDocument doc,
                    const QHash<QString, QString> &versionMapping);
+void copyScriptFiles(const QDomNodeList &childNodes, const PackageInfo &info, bool &foundDownloadableArchives, const QString &targetDir);
 
 void IFWTOOLS_EXPORT copyMetaData(const QString &outDir, const QString &dataDir, const PackageInfoVector &packages,
     const QString &appName, const QString& appVersion, const QStringList &uniteMetadatas);

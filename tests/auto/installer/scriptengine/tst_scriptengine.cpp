@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -388,13 +388,24 @@ private slots:
         QCOMPARE(result.isError(), false);
     }
 
+    void loadSimpleComponentScript_data()
+    {
+        QTest::addColumn<QString>("path");
+        QTest::addColumn<bool>("postLoad");
+        QTest::newRow("Pre component script") << ":///data/component1.qs" << false;
+        QTest::newRow("Post component script") << ":///data/component1.qs" << true;
+    }
+
     void loadSimpleComponentScript()
     {
-       try {
-            // ignore retranslateUi which is called by loadComponentScript
+        QFETCH(QString, path);
+        QFETCH(bool, postLoad);
+
+        try {
+            // ignore retranslateUi which is called by evaluateComponentScript
             setExpectedScriptOutput("Component constructor - OK");
             setExpectedScriptOutput("retranslateUi - OK");
-            m_component->loadComponentScript(":///data/component1.qs");
+            m_component->evaluateComponentScript(path, postLoad);
 
             setExpectedScriptOutput("retranslateUi - OK");
             m_component->languageChanged();
@@ -422,8 +433,19 @@ private slots:
         }
     }
 
+    void loadBrokenComponentScript_data()
+    {
+        QTest::addColumn<QString>("path");
+        QTest::addColumn<bool>("postLoad");
+        QTest::newRow("Pre component script") << ":///data/component2.qs" << false;
+        QTest::newRow("Post component script") << ":///data/component2.qs" << true;
+    }
+
     void loadBrokenComponentScript()
     {
+        QFETCH(QString, path);
+        QFETCH(bool, postLoad);
+
         Component *testComponent = new Component(&m_core);
         testComponent->setValue(scName, "broken.component");
 
@@ -433,21 +455,31 @@ private slots:
         try {
             // ignore Output from script
             setExpectedScriptOutput("script function: Component");
-            testComponent->loadComponentScript(":///data/component2.qs");
+            testComponent->evaluateComponentScript(path, postLoad);
         } catch (const Error &error) {
             const QString debugMessage(
-                QString("create Error-Exception: \"Exception while loading the component script \"%1\": "
-                "ReferenceError: broken is not defined\"").arg(QDir::toNativeSeparators(":///data/component2.qs")));
+                QString("Exception while loading the component script \"%1\": "
+                "ReferenceError: broken is not defined on line number: 33").arg(QDir::toNativeSeparators(":///data/component2.qs")));
             QVERIFY2(debugMessage.contains(error.message()), "(ReferenceError: broken is not defined)");
         }
     }
 
+    void loadComponentUserInterfaces_data()
+    {
+        QTest::addColumn<QString>("path");
+        QTest::addColumn<bool>("postLoad");
+        QTest::newRow("Pre component script") << ":///data/userinterface.qs" << false;
+        QTest::newRow("Post component script") << ":///data/userinterface.qs" << true;
+    }
+
     void loadComponentUserInterfaces()
     {
-       try {
+        QFETCH(QString, path);
+        QFETCH(bool, postLoad);
+        try {
             setExpectedScriptOutput("checked: false");
             m_component->loadUserInterfaces(QDir(":///data"), QStringList() << QLatin1String("form.ui"));
-            m_component->loadComponentScript(":///data/userinterface.qs");
+            m_component->evaluateComponentScript(path, postLoad);
         } catch (const Error &error) {
             QFAIL(qPrintable(error.message()));
         }
@@ -591,7 +623,7 @@ private slots:
         try {
             m_core.setPackageManager();
             Component *component = m_core.componentByName("component.test.addOperation");
-            component->loadComponentScript(":///data/addOperation.qs");
+            component->evaluateComponentScript(":///data/addOperation.qs");
 
             setExpectedScriptOutput("Component::createOperations()");
             component->createOperations();

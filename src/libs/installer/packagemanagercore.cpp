@@ -601,6 +601,18 @@ bool PackageManagerCore::clearLocalCache(QString *error)
 }
 
 /*!
+    \internal
+ */
+template <typename T>
+bool PackageManagerCore::loadComponentScripts(const T &components, const bool postScript)
+{
+    return d->loadComponentScripts(components, postScript);
+}
+
+template bool PackageManagerCore::loadComponentScripts<QList<Component *>>(const QList<Component *> &, const bool);
+template bool PackageManagerCore::loadComponentScripts<QHash<QString, Component *>>(const QHash<QString, Component *> &, const bool);
+
+/*!
     \sa {installer::componentsToInstallNeedsRecalculation}{installer.componentsToInstallNeedsRecalculation}
  */
 void PackageManagerCore::componentsToInstallNeedsRecalculation()

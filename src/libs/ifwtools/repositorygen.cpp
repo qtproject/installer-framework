@@ -367,39 +367,8 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
 
             root.appendChild(update);
 
-            // copy script file
-            const QString script = package.firstChildElement(QLatin1String("Script")).text();
-            if (!script.isEmpty()) {
-                QFile scriptFile(QString::fromLatin1("%1/meta/%2").arg(info.directory, script));
-                if (!scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-                    throw QInstaller::Error(QString::fromLatin1("Cannot open component script at \"%1\".")
-                                            .arg(QDir::toNativeSeparators(scriptFile.fileName())));
-                }
-
-                const QString scriptContent = QLatin1String("(function() {")
-                        + QString::fromUtf8(scriptFile.readAll())
-                        + QLatin1String(";"
-                                        "    if (typeof Component == \"undefined\")"
-                                        "        throw \"Missing Component constructor. Please check your script.\";"
-                                        "})();");
-
-                // if the user isn't aware of the downloadable archives value we will add it automatically later
-                foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
-                        || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
-
-                static QInstaller::ScriptEngine testScriptEngine;
-                const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
-                if (value.isError()) {
-                    throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
-                        "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
-                                value.toString().isEmpty() ? QString::fromLatin1("Unknown error.") :
-                                value.toString() + QStringLiteral(" on line number: ") +
-                                    value.property(QStringLiteral("lineNumber")).toString()));
-                }
-
-                const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
-                copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
-            }
+            // copy script files
+            copyScriptFiles(childNodes, info, foundDownloadableArchives, targetDir);
 
             // write DownloadableArchives tag if that is missed by the user
             if (!foundDownloadableArchives && !info.copiedFiles.isEmpty()) {
@@ -974,6 +943,50 @@ void QInstallerTools::splitMetadata(const QStringList &entryList, const QString 
                                         QDir::toNativeSeparators(tmpTarget), QDir::toNativeSeparators(finalTarget)));
         }
         dir.cdUp();
+    }
+}
+
+void QInstallerTools::copyScriptFiles(const QDomNodeList &childNodes, const PackageInfo &info, bool &foundDownloadableArchives, const QString &targetDir)
+{
+    for (int i = 0; i < childNodes.count(); ++i) {
+        const QDomNode node = childNodes.at(i);
+        const QString key = node.nodeName();
+
+        if (key != QLatin1String("Script"))
+            continue;
+        const QString script = node.toElement().text();
+        if (script.isEmpty())
+            continue;
+
+        QFile scriptFile(QString::fromLatin1("%1/meta/%2").arg(info.directory, script));
+        if (!scriptFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            throw QInstaller::Error(QString::fromLatin1("Cannot open component script at \"%1\".")
+                                        .arg(QDir::toNativeSeparators(scriptFile.fileName())));
+        }
+
+        const QString scriptContent = QLatin1String("(function() {")
+                                      + QString::fromUtf8(scriptFile.readAll())
+                                      + QLatin1String(";"
+                                                      "    if (typeof Component == \"undefined\")"
+                                                      "        throw \"Missing Component constructor. Please check your script.\";"
+                                                      "})();");
+
+        // if the user isn't aware of the downloadable archives value we will add it automatically later
+        foundDownloadableArchives |= scriptContent.contains(QLatin1String("addDownloadableArchive"))
+                                     || scriptContent.contains(QLatin1String("removeDownloadableArchive"));
+
+        static QInstaller::ScriptEngine testScriptEngine;
+        const QJSValue value = testScriptEngine.evaluate(scriptContent, scriptFile.fileName());
+        if (value.isError()) {
+            throw QInstaller::Error(QString::fromLatin1("Exception while loading component "
+                        "script at \"%1\": %2").arg(QDir::toNativeSeparators(scriptFile.fileName()),
+                        value.toString().isEmpty() ? QString::fromLatin1("Unknown error.") :
+                        value.toString() + QStringLiteral(" on line number: ") +
+                        value.property(QStringLiteral("lineNumber")).toString()));
+        }
+
+        const QString toLocation(QString::fromLatin1("%1/%2/%3").arg(targetDir, info.name, script));
+        copyWithException(scriptFile.fileName(), toLocation, QInstaller::scScript);
     }
 }
 
