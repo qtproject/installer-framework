@@ -48,7 +48,7 @@ public:
     explicit ScriptEngine(PackageManagerCore *core = 0);
 
     QJSValue globalObject() const { return m_engine.globalObject(); }
-    QJSValue newQObject(QObject *object);
+    QJSValue newQObject(QObject *object, bool qtScriptCompat = true);
     QJSValue newArray(uint length = 0);
     QJSValue evaluate(const QString &program, const QString &fileName = QString(),
         int lineNumber = 1);

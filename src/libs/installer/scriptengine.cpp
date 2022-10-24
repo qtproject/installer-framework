@@ -95,7 +95,7 @@ QJSValue InstallerProxy::components(const QString &regexp) const
 QJSValue InstallerProxy::componentByName(const QString &componentName)
 {
     if (m_core)
-        return m_engine->newQObject(m_core->componentByName(componentName));
+        return m_engine->newQObject(m_core->componentByName(componentName), false);
     return QJSValue();
 }
 
@@ -418,9 +418,9 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
 /*!
     Creates a JavaScript object that wraps the given QObject \a object.
 
-    Signals and slots, properties and children of \a object are
-    available as properties of the created QJSValue. In addition some helper methods and properties
-    are added:
+    Signals and slots, properties and children of \a object are available as properties
+    of the created QJSValue. If \a qtScriptCompat is set to \c true (default), some helper
+    methods and properties from the legacy \c QtScript module are added:
 
     \list
         \li findChild(), findChildren() recursively search for child objects with the given
@@ -429,13 +429,16 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) :
         names.
     \endlist
  */
-QJSValue ScriptEngine::newQObject(QObject *object)
+QJSValue ScriptEngine::newQObject(QObject *object, bool qtScriptCompat)
 {
     QJSValue jsValue = m_engine.newQObject(object);
     if (!jsValue.isQObject())
         return jsValue;
 
     QQmlEngine::setObjectOwnership(object, QQmlEngine::CppOwnership);
+
+    if (!qtScriptCompat) // skip adding the extra properties
+        return jsValue;
 
     // add findChild(), findChildren() methods known from QtScript
     QJSValue findChild = m_engine.evaluate(
