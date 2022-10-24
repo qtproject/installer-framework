@@ -72,6 +72,7 @@ public:
 
     bool initialize();
     bool clear();
+    bool sync();
 
     bool isValid() const;
     QString errorString() const;

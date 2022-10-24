@@ -345,6 +345,9 @@ public:
     void createLocalDependencyHash(const QString &component, const QString &dependencies) const;
     void createAutoDependencyHash(const QString &component, const QString &oldDependencies, const QString &newDependencies) const;
 
+    bool resetLocalCache(bool init = false);
+    bool clearLocalCache(QString *error = nullptr);
+
 public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();
@@ -355,7 +358,6 @@ public Q_SLOTS:
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
-    bool clearLocalCache(QString *error = nullptr);
     void componentsToInstallNeedsRecalculation();
     void calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes);
     void clearComponentsToInstallCalculated();

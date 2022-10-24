@@ -573,11 +573,21 @@ void PackageManagerCore::cancelMetaInfoJob()
 }
 
 /*!
+    Resets the cache used to store downloaded metadata, if one was previously
+    initialized. If \a init is set to \c true, the cache is reinitialized for
+    the path configured in installer's settings.
+
+    Returns \c true on success, \c false otherwise.
+*/
+bool PackageManagerCore::resetLocalCache(bool init)
+{
+    return d->m_metadataJob.resetCache(init);
+}
+
+/*!
     Clears the contents of the cache used to store downloaded metadata.
     Returns \c true on success, \c false otherwise. An error string can
     be retrieved with \a error.
-
-    \sa {installer::clearLocalCache}{installer.clearLocalCache}
 */
 bool PackageManagerCore::clearLocalCache(QString *error)
 {
@@ -3013,10 +3023,10 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         << humanReadableSize(repositorySize);
 
     if (d->m_checkAvailableSpace) {
-        const VolumeInfo tempVolume = VolumeInfo::fromPath(QDir::tempPath());
+        const VolumeInfo cacheVolume = VolumeInfo::fromPath(settings().localCachePath());
         const VolumeInfo targetVolume = VolumeInfo::fromPath(value(scTargetDir));
 
-        const quint64 tempVolumeAvailableSize = tempVolume.availableSize();
+        const quint64 cacheVolumeAvailableSize = cacheVolume.availableSize();
         const quint64 installVolumeAvailableSize = targetVolume.availableSize();
 
         // at the moment there is no better way to check this
@@ -3027,20 +3037,20 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
             return true;
         }
 
-        const bool tempOnSameVolume = (targetVolume == tempVolume);
-        if (tempOnSameVolume) {
-            qDebug() << "Tmp and install directories are on the same volume. Volume mount point:"
+        const bool cacheOnSameVolume = (targetVolume == cacheVolume);
+        if (cacheOnSameVolume) {
+            qDebug() << "Cache and install directories are on the same volume. Volume mount point:"
                 << targetVolume.mountPath() << "Free space available:"
                 << humanReadableSize(installVolumeAvailableSize);
         } else {
-            qDebug() << "Tmp is on a different volume than the installation directory. Tmp volume mount point:"
-                << tempVolume.mountPath() << "Free space available:"
-                << humanReadableSize(tempVolumeAvailableSize) << "Install volume mount point:"
+            qDebug() << "Cache is on a different volume than the installation directory. Cache volume mount point:"
+                << cacheVolume.mountPath() << "Free space available:"
+                << humanReadableSize(cacheVolumeAvailableSize) << "Install volume mount point:"
                 << targetVolume.mountPath() << "Free space available:"
                 << humanReadableSize(installVolumeAvailableSize);
         }
 
-        if (tempOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
+        if (cacheOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
             message = tr("Not enough disk space to store temporary files and the "
                 "installation. %1 are available, while the minimum required is %2.").arg(
                 humanReadableSize(installVolumeAvailableSize), humanReadableSize(required + tempRequired));
@@ -3054,16 +3064,11 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
             return false;
         }
 
-        if (tempVolumeAvailableSize < tempRequired) {
-#ifdef Q_OS_WIN
-            static const QLatin1String scTmpVariable("\"TEMP\" or \"TMP\"");
-#elif defined(Q_OS_LINUX) || defined(Q_OS_MACOS)
-            static const QLatin1String scTmpVariable("\"TMPDIR\"");
-#endif
+        if (cacheVolumeAvailableSize < tempRequired) {
             message = tr("Not enough disk space to store temporary files! %1 are available, "
                 "while the minimum required is %2. You may select another location for the "
-                "temporary files by modifying the %3 environment variable and restarting the application.")
-                .arg(humanReadableSize(tempVolumeAvailableSize), humanReadableSize(tempRequired), scTmpVariable);
+                "temporary files by modifying the local cache path from the installer settings.")
+                .arg(humanReadableSize(cacheVolumeAvailableSize), humanReadableSize(tempRequired));
             return false;
         }
 

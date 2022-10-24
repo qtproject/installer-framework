@@ -331,6 +331,9 @@ int main(int argc, char *argv[])
         } else if (parser.positionalArguments().contains(CommandLineOptions::scCreateOfflineShort)
                 || parser.positionalArguments().contains(CommandLineOptions::scCreateOfflineLong)) {
             return CommandLineInterface(argc, argv).createOfflineInstaller();
+        } else if (parser.positionalArguments().contains(CommandLineOptions::scClearCacheShort)
+                || parser.positionalArguments().contains(CommandLineOptions::scClearCacheLong)) {
+            return CommandLineInterface(argc, argv).clearLocalCache();
         }
         if (QInstaller::LoggingHandler::instance().isVerbose()) {
             std::cout << VERSION << std::endl << BUILDDATE << std::endl << SHA << std::endl;

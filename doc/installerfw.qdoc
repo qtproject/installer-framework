@@ -252,6 +252,9 @@
                 search command. The keys can be any of the possible package information elements, like
                 \c DisplayName and \c Description.
         \row
+            \li --cp, --cache-path <path>
+            \li Sets the path used for local metadata cache. The path must be writable by the current user.
+        \row
             \li --am, --accept-messages
             \li [CLI] Accepts all message queries without user input.
         \row
@@ -333,6 +336,9 @@
         \row
             \li co, create-offline <pkg ...>
             \li Create offline installer from selected packages.
+        \row
+            \li cc, clear-cache
+            \li Clear contents of the local metadata cache.
         \row
             \li pr, purge
             \li Uninstall all packages and remove the program directory.

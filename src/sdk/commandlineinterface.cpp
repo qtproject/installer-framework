@@ -248,6 +248,18 @@ int CommandLineInterface::createOfflineInstaller()
     }
 }
 
+int CommandLineInterface::clearLocalCache()
+{
+    if (!initialize())
+        return EXIT_FAILURE;
+
+    if (!m_core->clearLocalCache())
+        return EXIT_FAILURE;
+
+    qCDebug(QInstaller::lcInstallerInstallLog) << "Cache cleared successfully!";
+    return EXIT_SUCCESS;
+}
+
 bool CommandLineInterface::checkLicense()
 {
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();

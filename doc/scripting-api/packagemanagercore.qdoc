@@ -325,12 +325,6 @@
 */
 
 /*!
-    \qmlmethod void installer::clearLocalCache()
-
-    Clears the contents of the cache used to store downloaded metadata.
-*/
-
-/*!
     \qmlmethod void installer::componentsToInstallNeedsRecalculation()
 
     Ensures that component dependencies are re-calculated.
