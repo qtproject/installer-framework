@@ -1731,9 +1731,10 @@ void Component::updateModelData(const QString &key, const QString &data)
         tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
                                                       "This component cannot be installed.");
     }
+    static const QRegularExpression externalLinkRegexp(QLatin1String("{external-link}='(.*?)'"));
+    static const QLatin1String externalLinkElement(QLatin1String("<a href=\"\\1\">\\1</a>"));
     // replace {external-link}='' fields in component description with proper link tags
-    tooltipText.replace(QRegularExpression(QLatin1String("{external-link}='(.*?)'")),
-        QLatin1String("<a href=\"\\1\">\\1</a>"));
+    tooltipText.replace(externalLinkRegexp, externalLinkElement);
 
     setData(tooltipText, Qt::ToolTipRole);
 }
