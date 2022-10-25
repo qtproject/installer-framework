@@ -80,6 +80,21 @@
     For more information about the JavaScript global objects that you can use
     in control scripts, see \l{Scripting API}.
 
+    In addition to the predefined global objects, the scripting API supports working
+    with other objects derived from \c QObject. In the above code example the
+    \c{gui.currentPageWidget()} method returns a widget of type \c QWidget.
+
+    The scripting API makes use of Qt's object trees. Widgets derived from \c QObject export
+    their named child objects as properties for the JavaScript object, where the name of the
+    property is the same as the child object's \c{QObject::objectName}. The default properties
+    and their access functions of objects derived from \c QObject can also be used in the scripts.
+
+    For example, in the above code the \c MessageLabel object from class \c QLabel is a child
+    of the \c widget. The \c setText() is the setter access function for its \c QLabel::text property.
+
+    In addition to properties, the signals and public slots of objects derived from \c QObject
+    can be used in both controller and component scripts.
+
     \section1 Predefined Installer Pages
 
     The QInstaller JavaScript object provides access to the following predefined
