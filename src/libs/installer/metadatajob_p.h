@@ -99,6 +99,81 @@ private:
     QString m_targetDir;
 };
 
+class CacheTaskException : public QException
+{
+public:
+    CacheTaskException() {}
+    explicit CacheTaskException(const QString &message)
+        : m_message(message)
+    {}
+    ~CacheTaskException() {}
+
+    void raise() const override { throw *this; }
+    QString message() const { return m_message; }
+    CacheTaskException *clone() const override { return new CacheTaskException(*this); }
+
+private:
+    QString m_message;
+};
+
+class UpdateCacheTask : public AbstractTask<void>
+{
+    Q_OBJECT
+    Q_DISABLE_COPY(UpdateCacheTask)
+
+public:
+    UpdateCacheTask(GenericDataCache<Metadata> &cache, QHash<QString, Metadata *> &updates)
+        : m_cache(&cache)
+        , m_updates(&updates)
+    {}
+
+    void doTask(QFutureInterface<void> &fi) override
+    {
+        fi.reportStarted();
+        fi.setExpectedResultCount(1);
+
+        // Register items from current run to cache
+        QStringList registeredKeys;
+        bool success = true;
+        for (auto *meta : qAsConst(*m_updates)) {
+            if (!m_cache->registerItem(meta, true)) {
+                success = false;
+                break;
+            }
+            meta->setPersistentRepositoryPath(meta->repository().url());
+            registeredKeys.append(m_updates->key(meta));
+        }
+        // Remove items whose ownership was transferred to cache
+        for (auto &key : qAsConst(registeredKeys))
+            m_updates->remove(key);
+
+        // Bail out if there was error while registering items
+        if (!success) {
+            fi.reportException(UnzipArchiveException(m_cache->errorString() + u' '
+                + MetadataJob::tr("Clearing the cache directory and restarting the application may solve this.")));
+            m_cache->sync();
+            fi.reportFinished();
+            return;
+        }
+
+        // ...and clean up obsolete cached items
+        const QList<Metadata *> obsolete = m_cache->obsoleteItems();
+        for (auto *meta : obsolete)
+            m_cache->removeItem(meta->checksum());
+
+        if (!m_cache->sync()) {
+            fi.reportException(UnzipArchiveException(m_cache->errorString() + u' '
+                + MetadataJob::tr("Clearing the cache directory and restarting the application may solve this.")));
+        }
+
+        fi.reportFinished();
+    }
+
+private:
+    GenericDataCache<Metadata> *const m_cache;
+    QHash<QString, Metadata *> *const m_updates;
+};
+
 }   // namespace QInstaller
 
 #endif  // METADATAJOB_P_H

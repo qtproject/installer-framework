@@ -83,6 +83,7 @@ private slots:
     void xmlTaskFinished();
     void unzipTaskFinished();
     void metadataTaskFinished();
+    void updateCacheTaskFinished();
     void progressChanged(int progress);
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
@@ -91,7 +92,7 @@ private slots:
 private:
     bool fetchMetaDataPackages();
     void startUnzipRepositoryTask(const Repository &repo);
-    bool updateCache();
+    void startUpdateCacheTask();
     void resetCacheRepositories();
     void reset();
     void resetCompressedFetch();
@@ -117,6 +118,7 @@ private:
     TempPathDeleter m_tempDirDeleter;
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
+    QFutureWatcher<void> m_updateCacheTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
     DownloadType m_downloadType;

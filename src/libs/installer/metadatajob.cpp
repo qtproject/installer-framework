@@ -100,6 +100,7 @@ MetadataJob::MetadataJob(QObject *parent)
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::progressValueChanged, this, &MetadataJob::progressChanged);
+    connect(&m_updateCacheTask, &QFutureWatcherBase::finished, this, &MetadataJob::updateCacheTaskFinished);
 }
 
 MetadataJob::~MetadataJob()
@@ -337,47 +338,15 @@ void MetadataJob::startUnzipRepositoryTask(const Repository &repo)
     watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
 }
 
-bool MetadataJob::updateCache()
+void MetadataJob::startUpdateCacheTask()
 {
     const int toRegisterCount = m_fetchedMetadata.count();
     if (toRegisterCount > 0)
         emit infoMessage(this, tr("Updating local cache with %n new items...",
                                   nullptr, toRegisterCount));
 
-    // Register items from current run to cache
-    QStringList registeredKeys;
-    bool success = true;
-    for (auto *meta : qAsConst(m_fetchedMetadata)) {
-        if (!m_metaFromCache.registerItem(meta, true)) {
-            success = false;
-            break;
-        }
-        meta->setPersistentRepositoryPath(meta->repository().url());
-        registeredKeys.append(m_fetchedMetadata.key(meta));
-    }
-    // Remove items whose ownership was transferred to cache
-    for (auto &key : qAsConst(registeredKeys))
-        m_fetchedMetadata.remove(key);
-
-    // Bail out if there was error while registering items
-    if (!success) {
-        emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString() + u' '
-            + tr("Clearing the cache directory and restarting the application may solve this."));
-        m_metaFromCache.sync();
-        return false;
-    }
-
-    // ...and clean up obsolete cached items
-    const QList<Metadata *> obsolete = m_metaFromCache.obsoleteItems();
-    for (auto *meta : obsolete)
-        m_metaFromCache.removeItem(meta->checksum());
-
-    if (!m_metaFromCache.sync()) {
-        emitFinishedWithError(QInstaller::CacheError, m_metaFromCache.errorString() + u' '
-            + tr("Clearing the cache directory and restarting the application may solve this."));
-        return false;
-    }
-    return true;
+    UpdateCacheTask *task = new UpdateCacheTask(m_metaFromCache, m_fetchedMetadata);
+    m_updateCacheTask.setFuture(QtConcurrent::run(&UpdateCacheTask::doTask, task));
 }
 
 /*
@@ -544,12 +513,10 @@ void MetadataJob::xmlTaskFinished()
             if (!fetchMetaDataPackages()) {
                 // No new metadata packages to fetch, still need to update the cache
                 // for refreshed repositories.
-                if (updateCache())
-                    emitFinished();
+                startUpdateCacheTask();
             }
         } else {
-            if (updateCache())
-                emitFinished();
+                startUpdateCacheTask();
         }
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
@@ -579,13 +546,8 @@ void MetadataJob::unzipTaskFinished()
     m_unzipTasks.remove(watcher);
     delete watcher;
 
-    if (m_unzipTasks.isEmpty()) {
-        if (!updateCache())
-            return;
-
-        setProcessedAmount(100);
-        emitFinished();
-    }
+    if (m_unzipTasks.isEmpty())
+        startUpdateCacheTask();
 }
 
 void MetadataJob::progressChanged(int progress)
@@ -627,8 +589,7 @@ void MetadataJob::metadataTaskFinished()
                     watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
                 }
             } else {
-                if (updateCache())
-                    emitFinished();
+                startUpdateCacheTask();
             }
         }
     } catch (const TaskException &e) {
@@ -641,6 +602,25 @@ void MetadataJob::metadataTaskFinished()
         reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during download."));
     }
+}
+
+void MetadataJob::updateCacheTaskFinished()
+{
+    try {
+        m_updateCacheTask.waitForFinished();
+    } catch (const CacheTaskException &e) {
+        emitFinishedWithError(QInstaller::CacheError, e.message());
+    } catch (const QUnhandledException &e) {
+        emitFinishedWithError(QInstaller::CacheError, QLatin1String(e.what()));
+    } catch (...) {
+        emitFinishedWithError(QInstaller::CacheError, tr("Unknown exception during updating cache."));
+    }
+
+    if (error() != Job::NoError)
+        return;
+
+    setProcessedAmount(100);
+    emitFinished();
 }
 
 
