@@ -38,6 +38,7 @@
 
 #include <QtCore/QTimer>
 #include <QtWidgets/QMessageBox>
+#include <QtConcurrent>
 
 using namespace QInstaller;
 
@@ -198,10 +199,31 @@ void TabController::onAboutApplicationClicked()
 
 void TabController::onClearCacheClicked()
 {
-    QDialog *settingsDialog = static_cast<QDialog *>(sender());
+    SettingsDialog *settingsDialog = static_cast<SettingsDialog *>(sender());
+    settingsDialog->setEnabled(false);
+    settingsDialog->showClearCacheProgress(true);
 
     QString errorMessage;
-    const bool success = d->m_core->clearLocalCache(&errorMessage);
+    bool success = true;
+
+    // Clearing might take some time, run in a separate thread
+    QEventLoop loop;
+    QFutureWatcher<bool> futureWatcher;
+
+    connect(&futureWatcher, &QFutureWatcher<bool>::finished, this, [&]() {
+        success = futureWatcher.future().result();
+        if (loop.isRunning())
+            loop.quit();
+    });
+
+    futureWatcher.setFuture(QtConcurrent::run(d->m_core,
+        &PackageManagerCore::clearLocalCache, &errorMessage));
+
+    if (!futureWatcher.isFinished())
+        loop.exec();
+
+    settingsDialog->setEnabled(true);
+    settingsDialog->showClearCacheProgress(false);
 
     QMessageBox msgBox(settingsDialog);
     msgBox.setWindowModality(Qt::WindowModal);

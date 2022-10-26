@@ -257,6 +257,13 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
     }
 
    m_ui->m_cachePathLineEdit->setText(settings.localCachePath());
+   showClearCacheProgress(false);
+}
+
+void SettingsDialog::showClearCacheProgress(bool show)
+{
+    m_ui->m_clearCacheProgressLabel->setVisible(show);
+    m_ui->m_clearCacheProgressBar->setVisible(show);
 }
 
 void SettingsDialog::accept()

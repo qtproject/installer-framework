@@ -33,6 +33,7 @@
 #include "lockfile.h"
 
 #include <QHash>
+#include <QMutex>
 #include <QScopedPointer>
 
 namespace QInstaller {
@@ -96,8 +97,12 @@ private:
     bool fromDisk();
     bool toDisk();
 
+    bool remove(const QByteArray &checksum);
+
 private:
     QScopedPointer<KDUpdater::LockFile> m_lock;
+    mutable QMutex m_mutex;
+
     QHash<QByteArray, T *> m_items;
     QString m_path;
     QString m_type;

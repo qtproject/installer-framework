@@ -104,6 +104,8 @@ class SettingsDialog : public QDialog
 public:
     explicit SettingsDialog(QInstaller::PackageManagerCore *core, QWidget *parent = 0);
 
+    void showClearCacheProgress(bool show);
+
 public slots:
     void accept();
 

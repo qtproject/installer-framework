@@ -174,6 +174,7 @@ GenericDataCache<T>::~GenericDataCache()
 template<typename T>
 void GenericDataCache<T>::setType(const QString &type)
 {
+    QMutexLocker _(&m_mutex);
     m_type = type;
 }
 
@@ -186,6 +187,7 @@ void GenericDataCache<T>::setType(const QString &type)
 template<typename T>
 void GenericDataCache<T>::setVersion(const QString &version)
 {
+    QMutexLocker _(&m_mutex);
     m_version = version;
 }
 
@@ -200,6 +202,7 @@ void GenericDataCache<T>::setVersion(const QString &version)
 template <typename T>
 bool GenericDataCache<T>::initialize()
 {
+    QMutexLocker _(&m_mutex);
     Q_ASSERT(m_items.isEmpty());
 
     if (m_path.isEmpty()) {
@@ -247,6 +250,7 @@ bool GenericDataCache<T>::initialize()
 template <typename T>
 bool GenericDataCache<T>::clear()
 {
+    QMutexLocker _(&m_mutex);
     if (m_invalidated) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot clear invalidated cache."));
@@ -286,6 +290,7 @@ bool GenericDataCache<T>::clear()
 template<typename T>
 bool GenericDataCache<T>::sync()
 {
+    QMutexLocker _(&m_mutex);
     if (m_invalidated) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot synchronize invalidated cache."));
@@ -303,6 +308,7 @@ bool GenericDataCache<T>::sync()
 template<typename T>
 bool GenericDataCache<T>::isValid() const
 {
+    QMutexLocker _(&m_mutex);
     return !m_invalidated;
 }
 
@@ -314,6 +320,7 @@ bool GenericDataCache<T>::isValid() const
 template<typename T>
 QString GenericDataCache<T>::errorString() const
 {
+    QMutexLocker _(&m_mutex);
     return m_error;
 }
 
@@ -325,6 +332,7 @@ QString GenericDataCache<T>::errorString() const
 template <typename T>
 QString GenericDataCache<T>::path() const
 {
+    QMutexLocker _(&m_mutex);
     return m_path;
 }
 
@@ -337,6 +345,7 @@ QString GenericDataCache<T>::path() const
 template <typename T>
 void GenericDataCache<T>::setPath(const QString &path)
 {
+    QMutexLocker _(&m_mutex);
     if (!m_invalidated)
         toDisk();
 
@@ -352,6 +361,7 @@ void GenericDataCache<T>::setPath(const QString &path)
 template <typename T>
 QList<T *> GenericDataCache<T>::items() const
 {
+    QMutexLocker _(&m_mutex);
     if (m_invalidated) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot retrieve items from invalidated cache."));
@@ -369,6 +379,7 @@ QList<T *> GenericDataCache<T>::items() const
 template <typename T>
 T *GenericDataCache<T>::itemByChecksum(const QByteArray &checksum) const
 {
+    QMutexLocker _(&m_mutex);
     if (m_invalidated) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot retrieve item from invalidated cache."));
@@ -387,6 +398,7 @@ T *GenericDataCache<T>::itemByChecksum(const QByteArray &checksum) const
 template <typename T>
 T *GenericDataCache<T>::itemByPath(const QString &path) const
 {
+    QMutexLocker _(&m_mutex);
     auto it = std::find_if(m_items.constBegin(), m_items.constEnd(),
         [&](T *item) {
             return (QDir::fromNativeSeparators(path) == QDir::fromNativeSeparators(item->path()));
@@ -413,6 +425,7 @@ T *GenericDataCache<T>::itemByPath(const QString &path) const
 template <typename T>
 bool GenericDataCache<T>::registerItem(T *item, bool replace)
 {
+    QMutexLocker _(&m_mutex);
     if (m_invalidated) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot register item to invalidated cache."));
@@ -430,7 +443,7 @@ bool GenericDataCache<T>::registerItem(T *item, bool replace)
     }
     if (m_items.contains(item->checksum())) {
         if (replace) {// replace existing item including contents on disk
-            removeItem(item->checksum());
+            remove(item->checksum());
         } else {
             setErrorString(QCoreApplication::translate("GenericDataCache",
                 "Cannot register item with checksum %1. An item with the same checksum "
@@ -470,26 +483,8 @@ bool GenericDataCache<T>::registerItem(T *item, bool replace)
 template <typename T>
 bool GenericDataCache<T>::removeItem(const QByteArray &checksum)
 {
-    if (m_invalidated) {
-        setErrorString(QCoreApplication::translate("GenericDataCache",
-            "Cannot remove item from invalidated cache."));
-        return false;
-    }
-    QScopedPointer<T> item(m_items.take(checksum));
-    if (!item) {
-        setErrorString(QCoreApplication::translate("GenericDataCache",
-            "Cannot remove item specified by checksum %1: no such item exists.").arg(QLatin1String(checksum)));
-        return false;
-    }
-
-    try {
-        QInstaller::removeDirectory(item->path());
-    } catch (const Error &e) {
-        setErrorString(QCoreApplication::translate("GenericDataCache",
-            "Error while removing directory \"%1\": %2").arg(item->path(), e.message()));
-        return false;
-    }
-    return true;
+    QMutexLocker _(&m_mutex);
+    return remove(checksum);
 }
 
 /*!
@@ -500,6 +495,7 @@ bool GenericDataCache<T>::removeItem(const QByteArray &checksum)
 template<typename T>
 QList<T *> GenericDataCache<T>::obsoleteItems() const
 {
+    QMutexLocker _(&m_mutex);
     const QList<T *> obsoletes = QtConcurrent::blockingFiltered(m_items.values(),
         [&](T *item1) {
             if (item1->isActive()) // We can skip the iteration for active entries
@@ -633,6 +629,36 @@ bool GenericDataCache<T>::toDisk()
     if (manifestFile.write(manifestJsonDoc.toJson()) == -1) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Cannot write contents for manifest file: %1").arg(manifestFile.errorString()));
+        return false;
+    }
+    return true;
+}
+
+/*!
+    \fn template <typename T> QInstaller::GenericDataCache<T>::remove(const QByteArray &checksum)
+
+    \internal
+*/
+template<typename T>
+bool GenericDataCache<T>::remove(const QByteArray &checksum)
+{
+    if (m_invalidated) {
+        setErrorString(QCoreApplication::translate("GenericDataCache",
+            "Cannot remove item from invalidated cache."));
+        return false;
+    }
+    QScopedPointer<T> item(m_items.take(checksum));
+    if (!item) {
+        setErrorString(QCoreApplication::translate("GenericDataCache",
+            "Cannot remove item specified by checksum %1: no such item exists.").arg(QLatin1String(checksum)));
+        return false;
+    }
+
+    try {
+        QInstaller::removeDirectory(item->path());
+    } catch (const Error &e) {
+        setErrorString(QCoreApplication::translate("GenericDataCache",
+            "Error while removing directory \"%1\": %2").arg(item->path(), e.message()));
         return false;
     }
     return true;
