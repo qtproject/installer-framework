@@ -276,7 +276,7 @@ void ExtractWorker::extract(const QString &dirPath, const quint64 totalFiles)
     LibArchiveArchive::configureReader(reader.get());
     LibArchiveArchive::configureDiskWriter(writer.get());
 
-    DirectoryGuard targetDir(QFileInfo(dirPath).absolutePath());
+    DirectoryGuard targetDir(QFileInfo(dirPath).absoluteFilePath());
     try {
         const QStringList createdDirs = targetDir.tryCreate();
         // Make sure that all leading directories created get removed as well
@@ -622,7 +622,7 @@ bool LibArchiveArchive::extract(const QString &dirPath, const quint64 totalFiles
     configureReader(reader.get());
     configureDiskWriter(writer.get());
 
-    DirectoryGuard targetDir(QFileInfo(dirPath).absolutePath());
+    DirectoryGuard targetDir(QFileInfo(dirPath).absoluteFilePath());
     try {
         const QStringList createdDirs = targetDir.tryCreate();
         // Make sure that all leading directories created get removed as well
