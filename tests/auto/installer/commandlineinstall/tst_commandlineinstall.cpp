@@ -47,19 +47,32 @@ class tst_CommandLineInstall : public QObject
 {
     Q_OBJECT
 
+public:
+    void ignoreAvailablePackagesMissingMessages()
+    {
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Searching packages with regular expression:"));
+        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
+        QTest::ignoreMessage(QtDebugMsg, "Loading component scripts...");
+        QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
+    }
+
+    void ignoreInstallPackageFailsMessages(const QRegularExpression &regExp)
+    {
+        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
+        QTest::ignoreMessage(QtDebugMsg, "Loading component scripts...");
+        QTest::ignoreMessage(QtDebugMsg, regExp);
+    }
+
 private slots:
     void testListAvailablePackages()
     {
         QString loggingRules = (QLatin1String("ifw.* = false\n"));
 
-        QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
-
+        QLoggingCategory::setFilterRules(loggingRules);
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
                 (m_installDir, ":///data/repository"));
 
-        QLoggingCategory::setFilterRules(loggingRules);
         auto func = &PackageManagerCore::listAvailablePackages;
-
         verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
@@ -113,13 +126,11 @@ private slots:
              "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
 
-        // Need to change rules here to catch messages
         QLoggingCategory::setFilterRules("ifw.* = true\n");
-
-        QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
+        ignoreAvailablePackagesMissingMessages();
         core->listAvailablePackages(QLatin1String("C.virt"));
 
-        QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
+        ignoreAvailablePackagesMissingMessages();
         core->listAvailablePackages(QLatin1String("C.virt.subcomponent"));
     }
 
@@ -128,37 +139,33 @@ private slots:
         QString loggingRules = (QLatin1String("ifw.* = false\n"
                                 "ifw.installer.installlog = true\n"));
 
+        QLoggingCategory::setFilterRules(loggingRules);
+        QTest::ignoreMessage(QtDebugMsg, "Operations sanity check succeeded.");
+        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Using metadata cache from "));
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
                 (m_installDir, ":///data/uninstallableComponentsRepository"));
 
-        QLoggingCategory::setFilterRules(loggingRules);
-
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install component A. Component "
-            "is installed only as automatic dependency to autoDep.\n"));
+        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install component A. Component "
+                                                             "is installed only as automatic dependency to autoDep.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("A")));
 
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install component AB. Component "
-            "is not checkable, meaning you have to select one of the subcomponents.\n"));
+        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install component AB. Component "
+                                                             "is not checkable, meaning you have to select one of the subcomponents.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("AB")));
 
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install B. Component is virtual.\n"));
+        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install B. Component is virtual.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B")));
 
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install B.subcomponent. Component "
-            "is a descendant of a virtual component B.\n"));
+        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install B.subcomponent. Component "
+                                                             "is a descendant of a virtual component B.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B.subcomponent")));
 
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Cannot install MissingComponent. "
-            "Component not found.\n"));
+        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install MissingComponent. "
+                                                             "Component not found.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("MissingComponent")));
         QCOMPARE(PackageManagerCore::Canceled, core->status());
