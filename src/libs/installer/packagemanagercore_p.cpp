@@ -1431,6 +1431,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                         << error.message();
                 }
             } else {
+                writeMaintenanceToolAppBundle(performedOperations);
                 QFile replacementBinary(installerBaseBinary);
                 try {
                     QInstaller::openForRead(&replacementBinary);
