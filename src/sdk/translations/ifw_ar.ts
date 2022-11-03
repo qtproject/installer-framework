@@ -212,6 +212,26 @@
         <source>User defined repositories</source>
         <translation>المستودعات المعرفة من قبل المستخدم</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>ذاكرة التخزين المؤقت المحلية</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>يتم تخزين معلومات التعريف من المستودعات البعيدة مؤقتًا على القرص لتحسين أوقات التحميل. يمكنك تحديد دليل آخر لتخزين ذاكرة التخزين المؤقت أو مسح محتويات ذاكرة التخزين المؤقت الحالية.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>مسار ذاكرة التخزين المؤقت:</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>حذف محتويات دليل ذاكرة التخزين المؤقت</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>مسح ذاكرة التخزين المؤقت</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -274,6 +294,10 @@
     <message>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>قيمة غير صالحة لـ &apos;max-concurrent-operations&apos;</translation>
+    </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>قيمة فارغة للخيار &apos;cache-path&apos;.</translation>
     </message>
 </context>
 <context>
@@ -1329,10 +1353,6 @@ Error while loading %2</source>
         <translation>محرك نواة مدير الحزم مفقود.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>جارٍ تحضير تنزيل ملفات التعريف...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>جارٍ فك ضغط المستودعات المضغوطة. قد يستغرق هذا بعص الوقت...</translation>
     </message>
@@ -1387,6 +1407,25 @@ Error while loading %2</source>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>أرشيف غير مدعوم &quot;%1&quot;: لم يتم تسجيل أي معالج للاحقة الملف &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>جاري إحضار معلومات التحديث الأخيرة...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+            <numerusform>جاري تحديث ذاكرة التخزين المؤقت المحلية بـ%n من العناصر الجديدة...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>قد يؤدي مسح دليل ذاكرة التخزين المؤقت وإعادة تشغيل التطبيق إلى حل هذه المشكلة.</translation>
     </message>
 </context>
 <context>
@@ -1621,10 +1660,6 @@ Do you want to continue?</source>
         <translation>لا توجد مساحة كافية لتخزين جميع المكونات المحددة! بينما المساحة المطلوبة هي %2 على الأقل، المساحة المتاحة هي %1.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>لا توجد مساحة كافية لتخزين الملفات المؤقتة!. بينما المساحة المطلوبة هي %2 على الأقل، المساحة المتاحة هي %1.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>يبدو أن وحدة التخزين التي حددتها للتثبيت بها مساحة كافية للتثبيت، ولكن سيكون هناك أقل من 1% من مساحة وحدة التخزين المتاحة بعد ذلك.</translation>
     </message>
@@ -1655,6 +1690,10 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>لا يمكن تثبيت المكون%1. حدثت مشكلة أثناء تحميل هذا المكون، لذلك تم وضع علامة &quot;غير مستقر&quot; عليه ولا يمكن اختياره.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>لا توجد مساحة كافية على القرص لتخزين الملفات المؤقتة! يتوفر%1 ، بينما الحد الأدنى المطلوب هو%2. يمكنك تحديد موقع آخر للملفات المؤقتة عن طريق تعديل مسار ذاكرة التخزين المؤقت المحلية من إعدادات المثبت.</translation>
     </message>
 </context>
 <context>
@@ -1920,6 +1959,10 @@ Do you want to continue?</source>
     <message>
         <source>All components installed.</source>
         <translation>تم تثبيت جميع المكونات.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>جاري تحميل البرامج النصية للمكونات...</translation>
     </message>
 </context>
 <context>
@@ -2938,6 +2981,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>حول أداة الصيانة %1</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>لا يمكن تهيئة ذاكرة التخزين المؤقت بمسار فارغ.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>لا يمكن إنشاء دليل &quot;%1&quot; لذاكرة التخزين المؤقت.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>لا يمكن تهيئة ذاكرة التخزين المؤقت: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>لا يمكن مسح ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>لا يمكن إزالة ملف البيان: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>خطأ أثناء مسح ذاكرة التخزين المؤقت: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>لا يمكن استرداد العناصر من ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>لا يمكن استرداد العنصر من ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>لا يمكن تسجيل العنصر في ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>لا يمكن تسجيل عنصر فارغ.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>لا يمكن تسجيل عنصر غير صالح مع المجموع الاختباري %1</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>لا يمكن تسجيل العنصر بالمجموع الاختباري %1. عنصر بنفس المجموع الاختباري موجود بالفعل في ذاكرة التخزين المؤقت.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>خطأ أثناء نسخ العنصر إلى المسار &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>لا يمكن إزالة العنصر من ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>لا يمكن إزالة العنصر المحدد بواسطة المجموع الاختباري %1: لا يوجد مثل هذا العنصر.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>خطأ أثناء إزالة الدليل &quot;%1&quot;: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>خطأ أثناء إبطال ذاكرة التخزين المؤقت: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>لا يمكن فتح ملف البيان: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>لا يمكن كتابة محتويات لملف البيان: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>لا يمكن مزامنة ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>تم مسح ذاكرة التخزين المؤقت بنجاح!</translation>
     </message>
 </context>
 </TS>

@@ -205,7 +205,8 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool revers
                // Check if installed or about to be updated -packages are dependant on the package
                const QList<Component*> installDependants = m_core->installDependants(virtualComponent);
                for (Component *dependant : installDependants) {
-                   if (dependant->isInstalled() && !m_componentsToUninstall.contains(dependant)) {
+                   if ((dependant->isInstalled() && !m_componentsToUninstall.contains(dependant))
+                           || m_core->orderedComponentsToInstall().contains(dependant)) {
                        required = true;
                        break;
                    }

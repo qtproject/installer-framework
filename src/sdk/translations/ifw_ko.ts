@@ -212,6 +212,26 @@
         <source>User defined repositories</source>
         <translation>사용자 정의 저장소</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>로컬 캐시</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>로딩 시간을 줄이기 위해 원격 저장소 메타 정보가 디스크에 캐시(임시 저장)됩니다. 캐시를 저장하기 위해 다른 디렉터리를 선택하거나 현재 캐시를 지울 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>캐시를 위한 경로</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>캐시 디렉터리 내용 삭제</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>캐시 모두 삭제</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller</name>
@@ -385,6 +405,10 @@
     <message>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>&apos;최대 동시 작업&apos;값이 올바르지 않습니다.</translation>
+    </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>&apos;cache-path&apos; 옵션의 값이 비어 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -1299,10 +1323,6 @@ Error while loading %2</source>
         <translation>패키지 관리자 코어 엔진이 누락되었습니다.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>메타 정보 다운로드 준비 중...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>압축된 저장소의 압축을 해제합니다. 약간의 시간이 걸릴 수 있습니다...</translation>
     </message>
@@ -1357,6 +1377,20 @@ Error while loading %2</source>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>지원되지 않는 &quot;%1&quot; 아카이브: &quot;%2&quot; 파일 접미사를 위해 등록된 핸들러가 없습니다.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>최신 업데이트 정보를 가져오는 중...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>로컬캐시에 새 항목 %n개를 업데이트하는 중...</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>캐시 디렉터리를 모두 삭제하고 애플리케이션을 다시 시작하면 문제를 해결할 수 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -1575,10 +1609,6 @@ Do you want to continue?</source>
         <translation>디스크 공간이 부족하여 선택한 구성요소를 모두 저장할 수 없습니다! %1은(는) 사용 가능하지만 최소한 %2이(가) 필요합니다.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>디스크 공간이 부족하여 임시 파일을 저장할 수 없습니다! %1은(는) 사용 가능하지만 최소한 %2이(가) 필요합니다.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>설치를 위해 선택한 볼륨은 설치 공간이 충분한 것으로 보이지만, 설치 후에 남은 공간이 볼륨 공간의 %1 미만일 것으로 예상됩니다.</translation>
     </message>
@@ -1605,6 +1635,10 @@ Do you want to continue?</source>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>%1 구성요소를 설치할 수 없습니다. 해당 구성요소를 불러오는 중 문제가 발생했으므로 불안정한 것으로 표시되었으며 선택할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>디스크 공간이 부족하여 임시 파일을 저장할 수 없습니다. %1은(는) 사용 가능하지만 최소한 %2이(가) 필요합니다. 설치 프로그램 설정에서 로컬 캐시 경로를 수정하여 임시 파일의 다른 위치를 선택할 수 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -1872,6 +1906,10 @@ Do you want to continue?</source>
     <message>
         <source>All components installed.</source>
         <translation>모든 구성요소들을 설치했습니다.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>구성요소 스크립트를 불러오는 중...</translation>
     </message>
 </context>
 <context>
@@ -2866,6 +2904,96 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>%1 유지 보수 도구에 대하여</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>빈 경로에 캐시를 초기화할 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>캐시 디렉터리 &quot;%1&quot;를 만들 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>캐시를 초기화할 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>무효화한 캐시를 삭제할 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>매니페스트 파일을 삭제할 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>캐시를 모두 삭제하는 중 오류 발생: %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>무효화한 캐시에서 아이템들을 가져올 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>무효화한 캐시에서 아이템을 가져올 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>무효화한 캐시에 아이템을 등록할 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>빈 아이템을 등록할 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>체크섬 %1 무효한 아이템을 등록할 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>체크섬 %1 무효한 아이템을 등록할 수 없음. 같은 체크섬을 가진 아이템이 캐시에 있습니다.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>아이템을 &quot;%1&quot;경로에 복사하는 중 오류 발생: %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>무효화한 캐시에서 아이템을 지울 수 없음.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>체크섬 %1 아이템을 지울 수 없음: 해당 아이템이 없음.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>&quot;%1&quot; 디렉터리를 지우는 중 오류 발생: %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>캐시를 무효화하는 중 오류 발생: %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>매니페스트 파일을 열 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>매니페스트 파일 내용을 쓸 수 없음: %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>무효화된 캐시를 동기화할 수 없습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>캐시 삭제를 성공했습니다!</translation>
     </message>
 </context>
 </TS>

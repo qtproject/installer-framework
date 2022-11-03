@@ -1,3 +1,25 @@
+4.5.0
+- Update translations (QTIFW-2814)
+- macOS: support updating maintenance tool with an app bundle (QTIFW-2750)
+- Fix possible uncaught exceptions while loading package data
+- libarchive: support linking with zlib compiled into QtCore (QTIFW-2803)
+- Add new '--cache-path' and 'clear-cache' options for CLI (QTIFW-2810)
+- Add persistent metadata file cache (QTIFW-2621)
+- Metadata evaluation optimizations (QTIFW-2790)
+- Windows: fix placeholder version in "Apps & features" (QTIFW-2267)
+- Fix installer stalling when there's only one CPU core (QTIFW-2786)
+- Adjust the 'ready to install' message to avoid repeating the app name (SQUISH-9672)
+- CLI: add support for hiding values of printed options (QTIFW-2756)
+
+4.4.2
+- Fix uninstallation of needed virtual components
+- Attach to squish only when the port is separately given (QTIFW-2746)
+- Windows: fix installation error with concurrent Extract operations (QTIFW-2752)
+- Uninstaller remove target directory if it is empty (QTIFW-884)
+- Uninstaller remove maintenancetool's data files (QTIFW-884)
+- Do not convert newline characters in license files (QTIFW-903)
+- Set encoding to UTF-8 when writing license file (QTIFW-1436)
+
 4.4.1
 - Fix bug when all requested packages are not installed (QTIFW-2708)
 

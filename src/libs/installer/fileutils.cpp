@@ -457,6 +457,52 @@ void QInstaller::mkpath(const QString &path)
 /*!
     \internal
 
+    Creates directory \a path including all parent directories. Return \c true on
+    success, \c false otherwise.
+
+    On Windows \c QDir::mkpath() doesn't check if the leading directories were created
+    elsewhere (i.e. in another thread) after the initial check that the given path
+    requires creating also parent directories, and returns \c false.
+
+    On Unix platforms this case is handled different by QFileSystemEngine though,
+    which checks for \c EEXIST error code in case any of the recursive directories
+    could not be created.
+
+    Compared to \c QInstaller::mkpath() and \c QDir::mkpath() this function checks if
+    each parent directory to-be-created were created elsewhere.
+*/
+bool QInstaller::createDirectoryWithParents(const QString &path)
+{
+    if (path.isEmpty())
+        return false;
+
+    QFileInfo dirInfo(path);
+    if (dirInfo.exists() && dirInfo.isDir())
+        return true;
+
+    // bail out if we are at the root directory
+    if (dirInfo.isRoot())
+        return false;
+
+    QDir dir(path);
+    if (dir.mkdir(path))
+        return true;
+
+    // mkdir failed, try to create the parent directory
+    if (!createDirectoryWithParents(dirInfo.absolutePath()))
+        return false;
+
+    // now try again
+    if (dir.mkdir(path))
+        return true;
+
+    // directory may be have also been created elsewhere
+    return (dirInfo.exists() && dirInfo.isDir());
+}
+
+/*!
+    \internal
+
     Generates and returns a temporary file name. The name can start with
     a template \a templ.
 */

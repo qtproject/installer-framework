@@ -1526,10 +1526,6 @@ Erreur lors du chargement de %2</translation>
         <translation>Moteur principal du gestionnaire de paquetages manquant.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Préparation du téléchargement des métadonnées...</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Décompression des référentiels compressés.  Cette opération peut prendre du temps...</translation>
     </message>
@@ -1584,6 +1580,21 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>Archive non prise en charge &quot;%1&quot;: pas de gestionnaire enregistré pour les fichiers avec suffixe  &quot;%2&quot;.</translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation>Récuperation des dernières informations de mise a jour...</translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation>
+            <numerusform>Mise à jour du cache local avec %n nouvel élément...</numerusform>
+            <numerusform>Mise à jour du cache local avec %n nouveaux éléments</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
+        <translation>Effacer le répertoire de cache et redémarrer l&apos;application peut résoudre ce problème.</translation>
     </message>
 </context>
 <context>
@@ -1747,10 +1758,6 @@ Souhaitez-vous continuer ?</translation>
         <translation>L’espace disque est insuffisant pour stocker tous les composants sélectionnés ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires.</translation>
-    </message>
-    <message>
         <source>The volume you selected for installation seems to have sufficient space for installation, but there will be less than 1% of the volume&apos;s space available afterwards.</source>
         <translation>Le volume que vous avez sélectionné pour l&apos;installation semble avoir suffisamment d&apos;espace pour l&apos;installation, mais il restera moins de 1% de l&apos;espace du volume disponible par la suite.</translation>
     </message>
@@ -1785,6 +1792,10 @@ Souhaitez-vous continuer ?</translation>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
         <translation>Impossible d&apos;installer le composant %1. Un problème est survenu lors du chargement de ce composant, il est donc marqué comme instable et ne peut pas être sélectionné.</translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires. Vous pouvez sélectionner un autre emplacement pour les fichiers temporaires en modifiant le chemin du cache local à partir des paramètres du programme d&apos;installation.</translation>
     </message>
 </context>
 <context>
@@ -2052,6 +2063,10 @@ Souhaitez-vous continuer ?</translation>
     <message>
         <source>All components installed.</source>
         <translation>Tous les composants sont installés.</translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
+        <translation>Chargement des scripts du composant...</translation>
     </message>
 </context>
 <context>
@@ -2513,6 +2528,10 @@ Copiez le programme d’installation sur un disque local</translation>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
         <translation>Valeur non valide pour &apos;max-concurrent-operations&apos;.</translation>
     </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
+        <translation>Valeur vide pour l&apos;option &apos;cache-path&apos;.</translation>
+    </message>
 </context>
 <context>
     <name>RemoteClient</name>
@@ -2699,6 +2718,26 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <source>Deselect All</source>
         <translation>Tout désélectionner</translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation>Cache local</translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation>Les méta-informations des référentiels distants sont mises en cache sur le disque pour améliorer les temps de chargement. Vous pouvez sélectionner un autre répertoire pour stocker le cache ou effacer le contenu du cache actuel.</translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation>Chemin d&apos;accès au cache :</translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation>Supprime le contenu du répertoire cache</translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation>Vider le cache</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2883,6 +2922,96 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     <message>
         <source>About %1 Maintenance Tool</source>
         <translation>À propos de l&apos;outil de maintenance %1</translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation>Impossible d&apos;initialiser le cache avec un chemin vide.</translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation>Impossible de créer le répertoire &quot;%1&quot; pour le cache.</translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation>Impossible d&apos;initialiser le cache : %1</translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation>Impossible d&apos;effacer le cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation>Impossible de supprimer le fichier manifeste : %1</translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation>Erreur lors de la suppression du cache : %1</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation>Impossible de récupérer les éléments du cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation>Impossible de récupérer l&apos;élément du cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation>Impossible d&apos;enregistrer l&apos;élément dans le cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation>Impossible d&apos;enregistrer un élément nul.</translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation>Impossible d&apos;enregistrer un élément non valide avec la somme de contrôle %1</translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation>Impossible d&apos;enregistrer l&apos;élément avec la somme de contrôle %1. Un élément avec la même somme de contrôle existe déjà dans le cache.</translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation>Erreur lors de la copie de l&apos;élément vers le chemin &quot;%1&quot; : %2</translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation>Impossible de supprimer l&apos;élément du cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation>Impossible de supprimer l&apos;élément spécifié par la somme de contrôle %1 : aucun élément de ce type n&apos;existe.</translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation>Erreur lors de la suppression du répertoire &quot;%1&quot; : %2</translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation>Erreur lors de l&apos;invalidation du cache : %1</translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation>Impossible d&apos;ouvrir le fichier manifeste : %1</translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation>Impossible d&apos;écrire le contenu du fichier manifeste : %1</translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation>Impossible de synchroniser le cache invalidé.</translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
+        <translation>Cache vidé avec succès !</translation>
     </message>
 </context>
 </TS>

@@ -28,6 +28,7 @@
 
 #include "directoryguard.h"
 
+#include "fileutils.h"
 #include "globals.h"
 #include "errors.h"
 
@@ -92,8 +93,7 @@ QStringList DirectoryGuard::tryCreate()
         toCreate = QDir(p);
     }
 
-    QDir dir(m_path);
-    m_created = dir.mkpath(m_path);
+    m_created = QInstaller::createDirectoryWithParents(m_path);
     if (!m_created) {
         throw Error(QCoreApplication::translate("DirectoryGuard",
             "Cannot create directory \"%1\".").arg(QDir::toNativeSeparators(m_path)));

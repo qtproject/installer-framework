@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>data/valid.7z</file>
         <file>data/invalid.7z</file>
+        <file>data/subdirs.7z</file>
         <file>data/xmloperationrepository/Updates.xml</file>
         <file>data/xmloperationrepository/A/1.0.0content.7z</file>
         <file>data/xmloperationrepository/A/1.0.0content1.tar.gz</file>

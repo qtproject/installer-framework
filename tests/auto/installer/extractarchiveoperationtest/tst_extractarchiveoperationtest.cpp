@@ -28,6 +28,7 @@
 
 #include "../shared/packagemanager.h"
 
+#include "concurrentoperationrunner.h"
 #include "init.h"
 #include "extractarchiveoperation.h"
 
@@ -84,6 +85,57 @@ private slots:
         QVERIFY(op.undoOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
+    }
+
+    void testConcurrentExtractWithCompetingData()
+    {
+        // Suppress warnings about already deleted installerResources file
+        qInstallMessageHandler(silentTestMessageHandler);
+
+        const QString testDirectory = generateTemporaryFileName()
+            + "/subdir1/subdir2/subdir3/subdir4/subdir5/";
+
+        QStringList created7zList;
+
+        OperationList operations;
+        for (int i = 0; i < 100; ++i) {
+            ExtractArchiveOperation *op = new ExtractArchiveOperation(nullptr);
+            // We add the same data multiple times, and extract to same directory.
+            // Can't open the same archive multiple times however so it needs to
+            // be copied to unique files.
+            const QString new7zPath = generateTemporaryFileName() + ".7z";
+            QFile old7z(":///data/subdirs.7z");
+            QVERIFY(old7z.copy(new7zPath));
+
+            op->setArguments(QStringList() << new7zPath << testDirectory);
+            operations.append(op);
+        }
+        ConcurrentOperationRunner runner(&operations, Operation::Backup);
+
+        const QHash<Operation *, bool> backupResults = runner.run();
+        const OperationList backupOperations = backupResults.keys();
+
+        for (auto *operation : backupOperations)
+            QVERIFY2((backupResults.value(operation) && operation->error() == Operation::NoError),
+                     operation->errorString().toLatin1());
+
+        runner.setType(Operation::Perform);
+        const QHash<Operation *, bool> results = runner.run();
+        const OperationList performedOperations = results.keys();
+
+        for (auto *operation : performedOperations)
+            QVERIFY2((results.value(operation) && operation->error() == Operation::NoError),
+                     operation->errorString().toLatin1());
+
+        for (auto *operation : operations)
+            QVERIFY(operation->undoOperation());
+
+        qDeleteAll(operations);
+
+        for (const QString &archive : created7zList)
+            QFile::remove(archive);
+
+        QDir().rmdir(testDirectory);
     }
 
     void testExtractArchiveFromXML()

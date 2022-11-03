@@ -212,6 +212,26 @@
         <source>The server&apos;s URL that contains a valid repository.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Local cache</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The meta information from remote repositories is cached to disk to improve loading times. You may select another directory to store the cache or clear the contents of the current cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path for cache:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deletes the contents of the cache directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clear cache</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -273,6 +293,10 @@
     </message>
     <message>
         <source>Invalid value for &apos;max-concurrent-operations&apos;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty value for option &apos;cache-path&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1193,10 +1217,6 @@ Greška prilikom učitavanja %2</translation>
         <translation>Nedostaje osnovni uređaj upravljača paketa.</translation>
     </message>
     <message>
-        <source>Preparing meta information download...</source>
-        <translation>Pripremanje preuzimanja meta informacija …</translation>
-    </message>
-    <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
         <translation>Raspakiravanje komprimiranih spremišta. Može ponešto potrajati …</translation>
     </message>
@@ -1250,6 +1270,22 @@ Greška prilikom učitavanja %2</translation>
     </message>
     <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fetching latest update information...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Updating local cache with %n new items...</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1493,10 +1529,6 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Invalid</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1506,6 +1538,10 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
     </message>
     <message>
         <source>Cannot install component %1. There was a problem loading this component, so it is marked unstable and cannot be selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1772,6 +1808,10 @@ Ne preporučujemo instalirati u ovu mapu, jer instaliranje možda neće uspjeti.
     </message>
     <message>
         <source>All components installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading component scripts...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2068,10 +2108,6 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>Spremno za aktualiziranje paketa</translation>
     </message>
     <message>
-        <source>All required information is now available to begin updating your installation..</source>
-        <translation>Postavljanje je sad spremno za aktualiziranje tvoje instalacije.</translation>
-    </message>
-    <message>
         <source>&amp;Install</source>
         <translation>&amp;Instaliraj</translation>
     </message>
@@ -2085,6 +2121,10 @@ Kopiraj program za instaliranje na računalo</translation>
     </message>
     <message>
         <source>Ready to Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All required information is now available to begin updating your installation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2891,6 +2931,96 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>About %1 Maintenance Tool</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GenericDataCache</name>
+    <message>
+        <source>Cannot initialize cache with empty path.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create directory &quot;%1&quot; for cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot initialize cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot clear invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while clearing cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot retrieve items from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot retrieve item from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register item to invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register null item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register invalid item with checksum %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot register item with checksum %1. An item with the same checksum already exists in cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while copying item to path &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove item from invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot remove item specified by checksum %1: no such item exists.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while removing directory &quot;%1&quot;: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while invalidating cache: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot write contents for manifest file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot synchronize invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TabController</name>
+    <message>
+        <source>Cache cleared successfully!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
