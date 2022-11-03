@@ -1332,8 +1332,8 @@ PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationB
     QSet<QString> packagesWithoutOperation = installedPackages - operationPackages;
     QSet<QString> orphanedOperations = operationPackages - installedPackages;
     if (!packagesWithoutOperation.isEmpty() || !orphanedOperations.isEmpty())  {
-        qCritical() << "Operations missing for installed packages" << packagesWithoutOperation.toList();
-        qCritical() << "Orphaned operations" << orphanedOperations.toList();
+        qCritical() << "Operations missing for installed packages" << packagesWithoutOperation.values();
+        qCritical() << "Orphaned operations" << orphanedOperations.values();
         qCritical() << "Your installation seems to be corrupted. Please consider re-installing from scratch, "
                        "remove the packages from components.xml which operations are missing, "
                        "or reinstall the packages.";
@@ -2323,7 +2323,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 */
 QList<Component *> PackageManagerCore::componentsToUninstall() const
 {
-    return d->uninstallerCalculator()->componentsToUninstall().toList();
+    return d->uninstallerCalculator()->componentsToUninstall().values();
 }
 
 /*!
