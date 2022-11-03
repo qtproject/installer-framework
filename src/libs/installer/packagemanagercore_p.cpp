@@ -2355,7 +2355,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
 
     runner.setType(Operation::Perform);
     const QHash<Operation *, bool> results = runner.run();
-    const OperationList performedOperations = backupResults.keys();
+    const OperationList performedOperations = results.keys();
 
     QString error;
     for (auto &operation : performedOperations) {

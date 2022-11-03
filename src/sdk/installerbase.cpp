@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -98,17 +98,15 @@ int InstallerBase::run()
         return status;
 
 #ifdef ENABLE_SQUISH
-    int squishPort = 11233;
     if (m_parser.isSet(CommandLineOptions::scSquishPortLong)) {
-        squishPort = m_parser.value(CommandLineOptions::scSquishPortLong).toInt();
-    }
-    if (squishPort != 0) {
-        if (Squish::allowAttaching(squishPort))
-            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish port " << squishPort << " succeeded";
-        else
-            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish failed.";
-    } else {
-        qCWarning(QInstaller::lcDeveloperBuild)  << "Invalid squish port number: " << squishPort;
+        const int maxSquishPortNumber = 65535;
+        int squishPort = m_parser.value(CommandLineOptions::scSquishPortLong).toInt();
+        if (squishPort <= 0 || squishPort > maxSquishPortNumber) {
+            qWarning().noquote() << "Invalid Squish port:" << squishPort;
+        } else {
+            Squish::allowAttaching(squishPort);
+            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish port" << squishPort << "succeeded";
+        }
     }
 #endif
     const int result = QCoreApplication::instance()->exec();

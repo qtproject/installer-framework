@@ -1,3 +1,12 @@
+4.4.2
+- Fix uninstallation of needed virtual components
+- Attach to squish only when the port is separately given (QTIFW-2746)
+- Windows: fix installation error with concurrent Extract operations (QTIFW-2752)
+- Uninstaller remove target directory if it is empty (QTIFW-884)
+- Uninstaller remove maintenancetool's data files (QTIFW-884)
+- Do not convert newline characters in license files (QTIFW-903)
+- Set encoding to UTF-8 when writing license file (QTIFW-1436)
+
 4.4.1
 - Fix bug when all requested packages are not installed (QTIFW-2708)
 

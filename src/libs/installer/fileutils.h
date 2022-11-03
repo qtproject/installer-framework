@@ -89,6 +89,7 @@ private:
 
     void INSTALLER_EXPORT mkdir(const QString &path);
     void INSTALLER_EXPORT mkpath(const QString &path);
+    bool INSTALLER_EXPORT createDirectoryWithParents(const QString &path);
 #ifdef Q_OS_MACOS
     void INSTALLER_EXPORT mkalias(const QString &path, const QString &alias);
 #endif
