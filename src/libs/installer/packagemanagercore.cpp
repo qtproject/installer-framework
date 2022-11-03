@@ -644,7 +644,7 @@ void PackageManagerCore::calculateUserSelectedComponentsToInstall(const QList<QM
                                                                   UninstallerCalculator::UninstallReasonType::Replaced);
             }
         }
-        // 2. Component is reseleted for install (tapping checkbox off/on)
+        // 2. Component is reselected for install (tapping checkbox off/on)
         else if (installComponent->isSelected() && installComponent->isInstalled()
                  && !d->installerCalculator()->orderedComponentsToInstall().contains(installComponent)) {
             componentsToInstall.append(installComponent);
@@ -669,6 +669,13 @@ void PackageManagerCore::calculateUserSelectedComponentsToInstall(const QList<QM
         d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUnInstall, false);
     }
     d->uninstallerCalculator()->removeComponentsFromUnInstall(componentsToInstall);
+    if (componentsToUnInstall.isEmpty() && !componentsToInstall.isEmpty()) {
+        // There are no new components to be uninstalled but there
+        // are new components to be installed which might have virtual
+        // dependences to components which are already selected for uninstall.
+        // We need to remove those components from uninstall.
+        d->uninstallerCalculator()->appendVirtualComponentsToUninstall(true);
+    }
 
     d->updateComponentCheckedState();
 }
@@ -2395,44 +2402,65 @@ QList<Component*> PackageManagerCore::dependees(const Component *_component) con
 }
 
 /*!
-    Returns a list of components that depend on \a component. The list can be
-    empty. Dependendants are calculated from components which are about to be updated,
-    if no update is requested then the dependant is calculated from installed packages.
-
-    \note Automatic dependencies are not resolved.
+    Returns true if components which are about to be installed or updated
+    are dependent on \a component.
 */
-QList<Component*> PackageManagerCore::installDependants(const Component *component) const
+bool PackageManagerCore::isDependencyForRequestedComponent(const Component *component) const
 {
     if (!component)
-        return QList<Component *>();
+        return false;
 
     const QList<QInstaller::Component *> availableComponents = components(ComponentType::All);
     if (availableComponents.isEmpty())
-        return QList<Component *>();
+        return false;
 
-    QList<Component *> dependants;
     QString name;
     QString version;
-    foreach (Component *availableComponent, availableComponents) {
-        if (isUpdater() && availableComponent->updateRequested()) {
+    for (Component *availableComponent : availableComponents) {
+        if (!availableComponent) {
+            continue;
+        }
+        // 1. In updater mode, component to be updated might have new dependencies
+        // Check if the dependency is still needed
+        // 2. If component is selected and not installed, check if the dependency is needed
+        if (availableComponent->isSelected()
+                && ((isUpdater() && availableComponent->isInstalled())
+                    || (isPackageManager() && !availableComponent->isInstalled()))) {
             const QStringList &dependencies = availableComponent->dependencies();
             foreach (const QString &dependency, dependencies) {
                 parseNameAndVersion(dependency, &name, &version);
                 if (componentMatches(component, name, version)) {
-                    dependants.append(availableComponent);
-                }
-            }
-        } else {
-            KDUpdater::LocalPackage localPackage = d->m_localPackageHub->packageInfo(availableComponent->name());
-            foreach (const QString &dependency, localPackage.dependencies) {
-                parseNameAndVersion(dependency, &name, &version);
-                if (componentMatches(component, name, version)) {
-                    dependants.append(availableComponent);
+                    return true;
                 }
             }
         }
     }
-    return dependants;
+    return false;
+}
+
+
+/*!
+    Returns a list of local components which are dependent on \a component.
+*/
+QStringList PackageManagerCore::localDependenciesToComponent(const Component *component) const
+{
+    if (!component)
+        return QStringList();
+
+    QStringList dependents;
+    QString name;
+    QString version;
+
+    QMap<QString, LocalPackage> localPackages = d->m_localPackageHub->localPackages();
+    for (const KDUpdater::LocalPackage &localPackage : qAsConst(localPackages)) {
+        for (const QString &dependency : localPackage.dependencies) {
+            parseNameAndVersion(dependency, &name, &version);
+            if (componentMatches(component, name, version)) {
+                dependents.append(localPackage.name);
+            }
+        }
+    }
+    return dependents;
 }
 
 /*!
