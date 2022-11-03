@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,6 +47,12 @@ QRegularExpression INSTALLER_EXPORT commaRegExp();
 
 QString htmlToString(const QString &html);
 QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);
+
+template <typename T, template<typename> typename C>
+QSet<T> toQSet(const C<T> &container)
+{
+    return QSet<T>(container.begin(), container.end());
+}
 
 }   // QInstaller
 
