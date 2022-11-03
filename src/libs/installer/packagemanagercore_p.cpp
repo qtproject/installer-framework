@@ -1352,6 +1352,8 @@ void PackageManagerCorePrivate::writeMaintenanceToolAppBundle(OperationList &per
             << (targetAppDirPath + QLatin1String("/../plugins")));
         performOperationThreaded(op);
     }
+#else
+    Q_UNUSED(performedOperations);
 #endif
 }
 
@@ -3105,7 +3107,6 @@ void PackageManagerCorePrivate::calculateUninstallComponents()
 {
     clearUninstallerCalculator();
     const QList<Component *> componentsToInstallList = installerCalculator()->orderedComponentsToInstall();
-    QSet<Component*> componentsToInstall(componentsToInstallList.begin(), componentsToInstallList.end());
 
     QList<Component *> selectedComponentsToUninstall;
     foreach (Component* component, m_core->components(PackageManagerCore::ComponentType::Replacements)) {

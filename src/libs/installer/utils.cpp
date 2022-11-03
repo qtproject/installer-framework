@@ -139,7 +139,7 @@ QStringList QInstaller::localeCandidates(const QString &locale_)
     at least one mutually exclusive pair of options set. Otherwise returns an empty
     \c QStringList. The options considered mutual are provided with \a options.
 */
-QStringList QInstaller::checkMutualOptions(CommandLineParser &parser, const QStringList &options)
+QStringList QInstaller::checkMutualOptions(const CommandLineParser &parser, const QStringList &options)
 {
     QStringList mutual;
     foreach (const QString &option, options) {

@@ -3996,9 +3996,9 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         if (settings().allowUnstableComponents()) {
             // Check if there are sha checksum mismatch. Component will still show in install tree
             // but is unselectable.
-            foreach (const QString packageName, d->m_metadataJob.shaMismatchPackages()) {
-                if (packageName == component->name()) {
-                    const QString errorString = QLatin1String("SHA mismatch detected for component ") + packageName;
+            foreach (const QString pkgName, d->m_metadataJob.shaMismatchPackages()) {
+                if (pkgName == component->name()) {
+                    const QString errorString = QLatin1String("SHA mismatch detected for component ") + pkgName;
                     d->m_pendingUnstableComponents.insert(component->name(),
                         QPair<Component::UnstableError, QString>(Component::ShaMismatch, errorString));
                 }

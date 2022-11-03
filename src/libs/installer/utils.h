@@ -69,7 +69,7 @@ namespace QInstaller {
 
     QStringList INSTALLER_EXPORT localeCandidates(const QString &locale);
 
-    QStringList INSTALLER_EXPORT checkMutualOptions(CommandLineParser &parser, const QStringList &options);
+    QStringList INSTALLER_EXPORT checkMutualOptions(const CommandLineParser &parser, const QStringList &options);
 
     INSTALLER_EXPORT std::ostream& operator<<(std::ostream &os, const QString &string);
 }

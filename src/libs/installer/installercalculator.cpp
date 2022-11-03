@@ -327,7 +327,7 @@ QSet<Component *> InstallerCalculator::autodependencyComponents(const bool rever
     return foundAutoDependOnList;
 }
 
-void InstallerCalculator::calculateComponentDependencyReferences(const QString dependencyComponentName, const Component *component)
+void InstallerCalculator::calculateComponentDependencyReferences(const QString &dependencyComponentName, const Component *component)
 {
     Component *dependencyComponent = m_core->componentByName(dependencyComponentName);
     if (!dependencyComponent || component->autoDependencies().contains(dependencyComponentName))
@@ -338,8 +338,8 @@ void InstallerCalculator::calculateComponentDependencyReferences(const QString d
 
     const QStringList dependenciesList = dependencyComponent->currentDependencies();
     for (const QString &depComponentName : dependenciesList) {
-        Component *dependencyComponent = m_core->componentByName(depComponentName);
-        calculateComponentDependencyReferences(depComponentName, dependencyComponent);
+        Component *depComponent = m_core->componentByName(depComponentName);
+        calculateComponentDependencyReferences(depComponentName, depComponent);
     }
 }
 

@@ -201,7 +201,7 @@ CommandLineParser::CommandLineParser()
          QLatin1String("[CLI] Automatically sets the QFileDialog values getExistingDirectory() or getOpenFileName() "
                        "requested by install script. "
                        "Several identifier=value pairs can be given separated with comma, "
-                       "for example --file-query filedialog.id=C:\Temp,filedialog.id2=C:\Temp2"),
+                       "for example --file-query filedialog.id=C:/Temp,filedialog.id2=C:/Temp2"),
          QLatin1String("identifier=value")), CommandLineOnly);
     addOptionWithContext(QCommandLineOption(QStringList() << CommandLineOptions::scConfirmCommandShort
         << CommandLineOptions::scConfirmCommandLong, QLatin1String("[CLI] Confirms starting of "

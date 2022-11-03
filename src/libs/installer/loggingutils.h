@@ -64,7 +64,7 @@ public:
     VerbosityLevel verboseLevel() const;
     bool outputRedirected() const;
 
-    void printUpdateInformation(const QList<Component *> components) const;
+    void printUpdateInformation(const QList<Component *> &components) const;
     void printLocalPackageInformation(const QList<KDUpdater::LocalPackage> &packages) const;
     void printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesMap &installedPackages) const;
 

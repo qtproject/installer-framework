@@ -110,6 +110,7 @@ public:
 */
 LoggingHandler::LoggingHandler()
     : m_verbLevel(VerbosityLevel::Silent)
+    , m_outputRedirected(false)
 {
 #if defined(Q_OS_UNIX)
     m_outputRedirected = !isatty(fileno(stdout));
@@ -251,7 +252,7 @@ bool LoggingHandler::outputRedirected() const
 /*!
     Prints update information from \a components.
 */
-void LoggingHandler::printUpdateInformation(const QList<Component *> components) const
+void LoggingHandler::printUpdateInformation(const QList<Component *> &components) const
 {
     QString output;
     QXmlStreamWriter stream(&output);

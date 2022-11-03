@@ -189,7 +189,7 @@ Repository Metadata::repository() const
     is already set, the new one will override the previous one. The metadata becomes
     associated with the set repository even if it was fetched from another one.
 */
-void Metadata::setRepository(Repository repository)
+void Metadata::setRepository(const Repository &repository)
 {
     m_repository = repository;
 }

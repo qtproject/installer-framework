@@ -53,7 +53,7 @@ public:
     bool obsoletes(CacheableItem *other) override;
 
     Repository repository() const;
-    void setRepository(Repository repository);
+    void setRepository(const Repository &repository);
 
     bool isAvailableFromDefaultRepository() const;
     void setAvailableFromDefaultRepository(bool defaultRepository);
