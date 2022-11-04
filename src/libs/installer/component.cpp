@@ -596,7 +596,7 @@ bool Component::treeNameMoveChildren() const
     Loads the component script into the script engine. Call this method with
     \c postLoad \c true to a list of components that are updated or installed
     to improve performance if the amount of components is huge and there are no script
-    functions that needs to be called before the installation starts.
+    functions that need to be called before the installation starts.
 */
 void Component::loadComponentScript(const bool postLoad)
 {

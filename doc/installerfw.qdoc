@@ -1879,7 +1879,7 @@
     \section2 Getting the Maintenance Tool
 
     The maintenance tool for Linux and Windows is the same as the \c installerbase
-    executable located in your Qt Installer Framework's \c installation bin folder.
+    executable located in your Qt Installer Framework's installation \c bin folder.
     For macOS the maintenance tool app bundle can be created using the \c binarycreator
     tool with the command line switch \c --mt or \c --create-maintenancetool. The
     name of the macOS app bundle can be configured in config.xml using
