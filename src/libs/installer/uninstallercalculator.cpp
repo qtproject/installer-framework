@@ -72,12 +72,16 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component, con
         const QStringList &dependencies = PackageManagerCore::parseNames(m_localDependencyComponentHash.value(component->name()));
         for (const QString &dependencyComponent : dependencies) {
             Component *depComponent = m_core->componentByName(dependencyComponent);
-             if (depComponent && depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)) {
-                 appendComponentToUninstall(depComponent, reverse);
-                 insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
-             } else if (reverse) {
-                 appendComponentToUninstall(depComponent, true);
-             }
+            if (!depComponent)
+                continue;
+            if (depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)) {
+                appendComponentToUninstall(depComponent, reverse);
+                insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
+            } else if (reverse && depComponent->isVirtual()) {
+                // Remove from uninstall only hidden components, user
+                // can select other dependencies manually
+                appendComponentToUninstall(depComponent, true);
+            }
         }
     }
     if (reverse) {
@@ -175,20 +179,8 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool revers
     // Check for virtual components without dependees
     if (reverse) {
         for (Component *reverseFromUninstall : qAsConst(m_virtualComponentsForReverse)) {
-            if (m_componentsToUninstall.contains(reverseFromUninstall)) {
-                bool required = false;
-                // Check if installed or about to be updated -packages are dependant on the package
-                const QList<Component*> installDependants = m_core->installDependants(reverseFromUninstall);
-                for (Component *dependant : installDependants) {
-                    if (dependant->isInstalled() && !m_componentsToUninstall.contains(dependant)) {
-                        required = true;
-                        break;
-                    }
-                }
-                if (required) {
-                    unneededVirtualList.append(reverseFromUninstall);
-                }
-            }
+            if (m_componentsToUninstall.contains(reverseFromUninstall) && (isRequiredVirtualPackage(reverseFromUninstall)))
+                unneededVirtualList.append(reverseFromUninstall);
         }
     } else {
         for (const QString &componentName : qAsConst(m_localVirtualComponents)) {
@@ -201,17 +193,7 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool revers
                if (!virtualComponent->autoDependencies().isEmpty() || virtualComponent->forcedInstallation())
                    continue;
 
-               bool required = false;
-               // Check if installed or about to be updated -packages are dependant on the package
-               const QList<Component*> installDependants = m_core->installDependants(virtualComponent);
-               for (Component *dependant : installDependants) {
-                   if ((dependant->isInstalled() && !m_componentsToUninstall.contains(dependant))
-                           || m_core->orderedComponentsToInstall().contains(dependant)) {
-                       required = true;
-                       break;
-                   }
-               }
-               if (!required) {
+               if (!isRequiredVirtualPackage(virtualComponent)) {
                    unneededVirtualList.append(virtualComponent);
                    m_virtualComponentsForReverse.append(virtualComponent);
                    insertUninstallReason(virtualComponent, UninstallerCalculator::VirtualDependent);
@@ -224,4 +206,15 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool revers
         appendComponentsToUninstall(unneededVirtualList, reverse);
 }
 
+bool UninstallerCalculator::isRequiredVirtualPackage(Component *component)
+{
+    const QStringList localInstallDependents = m_core->localDependenciesToComponent(component);
+    for (const QString &dependent : localInstallDependents) {
+        Component *comp = m_core->componentByName(dependent);
+        if (!m_componentsToUninstall.contains(comp)) {
+            return true;
+        }
+    }
+    return m_core->isDependencyForRequestedComponent(component);
+}
 } // namespace QInstaller

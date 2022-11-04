@@ -68,10 +68,11 @@ public:
     QString uninstallReason(Component *component) const;
     UninstallerCalculator::UninstallReasonType uninstallReasonType(Component *c) const;
     QString uninstallReasonReferencedComponent(Component *component) const;
+    bool isRequiredVirtualPackage(Component *component);
+    void appendVirtualComponentsToUninstall(const bool reverse);
 
 private:
     void appendComponentToUninstall(Component *component, const bool reverse);
-    void appendVirtualComponentsToUninstall(const bool reverse);
 
     QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;
