@@ -1048,7 +1048,7 @@ bool PackageManagerCore::isFileExtensionRegistered(const QString &extension) con
  */
 bool PackageManagerCore::fileExists(const QString &filePath) const
 {
-    return QFileInfo(filePath).exists();
+    return QFileInfo::exists(filePath);
 }
 
 /*!

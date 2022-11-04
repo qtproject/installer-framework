@@ -1404,7 +1404,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         bool newBinaryWritten = false;
         QString mtName = maintenanceToolName();
         const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
-        if (!installerBaseBinary.isEmpty() && QFileInfo(installerBaseBinary).exists()) {
+        if (!installerBaseBinary.isEmpty() && QFileInfo::exists(installerBaseBinary)) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << installerBaseBinary;
             if (QInstaller::isInBundle(installerBaseBinary)) {
@@ -1455,7 +1455,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 }
             }
             m_installerBaseBinaryUnreplaced.clear();
-        } else if (!installerBaseBinary.isEmpty() && !QFileInfo(installerBaseBinary).exists()) {
+        } else if (!installerBaseBinary.isEmpty() && !QFileInfo::exists(installerBaseBinary)) {
             qCWarning(QInstaller::lcInstallerInstallLog) << "The current maintenance tool could not be updated."
                 << installerBaseBinary << "does not exist. Please fix the \"setInstallerBaseBinary"
                 "(<temp_installer_base_binary_path>)\" call in your script.";
@@ -2177,7 +2177,7 @@ bool PackageManagerCorePrivate::runOfflineGenerator()
         m_core->downloadNeededArchives(double(1));
 
         const QString installerBaseReplacement = replaceVariables(m_offlineBaseBinaryUnreplaced);
-        if (!installerBaseReplacement.isEmpty() && QFileInfo(installerBaseReplacement).exists()) {
+        if (!installerBaseReplacement.isEmpty() && QFileInfo::exists(installerBaseReplacement)) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << offlineBinaryTempName;
 

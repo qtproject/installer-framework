@@ -150,7 +150,7 @@ QList<VolumeInfo> mountedVolumes()
 
 bool pathIsOnLocalDevice(const QString &path)
 {
-    if (!QFileInfo(path).exists())
+    if (!QFileInfo::exists(path))
         return false;
 
     if (path.startsWith(QLatin1String("//")))

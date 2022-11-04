@@ -45,7 +45,7 @@ bool LockFile::Private::lock()
 
     errorString.clear();
     handle = CreateFile(filename.toStdWString().data(), GENERIC_READ | GENERIC_WRITE,
-        FILE_SHARE_READ, NULL, QFileInfo(filename).exists() ? OPEN_EXISTING : CREATE_NEW,
+        FILE_SHARE_READ, NULL, QFileInfo::exists(filename) ? OPEN_EXISTING : CREATE_NEW,
         FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE, NULL);
 
     if (handle == INVALID_HANDLE_VALUE) {

@@ -597,7 +597,7 @@ public:
         QString controlScript = QString();
         if (m_parser.isSet(CommandLineOptions::scScriptLong)) {
             controlScript = m_parser.value(CommandLineOptions::scScriptLong);
-            if (!QFileInfo(controlScript).exists())
+            if (!QFileInfo::exists(controlScript))
                 qCDebug(QInstaller::lcInstallerInstallLog) << "Script file does not exist.";
 
         } else if (!m_core->settings().controlScript().isEmpty()) {

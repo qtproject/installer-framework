@@ -185,7 +185,7 @@ int main(int argc, char** argv)
                         "Error: Repository parameter missing argument"));
                 }
 
-                if (!QFileInfo(args.first()).exists()) {
+                if (!QFileInfo::exists(args.first())) {
                     return printErrorAndUsageAndExit(QCoreApplication::translate("QInstaller",
                         "Error: Only local filesystem repositories now supported"));
                 }

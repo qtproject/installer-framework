@@ -77,7 +77,7 @@ public:
     explicit BundleBackup(const QString &bundle = QString())
         : bundle(bundle)
     {
-        if (!bundle.isEmpty() && QFileInfo(bundle).exists()) {
+        if (!bundle.isEmpty() && QFileInfo::exists(bundle)) {
             backup = QInstaller::generateTemporaryFileName(bundle);
             QFile::rename(bundle, backup);
         }

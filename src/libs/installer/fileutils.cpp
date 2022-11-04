@@ -371,7 +371,7 @@ bool QInstaller::setDefaultFilePermissions(QFile *file, DefaultFilePermissions p
 void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
-    Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
+    Q_ASSERT(!QFileInfo::exists(targetDir) || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir)) {
         throw Error(QCoreApplication::translate("QInstaller", "Cannot create directory \"%1\".")
             .arg(QDir::toNativeSeparators(targetDir)));
@@ -402,7 +402,7 @@ void QInstaller::copyDirectoryContents(const QString &sourceDir, const QString &
 void QInstaller::moveDirectoryContents(const QString &sourceDir, const QString &targetDir)
 {
     Q_ASSERT(QFileInfo(sourceDir).isDir());
-    Q_ASSERT(!QFileInfo(targetDir).exists() || QFileInfo(targetDir).isDir());
+    Q_ASSERT(!QFileInfo::exists(targetDir) || QFileInfo(targetDir).isDir());
     if (!QDir().mkpath(targetDir)) {
         throw Error(QCoreApplication::translate("QInstaller", "Cannot create directory \"%1\".")
             .arg(QDir::toNativeSeparators(targetDir)));

@@ -704,13 +704,13 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
 
     // Begin check arguments
     foreach (const QString &packageDir, args.packagesDirectories) {
-        if (!QFileInfo(packageDir).exists()) {
+        if (!QFileInfo::exists(packageDir)) {
             argumentError = QString::fromLatin1("Error: Package directory not found at the specified location.");
             return EXIT_FAILURE;
         }
     }
     foreach (const QString &repositoryDir, args.repositoryDirectories) {
-        if (!QFileInfo(repositoryDir).exists()) {
+        if (!QFileInfo::exists(repositoryDir)) {
             argumentError = QString::fromLatin1("Error: Only local filesystem repositories now supported.");
             return EXIT_FAILURE;
         }
@@ -721,12 +721,12 @@ int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError
             "contain any components apart from the root component.");
         return EXIT_FAILURE;
     }
-    if (!QFileInfo(args.templateBinary).exists()) {
+    if (!QFileInfo::exists(args.templateBinary)) {
 #ifdef Q_OS_WIN
         if (!args.templateBinary.endsWith(suffix))
             args.templateBinary = args.templateBinary + suffix;
         // Try again with added executable suffix
-        if (!QFileInfo(args.templateBinary).exists()) {
+        if (!QFileInfo::exists(args.templateBinary)) {
             argumentError = QString::fromLatin1("Error: Template base binary not found at the specified location.");
             return EXIT_FAILURE;
         }

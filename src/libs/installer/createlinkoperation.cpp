@@ -88,7 +88,7 @@ bool CreateLinkOperation::undoOperation()
         return false;
     }
 
-    return !QFileInfo(linkPath).exists();
+    return !QFileInfo::exists(linkPath);
 }
 
 bool CreateLinkOperation::testOperation()
