@@ -248,7 +248,8 @@ public:
     QString uninstallReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;
-    QList<Component*> installDependants(const Component *component) const;
+    bool isDependencyForRequestedComponent(const Component *component) const;
+    QStringList localDependenciesToComponent(const Component *component) const;
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
