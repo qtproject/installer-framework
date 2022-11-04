@@ -1,4 +1,5 @@
 4.5.0
+- Fix required virtual components still uninstalled in some occasions
 - Update translations (QTIFW-2814)
 - macOS: support updating maintenance tool with an app bundle (QTIFW-2750)
 - Fix possible uncaught exceptions while loading package data
