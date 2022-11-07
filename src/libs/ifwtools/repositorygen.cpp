@@ -188,7 +188,7 @@ static bool findMetaFile(const QString &repositoryDir, const QDomElement &packag
     const QDomNodeList c1 = packageUpdate.childNodes();
     for (int i = 0; i < c1.count(); ++i) {
         const QDomElement e1 = c1.at(i).toElement();
-        for (const QString &meta : *scMetaElements) {
+        for (const QString &meta : qAsConst(*scMetaElements)) {
             if (e1.tagName() == meta) {
                 metaElementFound = true;
                 break;
