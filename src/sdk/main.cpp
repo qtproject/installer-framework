@@ -49,6 +49,7 @@
 #include <QDateTime>
 #include <QNetworkProxyFactory>
 #include <QThread>
+#include <QThreadPool>
 #include <QDeadlineTimer>
 
 #include <iostream>
@@ -121,6 +122,13 @@ int main(int argc, char *argv[])
     rl.rlim_cur = qMin((rlim_t) OPEN_MAX, rl.rlim_max);
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
+
+    // Try to avoid running into situations where the application would hang due to "nested" blocking
+    // usage of the global threadpool that has only one thread available, i.e. main thread invokes
+    // QtConcurrent::run(&myFunction) and  myFunction() calls QtConcurrent::blockingFiltered()
+    // for a container.
+    if (QThread::idealThreadCount() == 1)
+        QThreadPool::globalInstance()->setMaxThreadCount(2);
 
     // We need to start either a command line application or a GUI application. Since we
     // fail doing so at least on Linux while parsing the argument using a core application
