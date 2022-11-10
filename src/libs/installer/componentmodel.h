@@ -49,6 +49,7 @@ class INSTALLER_EXPORT ComponentModel : public QAbstractItemModel
 
 public:
     enum ModelStateFlag {
+        Empty = -0x01,
         AllChecked = 0x01,
         AllUnchecked = 0x02,
         DefaultChecked = 0x04,

@@ -47,6 +47,8 @@ namespace QInstaller {
     This enum value holds the checked state of the components available for
     installation.
 
+    \value Empty
+           The model does not contain any components.
     \value AllChecked
            All components are checked.
     \value AllUnchecked
@@ -400,7 +402,7 @@ void ComponentModel::reset(QList<Component *> rootComponents)
     m_uncheckable.clear();
     m_indexByNameCache.clear();
     m_rootComponentList.clear();
-    m_modelState = DefaultChecked;
+    m_modelState = !rootComponents.isEmpty() ? DefaultChecked : Empty;
 
     // Initialize these with an empty set for every possible state, cause we compare the hashes later in
     // updateAndEmitModelState(). The comparison than might lead to wrong results if one of the checked
@@ -491,6 +493,10 @@ void ComponentModel::postModelReset()
 
 void ComponentModel::updateModelState()
 {
+    if (m_rootComponentList.isEmpty()) {
+        m_modelState = ComponentModel::Empty;
+        return;
+    }
     m_modelState = ComponentModel::DefaultChecked;
     if (m_initialCheckedState != m_currentCheckedState)
         m_modelState = ComponentModel::PartiallyChecked;

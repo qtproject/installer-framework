@@ -455,6 +455,11 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
         bspButton->setEnabled(!show);
 
+    if (show) {
+        q->gui()->button(QWizard::NextButton)->setEnabled(false);
+        q->gui()->button(QWizard::BackButton)->setEnabled(false);
+    }
+
     // In macOS 10.12 the widgets are not hidden if those are not updated immediately
 #ifdef Q_OS_MACOS
     q->repaint();
@@ -537,6 +542,12 @@ void ComponentSelectionPagePrivate::selectDefault()
 
 void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentModel::ModelState state)
 {
+    if (state.testFlag(ComponentModel::Empty)) {
+        m_checkAll->setEnabled(false);
+        m_uncheckAll->setEnabled(false);
+        m_checkDefault->setEnabled(false);
+        return;
+    }
     q->setModified(state.testFlag(ComponentModel::DefaultChecked) == false);
     // If all components in the checked list are only checkable when run without forced
     // installation, set ComponentModel::AllUnchecked as well, as we cannot uncheck anything.
