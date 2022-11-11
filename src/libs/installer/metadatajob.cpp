@@ -738,43 +738,14 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         hash.addData(&file);
         const QByteArray updatesChecksum = hash.result().toHex();
 
-        Metadata *cachedMetadata = m_metaFromCache.itemByChecksum(updatesChecksum);
-        if (cachedMetadata) {
-            const Repository repository = item.value(TaskRole::UserRole).value<Repository>();
-            if (cachedMetadata->isValid() && !repository.isCompressed()) {
-                // Refresh repository information to cache. Same repository may appear in multiple
-                // categories and the metadata may be available from default repositories simultaneously.
-                cachedMetadata->setRepository(repository);
-                if (!repository.categoryname().isEmpty())
-                    m_fetchedCategorizedRepositories.insert(repository); // For faster lookups
-                else
-                    cachedMetadata->setAvailableFromDefaultRepository(true);
+        bool refreshed;
+        Status status = refreshCacheItem(result, updatesChecksum, &refreshed);
+        if (status != XmlDownloadSuccess)
+            return status;
 
-                // Refresh also persistent information, the url of the repository may have changed
-                // from the last fetch.
-                cachedMetadata->setPersistentRepositoryPath(repository.url());
+        if (refreshed) // Found existing metadata
+            continue;
 
-                // search for additional repositories that we might need to check
-                QDomDocument doc = cachedMetadata->updatesDocument();
-                const MetadataJob::Status status
-                    = parseRepositoryUpdates(doc.documentElement(), result, cachedMetadata);
-                if (status == XmlDownloadRetry) {
-                    // The repository update may have removed or replaced current repositories,
-                    // clear repository information from cached items and refresh on next fetch run.
-                    resetCacheRepositories();
-                    return status;
-                }
-
-                continue;
-            }
-            // Missing or corrupted files, or compressed repository which takes priority
-            // over remote repository. We will re-download and uncompress
-            // the metadata. Remove broken item from the cache.
-            if (!m_metaFromCache.removeItem(updatesChecksum)) {
-                qCWarning(lcInstallerInstallLog) << m_metaFromCache.errorString();
-                return XmlDownloadFailure;
-            }
-        }
         metadata->setChecksum(updatesChecksum);
 
         file.seek(0);
@@ -849,7 +820,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         m_fetchedMetadata.insert(metadataPath, metadata.take());
 
         // search for additional repositories that we might need to check
-        const MetadataJob::Status status = parseRepositoryUpdates(root, result, metadataPtr);
+        status = parseRepositoryUpdates(root, result, metadataPtr);
         if (status == XmlDownloadRetry) {
             // The repository update may have removed or replaced current repositories,
             // clear repository information from cached items and refresh on next fetch run.
@@ -861,6 +832,53 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
     m_totalTaskCount = qCeil(taskCount);
     m_taskNumber = 0;
 
+    return XmlDownloadSuccess;
+}
+
+MetadataJob::Status MetadataJob::refreshCacheItem(const FileTaskResult &result,
+    const QByteArray &checksum, bool *refreshed)
+{
+    Q_ASSERT(refreshed);
+    *refreshed = false;
+
+    Metadata *cachedMetadata = m_metaFromCache.itemByChecksum(checksum);
+    if (!cachedMetadata)
+        return XmlDownloadSuccess;
+
+    const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
+    const Repository repository = item.value(TaskRole::UserRole).value<Repository>();
+    if (cachedMetadata->isValid() && !repository.isCompressed()) {
+        // Refresh repository information to cache. Same repository may appear in multiple
+        // categories and the metadata may be available from default repositories simultaneously.
+        cachedMetadata->setRepository(repository);
+        if (!repository.categoryname().isEmpty())
+            m_fetchedCategorizedRepositories.insert(repository); // For faster lookups
+        else
+            cachedMetadata->setAvailableFromDefaultRepository(true);
+
+        // Refresh also persistent information, the url of the repository may have changed
+        // from the last fetch.
+        cachedMetadata->setPersistentRepositoryPath(repository.url());
+
+        // search for additional repositories that we might need to check
+        QDomDocument doc = cachedMetadata->updatesDocument();
+        const Status status = parseRepositoryUpdates(doc.documentElement(), result, cachedMetadata);
+        if (status == XmlDownloadRetry) {
+            // The repository update may have removed or replaced current repositories,
+            // clear repository information from cached items and refresh on next fetch run.
+            resetCacheRepositories();
+            return status;
+        }
+        *refreshed = true;
+        return XmlDownloadSuccess;
+    }
+    // Missing or corrupted files, or compressed repository which takes priority
+    // over remote repository. We will re-download and uncompress
+    // the metadata. Remove broken item from the cache.
+    if (!m_metaFromCache.removeItem(checksum)) {
+        qCWarning(lcInstallerInstallLog) << m_metaFromCache.errorString();
+        return XmlDownloadFailure;
+    }
     return XmlDownloadSuccess;
 }
 
