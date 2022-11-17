@@ -9,6 +9,9 @@
 #include <QUuid>
 #include <QDebug>
 
+#include <iosfwd>
+#include <sstream>
+
 EventLogger::EventLogger()
 {
     m_deviceId = QInstaller::getDeviceId().toRfc4122();
@@ -236,7 +239,15 @@ void EventLogger::uninstallerStarted(int duration)
     auto evt = new eve_launcher::uninstaller::Started;
     evt->set_allocated_event_metadata(getEventMetadata());
     evt->set_duration(duration);
-    auto inf = pdm_proto::GetEVELauncherData();
+
+    platform::Information inf;
+    std::stringstream buffer;
+    auto can_serialize = pdm_proto::GetEVELauncherData(&buffer);
+    if (can_serialize) {
+        // buffer now contains an instance of the protobuf encoded details.
+        inf.ParseFromIstream(&buffer);
+    }
+
     evt->set_allocated_system_information(&inf);
     evt->set_allocated_device(new std::string(m_deviceId.data(), size_t(m_deviceId.size())));
     sendAllocatedEvent(evt);
@@ -336,7 +347,15 @@ void EventLogger::installerStarted(const QString& startMenuItemPath, int duratio
     qDebug() << "framework | EventLogger::installerStarted |" << startMenuItemPath << ", " << duration << "ms";
     auto evt = new eve_launcher::installer::Started;
     evt->set_allocated_event_metadata(getEventMetadata());
-    auto inf = pdm_proto::GetEVELauncherData();
+
+    platform::Information inf;
+    std::stringstream buffer;
+    auto can_serialize = pdm_proto::GetEVELauncherData(&buffer);
+    if (can_serialize) {
+        // buffer now contains an instance of the protobuf encoded details.
+        inf.ParseFromIstream(&buffer);
+    }
+
     evt->set_allocated_system_information(&inf);
     QString fileName = QInstaller::getInstallerFileName().split(QLatin1String("/")).last();
     qDebug() << "framework | EventLogger::installerStarted | " << fileName;
