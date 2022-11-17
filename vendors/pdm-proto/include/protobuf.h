@@ -1,10 +1,13 @@
 #pragma once
 
-#include "eve_public/app/platform.pb.h"
-#include "eve_launcher/pdm.pb.h"
+#include <ostream>
 
 namespace pdm_proto
 {
-	eve_public::app::platform::Information GetEVEPublicData();
-	platform::Information GetEVELauncherData();
+  // Return information from the eve_public domain
+  bool GetData(std::ostream* stream);
+  bool GetEVEPublicData(std::ostream* stream);
+  // Return information from the deprecated eve_launcher domain
+  [[deprecated("The eve_launcher domain is deprecated, use eve_public instead")]]
+  bool GetEVELauncherData(std::ostream* stream);
 }
