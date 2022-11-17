@@ -244,7 +244,6 @@ void EventLogger::uninstallerStarted(int duration)
     std::stringstream buffer;
     auto can_serialize = pdm_proto::GetEVELauncherData(&buffer);
     if (can_serialize) {
-        // buffer now contains an instance of the protobuf encoded details.
         inf.ParseFromIstream(&buffer);
     }
 
@@ -352,7 +351,6 @@ void EventLogger::installerStarted(const QString& startMenuItemPath, int duratio
     std::stringstream buffer;
     auto can_serialize = pdm_proto::GetEVELauncherData(&buffer);
     if (can_serialize) {
-        // buffer now contains an instance of the protobuf encoded details.
         inf.ParseFromIstream(&buffer);
     }
 
