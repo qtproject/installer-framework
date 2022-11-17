@@ -3493,6 +3493,17 @@ void PackageManagerCore::setInstallerBaseBinary(const QString &path)
 }
 
 /*!
+    Returns the value of \c installerbase binary which is used when writing
+    the maintenance tool. Value can be empty.
+
+    \sa setInstallerBaseBinary()
+*/
+QString PackageManagerCore::installerBaseBinary() const
+{
+    return d->m_installerBaseBinaryUnreplaced;
+}
+
+/*!
     Sets the \c installerbase binary located at \a path to use when writing the
     offline installer. Setting this makes it possible to run the offline generator
     in cases where we are not running a real installer, i.e. when executing autotests.

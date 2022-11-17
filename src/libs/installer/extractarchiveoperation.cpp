@@ -178,9 +178,13 @@ bool ExtractArchiveOperation::performOperation()
     QString installDir = targetDir;
     // If we have package manager in use (normal installer run) then use
     // TargetDir for saving filenames, otherwise those would be saved to
-    // extracted folder.
-    if (packageManager())
-        installDir = packageManager()->value(scTargetDir);
+    // extracted folder. Also initialize installerbasebinary which we use later
+    // to check if the extracted file in question is the maintenancetool itself.
+    QString installerBaseBinary;
+    if (PackageManagerCore *core = packageManager()) {
+        installDir = core->value(scTargetDir);
+        installerBaseBinary = core->toNativeSeparators(core->replaceVariables(core->installerBaseBinary()));
+    }
     const QString resourcesPath = installDir + QLatin1Char('/') + QLatin1String("installerResources");
 
     QString fileDirectory = resourcesPath + QLatin1Char('/') + archivePath.section(QLatin1Char('/'), 1, 1,
@@ -202,6 +206,13 @@ bool ExtractArchiveOperation::performOperation()
         setDefaultFilePermissions(file.fileName(), DefaultFilePermissions::NonExecutable);
         QDataStream out (&file);
         for (int i = 0; i < files.count(); ++i) {
+            if (!installerBaseBinary.isEmpty() && files[i].startsWith(installerBaseBinary)) {
+                // Do not write installerbase binary filename to extracted files. Installer binary
+                // is maintenance tool program, the binary is removed elsewhere
+                // when we do full uninstall.
+                files.clear();
+                break;
+            }
             files[i] = replacePath(files.at(i), installDir, QLatin1String(scRelocatable));
         }
         out << files;

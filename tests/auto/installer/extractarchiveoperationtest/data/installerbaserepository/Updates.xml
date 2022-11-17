@@ -1,0 +1,13 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>InstallerBase</DisplayName>
+  <Description>Example component InstallerBase</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <DownloadableArchives>installerbase.7z,content.7z</DownloadableArchives>
+ </PackageUpdate>
+</Updates>

@@ -166,6 +166,7 @@ public:
     Q_INVOKABLE static QString findPath(const QString &name, const QStringList &paths = QStringList());
 
     Q_INVOKABLE void setInstallerBaseBinary(const QString &path);
+    QString installerBaseBinary() const;
     void setOfflineBaseBinary(const QString &path);
 
     void addResourcesForOfflineGeneration(const QString &rcPath);
