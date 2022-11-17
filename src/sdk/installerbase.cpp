@@ -104,8 +104,8 @@ int InstallerBase::run()
         if (squishPort <= 0 || squishPort > maxSquishPortNumber) {
             qWarning().noquote() << "Invalid Squish port:" << squishPort;
         } else {
-            Squish::allowAttaching(squishPort);
-            qCDebug(QInstaller::lcDeveloperBuild)  << "Attaching to squish port" << squishPort << "succeeded";
+            bool attachSucceeded = Squish::allowAttaching(squishPort);
+            qCDebug(QInstaller::lcDeveloperBuild)  << "Attach to squish port" << squishPort << "succeeded: "<<attachSucceeded;
         }
     }
 #endif
