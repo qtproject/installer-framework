@@ -104,7 +104,7 @@ HEADERS += \
            installerbase.h \
            aboutapplicationdialog.h
 
-SOURCES = \
+SOURCES += \
           main.cpp \
           installerbase.cpp \
           tabcontroller.cpp \
