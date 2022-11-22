@@ -321,6 +321,37 @@ void UpdateOperation::setRequiresUnreplacedVariables(bool isRequired)
     m_requiresUnreplacedVariables = isRequired;
 }
 
+/*!
+    Replaces installer \c value \a variableValue with predefined variable.
+    If \c key is found for the \a variableValue and the \c key ends with string _OLD,
+    the initial \a variableValue is replaced  with the \c value having a key
+    without _OLD ending. This way we can replace the hard coded values defined for operations,
+    if the value has for some reason changed. For example if we set following variables
+    in install script:
+    \snippet installer.setValue("MY_OWN_EXECUTABLE", "C:/Qt/NewLocation/Tools.exe")
+    \snippet installer.setValue("MY_OWN_EXECUTABLE_OLD", "C:/Qt/OldLocation/Tools.exe")
+    and we have moved the Tools.exe from OldLocation to NewLocation, the operation
+    continues to work and use the Tools.exe from NewLocation although original
+    installation has been made with Tools.exe in OldLocation.
+    Returns \c true if \a variableValue is replaced.
+*/
+bool UpdateOperation::variableReplacement(QString *variableValue)
+{
+    bool variableValueChanged = false;
+    const QString valueNormalized = QDir::cleanPath(*variableValue);
+    QString key = m_core->key(valueNormalized);
+    if (key.endsWith(QLatin1String("_OLD"))) {
+        key.chop(4);
+        if (m_core->containsValue(key)) {
+            key.prepend(QLatin1String("@"));
+            key.append(QLatin1String("@"));
+            *variableValue = m_core->replaceVariables(key);
+            variableValueChanged = true;
+        }
+    }
+    return variableValueChanged;
+}
+
 struct StartsWith
 {
     explicit StartsWith(const QString &searchTerm)

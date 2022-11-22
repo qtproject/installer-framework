@@ -114,6 +114,7 @@ protected:
     QStringList parsePerformOperationArguments();
     QStringList parseUndoOperationArguments();
     void setRequiresUnreplacedVariables(bool isRequired);
+    bool variableReplacement(QString *variableValue);
 
 private:
     QString m_name;

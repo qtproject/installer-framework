@@ -46,6 +46,7 @@ SettingsOperation::SettingsOperation(PackageManagerCore *core)
     : UpdateOperation(core)
 {
     setName(QLatin1String("Settings"));
+    setRequiresUnreplacedVariables(true);
 }
 
 void SettingsOperation::backup()
@@ -104,10 +105,17 @@ bool SettingsOperation::performOperation()
 
     if (!checkArguments())
         return false;
-    const QString path = argumentKeyValue(QLatin1String("path"));
+    QString path = argumentKeyValue(QLatin1String("path"));
     const QString method = argumentKeyValue(QLatin1String("method"));
     const QString key = argumentKeyValue(QLatin1String("key"));
-    const QString aValue = argumentKeyValue(QLatin1String("value"));
+    QString aValue = argumentKeyValue(QLatin1String("value"));
+
+    if (requiresUnreplacedVariables()) {
+        if (PackageManagerCore *const core = packageManager()) {
+            path = core->replaceVariables(path);
+            aValue = core->replaceVariables(aValue);
+        }
+    }
 
     // use MkdirOperation to get the path so it can remove it with MkdirOperation::undoOperation later
     KDUpdater::MkdirOperation mkDirOperation;
@@ -152,13 +160,24 @@ bool SettingsOperation::undoOperation()
 {
     if (!checkArguments())
         return false;
-    const QString path = argumentKeyValue(QLatin1String("path"));
+    QString path = argumentKeyValue(QLatin1String("path"));
     const QString method = argumentKeyValue(QLatin1String("method"));
     const QString key = argumentKeyValue(QLatin1String("key"));
-    const QString aValue = argumentKeyValue(QLatin1String("value"));
+    QString aValue = argumentKeyValue(QLatin1String("value"));
 
     if (method.startsWith(QLatin1String("remove")))
         return true;
+
+    if (requiresUnreplacedVariables()) {
+        if (PackageManagerCore *const core = packageManager()) {
+            path = core->replaceVariables(path);
+            aValue = core->replaceVariables(aValue);
+            // Check is different settings file is wanted to be used.
+            // Old settings file name should be set to variable <variable_name>_OLD,
+            // and new path is then read from <variable_name> variable.
+            variableReplacement(&path);
+        }
+    }
 
     bool cleanUp = false;
     { // kill the scope to kill settings object, else remove file will not work
