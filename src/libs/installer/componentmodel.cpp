@@ -214,7 +214,10 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
                 return component->data(Qt::UserRole + index.column());
         }
         if (role == Qt::CheckStateRole) {
-            if (!component->isCheckable() || !component->autoDependencies().isEmpty() || component->isUnstable())
+            if (!component->isCheckable() || component->isUnstable())
+                return QVariant();
+
+            if (!m_core->isUpdater() && !component->autoDependencies().isEmpty())
                 return QVariant();
         }
         if (role == ComponentModelHelper::ExpandedByDefault) {
@@ -558,8 +561,11 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
             checkable = false;
         }
 
-       if ((!node->isCheckable() && checkable) || !node->isEnabled() || !node->autoDependencies().isEmpty() || node->isUnstable())
+        if ((!node->isCheckable() && checkable) || !node->isEnabled() || node->isUnstable())
             continue;
+
+        if (!m_core->isUpdater() && !node->autoDependencies().isEmpty())
+           continue;
 
         Qt::CheckState newState = state;
         const Qt::CheckState recentState = node->checkState();

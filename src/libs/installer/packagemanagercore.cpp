@@ -4325,7 +4325,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
                 if (d->statusCanceledOrFailed())
                     return false;
 
-                if (!component->isUnstable() && component->autoDependencies().isEmpty())
+                if (!component->isUnstable())
                     component->setCheckState(Qt::Checked);
             }
 
@@ -4337,7 +4337,7 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             foreach (QInstaller::Component *component, d->m_updaterComponentsDeps) {
                 if (d->statusCanceledOrFailed())
                     return false;
-                if (component->isInstalled() && !component->autoDependencies().isEmpty()) {
+                if (component->isInstalled()) {
                     // since we do not put them into the model, which would force a update of e.g. tri state
                     // components, we have to check all installed components ourselves
                     if (!component->isUnstable())
