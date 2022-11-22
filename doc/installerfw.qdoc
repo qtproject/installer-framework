@@ -983,7 +983,8 @@
         \row
             \li ForcedInstallation
             \li Determines that the package must always be installed. End users
-                cannot deselect it in the installer.
+                cannot deselect it in the installer. When updating components, the
+                component can still be deselected from an update.
         \row
             \li ForcedUpdate
             \li Marks the package as \c ForcedUpdate to force a restart of the
@@ -1009,7 +1010,9 @@
         \row
             \li Checkable
             \li Set to \c false if you want to hide the checkbox for an item. This is useful
-                when only a few subcomponents should be selected instead of all. Optional.
+                when only a few subcomponents should be selected instead of all. When updating
+                components, the checkbox is still visible to allow toggling the component for
+                update. Optional.
         \row
             \li ExpandedByDefault
             \li Set to \c true if you want this item to be expanded by default. Optional.

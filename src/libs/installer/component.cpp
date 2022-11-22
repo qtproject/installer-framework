@@ -463,12 +463,14 @@ void Component::setValue(const QString &key, const QString &value)
 
     if (key == scName)
         d->m_componentName = normalizedValue;
-    if (key == scCheckable)
-        this->setCheckable(normalizedValue.toLower() == scTrue);
+    if (key == scCheckable) // Non-checkable components can still be toggled in updater
+        this->setCheckable(normalizedValue.toLower() == scTrue || d->m_core->isUpdater());
     if (key == scExpandedByDefault)
         this->setExpandedByDefault(normalizedValue.toLower() == scTrue);
     if (key == scForcedInstallation) {
-        if (value == scTrue && !PackageManagerCore::noForceInstallation()) {
+        if (value == scTrue && !d->m_core->isUpdater() && !PackageManagerCore::noForceInstallation()) {
+            // Forced installation components can still be toggled in updater or when
+            // core is set to ignore forced installations.
             setCheckable(false);
             setCheckState(Qt::Checked);
         }

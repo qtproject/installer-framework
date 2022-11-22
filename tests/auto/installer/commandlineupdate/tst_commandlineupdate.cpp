@@ -295,7 +295,7 @@ private slots:
         componentResourcesAfterUpdate.append(ComponentResource("componentA", "1.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentB", "2.0.0content.txt"));
         componentResourcesAfterUpdate.append(ComponentResource("componentD", "2.0.0content.txt"));//AutodepenOn componentA,componentB
-        componentResourcesAfterUpdate.append(ComponentResource("componentE", "2.0.0content.txt"));//ForcedInstall
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "1.0.0content.txt"));//ForcedInstall, not updated without user selection
         componentResourcesAfterUpdate.append(ComponentResource("componentG", "1.0.0content.txt"));
 
         deletedComponentResources.clear();
@@ -316,7 +316,7 @@ private slots:
                 << componentResourcesAfterUpdate
                 << (QStringList() <<  "components.xml" << "installcontent.txt" << "installcontentA.txt"
                         << "installcontentD_update.txt" << "installcontentB_update.txt"
-                        << "installcontentE_update.txt" << "installcontentG.txt")
+                        << "installcontentE.txt" << "installcontentG.txt")
                 << deletedComponentResources;
     }
 
