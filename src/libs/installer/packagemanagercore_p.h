@@ -294,7 +294,7 @@ private:
     int m_magicMarkerSupplement;
 
     bool m_componentsToInstallCalculated;
-    bool m_foundEssentialUpdate;;
+    bool m_foundEssentialUpdate;
 
     mutable ScriptEngine *m_componentScriptEngine;
     mutable ScriptEngine *m_controlScriptEngine;

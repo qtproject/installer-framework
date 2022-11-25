@@ -58,34 +58,50 @@ private slots:
 
     void updateWithContentSha1_data()
     {
+        QTest::addColumn<QString>("repository");
+        QTest::addColumn<QString>("repositoryForUpdate");
         QTest::addColumn<QString>("component");
         QTest::addColumn<QString>("content");
         QTest::addColumn<QString>("updatedContent");
         QTest::addColumn<PackageManagerCore::Status>("expectedStatusAfterInstall");
         QTest::addColumn<PackageManagerCore::Status>("expectedStatusAfterUpdate");
 
-        QTest::newRow("ContentSha1Change") << "componentA" << "1.0.0content.txt" << "0.1.0content.txt" << PackageManagerCore::Success << PackageManagerCore::Success;
-        QTest::newRow("NewContentSha1") << "componentB" << "1.0.0content.txt" << "0.1.0content.txt" << PackageManagerCore::Success << PackageManagerCore::Success;
-        QTest::newRow("SameContentSha1") << "componentC" << "1.0.0content.txt" << "1.0.0content.txt" << PackageManagerCore::Success << PackageManagerCore::Canceled;
-        QTest::newRow("Sha1RemovedFromRepo") << "componentD" << "1.0.0content.txt" << "2.0.0content.txt" << PackageManagerCore::Success << PackageManagerCore::Success;
+        QTest::newRow("Sha1UpdateForEssential")
+            << ":///data/repositoryWithEssential" << ":///data/repositoryUpdateWithEssential"
+            << "componentEssential" << "2.0.0content.txt" << "1.0.0content.txt"
+            << PackageManagerCore::Success << PackageManagerCore::EssentialUpdated;
+        QTest::newRow("ContentSha1Change")
+            << ":///data/repository" << ":///data/repositoryUpdate" << "componentA" << "1.0.0content.txt" << "0.1.0content.txt"
+            << PackageManagerCore::Success << PackageManagerCore::Success;
+        QTest::newRow("NewContentSha1")
+            << ":///data/repository" << ":///data/repositoryUpdate" << "componentB" << "1.0.0content.txt" << "0.1.0content.txt"
+            << PackageManagerCore::Success << PackageManagerCore::Success;
+        QTest::newRow("SameContentSha1")
+            << ":///data/repository" << ":///data/repositoryUpdate" << "componentC" << "1.0.0content.txt" << "1.0.0content.txt"
+            << PackageManagerCore::Success << PackageManagerCore::Canceled;
+        QTest::newRow("Sha1RemovedFromRepo")
+            << ":///data/repository" << ":///data/repositoryUpdate" << "componentD" << "1.0.0content.txt" << "2.0.0content.txt"
+            << PackageManagerCore::Success << PackageManagerCore::Success;
     }
 
     void updateWithContentSha1()
     {
+        QFETCH(QString, repository);
+        QFETCH(QString, repositoryForUpdate);
         QFETCH(QString, component);
         QFETCH(QString, content);
         QFETCH(QString, updatedContent);
         QFETCH(PackageManagerCore::Status, expectedStatusAfterInstall);
         QFETCH(PackageManagerCore::Status, expectedStatusAfterUpdate);
 
-        setRepository(":///data/repository");
+        setRepository(repository);
         QCOMPARE(expectedStatusAfterInstall, core->installSelectedComponentsSilently(QStringList() << component));
         QCOMPARE(expectedStatusAfterInstall, core->status());
         VerifyInstaller::verifyInstallerResources(m_installDir, component, content);
 
         core->commitSessionOperations();
         core->setPackageManager();
-        setRepository(":///data/repositoryUpdate");
+        setRepository(repositoryForUpdate);
         QCOMPARE(expectedStatusAfterUpdate, core->updateComponentsSilently(QStringList()));
         VerifyInstaller::verifyInstallerResources(m_installDir, component, updatedContent);
     }

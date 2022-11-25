@@ -1,0 +1,27 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>componentA</Name>
+  <DisplayName>Component A</DisplayName>
+  <Description>This component does not depend on any other component.</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+  <UpdateFile OS="Any" CompressedSize="283" UncompressedSize="101"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <ContentSha1>10</ContentSha1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentEssential</Name>
+  <DisplayName>Component Essential</DisplayName>
+  <Description>Component Essential</Description>
+  <Essential>true</Essential>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>80</SortingPriority>
+  <UpdateFile UncompressedSize="101" CompressedSize="283" OS="Any"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+</Updates>

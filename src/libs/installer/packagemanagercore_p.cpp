@@ -497,6 +497,7 @@ void PackageManagerCorePrivate::clearAllComponentLists()
 
     m_componentsToReplaceAllMode.clear();
     m_componentsToInstallCalculated = false;
+    m_foundEssentialUpdate = false;
 
     qDeleteAll(toDelete);
     cleanUpComponentEnvironment();
@@ -522,6 +523,7 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
 
     m_componentsToReplaceUpdaterMode.clear();
     m_componentsToInstallCalculated = false;
+    m_foundEssentialUpdate = false;
 
     qDeleteAll(usedComponents);
     cleanUpComponentEnvironment();
