@@ -129,7 +129,7 @@ int TabController::init()
     if (page) {
         page->setMessage(QString());
         page->setErrorMessage(QString());
-        page->onCoreNetworkSettingsChanged();
+        page->resetFetchedState();
     }
 
     d->m_gui->restart();

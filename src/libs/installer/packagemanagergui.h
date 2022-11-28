@@ -236,6 +236,8 @@ public:
     void setMaintenanceToolsEnabled(bool enable);
     void setMaintainerToolsEnabled(bool enable);
 
+    void resetFetchedState();
+
 public Q_SLOTS:
     void onCoreNetworkSettingsChanged();
     void setMessage(const QString &msg);

@@ -1740,6 +1740,17 @@ void IntroductionPage::setMaintainerToolsEnabled(bool enable)
         && ProductKeyCheck::instance()->hasValidKey());
 }
 
+/*!
+    Resets the internal page state, so that on clicking \uicontrol Next the metadata needs to be
+    fetched again.
+*/
+void IntroductionPage::resetFetchedState()
+{
+    m_updatesFetched = false;
+    m_allPackagesFetched = false;
+    m_forceUpdate = false;
+}
+
 // -- public slots
 
 /*!
@@ -1881,9 +1892,7 @@ void IntroductionPage::initializePage()
 */
 void IntroductionPage::onCoreNetworkSettingsChanged()
 {
-    m_updatesFetched = false;
-    m_allPackagesFetched = false;
-    m_forceUpdate = false;
+    resetFetchedState();
 
     PackageManagerCore *core = packageManagerCore();
     if (core->isUninstaller() || core->isMaintainer()) {
