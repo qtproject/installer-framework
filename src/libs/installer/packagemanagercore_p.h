@@ -119,7 +119,6 @@ public:
     QList<Component*> &replacementDependencyComponents();
     QHash<QString, QPair<Component*, Component*> > &componentsToReplace();
     QHash<QString, QStringList > &componentReplaces();
-    QList<Component*> replacedComponentsByName(const QString &name);
 
     void clearInstallerCalculator();
     InstallerCalculator *installerCalculator() const;

@@ -30,9 +30,6 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
-#include "globals.h"
-
-#include <QDebug>
 
 namespace QInstaller {
 
@@ -42,13 +39,11 @@ namespace QInstaller {
     \internal
 */
 
-UninstallerCalculator::UninstallerCalculator(const QList<Component *> &installedComponents
-         , PackageManagerCore *core
+UninstallerCalculator::UninstallerCalculator(PackageManagerCore *core
          , const AutoDependencyHash &autoDependencyComponentHash
          , const LocalDependencyHash &localDependencyComponentHash
          , const QStringList &localVirtualComponents)
-    : m_installedComponents(installedComponents)
-    , m_core(core)
+    : m_core(core)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
     , m_localDependencyComponentHash(localDependencyComponentHash)
     , m_localVirtualComponents(localVirtualComponents)
@@ -60,7 +55,7 @@ QSet<Component *> UninstallerCalculator::componentsToUninstall() const
     return m_componentsToUninstall;
 }
 
-void UninstallerCalculator::appendComponentToUninstall(Component *component, const bool reverse)
+void UninstallerCalculator::appendComponentToUninstall(Component *component)
 {
     if (!component)
         return;
@@ -75,28 +70,20 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component, con
             if (!depComponent)
                 continue;
             if (depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)) {
-                appendComponentToUninstall(depComponent, reverse);
+                appendComponentToUninstall(depComponent);
                 insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
-            } else if (reverse && depComponent->isVirtual()) {
-                // Remove from uninstall only hidden components, user
-                // can select other dependencies manually
-                appendComponentToUninstall(depComponent, true);
             }
         }
     }
-    if (reverse) {
-        m_componentsToUninstall.remove(component);
-    } else {
-        m_componentsToUninstall.insert(component);
-    }
+
+    m_componentsToUninstall.insert(component);
 }
 
-void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> &components, const bool reverse)
+void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> &components)
 {
-    if (components.isEmpty())
-        return;
     foreach (Component *component, components)
-        appendComponentToUninstall(component, reverse);
+        appendComponentToUninstall(component);
+
     QList<Component*> autoDependOnList;
     // All regular dependees are resolved. Now we are looking for auto depend on components.
     for (Component *component : components) {
@@ -108,9 +95,7 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
             Component *autoDepComponent = m_core->componentByName(autoDependencyComponent);
             if (autoDepComponent && autoDepComponent->isInstalled()) {
                 // A component requested auto uninstallation, keep it to resolve their dependencies as well.
-                if (reverse) {
-                    autoDependOnList.append(autoDepComponent);
-                } else if (!m_componentsToUninstall.contains(autoDepComponent)) {
+                if (!m_componentsToUninstall.contains(autoDepComponent)) {
                     insertUninstallReason(autoDepComponent, UninstallerCalculator::AutoDependent, component->name());
                     autoDepComponent->setInstallAction(ComponentModelHelper::AutodependUninstallation);
                     autoDependOnList.append(autoDepComponent);
@@ -118,15 +103,11 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
             }
         }
     }
-    if (!autoDependOnList.isEmpty())
-        appendComponentsToUninstall(autoDependOnList, reverse);
-    else
-        appendVirtualComponentsToUninstall(reverse);
-}
 
-void UninstallerCalculator::removeComponentsFromUnInstall(const QList<Component*> &components)
-{
-    appendComponentsToUninstall(components, true);
+    if (!autoDependOnList.isEmpty())
+        appendComponentsToUninstall(autoDependOnList);
+    else
+        appendVirtualComponentsToUninstall();
 }
 
 void UninstallerCalculator::insertUninstallReason(Component *component, const UninstallReasonType uninstallReason,
@@ -172,38 +153,30 @@ QString UninstallerCalculator::uninstallReasonReferencedComponent(Component *com
     return m_toUninstallComponentIdReasonHash.value(component->name()).second;
 }
 
-void UninstallerCalculator::appendVirtualComponentsToUninstall(const bool reverse)
+void UninstallerCalculator::appendVirtualComponentsToUninstall()
 {
     QList<Component*> unneededVirtualList;
-
     // Check for virtual components without dependees
-    if (reverse) {
-        for (Component *reverseFromUninstall : qAsConst(m_virtualComponentsForReverse)) {
-            if (m_componentsToUninstall.contains(reverseFromUninstall) && (isRequiredVirtualPackage(reverseFromUninstall)))
-                unneededVirtualList.append(reverseFromUninstall);
-        }
-    } else {
-        for (const QString &componentName : qAsConst(m_localVirtualComponents)) {
-            Component *virtualComponent = m_core->componentByName(componentName, m_core->components(PackageManagerCore::ComponentType::All));
-            if (!virtualComponent)
-                continue;
+    for (const QString &componentName : qAsConst(m_localVirtualComponents)) {
+        Component *virtualComponent = m_core->componentByName(componentName, m_core->components(PackageManagerCore::ComponentType::All));
+        if (!virtualComponent)
+            continue;
 
-            if (virtualComponent->isInstalled() && !m_componentsToUninstall.contains(virtualComponent)) {
-               // Components with auto dependencies were handled in the previous step
-               if (!virtualComponent->autoDependencies().isEmpty() || virtualComponent->forcedInstallation())
-                   continue;
+        if (virtualComponent->isInstalled() && !m_componentsToUninstall.contains(virtualComponent)) {
+           // Components with auto dependencies were handled in the previous step
+           if (!virtualComponent->autoDependencies().isEmpty() || virtualComponent->forcedInstallation())
+               continue;
 
-               if (!isRequiredVirtualPackage(virtualComponent)) {
-                   unneededVirtualList.append(virtualComponent);
-                   m_virtualComponentsForReverse.append(virtualComponent);
-                   insertUninstallReason(virtualComponent, UninstallerCalculator::VirtualDependent);
-               }
-            }
+           if (!isRequiredVirtualPackage(virtualComponent)) {
+               unneededVirtualList.append(virtualComponent);
+               m_virtualComponentsForReverse.append(virtualComponent);
+               insertUninstallReason(virtualComponent, UninstallerCalculator::VirtualDependent);
+           }
         }
     }
 
     if (!unneededVirtualList.isEmpty())
-        appendComponentsToUninstall(unneededVirtualList, reverse);
+        appendComponentsToUninstall(unneededVirtualList);
 }
 
 bool UninstallerCalculator::isRequiredVirtualPackage(Component *component)

@@ -185,16 +185,10 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_stackedLayout->addWidget(progressStackedWidget);
     m_stackedLayout->setCurrentIndex(0);
 
-    connect(m_allModel, &ComponentModel::modelCheckStateChanged,
-        this, &ComponentSelectionPagePrivate::onModelStateChanged);
-    connect(m_updaterModel, &ComponentModel::modelCheckStateChanged,
-        this, &ComponentSelectionPagePrivate::onModelStateChanged);
-
-    connect(m_allModel, &ComponentModel::componentsCheckStateChanged, this,
-        [=]() { onModelStateChanged(m_allModel->checkedState());});
-
-    connect(m_updaterModel, &ComponentModel::componentsCheckStateChanged, this,
-        [=]() { onModelStateChanged(m_allModel->checkedState());});
+    connect(m_allModel, &ComponentModel::checkStateChanged,
+            this, &ComponentSelectionPagePrivate::onModelStateChanged);
+    connect(m_updaterModel, &ComponentModel::checkStateChanged,
+            this, &ComponentSelectionPagePrivate::onModelStateChanged);
 
     connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
     connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));

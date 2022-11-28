@@ -361,7 +361,6 @@ public Q_SLOTS:
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation();
-    void calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes);
     void clearComponentsToInstallCalculated();
 
 Q_SIGNALS:

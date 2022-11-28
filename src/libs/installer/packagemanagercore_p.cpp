@@ -542,21 +542,6 @@ QHash<QString, QStringList> &PackageManagerCorePrivate::componentReplaces()
     return m_componentReplaces;
 }
 
-QList<Component*> PackageManagerCorePrivate::replacedComponentsByName(const QString &name)
-{
-    // Creates a list of components which are replaced by component 'name'
-    QList<Component*> replacedComponents;
-    if (m_componentReplaces.contains(name)) {
-        for (const QString &replacedComponentName : m_componentReplaces.value(name)) {
-            Component *replacedComponent = m_core->componentByName(replacedComponentName,
-                    m_core->components(PackageManagerCore::ComponentType::All));
-            if (replacedComponent)
-                replacedComponents.append(replacedComponent);
-        }
-    }
-    return replacedComponents;
-}
-
 void PackageManagerCorePrivate::clearInstallerCalculator()
 {
     delete m_installerCalculator;
@@ -591,7 +576,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
             }
         }
 
-        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core,
+        pmcp->m_uninstallerCalculator = new UninstallerCalculator(m_core,
             pmcp->m_autoDependencyComponentHash, pmcp->m_localDependencyComponentHash, pmcp->m_localVirtualComponents);
     }
     return m_uninstallerCalculator;

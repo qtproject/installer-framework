@@ -58,14 +58,7 @@ namespace QInstaller {
 */
 
 /*!
-    \fn void QInstaller::ComponentModel::componentsCheckStateChanged(const QList<QModelIndex> &indexes)
-
-    This signal is emitted whenever the checked state of components are changed. The \a indexes value
-    indicates the QModelIndexes representation of the components as seen from the model.
-*/
-
-/*!
-    \fn void QInstaller::ComponentModel::modelCheckStateChanged(QInstaller::ComponentModel::ModelState state)
+    \fn void QInstaller::ComponentModel::checkStateChanged(QInstaller::ComponentModel::ModelState state)
 
     This signal is emitted whenever the checked state of a model is changed after all state
     calculations have taken place. The \a state is a combination of \c ModelStateFlag values
@@ -238,7 +231,6 @@ QVariant ComponentModel::data(const QModelIndex &index, int role) const
 /*!
     Sets the \a role data for the item at \a index to \a value. Returns true if successful;
     otherwise returns false. The dataChanged() signal is emitted if the data was successfully set.
-    The componentsCheckStateChanged() signal is emitted in addition if the checked state of the item is set.
 */
 bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -260,13 +252,10 @@ bool ComponentModel::setData(const QModelIndex &index, const QVariant &value, in
             const Qt::CheckState oldValue = component->checkState();
             newValue = (oldValue == Qt::Checked) ? Qt::Unchecked : Qt::Checked;
         }
-        const QList<QModelIndex> changed = updateCheckedState(nodes << component, newValue);
-        foreach (const QModelIndex &changedIndex, changed) {
+        const QSet<QModelIndex> changed = updateCheckedState(nodes << component, newValue);
+        foreach (const QModelIndex &changedIndex, changed)
             emit dataChanged(changedIndex, changedIndex);
-        }
-        updateModelState();
-        if (changed.count() > 0)
-            emit componentsCheckStateChanged(changed);
+        updateAndEmitModelState();     // update the internal state
     } else {
         component->setData(value, role);
         emit dataChanged(index, index);
@@ -446,8 +435,7 @@ void ComponentModel::setCheckedState(QInstaller::ComponentModel::ModelStateFlag 
         default:
             break;
     }
-    updateModelState();
-    emit modelCheckStateChanged(m_modelState);
+    updateAndEmitModelState();     // update the internal state
 }
 
 
@@ -485,11 +473,10 @@ void ComponentModel::postModelReset()
     }
 
     m_currentCheckedState = m_initialCheckedState;
-    updateModelState();     // update the internal state
-    emit modelCheckStateChanged(m_modelState);
+    updateAndEmitModelState();     // update the internal state
 }
 
-void ComponentModel::updateModelState()
+void ComponentModel::updateAndEmitModelState()
 {
     m_modelState = ComponentModel::DefaultChecked;
     if (m_initialCheckedState != m_currentCheckedState)
@@ -504,6 +491,8 @@ void ComponentModel::updateModelState()
         m_modelState |= ComponentModel::AllChecked;
         m_modelState &= ~ComponentModel::PartiallyChecked;
     }
+
+    emit checkStateChanged(m_modelState);
 }
 
 void ComponentModel::collectComponents(Component *const component, const QModelIndex &parent) const
@@ -547,7 +536,7 @@ static Qt::CheckState verifyPartiallyChecked(Component *component)
 
 }   // namespace ComponentModelPrivate
 
-QList<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, const Qt::CheckState state)
+QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &components, const Qt::CheckState state)
 {
     // get all parent nodes for the components we're going to update
     QMultiMap<QString, Component *> sortedNodesMap;
@@ -558,7 +547,7 @@ QList<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compon
         }
     }
 
-    QList<QModelIndex> changed;
+    QSet<QModelIndex> changed;
     const ComponentList sortedNodes = sortedNodesMap.values();
     // we can start in descending order to check node and tri-state nodes properly
     for (int i = sortedNodes.count(); i > 0; i--) {
@@ -580,10 +569,7 @@ QList<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compon
             continue;
 
         node->setCheckState(newState);
-        QModelIndex index = indexFromComponentName(node->treeName());
-        //Prepend to the list so that install order is correct (parent first)
-        if (!changed.contains(index))
-            changed.prepend(indexFromComponentName(node->treeName()));
+        changed.insert(indexFromComponentName(node->treeName()));
 
         m_currentCheckedState[Qt::Checked].remove(node);
         m_currentCheckedState[Qt::Unchecked].remove(node);

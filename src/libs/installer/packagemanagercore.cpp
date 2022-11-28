@@ -611,7 +611,7 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
     QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
     d->m_componentsToInstallCalculated =
-            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall, true);
+            d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
 
     d->calculateUninstallComponents();
     d->updateComponentCheckedState();
@@ -620,66 +620,6 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
     foreach (Component *const component, components(ComponentType::Root))
         component->updateUncompressedSize(); // this is a recursive call
 }
-
-/*!
-    Calculates components to install based on user selection. \a indexes
-    contains list of model indexes user has selected for install, dependencies
-    and autodependencies are resolved later.
- */
-void PackageManagerCore::calculateUserSelectedComponentsToInstall(const QList<QModelIndex> &indexes)
-{
-    QList<Component*> componentsToInstall;
-    QList<Component*> componentsToUnInstall;
-    ComponentModel *model = isUpdater() ? updaterComponentModel() : defaultComponentModel();
-    for (QModelIndex index : indexes) {
-        Component *installComponent = model->componentFromIndex(index);
-        // 1. Component is selected for install
-        if (installComponent->isSelected() && !installComponent->isInstalled()) {
-            componentsToInstall.append(installComponent);
-            // Check if component has replacements that needs to be removed
-            const QList<Component*> replacedComponents = d->replacedComponentsByName(installComponent->name());
-            for (Component *replacedComponent : replacedComponents) {
-                componentsToUnInstall.append(replacedComponent);
-                d->uninstallerCalculator()->insertUninstallReason(replacedComponent,
-                                                                  UninstallerCalculator::UninstallReasonType::Replaced);
-            }
-        }
-        // 2. Component is reselected for install (tapping checkbox off/on)
-        else if (installComponent->isSelected() && installComponent->isInstalled()
-                 && !d->installerCalculator()->orderedComponentsToInstall().contains(installComponent)) {
-            componentsToInstall.append(installComponent);
-        }
-        // 3. Component is selected for uninstall
-        else if (!isUpdater() && !installComponent->isSelected() && installComponent->isInstalled()) {
-            componentsToUnInstall.append(installComponent);
-        }
-        // 4. Component is reselected for uninstall (tapping checkbox on/off)
-        else if (!installComponent->isSelected()
-                && d->installerCalculator()->orderedComponentsToInstall().contains(installComponent)) {
-            componentsToUnInstall.append(installComponent);
-            // Check if component has replacements that needs to be readded
-            componentsToInstall.append(d->replacedComponentsByName(installComponent->name()));
-        }
-    }
-
-    d->installerCalculator()->removeComponentsFromInstall(componentsToUnInstall);
-    d->m_componentsToInstallCalculated
-        = d->installerCalculator()->appendComponentsToInstall(componentsToInstall, false);
-    if (!isUpdater()) {
-        d->uninstallerCalculator()->appendComponentsToUninstall(componentsToUnInstall, false);
-    }
-    d->uninstallerCalculator()->removeComponentsFromUnInstall(componentsToInstall);
-    if (componentsToUnInstall.isEmpty() && !componentsToInstall.isEmpty()) {
-        // There are no new components to be uninstalled but there
-        // are new components to be installed which might have virtual
-        // dependences to components which are already selected for uninstall.
-        // We need to remove those components from uninstall.
-        d->uninstallerCalculator()->appendVirtualComponentsToUninstall(true);
-    }
-
-    d->updateComponentCheckedState();
-}
-
 
 /*!
     Forces a recalculation of components to install.
@@ -4576,10 +4516,8 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
         ComponentModel::tr("Release Date"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
-    connect(model, &ComponentModel::modelCheckStateChanged,
+    connect(model, &ComponentModel::checkStateChanged,
         this, &PackageManagerCore::componentsToInstallNeedsRecalculation);
-    connect(model, &ComponentModel::componentsCheckStateChanged,
-        this, &PackageManagerCore::calculateUserSelectedComponentsToInstall);
     return model;
 }
 
