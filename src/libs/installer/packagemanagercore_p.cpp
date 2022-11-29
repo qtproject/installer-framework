@@ -1931,7 +1931,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
                 // There is a replacement, but the replacement is not scheduled for update, keep it as well.
                 if (m_componentsToReplaceUpdaterMode.contains(name)
-                    && !m_componentsToReplaceUpdaterMode.value(name).first->updateRequested()) {
+                    && !m_installerCalculator->orderedComponentsToInstall().contains(m_componentsToReplaceUpdaterMode.value(name).first)) {
                         nonRevertedOperations.append(operation);
                         continue;
                 }
@@ -3088,12 +3088,10 @@ void PackageManagerCorePrivate::calculateUninstallComponents()
     foreach (Component* component, m_core->components(PackageManagerCore::ComponentType::Replacements)) {
         // Uninstall the component if replacement is selected for install or update
         QPair<Component*, Component*> comp = componentsToReplace().value(component->name());
-        if (comp.first) {
-            if (comp.first->isSelectedForInstallation() || comp.first->updateRequested()) {
-                uninstallerCalculator()->insertUninstallReason(component,
-                    UninstallerCalculator::Replaced, comp.first->name());
-                selectedComponentsToUninstall.append(comp.second);
-            }
+        if (comp.first && m_installerCalculator->orderedComponentsToInstall().contains(comp.first)) {
+            uninstallerCalculator()->insertUninstallReason(component,
+                UninstallerCalculator::Replaced, comp.first->name());
+            selectedComponentsToUninstall.append(comp.second);
         }
     }
     foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::AllNoReplacements)) {

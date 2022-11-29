@@ -17,6 +17,8 @@
         <file>data/installPackagesRepository/componentF.subcomponent1.subsubcomponent2/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent1/1.0.0content.7z</file>
         <file>data/installPackagesRepository/componentF.subcomponent2.subsubcomponent2/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/qt.tools.qtcreator/1.0.0content.7z</file>
+        <file>data/installPackagesRepository/qt.tools.qtcreator.enterprise.plugins/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/Updates.xml</file>
         <file>data/installPackagesRepositoryUpdate/componentA/1.0.0content.7z</file>
         <file>data/installPackagesRepositoryUpdate/componentB/2.0.0content.7z</file>
@@ -52,5 +54,9 @@
         <file>data/repositoryWithDependencyToEssential/Updates.xml</file>
         <file>data/repositoryWithDependencyToEssential/componentAutoDependOnA/1.0content.7z</file>
         <file>data/repositoryWithDependencyToEssential/componentA/3.0.0content.7z</file>
+        <file>data/repositoryUpdateWithReplacements/Updates.xml</file>
+        <file>data/repositoryUpdateWithReplacements/qt.tools.qtcreator/2.0.0content.7z</file>
+        <file>data/repositoryUpdateWithReplacements/qt.tools.qtcreator_gui/2.0.0content.7z</file>
+        <file>data/repositoryUpdateWithReplacements/qt.tools.qtcreator_gui.enterprise.plugins/2.0.0content.7z</file>
     </qresource>
 </RCC>

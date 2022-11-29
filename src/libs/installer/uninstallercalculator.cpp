@@ -69,7 +69,8 @@ void UninstallerCalculator::appendComponentToUninstall(Component *component)
             Component *depComponent = m_core->componentByName(dependencyComponent);
             if (!depComponent)
                 continue;
-            if (depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)) {
+            if (depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)
+                    && !m_core->orderedComponentsToInstall().contains(depComponent)) {
                 appendComponentToUninstall(depComponent);
                 insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
             }

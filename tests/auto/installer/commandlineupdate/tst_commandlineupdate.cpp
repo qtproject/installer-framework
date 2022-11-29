@@ -318,6 +318,36 @@ private slots:
                         << "installcontentD_update.txt" << "installcontentB_update.txt"
                         << "installcontentE.txt" << "installcontentG.txt")
                 << deletedComponentResources;
+
+        /*********** Update packages with replacements **********/
+        componentResources.clear();
+        componentResources.append(ComponentResource("qt.tools.qtcreator", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("qt.tools.qtcreator.enterprise.plugins", "1.0.0content.txt"));
+        componentResources.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        componentResourcesAfterUpdate.clear();
+        componentResourcesAfterUpdate.append(ComponentResource("qt.tools.qtcreator", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("qt.tools.qtcreator_gui", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("qt.tools.qtcreator_gui.enterprise.plugins", "2.0.0content.txt"));
+        componentResourcesAfterUpdate.append(ComponentResource("componentE", "1.0.0content.txt"));
+
+        deletedComponentResources.clear();
+        deletedComponentResources.append(ComponentResource("qt.tools.qtcreator.enterprise.plugins", "1.0.0content.txt"));
+
+        QTest::newRow("Update packages with replacements")
+            << ":///data/installPackagesRepository"
+            << (QStringList()<< "qt.tools.qtcreator")
+            << PackageManagerCore::Success
+            << componentResources
+            << (QStringList() << "components.xml" << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
+                              << "installcontent.txt" << "qtcreator.txt" << "plugins.txt")
+            << ":///data/repositoryUpdateWithReplacements"
+            << (QStringList() << "qt.tools.qtcreator")
+            << PackageManagerCore::Success
+            << componentResourcesAfterUpdate
+            << (QStringList() << "components.xml" << "installcontentA.txt" << "installcontentE.txt" << "installcontentG.txt"
+                              << "installcontent.txt" << "gui.txt" << "qtcreator2.txt" << "gui_plugins.txt")
+            << deletedComponentResources;
     }
 
     void testUpdate()
