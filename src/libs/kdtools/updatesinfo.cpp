@@ -177,7 +177,8 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
         info.data.insert(QLatin1String("Script"), scriptHash);
 
     QStringList candidates;
-    foreach (const QString &lang, QLocale().uiLanguages())
+    static const QStringList uiLanguages = QLocale().uiLanguages();
+    foreach (const QString &lang, uiLanguages)
         candidates << QInstaller::localeCandidates(lang.toLower());
     foreach (const QString &candidate, candidates) {
         if (localizedDescriptions.contains(candidate)) {
