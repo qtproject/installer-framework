@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QHeaderView>
 
 #include "componentmodel.h"
 #include "packagemanagergui.h"
@@ -90,6 +91,10 @@ public slots:
     void setSearchPattern(const QString &text);
 
 private:
+    void storeHeaderResizeModes();
+    void restoreHeaderResizeModes();
+
+private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
@@ -113,6 +118,9 @@ private:
     QStackedLayout *m_stackedLayout;
     ComponentSortFilterProxyModel *m_proxyModel;
     QLineEdit *m_searchLineEdit;
+
+    bool m_headerStretchLastSection;
+    QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;
 };
 
 }  // namespace QInstaller
