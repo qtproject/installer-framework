@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Qt Installer Framework Binaries</DisplayName>
     <Description>Installs the binaries, examples and help files.</Description>
-    <Version>@IFW_VERSION_STR@</Version>
+    <Version>4.5.1</Version>
     <ReleaseDate>2022-07-07</ReleaseDate>
     <Default>True</Default>
 </Package>
