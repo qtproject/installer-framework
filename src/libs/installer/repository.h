@@ -67,6 +67,9 @@ public:
     QString categoryname() const;
     void setCategoryName(const QString &categoryname);
 
+    QByteArray xmlChecksum() const;
+    void setXmlChecksum(const QByteArray &checksum);
+
     bool isCompressed() const;
     bool operator==(const Repository &other) const;
     bool operator!=(const Repository &other) const;
@@ -86,6 +89,7 @@ private:
     QString m_displayname;
     QString m_categoryname;
     bool m_compressed;
+    QByteArray m_xmlChecksum;
 };
 
 inline uint qHash(const Repository &repository)

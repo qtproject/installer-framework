@@ -225,6 +225,8 @@ void MetadataJob::doStart()
     setError(Job::NoError);
     setErrorString(QString());
     m_metadataResult.clear();
+    setProgressTotalAmount(100);
+
     if (!m_core) {
         emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
         return; // We can't do anything here without core, so avoid tons of !m_core checks.
@@ -239,27 +241,55 @@ void MetadataJob::doStart()
         emit infoMessage(this, tr("Fetching latest update information..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
         if (onlineInstaller || m_core->isMaintainer()) {
+            static const QString updateFilePath(QLatin1Char('/') + scUpdatesXML + QLatin1Char('?'));
+            static const QString randomQueryString = QString::number(QRandomGenerator::global()->generate());
+
             QList<FileTaskItem> items;
             QSet<Repository> repositories = getRepositories();
+            quint64 cachedCount = 0;
             foreach (const Repository &repo, repositories) {
+                // For not blocking the UI
+                qApp->processEvents();
+
                 if (repo.isEnabled() &&
                         productKeyCheck->isValidRepository(repo)) {
                     QAuthenticator authenticator;
                     authenticator.setUser(repo.username());
                     authenticator.setPassword(repo.password());
 
-                    if (!repo.isCompressed()) {
-                        QString url = repo.url().toString() + QLatin1String("/Updates.xml?");
-                        if (!m_core->value(scUrlQueryString).isEmpty())
-                            url += m_core->value(scUrlQueryString) + QLatin1Char('&');
+                    if (repo.isCompressed())
+                        continue;
 
-                        // also append a random string to avoid proxy caches
-                        FileTaskItem item(url.append(QString::number(QRandomGenerator::global()->generate())));
-                        item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
-                        item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
-                        items.append(item);
+                    QString url;
+                    url = repo.url().toString() + updateFilePath;
+                    if (!m_core->value(scUrlQueryString).isEmpty())
+                        url += m_core->value(scUrlQueryString) + QLatin1Char('&');
+                    // also append a random string to avoid proxy caches
+                    url.append(randomQueryString);
+
+                    // Check if we can skip downloading already cached repositories
+                    const Status foundStatus = findCachedUpdatesFile(repo, url);
+                    if (foundStatus == XmlDownloadSuccess) {
+                        // Found existing Updates.xml
+                        ++cachedCount;
+                        continue;
+                    } else if (foundStatus == XmlDownloadRetry) {
+                         // Repositories changed, restart with the new repositories
+                        QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+                        return;
                     }
+
+                    FileTaskItem item(url);
+                    item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                    item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                    items.append(item);
                 }
+            }
+            const quint64 totalCount = repositories.count();
+            if (cachedCount > 0) {
+                qCDebug(lcInstallerInstallLog).nospace() << "Loaded from cache "
+                    << cachedCount << "/" << totalCount << ". Downloading remaining "
+                    << items.count() << "/" << totalCount <<".";
             }
             if (items.count() > 0) {
                 startXMLTask(items);
@@ -305,7 +335,6 @@ void MetadataJob::startXMLTask(const QList<FileTaskItem> &items)
 {
     DownloadFileTask *const xmlTask = new DownloadFileTask(items);
     xmlTask->setProxyFactory(m_core->proxyFactory());
-    setProgressTotalAmount(100);
     connect(&m_xmlTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
         &MetadataJob::progressChanged);
     m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
@@ -883,6 +912,31 @@ MetadataJob::Status MetadataJob::refreshCacheItem(const FileTaskResult &result,
         return XmlDownloadFailure;
     }
     return XmlDownloadSuccess;
+}
+
+MetadataJob::Status MetadataJob::findCachedUpdatesFile(const Repository &repository, const QString &fileUrl)
+{
+    if (repository.xmlChecksum().isEmpty())
+        return XmlDownloadFailure;
+
+    Metadata *metadata = m_metaFromCache.itemByChecksum(repository.xmlChecksum());
+    if (!metadata)
+        return XmlDownloadFailure;
+
+    const QString targetPath = metadata->path() + QLatin1Char('/') + scUpdatesXML;
+
+    FileTaskItem cachedMetaTaskItem(fileUrl, targetPath);
+    cachedMetaTaskItem.insert(TaskRole::UserRole, QVariant::fromValue(repository));
+    const FileTaskResult cachedMetaTaskResult(targetPath, repository.xmlChecksum(), cachedMetaTaskItem, false);
+
+    bool isCached = false;
+    const Status status = refreshCacheItem(cachedMetaTaskResult, repository.xmlChecksum(), &isCached);
+    if (isCached)
+        return XmlDownloadSuccess;
+    else if (status == XmlDownloadRetry)
+        return XmlDownloadRetry;
+    else
+        return XmlDownloadFailure;
 }
 
 MetadataJob::Status MetadataJob::parseRepositoryUpdates(const QDomElement &root,

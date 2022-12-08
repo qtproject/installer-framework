@@ -64,6 +64,7 @@ Repository::Repository(const Repository &other)
     , m_displayname(other.m_displayname)
     , m_compressed(other.m_compressed)
     , m_categoryname(other.m_categoryname)
+    , m_xmlChecksum(other.m_xmlChecksum)
 {
 }
 
@@ -221,6 +222,28 @@ void Repository::setCategoryName(const QString &categoryname)
 }
 
 /*!
+    Returns the expected checksum of the repository, which is the checksum
+    calculated from the \c Updates.xml document at the root of the repository.
+
+    This value is used as a hint when looking for already fetched repositories
+    from the local cache. If the installer has cached a repository with a matching
+    checksum, it can skip downloading the \c Updates.xml file for that repository again.
+*/
+QByteArray Repository::xmlChecksum() const
+{
+    return m_xmlChecksum;
+}
+
+/*!
+    Sets the expected checksum of the repository to \c checksum. The checksum
+    is calculated from the \c Updates.xml document at the root of the repository.
+*/
+void Repository::setXmlChecksum(const QByteArray &checksum)
+{
+    m_xmlChecksum = checksum;
+}
+
+/*!
     Returns true if repository is compressed
 */
 bool Repository::isCompressed() const
@@ -235,7 +258,8 @@ bool Repository::isCompressed() const
 bool Repository::operator==(const Repository &other) const
 {
     return m_url == other.m_url && m_default == other.m_default && m_enabled == other.m_enabled
-        && m_username == other.m_username && m_password == other.m_password && m_displayname == other.m_displayname;
+        && m_username == other.m_username && m_password == other.m_password
+        && m_displayname == other.m_displayname && m_xmlChecksum == other.m_xmlChecksum;
 }
 
 /*!
@@ -263,6 +287,7 @@ const Repository &Repository::operator=(const Repository &other)
     m_displayname = other.m_displayname;
     m_compressed = other.m_compressed;
     m_categoryname = other.m_categoryname;
+    m_xmlChecksum = other.m_xmlChecksum;
 
     return *this;
 }
@@ -282,7 +307,7 @@ QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
     QByteArray url, username, password, displayname, compressed;
     istream >> url >> repository.m_default >> repository.m_enabled >> username >> password
-            >> displayname >> repository.m_categoryname;
+            >> displayname >> repository.m_categoryname >> repository.m_xmlChecksum;
     repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
     repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
     repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
@@ -297,7 +322,8 @@ QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
 {
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
         << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64()
-        << repository.m_displayname.toUtf8().toBase64() << repository.m_categoryname.toUtf8().toBase64();
+        << repository.m_displayname.toUtf8().toBase64() << repository.m_categoryname.toUtf8().toBase64()
+        << repository.m_xmlChecksum.toBase64();
 }
 
 }

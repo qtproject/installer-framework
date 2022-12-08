@@ -98,6 +98,7 @@ private:
     void resetCompressedFetch();
     Status parseUpdatesXml(const QList<FileTaskResult> &results);
     Status refreshCacheItem(const FileTaskResult &result, const QByteArray &checksum, bool *refreshed);
+    Status findCachedUpdatesFile(const Repository &repository, const QString &fileUrl);
     Status parseRepositoryUpdates(const QDomElement &root, const FileTaskResult &result, Metadata *metadata);
     QSet<Repository> getRepositories();
     void addFileTaskItem(const QString &source, const QString &target, Metadata *metadata,
