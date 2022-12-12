@@ -283,6 +283,11 @@ public:
 */
 
 /*!
+    \fn void QInstaller::PackageManagerGui::aboutApplicationClicked()
+    \sa {gui::aboutApplicationClicked}{gui.aboutApplicationClicked}
+*/
+
+/*!
     \fn void QInstaller::PackageManagerGui::packageManagerCore() const
 
     Returns the package manager core.
@@ -2236,6 +2241,11 @@ void ComponentSelectionPage::showEvent(QShowEvent *event)
     QWizardPage::showEvent(event);
 }
 
+/*!
+    Called when \c ComponentSelectionPage is validated.
+    Tries to load \c component scripts for components about to be installed.
+    Returns \c true if the script loading succeeded and the next page is shown.
+*/
 bool ComponentSelectionPage::validatePage()
 {
     PackageManagerCore *core = packageManagerCore();

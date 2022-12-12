@@ -256,7 +256,7 @@ QString Metadata::persistentRepositoryPath()
 }
 
 /*!
-    Checks whether the updates document of this metadata contains the repository
+    Returns true if the updates document of this metadata contains the repository
     update element, which can include actions to \c add, \c remove, and \c replace
     repositories.
 

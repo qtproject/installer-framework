@@ -512,7 +512,7 @@ QList<T *> GenericDataCache<T>::obsoleteItems() const
 }
 
 /*!
-   \fn template <typename T> QInstaller::GenericDataCache<T>::invalidate()
+   \internal
 
     Marks the cache invalid and clears all items. The contents
     on disk are not deleted. Releases the lock file of the cache.
@@ -532,7 +532,7 @@ void GenericDataCache<T>::invalidate()
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::setErrorString(const QString &error) const
+    \internal
 
     Sets the current error string to \a error and prints it as a warning to the console.
 */
@@ -544,7 +544,7 @@ void GenericDataCache<T>::setErrorString(const QString &error) const
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::fromDisk()
+    \internal
 
     Reads the manifest file of the cache if one exists, and populates the internal
     hash from the file contents. Returns \c true if the manifests was read successfully
@@ -598,7 +598,7 @@ bool GenericDataCache<T>::fromDisk()
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::toDisk()
+    \internal
 
     Writes the manifest file with the contents of the internal item hash.
     Returns \c true on success, \c false otherwise.
@@ -635,8 +635,6 @@ bool GenericDataCache<T>::toDisk()
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::remove(const QByteArray &checksum)
-
     \internal
 */
 template<typename T>

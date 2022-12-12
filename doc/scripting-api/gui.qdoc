@@ -58,6 +58,13 @@
 */
 
 /*!
+    \qmlsignal gui::aboutApplicationClicked()
+
+    This signal is emitted when the about application menu and dialog
+    on macOS are shown.
+*/
+
+/*!
     \qmlsignal gui::settingsButtonClicked()
 
     This signal is emitted when the \uicontrol Settings button is clicked.

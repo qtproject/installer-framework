@@ -1255,6 +1255,10 @@ PackageManagerCore::PackageManagerCore()
     Creates and initializes a remote client. Requests administrator's rights for
     QFile, QSettings, and QProcess operations. Calls \c init() with \a socketName, \a key,
     and \a mode to set the server side authorization key.
+
+    The \a datFileName contains the corresponding .dat file name for the running
+    \c maintenance tool binary. \a datFileName can be empty if \c maintenance tool
+    fails to find it or if \c installer is run instead of \c maintenance tool.
 */
 PackageManagerCore::PackageManagerCore(qint64 magicmaker, const QList<OperationBlob> &operations,
         const QString &datFileName,
