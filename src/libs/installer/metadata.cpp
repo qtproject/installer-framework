@@ -36,6 +36,7 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
+#include <QByteArrayMatcher>
 
 namespace QInstaller {
 
@@ -252,6 +253,34 @@ QString Metadata::persistentRepositoryPath()
     }
     m_persistentRepositoryPath = QString::fromLatin1(file.readAll()).trimmed();
     return m_persistentRepositoryPath;
+}
+
+/*!
+    Checks whether the updates document of this metadata contains the repository
+    update element, which can include actions to \c add, \c remove, and \c replace
+    repositories.
+
+    \note This function does not check that the repository updates are actually
+    valid, only that the updates document contains the \c RepositoryUpdate element.
+*/
+bool Metadata::containsRepositoryUpdates() const
+{
+    QFile updateFile(path() + QLatin1String("/Updates.xml"));
+    if (!updateFile.open(QIODevice::ReadOnly)) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+            << "Cannot open" << updateFile.fileName()
+            << "for reading:" << updateFile.errorString();
+        return false;
+    }
+
+    static const auto matcher = qMakeStaticByteArrayMatcher("<RepositoryUpdate>");
+    while (!updateFile.atEnd()) {
+        const QByteArray line = updateFile.readLine().simplified();
+        if (matcher.indexIn(line) != -1)
+            return true;
+    }
+
+    return false;
 }
 
 } // namespace QInstaller

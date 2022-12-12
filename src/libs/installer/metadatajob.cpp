@@ -862,13 +862,15 @@ MetadataJob::Status MetadataJob::refreshCacheItem(const FileTaskResult &result,
         cachedMetadata->setPersistentRepositoryPath(repository.url());
 
         // search for additional repositories that we might need to check
-        QDomDocument doc = cachedMetadata->updatesDocument();
-        const Status status = parseRepositoryUpdates(doc.documentElement(), result, cachedMetadata);
-        if (status == XmlDownloadRetry) {
-            // The repository update may have removed or replaced current repositories,
-            // clear repository information from cached items and refresh on next fetch run.
-            resetCacheRepositories();
-            return status;
+        if (cachedMetadata->containsRepositoryUpdates()) {
+            QDomDocument doc = cachedMetadata->updatesDocument();
+            const Status status = parseRepositoryUpdates(doc.documentElement(), result, cachedMetadata);
+            if (status == XmlDownloadRetry) {
+                // The repository update may have removed or replaced current repositories,
+                // clear repository information from cached items and refresh on next fetch run.
+                resetCacheRepositories();
+                return status;
+            }
         }
         *refreshed = true;
         return XmlDownloadSuccess;

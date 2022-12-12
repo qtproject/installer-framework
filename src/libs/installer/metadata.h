@@ -61,6 +61,8 @@ public:
     void setPersistentRepositoryPath(const QUrl &url);
     QString persistentRepositoryPath();
 
+    bool containsRepositoryUpdates() const;
+
 private:
     Repository m_repository;
     QString m_persistentRepositoryPath;
