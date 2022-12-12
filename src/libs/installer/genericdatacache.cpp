@@ -75,7 +75,7 @@ static const QLatin1String scManifestFile("manifest.json");
 */
 
 /*!
-    \fn QInstaller::CacheableItem::isActive const
+    \fn QInstaller::CacheableItem::isActive() const
 
     Returns \c true if this item is an actively used cache item, \c false otherwise.
     This information is used as a hint for filtering obsolete entries, an active item
@@ -536,11 +536,11 @@ void GenericDataCache<T>::invalidate()
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::setErrorString(const QString &error)
+    \fn template <typename T> QInstaller::GenericDataCache<T>::setErrorString(const QString &error) const
 
     Sets the current error string to \a error and prints it as a warning to the console.
 */
-template<typename T>
+template <typename T>
 void GenericDataCache<T>::setErrorString(const QString &error) const
 {
     m_error = error;

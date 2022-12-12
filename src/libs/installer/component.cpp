@@ -90,6 +90,8 @@ static const QLatin1String scUnstable("Unstable");
             Component has dependencies to missing components.
     \value  InvalidTreeName
             Component has an invalid tree name.
+    \value  DescendantOfUnstable
+            Component is descendant of an unstable component.
 */
 
 /*!

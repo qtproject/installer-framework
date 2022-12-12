@@ -328,8 +328,10 @@ void UpdateOperation::setRequiresUnreplacedVariables(bool isRequired)
     without _OLD ending. This way we can replace the hard coded values defined for operations,
     if the value has for some reason changed. For example if we set following variables
     in install script:
-    \snippet installer.setValue("MY_OWN_EXECUTABLE", "C:/Qt/NewLocation/Tools.exe")
-    \snippet installer.setValue("MY_OWN_EXECUTABLE_OLD", "C:/Qt/OldLocation/Tools.exe")
+    \badcode
+        installer.setValue("MY_OWN_EXECUTABLE", "C:/Qt/NewLocation/Tools.exe")
+        installer.setValue("MY_OWN_EXECUTABLE_OLD", "C:/Qt/OldLocation/Tools.exe")
+    \endcode
     and we have moved the Tools.exe from OldLocation to NewLocation, the operation
     continues to work and use the Tools.exe from NewLocation although original
     installation has been made with Tools.exe in OldLocation.
