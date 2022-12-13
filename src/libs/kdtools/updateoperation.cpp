@@ -348,6 +348,8 @@ bool UpdateOperation::variableReplacement(QString *variableValue)
             key.prepend(QLatin1String("@"));
             key.append(QLatin1String("@"));
             *variableValue = m_core->replaceVariables(key);
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Running above operation with replaced value: " << valueNormalized
+                                                       << "has been replaced with" <<  *variableValue;
             variableValueChanged = true;
         }
     }
