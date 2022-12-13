@@ -221,30 +221,29 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
 
     q->setValue(QLatin1String("ExitCode"), process->exitCode());
 
-    if (process->exitStatus() == QProcessWrapper::CrashExit) {
-        q->setError(UserDefinedError);
-        q->setErrorString(tr("Program crashed: \"%1\"").arg(callstr));
-        returnValue = Error;
-    }
+    if (success) {
+        const QByteArray standardErrorOutput = process->readAllStandardError();
+        // in error case it would be useful to see something in verbose output
+        if (!standardErrorOutput.isEmpty())
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << standardErrorOutput;
 
-    if (!allowedExitCodes.contains(process->exitCode()) && returnValue != NeedsRerun) {
-        if (!needsRerunWithReplacedVariables(arguments, type)) {
+        if (process->exitStatus() == QProcessWrapper::CrashExit) {
             q->setError(UserDefinedError);
-            if (customErrorMessage.isEmpty()) {
-                q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
-                    .arg(QString::number(process->exitCode()), callstr));
-            } else {
-                q->setErrorString(customErrorMessage);
-            }
-
-            QByteArray standardErrorOutput = process->readAllStandardError();
-            // in error case it would be useful to see something in verbose output
-            if (!standardErrorOutput.isEmpty())
-                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << standardErrorOutput;
-
+            q->setErrorString(tr("Program crashed: \"%1\"").arg(callstr));
             returnValue = Error;
-        } else {
-            returnValue = NeedsRerun;
+        } else if (!allowedExitCodes.contains(process->exitCode()) && returnValue != NeedsRerun) {
+            if (!needsRerunWithReplacedVariables(arguments, type)) {
+                q->setError(UserDefinedError);
+                if (customErrorMessage.isEmpty()) {
+                    q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
+                        .arg(QString::number(process->exitCode()), callstr));
+                } else {
+                    q->setErrorString(customErrorMessage);
+                }
+                returnValue = Error;
+            } else {
+                returnValue = NeedsRerun;
+            }
         }
     }
     Q_ASSERT(process);

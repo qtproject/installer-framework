@@ -44,7 +44,6 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QCheckBox>
-#include <QHeaderView>
 #include <QStandardPaths>
 #include <QFileDialog>
 #include <QStackedLayout>
@@ -73,8 +72,10 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_categoryWidget(Q_NULLPTR)
         , m_categoryLayoutVisible(false)
         , m_proxyModel(new ComponentSortFilterProxyModel(q))
+        , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
+    m_treeView->setUniformRowHeights(true);
     m_proxyModel->setRecursiveFilteringEnabled(true);
     m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
@@ -185,16 +186,10 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_stackedLayout->addWidget(progressStackedWidget);
     m_stackedLayout->setCurrentIndex(0);
 
-    connect(m_allModel, &ComponentModel::modelCheckStateChanged,
-        this, &ComponentSelectionPagePrivate::onModelStateChanged);
-    connect(m_updaterModel, &ComponentModel::modelCheckStateChanged,
-        this, &ComponentSelectionPagePrivate::onModelStateChanged);
-
-    connect(m_allModel, &ComponentModel::componentsCheckStateChanged, this,
-        [=]() { onModelStateChanged(m_allModel->checkedState());});
-
-    connect(m_updaterModel, &ComponentModel::componentsCheckStateChanged, this,
-        [=]() { onModelStateChanged(m_allModel->checkedState());});
+    connect(m_allModel, &ComponentModel::checkStateChanged,
+            this, &ComponentSelectionPagePrivate::onModelStateChanged);
+    connect(m_updaterModel, &ComponentModel::checkStateChanged,
+            this, &ComponentSelectionPagePrivate::onModelStateChanged);
 
     connect(m_core, SIGNAL(metaJobProgress(int)), this, SLOT(onProgressChanged(int)));
     connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
@@ -374,6 +369,9 @@ void ComponentSelectionPagePrivate::expandDefault()
 */
 void ComponentSelectionPagePrivate::expandSearchResults()
 {
+    // Avoid resizing the sections after each expand of a node
+    storeHeaderResizeModes();
+
     // Expand parents of root indexes accepted by filter
     const QVector<QModelIndex> acceptedIndexes = m_proxyModel->directlyAcceptedIndexes();
     for (auto proxyModelIndex : acceptedIndexes) {
@@ -389,6 +387,7 @@ void ComponentSelectionPagePrivate::expandSearchResults()
             index = index.parent();
         }
     }
+    restoreHeaderResizeModes();
 }
 
 void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &current)
@@ -586,6 +585,31 @@ void ComponentSelectionPagePrivate::setSearchPattern(const QString &text)
     } else {
         expandSearchResults();
     }
+}
+
+/*!
+    Stores the current resize modes of the tree view header's columns, and sets
+    the new resize modes to \c QHeaderView::Fixed.
+*/
+void ComponentSelectionPagePrivate::storeHeaderResizeModes()
+{
+    m_headerStretchLastSection = m_treeView->header()->stretchLastSection();
+    for (int i = 0; i < ComponentModelHelper::LastColumn; ++i)
+        m_headerResizeModes.insert(i, m_treeView->header()->sectionResizeMode(i));
+
+    m_treeView->header()->setStretchLastSection(false);
+    m_treeView->header()->setSectionResizeMode(QHeaderView::Fixed);
+}
+
+/*!
+    Restores the resize modes of the tree view header's columns, that were
+    stored when calling \l storeHeaderResizeModes().
+*/
+void ComponentSelectionPagePrivate::restoreHeaderResizeModes()
+{
+    m_treeView->header()->setStretchLastSection(m_headerStretchLastSection);
+    for (int i = 0; i < ComponentModelHelper::LastColumn; ++i)
+        m_treeView->header()->setSectionResizeMode(i, m_headerResizeModes.value(i));
 }
 
 }  // namespace QInstaller

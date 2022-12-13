@@ -582,6 +582,7 @@ void MetadataJob::metadataTaskFinished()
                     }
                     UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
                         item.value(TaskRole::UserRole).toString());
+                    task->setRemoveArchive(true);
 
                     QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
                     m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));

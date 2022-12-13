@@ -177,6 +177,7 @@ private slots:
 
         QFile testFile(testFilePath);
         QVERIFY2(testFile.open(QIODevice::WriteOnly | QIODevice::Text), contentFile.errorString().toLatin1());
+        m_cleanupFilePaths << testFilePath;
 
         QTextStream out(&testFile);
 
@@ -244,6 +245,7 @@ private slots:
         QFile testFile(testFilePath);
         QVERIFY2(testFile.open(QIODevice::WriteOnly | QIODevice::Text), contentFile.errorString()
             .toLatin1());
+        m_cleanupFilePaths << testFilePath;
 
         QTextStream out(&testFile);
 
@@ -293,7 +295,7 @@ private slots:
         QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
                  QStringList() << "value1" << "value2" << "value3");
 
-        core->installDefaultComponentsSilently();
+        core->installSelectedComponentsSilently(QStringList() << "A");
 
         QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
                  QStringList() << "value1" << "value2" << "value3" << "valueFromScript");
@@ -304,6 +306,68 @@ private slots:
 
         QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
                  QStringList() << "value1" << "value2" << "value3");
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
+    void testPerformingFromCLIWithPlaceholders()
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+            (installDir, ":///data/repository");
+
+        core->installSelectedComponentsSilently(QStringList() << "B");
+        // Path is set in component constructor in install script
+        const QString  settingsFile = core->value("SettingsPathFromVariable");
+        QSettings testSettings(QDir(m_testSettingsDirPath).filePath(settingsFile),
+                               QSettings::IniFormat);
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "ValueFromPlaceholder");
+
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "B");
+
+        // Settings file is removed as it is empty
+        QVERIFY(!QFile::exists(settingsFile));
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
+        core->deleteLater();
+    }
+
+    void testPerformingFromCLIWithSettingsFileMoved()
+    {
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
+            (installDir, ":///data/repository");
+
+
+        core->installSelectedComponentsSilently(QStringList() << "C");
+
+        const QString settingsFileName = qApp->applicationDirPath() + "/oldTestSettings.ini";
+        QSettings testSettings(QDir(m_testSettingsDirPath).filePath(settingsFileName),
+                               QSettings::IniFormat);
+
+        QCOMPARE(testSettings.value("testcategory/categoryarrayvalue1").toStringList(),
+                 QStringList() << "valueFromScript");
+
+        QFile settingsFile(settingsFileName);
+        // Move the settings path to new location. Script has set values
+        // ComponentCSettingsPath (@InstallerDirPath@/newTestSettings.ini) and
+        // ComponentCSettingsPath_OLD (@InstallerDirPath@/oldTestSettings.ini) so
+        // UNDO operation should delete the moved newTestSettings.ini file instead.
+        QVERIFY2(settingsFile.rename(qApp->applicationDirPath() + "/newTestSettings.ini"), "Could not move settings file.");
+        core->commitSessionOperations();
+        core->setPackageManager();
+        core->uninstallComponentsSilently(QStringList() << "C");
+
+        // Settings file is removed in uninstall as it is empty
+        QVERIFY2(!QFile::exists(qApp->applicationDirPath() + "/newTestSettings.ini"), "Settings file not deleted correctly");
+
         QDir dir(installDir);
         QVERIFY(dir.removeRecursively());
         core->deleteLater();

@@ -39,6 +39,7 @@
 namespace QInstaller {
 
 class Component;
+class PackageManagerCore;
 
 class INSTALLER_EXPORT InstallerCalculator
 {
@@ -53,33 +54,27 @@ public:
         Resolved  // "Component(s) that have resolved Dependencies"
     };
 
-    InstallReasonType installReasonType(const Component *c) const;
+    InstallReasonType installReasonType(const Component *component) const;
     QString installReason(const Component *component) const;
     QList<Component*> orderedComponentsToInstall() const;
     QString componentsToInstallError() const;
-
-    bool appendComponentsToInstall(const QList<Component*> &components, bool modelReset = false, const bool revertFromInstall = false);
-    bool removeComponentsFromInstall(const QList<Component*> &components);
+    bool appendComponentsToInstall(const QList<Component*> &components);
 
 private:
     QString installReasonReferencedComponent(const Component *component) const;
-    void insertInstallReason(const Component *component,
-                             const InstallReasonType installReason,
-                             const QString &referencedComponentName = QString(),
-                             const bool revertFromInstall = false);
-    void realAppendToInstallComponents(Component *component, const QString &version, const bool revertFromInstall);
-    bool appendComponentToInstall(Component *component, const QString &version, const bool revertFromInstall);
-    QString recursionError(const Component *component) const;
-    QSet<Component *> autodependencyComponents(const bool revertFromInstall);
-    void calculateComponentDependencyReferences(const QString &dependencyComponentName, const Component *component);
+    void insertInstallReason(Component *component,
+                             InstallReasonType installReasonType,
+                             const QString &referencedComponentName = QString());
+    void realAppendToInstallComponents(Component *component, const QString &version = QString());
+    bool appendComponentToInstall(Component *components, const QString &version = QString());
+    QSet<Component *> autodependencyComponents();
+    QString recursionError(Component *component) const;
 
 private:
     PackageManagerCore *m_core;
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QList<const Component*> m_componentsForAutodepencencyCheck;
-    //for faster lookups.
-    QSet<QString> m_toInstallComponentIds;
-    QHash<QString, QStringList> m_referenceCount;
+    QSet<QString> m_toInstallComponentIds; //for faster lookups
     QString m_componentsToInstallError;
     //calculate installation order variables
     QList<Component*> m_orderedComponentsToInstall;

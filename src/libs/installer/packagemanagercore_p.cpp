@@ -544,21 +544,6 @@ QHash<QString, QStringList> &PackageManagerCorePrivate::componentReplaces()
     return m_componentReplaces;
 }
 
-QList<Component*> PackageManagerCorePrivate::replacedComponentsByName(const QString &name)
-{
-    // Creates a list of components which are replaced by component 'name'
-    QList<Component*> replacedComponents;
-    if (m_componentReplaces.contains(name)) {
-        for (const QString &replacedComponentName : m_componentReplaces.value(name)) {
-            Component *replacedComponent = m_core->componentByName(replacedComponentName,
-                    m_core->components(PackageManagerCore::ComponentType::All));
-            if (replacedComponent)
-                replacedComponents.append(replacedComponent);
-        }
-    }
-    return replacedComponents;
-}
-
 void PackageManagerCorePrivate::clearInstallerCalculator()
 {
     delete m_installerCalculator;
@@ -593,7 +578,7 @@ UninstallerCalculator *PackageManagerCorePrivate::uninstallerCalculator() const
             }
         }
 
-        pmcp->m_uninstallerCalculator = new UninstallerCalculator(installedComponents, m_core,
+        pmcp->m_uninstallerCalculator = new UninstallerCalculator(m_core,
             pmcp->m_autoDependencyComponentHash, pmcp->m_localDependencyComponentHash, pmcp->m_localVirtualComponents);
     }
     return m_uninstallerCalculator;
@@ -1950,7 +1935,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
                 // There is a replacement, but the replacement is not scheduled for update, keep it as well.
                 if (m_componentsToReplaceUpdaterMode.contains(name)
-                    && !m_componentsToReplaceUpdaterMode.value(name).first->updateRequested()) {
+                    && !m_installerCalculator->orderedComponentsToInstall().contains(m_componentsToReplaceUpdaterMode.value(name).first)) {
                         nonRevertedOperations.append(operation);
                         continue;
                 }
@@ -3114,12 +3099,10 @@ void PackageManagerCorePrivate::calculateUninstallComponents()
     foreach (Component* component, m_core->components(PackageManagerCore::ComponentType::Replacements)) {
         // Uninstall the component if replacement is selected for install or update
         QPair<Component*, Component*> comp = componentsToReplace().value(component->name());
-        if (comp.first) {
-            if (comp.first->isSelectedForInstallation() || comp.first->updateRequested()) {
-                uninstallerCalculator()->insertUninstallReason(component,
-                    UninstallerCalculator::Replaced, comp.first->name());
-                selectedComponentsToUninstall.append(comp.second);
-            }
+        if (comp.first && m_installerCalculator->orderedComponentsToInstall().contains(comp.first)) {
+            uninstallerCalculator()->insertUninstallReason(component,
+                UninstallerCalculator::Replaced, comp.first->name());
+            selectedComponentsToUninstall.append(comp.second);
         }
     }
     foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::AllNoReplacements)) {

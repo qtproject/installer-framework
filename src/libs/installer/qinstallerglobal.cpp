@@ -39,6 +39,7 @@
     \value ExtractionError
     \value UserIgnoreError
     \value RepositoryUpdatesReceived
+    \value CacheError
 */
 
 /*!
@@ -66,9 +67,10 @@
 */
 
 /*!
-    \typedef QInstaller::LocalPackagesHash
+    \typedef QInstaller::LocalPackagesMap
 
-    Synonym for QHash<QString, KDUpdater::LocalPackage>.
+    Synonym for QMap<QString, KDUpdater::LocalPackage>. The map key is component name,
+    and value contains information about the local package.
 */
 
 /*!
@@ -85,7 +87,7 @@
 */
 
 /*!
-    \typedef QInstaller::DependencyHash
+    \typedef QInstaller::LocalDependencyHash
 
     Synonym for QHash<QString, QStringList>. The hash key is component name,
     which other components depend on. The value can contain several component

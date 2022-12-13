@@ -313,6 +313,7 @@ void LocalPackageHub::refresh()
     \a title,
     \a treeName,
     \a description,
+    \a sortingPriority,
     \a dependencies,
     \a autoDependencies,
     \a forcedInstallation,

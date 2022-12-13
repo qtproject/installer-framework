@@ -1,3 +1,13 @@
+4.5.1
+- Make Settings operation to support _OLD and placeholders (QTIFW-2882)
+- ExtractOp: fix leftover empty directories when 'targetDir' arg is used (QTIFW-2764)
+- Fix errors occurring in full uninstall on macOS (QTIFW-2875)
+- Fix updater view behavior for non-checkable components (QTIFW-836)
+- Execute operation: fix overwritten error string for crashed processes (QTIFW-2875)
+- MetadataJob: fix removing compressed repositories after extracting (QTIFW-2876)
+- Fix replaced removal on update (QTIFW-2887)
+- Fix user set binary marker not having any effect on maintenance tool (QTIFW-2884)
+
 4.5.0
 - Fix required virtual components still uninstalled in some occasions
 - Update translations (QTIFW-2814)
@@ -11,6 +21,12 @@
 - Fix installer stalling when there's only one CPU core (QTIFW-2786)
 - Adjust the 'ready to install' message to avoid repeating the app name (SQUISH-9672)
 - CLI: add support for hiding values of printed options (QTIFW-2756)
+- Replace .vbs hack to update maintenance tool binary on Windows (QTIFW-2625)
+- Disable package manager and updater for offline maintenance tool (QTIFW-2627)
+- Display progress for loading component install scripts (QTIFW-2701)
+- Fix separators for localInstallerBinaryUsed() (QTIFW-2700)
+- Allow searching components also in the updater view (QTIFW-2667)
+- Add list of components to uninstall to installation log (QTIFW-2666)
 
 4.4.2
 - Fix uninstallation of needed virtual components

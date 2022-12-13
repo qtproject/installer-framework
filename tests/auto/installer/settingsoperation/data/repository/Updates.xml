@@ -8,8 +8,26 @@
   <Description>Example component A</Description>
   <Version>1.0.2-1</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
-  <Default>true</Default>
+  <Default>false</Default>
   <Script>script.qs</Script>
   <SHA1>5dc8a98f591998de0c555e194e228fa740a15632</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B</Name>
+  <DisplayName>B</DisplayName>
+  <Description>Example component B</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>false</Default>
+  <Script>script.qs</Script>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>C</Name>
+  <DisplayName>C</DisplayName>
+  <Description>Example component C</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>false</Default>
+  <Script>script.qs</Script>
  </PackageUpdate>
 </Updates>

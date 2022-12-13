@@ -62,10 +62,12 @@ class UnzipArchiveTask : public AbstractTask<void>
 
 public:
     UnzipArchiveTask(const QString &arcive, const QString &target)
-        : m_archive(arcive), m_targetDir(target)
+        : m_archive(arcive), m_targetDir(target), m_removeArchive(false)
     {}
     QString target() { return m_targetDir; }
     QString archive() { return m_archive; }
+    void setRemoveArchive(bool remove) { m_removeArchive = remove; }
+
     void doTask(QFutureInterface<void> &fi) override
     {
         fi.reportStarted();
@@ -87,9 +89,10 @@ public:
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
                 "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
         }
-        // Don't need the archive anymore
+
         archive->close();
-        QFile::remove(m_archive);
+        if (m_removeArchive)
+            QFile::remove(m_archive);
 
         fi.reportFinished();
     }
@@ -97,6 +100,7 @@ public:
 private:
     QString m_archive;
     QString m_targetDir;
+    bool m_removeArchive;
 };
 
 class CacheTaskException : public QException

@@ -248,7 +248,6 @@ private slots:
     {
         QTest::addColumn<PackageManagerCore *>("core");
         QTest::addColumn<QList<Component *> >("selectedToUninstall");
-        QTest::addColumn<QList<Component *> >("installedComponents");
         QTest::addColumn<QSet<Component *> >("expectedResult");
         QTest::addColumn<UninstallReasonList >("uninstallReasons");
         QTest::addColumn<LocalDependencyHash >("dependencyHash");
@@ -277,7 +276,6 @@ private slots:
         uninstallReasonList.append(qMakePair(componentB, UninstallerCalculator::Dependent));
         QTest::newRow("Uninstaller resolved") << core
                     << (QList<Component *>() << componentAB)
-                    << (QList<Component *>() << componentA << componentB)
                     << (QSet<Component *>() << componentAB << componentB)
                     << uninstallReasonList
                     << dependencyComponentHash;
@@ -303,7 +301,6 @@ private slots:
         uninstallReasonList.append(qMakePair(compB, UninstallerCalculator::Dependent));
         QTest::newRow("Cascade dependencies") << core
                     << (QList<Component *>() << compA)
-                    << (QList<Component *>() << compB)
                     << (QSet<Component *>() << compA << compB)
                     << (uninstallReasonList)
                     << dependencyComponentHash;
@@ -313,12 +310,11 @@ private slots:
     {
         QFETCH(PackageManagerCore *, core);
         QFETCH(QList<Component *> , selectedToUninstall);
-        QFETCH(QList<Component *> , installedComponents);
         QFETCH(QSet<Component *> , expectedResult);
         QFETCH(UninstallReasonList, uninstallReasons);
         QFETCH(LocalDependencyHash, dependencyHash);
 
-        UninstallerCalculator calc(installedComponents, core, QHash<QString, QStringList>(), dependencyHash, QStringList());
+        UninstallerCalculator calc(core, QHash<QString, QStringList>(), dependencyHash, QStringList());
         calc.appendComponentsToUninstall(selectedToUninstall);
         QSet<Component *> result = calc.componentsToUninstall();
         for (auto pair : uninstallReasons) {

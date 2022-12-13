@@ -177,6 +177,39 @@ private slots:
         QVERIFY(dir.removeRecursively());
     }
 
+    void testInstallerBaseBinaryExtraction()
+    {
+        m_testDirectory = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(m_testDirectory));
+        QVERIFY(QDir(m_testDirectory).exists());
+
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                                                (m_testDirectory, ":///data/installerbaserepository"));
+        core->setInstallerBaseBinary(m_testDirectory + QDir::separator() + "testInstallerBase.txt");
+        core->installDefaultComponentsSilently();
+
+        QFile contentResourceFile(m_testDirectory + QDir::separator() + "installerResources" + QDir::separator() + "A" + QDir::separator() + "1.0.0content.txt");
+        QVERIFY2(contentResourceFile.open(QIODevice::ReadOnly | QIODevice::Text), "Could not open content resource file for reading.");
+        QTextStream fileStream(&contentResourceFile);
+        QString line = fileStream.readLine();
+        QVERIFY2(!line.isEmpty(), "Content not written to resource file.");
+        contentResourceFile.close();
+
+        QFile installerBaseResourceFile(m_testDirectory + QDir::separator() + "installerResources" + QDir::separator() + "A" + QDir::separator() + "1.0.0installerbase.txt");
+        QVERIFY2(installerBaseResourceFile.open(QIODevice::ReadOnly | QIODevice::Text),  "Could not open installerbase resource file for reading.");
+        QTextStream fileStream2(&installerBaseResourceFile);
+        line = installerBaseResourceFile.readLine();
+        QVERIFY2(line.isEmpty(), "Installerbase falsly written to resource file.");
+        installerBaseResourceFile.close();
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+
+        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently(QStringList() << "A"));
+        QDir dir(m_testDirectory);
+        QVERIFY(dir.removeRecursively());
+    }
+
 private:
     QString m_testDirectory;
 };

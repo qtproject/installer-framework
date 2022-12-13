@@ -11,5 +11,8 @@
         <file>data/xmloperationrepository/A/1.0.0content4.zip</file>
         <file>data/xmloperationrepository/A/1.0.0anothercontent.7z</file>
         <file>data/xmloperationrepository/A/1.0.0default.7z</file>
+        <file>data/installerbaserepository/Updates.xml</file>
+        <file>data/installerbaserepository/A/1.0.0content.7z</file>
+        <file>data/installerbaserepository/A/1.0.0installerbase.7z</file>
     </qresource>
 </RCC>

@@ -1,0 +1,32 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>false</Checksum>
+ <PackageUpdate>
+  <Name>qt.tools.qtcreator</Name>
+  <DisplayName>Component qtcreator. Dependency removed</DisplayName>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+  <PackageUpdate>
+  <Name>qt.tools.qtcreator_gui</Name>
+  <DisplayName>Component K. Autodepends on componentJ</DisplayName>
+  <Description>Component K. Autodepends on componentJ</Description>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <AutoDependOn>qt.tools.qtcreator</AutoDependOn>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>qt.tools.qtcreator_gui.enterprise.plugins</Name>
+  <DisplayName>enterprise plugins, replaces another component</DisplayName>
+  <Version>2.0.0</Version>
+  <ReleaseDate>2018-03-14</ReleaseDate>
+  <Virtual>true</Virtual>
+  <Replaces>qt.tools.qtcreator.enterprise.plugins</Replaces>
+  <AutoDependOn>qt.tools.qtcreator</AutoDependOn>
+  <UpdateFile UncompressedSize="99" OS="Any" CompressedSize="305"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+</Updates>

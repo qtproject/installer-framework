@@ -53,28 +53,26 @@ public:
         AutoDependent     // "Removed as autodependency component is removed"
     };
 
-    UninstallerCalculator(const QList<Component *> &installedComponents, PackageManagerCore *core,
+    UninstallerCalculator(PackageManagerCore *core,
                           const AutoDependencyHash &autoDependencyComponentHash,
                           const LocalDependencyHash &localDependencyComponentHash,
                           const QStringList &localVirtualComponents);
 
     QSet<Component*> componentsToUninstall() const;
 
-    void appendComponentsToUninstall(const QList<Component*> &components, const bool reverse = false);
-    void removeComponentsFromUnInstall(const QList<Component*> &components);
+    void appendComponentsToUninstall(const QList<Component*> &components);
     void insertUninstallReason(Component *component,
                                const UninstallReasonType uninstallReason,
                                const QString &referencedComponentName = QString());
     QString uninstallReason(Component *component) const;
     UninstallerCalculator::UninstallReasonType uninstallReasonType(Component *c) const;
-    QString uninstallReasonReferencedComponent(Component *component) const;
-    bool isRequiredVirtualPackage(Component *component);
-    void appendVirtualComponentsToUninstall(const bool reverse);
 
 private:
-    void appendComponentToUninstall(Component *component, const bool reverse);
+    QString uninstallReasonReferencedComponent(Component *component) const;
+    bool isRequiredVirtualPackage(Component *component);
+    void appendComponentToUninstall(Component *component);
+    void appendVirtualComponentsToUninstall();
 
-    QList<Component *> m_installedComponents;
     QSet<Component *> m_componentsToUninstall;
     PackageManagerCore *m_core;
     QHash<QString, QPair<UninstallReasonType, QString> > m_toUninstallComponentIdReasonHash;

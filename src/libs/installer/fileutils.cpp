@@ -485,7 +485,7 @@ bool QInstaller::createDirectoryWithParents(const QString &path)
         return false;
 
     QDir dir(path);
-    if (dir.mkdir(path))
+    if (dir.exists() || dir.mkdir(path))
         return true;
 
     // mkdir failed, try to create the parent directory
@@ -493,7 +493,7 @@ bool QInstaller::createDirectoryWithParents(const QString &path)
         return false;
 
     // now try again
-    if (dir.mkdir(path))
+    if (dir.exists() || dir.mkdir(path))
         return true;
 
     // directory may be have also been created elsewhere

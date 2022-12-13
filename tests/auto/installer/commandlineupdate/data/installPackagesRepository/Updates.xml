@@ -160,4 +160,20 @@
   <ForcedUpdate>true</ForcedUpdate>
   <DownloadableArchives>content.7z</DownloadableArchives>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>qt.tools.qtcreator</Name>
+  <DisplayName>Component qtcreator. Depends on virtual component</DisplayName>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <Dependencies>qt.tools.qtcreator.enterprise.plugins</Dependencies>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>qt.tools.qtcreator.enterprise.plugins</Name>
+  <DisplayName>enterprise plugin component</DisplayName>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Virtual>true</Virtual>
+ </PackageUpdate>
 </Updates>
