@@ -650,7 +650,7 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
         const QString value = v.text();
 
         const QVariant::Type t = QVariant::nameToType(type.toLatin1().data());
-        QVariant var = qVariantFromValue(value);
+        QVariant var = QVariant::fromValue(value);
         if (t == QVariant::List || t == QVariant::StringList || !var.convert(t)) {
             QDataStream stream(QByteArray::fromBase64( value.toLatin1()));
             stream >> var;

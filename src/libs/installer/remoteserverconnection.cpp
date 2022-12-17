@@ -278,7 +278,7 @@ void RemoteServerConnection::handleQProcess(RemoteServerReply *reply, const QStr
 
         qint64 pid = -1;
         bool success = QInstaller::startDetached(program, arguments, workingDirectory, &pid);
-        reply->send(qMakePair< bool, qint64>(success, pid));
+        reply->send(QPair<bool, qint64>(success, pid));
     } else if (command == QLatin1String(Protocol::QProcessStartDetached2)) {
         QString program;
         QStringList arguments;
@@ -289,7 +289,7 @@ void RemoteServerConnection::handleQProcess(RemoteServerReply *reply, const QStr
 
         qint64 pid = -1;
         bool success = QProcess::startDetached(program, arguments, workingDirectory, &pid);
-        reply->send(qMakePair< bool, qint64>(success, pid));
+        reply->send(QPair<bool, qint64>(success, pid));
     } else if (command == QLatin1String(Protocol::QProcessSetWorkingDirectory)) {
         QString dir;
         data >> dir;
@@ -517,13 +517,13 @@ void RemoteServerConnection::handleQFSFileEngine(RemoteServerReply *reply, const
         data >> maxlen;
         QByteArray byteArray(maxlen, '\0');
         const qint64 r = m_engine->read(byteArray.data(), maxlen);
-        reply->send(qMakePair<qint64, QByteArray>(r, byteArray));
+        reply->send(QPair<qint64, QByteArray>(r, byteArray));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineReadLine)) {
         qint64 maxlen;
         data >> maxlen;
         QByteArray byteArray(maxlen, '\0');
         const qint64 r = m_engine->readLine(byteArray.data(), maxlen);
-        reply->send(qMakePair<qint64, QByteArray>(r, byteArray));
+        reply->send(QPair<qint64, QByteArray>(r, byteArray));
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRemove)) {
         reply->send(m_engine->remove());
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineRename)) {
