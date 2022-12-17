@@ -313,7 +313,7 @@ void RemoteServerConnection::handleQProcess(RemoteServerReply *reply, const QStr
         qint32 mode;
         data >> program;
         data >> mode;
-        m_process->start(program, static_cast<QIODevice::OpenMode> (mode));
+        m_process->start(program, {}, static_cast<QIODevice::OpenMode> (mode));
     } else if (command == QLatin1String(Protocol::QProcessState)) {
         reply->send(static_cast<qint32> (m_process->state()));
     } else if (command == QLatin1String(Protocol::QProcessTerminate)) {
