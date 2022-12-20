@@ -123,15 +123,14 @@ QDomDocument Metadata::updatesDocument() const
 
 /*!
     Returns \c true if the \c Updates.xml document of this metadata
-    exists and can be opened for reading, \c false otherwise.
+    exists, \c false otherwise.
 */
 bool Metadata::isValid() const
 {
-    QFile updateFile(path() + QLatin1String("/Updates.xml"));
-    if (!updateFile.open(QIODevice::ReadOnly)) {
+    const QString updateFile(path() + QLatin1String("/Updates.xml"));
+    if (!QFileInfo::exists(updateFile)) {
         qCWarning(QInstaller::lcInstallerInstallLog)
-            << "Cannot open" << updateFile.fileName()
-            << "for reading:" << updateFile.errorString();
+            << "File" << updateFile << "does not exist.";
         return false;
     }
     return true;
