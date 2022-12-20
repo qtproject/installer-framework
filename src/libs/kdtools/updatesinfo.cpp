@@ -28,13 +28,14 @@
 
 #include "updatesinfo_p.h"
 #include "utils.h"
+#include "constants.h"
 
-#include <QDomDocument>
 #include <QFile>
 #include <QLocale>
 #include <QPair>
 #include <QVector>
 #include <QUrl>
+#include <QXmlStreamReader>
 
 using namespace KDUpdater;
 
@@ -62,35 +63,24 @@ void UpdatesInfoData::parseFile(const QString &updateXmlFile)
         return;
     }
 
-    QDomDocument doc;
-    QString parseErrorMessage;
-    int parseErrorLine, parseErrorColumn;
-    if (!doc.setContent(&file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn)) {
-        error = UpdatesInfo::InvalidXmlError;
-        errorMessage = tr("Parse error in %1 at %2, %3: %4").arg(updateXmlFile,
-            QString::number(parseErrorLine), QString::number(parseErrorColumn), parseErrorMessage);
-        return;
-    }
-
-    QDomElement rootE = doc.documentElement();
-    if (rootE.tagName() != QLatin1String("Updates")) {
-        setInvalidContentError(tr("Root element %1 unexpected, should be \"Updates\".").arg(rootE.tagName()));
-        return;
-    }
-
-    QDomNodeList childNodes = rootE.childNodes();
-    for(int i = 0; i < childNodes.count(); i++) {
-        const QDomElement childE = childNodes.at(i).toElement();
-        if (childE.isNull())
-            continue;
-
-        if (childE.tagName() == QLatin1String("ApplicationName"))
-            applicationName = childE.text();
-        else if (childE.tagName() == QLatin1String("ApplicationVersion"))
-            applicationVersion = childE.text();
-        else if (childE.tagName() == QLatin1String("PackageUpdate")) {
-            if (!parsePackageUpdateElement(childE))
-                return; //error handled in subroutine
+    QXmlStreamReader reader(&file);
+    if (reader.readNextStartElement()) {
+        if (reader.name() == QLatin1String("Updates")) {
+            while (reader.readNextStartElement()) {
+                if (reader.name() == QLatin1String("ApplicationName")) {
+                    applicationName = reader.readElementText();
+                } else if (reader.name() == QLatin1String("ApplicationVersion")) {
+                    applicationVersion = reader.readElementText();
+                } else if (reader.name() == QLatin1String("PackageUpdate")) {
+                    if (!parsePackageUpdateElement(reader))
+                        return; //error handled in subroutine
+                } else {
+                    reader.skipCurrentElement();
+                }
+            }
+        } else {
+            setInvalidContentError(tr("Root element %1 unexpected, should be \"Updates\".").arg(reader.name()));
+            return;
         }
     }
 
@@ -108,84 +98,51 @@ void UpdatesInfoData::parseFile(const QString &updateXmlFile)
     error = UpdatesInfo::NoError;
 }
 
-bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
+bool UpdatesInfoData::parsePackageUpdateElement(QXmlStreamReader &reader)
 {
-    if (updateE.isNull())
-        return false;
-
     UpdateInfo info;
-    QMap<QString, QString> localizedDescriptions;
     QHash<QString, QVariant> scriptHash;
-    for (int i = 0; i < updateE.childNodes().count(); i++) {
-        QDomElement childE = updateE.childNodes().at(i).toElement();
-        if (childE.isNull())
+    while (reader.readNext()) {
+        const QString elementName = reader.name().toString();
+        if ((reader.name() == QLatin1String("PackageUpdate"))
+                && (reader.tokenType() == QXmlStreamReader::EndElement)) {
+            break;
+        }
+        if (elementName.isEmpty() || reader.tokenType() == QXmlStreamReader::EndElement)
             continue;
-
-        if (childE.tagName() == QLatin1String("ReleaseNotes")) {
-            info.data[childE.tagName()] = QUrl(childE.text());
-        } else if (childE.tagName() == QLatin1String("Licenses")) {
-            QHash<QString, QVariant> licenseHash;
-            const QDomNodeList licenseNodes = childE.childNodes();
-            for (int index = 0; index < licenseNodes.count(); ++index) {
-                const QDomNode licenseNode = licenseNodes.at(index);
-                if (licenseNode.nodeName() == QLatin1String("License")) {
-                    QDomElement element = licenseNode.toElement();
-                    QVariantMap attributes;
-                    attributes.insert(QLatin1String("file"), element.attributeNode(QLatin1String("file")).value());
-                    if (!element.attributeNode(QLatin1String("priority")).isNull())
-                        attributes.insert(QLatin1String("priority"), element.attributeNode(QLatin1String("priority")).value());
-                    else
-                        attributes.insert(QLatin1String("priority"), QLatin1String("0"));
-                    licenseHash.insert(element.attributeNode(QLatin1String("name")).value(), attributes);
-                }
-            }
-            if (!licenseHash.isEmpty())
-                info.data.insert(QLatin1String("Licenses"), licenseHash);
-        } else if (childE.tagName() == QLatin1String("TreeName")) {
-            const bool moveChildren = QVariant(childE.attribute(QLatin1String("moveChildren"))).toBool();
-            const QPair<QString, bool> treeNamePair(childE.text(), moveChildren);
+        if (elementName == QLatin1String("Licenses")) {
+            parseLicenses(reader, info.data);
+        } else if (elementName == QLatin1String("TreeName")) {
+            const QXmlStreamAttributes attr = reader.attributes();
+            const bool moveChildren = attr.value(QLatin1String("moveChildren")).toString().toLower() == QInstaller::scTrue ? true : false;
+            const QPair<QString, bool> treeNamePair(reader.readElementText(), moveChildren);
             info.data.insert(QLatin1String("TreeName"), QVariant::fromValue(treeNamePair));
-        } else if (childE.tagName() == QLatin1String("Version")) {
+        } else if (elementName == QLatin1String("Version")) {
+            const QXmlStreamAttributes attr = reader.attributes();
             info.data.insert(QLatin1String("inheritVersionFrom"),
-                childE.attribute(QLatin1String("inheritVersionFrom")));
-            info.data[childE.tagName()] = childE.text();
-        } else if (childE.tagName() == QLatin1String("DisplayName")) {
-            processLocalizedTag(childE, info.data);
-        } else if (childE.tagName() == QLatin1String("Description")) {
-            if (!childE.hasAttribute(QLatin1String("xml:lang")))
-                info.data[QLatin1String("Description")] = childE.text();
-            QString languageAttribute = childE.attribute(QLatin1String("xml:lang"), QLatin1String("en"));
-            localizedDescriptions.insert(languageAttribute.toLower(), childE.text());
-        } else if (childE.tagName() == QLatin1String("UpdateFile")) {
-            info.data[QLatin1String("CompressedSize")] = childE.attribute(QLatin1String("CompressedSize"));
-            info.data[QLatin1String("UncompressedSize")] = childE.attribute(QLatin1String("UncompressedSize"));
-        } else if (childE.tagName() == QLatin1String("Operations")) {
-            const QDomNodeList operationNodes = childE.childNodes();
-            QVariant operationListVariant = parseOperations(childE.childNodes());
-            info.data.insert(QLatin1String("Operations"), operationListVariant);
-        } else if (childE.tagName() == QLatin1String("Script")) {
-            const bool postLoad = QVariant(childE.attribute(QLatin1String("postLoad"))).toBool();
+                attr.value(QLatin1String("inheritVersionFrom")).toString());
+            info.data[elementName] = reader.readElementText();
+        } else if (elementName == QLatin1String("DisplayName")
+                    || elementName == QLatin1String("Description")) {
+            processLocalizedTag(reader, info.data);
+        } else if (elementName == QLatin1String("UpdateFile")) {
+            info.data[QLatin1String("CompressedSize")] = reader.attributes().value(QLatin1String("CompressedSize")).toString();
+            info.data[QLatin1String("UncompressedSize")] = reader.attributes().value(QLatin1String("UncompressedSize")).toString();
+        } else if (elementName == QLatin1String("Operations")) {
+            parseOperations(reader, info.data);
+        } else if (elementName == QLatin1String("Script")) {
+            const QXmlStreamAttributes attr = reader.attributes();
+            const bool postLoad = attr.value(QLatin1String("postLoad")).toString().toLower() == QInstaller::scTrue ? true : false;
             if (postLoad)
-                scriptHash.insert(QLatin1String("postLoadScript"), childE.text());
+                scriptHash.insert(QLatin1String("postLoadScript"), reader.readElementText());
             else
-                scriptHash.insert(QLatin1String("installScript"), childE.text());
+                scriptHash.insert(QLatin1String("installScript"), reader.readElementText());
         } else {
-            info.data[childE.tagName()] = childE.text();
+            info.data[elementName] = reader.readElementText();
         }
     }
     if (!scriptHash.isEmpty())
         info.data.insert(QLatin1String("Script"), scriptHash);
-
-    QStringList candidates;
-    static const QStringList uiLanguages = QLocale().uiLanguages();
-    foreach (const QString &lang, uiLanguages)
-        candidates << QInstaller::localeCandidates(lang.toLower());
-    foreach (const QString &candidate, candidates) {
-        if (localizedDescriptions.contains(candidate)) {
-            info.data[QLatin1String("Description")] = localizedDescriptions.value(candidate);
-            break;
-        }
-    }
 
     if (!info.data.contains(QLatin1String("Name"))) {
         setInvalidContentError(tr("PackageUpdate element without Name"));
@@ -204,44 +161,77 @@ bool UpdatesInfoData::parsePackageUpdateElement(const QDomElement &updateE)
     return true;
 }
 
-void UpdatesInfoData::processLocalizedTag(const QDomElement &childE, QHash<QString, QVariant> &info) const
+void UpdatesInfoData::processLocalizedTag(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const
 {
-    QString languageAttribute = childE.attribute(QLatin1String("xml:lang")).toLower();
-    if (!info.contains(childE.tagName()) && (languageAttribute.isEmpty()))
-        info[childE.tagName()] = childE.text();
+    const QString languageAttribute =  reader.attributes().value(QLatin1String("xml:lang")).toString().toLower();
+    const QString elementName = reader.name().toString();
+    if (!info.contains(elementName) && (languageAttribute.isEmpty()))
+        info[elementName] = reader.readElementText();
 
+    if (languageAttribute.isEmpty())
+        return;
     // overwrite default if we have a language specific description
     if (QLocale().name().startsWith(languageAttribute, Qt::CaseInsensitive))
-        info[childE.tagName()] = childE.text();
+        info[elementName] = reader.readElementText();
 }
 
-QVariant UpdatesInfoData::parseOperations(const QDomNodeList &operationNodes)
+void UpdatesInfoData::parseOperations(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const
 {
-    QVariant operationListVariant;
     QList<QPair<QString, QVariant>> operationsList;
-    for (int i = 0; i < operationNodes.count(); ++i) {
-        const QDomNode operationNode = operationNodes.at(i);
-        if (operationNode.nodeName() == QLatin1String("Operation")) {
-            const QDomNodeList argumentNodes = operationNode.childNodes();
-            QStringList attributes;
-            for (int index = 0; index < argumentNodes.count(); ++index) {
-                const QDomNode argumentNode = argumentNodes.at(index);
-                if (argumentNode.nodeName() == QLatin1String("Argument")) {
-                    QDomElement argumentElement = argumentNode.toElement();
-                    attributes.append(argumentElement.text());
-                }
-            }
-            QPair<QString, QVariant> pair;
-            pair.first = operationNode.toElement().attributeNode(QLatin1String("name")).value();
-            pair.second = attributes;
-            operationsList.append(pair);
+    while (reader.readNext()) {
+        const QString subElementName = reader.name().toString();
+        // End of parsing operations
+        if ((subElementName == QLatin1String("Operations"))
+                && (reader.tokenType() == QXmlStreamReader::EndElement)) {
+            break;
         }
+        if (subElementName != QLatin1String("Operation") || reader.tokenType() == QXmlStreamReader::EndElement)
+            continue;
+        QStringList attributes;
+        const QXmlStreamAttributes attr = reader.attributes();
+        while (reader.readNext()) {
+            const QString subElementName2 = reader.name().toString();
+            // End of parsing single operation
+            if ((subElementName2 == QLatin1String("Operation"))
+                    && (reader.tokenType() == QXmlStreamReader::EndElement)) {
+                break;
+            }
+            if (subElementName2 != QLatin1String("Argument") || reader.tokenType() == QXmlStreamReader::EndElement)
+                continue;
+            attributes.append(reader.readElementText());
+        }
+        QPair<QString, QVariant> pair;
+        pair.first = attr.value(QLatin1String("name")).toString();
+        pair.second = attributes;
+        operationsList.append(pair);
     }
-    operationListVariant.setValue(operationsList);
-    return operationListVariant;
+    info.insert(QLatin1String("Operations"), QVariant::fromValue(operationsList));
 }
 
-
+void UpdatesInfoData::parseLicenses(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const
+{
+    QHash<QString, QVariant> licenseHash;
+    while (reader.readNext()) {
+        const QString subElementName = reader.name().toString();
+        // End of parsing Licenses
+        if ((subElementName == QLatin1String("Licenses"))
+                && (reader.tokenType() == QXmlStreamReader::EndElement)) {
+            break;
+        }
+        if (subElementName != QLatin1String("License") || reader.tokenType() == QXmlStreamReader::EndElement)
+            continue;
+        const QXmlStreamAttributes attr = reader.attributes();
+        QVariantMap attributes;
+        attributes.insert(QLatin1String("file"), attr.value(QLatin1String("file")).toString());
+        if (!attr.value(QLatin1String("priority")).isNull())
+            attributes.insert(QLatin1String("priority"), attr.value(QLatin1String("priority")).toString());
+        else
+            attributes.insert(QLatin1String("priority"), QLatin1String("0"));
+        licenseHash.insert(attr.value(QLatin1String("name")).toString(), attributes);
+    }
+    if (!licenseHash.isEmpty())
+        info.insert(QLatin1String("Licenses"), licenseHash);
+}
 //
 // UpdatesInfo
 //

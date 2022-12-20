@@ -59,6 +59,12 @@ static const QMap<QString, QString> rootComponentDisplayNames = {
     {"de_de", QString::fromUtf8("Wurzel Komponente")}
 };
 
+static const QMap<QString, QString> rootComponentDescriptions = {
+    {"", QLatin1String("Install this example.")},
+    {"ru_ru", QString::fromUtf8("Установите этот пример.")},
+    {"de_de", QString::fromUtf8("Installieren Sie dieses Beispiel.")}
+};
+
 class tst_ComponentModel : public QObject
 {
     Q_OBJECT
@@ -372,6 +378,10 @@ private slots:
                 ? rootComponentDisplayNames[localeToTest.toLower()]
                 : rootComponentDisplayNames[QString()];
 
+            QString expectedDescription = rootComponentDescriptions.contains(localeToTest.toLower())
+                                       ? rootComponentDescriptions[localeToTest.toLower()]
+                                       : rootComponentDescriptions[QString()];
+
             setPackageManagerOptions(NoFlags);
 
             QList<Component*> rootComponents = loadComponents();
@@ -383,6 +393,9 @@ private slots:
 
             const QModelIndex root = model.indexFromComponentName(vendorProduct);
             QCOMPARE(model.data(root, Qt::DisplayRole).toString(), expectedName);
+
+            Component *comp = model.componentFromIndex(root);
+            QCOMPARE(comp->value("Description"), expectedDescription);
 
             qDeleteAll(rootComponents);
         }
@@ -529,6 +542,7 @@ private:
             component->setValue("Virtual", info.data.value("Virtual").toString());
             component->setValue("DisplayName", info.data.value("DisplayName").toString());
             component->setValue("Checkable", info.data.value("Checkable").toString());
+            component->setValue("Description", info.data.value("Description").toString());
 
             QString forced = info.data.value("ForcedInstallation", scFalse).toString().toLower();
             if (m_core.noForceInstallation())

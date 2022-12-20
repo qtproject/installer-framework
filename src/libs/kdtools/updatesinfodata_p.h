@@ -32,8 +32,7 @@
 #include <QCoreApplication>
 #include <QSharedData>
 
-QT_FORWARD_DECLARE_CLASS(QDomElement)
-QT_FORWARD_DECLARE_CLASS(QDomNodeList)
+QT_FORWARD_DECLARE_CLASS(QXmlStreamReader)
 
 namespace KDUpdater {
 
@@ -55,13 +54,14 @@ public:
     QList<UpdateInfo> updateInfoList;
 
     void parseFile(const QString &updateXmlFile);
-    bool parsePackageUpdateElement(const QDomElement &updateE);
+    bool parsePackageUpdateElement(QXmlStreamReader &reader);
 
     void setInvalidContentError(const QString &detail);
 
 private:
-    void processLocalizedTag(const QDomElement &childE, QHash<QString, QVariant> &info) const;
-    QVariant parseOperations(const QDomNodeList &operationNodes);
+    void processLocalizedTag(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const;
+    void parseOperations(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const;
+    void parseLicenses(QXmlStreamReader &reader, QHash<QString, QVariant> &info) const;
 };
 
 } // namespace KDUpdater

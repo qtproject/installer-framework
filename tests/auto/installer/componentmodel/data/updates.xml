@@ -8,6 +8,8 @@
         <DisplayName xml:lang="ru_RU">Корневая компонента</DisplayName>
         <DisplayName xml:lang="de_DE">Wurzel Komponente</DisplayName>
         <Description>Install this example.</Description>
+        <Description xml:lang="ru_RU">Установите этот пример.</Description>
+        <Description xml:lang="de_DE">Installieren Sie dieses Beispiel.</Description>
         <Version>0.1.0-1</Version>
         <ReleaseDate>2010-09-21</ReleaseDate>
         <Default>true</Default>
