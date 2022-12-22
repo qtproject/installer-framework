@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -46,12 +46,12 @@ private slots:
         m_core.setValue(QLatin1String("QMAKE_BINARY"), QUOTE(QMAKE_BINARY));
         m_core.setValue(QLatin1String("QMAKE_BINARY_OLD"), QLatin1String("FAKE_QMAKE"));
         ElevatedExecuteOperation operation(&m_core);
-        operation.setArguments(QStringList() << QLatin1String("UNDOEXECUTE") << QLatin1String("FAKE_QMAKE"));
+        operation.setArguments(QStringList() << QLatin1String("UNDOEXECUTE") << QLatin1String("FAKE_QMAKE") << QLatin1String("-v"));
 
-        QTest::ignoreMessage(QtDebugMsg, "\"FAKE_QMAKE\" started, arguments: \"\"");
-        QString message =  "Failed to run undo operation \"Execute\" for component . Trying again with arguments %1";
+        QTest::ignoreMessage(QtDebugMsg, "\"FAKE_QMAKE\" started, arguments: \"-v\"");
+        QString message =  "Failed to run undo operation \"Execute\" for component . Trying again with arguments %1, -v";
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(QUOTE(QMAKE_BINARY))));
-        message =  "\"%1\" started, arguments: \"\"";
+        message =  "\"%1\" started, arguments: \"-v\"";
         QTest::ignoreMessage(QtDebugMsg, qPrintable(message.arg(QUOTE(QMAKE_BINARY))));
 
         QCOMPARE(operation.undoOperation(), true);
