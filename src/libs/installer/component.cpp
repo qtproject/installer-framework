@@ -1198,6 +1198,10 @@ void Component::markComponentUnstable(Component::UnstableError error, const QStr
     setValue(scUnstable, scTrue);
     QMetaEnum metaEnum = QMetaEnum::fromType<Component::UnstableError>();
     emit packageManagerCore()->unstableComponentFound(QLatin1String(metaEnum.valueToKey(error)), errorMessage, this->name());
+
+    // Update the description and tooltip texts to contain
+    // information about the unstable error.
+    updateModelData(scDescription, QString());
 }
 
 QJSValue Component::callScriptMethod(const QString &methodName, const QJSValueList &arguments) const
@@ -1738,24 +1742,26 @@ void Component::updateModelData(const QString &key, const QString &data)
         setData(humanReadableSize(size), UncompressedSize);
     }
 
-    QString tooltipText;
-    const QString &updateInfo = d->m_vars.value(scUpdateText);
-    if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
-        tooltipText = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
-    } else {
-        tooltipText = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
-            + tr("Update Info: ") + updateInfo;
-    }
-    if (isUnstable()) {
-        tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
+    if (key == scUpdateText || key == scDescription) {
+        QString tooltipText;
+        const QString &updateInfo = d->m_vars.value(scUpdateText);
+        if (!d->m_core->isUpdater() || updateInfo.isEmpty()) {
+            tooltipText = QString::fromLatin1("<html><body>%1</body></html>").arg(d->m_vars.value(scDescription));
+        } else {
+            tooltipText = d->m_vars.value(scDescription) + QLatin1String("<br><br>")
+                          + tr("Update Info: ") + updateInfo;
+        }
+        if (isUnstable()) {
+            tooltipText += QLatin1String("<br>") + tr("There was an error loading the selected component. "
                                                       "This component cannot be installed.");
-    }
-    static const QRegularExpression externalLinkRegexp(QLatin1String("{external-link}='(.*?)'"));
-    static const QLatin1String externalLinkElement(QLatin1String("<a href=\"\\1\">\\1</a>"));
-    // replace {external-link}='' fields in component description with proper link tags
-    tooltipText.replace(externalLinkRegexp, externalLinkElement);
+        }
+        static const QRegularExpression externalLinkRegexp(QLatin1String("{external-link}='(.*?)'"));
+        static const QLatin1String externalLinkElement(QLatin1String("<a href=\"\\1\">\\1</a>"));
+        // replace {external-link}='' fields in component description with proper link tags
+        tooltipText.replace(externalLinkRegexp, externalLinkElement);
 
-    setData(tooltipText, Qt::ToolTipRole);
+        setData(tooltipText, Qt::ToolTipRole);
+    }
 }
 
 /*!
