@@ -74,6 +74,9 @@ static const QLatin1String scCheckable("Checkable");
 static const QLatin1String scExpandedByDefault("ExpandedByDefault");
 static const QLatin1String scUnstable("Unstable");
 
+static const char *scClearCacheHint = QT_TR_NOOP(
+    "Clearing the cache directory and restarting the application may solve this.");
+
 /*!
     \enum QInstaller::Component::UnstableError
 
@@ -700,8 +703,8 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
     while (it.hasNext()) {
         QFile file(it.next());
         if (!file.open(QIODevice::ReadOnly)) {
-            throw Error(tr("Cannot open the requested UI file \"%1\": %2").arg(
-                            it.fileName(), file.errorString()));
+            throw Error(tr("Cannot open the requested UI file \"%1\": %2.\n\n%3").arg(
+                            it.fileName(), file.errorString(), tr(scClearCacheHint)));
         }
 
         static QUiLoader loader;
@@ -709,8 +712,8 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
         loader.setLanguageChangeEnabled(true);
         QWidget *const widget = loader.load(&file, 0);
         if (!widget) {
-            throw Error(tr("Cannot load the requested UI file \"%1\": %2").arg(
-                            it.fileName(), loader.errorString()));
+            throw Error(tr("Cannot load the requested UI file \"%1\": %2.\n\n%3").arg(
+                            it.fileName(), loader.errorString(), tr(scClearCacheHint)));
         }
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);
@@ -755,8 +758,8 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
 
         QFile file(fileInfo.filePath());
         if (!file.open(QIODevice::ReadOnly)) {
-            throw Error(tr("Cannot open the requested license file \"%1\": %2").arg(
-                            file.fileName(), file.errorString()));
+            throw Error(tr("Cannot open the requested license file \"%1\": %2.\n\n%3").arg(
+                            file.fileName(), file.errorString(), tr(scClearCacheHint)));
         }
         QTextStream stream(&file);
         stream.setCodec("UTF-8");
