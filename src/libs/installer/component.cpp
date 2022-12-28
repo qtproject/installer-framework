@@ -994,6 +994,15 @@ void Component::addDownloadableArchive(const QString &path)
 }
 
 /*!
+    \internal
+*/
+void Component::addDownloadableArchives(const QString& archives)
+{
+    Q_ASSERT(isFromOnlineRepository());
+    d->m_downloadableArchivesVariable = archives;
+}
+
+/*!
     Removes the archive \a path previously added via addDownloadableArchive() from this component.
     This can only be called if this component was downloaded from an online repository.
 
@@ -1008,9 +1017,15 @@ void Component::removeDownloadableArchive(const QString &path)
 
 /*!
     Returns the archives to be downloaded from the online repository before installation.
+    Should be called only once when the installation starts.
 */
-QStringList Component::downloadableArchives() const
+QStringList Component::downloadableArchives()
 {
+    const QStringList downloadableArchives = d->m_downloadableArchivesVariable
+                .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    foreach (const QString downloadableArchive, downloadableArchives)
+        addDownloadableArchive(downloadableArchive);
+
     return d->m_downloadableArchives;
 }
 

@@ -3977,14 +3977,8 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
             component->setValue(QLatin1String("password"), repo.password());
         }
 
-        // add downloadable archive from xml
-        const QStringList downloadableArchives = data.package->data(scDownloadableArchives).toString()
-            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
-
-        if (component->isFromOnlineRepository()) {
-            foreach (const QString downloadableArchive, downloadableArchives)
-                component->addDownloadableArchive(downloadableArchive);
-        }
+        if (component->isFromOnlineRepository())
+            component->addDownloadableArchives(data.package->data(scDownloadableArchives).toString());
 
         const QStringList componentsToReplace = data.package->data(scReplaces).toString()
             .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
