@@ -375,4 +375,28 @@
             \li ApplicationsDirX64
             \li \c {C:\Program Files}
     \endtable
+
+    \section1 Using postLoad in Component Script
+    By default, component scripts are evaluated before the install tree view
+    is shown. This can have performance cost if there is a huge amount of
+    components with component scripts. The \c postLoad attribute introduces a way
+    to evaluate the component script right before installation starts, only for
+    the components that are selected for installation or update:
+    \code
+    <Script postLoad="true">my_install_script.qs</Script>
+    \endcode
+    Whether \c postLoad can be set to \c true must be considered case by case,
+    depending on the contents of the script. For example, if the script contents
+    affect the install tree view, like setting \c <Default> to \c true, setting
+    new dependencies, or adding new wizard pages, \c postLoad must not be used or
+    it must be set to \c false. If the script contains only methods
+    that are run during the installation, \c postLoad can be set to \c true. For
+    example, all overridden \c operation functions are run during installation.
+    For more information, see \l {Adding Operations to Components}. If you are not
+    sure when to use \c postLoad, then don't use it. The performance cost is
+    huge only when there are thousands of scripts to be evaluated.
+
+    Both \c <Script postLoad="true"> and \c <Script> tags can be used at the same time.
+    This means that one component can have one script that is evaluated when the installation
+    starts and another script that is evaluated before the install tree view is shown.
 */
