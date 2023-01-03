@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -58,7 +58,11 @@ public:
     Resource(const QString &path, const Range<qint64> &segment);
     ~Resource();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     bool open();
+#else
+    bool open(std::optional<QFile::Permissions> permissions = std::nullopt);
+#endif
     void close() override;
 
     bool seek(qint64 pos) override;

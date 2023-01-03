@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -497,11 +497,20 @@ void RemoteServerConnection::handleQFSFileEngine(RemoteServerReply *reply, const
         bool createParentDirectories;
         data >>dirName;
         data >>createParentDirectories;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         reply->send(m_engine->mkdir(dirName, createParentDirectories));
+#else
+        reply->send(m_engine->mkdir(dirName, createParentDirectories, std::nullopt));
+#endif
+
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOpen)) {
         qint32 openMode;
         data >>openMode;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         reply->send(m_engine->open(static_cast<QIODevice::OpenMode> (openMode)));
+#else
+        reply->send(m_engine->open(static_cast<QIODevice::OpenMode> (openMode), std::nullopt));
+#endif
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineOwner)) {
         qint32 owner;
         data >>owner;

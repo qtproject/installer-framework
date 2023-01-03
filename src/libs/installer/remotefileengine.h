@@ -53,7 +53,12 @@ public:
     RemoteFileEngine();
     ~RemoteFileEngine();
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     bool open(QIODevice::OpenMode mode) override;
+#else
+    bool open(QIODevice::OpenMode mode,
+              std::optional<QFile::Permissions> permissions = std::nullopt) override;
+#endif
     bool close() override;
     bool flush() override;
     bool syncToDisk() override;
@@ -66,7 +71,12 @@ public:
     bool rename(const QString &newName) override;
     bool renameOverwrite(const QString &newName) override;
     bool link(const QString &newName) override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     bool mkdir(const QString &dirName, bool createParentDirectories) const override;
+#else
+    bool mkdir(const QString &dirName, bool createParentDirectories,
+               std::optional<QFile::Permissions> permissions = std::nullopt) const override;
+#endif
     bool rmdir(const QString &dirName, bool recurseParentDirectories) const override;
     bool setSize(qint64 size) override;
     bool caseSensitive() const override;

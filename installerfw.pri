@@ -141,7 +141,13 @@ CONFIG(static, static|shared) {
     QT += concurrent network qml xml
     greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 }
-CONFIG += depend_includepath no_private_qt_headers_warning c++11
+CONFIG += depend_includepath no_private_qt_headers_warning
+versionAtLeast(QT_MAJOR_VERSION, 6) {
+    CONFIG+=c++17
+} else {
+    CONFIG+=c++11
+}
+
 win32:CONFIG += console
 
 exists(".git") {

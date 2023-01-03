@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -127,9 +127,16 @@ bool BinaryFormatEngine::close()
 /*!
     \internal
 */
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 bool BinaryFormatEngine::open(QIODevice::OpenMode mode)
+#else
+bool BinaryFormatEngine::open(QIODevice::OpenMode mode, std::optional<QFile::Permissions> permissions)
+#endif
 {
     Q_UNUSED(mode)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    Q_UNUSED(permissions)
+#endif
     return m_resource.isNull() ? false : m_resource->open();
 }
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -153,12 +153,19 @@ void Resource::setName(const QByteArray &name)
     Opens a resource in QIODevice::ReadOnly mode. The function returns \c true
     if successful.
 */
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 bool Resource::open()
+#else
+bool Resource::open(std::optional<QFile::Permissions> permissions)
+#endif
 {
     if (isOpen())
         return false;
-
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     if (!m_file.open(QIODevice::ReadOnly | QIODevice::Unbuffered)) {
+#else
+    if (!m_file.open(QIODevice::ReadOnly | QIODevice::Unbuffered, permissions)) {
+#endif
         setErrorString(m_file.errorString());
         return false;
     }
