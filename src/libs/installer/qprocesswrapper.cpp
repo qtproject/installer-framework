@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -54,7 +54,7 @@ QProcessWrapper::QProcessWrapper(QObject *parent)
     connect(&process, &QIODevice::bytesWritten, this, &QProcessWrapper::bytesWritten);
     connect(&process, &QIODevice::aboutToClose, this, &QProcessWrapper::aboutToClose);
     connect(&process, &QIODevice::readChannelFinished, this, &QProcessWrapper::readChannelFinished);
-    connect(&process, SIGNAL(error(QProcess::ProcessError)), SIGNAL(error(QProcess::ProcessError)));
+    connect(&process, SIGNAL(errorOccurred(QProcess::ProcessError)), SIGNAL(errorOccurred(QProcess::ProcessError)));
     connect(&process, &QProcess::readyReadStandardOutput, this, &QProcessWrapper::readyReadStandardOutput);
     connect(&process, &QProcess::readyReadStandardError, this, &QProcessWrapper::readyReadStandardError);
     connect(&process, SIGNAL(finished(int,QProcess::ExitStatus)), SIGNAL(finished(int,QProcess::ExitStatus)));
@@ -88,7 +88,7 @@ void QProcessWrapper::processSignals()
         } else if (name == QLatin1String(Protocol::QProcessSignalReadChannelFinished)) {
             emit readChannelFinished();
         } else if (name == QLatin1String(Protocol::QProcessSignalError)) {
-            emit error(static_cast<QProcess::ProcessError> (receivedSignals.takeFirst().toInt()));
+            emit errorOccurred(static_cast<QProcess::ProcessError> (receivedSignals.takeFirst().toInt()));
         } else if (name == QLatin1String(Protocol::QProcessSignalReadyReadStandardOutput)) {
             emit readyReadStandardOutput();
         } else if (name == QLatin1String(Protocol::QProcessSignalReadyReadStandardError)) {

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -119,7 +119,7 @@ Q_SIGNALS:
     void bytesWritten(qint64);
     void aboutToClose();
     void readChannelFinished();
-    void error(QProcess::ProcessError);
+    void errorOccurred(QProcess::ProcessError);
     void readyReadStandardOutput();
     void readyReadStandardError();
     void finished(int exitCode, QProcess::ExitStatus exitStatus);

@@ -52,7 +52,7 @@ private:
         connect(process, &QIODevice::bytesWritten, this, &QProcessSignalReceiver::onBytesWritten);
         connect(process, &QIODevice::aboutToClose, this, &QProcessSignalReceiver::onAboutToClose);
         connect(process, &QIODevice::readChannelFinished, this, &QProcessSignalReceiver::onReadChannelFinished);
-        connect(process, SIGNAL(error(QProcess::ProcessError)),
+        connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)),
             SLOT(onError(QProcess::ProcessError)));
         connect(process, &QProcess::readyReadStandardOutput,
                 this, &QProcessSignalReceiver::onReadyReadStandardOutput);

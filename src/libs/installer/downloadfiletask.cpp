@@ -269,7 +269,7 @@ void Downloader::onFinished(QNetworkReply *reply)
     }
 }
 
-void Downloader::onError(QNetworkReply::NetworkError error)
+void Downloader::errorOccurred(QNetworkReply::NetworkError error)
 {
     QNetworkReply *const reply = qobject_cast<QNetworkReply *>(sender());
 
@@ -401,8 +401,8 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     m_downloads[reply] = std::move(data);
 
     connect(reply, &QIODevice::readyRead, this, &Downloader::onReadyRead);
-    connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this,
-        SLOT(onError(QNetworkReply::NetworkError)));
+    connect(reply, SIGNAL(errorOccurred(QNetworkReply::NetworkError)), this,
+        SLOT(errorOccurred(QNetworkReply::NetworkError)));
 #ifndef QT_NO_SSL
     connect(reply, &QNetworkReply::sslErrors, this, &Downloader::onSslErrors);
 #endif

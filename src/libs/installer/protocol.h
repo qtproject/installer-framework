@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -90,7 +90,7 @@ const char GetQProcessSignals[] = "GetQProcessSignals";
 const char QProcessSignalBytesWritten[] = "QProcess::bytesWritten";
 const char QProcessSignalAboutToClose[] = "QProcess::aboutToClose";
 const char QProcessSignalReadChannelFinished[] = "QProcess::readChannelFinished";
-const char QProcessSignalError[] = "QProcess::error";
+const char QProcessSignalError[] = "QProcess::errorOccurred";
 const char QProcessSignalReadyReadStandardOutput[] = "QProcess::readyReadStandardOutput";
 const char QProcessSignalReadyReadStandardError[] = "QProcess::readyReadStandardError";
 const char QProcessSignalStarted[] = "QProcess::started";
