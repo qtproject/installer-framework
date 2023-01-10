@@ -198,7 +198,6 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall()
 
            if (!isRequiredVirtualPackage(virtualComponent)) {
                unneededVirtualList.append(virtualComponent);
-               m_virtualComponentsForReverse.append(virtualComponent);
                insertUninstallReason(virtualComponent, UninstallerCalculator::VirtualDependent);
            }
         }

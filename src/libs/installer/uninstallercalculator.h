@@ -81,7 +81,6 @@ private:
     AutoDependencyHash m_autoDependencyComponentHash;
     LocalDependencyHash m_localDependencyComponentHash;
     QStringList m_localVirtualComponents;
-    QList<Component *> m_virtualComponentsForReverse;
 };
 
 }
