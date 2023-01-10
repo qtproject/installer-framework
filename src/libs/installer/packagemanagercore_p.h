@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -267,7 +267,6 @@ private:
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);
     bool calculateComponentsAndRun();
-    void calculateUninstallComponents();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
     bool askUserConfirmCommand() const;
@@ -292,7 +291,6 @@ private:
     qint64 m_magicBinaryMarker;
     int m_magicMarkerSupplement;
 
-    bool m_componentsToInstallCalculated;
     bool m_foundEssentialUpdate;;
 
     mutable ScriptEngine *m_componentScriptEngine;

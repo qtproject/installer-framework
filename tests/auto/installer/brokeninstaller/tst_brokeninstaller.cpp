@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2018 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -145,7 +145,7 @@ private slots:
         Component *componentDependingOnMissingDependency = core.componentByName("componentd");
         componentDependingOnMissingDependency->addDependency("componentmissingdependency");
 
-        core.componentsToInstallNeedsRecalculation();
+        core.recalculateAllComponents();
         model->reset(components);
 
         testModelState(model, m_checkedComponentsWithMissingDependency, m_partiallyCheckedComponentsWithBrokenScript, m_uncheckedComponentsWithMissingDependency);

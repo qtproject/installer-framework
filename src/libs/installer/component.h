@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -208,6 +208,7 @@ public:
     bool isVirtual() const;
     bool isSelected() const;
     bool forcedInstallation() const;
+    bool isEssential() const;
 
     void setValidatorCallbackName(const QString &name);
 

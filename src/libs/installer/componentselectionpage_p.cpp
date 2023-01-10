@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -72,6 +72,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_categoryWidget(Q_NULLPTR)
         , m_categoryLayoutVisible(false)
         , m_proxyModel(new ComponentSortFilterProxyModel(q))
+        , m_componentsResolved(false)
         , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
@@ -390,6 +391,15 @@ void ComponentSelectionPagePrivate::expandSearchResults()
     restoreHeaderResizeModes();
 }
 
+/*!
+    Returns \c true if the components to install and uninstall are calculated
+    successfully, \c false otherwise.
+*/
+bool ComponentSelectionPagePrivate::componentsResolved() const
+{
+    return m_componentsResolved;
+}
+
 void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &current)
 {
     if (!current.isValid())
@@ -536,6 +546,14 @@ void ComponentSelectionPagePrivate::selectDefault()
 
 void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentModel::ModelState state)
 {
+    m_componentsResolved = m_core->recalculateAllComponents();
+    if (!m_componentsResolved) {
+        const QString error = !m_core->componentsToInstallError().isEmpty()
+            ? m_core->componentsToInstallError() : m_core->componentsToUninstallError();
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+            QLatin1String("CalculateComponentsError"), tr("Error"), error);
+    }
+
     q->setModified(state.testFlag(ComponentModel::DefaultChecked) == false);
     // If all components in the checked list are only checkable when run without forced
     // installation, set ComponentModel::AllUnchecked as well, as we cannot uncheck anything.

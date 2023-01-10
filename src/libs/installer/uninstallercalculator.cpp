@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,6 +30,7 @@
 
 #include "component.h"
 #include "packagemanagercore.h"
+#include "globals.h"
 
 namespace QInstaller {
 
@@ -55,35 +56,60 @@ QSet<Component *> UninstallerCalculator::componentsToUninstall() const
     return m_componentsToUninstall;
 }
 
-void UninstallerCalculator::appendComponentToUninstall(Component *component)
+QString UninstallerCalculator::componentsToUninstallError() const
+{
+    return m_componentsToUninstallError;
+}
+
+bool UninstallerCalculator::appendComponentToUninstall(Component *component)
 {
     if (!component)
-        return;
+        return true;
 
     if (!component->isInstalled())
-        return;
+        return true;
 
     if (m_localDependencyComponentHash.contains(component->name())) {
         const QStringList &dependencies = PackageManagerCore::parseNames(m_localDependencyComponentHash.value(component->name()));
         for (const QString &dependencyComponent : dependencies) {
             Component *depComponent = m_core->componentByName(dependencyComponent);
-            if (!depComponent)
+            if (!depComponent || !depComponent->isInstalled())
                 continue;
-            if (depComponent->isInstalled() && !m_componentsToUninstall.contains(depComponent)
-                    && !m_core->orderedComponentsToInstall().contains(depComponent)) {
-                appendComponentToUninstall(depComponent);
-                insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
+
+            if (m_componentsToUninstall.contains(depComponent)
+                    || m_core->orderedComponentsToInstall().contains(depComponent)) {
+                // Component is already selected for uninstall or update
+                continue;
             }
+
+            if (depComponent->isEssential() || depComponent->forcedInstallation()) {
+                const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
+                    "Impossible dependency resolution detected. Forced install component \"%1\" would be uninstalled "
+                    "because its dependency \"%2\" is marked for uninstallation with reason: \"%3\".")
+                        .arg(depComponent->name(), component->name(), uninstallReason(component));
+
+                qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
+                m_componentsToUninstallError.append(errorMessage);
+                return false;
+            }
+            // Resolve also all cascading dependencies
+            if (!appendComponentToUninstall(depComponent))
+                return false;
+
+            insertUninstallReason(depComponent, UninstallerCalculator::Dependent, component->name());
         }
     }
 
     m_componentsToUninstall.insert(component);
+    return true;
 }
 
-void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> &components)
+bool UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> &components)
 {
-    foreach (Component *component, components)
-        appendComponentToUninstall(component);
+    foreach (Component *component, components) {
+        if (!appendComponentToUninstall(component))
+            return false;
+    }
 
     QList<Component*> autoDependOnList;
     // All regular dependees are resolved. Now we are looking for auto depend on components.
@@ -109,6 +135,8 @@ void UninstallerCalculator::appendComponentsToUninstall(const QList<Component*> 
         appendComponentsToUninstall(autoDependOnList);
     else
         appendVirtualComponentsToUninstall();
+
+    return true;
 }
 
 void UninstallerCalculator::insertUninstallReason(Component *component, const UninstallReasonType uninstallReason,

@@ -325,15 +325,25 @@
 */
 
 /*!
+    \qmlmethod boolean installer::recalculateAllComponents()
+
+    Recalculates all components to install and uninstall. Returns \c true
+    on success, \c false otherwise.
+*/
+
+/*!
     \qmlmethod void installer::componentsToInstallNeedsRecalculation()
+    \deprecated [4.5] Use recalculateAllComponents() instead.
 
     Ensures that component dependencies are re-calculated.
 */
 
 /*!
     \qmlmethod void installer::clearComponentsToInstallCalculated()
-
-    Forces a recalculation of components to install.
+    \deprecated [4.5] Installer framework recalculates components each time the calculation
+    of components to install is requested, so there is no need to call this anymore, and the
+    method does nothing. On previous versions calling this forced a recalculation of
+    components to install.
 */
 
 /*!

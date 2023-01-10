@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -59,8 +59,9 @@ public:
                           const QStringList &localVirtualComponents);
 
     QSet<Component*> componentsToUninstall() const;
+    QString componentsToUninstallError() const;
 
-    void appendComponentsToUninstall(const QList<Component*> &components);
+    bool appendComponentsToUninstall(const QList<Component*> &components);
     void insertUninstallReason(Component *component,
                                const UninstallReasonType uninstallReason,
                                const QString &referencedComponentName = QString());
@@ -70,8 +71,9 @@ public:
 private:
     QString uninstallReasonReferencedComponent(Component *component) const;
     bool isRequiredVirtualPackage(Component *component);
-    void appendComponentToUninstall(Component *component);
+    bool appendComponentToUninstall(Component *component);
     void appendVirtualComponentsToUninstall();
+    QString m_componentsToUninstallError;
 
     QSet<Component *> m_componentsToUninstall;
     PackageManagerCore *m_core;

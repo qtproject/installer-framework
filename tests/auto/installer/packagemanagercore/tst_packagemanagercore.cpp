@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2022 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -260,7 +260,6 @@ private slots:
         root->setInstalled();
         child1->setInstalled();
         child2->setUninstalled();
-        core.componentsToInstallNeedsRecalculation();
         core.calculateComponentsToInstall();
         QCOMPARE(core.requiredDiskSpace(), 250ULL);
     }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1329,6 +1329,15 @@ bool Component::isSelected() const
 bool Component::forcedInstallation() const
 {
     return d->m_vars.value(scForcedInstallation, scFalse).toLower() == scTrue;
+}
+
+/*!
+    Returns whether this component is essential. Essential components
+    are always installed, and updated before other components.
+*/
+bool Component::isEssential() const
+{
+    return d->m_vars.value(scEssential, scFalse).toLower() == scTrue;
 }
 
 /*!

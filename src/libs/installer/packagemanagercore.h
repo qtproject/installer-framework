@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -239,12 +239,15 @@ public:
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
-    bool calculateComponents(QString *displayString);
+
+    Q_INVOKABLE bool recalculateAllComponents();
+    QString componentResolveReasons() const;
 
     Q_INVOKABLE bool calculateComponentsToUninstall() const;
     QList<Component*> componentsToUninstall() const;
 
     QString componentsToInstallError() const;
+    QString componentsToUninstallError() const;
     QString installReason(Component *component) const;
     QString uninstallReason(Component *component) const;
 
@@ -360,8 +363,8 @@ public Q_SLOTS:
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
-    void componentsToInstallNeedsRecalculation();
-    void clearComponentsToInstallCalculated();
+    void componentsToInstallNeedsRecalculation(); // TODO: deprecated, remove
+    void clearComponentsToInstallCalculated() {} // TODO: deprecated, remove
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;
