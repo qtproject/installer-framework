@@ -46,6 +46,7 @@ greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 
 HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
+    calculatorbase.h \
     componentsortfilterproxymodel.h \
     concurrentoperationrunner.h \
     genericdatacache.h \
@@ -149,6 +150,7 @@ SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
     archivefactory.cpp \
     aspectratiolabel.cpp \
+    calculatorbase.cpp \
     concurrentoperationrunner.cpp \
     directoryguard.cpp \
     fileguard.cpp \

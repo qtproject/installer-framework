@@ -25,47 +25,52 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
-#ifndef UNINSTALLERCALCULATOR_H
-#define UNINSTALLERCALCULATOR_H
 
-#include "installer_global.h"
-#include "qinstallerglobal.h"
 #include "calculatorbase.h"
 
-#include <QHash>
-#include <QList>
-#include <QSet>
-#include <QString>
+#include "component.h"
 
 namespace QInstaller {
 
-class Component;
-class PackageManagerCore;
-
-class INSTALLER_EXPORT UninstallerCalculator : public CalculatorBase
+CalculatorBase::CalculatorBase(PackageManagerCore *core)
+    : m_core(core)
 {
-public:
-    UninstallerCalculator(PackageManagerCore *core,
-                          const AutoDependencyHash &autoDependencyComponentHash,
-                          const LocalDependencyHash &localDependencyComponentHash,
-                          const QStringList &localVirtualComponents);
-    ~UninstallerCalculator();
+}
 
-    bool solve(const QList<Component*> &components) override;
-    QString resolutionText(Component *component) const override;
+CalculatorBase::~CalculatorBase()
+{
+}
 
-private:
-    bool solveComponent(Component *component, const QString &version = QString()) override;
+void CalculatorBase::insertResolution(Component *component, const Resolution resolutionType
+    , const QString &referencedComponent)
+{
+    // Keep the first reason
+    if (m_componentNameResolutionHash.contains(component->name()))
+        return;
 
-    bool isRequiredVirtualPackage(Component *component);
-    void appendVirtualComponentsToUninstall();
+    m_componentNameResolutionHash.insert(component->name(),
+        QPair<Resolution, QString>(resolutionType, referencedComponent));
+}
 
-private:
-    AutoDependencyHash m_autoDependencyComponentHash;
-    LocalDependencyHash m_localDependencyComponentHash;
-    QStringList m_localVirtualComponents;
-};
+QList<Component *> CalculatorBase::resolvedComponents() const
+{
+    return m_resolvedComponents;
+}
+
+CalculatorBase::Resolution CalculatorBase::resolutionType(Component *component) const
+{
+    return m_componentNameResolutionHash.value(component->name()).first;
+}
+
+QString CalculatorBase::error() const
+{
+    return m_errorString;
+}
+
+QString CalculatorBase::referencedComponent(Component *component) const
+{
+    return m_componentNameResolutionHash.value(component->name()).second;
+}
 
 } // namespace QInstaller
 
-#endif // UNINSTALLERCALCULATOR_H

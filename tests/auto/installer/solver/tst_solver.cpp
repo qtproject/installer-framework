@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,7 +39,7 @@
 using namespace QInstaller;
 
 typedef QMap<Component *, QStringList> ComponentToStringList;
-typedef QList<QPair<Component *, UninstallerCalculator::UninstallReasonType>> UninstallReasonList;
+typedef QList<QPair<Component *, CalculatorBase::Resolution>> UninstallReasonList;
 
 Q_DECLARE_METATYPE(UninstallReasonList)
 
@@ -149,7 +149,7 @@ private slots:
         QTest::addColumn<PackageManagerCore *>("core");
         QTest::addColumn<QList<Component *> >("selectedComponents");
         QTest::addColumn<QList<Component *> >("expectedResult");
-        QTest::addColumn<QList<int> >("installReason");
+        QTest::addColumn<QList<CalculatorBase::Resolution> >("installReason");
         QTest::addColumn<AutoDependencyHash >("autodependencyHash");
 
         PackageManagerCore *core = new PackageManagerCore();
@@ -176,11 +176,11 @@ private slots:
         QTest::newRow("Installer resolved") << core
                     << (QList<Component *>() << componentB)
                     << (QList<Component *>() << componentB_NewVersion << componentAB << componentB << componentB_Auto)
-                    << (QList<int>()
-                        << InstallerCalculator::Dependent
-                        << InstallerCalculator::Dependent
-                        << InstallerCalculator::Resolved
-                        << InstallerCalculator::Automatic)
+                    << (QList<CalculatorBase::Resolution>()
+                        << CalculatorBase::Resolution::Dependent
+                        << CalculatorBase::Resolution::Dependent
+                        << CalculatorBase::Resolution::Resolved
+                        << CalculatorBase::Resolution::Automatic)
                     << autodependencyHash;
     }
 
@@ -189,17 +189,17 @@ private slots:
         QFETCH(PackageManagerCore *, core);
         QFETCH(QList<Component *> , selectedComponents);
         QFETCH(QList<Component *> , expectedResult);
-        QFETCH(QList<int>, installReason);
+        QFETCH(QList<CalculatorBase::Resolution>, installReason);
         QFETCH(AutoDependencyHash, autodependencyHash);
 
         InstallerCalculator calc(core, autodependencyHash);
-        calc.appendComponentsToInstall(selectedComponents);
-        QList<Component *> result = calc.orderedComponentsToInstall();
+        calc.solve(selectedComponents);
+        QList<Component *> result = calc.resolvedComponents();
 
         QCOMPARE(result.count(), expectedResult.count());
         for (int i = 0; i < result.count(); i++) {
             QCOMPARE(result.at(i), expectedResult.at(i));
-            QCOMPARE((int)calc.installReasonType(result.at(i)), installReason.at(i));
+            QCOMPARE(calc.resolutionType(result.at(i)), installReason.at(i));
         }
         delete core;
     }
@@ -237,9 +237,9 @@ private slots:
 
         InstallerCalculator calc(core, QHash<QString, QStringList>());
         QTest::ignoreMessage(QtWarningMsg, "Cannot find missing dependency \"B->=2.0.0\" for \"A\".");
-        calc.appendComponentsToInstall(selectedComponents);
+        calc.solve(selectedComponents);
 
-        QList<Component *> result = calc.orderedComponentsToInstall();
+        QList<Component *> result = calc.resolvedComponents();
         QCOMPARE(result.count(), expectedResult.count());
         delete core;
     }
@@ -248,7 +248,7 @@ private slots:
     {
         QTest::addColumn<PackageManagerCore *>("core");
         QTest::addColumn<QList<Component *> >("selectedToUninstall");
-        QTest::addColumn<QSet<Component *> >("expectedResult");
+        QTest::addColumn<QList<Component *> >("expectedResult");
         QTest::addColumn<UninstallReasonList >("uninstallReasons");
         QTest::addColumn<LocalDependencyHash >("dependencyHash");
 
@@ -272,11 +272,11 @@ private slots:
         QHash<QString, QStringList> dependencyComponentHash;
         dependencyComponentHash.insert(QLatin1String("A.B"), QStringList() << QLatin1String("B"));
 
-        uninstallReasonList.append(qMakePair(componentAB, UninstallerCalculator::Selected));
-        uninstallReasonList.append(qMakePair(componentB, UninstallerCalculator::Dependent));
+        uninstallReasonList.append(qMakePair(componentAB, CalculatorBase::Resolution::Selected));
+        uninstallReasonList.append(qMakePair(componentB, CalculatorBase::Resolution::Dependent));
         QTest::newRow("Uninstaller resolved") << core
                     << (QList<Component *>() << componentAB)
-                    << (QSet<Component *>() << componentAB << componentB)
+                    << (QList<Component *>() << componentB << componentAB)
                     << uninstallReasonList
                     << dependencyComponentHash;
 
@@ -297,11 +297,11 @@ private slots:
 
         dependencyComponentHash.insert(QLatin1String("A"), QStringList() << QLatin1String("B"));
 
-        uninstallReasonList.append(qMakePair(compA, UninstallerCalculator::Selected));
-        uninstallReasonList.append(qMakePair(compB, UninstallerCalculator::Dependent));
+        uninstallReasonList.append(qMakePair(compA, CalculatorBase::Resolution::Selected));
+        uninstallReasonList.append(qMakePair(compB, CalculatorBase::Resolution::Dependent));
         QTest::newRow("Cascade dependencies") << core
                     << (QList<Component *>() << compA)
-                    << (QSet<Component *>() << compA << compB)
+                    << (QList<Component *>() << compB << compA)
                     << (uninstallReasonList)
                     << dependencyComponentHash;
     }
@@ -310,15 +310,15 @@ private slots:
     {
         QFETCH(PackageManagerCore *, core);
         QFETCH(QList<Component *> , selectedToUninstall);
-        QFETCH(QSet<Component *> , expectedResult);
+        QFETCH(QList<Component *> , expectedResult);
         QFETCH(UninstallReasonList, uninstallReasons);
         QFETCH(LocalDependencyHash, dependencyHash);
 
         UninstallerCalculator calc(core, QHash<QString, QStringList>(), dependencyHash, QStringList());
-        calc.appendComponentsToUninstall(selectedToUninstall);
-        QSet<Component *> result = calc.componentsToUninstall();
+        calc.solve(selectedToUninstall);
+        QList<Component *> result = calc.resolvedComponents();
         for (auto pair : uninstallReasons) {
-            UninstallerCalculator::UninstallReasonType type = calc.uninstallReasonType(pair.first);
+            CalculatorBase::Resolution type = calc.resolutionType(pair.first);
             QCOMPARE(pair.second, type);
         }
         QCOMPARE(result.count(), expectedResult.count());

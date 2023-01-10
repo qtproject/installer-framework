@@ -2199,7 +2199,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     const QList<Component*> selectedComponentsToInstall = componentsMarkedForInstallation();
 
     const bool componentsToInstallCalculated =
-        d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
+        d->installerCalculator()->solve(selectedComponentsToInstall);
 
     emit finishedCalculateComponentsToInstall();
     return componentsToInstallCalculated;
@@ -2210,7 +2210,7 @@ bool PackageManagerCore::calculateComponentsToInstall() const
 */
 QList<Component*> PackageManagerCore::orderedComponentsToInstall() const
 {
-    return d->installerCalculator()->orderedComponentsToInstall();
+    return d->installerCalculator()->resolvedComponents();
 }
 
 /*!
@@ -2287,15 +2287,15 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
     emit aboutCalculateComponentsToUninstall();
 
     d->clearUninstallerCalculator();
-    const QList<Component *> componentsToInstallList = d->installerCalculator()->orderedComponentsToInstall();
+    const QList<Component *> componentsToInstallList = d->installerCalculator()->resolvedComponents();
 
     QList<Component *> selectedComponentsToUninstall;
     foreach (Component* component, components(PackageManagerCore::ComponentType::Replacements)) {
         // Uninstall the component if replacement is selected for install or update
         QPair<Component*, Component*> comp = d->componentsToReplace().value(component->name());
-        if (comp.first && d->m_installerCalculator->orderedComponentsToInstall().contains(comp.first)) {
-            d->uninstallerCalculator()->insertUninstallReason(component,
-                UninstallerCalculator::Replaced, comp.first->name());
+        if (comp.first && d->m_installerCalculator->resolvedComponents().contains(comp.first)) {
+            d->uninstallerCalculator()->insertResolution(component,
+                CalculatorBase::Resolution::Replaced, comp.first->name());
             selectedComponentsToUninstall.append(comp.second);
         }
     }
@@ -2304,7 +2304,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
             selectedComponentsToUninstall.append(component);
     }
     const bool componentsToUninstallCalculated =
-        d->uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
+        d->uninstallerCalculator()->solve(selectedComponentsToUninstall);
 
     emit finishedCalculateComponentsToUninstall();
     return componentsToUninstallCalculated;
@@ -2319,7 +2319,7 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
 */
 QList<Component *> PackageManagerCore::componentsToUninstall() const
 {
-    return d->uninstallerCalculator()->componentsToUninstall().values();
+    return d->uninstallerCalculator()->resolvedComponents();
 }
 
 /*!
@@ -2327,7 +2327,7 @@ QList<Component *> PackageManagerCore::componentsToUninstall() const
 */
 QString PackageManagerCore::componentsToInstallError() const
 {
-    return d->installerCalculator()->componentsToInstallError();
+    return d->installerCalculator()->error();
 }
 
 /*!
@@ -2335,7 +2335,7 @@ QString PackageManagerCore::componentsToInstallError() const
 */
 QString PackageManagerCore::componentsToUninstallError() const
 {
-    return d->uninstallerCalculator()->componentsToUninstallError();
+    return d->uninstallerCalculator()->error();
 }
 
 /*!
@@ -2349,7 +2349,7 @@ QString PackageManagerCore::componentsToUninstallError() const
 */
 QString PackageManagerCore::installReason(Component *component) const
 {
-    return d->installerCalculator()->installReason(component);
+    return d->installerCalculator()->resolutionText(component);
 }
 
 /*!
@@ -2365,7 +2365,7 @@ QString PackageManagerCore::installReason(Component *component) const
 */
 QString PackageManagerCore::uninstallReason(Component *component) const
 {
-    return d->uninstallerCalculator()->uninstallReason(component);
+    return d->uninstallerCalculator()->resolutionText(component);
 }
 
 /*!

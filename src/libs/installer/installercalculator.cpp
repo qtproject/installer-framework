@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,48 +42,38 @@ namespace QInstaller {
 */
 
 InstallerCalculator::InstallerCalculator(PackageManagerCore *core, const AutoDependencyHash &autoDependencyComponentHash)
-    : m_core(core)
+    : CalculatorBase(core)
     , m_autoDependencyComponentHash(autoDependencyComponentHash)
 {
 }
 
-InstallerCalculator::InstallReasonType InstallerCalculator::installReasonType(const Component *c) const
+InstallerCalculator::~InstallerCalculator()
 {
-    return m_toInstallComponentIdReasonHash.value(c->name(),
-        qMakePair(InstallerCalculator::Selected, QString())).first;
 }
 
-QString InstallerCalculator::installReason(const Component *component) const
+QString InstallerCalculator::resolutionText(Component *component) const
 {
-    InstallerCalculator::InstallReasonType reason = installReasonType(component);
+    const Resolution reason = resolutionType(component);
     switch (reason) {
-        case Automatic:
+        case Resolution::Automatic:
             return QCoreApplication::translate("InstallerCalculator",
                 "Components added as automatic dependencies:");
-        case Dependent:
+        case Resolution::Dependent:
             return QCoreApplication::translate("InstallerCalculator", "Components added as "
-                "dependency for \"%1\":").arg(installReasonReferencedComponent(component));
-        case Resolved:
+                "dependency for \"%1\":").arg(referencedComponent(component));
+        case Resolution::Resolved:
             return QCoreApplication::translate("InstallerCalculator",
                 "Components that have resolved dependencies:");
-        case Selected:
+        case Resolution::Selected:
             return QCoreApplication::translate("InstallerCalculator",
                 "Selected components without dependencies:");
+        default:
+            Q_ASSERT_X(false, Q_FUNC_INFO, "Invalid install resolution detected!");
     }
     return QString();
 }
 
-QList<Component*> InstallerCalculator::orderedComponentsToInstall() const
-{
-    return m_orderedComponentsToInstall;
-}
-
-QString InstallerCalculator::componentsToInstallError() const
-{
-    return m_componentsToInstallError;
-}
-
-bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &components)
+bool InstallerCalculator::solve(const QList<Component *> &components)
 {
     if (components.isEmpty())
         return true;
@@ -95,54 +85,38 @@ bool InstallerCalculator::appendComponentsToInstall(const QList<Component *> &co
         if (m_toInstallComponentIds.contains(component->name())) {
             const QString errorMessage = recursionError(component);
             qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
-            m_componentsToInstallError.append(errorMessage);
+            m_errorString.append(errorMessage);
             Q_ASSERT_X(!m_toInstallComponentIds.contains(component->name()), Q_FUNC_INFO,
                 qPrintable(errorMessage));
             return false;
         }
 
         if (component->currentDependencies().isEmpty())
-            realAppendToInstallComponents(component);
+            addComponentForInstall(component);
         else
             notAppendedComponents.append(component);
     }
 
     for (Component *component : qAsConst(notAppendedComponents)) {
-        if (!appendComponentToInstall(component))
+        if (!solveComponent(component))
             return false;
     }
 
     // All regular dependencies are resolved. Now we are looking for auto depend on components.
     QSet<Component *> foundAutoDependOnList = autodependencyComponents();
-
     if (!foundAutoDependOnList.isEmpty())
-        return appendComponentsToInstall(foundAutoDependOnList.values());
+        return solve(foundAutoDependOnList.values());
+
     return true;
 }
 
-QString InstallerCalculator::installReasonReferencedComponent(const Component *component) const
-{
-    return m_toInstallComponentIdReasonHash.value(component->name(),
-        qMakePair(InstallerCalculator::Selected, QString())).second;
-}
-
-void InstallerCalculator::insertInstallReason(Component *component,
-    InstallReasonType installReason, const QString &referencedComponentName)
-{
-    // keep the first reason
-    if (m_toInstallComponentIdReasonHash.contains(component->name()))
-        return;
-    m_toInstallComponentIdReasonHash.insert(component->name(),
-        qMakePair(installReason, referencedComponentName));
-}
-
-void InstallerCalculator::realAppendToInstallComponents(Component *component, const QString &version)
+void InstallerCalculator::addComponentForInstall(Component *component, const QString &version)
 {
     if (!m_componentsForAutodepencencyCheck.contains(component))
         m_componentsForAutodepencencyCheck.append(component);
 
     if (!component->isInstalled(version) || (m_core->isUpdater() && component->isUpdateAvailable())) {
-        m_orderedComponentsToInstall.append(component);
+        m_resolvedComponents.append(component);
         m_toInstallComponentIds.insert(component->name());
     }
 }
@@ -150,10 +124,10 @@ void InstallerCalculator::realAppendToInstallComponents(Component *component, co
 QString InstallerCalculator::recursionError(Component *component) const
 {
     return QCoreApplication::translate("InstallerCalculator", "Recursion detected, component \"%1\" "
-        "already added with reason: \"%2\"").arg(component->name(), installReason(component));
+        "already added with reason: \"%2\"").arg(component->name(), resolutionText(component));
 }
 
-bool InstallerCalculator::appendComponentToInstall(Component *component, const QString &version)
+bool InstallerCalculator::solveComponent(Component *component, const QString &version)
 {
     const QStringList dependenciesList = component->currentDependencies();
     QString requiredDependencyVersion = version;
@@ -166,7 +140,7 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
                 "Cannot find missing dependency \"%1\" for \"%2\".").arg(dependencyComponentName,
                 component->name());
             qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
-            m_componentsToInstallError.append(errorMessage);
+            m_errorString.append(errorMessage);
             if (component->packageManagerCore()->settings().allowUnstableComponents()) {
                 component->setUnstable(Component::UnstableError::MissingDependency, errorMessage);
                 continue;
@@ -204,24 +178,24 @@ bool InstallerCalculator::appendComponentToInstall(Component *component, const Q
             if (m_visitedComponents.value(component).contains(dependencyComponent)) {
                 const QString errorMessage = recursionError(component);
                 qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
-                m_componentsToInstallError = errorMessage;
+                m_errorString = errorMessage;
                 Q_ASSERT_X(!m_visitedComponents.value(component).contains(dependencyComponent),
                     Q_FUNC_INFO, qPrintable(errorMessage));
                 return false;
             }
             m_visitedComponents[component].insert(dependencyComponent);
             // add needed dependency components to the next run
-            insertInstallReason(dependencyComponent, InstallerCalculator::Dependent,
+            insertResolution(dependencyComponent, Resolution::Dependent,
                 component->name());
 
-            if (!appendComponentToInstall(dependencyComponent, requiredDependencyVersion))
+            if (!solveComponent(dependencyComponent, requiredDependencyVersion))
                 return false;
         }
     }
 
     if (!m_toInstallComponentIds.contains(component->name())) {
-        realAppendToInstallComponents(component, requiredDependencyVersion);
-        insertInstallReason(component, InstallerCalculator::Resolved);
+        addComponentForInstall(component, requiredDependencyVersion);
+        insertResolution(component, Resolution::Resolved);
     }
     return true;
 }
@@ -253,7 +227,7 @@ QSet<Component *> InstallerCalculator::autodependencyComponents()
                 // are other autodependencies as well
                 if (autoDependComponent->isAutoDependOn(m_toInstallComponentIds)) {
                     foundAutoDependOnList.insert(autoDependComponent);
-                    insertInstallReason(autoDependComponent, InstallerCalculator::Automatic);
+                    insertResolution(autoDependComponent, Resolution::Automatic);
                 }
             }
         }

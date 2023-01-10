@@ -401,10 +401,10 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
             component->setCheckState(Qt::Checked);
 
         clearInstallerCalculator();
-        if (installerCalculator()->appendComponentsToInstall(components.values()) == false) {
-            setStatus(PackageManagerCore::Failure, installerCalculator()->componentsToInstallError());
+        if (installerCalculator()->solve(components.values()) == false) {
+            setStatus(PackageManagerCore::Failure, installerCalculator()->error());
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
-                tr("Unresolved dependencies"), installerCalculator()->componentsToInstallError());
+                tr("Unresolved dependencies"), installerCalculator()->error());
             return false;
         }
 
@@ -1932,7 +1932,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
                 // There is a replacement, but the replacement is not scheduled for update, keep it as well.
                 if (m_componentsToReplaceUpdaterMode.contains(name)
-                    && !m_installerCalculator->orderedComponentsToInstall().contains(m_componentsToReplaceUpdaterMode.value(name).first)) {
+                    && !m_installerCalculator->resolvedComponents().contains(m_componentsToReplaceUpdaterMode.value(name).first)) {
                         nonRevertedOperations.append(operation);
                         continue;
                 }
@@ -2935,9 +2935,9 @@ void PackageManagerCorePrivate::updateComponentCheckedState()
               ? ComponentModelHelper::KeepInstalled
               : ComponentModelHelper::KeepUninstalled);
     }
-    for (Component *component : uninstallerCalculator()->componentsToUninstall())
+    for (Component *component : uninstallerCalculator()->resolvedComponents())
         component->setInstallAction(ComponentModelHelper::Uninstall);
-    for (Component *component : installerCalculator()->orderedComponentsToInstall())
+    for (Component *component : installerCalculator()->resolvedComponents())
         component->setInstallAction(ComponentModelHelper::Install);
 }
 
@@ -3062,7 +3062,7 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
         try {
-            loadComponentScripts(installerCalculator()->orderedComponentsToInstall(), true);
+            loadComponentScripts(installerCalculator()->resolvedComponents(), true);
         }  catch (const Error &error) {
             qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
             return false;
