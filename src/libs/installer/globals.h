@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -44,6 +44,11 @@ INSTALLER_EXPORT Q_DECLARE_LOGGING_CATEGORY(lcDeveloperBuild)
 QStringList INSTALLER_EXPORT loggingCategories();
 
 QRegularExpression INSTALLER_EXPORT commaRegExp();
+inline QStringList splitStringWithComma(const QString &value) {
+    if (!value.isEmpty())
+        return value.split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    return QStringList();
+}
 
 QString htmlToString(const QString &html);
 QString enumToString(const QMetaObject& metaObject, const char *enumerator, int key);

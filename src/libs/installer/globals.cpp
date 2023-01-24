@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -57,6 +57,12 @@ namespace QInstaller
 
 /*!
     \fn QInstaller::lcDeveloperBuild()
+    \internal
+*/
+
+/*!
+    \fn inline QInstaller::splitStringWithComma(const QString &value())
+    Splits \a value into substrings wherever comma occurs, and returns the list of those strings.
     \internal
 */
 

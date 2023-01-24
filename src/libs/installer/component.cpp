@@ -367,13 +367,13 @@ void Component::loadDataFromPackage(const Package &package)
         return;
 
     setLocalTempPath(QInstaller::pathFromUrl(package.packageSource().url));
-    const QStringList uis = package.data(QLatin1String("UserInterfaces")).toString()
-        .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
-    if (!uis.isEmpty())
-        loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uis);
+
+    const QStringList uiList = QInstaller::splitStringWithComma(package.data(QLatin1String("UserInterfaces")).toString());
+    if (!uiList.isEmpty())
+        loadUserInterfaces(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), uiList);
+
 #ifndef IFW_DISABLE_TRANSLATIONS
-    const QStringList qms = package.data(QLatin1String("Translations")).toString()
-        .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    const QStringList qms = QInstaller::splitStringWithComma(package.data(QLatin1String("Translations")).toString());
     if (!qms.isEmpty())
         loadTranslations(QDir(QString::fromLatin1("%1/%2").arg(localTempPath(), name())), qms);
 #endif
@@ -1417,7 +1417,7 @@ void Component::addDependency(const QString &newDependency)
 */
 QStringList Component::dependencies() const
 {
-    return d->m_vars.value(scDependencies).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    return QInstaller::splitStringWithComma(d->m_vars.value(scDependencies));
 }
 
 /*!
@@ -1425,7 +1425,7 @@ QStringList Component::dependencies() const
 */
 QStringList Component::localDependencies() const
 {
-    return d->m_vars.value(scLocalDependencies).split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
+    return QInstaller::splitStringWithComma(d->m_vars.value(scLocalDependencies));
 }
 
 /*!

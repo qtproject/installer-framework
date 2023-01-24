@@ -4021,9 +4021,7 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
         if (component->isFromOnlineRepository())
             component->addDownloadableArchives(data.package->data(scDownloadableArchives).toString());
 
-        const QStringList componentsToReplace = data.package->data(scReplaces).toString()
-            .split(QInstaller::commaRegExp(), Qt::SkipEmptyParts);
-
+        const QStringList componentsToReplace = QInstaller::splitStringWithComma(data.package->data(scReplaces).toString());
         if (!componentsToReplace.isEmpty()) {
             // Store the component (this is a component that replaces others) and all components that
             // this one will replace.
