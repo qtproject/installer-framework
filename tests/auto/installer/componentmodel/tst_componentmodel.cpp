@@ -526,6 +526,7 @@ private:
     {
         UpdatesInfo updatesInfo;
         updatesInfo.setFileName(":///data/updates.xml");
+        updatesInfo.parseFile();
         const QList<UpdateInfo> updateInfos = updatesInfo.updatesInfo();
 
         QHash<QString, Component*> components;

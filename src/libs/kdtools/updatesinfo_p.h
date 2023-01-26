@@ -69,6 +69,7 @@ public:
 
     QString fileName() const;
     void setFileName(const QString &updateXmlFile);
+    void parseFile();
 
     QString applicationName() const;
     QString applicationVersion() const;

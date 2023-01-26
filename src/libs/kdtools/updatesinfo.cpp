@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -266,6 +267,10 @@ void UpdatesInfo::setFileName(const QString &updateXmlFile)
     d->updateInfoList.clear();
 
     d->updateXmlFile = updateXmlFile;
+}
+
+void UpdatesInfo::parseFile()
+{
     d->parseFile(d->updateXmlFile);
 }
 
