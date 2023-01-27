@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -74,6 +74,7 @@ public:
     void updateTreeView();
     void expandDefault();
     void expandSearchResults();
+    bool componentsResolved() const;
 
 public slots:
     void currentSelectedChanged(const QModelIndex &current);
@@ -118,6 +119,7 @@ private:
     QStackedLayout *m_stackedLayout;
     ComponentSortFilterProxyModel *m_proxyModel;
     QLineEdit *m_searchLineEdit;
+    bool m_componentsResolved;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;

@@ -907,8 +907,12 @@
                 The component is installed if and only if
                 all of the specified dependencies are fulfilled.
                 If a component has an automatic dependency on other components,
-                the check box will not be visible next to the component in the component tree.
-                The selection will be performed automatically.
+                the check box will not be visible next to the component in the component tree,
+                but this does not change the visibility of the check box in the updater view
+                where the end user may still manually select the component for update.
+
+                When running an installer or a maintenance tool in package manager
+                mode, the selection will be performed automatically.
                 If the component was not installed before, it will
                 be selected for installation only when all components
                 from this list are also selected for installation.

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -170,7 +170,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(0) // initialize with pseudo marker
     , m_magicMarkerSupplement(BinaryContent::Default)
-    , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(nullptr)
     , m_controlScriptEngine(nullptr)
     , m_installerCalculator(nullptr)
@@ -209,7 +208,6 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
     , m_magicMarkerSupplement(BinaryContent::Default)
-    , m_componentsToInstallCalculated(false)
     , m_componentScriptEngine(nullptr)
     , m_controlScriptEngine(nullptr)
     , m_installerCalculator(nullptr)
@@ -496,7 +494,6 @@ void PackageManagerCorePrivate::clearAllComponentLists()
     m_deletedReplacedComponents.clear();
 
     m_componentsToReplaceAllMode.clear();
-    m_componentsToInstallCalculated = false;
     m_foundEssentialUpdate = false;
 
     qDeleteAll(toDelete);
@@ -524,7 +521,6 @@ void PackageManagerCorePrivate::clearUpdaterComponentLists()
     m_updaterDependencyReplacements.clear();
 
     m_componentsToReplaceUpdaterMode.clear();
-    m_componentsToInstallCalculated = false;
     m_foundEssentialUpdate = false;
 
     qDeleteAll(usedComponents);
@@ -590,7 +586,6 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 {
     m_coreCheckedHash.clear();
     m_data = PackageManagerCoreData(params, isInstaller());
-    m_componentsToInstallCalculated = false;
 
 #ifdef Q_OS_LINUX
     if (m_launchedAsRoot && isInstaller())
@@ -2921,7 +2916,6 @@ void PackageManagerCorePrivate::restoreCheckState()
     }
 
     m_coreCheckedHash.clear();
-    m_componentsToInstallCalculated = false;
 }
 
 void PackageManagerCorePrivate::storeCheckState()
@@ -3062,20 +3056,19 @@ QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringLi
 
 bool PackageManagerCorePrivate::calculateComponentsAndRun()
 {
-    QString htmlOutput;
-    bool componentsOk = m_core->calculateComponents(&htmlOutput);
-
-    try {
-        loadComponentScripts(installerCalculator()->orderedComponentsToInstall(), true);
-    }  catch (const Error &error) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
-        return false;
-    }
+    bool componentsOk = m_core->recalculateAllComponents();
 
     if (statusCanceledOrFailed()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "Installation canceled.";
     } else if (componentsOk && acceptLicenseAgreements()) {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
+        try {
+            loadComponentScripts(installerCalculator()->orderedComponentsToInstall(), true);
+        }  catch (const Error &error) {
+            qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
+            return false;
+        }
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote()
+            << htmlToString(m_core->componentResolveReasons());
 
         QString spaceInfo;
         const bool spaceOk = m_core->checkAvailableSpace(spaceInfo);
@@ -3090,28 +3083,6 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         }
     }
     return false;
-}
-
-void PackageManagerCorePrivate::calculateUninstallComponents()
-{
-    clearUninstallerCalculator();
-    const QList<Component *> componentsToInstallList = installerCalculator()->orderedComponentsToInstall();
-
-    QList<Component *> selectedComponentsToUninstall;
-    foreach (Component* component, m_core->components(PackageManagerCore::ComponentType::Replacements)) {
-        // Uninstall the component if replacement is selected for install or update
-        QPair<Component*, Component*> comp = componentsToReplace().value(component->name());
-        if (comp.first && m_installerCalculator->orderedComponentsToInstall().contains(comp.first)) {
-            uninstallerCalculator()->insertUninstallReason(component,
-                UninstallerCalculator::Replaced, comp.first->name());
-            selectedComponentsToUninstall.append(comp.second);
-        }
-    }
-    foreach (Component *component, m_core->components(PackageManagerCore::ComponentType::AllNoReplacements)) {
-        if (component->uninstallationRequested() && !componentsToInstallList.contains(component))
-            selectedComponentsToUninstall.append(component);
-    }
-    uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
 }
 
 bool PackageManagerCorePrivate::acceptLicenseAgreements() const

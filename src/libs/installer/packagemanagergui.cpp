@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1439,7 +1439,6 @@ int PackageManagerPage::nextId() const
         if (core->isUninstaller())
             return nextNextId;  // forcibly hide the license page if we run as uninstaller
 
-        core->calculateComponentsToInstall();
         foreach (Component* component, core->orderedComponentsToInstall()) {
             if (core->isMaintainer() && component->isInstalled())
                 continue; // package manager or updater, hide as long as the component is installed
@@ -1950,9 +1949,6 @@ void IntroductionPage::entering()
 */
 void IntroductionPage::leaving()
 {
-    // force a recalculation of components to install to keep the state correct
-    if (!packageManagerCore()->isUninstaller())
-        packageManagerCore()->componentsToInstallNeedsRecalculation();
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
@@ -2082,7 +2078,6 @@ void LicenseAgreementPage::entering()
     m_textBrowser->setHtml(QString());
     m_licenseListWidget->setVisible(false);
 
-    packageManagerCore()->calculateComponentsToInstall();
     foreach (QInstaller::Component *component, packageManagerCore()->orderedComponentsToInstall())
         packageManagerCore()->addLicenseItem(component->licenses());
 
@@ -2213,8 +2208,7 @@ void ComponentSelectionPage::entering()
     d->updateTreeView();
 
     // check component model state so we can enable needed component selection buttons
-    if (core->isUpdater())
-        d->onModelStateChanged(d->m_currentModel->checkedState());
+    d->onModelStateChanged(d->m_currentModel->checkedState());
 
     setModified(isComplete());
     if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
@@ -2339,7 +2333,7 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
                 name, allComponents);
     if (component && component->isInstalled() && component->isVirtual()) {
         component->setCheckState(Qt::Unchecked);
-        core->componentsToInstallNeedsRecalculation();
+        core->recalculateAllComponents();
         qCDebug(QInstaller::lcDeveloperBuild) << "Virtual component " << name << " was selected for uninstall by script.";
         return true;
     }
@@ -2356,6 +2350,9 @@ void ComponentSelectionPage::setModified(bool modified)
 */
 bool ComponentSelectionPage::isComplete() const
 {
+    if (!d->componentsResolved())
+        return false;
+
     if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
         return d->m_currentModel->checked().count();
 
@@ -2713,8 +2710,9 @@ void ReadyForInstallationPage::entering()
             .arg(productName()));
     }
 
-    QString htmlOutput;
-    bool componentsOk = packageManagerCore()->calculateComponents(&htmlOutput);
+    bool componentsOk = packageManagerCore()->recalculateAllComponents();
+    const QString htmlOutput = packageManagerCore()->componentResolveReasons();
+
     qCDebug(QInstaller::lcInstallerInstallLog).noquote() << htmlToString(htmlOutput);
     m_taskDetailsBrowser->setHtml(htmlOutput);
     m_taskDetailsBrowser->setVisible(!componentsOk || LoggingHandler::instance().isVerbose());

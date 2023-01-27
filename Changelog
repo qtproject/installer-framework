@@ -1,3 +1,6 @@
+4.5.2
+- Fix freezing UI while searching components (QTIFW-2886)
+
 4.5.1
 - Make Settings operation to support _OLD and placeholders (QTIFW-2882)
 - ExtractOp: fix leftover empty directories when 'targetDir' arg is used (QTIFW-2764)
