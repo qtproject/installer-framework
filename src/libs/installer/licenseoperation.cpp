@@ -56,7 +56,7 @@ void LicenseOperation::backup()
 
 bool LicenseOperation::performOperation()
 {
-    QVariantMap licenses = value(QLatin1String("licenses")).toMap();
+    QVariantMap licenses = value(scLicenses).toMap();
     if (licenses.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("No license files found to copy."));
@@ -96,7 +96,7 @@ bool LicenseOperation::performOperation()
 
 bool LicenseOperation::undoOperation()
 {
-    const QVariantMap licenses = value(QLatin1String("licenses")).toMap();
+    const QVariantMap licenses = value(scLicenses).toMap();
     if (licenses.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("No license files found to delete."));

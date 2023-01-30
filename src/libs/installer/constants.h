@@ -73,10 +73,61 @@ static const QLatin1String scSHA1("SHA1");
 static const QLatin1String scMetadataName("MetadataName");
 static const QLatin1String scContentSha1("ContentSha1");
 
+// symbols
+static const QLatin1String scCaretSymbol("^");
+static const QLatin1String scCommaWithSpace(", ");
+static const QLatin1String scBr("<br>");
+
 // constants used throughout the components class
 static const QLatin1String scVirtual("Virtual");
 static const QLatin1String scSortingPriority("SortingPriority");
 static const QLatin1String scCheckable("Checkable");
+static const QLatin1String scScriptTag("Script");
+static const QLatin1String scInstalled("Installed");
+static const QLatin1String scUpdateText("UpdateText");
+static const QLatin1String scUninstalled("Uninstalled");
+static const QLatin1String scCurrentState("CurrentState");
+static const QLatin1String scForcedInstallation("ForcedInstallation");
+static const QLatin1String scExpandedByDefault("ExpandedByDefault");
+static const QLatin1String scUnstable("Unstable");
+static const QLatin1String scTargetDirPlaceholder("@TargetDir@");
+static const QLatin1String scTargetDirPlaceholderWithArg("@TargetDir@%1");
+static const QLatin1String scLastUpdateDate("LastUpdateDate");
+static const QLatin1String scInstallDate("InstallDate");
+static const QLatin1String scUserInterfaces("UserInterfaces");
+static const QLatin1String scTranslations("Translations");
+static const QLatin1String scLicenses("Licenses");
+static const QLatin1String scLicense("License");
+static const QLatin1String scOperations("Operations");
+static const QLatin1String scInstallScript("installScript");
+static const QLatin1String scPostLoadScript("postLoadScript");
+static const QLatin1String scComponent("Component");
+static const QLatin1String scComponentSmall("component");
+static const QLatin1String scRetranslateUi("retranslateUi");
+static const QLatin1String scEn("en");
+static const QLatin1String scIfw_("ifw_");
+static const QLatin1String scFile("file");
+static const QLatin1String scContent("content");
+static const QLatin1String scExtract("Extract");
+static const QLatin1String scSha1("sha1");
+static const QLatin1String scCreateOperationsForPath("createOperationsForPath");
+static const QLatin1String scCreateOperationsForArchive("createOperationsForArchive");
+static const QLatin1String scCreateOperations("createOperations");
+static const QLatin1String scBeginInstallation("beginInstallation");
+static const QLatin1String scMinimumProgress("MinimumProgress");
+static const QLatin1String scDelete("Delete");
+static const QLatin1String scCopy("Copy");
+static const QLatin1String scMkdir("Mkdir");
+static const QLatin1String scPerformUndo("performUndo");
+static const QLatin1String scIsDefault("isDefault");
+static const QLatin1String scAdmin("admin");
+static const QLatin1String scTwoArgs("%1/%2/");
+static const QLatin1String scThreeArgs("%1/%2/%3");
+static const QLatin1String scComponentScriptTest("var component = installer.componentByName('%1'); component.name;");
+static const QLatin1String scInstallerPrefix("installer://");
+static const QLatin1String scInstallerPrefixWithOneArgs("installer://%1/");
+static const QLatin1String scInstallerPrefixWithTwoArgs("installer://%1/%2");
+static const QLatin1String scLocalesArgs("%1%2_%3.%4");
 
 // constants used throughout the settings and package manager core class
 static const QLatin1String scTitle("Title");
