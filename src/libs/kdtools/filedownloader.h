@@ -58,6 +58,8 @@ public:
 
     QByteArray assumedSha1Sum() const;
     void setAssumedSha1Sum(const QByteArray &sha1);
+    void setCheckSha1Sum(const bool checkSha1Sum);
+    bool checkSha1Sum() const;
 
     QString scheme() const;
     void setScheme(const QString &scheme);

@@ -105,6 +105,14 @@ public:
         AllNoReplacements = (Root | Descendants | Dependencies),
         All = (Root | Descendants | Dependencies | Replacements)
     };
+
+    struct DownloadItem
+    {
+        QString fileName;
+        QString sourceUrl;
+        bool checkSha1CheckSum;
+    };
+
     Q_DECLARE_FLAGS(ComponentTypes, ComponentType)
 
     static QFont virtualComponentsFont();
@@ -193,9 +201,6 @@ public:
 
     void setOfflineBinaryName(const QString &name);
     QString offlineBinaryName() const;
-
-    bool testChecksum() const;
-    void setTestChecksum(bool test);
 
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
     Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,

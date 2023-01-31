@@ -262,7 +262,7 @@ private:
     PackagesList remotePackages();
     LocalPackagesMap localInstalledPackages();
     bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
-    bool addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository = false);
+    bool addUpdateResourcesFromRepositories(bool compressedRepository = false);
     void processFilesForDelayedDeletion();
     void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
     QStringList runningInstallerProcesses(const QStringList &exludeFiles);

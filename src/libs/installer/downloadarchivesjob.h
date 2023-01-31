@@ -30,7 +30,7 @@
 #define DOWNLOADARCHIVESJOB_H
 
 #include "job.h"
-
+#include "packagemanagercore.h"
 #include <QtCore/QPair>
 #include <QtCore/QElapsedTimer>
 
@@ -45,7 +45,6 @@ namespace KDUpdater {
 namespace QInstaller {
 
 class MessageBoxHandler;
-class PackageManagerCore;
 
 class DownloadArchivesJob : public Job
 {
@@ -56,7 +55,7 @@ public:
     ~DownloadArchivesJob();
 
     int numberOfDownloads() const { return m_archivesDownloaded; }
-    void setArchivesToDownload(const QList<QPair<QString, QString> > &archives);
+    void setArchivesToDownload(const QList<PackageManagerCore::DownloadItem> &archives);
     void setExpectedTotalSize(quint64 total);
 
 Q_SIGNALS:
@@ -94,7 +93,7 @@ private:
 
     int m_archivesDownloaded;
     int m_archivesToDownloadCount;
-    QList<QPair<QString, QString> > m_archivesToDownload;
+    QList<PackageManagerCore::DownloadItem> m_archivesToDownload;
 
     bool m_canceled;
     QByteArray m_currentHash;

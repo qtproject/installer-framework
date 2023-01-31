@@ -812,16 +812,19 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
 {
     Q_ASSERT(partProgressSize >= 0 && partProgressSize <= 1);
 
-    QList<QPair<QString, QString> > archivesToDownload;
+    QList<DownloadItem> archivesToDownload;
     quint64 archivesToDownloadTotalSize = 0;
     QList<Component*> neededComponents = orderedComponentsToInstall();
     foreach (Component *component, neededComponents) {
         // collect all archives to be downloaded
         const QStringList toDownload = component->downloadableArchives();
+        bool checkSha1CheckSum = (component->value(scCheckSha1CheckSum).toLower() == scTrue);
         foreach (const QString &versionFreeString, toDownload) {
-            archivesToDownload.push_back(qMakePair(QString::fromLatin1("installer://%1/%2")
-                .arg(component->name(), versionFreeString), QString::fromLatin1("%1/%2/%3")
-                .arg(component->repositoryUrl().toString(), component->name(), versionFreeString)));
+            DownloadItem item;
+            item.checkSha1CheckSum = checkSha1CheckSum;
+            item.fileName = scInstallerPrefixWithTwoArgs.arg(component->name(), versionFreeString);
+            item.sourceUrl = scThreeArgs.arg(component->repositoryUrl().toString(), component->name(), versionFreeString);
+            archivesToDownload.push_back(item);
         }
         archivesToDownloadTotalSize += component->value(scCompressedSize).toULongLong();
     }
@@ -1651,7 +1654,7 @@ bool PackageManagerCore::fetchCompressedPackagesTree()
     if (!d->fetchMetaInformationFromRepositories(DownloadType::CompressedPackage))
         return false;
 
-    if (!d->addUpdateResourcesFromRepositories(true, true)) {
+    if (!d->addUpdateResourcesFromRepositories(true)) {
         return false;
     }
 
@@ -1690,7 +1693,7 @@ bool PackageManagerCore::fetchRemotePackagesTree()
     if (!d->fetchMetaInformationFromRepositories(DownloadType::CompressedPackage))
         return false;
 
-    if (!d->addUpdateResourcesFromRepositories(true))
+    if (!d->addUpdateResourcesFromRepositories())
         return false;
 
     const PackagesList &packages = d->remotePackages();
@@ -1942,24 +1945,6 @@ void PackageManagerCore::setTemporaryRepositories(const QStringList &repositorie
     foreach (const QString &repository, repositories)
         repositorySet.insert(Repository::fromUserInput(repository, compressed));
     settings().setTemporaryRepositories(repositorySet, replace);
-}
-
-/*!
-    Checks whether the downloader should try to download SHA-1 checksums for
-    archives and returns the checksums.
-*/
-bool PackageManagerCore::testChecksum() const
-{
-    return d->m_testChecksum;
-}
-
-/*!
-    The \a test argument determines whether the downloader should try to
-    download SHA-1 checksums for archives.
-*/
-void PackageManagerCore::setTestChecksum(bool test)
-{
-    d->m_testChecksum = test;
 }
 
 /*!
@@ -2512,7 +2497,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
     ComponentModel *model = defaultComponentModel();
     d->fetchMetaInformationFromRepositories(DownloadType::UpdatesXML);
 
-    d->addUpdateResourcesFromRepositories(true);
+    d->addUpdateResourcesFromRepositories();
     QRegularExpression re(regexp);
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     const PackagesList &packages = d->remotePackages();

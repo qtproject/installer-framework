@@ -42,7 +42,8 @@ SUBDIRS += \
     createoffline \
     contentshaupdate \
     componentreplace \
-    metadatacache
+    metadatacache \
+    contentsha1check
 
 CONFIG(libarchive) {
     SUBDIRS += libarchivearchive

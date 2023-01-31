@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -71,6 +72,8 @@ public:
 
     QString applicationName() const;
     QString applicationVersion() const;
+
+    QString checkSha1CheckSum() const;
 
     int updateInfoCount() const;
     UpdateInfo updateInfo(int index) const;

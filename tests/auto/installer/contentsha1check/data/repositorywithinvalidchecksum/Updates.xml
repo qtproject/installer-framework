@@ -1,0 +1,27 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>E</Name>
+  <DisplayName>E</DisplayName>
+  <Description>Example component E, invalid checksum</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="215" OS="Any" UncompressedSize="74"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>db7e010425aaaaaaeebc6281a9d4c91e5666fd8f</SHA1>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>F</Name>
+  <DisplayName>F</DisplayName>
+  <Description>Example component F</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="215" OS="Any" UncompressedSize="74"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <SHA1>b69b864cef5d0aecb496273374dd24bb8cba83bd</SHA1>
+ </PackageUpdate>
+</Updates>

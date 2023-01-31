@@ -348,6 +348,7 @@ void Component::loadDataFromPackage(const Package &package)
         forced = scFalse;
     setValue(scForcedInstallation, forced);
     setValue(scContentSha1, package.data(scContentSha1).toString());
+    setValue(scCheckSha1CheckSum, package.data(scCheckSha1CheckSum, scTrue).toString().toLower());
 
     const auto treeNamePair = package.data(scTreeName).value<QPair<QString, bool>>();
     setValue(scTreeName, treeNamePair.first);

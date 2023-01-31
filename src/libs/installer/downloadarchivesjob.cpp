@@ -75,7 +75,7 @@ DownloadArchivesJob::~DownloadArchivesJob()
     Sets the \a archives to download. The first value of each pair contains the file name to register
     the file in the installer's internal file system, the second one the source url.
 */
-void DownloadArchivesJob::setArchivesToDownload(const QList<QPair<QString, QString> > &archives)
+void DownloadArchivesJob::setArchivesToDownload(const QList<PackageManagerCore::DownloadItem> &archives)
 {
     m_archivesToDownload = archives;
     m_archivesToDownloadCount = archives.count();
@@ -111,14 +111,14 @@ void DownloadArchivesJob::doCancel()
 
 void DownloadArchivesJob::fetchNextArchiveHash()
 {
-    if (m_core->testChecksum()) {
+    if (m_archivesToDownload.isEmpty()) {
+        emitFinished();
+        return;
+    }
+
+    if (m_archivesToDownload.first().checkSha1CheckSum) {
         if (m_canceled) {
             finishWithError(tr("Canceled"));
-            return;
-        }
-
-        if (m_archivesToDownload.isEmpty()) {
-            emitFinished();
             return;
         }
 
@@ -281,10 +281,10 @@ void DownloadArchivesJob::registerFile()
 {
     Q_ASSERT(m_downloader != nullptr);
 
-    if (m_canceled)
+    if (m_canceled || m_archivesToDownload.isEmpty())
         return;
 
-    if (m_core->testChecksum() && m_currentHash != m_downloader->sha1Sum().toHex()) {
+    if (m_archivesToDownload.first().checkSha1CheckSum && m_currentHash != m_downloader->sha1Sum().toHex()) {
         //TODO: Maybe we should try to download the file again automatically
         const QMessageBox::Button res =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -308,8 +308,8 @@ void DownloadArchivesJob::registerFile()
             emit progressChanged(double(m_archivesDownloaded) / m_archivesToDownloadCount);
         }
 
-        const QPair<QString, QString> pair = m_archivesToDownload.takeFirst();
-        BinaryFormatEngineHandler::instance()->registerResource(pair.first,
+        const PackageManagerCore::DownloadItem item = m_archivesToDownload.takeFirst();
+        BinaryFormatEngineHandler::instance()->registerResource(item.fileName,
             m_downloader->downloadedFileName());
 
         emit fileDownloadReady(m_downloader->downloadedFileName());
@@ -330,7 +330,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
     const QMessageBox::StandardButton b =
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
         QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Cannot download archive %1: %2")
-        .arg(m_archivesToDownload.first().second, error), QMessageBox::Retry | QMessageBox::Cancel);
+        .arg(m_archivesToDownload.first().sourceUrl, error), QMessageBox::Retry | QMessageBox::Cancel);
 
     // Do not call fetchNextArchiveHash when using command line instance,
     // installer tries to download the same archive causing infinite loop
@@ -353,13 +353,13 @@ void DownloadArchivesJob::finishWithError(const QString &error)
 KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &suffix, const QString &queryString)
 {
     KDUpdater::FileDownloader *downloader = nullptr;
-    const QFileInfo fi = QFileInfo(m_archivesToDownload.first().first);
+    const QFileInfo fi = QFileInfo(m_archivesToDownload.first().fileName);
     const Component *const component = m_core->componentByName(PackageManagerCore::checkableName(QFileInfo(fi.path()).fileName()));
     if (component) {
         QString fullQueryString;
         if (!queryString.isEmpty())
             fullQueryString = QLatin1String("?") + queryString;
-        const QUrl url(m_archivesToDownload.first().second + suffix + fullQueryString);
+        const QUrl url(m_archivesToDownload.first().sourceUrl + suffix + fullQueryString);
         const QString &scheme = url.scheme();
         downloader = FileDownloaderFactory::instance().create(scheme, this);
 

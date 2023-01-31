@@ -2826,7 +2826,7 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadTyp
     return m_repoFetched;
 }
 
-bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChecksum, bool compressedRepository)
+bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool compressedRepository)
 {
     if (!compressedRepository && m_updateSourcesAdded)
         return m_updateSourcesAdded;
@@ -2857,34 +2857,6 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool parseChe
         if (data->path().isEmpty())
             continue;
 
-        if (parseChecksum) {
-            const QString updatesXmlPath = data->path() + QLatin1String("/Updates.xml");
-            QFile updatesFile(updatesXmlPath);
-            try {
-                QInstaller::openForRead(&updatesFile);
-            } catch(const Error &e) {
-                qCWarning(QInstaller::lcInstallerInstallLog) << "Error opening Updates.xml:"
-                    << e.message();
-                setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
-                return false;
-            }
-
-            int line = 0;
-            int column = 0;
-            QString error;
-            QDomDocument doc;
-            if (!doc.setContent(&updatesFile, &error, &line, &column)) {
-                qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Parse error in file "
-                    << updatesFile.fileName() << ": " << error << " at line " << line
-                    << " col " << column;
-                setStatus(PackageManagerCore::Failure, tr("Cannot add temporary update source information."));
-                return false;
-            }
-
-            const QDomNode checksum = doc.documentElement().firstChildElement(QLatin1String("Checksum"));
-            if (!checksum.isNull())
-                m_core->setTestChecksum(checksum.toElement().text().toLower() == scTrue);
-        }
         if (data->repository().isCompressed())
             m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 2));
         else
