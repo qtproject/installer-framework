@@ -274,7 +274,7 @@ private:
     void commitPendingUnstableComponents();
     void createAutoDependencyHash(const QString &componentName, const QString &oldValue, const QString &newValue);
     void createLocalDependencyHash(const QString &componentName, const QString &dependencies);
-    void updateComponentCheckedState();
+    void updateComponentInstallActions();
 
     // remove once we deprecate isSelected, setSelected etc...
     void restoreCheckState();

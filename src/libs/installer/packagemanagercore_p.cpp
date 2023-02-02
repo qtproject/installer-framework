@@ -2922,7 +2922,7 @@ void PackageManagerCorePrivate::storeCheckState()
         m_coreCheckedHash.insert(component, component->checkState());
 }
 
-void PackageManagerCorePrivate::updateComponentCheckedState()
+void PackageManagerCorePrivate::updateComponentInstallActions()
 {
     for (Component *component : m_core->components(PackageManagerCore::ComponentType::All)) {
         component->setInstallAction(component->isInstalled()

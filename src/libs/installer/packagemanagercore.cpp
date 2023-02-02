@@ -633,8 +633,6 @@ bool PackageManagerCore::recalculateAllComponents()
     if (!isInstaller() && !calculateComponentsToUninstall())
         return false;
 
-    // update install actions
-    d->updateComponentCheckedState();
     // update all nodes uncompressed size
     foreach (Component *const component, components(ComponentType::Root))
         component->updateUncompressedSize(); // this is a recursive call
@@ -2186,6 +2184,8 @@ bool PackageManagerCore::calculateComponentsToInstall() const
     const bool componentsToInstallCalculated =
         d->installerCalculator()->appendComponentsToInstall(selectedComponentsToInstall);
 
+    d->updateComponentInstallActions();
+
     emit finishedCalculateComponentsToInstall();
     return componentsToInstallCalculated;
 }
@@ -2290,6 +2290,8 @@ bool PackageManagerCore::calculateComponentsToUninstall() const
     }
     const bool componentsToUninstallCalculated =
         d->uninstallerCalculator()->appendComponentsToUninstall(selectedComponentsToUninstall);
+
+    d->updateComponentInstallActions();
 
     emit finishedCalculateComponentsToUninstall();
     return componentsToUninstallCalculated;
