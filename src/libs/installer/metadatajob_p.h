@@ -140,7 +140,7 @@ public:
         QStringList registeredKeys;
         bool success = true;
         for (auto *meta : qAsConst(*m_updates)) {
-            if (!m_cache->registerItem(meta, true)) {
+            if (!m_cache->registerItem(meta, true, GenericDataCache<Metadata>::Move)) {
                 success = false;
                 break;
             }

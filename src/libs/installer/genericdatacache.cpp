@@ -120,6 +120,16 @@ CacheableItem::~CacheableItem()
 */
 
 /*!
+    \enum GenericDataCache::RegisterMode
+    This enum holds the possible values for modes of registering items to cache.
+
+    \value Copy
+           The contents of the item are copied to the cache.
+    \value Move
+           The contents of the item are move to the cache.
+*/
+
+/*!
     \fn template <typename T> QInstaller::GenericDataCache<T>::GenericDataCache()
 
     Constructs a new empty cache. The cache is invalid until set with a
@@ -417,13 +427,14 @@ T *GenericDataCache<T>::itemByPath(const QString &path) const
     the new \a item replaces a previous item with the same checksum.
 
     The cache takes ownership of the object pointed by \a item. The contents of the
-    item are copied to the cache with a subdirectory name that matches the checksum
-    of the item.
+    item are copied or moved to the cache with a subdirectory name that matches the checksum
+    of the item. The \c mode decides how the contents of the item are registered, either by
+    copying or moving.
 
     Returns \c true on success or \c false if the item could not be registered.
 */
 template <typename T>
-bool GenericDataCache<T>::registerItem(T *item, bool replace)
+bool GenericDataCache<T>::registerItem(T *item, bool replace, RegisterMode mode)
 {
     QMutexLocker _(&m_mutex);
     if (m_invalidated) {
@@ -455,10 +466,27 @@ bool GenericDataCache<T>::registerItem(T *item, bool replace)
     const QString newPath = m_path + QDir::separator() + QString::fromLatin1(item->checksum());
     try {
         // A directory is in the way but it isn't registered to the current cache, remove.
-        if (QDir().exists(newPath))
+        QDir dir;
+        if (dir.exists(newPath))
             QInstaller::removeDirectory(newPath);
 
-        QInstaller::copyDirectoryContents(item->path(), newPath);
+        switch (mode) {
+        case Copy:
+            QInstaller::copyDirectoryContents(item->path(), newPath);
+            break;
+        case Move:
+            // First, try moving the top level directory
+            if (!dir.rename(item->path(), newPath)) {
+                qCDebug(lcDeveloperBuild) << "Failed to rename directory" << item->path()
+                    << "to" << newPath << ". Trying again.";
+                // If that does not work, fallback to moving the contents one by one
+                QInstaller::moveDirectoryContents(item->path(), newPath);
+            }
+            break;
+        default:
+            throw Error(QCoreApplication::translate("GenericDataCache",
+                "Unknown register mode selected!"));
+        }
     } catch (const Error &e) {
         setErrorString(QCoreApplication::translate("GenericDataCache",
             "Error while copying item to path \"%1\": %2").arg(newPath, e.message()));

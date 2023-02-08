@@ -64,6 +64,11 @@ template <typename T>
 class INSTALLER_EXPORT GenericDataCache
 {
 public:
+    enum RegisterMode {
+        Copy = 0,
+        Move = 1
+    };
+
     GenericDataCache();
     explicit GenericDataCache(const QString &path, const QString &type, const QString &version);
     ~GenericDataCache();
@@ -85,7 +90,7 @@ public:
     T *itemByChecksum(const QByteArray &checksum) const;
     T *itemByPath(const QString &path) const;
 
-    bool registerItem(T *item, bool replace = false);
+    bool registerItem(T *item, bool replace = false, RegisterMode mode = Copy);
     bool removeItem(const QByteArray &checksum);
 
     QList<T *> obsoleteItems() const;
