@@ -153,7 +153,7 @@ public:
 
         // Bail out if there was error while registering items
         if (!success) {
-            fi.reportException(UnzipArchiveException(m_cache->errorString() + u' '
+            fi.reportException(CacheTaskException(m_cache->errorString() + u' '
                 + MetadataJob::tr("Clearing the cache directory and restarting the application may solve this.")));
             m_cache->sync();
             fi.reportFinished();
@@ -166,7 +166,7 @@ public:
             m_cache->removeItem(meta->checksum());
 
         if (!m_cache->sync()) {
-            fi.reportException(UnzipArchiveException(m_cache->errorString() + u' '
+            fi.reportException(CacheTaskException(m_cache->errorString() + u' '
                 + MetadataJob::tr("Clearing the cache directory and restarting the application may solve this.")));
         }
 
