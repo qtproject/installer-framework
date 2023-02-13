@@ -4433,14 +4433,19 @@ void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &compon
     if (treeNameComponents.isEmpty())
         return;
 
-    QHash<QString, Component *> componentsTemp = components;
-    for (auto *component : qAsConst(components)) {
+    QHash<QString, Component *> componentsTemp;
+    QMutableHashIterator<QString, Component* > i(components);
+    while (i.hasNext()) {
+        i.next();
+        Component *component = i.value();
         if (component->treeName() != component->name()) // already handled
             continue;
 
         QString newName;
         // Check treename candidates, keep the name closest to a leaf component
-        for (auto &name : treeNameComponents.keys()) {
+        QMap<QString, QString>::const_iterator j;
+        for (j = treeNameComponents.begin(); j != treeNameComponents.end(); ++j) {
+            const QString name = j.key();
             if (!component->name().startsWith(name))
                 continue;
 
@@ -4475,16 +4480,16 @@ void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &compon
                 d->m_pendingUnstableComponents.insert(component->name(),
                     QPair<Component::UnstableError, QString>(Component::InvalidTreeName, errorString));
             } else {
-                componentsTemp.remove(componentsTemp.key(component));
+                i.remove();
             }
             continue;
         }
         component->setValue(scAutoTreeName, treeName);
 
-        componentsTemp.remove(componentsTemp.key(component));
+        i.remove();
         componentsTemp.insert(treeName, component);
     }
-    components = componentsTemp;
+    components.insert(componentsTemp);
 }
 
 void PackageManagerCore::restoreCheckState()
