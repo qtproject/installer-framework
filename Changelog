@@ -1,6 +1,7 @@
 4.5.2
 - Fix freezing UI while searching components (QTIFW-2886)
 - Show check box for AutoDependOn components in updater view (QTIFW-2855)
+- Update OpenSSL version to 1.1.1s in prebuilt binaries
 
 4.5.1
 - Make Settings operation to support _OLD and placeholders (QTIFW-2882)
