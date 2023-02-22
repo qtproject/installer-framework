@@ -766,13 +766,21 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             return XmlDownloadFailure;
         }
         const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
+        const Repository repository = item.value(TaskRole::UserRole).value<Repository>();
 
-        // Check if we have cached the metadata for this repository already
         QCryptographicHash hash(QCryptographicHash::Sha1);
         hash.addData(&file);
         const QByteArray updatesChecksum = hash.result().toHex();
 
+        if (!repository.xmlChecksum().isEmpty() && updatesChecksum != repository.xmlChecksum()) {
+            qCWarning(lcDeveloperBuild).noquote().nospace() << "The checksum for Updates.xml "
+                "file downloaded from repository:\n" << repository.url().toString() << "\ndoes not "
+                "match the expected value:\n\tActual SHA1: " << updatesChecksum << "\n\tExpected SHA1: "
+                << repository.xmlChecksum() << Qt::endl;
+        }
+
         bool refreshed;
+        // Check if we have cached the metadata for this repository already
         Status status = refreshCacheItem(result, updatesChecksum, &refreshed);
         if (status != XmlDownloadSuccess)
             return status;
@@ -794,7 +802,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         }
         file.close();
 
-        metadata->setRepository(item.value(TaskRole::UserRole).value<Repository>());
+        metadata->setRepository(repository);
         const bool online = !(metadata->repository().url().scheme()).isEmpty();
 
         bool testCheckSum = true;
@@ -881,6 +889,7 @@ MetadataJob::Status MetadataJob::refreshCacheItem(const FileTaskResult &result,
 
     const FileTaskItem item = result.value(TaskRole::TaskItem).value<FileTaskItem>();
     const Repository repository = item.value(TaskRole::UserRole).value<Repository>();
+
     if (cachedMetadata->isValid() && !repository.isCompressed()) {
         // Refresh repository information to cache. Same repository may appear in multiple
         // categories and the metadata may be available from default repositories simultaneously.
