@@ -41,52 +41,52 @@ template <typename T,  typename FunctionPointer, typename... Args>
 class StoredInterfaceFunctionCall : public QRunnable
 {
 public:
-    StoredInterfaceFunctionCall(void (fn)(QFutureInterface<T> &, Args...), const Args...)
-    : fn(fn), args(args) { }
+    StoredInterfaceFunctionCall(void (fn)(QFutureInterface<T> &, Args...), const Args&&... args)
+    : m_fn(fn), m_args(std::make_tuple(std::forward<Args>(args)...)) { }
 
     QFuture<T> start()
     {
-        futureInterface.reportStarted();
-        QFuture<T> future = futureInterface.future();
+        m_futureInterface.reportStarted();
+        QFuture<T> future = m_futureInterface.future();
         QThreadPool::globalInstance()->start(this);
         return future;
     }
 
     void run() override
     {
-        fn(futureInterface, std::forward<Args>(args)...);
-        futureInterface.reportFinished();
+        fn(m_futureInterface, std::forward<Args>(m_args)...);
+        m_futureInterface.reportFinished();
     }
 private:
-    QFutureInterface<T> futureInterface;
-    FunctionPointer fn;
-    std::tuple<Args...> args;
+    QFutureInterface<T> m_futureInterface;
+    FunctionPointer m_fn;
+    std::tuple<Args...> m_args;
 };
 template <typename T,  typename FunctionPointer, typename Class, typename... Args>
 class StoredInterfaceMemberFunctionCall : public QRunnable
 {
 public:
-    StoredInterfaceMemberFunctionCall(void (Class::*fn)(QFutureInterface<T> &, Args...), Class *object, const Args...)
-    : fn(fn), object(object), args(args) { }
+    StoredInterfaceMemberFunctionCall(void (Class::*fn)(QFutureInterface<T> &, Args...), Class *object, const Args&&... args)
+    : m_fn(fn), m_object(object), m_args(std::make_tuple(std::forward<Args>(args)...)) { }
 
     QFuture<T> start()
     {
-        futureInterface.reportStarted();
-        QFuture<T> future = futureInterface.future();
+        m_futureInterface.reportStarted();
+        QFuture<T> future = m_futureInterface.future();
         QThreadPool::globalInstance()->start(this);
         return future;
     }
 
     void run() override
     {
-        (object->*fn)(futureInterface, std::forward<Args>(args)...);
-        futureInterface.reportFinished();
+        (m_object->*m_fn)(m_futureInterface, std::forward<Args>(m_args)...);
+        m_futureInterface.reportFinished();
     }
 private:
-    QFutureInterface<T> futureInterface;
-    FunctionPointer fn;
-    Class *object;
-    std::tuple<Args...> args;
+    QFutureInterface<T> m_futureInterface;
+    FunctionPointer m_fn;
+    Class *m_object;
+    std::tuple<Args...> m_args;
 };
 
 template <typename T, typename... Args>
