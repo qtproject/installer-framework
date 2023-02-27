@@ -279,7 +279,14 @@ void MetadataJob::doStart()
                         return;
                     }
 
-                    FileTaskItem item(url);
+                    QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
+                    if (!tmp.isValid()) {
+                        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
+                        continue;
+                    }
+                    tmp.setAutoRemove(false);
+                    m_tempDirDeleter.add(tmp.path());
+                    FileTaskItem item(url, tmp.path() + QLatin1String("/Updates.xml"));
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                     items.append(item);
@@ -414,7 +421,15 @@ void MetadataJob::unzipRepositoryTaskFinished()
                 error = testJob.error();
                 errorString = testJob.errorString();
                 if (error == Job::NoError) {
-                    FileTaskItem item(url);
+                    QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
+                    if (!tmp.isValid()) {
+                        qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
+                        continue;
+                    }
+                    tmp.setAutoRemove(false);
+                    m_tempDirDeleter.add(tmp.path());
+                    FileTaskItem item(url, tmp.path() + QLatin1String("/Updates.xml"));
+
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                     m_unzipRepositoryitems.append(item);
                 } else {
@@ -604,6 +619,13 @@ void MetadataJob::metadataTaskFinished()
                         } else {
                             throw QInstaller::TaskException(mismatchMessage);
                         }
+                        QFileInfo fi(result.target());
+                        QString targetPath = fi.absolutePath();
+                        if (m_fetchedMetadata.contains(targetPath)) {
+                            delete m_fetchedMetadata.value(targetPath);
+                            m_fetchedMetadata.remove(targetPath);
+                        }
+                        continue;
                     }
                     UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
                         item.value(TaskRole::UserRole).toString());
@@ -614,6 +636,9 @@ void MetadataJob::metadataTaskFinished()
                     connect(watcher, &QFutureWatcherBase::finished, this, &MetadataJob::unzipTaskFinished);
                     watcher->setFuture(QtConcurrent::run(&UnzipArchiveTask::doTask, task));
                 }
+                if (m_unzipTasks.isEmpty())
+                    startUpdateCacheTask();
+
             } else {
                 startUpdateCacheTask();
             }
@@ -735,23 +760,10 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         if (result.target().isEmpty()) {
             continue;
         }
-        QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
-        if (!tmp.isValid()) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
-            return XmlDownloadFailure;
-        }
 
-        tmp.setAutoRemove(false);
-        QScopedPointer<Metadata> metadata(new Metadata(tmp.path()));
-        m_tempDirDeleter.add(metadata->path());
-
+        QFileInfo fileInfo(result.target());
+        QScopedPointer<Metadata> metadata(new Metadata(fileInfo.absolutePath()));
         QFile file(result.target());
-        if (!file.rename(metadata->path() + QLatin1String("/Updates.xml"))) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot rename target to Updates.xml:"
-                << file.errorString();
-            return XmlDownloadFailure;
-        }
-
         if (!file.open(QIODevice::ReadOnly)) {
             qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open Updates.xml for reading:"
                 << file.errorString();

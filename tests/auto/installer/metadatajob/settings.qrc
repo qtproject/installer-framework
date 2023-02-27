@@ -3,5 +3,7 @@
         <file>data/repository/Updates.xml</file>
         <file>data/repositoryActionAdd/Updates.xml</file>
         <file>data/repositoryActionRemove/Updates.xml</file>
+        <file>data/repositoryZipped/repositoryZipped.7z</file>
+        <file>data/repository7zInvalidMetaSha1/repository7zInvalidMetaSha1.7z</file>
     </qresource>
 </RCC>

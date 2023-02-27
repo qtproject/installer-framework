@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -96,6 +96,49 @@ private slots:
         metadata.start();
         metadata.waitForFinished();
         QCOMPARE(metadata.metadata().count(), 1);
+    }
+
+    void testZippedRepository_data()
+    {
+        QTest::addColumn<QStringList>("repositories");
+        QTest::addColumn<int>("metacount");
+        QTest::addColumn<bool>("allowUnstable");
+
+        QStringList repositories;
+        repositories << ":///data/repositoryZipped/repositoryZipped.7z";
+        QTest::newRow("7z repository") << repositories << 1 << true;
+
+        repositories.clear();
+        repositories << ":///data/repository7zInvalidMetaSha1/repository7zInvalidMetaSha1.7z";
+        QTest::newRow("7z with invalid meta sha1") << repositories << 0 << true;
+
+        repositories.clear();
+        repositories << ":///data/repositoryZipped/repositoryZipped.7z" << ":///data/repository7zInvalidMetaSha1/repository7zInvalidMetaSha1.7z";
+        QTest::newRow("7z with one valid repository") << repositories << 1 << true;
+
+        repositories.clear();
+        repositories << ":///data/repository7zInvalidMetaSha1/repository7zInvalidMetaSha1.7z" << ":///data/repositoryZipped/repositoryZipped.7z";
+        QTest::newRow("7z with one valid repository") << repositories << 0 << false;
+    }
+
+    void testZippedRepository()
+    {
+        QFETCH(QStringList, repositories);
+        QFETCH(int, metacount);
+        QFETCH(bool, allowUnstable);
+
+        PackageManagerCore core;
+        core.setInstaller();
+        core.setTemporaryRepositories(repositories, false, true);
+        core.settings().setAllowUnstableComponents(allowUnstable);
+
+        MetadataJob metadata;
+        metadata.setPackageManagerCore(&core);
+        metadata.addDownloadType(DownloadType::CompressedPackage);
+        metadata.setAutoDelete(true);
+        metadata.start();
+        metadata.waitForFinished();
+        QCOMPARE(metadata.metadata().count(), metacount);
     }
 };
 
