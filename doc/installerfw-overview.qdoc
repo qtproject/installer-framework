@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,28 +34,28 @@
 
     The Qt Installer Framework provides a set of tools and utilities to
     create installers once, and deploy them across all the supported desktop
-    Qt platforms without rewriting the source code. The installers will have the
-    native look and feel on the platform where they are run: Linux, Microsoft
-    Windows, and macOS.
+    Qt platforms without rewriting the source code. The installers will have
+    the native look and feel of the platform on which they run: Linux,
+    Microsoft Windows, and macOS.
 
     The Qt Installer Framework tools generate installers with a set of pages
-    that guide the users during the installation, update, or uninstallation
-    process. You provide the installable content and specify information about
+    that guide the users during the installation, update, or uninstall
+    process. You supply the installable content and specify information about
     it, such as the name of the product and the installer and the text for the
     license agreement.
 
     You can customize the installers by adding widgets to the predefined pages
-    or by adding whole pages to provide users with additional options. You can
+    or by adding whole pages to offer users more options. You can
     create scripts to add operations to the installer.
 
     \section1 Choosing Installer Type
 
-    You can provide end users with an \e offline or \e online installer, or
+    You can offer end users an \e offline or \e online installer, or
     both, depending on your use cases.
 
     \image ifw-overview.png
 
-    Both installers install a \e {maintenance tool} that can later be used to
+    Both installers install a \e {maintenance tool}, which allows you to later
     add, update, and remove components. Offline installers contain all the
     installable components and do not require network connections during the
     installation. Online installers only install the maintenance tool that then
@@ -63,12 +63,12 @@
     Therefore, the size of an online installer binary is smaller and its
     download time is shorter than that of an offline installer binary. The total
     time spent downloading and running an online installer might also be shorter
-    than dowloading and running an offline installer if the end users do not
+    than downloading and running an offline installer if the end users do not
     install all the available components.
 
-    End users can use the maintenance tool to install additional components from
+    End users can use the maintenance tool to install more components from
     the server after the initial installation, as well as to receive automatic
-    updates to content as soon as the updates are published on the server.
+    updates to content as soon as the updates are available on the server.
     However, this works for an offline installation only if you specify a
     repository address in the offline installer configuration or if end users
     specify the repository address themselves in the maintenance tool settings.
@@ -84,7 +84,7 @@
     \section1 Promoting Updates
 
     Make online repositories available to promote updates to end users who
-    install your product. The easiest way to provide an update is to recreate
+    install your product. The easiest way to offer an update is to recreate
     the repository and upload it to the web server. For large repositories, you
     can update only the changed components.
 

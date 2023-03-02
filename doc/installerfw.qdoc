@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -90,7 +90,7 @@
 
     \title Creating Installers
 
-    The following steps are needed to create offline and online installers:
+    To create offline and online installers, do the following:
 
     \list 1
 
@@ -98,13 +98,13 @@
             For more information, see \l{Package Directory}.
 
         \li Create a configuration file called \c config.xml in the \c config
-            directory. It contains information about how to build the installer
+            directory. It has information about how to build the installer
             binaries and online repositories. For more information about the
             file format and available settings, see
             \l{Configuration File}.
 
         \li Create a package information file called \c package.xml in the
-            \c {packages\{component}\meta} directory. It contains settings for deployment and
+            \c {packages\{component}\meta} directory. It has settings for deployment and
             the installation process. For more information, see
             \l{Meta Directory}.
 
@@ -112,7 +112,7 @@
             For more information, see \l{Data Directory}.
 
         \li For online installers, use the \c repogen tool to create the
-            repository that contains the installable content and upload the
+            repository that has the installable content and upload the
             repository to a web server.
 
         \li Use the \c binarycreator tool to create the installer. For more

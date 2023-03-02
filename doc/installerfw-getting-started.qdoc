@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,22 +32,14 @@
 
     \title Getting Started
 
-    Qt Installer Framework is developed as part of the Qt project. The
-    framework itself uses Qt. However, it can be used to install all kind of
-    applications, including (but not limited to) applications built with Qt.
+    You can use the Qt Installer Framework to create installation programs for
+    all kinds of applications, including (but not limited to) applications built
+    with Qt.
 
     \section1 Supported Platforms
 
     You can use the Qt Installer Framework to create installers for all
     platforms supported by \l[QtDoc]{Supported Platforms}{desktop Qt}.
-
-    The installers have been tested on the following platforms:
-
-    \list
-        \li Microsoft Windows 7, and later
-        \li Ubuntu Linux 18.04, and later
-        \li macOS 10.13, and later
-    \endlist
 
     \section1 Building from Sources
 
@@ -57,7 +49,7 @@
 
     \section2 Supported Compilers
 
-    The Qt Installer Framework can be compiled with Microsoft Visual Studio
+    You can compile the Qt Installer Framework with Microsoft Visual Studio
     2015 and newer, GCC 5 and newer, and Clang 11.0.0 and newer. Currently, the
     tested combination for Windows is Qt 5.15.2 with MSVC 2015 (Windows 10).
 
@@ -65,16 +57,15 @@
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
-    installers as one file. Please read SSL Import and Export Restrictions
-    from http://doc.qt.io/qt-5/ssl.html if you are statically linking against
-    OpenSSL libraries.
+    installers as one file. For more information about statically linking
+    against OpenSSL libraries, see \l{http://doc.qt.io/qt-5/ssl.html}{SSL
+    Import and Export Restrictions}.
 
     The supported Qt version is 5.15.2.
 
     \section3 Configuring Qt for Windows
 
-    We recommend that you use the following options when you configure Qt for
-    Windows:
+    Use the following configuration options for Windows:
 
     \code
     configure -prefix %CD%\qtbase -release -static -static-runtime -accessibility -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests
@@ -88,7 +79,7 @@
 
     \section3 Configuring Qt for Linux
 
-    We recommend that you use the following configuration options for Linux:
+    Use the following configuration options for Linux:
 
     \code
     configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
@@ -101,7 +92,7 @@
 
     \section3 Configuring Qt for macOS
 
-    We recommend that you use the following configuration options for macOS:
+    Use the following configuration options for macOS:
 
     \code
     configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
@@ -115,34 +106,36 @@
     \section2 Third Party Dependencies
 
     The Qt Installer Framework sources contain a redistribution of parts of the
-    libarchive compression and archive library, which requires you to link against
-    additional libraries; \c liblzma, \c zlib, \c libbzip2, and on macOS, \c libiconv.
+    \c libarchive compression and archive library, which requires you to link
+    against the following libraries; \c liblzma, \c zlib, \c libbzip2, and on
+    macOS, \c libiconv.
 
-    The usage of libarchive is recommended and can be enabled by adding the libarchive
-    configuration feature to the list of values specified by the \c CONFIG variable. Installers
-    created with this configuration support the (de)compression of 7zip, zip, and tar archive
-    files, with gzip, bzip2, and xz as available compression methods.
+    To enable the use of \c libarchive, add the \c libarchive configuration
+    feature to the list of values specified by the \c CONFIG variable.
+    Installers created with this configuration support the creating and
+    extracting of 7zip, zip, and tar archive files, with \c gzip, bzip2, and
+    \c xz as available compression methods.
 
     \code
     qmake CONFIG+=libarchive
     \endcode
 
-    The \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
-    variables can be used to specify the exact library files if required.
+    You can use the \c IFW_ZLIB_LIBRARY, \c IFW_BZIP2_LIBRARY, \c IFW_LZMA_LIBRARY, and \c IFW_ICONV_LIBRARY
+    variables to specify the exact library files.
 
-    If the Qt version used to build the Qt Installer Framework was configured with \c{-qt-zlib} and
-    \c IFW_ZLIB_LIBRARY variable is empty, libarchive will attempt to use the \c zlib library compiled
+    If you add the \c{-qt-zlib} configuration to the Qt version used to build the Qt Installer Framework, and
+    \c IFW_ZLIB_LIBRARY variable is empty, \c libarchive will try to use the \c zlib library compiled
     into the QtCore module, which removes the need for an external library.
 
-    If you do not enable libarchive support, the builtin LZMA SDK library will be used as a fallback and
-    installation of the additional dependencies can be skipped, but created installers will
+    If you do not enable \c libarchive support, the builtin LZMA SDK library will act as a fallback and
+    installation of the extra dependencies will not occur, but created installers will
     only support the 7zip format.
 
     \note Building IFW with LZMA SDK is deprecated and may not be available in future versions.
 
     \section3 Installing Dependencies for Windows
 
-    The source archives for the dependencies can be downloaded from:
+    You can download the source archives for the dependencies from:
 
     \list
         \li \l https://tukaani.org/xz/
@@ -171,7 +164,7 @@
 
     The easiest way to install the missing libraries is with a third party
     package manager solution, like Homebrew or MacPorts. On macOS 10.15 you
-    should only need to additionally install the liblzma library.
+    should only need to additionally install the \c liblzma library.
 
     On Homebrew this would be:
 
@@ -181,9 +174,10 @@
 
     \section3 Troubleshooting
 
-    For libarchive related compilation errors, you may need to edit the definitions in
-    a configuration header file respective to your platform, which can be found from the
-    'src/libs/3rdparty/libarchive/config/' directory of the Installer Framework sources.
+    For \c libarchive related compilation errors, you may need to edit the definitions in
+    a configuration header file respective to your platform. You can find this file in
+    the \c src/libs/3rdparty/libarchive/config/ directory of the Installer Framework sources.
+
 
     \section2 Setting up Qt Installer Framework
 
