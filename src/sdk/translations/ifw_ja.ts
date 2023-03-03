@@ -2564,8 +2564,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>読み取り用の設定ファイル %1 を開けません: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>カテゴリを選択</translation>
+        <source>Categories</source>
+        <translation type="unfinished">カテゴリを選択</translation>
     </message>
 </context>
 <context>
@@ -2781,8 +2781,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>コンポーネント情報</translation>
+        <source>Information</source>
+        <translation type="unfinished">コンポーネント情報</translation>
     </message>
 </context>
 <context>

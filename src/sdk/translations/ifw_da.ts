@@ -2574,7 +2574,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Kan ikke åbne indstillingsfilen %1 til læsning: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
+        <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2793,7 +2793,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Fejl</translation>
     </message>
     <message>
-        <source>Component Information</source>
+        <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

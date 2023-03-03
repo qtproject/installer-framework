@@ -2574,7 +2574,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Impossibile aprire il file di impostazioni %1 per la lettura: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
+        <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2793,7 +2793,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Errore</translation>
     </message>
     <message>
-        <source>Component Information</source>
+        <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

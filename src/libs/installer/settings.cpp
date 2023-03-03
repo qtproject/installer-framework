@@ -993,7 +993,7 @@ void Settings::setSaveDefaultRepositories(bool save)
 QString Settings::repositoryCategoryDisplayName() const
 {
     QString displayName = d->m_data.value(QLatin1String(scRepositoryCategoryDisplayName)).toString();
-    return displayName.isEmpty() ? tr("Select Categories") : displayName;
+    return displayName.isEmpty() ? tr("Categories") : displayName;
 }
 
 void Settings::setRepositoryCategoryDisplayName(const QString& name)

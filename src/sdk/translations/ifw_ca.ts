@@ -941,7 +941,7 @@
         <translation>Error</translation>
     </message>
     <message>
-        <source>Component Information</source>
+        <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2613,8 +2613,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>No s&apos;ha pogut obrir el fitxer d&apos;ajustaments %1 per a lectura: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Selecciona les categories dels paquets</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Selecciona les categories dels paquets</translation>
     </message>
 </context>
 <context>

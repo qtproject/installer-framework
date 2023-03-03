@@ -655,8 +655,8 @@
         <translation>필터</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>구성요소 정보</translation>
+        <source>Information</source>
+        <translation type="unfinished">구성요소 정보</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2322,8 +2322,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>설정 파일 &quot;%1&quot;을(를) 읽기 위해 열 수 없음: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>범주 선택</translation>
+        <source>Categories</source>
+        <translation type="unfinished">범주 선택</translation>
     </message>
 </context>
 <context>

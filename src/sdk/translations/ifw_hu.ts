@@ -932,8 +932,8 @@
         <translation>Szűrő</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Komponens Információ</translation>
+        <source>Information</source>
+        <translation type="unfinished">Komponens Információ</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2622,8 +2622,8 @@ a megfelelő jogokkal rendelkező felhasználóként, majd kattintson az OK gomb
         <translation>Nem sikerült megnyitni &quot;%1&quot; beállítás fájlt olvasásra: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Válasszon Kategóriákat</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Válasszon Kategóriákat</translation>
     </message>
 </context>
 <context>

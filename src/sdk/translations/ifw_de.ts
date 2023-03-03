@@ -941,8 +941,8 @@
         <translation>Fehler</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Komponenteninformationen</translation>
+        <source>Information</source>
+        <translation type="unfinished">Komponenteninformationen</translation>
     </message>
 </context>
 <context>
@@ -2622,8 +2622,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Konnte Einstellungsdatei %1 nicht zum Lesen öffnen: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Kategorien auswählen</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Kategorien auswählen</translation>
     </message>
 </context>
 <context>

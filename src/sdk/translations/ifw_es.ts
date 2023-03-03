@@ -2578,8 +2578,8 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
         <translation>No se puede abrir el archivo de configuración %1 para la lectura: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Seleccione las categorías</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Seleccione las categorías</translation>
     </message>
 </context>
 <context>
@@ -2797,8 +2797,8 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
         <translation>Error</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Información de componentes</translation>
+        <source>Information</source>
+        <translation type="unfinished">Información de componentes</translation>
     </message>
 </context>
 <context>

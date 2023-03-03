@@ -946,8 +946,8 @@
         <translation>Ошибка</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Сведения о компонентах</translation>
+        <source>Information</source>
+        <translation type="unfinished">Сведения о компонентах</translation>
     </message>
 </context>
 <context>
@@ -2629,8 +2629,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Невозможно открыть файл настроек %1 на чтение: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Выберите категории пакетов</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Выберите категории пакетов</translation>
     </message>
 </context>
 <context>

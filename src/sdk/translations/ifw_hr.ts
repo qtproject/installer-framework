@@ -2318,7 +2318,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Nije moguće otvoriti datoteke postavaka %1 za učitavanje: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
+        <source>Categories</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2832,7 +2832,7 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Greška</translation>
     </message>
     <message>
-        <source>Component Information</source>
+        <source>Information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

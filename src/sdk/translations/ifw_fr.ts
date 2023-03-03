@@ -2580,8 +2580,8 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <translation>Impossible d’ouvrir le fichier de paramètres %1 en lecture : %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Sélectionner les catégories</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Sélectionner les catégories</translation>
     </message>
 </context>
 <context>
@@ -2799,8 +2799,8 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <translation>Erreur</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Informations sur les composants</translation>
+        <source>Information</source>
+        <translation type="unfinished">Informations sur les composants</translation>
     </message>
 </context>
 <context>

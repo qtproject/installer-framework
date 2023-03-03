@@ -2288,8 +2288,8 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <translation>Não é possível abrir o ficheiro de configurações %1 para leitura: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Selecionar categorias</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Selecionar categorias</translation>
     </message>
 </context>
 <context>
@@ -2797,8 +2797,8 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Informação do componente</translation>
+        <source>Information</source>
+        <translation type="unfinished">Informação do componente</translation>
     </message>
 </context>
 <context>

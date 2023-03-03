@@ -659,8 +659,8 @@
         <translation>خطأ</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>معلومات المكون</translation>
+        <source>Information</source>
+        <translation type="unfinished">معلومات المكون</translation>
     </message>
 </context>
 <context>
@@ -2367,8 +2367,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>لا يمكن فتح ملف الإعدادات %1 للقراءة: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>حدد الاقسام</translation>
+        <source>Categories</source>
+        <translation type="unfinished">حدد الاقسام</translation>
     </message>
 </context>
 <context>

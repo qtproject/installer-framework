@@ -2569,8 +2569,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>无法打开设置文件 %1 进行读取：%2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>选择类别</translation>
+        <source>Categories</source>
+        <translation type="unfinished">选择类别</translation>
     </message>
 </context>
 <context>
@@ -2786,8 +2786,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>错误</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>组件信息</translation>
+        <source>Information</source>
+        <translation type="unfinished">组件信息</translation>
     </message>
 </context>
 <context>

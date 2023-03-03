@@ -48,7 +48,6 @@
 #include <QFileDialog>
 #include <QStackedLayout>
 #include <QStackedWidget>
-#include <QToolBox>
 #include <QLineEdit>
 
 namespace QInstaller {
@@ -67,7 +66,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_updaterModel(m_core->updaterComponentModel())
         , m_currentModel(m_allModel)
         , m_allowCompressedRepositoryInstall(false)
-        , m_toolBox(nullptr)
+        , m_tabWidget(nullptr)
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_categoryLayoutVisible(false)
@@ -87,8 +86,10 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
     descriptionVLayout->setContentsMargins(0, 0, 0, 0);
 
-    m_toolBox = new QToolBox(q);
-    m_toolBox->setObjectName(QLatin1String("ToolBox"));
+    m_tabWidget = new QTabWidget(q);
+    m_tabWidget->setObjectName(QLatin1String("ComponentSelectionTabWidget"));
+    m_tabWidget->tabBar()->setObjectName(QLatin1String("ComponentSelectionTabBar"));
+    m_tabWidget->hide();
 
     QScrollArea *descriptionScrollArea = new QScrollArea(q);
     descriptionScrollArea->setWidgetResizable(true);
@@ -270,7 +271,7 @@ void ComponentSelectionPagePrivate::setupCategoryLayout()
 
     vLayout->addWidget(m_categoryGroupBox);
     vLayout->addStretch();
-    m_toolBox->insertItem(1, m_categoryWidget, m_core->settings().repositoryCategoryDisplayName());
+    m_tabWidget->insertTab(1, m_categoryWidget, m_core->settings().repositoryCategoryDisplayName());
 }
 
 void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
@@ -284,14 +285,14 @@ void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
     setupCategoryLayout();
     if (show) {
         m_mainGLayout->removeWidget(m_descriptionBaseWidget);
-        m_toolBox->insertItem(0, m_descriptionBaseWidget, tr("Component Information"));
-        m_mainGLayout->addWidget(m_toolBox, 1, 1);
+        m_tabWidget->insertTab(0, m_descriptionBaseWidget, tr("Information"));
+        m_mainGLayout->addWidget(m_tabWidget, 1, 1);
     } else {
-        m_toolBox->removeItem(0);
-        m_mainGLayout->removeWidget(m_toolBox);
+        m_tabWidget->removeTab(0);
+        m_mainGLayout->removeWidget(m_tabWidget);
         m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
     }
-    m_toolBox->setVisible(show);
+    m_tabWidget->setVisible(show);
     m_categoryLayoutVisible = show;
 }
 

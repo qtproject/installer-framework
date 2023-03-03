@@ -2287,8 +2287,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Não é possível abrir o arquivo de configurações %1 para leitura: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Selecionar Categorias</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Selecionar Categorias</translation>
     </message>
 </context>
 <context>
@@ -2796,8 +2796,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Informação Componente.</translation>
+        <source>Information</source>
+        <translation type="unfinished">Informação Componente.</translation>
     </message>
 </context>
 <context>

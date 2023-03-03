@@ -48,7 +48,6 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QStackedLayout;
-class QToolBox;
 
 namespace QInstaller {
 
@@ -99,7 +98,7 @@ private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
-    QToolBox *m_toolBox;
+    QTabWidget *m_tabWidget;
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;

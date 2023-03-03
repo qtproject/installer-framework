@@ -2592,8 +2592,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Nie można otworzyć pliku ustawień %1 do odczytu: %2</translation>
     </message>
     <message>
-        <source>Select Categories</source>
-        <translation>Wybierz kategorie</translation>
+        <source>Categories</source>
+        <translation type="unfinished">Wybierz kategorie</translation>
     </message>
 </context>
 <context>
@@ -2813,8 +2813,8 @@ or accept the elevation of access rights if being asked.</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <source>Component Information</source>
-        <translation>Informacje o składnikach</translation>
+        <source>Information</source>
+        <translation type="unfinished">Informacje o składnikach</translation>
     </message>
 </context>
 <context>
