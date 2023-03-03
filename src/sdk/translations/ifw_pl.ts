@@ -835,32 +835,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Def&amp;ault</source>
-        <translation>&amp;Domyślne</translation>
+        <source>Default</source>
+        <translation>Domyślne</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>Zaznacz domyślne komponenty.</translation>
     </message>
     <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Resetuj</translation>
+        <source>Reset</source>
+        <translation>Resetuj</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>Zresetuj wszystkie komponenty do ich pierwotnego stanu zaznaczenia.</translation>
     </message>
     <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;Zaznacz wszystkie</translation>
+        <source>Select All</source>
+        <translation>Zaznacz wszystkie</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>Zaznacz wszystkie komponenty.</translation>
     </message>
     <message>
-        <source>&amp;Deselect All</source>
-        <translation>&amp;Usuń zaznaczenie wszystkich</translation>
+        <source>Deselect All</source>
+        <translation>Usuń zaznaczenie wszystkich</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

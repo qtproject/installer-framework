@@ -830,32 +830,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Def&amp;ault</source>
-        <translation>Predetermin&amp;at</translation>
+        <source>Default</source>
+        <translation>Predeterminat</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Restableix</translation>
+        <source>Reset</source>
+        <translation>Restableix</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;Selecciona-ho tot</translation>
+        <source>Select All</source>
+        <translation>Selecciona-ho tot</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Deselect All</source>
-        <translation>&amp;Desselecciona-ho tot</translation>
+        <source>Deselect All</source>
+        <translation>Desselecciona-ho tot</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

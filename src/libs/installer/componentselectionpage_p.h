@@ -48,6 +48,7 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QStackedLayout;
+class QComboBox;
 
 namespace QInstaller {
 
@@ -77,6 +78,7 @@ public:
 
 public slots:
     void currentSelectedChanged(const QModelIndex &current);
+    void updateAllCheckStates(int which);
     void selectAll();
     void deselectAll();
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
@@ -93,6 +95,7 @@ public slots:
 private:
     void storeHeaderResizeModes();
     void restoreHeaderResizeModes();
+    void setComboBoxItemEnabled(int index, bool enabled);
 
 private:
     ComponentSelectionPage *q;
@@ -102,9 +105,7 @@ private:
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
-    QPushButton *m_checkAll;
-    QPushButton *m_uncheckAll;
-    QPushButton *m_checkDefault;
+    QComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;

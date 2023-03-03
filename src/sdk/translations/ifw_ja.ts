@@ -825,52 +825,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt + A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>デフォルト (&amp;A)</translation>
+        <source>Default</source>
+        <translation>デフォルト</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>ツリー表示でデフォルトのコンポーネントを選択します。</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt + R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>リセット(&amp;R)</translation>
+        <source>Reset</source>
+        <translation>リセット</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>ツリー表示ですべてのコンポーネントを元の選択状態にリセットします。</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt + S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>すべて選択(&amp;S)</translation>
+        <source>Select All</source>
+        <translation>すべて選択</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>ツリー表示ですべてのコンポーネントを選択します。</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt + D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>すべて選択解除 (&amp;D)</translation>
+        <source>Deselect All</source>
+        <translation>すべて選択解除</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

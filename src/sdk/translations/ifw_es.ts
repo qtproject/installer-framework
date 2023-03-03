@@ -830,52 +830,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>Predetermin&amp;ado</translation>
+        <source>Default</source>
+        <translation>Predeterminado</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>Selecciona los componentes predeterminados en la vista de árbol.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Restablecer</translation>
+        <source>Reset</source>
+        <translation>Restablecer</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>Restablece todos los componentes a su estado de selección original en la vista de árbol.</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;Seleccionar todo</translation>
+        <source>Select All</source>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>Selecciona todos los componentes en la vista de árbol.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>Anular selección de to&amp;do</translation>
+        <source>Deselect All</source>
+        <translation>Anular selección de todo</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

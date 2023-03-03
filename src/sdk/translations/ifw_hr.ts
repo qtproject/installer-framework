@@ -1946,32 +1946,32 @@ Kopiraj program za instaliranje na računalo</translation>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Def&amp;ault</source>
-        <translation>St&amp;andardne</translation>
+        <source>Default</source>
+        <translation>Standardne</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Resetiraj</translation>
+        <source>Reset</source>
+        <translation>Resetiraj</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Select All</source>
-        <translation>Odaberi &amp;sve</translation>
+        <source>Select All</source>
+        <translation>Odaberi sve</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Deselect All</source>
-        <translation>O&amp;dznači sav odabir</translation>
+        <source>Deselect All</source>
+        <translation>dznači sav odabir</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

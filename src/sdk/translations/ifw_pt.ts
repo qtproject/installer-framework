@@ -1913,52 +1913,32 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>Def&amp;eito</translation>
+        <source>Default</source>
+        <translation>Defeito</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>Selecione os componentes por defeito na vista de árvore.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Reverter</translation>
+        <source>Reset</source>
+        <translation>Reverter</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>Reverter todos os componentes para o seu estado original na visualização em árvore.</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;Selecionar Todos</translation>
+        <source>Select All</source>
+        <translation>Selecionar Todos</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>Selecione todos os componentes na visualização em árvore.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>&amp;Desmarcar Todos</translation>
+        <source>Deselect All</source>
+        <translation>Desmarcar Todos</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

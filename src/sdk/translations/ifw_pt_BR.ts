@@ -1912,32 +1912,32 @@ Por favor, copie o instalador para uma unidade local</translation>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Def&amp;ault</source>
-        <translation>Def&amp;ault</translation>
+        <source>Default</source>
+        <translation>Default</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Resetar</translation>
+        <source>Reset</source>
+        <translation>Resetar</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;Selecionar Todos</translation>
+        <source>Select All</source>
+        <translation>Selecionar Todos</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Deselect All</source>
-        <translation>&amp;Desmarcar Todos</translation>
+        <source>Deselect All</source>
+        <translation>Desmarcar Todos</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

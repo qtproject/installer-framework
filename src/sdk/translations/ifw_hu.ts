@@ -825,38 +825,23 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>&amp;Alapértelmezett</translation>
+        <source>Default</source>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>Alapértelmezett komponensek kiválasztása a fa nézetben.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Visszaállítás</translation>
+        <source>Reset</source>
+        <translation>Visszaállítás</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>Összes komponens visszaállítása az eredeti kiválasztási állapotba a fa nézetben. </translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
+        <source>Select All</source>
         <translation>Mindent kijelöl</translation>
     </message>
     <message>
@@ -864,12 +849,7 @@
         <translation>Minden komponens kijelölése a fa nézetben.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
+        <source>Deselect All</source>
         <translation>Összes kijelölés megszüntetése</translation>
     </message>
     <message>

@@ -548,52 +548,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>الاف&amp;تراضي</translation>
+        <source>Default</source>
+        <translation>الافتراضي</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>حدد المكونات الافتراضية في العرض الشجري.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;أعد الضبط</translation>
+        <source>Reset</source>
+        <translation>أعد الضبط</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>إعادة تعيين جميع المكونات إلى حالة التحديد الأصلية في طريقة العرض الشجري.</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>&amp;حدّد الكل</translation>
+        <source>Select All</source>
+        <translation>حدّد الكل</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>قم بتحديد جميع المكونات في عرض الشجري.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>&amp;ألغِ تحديد الكل</translation>
+        <source>Deselect All</source>
+        <translation>ألغِ تحديد الكل</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

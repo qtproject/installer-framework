@@ -830,52 +830,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>St&amp;andard</translation>
+        <source>Default</source>
+        <translation>Standard</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>Wählt die Standardkomponenten in der Baumansicht aus.</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+Z</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>&amp;Zurücksetzen</translation>
+        <source>Reset</source>
+        <translation>Zurücksetzen</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>Setzt alle Komponenten in der Baumansicht auf die ursprüngliche Auswahl zurück.</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>Alle au&amp;swählen</translation>
+        <source>Select All</source>
+        <translation>Alle auswählen</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>Wählt alle Komponenten in der Baumansicht aus.</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+B</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>Alle a&amp;bwählen</translation>
+        <source>Deselect All</source>
+        <translation>Alle abwählen</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

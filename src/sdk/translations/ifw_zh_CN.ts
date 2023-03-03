@@ -825,52 +825,32 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Def&amp;ault</source>
-        <translation>默认(&amp;A)</translation>
+        <source>Default</source>
+        <translation>默认</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
         <translation>在树视图中选择默认组件。</translation>
     </message>
     <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation>重置(&amp;R)</translation>
+        <source>Reset</source>
+        <translation>重置</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
         <translation>在树视图中将所有组件重置为其原始选择状态。</translation>
     </message>
     <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation>全选(&amp;S)</translation>
+        <source>Select All</source>
+        <translation>全选</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
         <translation>在树视图中选择所有组件。</translation>
     </message>
     <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
-        <source>&amp;Deselect All</source>
-        <translation>取消全选(&amp;D)</translation>
+        <source>Deselect All</source>
+        <translation>取消全选</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>

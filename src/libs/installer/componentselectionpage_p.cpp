@@ -28,6 +28,7 @@
 
 #include "componentselectionpage_p.h"
 
+#include "globals.h"
 #include "packagemanagergui.h"
 #include "componentmodel.h"
 #include "settings.h"
@@ -49,6 +50,8 @@
 #include <QStackedLayout>
 #include <QStackedWidget>
 #include <QLineEdit>
+#include <QComboBox>
+#include <QStandardItemModel>
 
 namespace QInstaller {
 
@@ -57,6 +60,11 @@ namespace QInstaller {
     \class QInstaller::ComponentSelectionPagePrivate
     \internal
 */
+
+constexpr int scNoCheckSelectionIndex = 0;
+constexpr int scCheckDefaultIndex = 1;
+constexpr int scCheckAllIndex = 2;
+constexpr int scUncheckAllIndex = 3;
 
 ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core)
         : q(qq)
@@ -110,46 +118,30 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     descriptionVLayout->addWidget(m_sizeLabel);
 
-    QHBoxLayout *buttonHLayout = new QHBoxLayout;
-    m_checkDefault = new QPushButton;
-    connect(m_checkDefault, &QAbstractButton::clicked,
-            this, &ComponentSelectionPagePrivate::selectDefault);
+    QHBoxLayout *topHLayout = new QHBoxLayout;
+    m_checkStateComboBox = new QComboBox(q);
+    m_checkStateComboBox->setObjectName(QLatin1String("CheckStateComboBox"));
+    topHLayout->addWidget(m_checkStateComboBox);
+
+    connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &ComponentSelectionPagePrivate::updateAllCheckStates);
+
+    m_checkStateComboBox->insertItem(scNoCheckSelectionIndex, ComponentSelectionPage::tr("Select"));
     if (m_core->isInstaller()) {
-        m_checkDefault->setObjectName(QLatin1String("SelectDefaultComponentsButton"));
-        m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+A",
-            "Select default components")));
-        m_checkDefault->setText(ComponentSelectionPage::tr("Def&ault"));
-        m_checkDefault->setToolTip(ComponentSelectionPage::tr("Select default components in the tree view."));
+        m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Default"));
+        m_checkStateComboBox->setItemData(scCheckDefaultIndex,
+            ComponentSelectionPage::tr("Select default components in the tree view."), Qt::ToolTipRole);
     } else {
-        m_checkDefault->setEnabled(false);
-        m_checkDefault->setObjectName(QLatin1String("ResetComponentsButton"));
-        m_checkDefault->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+R",
-            "Reset to already installed components")));
-        m_checkDefault->setText(ComponentSelectionPage::tr("&Reset"));
-        m_checkDefault->setToolTip(
-            ComponentSelectionPage::tr("Reset all components to their original selection state in the tree view."));
+        m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Reset"));
+        m_checkStateComboBox->setItemData(scCheckDefaultIndex,
+            ComponentSelectionPage::tr("Reset all components to their original selection state in the tree view."), Qt::ToolTipRole);
     }
-    buttonHLayout->addWidget(m_checkDefault);
-
-    m_checkAll = new QPushButton;
-    connect(m_checkAll, &QAbstractButton::clicked,
-            this, &ComponentSelectionPagePrivate::selectAll);
-    m_checkAll->setObjectName(QLatin1String("SelectAllComponentsButton"));
-    m_checkAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+S",
-        "Select all components")));
-    m_checkAll->setText(ComponentSelectionPage::tr("&Select All"));
-    m_checkAll->setToolTip(ComponentSelectionPage::tr("Select all components in the tree view."));
-    buttonHLayout->addWidget(m_checkAll);
-
-    m_uncheckAll = new QPushButton;
-    connect(m_uncheckAll, &QAbstractButton::clicked,
-            this, &ComponentSelectionPagePrivate::deselectAll);
-    m_uncheckAll->setObjectName(QLatin1String("DeselectAllComponentsButton"));
-    m_uncheckAll->setShortcut(QKeySequence(ComponentSelectionPage::tr("Alt+D",
-        "Deselect all components")));
-    m_uncheckAll->setText(ComponentSelectionPage::tr("&Deselect All"));
-    m_uncheckAll->setToolTip(ComponentSelectionPage::tr("Deselect all components in the tree view."));
-    buttonHLayout->addWidget(m_uncheckAll);
+    m_checkStateComboBox->insertItem(scCheckAllIndex, ComponentSelectionPage::tr("Select All"));
+    m_checkStateComboBox->setItemData(scCheckAllIndex,
+        ComponentSelectionPage::tr("Select all components in the tree view."), Qt::ToolTipRole);
+    m_checkStateComboBox->insertItem(scUncheckAllIndex, ComponentSelectionPage::tr("Deselect All"));
+    m_checkStateComboBox->setItemData(scUncheckAllIndex,
+        ComponentSelectionPage::tr("Deselect all components in the tree view."), Qt::ToolTipRole);
 
     QWidget *progressStackedWidget = new QWidget();
     QVBoxLayout *metaLayout = new QVBoxLayout(progressStackedWidget);
@@ -177,7 +169,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
-    m_mainGLayout->addLayout(buttonHLayout, 0, 0);
+    m_mainGLayout->addLayout(topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
     m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
     m_mainGLayout->setColumnStretch(0, 3);
@@ -298,7 +290,7 @@ void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
 
 void ComponentSelectionPagePrivate::updateTreeView()
 {
-    m_checkDefault->setVisible(m_core->isInstaller() || m_core->isPackageManager());
+    setComboBoxItemEnabled(scCheckDefaultIndex, m_core->isInstaller() || m_core->isPackageManager());
     if (m_treeView->selectionModel()) {
         disconnect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &ComponentSelectionPagePrivate::currentSelectedChanged);
@@ -422,6 +414,32 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
             "will occupy approximately %1 on your hard disk drive.")
             .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
     }
+}
+
+/*!
+    Updates the checkstate of the components based on the value of \c which.
+*/
+void ComponentSelectionPagePrivate::updateAllCheckStates(int which)
+{
+    switch (which) {
+    case scNoCheckSelectionIndex:
+        // A 'helper' text index, no selection
+        return;
+    case scCheckDefaultIndex:
+        selectDefault();
+        break;
+    case scCheckAllIndex:
+        selectAll();
+        break;
+    case scUncheckAllIndex:
+        deselectAll();
+        break;
+    default:
+        qCWarning(lcInstallerInstallLog) << "Invalid index for check state selection!";
+        break;
+    }
+    // Reset back to 'helper' text index
+    m_checkStateComboBox->setCurrentIndex(scNoCheckSelectionIndex);
 }
 
 void ComponentSelectionPagePrivate::selectAll()
@@ -553,9 +571,9 @@ void ComponentSelectionPagePrivate::selectDefault()
 void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentModel::ModelState state)
 {
     if (state.testFlag(ComponentModel::Empty)) {
-        m_checkAll->setEnabled(false);
-        m_uncheckAll->setEnabled(false);
-        m_checkDefault->setEnabled(false);
+        setComboBoxItemEnabled(scCheckAllIndex, false);
+        setComboBoxItemEnabled(scUncheckAllIndex, false);
+        setComboBoxItemEnabled(scCheckDefaultIndex, false);
         return;
     }
 
@@ -576,9 +594,9 @@ void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentMod
             state |= ComponentModel::AllUnchecked;
     }
     // enable the button if the corresponding flag is not set
-    m_checkAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
-    m_uncheckAll->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
-    m_checkDefault->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
+    setComboBoxItemEnabled(scCheckAllIndex, state.testFlag(ComponentModel::AllChecked) == false);
+    setComboBoxItemEnabled(scUncheckAllIndex, state.testFlag(ComponentModel::AllUnchecked) == false);
+    setComboBoxItemEnabled(scCheckDefaultIndex, state.testFlag(ComponentModel::DefaultChecked) == false);
 
     // update the current selected node (important to reflect possible sub-node changes)
     if (m_treeView->selectionModel())
@@ -630,6 +648,22 @@ void ComponentSelectionPagePrivate::restoreHeaderResizeModes()
     m_treeView->header()->setStretchLastSection(m_headerStretchLastSection);
     for (int i = 0; i < ComponentModelHelper::LastColumn; ++i)
         m_treeView->header()->setSectionResizeMode(i, m_headerResizeModes.value(i));
+}
+
+/*!
+    Sets the enabled state of the combo box item in \a index to \a enabled.
+*/
+void ComponentSelectionPagePrivate::setComboBoxItemEnabled(int index, bool enabled)
+{
+    auto *model = qobject_cast<QStandardItemModel *>(m_checkStateComboBox->model());
+    if (!model)
+        return;
+
+    QStandardItem *item = model->item(index);
+    if (!item)
+        return;
+
+    item->setEnabled(enabled);
 }
 
 }  // namespace QInstaller
