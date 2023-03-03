@@ -177,11 +177,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_searchLineEdit, &QLineEdit::textChanged,
             this, &ComponentSelectionPagePrivate::setSearchPattern);
     connect(q, &ComponentSelectionPage::entered, m_searchLineEdit, &QLineEdit::clear);
+    topHLayout->addWidget(m_searchLineEdit);
 
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
-    treeViewVLayout->addWidget(m_searchLineEdit);
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
