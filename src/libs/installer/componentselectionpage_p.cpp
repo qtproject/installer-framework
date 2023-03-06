@@ -99,6 +99,8 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_tabWidget->tabBar()->setObjectName(QLatin1String("ComponentSelectionTabBar"));
     m_tabWidget->hide();
 
+    m_rightSideVLayout = new QVBoxLayout;
+
     QScrollArea *descriptionScrollArea = new QScrollArea(q);
     descriptionScrollArea->setWidgetResizable(true);
     descriptionScrollArea->setFrameShape(QFrame::NoFrame);
@@ -117,6 +119,20 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_sizeLabel->setWordWrap(true);
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     descriptionVLayout->addWidget(m_sizeLabel);
+
+    m_qbspPushButton = new QPushButton(q);
+    m_qbspPushButton->setVisible(false);
+    m_qbspPushButton->setText(ComponentSelectionPage::tr("Browse &QBSP files"));
+    m_qbspPushButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    m_qbspPushButton->setToolTip(
+            ComponentSelectionPage::tr("Select a Qt Board Support Package file to install "
+            "additional content that is not directly available from the online repositories."));
+
+    connect(m_qbspPushButton, &QPushButton::clicked,
+            this, &ComponentSelectionPagePrivate::qbspButtonClicked);
+
+    m_rightSideVLayout->addWidget(m_descriptionBaseWidget);
+    m_rightSideVLayout->addWidget(m_qbspPushButton, 0, Qt::AlignRight | Qt::AlignBottom);
 
     QHBoxLayout *topHLayout = new QHBoxLayout;
     m_checkStateComboBox = new QComboBox(q);
@@ -169,9 +185,16 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
+    {
+        int left = 0;
+        int top = 0;
+        int bottom = 0;
+        m_mainGLayout->getContentsMargins(&left, &top, nullptr, &bottom);
+        m_mainGLayout->setContentsMargins(left, top, 0, bottom);
+    }
     m_mainGLayout->addLayout(topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
-    m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
+    m_mainGLayout->addLayout(m_rightSideVLayout, 1, 1);
     m_mainGLayout->setColumnStretch(0, 3);
     m_mainGLayout->setColumnStretch(1, 2);
 
@@ -207,29 +230,13 @@ void ComponentSelectionPagePrivate::allowCompressedRepositoryInstall()
 
 void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 {
-    QWizard *wizard = qobject_cast<QWizard*>(m_core->guiObject());
-    if (wizard && !(wizard->options() & QWizard::HaveCustomButton2) && m_allowCompressedRepositoryInstall) {
-        wizard->setOption(QWizard::HaveCustomButton2, true);
-        wizard->setButtonText(QWizard::CustomButton2,
-                ComponentSelectionPage::tr("&Browse QBSP files"));
-        wizard->button(QWizard::CustomButton2)->setToolTip(
-                ComponentSelectionPage::tr("Select a Qt Board Support Package file to install "
-                "additional content that is not directly available from the online repositories."));
-        connect(wizard, &QWizard::customButtonClicked,
-                this, &ComponentSelectionPagePrivate::customButtonClicked);
-        q->gui()->updateButtonLayout();
-    }
+    if (m_allowCompressedRepositoryInstall)
+        m_qbspPushButton->setVisible(true);
 }
 
 void ComponentSelectionPagePrivate::hideCompressedRepositoryButton()
 {
-    QWizard *wizard = qobject_cast<QWizard*>(m_core->guiObject());
-    if (wizard && (wizard->options() & QWizard::HaveCustomButton2)) {
-        wizard->setOption(QWizard::HaveCustomButton2, false);
-        disconnect(wizard, &QWizard::customButtonClicked,
-                this, &ComponentSelectionPagePrivate::customButtonClicked);
-        q->gui()->updateButtonLayout();
-    }
+    m_qbspPushButton->setVisible(false);
 }
 
 void ComponentSelectionPagePrivate::setupCategoryLayout()
@@ -276,13 +283,14 @@ void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
 
     setupCategoryLayout();
     if (show) {
-        m_mainGLayout->removeWidget(m_descriptionBaseWidget);
+        m_rightSideVLayout->removeWidget(m_descriptionBaseWidget);
         m_tabWidget->insertTab(0, m_descriptionBaseWidget, tr("Information"));
-        m_mainGLayout->addWidget(m_tabWidget, 1, 1);
+        m_rightSideVLayout->insertWidget(m_rightSideVLayout->count() - 1, m_tabWidget);
     } else {
         m_tabWidget->removeTab(0);
-        m_mainGLayout->removeWidget(m_tabWidget);
-        m_mainGLayout->addWidget(m_descriptionBaseWidget, 1, 1);
+        m_rightSideVLayout->removeWidget(m_tabWidget);
+        m_rightSideVLayout->insertWidget(m_rightSideVLayout->count() - 1, m_descriptionBaseWidget);
+        m_descriptionBaseWidget->setVisible(true);
     }
     m_tabWidget->setVisible(show);
     m_categoryLayoutVisible = show;
@@ -480,8 +488,7 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
     else
         m_stackedLayout->setCurrentIndex(0);
 
-    if (QAbstractButton *bspButton = q->gui()->button(QWizard::CustomButton2))
-        bspButton->setEnabled(!show);
+    m_qbspPushButton->setEnabled(!show);
 
     if (show) {
         q->gui()->button(QWizard::NextButton)->setEnabled(false);
@@ -512,31 +519,29 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
     m_searchLineEdit->text().isEmpty() ? expandDefault() : expandSearchResults();
 }
 
-void ComponentSelectionPagePrivate::customButtonClicked(int which)
+void ComponentSelectionPagePrivate::qbspButtonClicked()
 {
-    if (QWizard::WizardButton(which) == QWizard::CustomButton2) {
-        QString defaultDownloadDirectory =
-            QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
-        QStringList fileNames = QFileDialog::getOpenFileNames(nullptr,
-            ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
-            QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
+    QString defaultDownloadDirectory =
+        QStandardPaths::writableLocation(QStandardPaths::DownloadLocation);
+    QStringList fileNames = QFileDialog::getOpenFileNames(nullptr,
+        ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
+        QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
 
-        QSet<Repository> set;
-        foreach (QString fileName, fileNames) {
-            Repository repository = Repository::fromUserInput(fileName, true);
-            repository.setEnabled(true);
-            set.insert(repository);
-        }
-        if (set.count() > 0) {
-            updateWidgetVisibility(true);
-            m_core->settings().addTemporaryRepositories(set, false);
-            if (!m_core->fetchCompressedPackagesTree()) {
-                MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
-                    QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());
-            }
-        }
-        updateWidgetVisibility(false);
+    QSet<Repository> set;
+    foreach (QString fileName, fileNames) {
+        Repository repository = Repository::fromUserInput(fileName, true);
+        repository.setEnabled(true);
+        set.insert(repository);
     }
+    if (set.count() > 0) {
+        updateWidgetVisibility(true);
+        m_core->settings().addTemporaryRepositories(set, false);
+        if (!m_core->fetchCompressedPackagesTree()) {
+            MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
+                QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());
+        }
+    }
+    updateWidgetVisibility(false);
 }
 
 /*!

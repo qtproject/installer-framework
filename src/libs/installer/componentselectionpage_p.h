@@ -84,7 +84,7 @@ public slots:
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();
-    void customButtonClicked(int which);
+    void qbspButtonClicked();
     void onProgressChanged(int progress);
     void setMessage(const QString &msg);
     void setTotalProgress(int totalProgress);
@@ -105,12 +105,14 @@ private:
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
+    QPushButton *m_qbspPushButton;
     QComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
+    QVBoxLayout *m_rightSideVLayout;
     bool m_allowCompressedRepositoryInstall;
     bool m_categoryLayoutVisible;
     ComponentModel *m_allModel;
