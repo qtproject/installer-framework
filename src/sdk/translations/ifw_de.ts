@@ -217,7 +217,7 @@
     </message>
     <message>
         <source>Download finished.</source>
-        <translation>Heruntergeladen abgeschlossen.</translation>
+        <translation>Herunterladen abgeschlossen.</translation>
     </message>
     <message>
         <source>%1 of %2</source>
@@ -402,7 +402,7 @@
     </message>
     <message>
         <source>The directory does not exist.</source>
-        <translation>Der Verzeichnis existiert nicht.</translation>
+        <translation>Das Verzeichnis existiert nicht.</translation>
     </message>
     <message>
         <source>Cannot recreate directory &quot;%1&quot;: %2</source>
@@ -553,7 +553,7 @@
     </message>
     <message>
         <source>Cannot retrieve number of items in archive.</source>
-        <translation>Konnte Anzahl Dateien im Archiv nicht feststellen.</translation>
+        <translation>Konnte Anzahl der Dateien im Archiv nicht feststellen.</translation>
     </message>
     <message>
         <source>Cannot retrieve path of archive item &quot;%1&quot;.</source>
@@ -1566,7 +1566,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unpacking compressed repositories. This may take a while...</source>
-        <translation>Entpacken des komprimierten Repository, Das könnte eine Weile dauern...</translation>
+        <translation>Entpacken der gepackten Repositories. Das könnte eine Weile dauern...</translation>
     </message>
     <message>
         <source>Metadata download canceled.</source>
@@ -1574,7 +1574,7 @@ Fehler beim Laden von %2</translation>
     </message>
     <message>
         <source>Unknown exception during extracting.</source>
-        <translation>Beim Auspacken ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
+        <translation>Beim Entpacken ist eine unbekannte Ausnahmebedingung aufgetreten.</translation>
     </message>
     <message>
         <source>Missing proxy credentials.</source>
@@ -1961,7 +1961,7 @@ Möchten Sie trotzdem fortsetzen?</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
-        <translation>Es ist nicht möglich, diese Oparation von einem Netzwerk-Speicherort aus zu starten</translation>
+        <translation>Es ist nicht möglich, diese Operation von einem Netzwerk-Speicherort aus zu starten</translation>
     </message>
     <message>
         <source>Removing deselected components...</source>
