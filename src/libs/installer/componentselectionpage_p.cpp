@@ -194,7 +194,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     }
     m_mainGLayout->addLayout(topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
-    m_mainGLayout->addLayout(m_rightSideVLayout, 1, 1);
+    m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
     m_mainGLayout->setColumnStretch(0, 3);
     m_mainGLayout->setColumnStretch(1, 2);
 
