@@ -639,7 +639,7 @@
     \l{Component Scripting}.
 
     A control script is associated with the whole installer by specifying it
-    in the \c ControlScript element of the control.xml file of the installer.
+    in the \c ControlScript element of the config.xml file of the installer.
     Control scripts can be part of the installer resources or be passed on the
     command line. They can be used to modify the installer pages that are
     presented to users before components are loaded. Also, you can use them to
