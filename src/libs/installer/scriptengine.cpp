@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,6 +34,7 @@
 #include "loggingutils.h"
 #include "packagemanagergui.h"
 #include "component.h"
+#include "settings.h"
 
 #include <QMetaEnum>
 #include <QQmlEngine>
@@ -377,9 +378,9 @@ QString QFileDialogProxy::getExistingFileOrDirectory(const QString &caption,
 /*!
     Constructs a script engine with \a core as parent.
 */
-ScriptEngine::ScriptEngine(PackageManagerCore *core) :
-    QObject(core),
-    m_guiProxy(new GuiProxy(this, this))
+ScriptEngine::ScriptEngine(PackageManagerCore *core) : QObject(core)
+    , m_guiProxy(new GuiProxy(this, this))
+    , m_core(core)
 {
     m_engine.installExtensions(QJSEngine::TranslationExtension);
     QJSValue global = m_engine.globalObject();
@@ -574,14 +575,17 @@ QJSValue ScriptEngine::callScriptMethod(const QJSValue &scriptContext, const QSt
     if (!method.isCallable())
         return QJSValue(QJSValue::UndefinedValue);
     if (method.isError()) {
-        throw Error(method.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
-            : method.toString());
+        QString errorString = method.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
+            : method.toString();
+
+        throw Error(QString::fromLatin1("%1 \n%2 \"%3\"").arg(errorString, tr(scClearCacheHint), m_core->settings().localCachePath()));
     }
 
     const QJSValue result = method.call(arguments);
     if (result.isError()) {
-        throw Error(result.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
-            : result.toString());
+        QString errorString = result.toString().isEmpty() ? QString::fromLatin1("Unknown error.")
+            : result.toString();
+        throw Error(QString::fromLatin1("%1 \n%2 \"%3\"").arg(errorString, tr(scClearCacheHint), m_core->settings().localCachePath()));
     }
 
     stack.removeLast();

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -77,6 +77,7 @@ private:
     QJSEngine m_engine;
     QHash<QString, QStringList> m_callstack;
     GuiProxy *m_guiProxy;
+    PackageManagerCore *m_core;
 };
 
 }
