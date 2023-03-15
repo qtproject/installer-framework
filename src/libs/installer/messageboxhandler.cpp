@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -368,6 +368,7 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
     QMessageBox::StandardButton defaultButton)
 {
     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
+    msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
     QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
     Q_ASSERT(buttonBox != nullptr);
 
