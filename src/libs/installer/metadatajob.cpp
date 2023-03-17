@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -237,7 +237,7 @@ void MetadataJob::doStart()
     }
 
     const ProductKeyCheck *const productKeyCheck = ProductKeyCheck::instance();
-    if (m_downloadType == DownloadType::All || m_downloadType == DownloadType::UpdatesXML) {
+    if (m_downloadType != DownloadType::CompressedPackage) {
         emit infoMessage(this, tr("Fetching latest update information..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
         if (onlineInstaller || m_core->isMaintainer()) {
@@ -538,15 +538,11 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        if (m_downloadType != DownloadType::UpdatesXML) {
-            if (!fetchMetaDataPackages()) {
-                // No new metadata packages to fetch, still need to update the cache
-                // for refreshed repositories.
-                startUpdateCacheTask();
-            }
-        } else {
-                startUpdateCacheTask();
-        }
+        if (!fetchMetaDataPackages()) {
+            // No new metadata packages to fetch, still need to update the cache
+            // for refreshed repositories.
+            startUpdateCacheTask();
+        }        
     } else if (status == XmlDownloadRetry) {
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {

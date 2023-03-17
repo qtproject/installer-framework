@@ -48,8 +48,7 @@ class PackageManagerCore;
 enum DownloadType
 {
     All,
-    CompressedPackage,
-    UpdatesXML
+    CompressedPackage
 };
 
 class INSTALLER_EXPORT MetadataJob : public Job

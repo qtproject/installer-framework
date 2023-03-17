@@ -2497,7 +2497,7 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
         << "Searching packages with regular expression:" << regexp;
 
     ComponentModel *model = defaultComponentModel();
-    d->fetchMetaInformationFromRepositories(DownloadType::UpdatesXML);
+    d->fetchMetaInformationFromRepositories();
 
     d->addUpdateResourcesFromRepositories();
     QRegularExpression re(regexp);
