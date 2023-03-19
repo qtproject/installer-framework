@@ -4,18 +4,18 @@
     specifies the text and default values used in the installer:
 
     \list
-         \li The \c <Name> element specifies the application name that is added
+         \li The \c <Name> element sets the application name and adds it
              to the page name and introduction text.
-        \li The \c <Version> element specifies the application version number.
-        \li The \c <Title> element specifies the installer name displayed on the
-            title bar.
-        \li The \c <Publisher> element specifies the publisher of the software
+        \li The \c <Version> element sets the application version number.
+        \li The \c <Title> element sets the installer name and displays it on
+            the title bar.
+        \li The \c <Publisher> element sets the publisher of the software
             (as shown in the Windows Control Panel, for example).
-        \li The \c <StartMenuDir> element specifies the name of the default
+        \li The \c <StartMenuDir> element sets the name of the default
             program group for the product in the Windows \gui Start menu.
-        \li The \c <TargetDir> element specifies that the default target
-            directory is located in the \c IfwExamples directory in the home directory
-            of the current user (because the predefined variable\c @HomeDir@ is
-            used as a part of the value). For more information, see
-            \l{Predefined Variables}.
+        \li The \c <TargetDir> element sets the default target directory
+            location to be within the \c IfwExamples directory in the home
+            directory of the current user (because it uses the pre-existing
+            variable \c, @HomeDir@, as part of the value). For more information,
+            see \l{Predefined Variables}.
     \endlist

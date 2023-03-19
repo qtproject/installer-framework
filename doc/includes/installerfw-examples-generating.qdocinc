@@ -14,4 +14,4 @@
             \endcode
     \endlist
 
-    The installer is created in the current directory.
+    This creates the installer to the current directory.

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -30,14 +30,14 @@
     \ingroup qtifwexamples
     \title Change Installer UI Example
 
-    \brief Using a component script to modify the installer UI.
+    \brief Using a component script to change the installer UI.
 
     \image qtifw-examples-changeuserinterface.png
 
     \e {Change Installer UI} demonstrates how to use the \c Component() function
-    to modify the default text for the check box label on the
+    to change the default text for the check box label on the
     \l{License Agreement Page}{license check page}. This example does not install
-    any components, but we specify a dummy component in the package information
+    any components, but it specifies a dummy component in the package information
     file, because installers without components are not allowed.
 
     \include installerfw-examples-configuring.qdocinc
@@ -49,26 +49,26 @@
     \list
         \li The \c <Default> element specifies whether the component is
             preselected for installation in the user interface by default.
-        \li The \c <Script> element specifies the file name of the JavaScript
-            file that is loaded to perform operations.
-        \li The \c <Licenses> element specifies the \c name of the license
-            agreement to be accepted by the end user and the filename of the
-            \c file that contains the license.
+        \li The \c <Script> element sets the file name of the loaded JavaScript
+            file.
+        \li The \c <Licenses> element sets the \c name of the license
+            agreement that the end user accepts, as well as the filename of the
+            \c file that has the license.
     \endlist
 
     \quotefile changeuserinterface/packages/org.qtproject.ifw.example.changeuserinterface/meta/package.xml
 
-    \section1 Modifying UI Text
+    \section1 Updating UI Text
 
-    In installscript.qs, we call the \c Component() function to add the license
-    check page and to connect to the \c changeLicenseLabels signal when end
+    In installscript.qs, the \c Component() function adds the license
+    check page and connects to the \c changeLicenseLabels signal when end
     users enter the page:
 
     \quotefromfile changeuserinterface/packages/org.qtproject.ifw.example.changeuserinterface/meta/installscript.qs
     \skipto Component()
     \printuntil }
 
-    We use the \c changeLicenseLabels function to change the text label for the
+    The \c changeLicenseLabels function changes the text label for the
     accept license check box on the page:
 
     \printuntil }
