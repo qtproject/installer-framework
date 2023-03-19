@@ -23,6 +23,7 @@
 core
 .qmake.cache
 .qmake.vars
+.qmake.stash
 *.prl
 tags
 .DS_Store
@@ -90,4 +91,8 @@ doc-build
 .metadata
 *.qtc_clangd
 
+doc/codeattributions.qdoc
+/doc/qdoc_wrapper.sh
+/src/sdk/installerbase.qrc
 /src/sdk/translations/untranslated.ts
+/src/sdk/translations/ifw_en.ts
