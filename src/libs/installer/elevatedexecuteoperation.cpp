@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -65,10 +65,12 @@ public:
 
 private:
     bool needsRerunWithReplacedVariables(QStringList &arguments, const OperationType type);
+    void setErrorMessage(const QString &message);
 
-
+private:
     QProcessWrapper *process;
     bool showStandardError;
+    QString m_customErrorMessage;
 };
 
 ElevatedExecuteOperation::ElevatedExecuteOperation(PackageManagerCore *core)
@@ -120,13 +122,12 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
         args.removeAll(workingDirectoryArgument);
     }
 
-    QString customErrorMessage;
     QStringList filteredCustomErrorMessage = args.filter(QLatin1String("errormessage="),
         Qt::CaseInsensitive);
     if (!filteredCustomErrorMessage.isEmpty()) {
         QString customErrorMessageArgument = filteredCustomErrorMessage.at(0);
-        customErrorMessage = customErrorMessageArgument;
-        customErrorMessage.replace(QLatin1String("errormessage="), QString(), Qt::CaseInsensitive);
+        m_customErrorMessage = customErrorMessageArgument;
+        m_customErrorMessage.replace(QLatin1String("errormessage="), QString(), Qt::CaseInsensitive);
         args.removeAll(customErrorMessageArgument);
     }
 
@@ -156,7 +157,8 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
         const bool success = QProcessWrapper::startDetached(args.front(), args.mid(1));
         if (!success) {
             q->setError(UserDefinedError);
-            q->setErrorString(tr("Cannot start detached: \"%1\"").arg(callstr));
+            setErrorMessage(tr("Cannot start detached: \"%1\"").arg(callstr));
+
             returnValue = Error;
         }
         return returnValue;
@@ -201,8 +203,7 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
     int returnValue = NoError;
     if (!success) {
         q->setError(UserDefinedError);
-        //TODO: pass errorString() through the wrapper */
-        q->setErrorString(tr("Cannot start: \"%1\": %2").arg(callstr,
+        setErrorMessage(tr("Cannot start: \"%1\": %2").arg(callstr,
             process->errorString()));
         if (!needsRerunWithReplacedVariables(arguments, type)) {
             returnValue = Error;
@@ -228,17 +229,13 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
 
         if (process->exitStatus() == QProcessWrapper::CrashExit) {
             q->setError(UserDefinedError);
-            q->setErrorString(tr("Program crashed: \"%1\"").arg(callstr));
+            setErrorMessage(tr("Program crashed: \"%1\"").arg(callstr));
             returnValue = Error;
         } else if (!allowedExitCodes.contains(process->exitCode()) && returnValue != NeedsRerun) {
             if (!needsRerunWithReplacedVariables(arguments, type)) {
                 q->setError(UserDefinedError);
-                if (customErrorMessage.isEmpty()) {
-                    q->setErrorString(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
-                        .arg(QString::number(process->exitCode()), callstr));
-                } else {
-                    q->setErrorString(customErrorMessage);
-                }
+                setErrorMessage(tr("Execution failed (Unexpected exit code: %1): \"%2\"")
+                    .arg(QString::number(process->exitCode()), callstr));
                 returnValue = Error;
             } else {
                 returnValue = NeedsRerun;
@@ -275,6 +272,13 @@ bool ElevatedExecuteOperation::Private::needsRerunWithReplacedVariables(QStringL
     return rerun;
 }
 
+void ElevatedExecuteOperation::Private::setErrorMessage(const QString &message)
+{
+    if (m_customErrorMessage.isEmpty())
+        q->setErrorString(message);
+    else
+        q->setErrorString(m_customErrorMessage);
+}
 /*!
  Cancels the ElevatedExecuteOperation. This methods tries to terminate the process
  gracefully by calling QProcessWrapper::terminate. After 10 seconds, the process gets killed.
