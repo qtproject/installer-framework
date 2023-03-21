@@ -61,10 +61,10 @@ namespace QInstaller {
     \internal
 */
 
-constexpr int scNoCheckSelectionIndex = 0;
-constexpr int scCheckDefaultIndex = 1;
-constexpr int scCheckAllIndex = 2;
-constexpr int scUncheckAllIndex = 3;
+constexpr int scNoCheckSelectionIndex = -1;
+constexpr int scCheckDefaultIndex = 0;
+constexpr int scCheckAllIndex = 1;
+constexpr int scUncheckAllIndex = 2;
 
 ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core)
         : q(qq)
@@ -142,7 +142,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ComponentSelectionPagePrivate::updateAllCheckStates);
 
-    m_checkStateComboBox->insertItem(scNoCheckSelectionIndex, ComponentSelectionPage::tr("Select"));
+    m_checkStateComboBox->setPlaceholderText(ComponentSelectionPage::tr("Select"));
     if (m_core->isInstaller()) {
         m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Default"));
         m_checkStateComboBox->setItemData(scCheckDefaultIndex,
