@@ -52,6 +52,7 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QStandardItemModel>
+#include <QStyledItemDelegate>
 
 namespace QInstaller {
 
@@ -136,6 +137,8 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     QHBoxLayout *topHLayout = new QHBoxLayout;
     m_checkStateComboBox = new QComboBox(q);
+    QStyledItemDelegate *delegate = new QStyledItemDelegate(this);
+    m_checkStateComboBox->setItemDelegate(delegate);
     m_checkStateComboBox->setObjectName(QLatin1String("CheckStateComboBox"));
     topHLayout->addWidget(m_checkStateComboBox);
 
