@@ -1295,7 +1295,7 @@ QString PackageManagerPage::productName() const
 */
 void PackageManagerPage::setColoredTitle(const QString &title)
 {
-    setTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, title));
+    setTitle(QString::fromLatin1("<center><font color=\"%1\">%2</font></center>").arg(m_titleColor, title));
 }
 
 /*!
@@ -1303,7 +1303,7 @@ void PackageManagerPage::setColoredTitle(const QString &title)
 */
 void PackageManagerPage::setColoredSubTitle(const QString &subTitle)
 {
-    setSubTitle(QString::fromLatin1("<font color=\"%1\">%2</font>").arg(m_titleColor, subTitle));
+    setSubTitle(QString::fromLatin1("<center><font color=\"%1\">%2</font></center>").arg(m_titleColor, subTitle));
 }
 
 /*!
