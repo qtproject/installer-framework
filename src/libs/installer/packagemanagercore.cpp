@@ -3744,6 +3744,7 @@ bool PackageManagerCore::isUninstaller() const
 void PackageManagerCore::setUpdater()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicUpdaterMarker;
+    d->m_componentByNameHash.clear();
     emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
@@ -3764,6 +3765,7 @@ bool PackageManagerCore::isUpdater() const
 void PackageManagerCore::setPackageManager()
 {
     d->m_magicBinaryMarker = BinaryContent::MagicPackageManagerMarker;
+    d->m_componentByNameHash.clear();
     emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
