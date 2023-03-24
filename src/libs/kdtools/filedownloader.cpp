@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -1483,21 +1484,35 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     void (QNetworkReply::*errorSignal)(QNetworkReply::NetworkError) = &QNetworkReply::error;
     connect(d->http, errorSignal, this, &HttpDownloader::httpError);
 
+    bool fileOpened = false;
     if (d->destFileName.isEmpty()) {
         QTemporaryFile *file = new QTemporaryFile(this);
-        file->open();
+        fileOpened = file->open();
         d->destination = file;
     } else {
         d->destination = new QFile(d->destFileName, this);
-        d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+        fileOpened = d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
     }
-
-    if (!d->destination->isOpen()) {
-        const QString error = d->destination->errorString();
-        const QString fileName = d->destination->fileName();
-        d->shutDown();
-        setDownloadAborted(tr("Cannot download %1. Cannot create file \"%2\": %3").arg(
-            url.toString(), fileName, error));
+    if (!fileOpened) {
+        qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Failed to open file " << d->destFileName
+            << ": "<<d->destination->errorString() << ". Trying again.";
+        QFileInfo fileInfo;
+        fileInfo.setFile(d->destination->fileName());
+        if (!QDir().mkpath(fileInfo.absolutePath())) {
+            setDownloadAborted(tr("Cannot download %1. Cannot create directory for \"%2\"").arg(
+                url.toString(), fileInfo.filePath()));
+        } else {
+            fileOpened = d->destination->open(QIODevice::ReadWrite | QIODevice::Truncate);
+            if (fileOpened)
+                return;
+            if (d->destination->exists())
+                qCWarning(QInstaller::lcInstallerInstallLog) << "File exists but installer is unable to open it.";
+            else
+                qCWarning(QInstaller::lcInstallerInstallLog) << "File does not exist.";
+            d->shutDown();
+            setDownloadAborted(tr("Cannot download %1. Cannot create file \"%2\": %3").arg(
+                url.toString(), d->destination->fileName(), d->destination->errorString()));
+        }
     }
 }
 

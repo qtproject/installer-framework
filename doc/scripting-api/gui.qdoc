@@ -128,7 +128,11 @@
 /*!
     \qmlmethod void gui::showSettingsButton(boolean show)
 
-    Shows the \uicontrol Settings button if \a show is \c true.
+    Shows the \uicontrol Settings button if \a show is \c true. This function
+    overrides the visibility of the \uicontrol Settings button in all pages. Be
+    careful when showing the settings button so that users cannot change network
+    settings while downloading data in the background. Changing the
+    settings will restart the wizard and switch back to the introduction page.
 */
 
 /*!

@@ -212,8 +212,9 @@ Q_DECLARE_METATYPE(DynamicInstallerPage*)
 class PackageManagerGui::Private
 {
 public:
-    Private()
-        : m_currentId(-1)
+    Private(PackageManagerGui *qq)
+        : q(qq)
+        , m_currentId(-1)
         , m_modified(false)
         , m_autoSwitchPage(true)
         , m_showSettingsButton(false)
@@ -237,6 +238,20 @@ public:
             QLatin1String("unknown button"));
     }
 
+    void showSettingsButton(bool show)
+    {
+        if (m_showSettingsButton == show)
+            return;
+        q->setOption(QWizard::HaveCustomButton1, show);
+        q->setButtonText(QWizard::CustomButton1, tr("&Settings"));
+        q->button(QWizard::CustomButton1)->setToolTip(
+            PackageManagerGui::tr("Specify proxy settings and configure repositories for add-on components."));
+
+        q->updateButtonLayout();
+        m_showSettingsButton = show;
+    }
+
+    PackageManagerGui *q;
     int m_currentId;
     bool m_modified;
     bool m_autoSwitchPage;
@@ -301,7 +316,7 @@ public:
 */
 PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     : QWizard(parent)
-    , d(new Private)
+    , d(new Private(this))
     , m_core(core)
 {
     if (m_core->isInstaller())
@@ -1036,16 +1051,18 @@ void PackageManagerGui::showFinishedPage()
 */
 void PackageManagerGui::showSettingsButton(bool show)
 {
-    if (d->m_showSettingsButton == show)
-        return;
+    m_core->setValue(QLatin1String("ShowSettingsButton"), QString::number(show));
+    d->showSettingsButton(show);
+}
 
-    d->m_showSettingsButton = show;
-    setOption(QWizard::HaveCustomButton1, show);
-    setButtonText(QWizard::CustomButton1, tr("&Settings"));
-    button(QWizard::CustomButton1)->setToolTip(
-        PackageManagerGui::tr("Specify proxy settings and configure repositories for add-on components."));
-
-    updateButtonLayout();
+/*!
+    Shows the \uicontrol Settings button if \a request is \c true. If script has
+    set the settings button visibility, this function has no effect.
+*/
+void PackageManagerGui::requestSettingsButtonByInstaller(bool request)
+{
+    if (m_core->value(QLatin1String("ShowSettingsButton")).isEmpty())
+        d->showSettingsButton(request);
 }
 
 /*!
@@ -1839,7 +1856,7 @@ void IntroductionPage::setUpdater(bool value)
 {
     if (value) {
         entering();
-        gui()->showSettingsButton(true);
+        gui()->requestSettingsButtonByInstaller(true);
         packageManagerCore()->setUpdater();
         emit packageManagerCoreTypeChanged();
 
@@ -1851,7 +1868,7 @@ void IntroductionPage::setUninstaller(bool value)
 {
     if (value) {
         entering();
-        gui()->showSettingsButton(true);
+        gui()->requestSettingsButtonByInstaller(true);
         packageManagerCore()->setUninstaller();
         emit packageManagerCoreTypeChanged();
 
@@ -1863,7 +1880,7 @@ void IntroductionPage::setPackageManager(bool value)
 {
     if (value) {
         entering();
-        gui()->showSettingsButton(true);
+        gui()->requestSettingsButtonByInstaller(true);
         packageManagerCore()->setPackageManager();
         emit packageManagerCoreTypeChanged();
 
