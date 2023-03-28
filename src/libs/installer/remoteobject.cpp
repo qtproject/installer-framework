@@ -46,7 +46,6 @@ namespace QInstaller {
 
 RemoteObject::RemoteObject(const QString &wrappedType, QObject *parent)
     : QObject(parent)
-    , dummy(nullptr)
     , m_type(wrappedType)
     , m_socket(nullptr)
 {
@@ -138,12 +137,6 @@ bool RemoteObject::isConnectedToServer() const
     if (m_socket && (m_socket->state() == QLocalSocket::ConnectedState))
         return true;
     return false;
-}
-
-void RemoteObject::callRemoteMethod(const QString &name)
-{
-    const QString reply = sendReceivePacket<QString>(name, dummy, dummy, dummy);
-    Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
 }
 
 } // namespace QInstaller

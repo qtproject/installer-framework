@@ -418,8 +418,7 @@ bool RemoteFileEngine::seek(qint64 offset)
 void RemoteFileEngine::setFileName(const QString &fileName)
 {
     if (connectToServer()) {
-        callRemoteMethod(QString::fromLatin1(Protocol::QAbstractFileEngineSetFileName), fileName,
-            dummy);
+        callRemoteMethodDefaultReply(QString::fromLatin1(Protocol::QAbstractFileEngineSetFileName), fileName);
     }
     m_fileEngine.setFileName(fileName);
 }

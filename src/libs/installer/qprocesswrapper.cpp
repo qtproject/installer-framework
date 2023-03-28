@@ -191,8 +191,8 @@ void QProcessWrapper::setProcessChannelMode(QProcessWrapper::ProcessChannelMode 
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessSetProcessChannelMode),
-            static_cast<QProcess::ProcessChannelMode>(mode), dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessSetProcessChannelMode),
+            static_cast<QProcess::ProcessChannelMode>(mode));
         m_lock.unlock();
     } else {
         process.setProcessChannelMode(static_cast<QProcess::ProcessChannelMode>(mode));
@@ -216,8 +216,8 @@ void QProcessWrapper::setReadChannel(QProcessWrapper::ProcessChannel chan)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessSetReadChannel),
-            static_cast<QProcess::ProcessChannel>(chan), dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessSetReadChannel),
+            static_cast<QProcess::ProcessChannel>(chan));
         m_lock.unlock();
     } else {
         process.setReadChannel(static_cast<QProcess::ProcessChannel>(chan));
@@ -263,7 +263,7 @@ void QProcessWrapper::closeWriteChannel()
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessCloseWriteChannel));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessCloseWriteChannel));
         m_lock.unlock();
     } else {
         process.closeWriteChannel();
@@ -296,7 +296,7 @@ void QProcessWrapper::kill()
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessKill));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessKill));
         m_lock.unlock();
     } else {
         process.kill();
@@ -343,7 +343,7 @@ void QProcessWrapper::start(const QString &param1, const QStringList &param2,
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessStart3Arg), param1, param2, param3);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessStart3Arg), param1, param2, param3);
         m_lock.unlock();
     } else {
         process.start(param1, param2, param3);
@@ -354,7 +354,7 @@ void QProcessWrapper::start(const QString &param1, QIODevice::OpenMode param2)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessStart2Arg), param1, param2);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessStart2Arg), param1, param2);
         m_lock.unlock();
     } else {
         process.start(param1, {}, param2);
@@ -376,7 +376,7 @@ void QProcessWrapper::terminate()
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessTerminate));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessTerminate));
         m_lock.unlock();
     } else {
         process.terminate();
@@ -443,7 +443,7 @@ void QProcessWrapper::setEnvironment(const QStringList &param1)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessSetEnvironment), param1, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessSetEnvironment), param1);
         m_lock.unlock();
     } else {
         process.setEnvironment(param1);
@@ -455,7 +455,7 @@ void QProcessWrapper::setNativeArguments(const QString &param1)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessSetNativeArguments), param1, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessSetNativeArguments), param1);
         m_lock.unlock();
     } else {
         process.setNativeArguments(param1);
@@ -467,7 +467,7 @@ void QProcessWrapper::setWorkingDirectory(const QString &param1)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::QProcessSetWorkingDirectory), param1, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::QProcessSetWorkingDirectory), param1);
         m_lock.unlock();
     } else {
         process.setWorkingDirectory(param1);

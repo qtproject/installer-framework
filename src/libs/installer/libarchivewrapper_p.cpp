@@ -105,7 +105,7 @@ void LibArchiveWrapperPrivate::setFilename(const QString &filename)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetFilename), filename, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveSetFilename), filename);
         m_lock.unlock();
     }
     m_archive.setFilename(filename);
@@ -145,7 +145,7 @@ bool LibArchiveWrapperPrivate::extract(const QString &dirPath, const quint64 tot
         timer.start();
 
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, total);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveExtract), dirPath, total);
         m_lock.unlock();
         {
             QEventLoop loop;
@@ -203,7 +203,7 @@ void LibArchiveWrapperPrivate::setCompressionLevel(const AbstractArchive::Compre
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetCompressionLevel), level, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveSetCompressionLevel), level);
         m_lock.unlock();
         return;
     }
@@ -219,7 +219,7 @@ void LibArchiveWrapperPrivate::cancel()
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveCancel));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveCancel));
         m_lock.unlock();
         return;
     }
@@ -354,7 +354,7 @@ void LibArchiveWrapperPrivate::addDataBlock(const QByteArray &buffer)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveAddDataBlock), buffer, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveAddDataBlock), buffer);
         m_lock.unlock();
     }
 }
@@ -367,7 +367,7 @@ void LibArchiveWrapperPrivate::setClientDataAtEnd()
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd));
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveSetClientDataAtEnd));
         m_lock.unlock();
     }
 }
@@ -379,7 +379,7 @@ void LibArchiveWrapperPrivate::setClientFilePosition(qint64 pos)
 {
     if (connectToServer()) {
         m_lock.lockForWrite();
-        callRemoteMethod(QLatin1String(Protocol::AbstractArchiveSetFilePosition), pos, dummy);
+        callRemoteMethodDefaultReply(QLatin1String(Protocol::AbstractArchiveSetFilePosition), pos);
         m_lock.unlock();
     }
 }

@@ -52,93 +52,50 @@ public:
     virtual ~RemoteObject() = 0;
 
     bool isConnectedToServer() const;
-    void callRemoteMethod(const QString &name);
 
-    template<typename T1, typename T2>
-    void callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2)
+    template<typename... Args>
+    void callRemoteMethodDefaultReply(const QString &name, const Args&... args)
     {
-        const QString reply = sendReceivePacket<QString>(name, arg, arg2, dummy);
+        const QString reply = sendReceivePacket<QString>(name, args...);
         Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
     }
 
-    template<typename T1, typename T2, typename T3>
-    void callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 & arg3)
+    template<typename T, typename... Args>
+    T callRemoteMethod(const QString &name, const Args&... args) const
     {
-        const QString reply = sendReceivePacket<QString>(name, arg, arg2, arg3);
-        Q_ASSERT(reply == QLatin1String(Protocol::DefaultReply));
-    }
-
-    template<typename T>
-    T callRemoteMethod(const QString &name) const
-    {
-        return sendReceivePacket<T>(name, dummy, dummy, dummy);
-    }
-
-    template<typename T, typename T1>
-    T callRemoteMethod(const QString &name, const T1 &arg) const
-    {
-        return sendReceivePacket<T>(name, arg, dummy, dummy);
-    }
-
-    template<typename T, typename T1, typename T2>
-    T callRemoteMethod(const QString &name, const T1 & arg, const T2 &arg2) const
-    {
-        return sendReceivePacket<T>(name, arg, arg2, dummy);
-    }
-
-    template<typename T, typename T1, typename T2, typename T3>
-    T callRemoteMethod(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
-    {
-        return sendReceivePacket<T>(name, arg, arg2, arg3);
+        return sendReceivePacket<T>(name, args...);
     }
 
 protected:
     bool authorize();
     bool connectToServer(const QVariantList &arguments = QVariantList());
 
-    // Use this structure to allow derived classes to manipulate the template
-    // function signature of the callRemoteMethod templates, since most of the
-    // generated functions will differ in return type rather given arguments.
-    struct Dummy {}; Dummy *dummy;
-
 private:
-    template<typename T> bool isValueType(T) const
-    {
-        return true;
-    }
 
-    template<typename T> bool isValueType(T *dummy) const
+    template<typename T, typename... Args>
+    T sendReceivePacket(const QString &name, const Args&... args) const
     {
-        // Force compiler error while passing anything different then Dummy* to the function.
-        // It really doesn't make sense to send any pointer over to the server, so bail early.
-        Q_UNUSED(static_cast<Dummy*> (dummy))
-        return false;
-    }
-
-    template<typename T, typename T1, typename T2, typename T3>
-    T sendReceivePacket(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
-    {
-        writeData(name, arg, arg2, arg3);
+        writeData(name, args...);
         while (m_socket->bytesToWrite())
             m_socket->waitForBytesWritten();
 
         return readData<T>(name);
     }
 
+    template <class T> int writeObject(QDataStream& out, const T& t) const
+    {
+        static_assert(!std::is_pointer<T>::value, "Pointer passed to remote server");
+        out << t;
+        return 0;
+    }
 
-    template<typename T1, typename T2, typename T3>
-    void writeData(const QString &name, const T1 &arg, const T2 &arg2, const T3 &arg3) const
+    template<typename... Args>
+    void writeData(const QString &name, const Args&... args) const
     {
         QByteArray data;
         QDataStream out(&data, QIODevice::WriteOnly);
 
-        if (isValueType(arg))
-            out << arg;
-        if (isValueType(arg2))
-            out << arg2;
-        if (isValueType(arg3))
-            out << arg3;
-
+        (void)std::initializer_list<int>{writeObject(out, args)...};
         sendPacket(m_socket, name.toLatin1(), data);
         m_socket->flush();
     }
