@@ -149,7 +149,7 @@
                 \c linkname.
                 On Windows, this creates a .lnk file which can have
                 \c arguments. Furthermore, \c filename can be
-                an HTTP or FTP URL in which case a URL shortcut is created.
+                an HTTP, HTTPS or FTP URL in which case a URL shortcut is created.
                 \note If the \c @AllUsersStartMenuProgramsPath@ is used for
                 placing the shortcut, then due to a problem on Windows, it will
                 drop any arguments to the target and any description set. In

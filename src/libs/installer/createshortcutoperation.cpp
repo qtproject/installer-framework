@@ -110,6 +110,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     IUnknown *iunkn = nullptr;
 
     if (fileName.toLower().startsWith(QLatin1String("http:"))
+        || fileName.toLower().startsWith(QLatin1String("https:"))
         || fileName.toLower().startsWith(QLatin1String("ftp:"))) {
         IUniformResourceLocator *iurl = nullptr;
         if (FAILED(CoCreateInstance(CLSID_InternetShortcut, nullptr, CLSCTX_INPROC_SERVER,
