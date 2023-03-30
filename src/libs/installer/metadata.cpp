@@ -46,6 +46,60 @@ namespace QInstaller {
     \brief The Metadata class represents fetched metadata from a repository.
 */
 
+
+/*!
+    \internal
+*/
+static bool verifyFileIntegrityFromElement(const QDomElement &element, const QString &childNodeName,
+    const QString &attribute, const QString &metaDirectory, bool testChecksum)
+{
+    const QDomNodeList nodes = element.childNodes();
+    for (int i = 0; i < nodes.count(); ++i) {
+        const QDomNode node = nodes.at(i);
+        if (node.nodeName() != childNodeName)
+            continue;
+
+        const QDir dir(metaDirectory);
+        const QString filename = attribute.isEmpty()
+            ? node.toElement().text()
+            : node.toElement().attribute(attribute);
+
+        if (filename.isEmpty())
+            continue;
+
+        QFile file(dir.absolutePath() + QDir::separator() + filename);
+        if (!file.open(QIODevice::ReadOnly)) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "Cannot open" << file.fileName()
+                << "for reading:" << file.errorString();
+            return false;
+        }
+
+        if (!testChecksum)
+            continue;
+
+        QFile hashFile(file.fileName() + QLatin1String(".sha1"));
+        if (!hashFile.open(QIODevice::ReadOnly)) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "Cannot open" << hashFile.fileName()
+                << "for reading:" << hashFile.errorString();
+            return false;
+        }
+
+        QCryptographicHash hash(QCryptographicHash::Sha1);
+        hash.addData(&file);
+
+        const QByteArray checksum = hash.result().toHex();
+        const QByteArray expectedChecksum = hashFile.readAll();
+        if (checksum != expectedChecksum) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "Unexpected checksum for file" << file.fileName();
+            return false;
+        }
+    }
+    return true;
+}
+
 /*!
     Constructs a new metadata object.
 */
@@ -122,18 +176,23 @@ QDomDocument Metadata::updatesDocument() const
 }
 
 /*!
-    Returns \c true if the \c Updates.xml document of this metadata
-    exists, \c false otherwise.
+    Returns \c true if the \c Updates.xml document of this metadata exists, and that all
+    meta files referenced in the document exist. If the \c Updates.xml contains a \c Checksum
+    element with a value of \c true, the integrity of the files is also verified.
+
+    Returns \c false otherwise.
 */
 bool Metadata::isValid() const
 {
-    const QString updateFile(path() + QLatin1String("/Updates.xml"));
-    if (!QFileInfo::exists(updateFile)) {
+    QFile updateFile(path() + QLatin1String("/Updates.xml"));
+    if (!updateFile.open(QIODevice::ReadOnly)) {
         qCWarning(QInstaller::lcInstallerInstallLog)
-            << "File" << updateFile << "does not exist.";
+            << "Cannot open" << updateFile.fileName()
+            << "for reading:" << updateFile.errorString();
         return false;
     }
-    return true;
+
+    return verifyMetaFiles(&updateFile);
 }
 
 /*!
@@ -280,6 +339,80 @@ bool Metadata::containsRepositoryUpdates() const
     }
 
     return false;
+}
+
+/*!
+    Verifies that the files referenced in \a updateFile document exist
+    on disk. If the document contains a \c Checksum element with a value
+    of \c true, the integrity of the files is also verified.
+
+    Returns \c true if the meta files are valid, \c false otherwise.
+*/
+bool Metadata::verifyMetaFiles(QFile *updateFile) const
+{
+    QDomDocument doc;
+    QString errorString;
+    if (!doc.setContent(updateFile, &errorString)) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+            << "Cannot set document content:" << errorString;
+        return false;
+    }
+
+    const QDomElement rootElement = doc.documentElement();
+    const QDomNodeList childNodes = rootElement.childNodes();
+
+    bool testChecksum = true;
+    const QDomElement checksumElement = rootElement.firstChildElement(QLatin1String("Checksum"));
+    if (!checksumElement.isNull())
+        testChecksum = (checksumElement.text().toLower() == scTrue);
+
+    for (int i = 0; i < childNodes.count(); ++i) {
+        const QDomElement element = childNodes.at(i).toElement();
+        if (element.isNull() || element.tagName() != QLatin1String("PackageUpdate"))
+            continue;
+
+        const QDomNodeList c2 = element.childNodes();
+        QString packageName;
+        QString unused1;
+        QString unused2;
+
+        // Only need the package name, so values for "online" and "testCheckSum" do not matter
+        if (!MetadataJob::parsePackageUpdate(c2, packageName, unused1, unused2, true, true))
+            continue; // nothing to check for this package
+
+        const QString packagePath = QString::fromLatin1("%1/%2/").arg(path(), packageName);
+        for (auto &metaTagName : qAsConst(*scMetaElements)) {
+            const QDomElement metaElement = element.firstChildElement(metaTagName);
+            if (metaElement.isNull())
+                continue;
+
+            if (metaElement.tagName() == QLatin1String("Licenses")) {
+                if (!verifyFileIntegrityFromElement(metaElement, QLatin1String("License"),
+                        QLatin1String("file"), packagePath, testChecksum)) {
+                    return false;
+                }
+            } else if (metaElement.tagName() == QLatin1String("UserInterfaces")) {
+                if (!verifyFileIntegrityFromElement(metaElement, QLatin1String("UserInterface"),
+                        QString(), packagePath, testChecksum)) {
+                    return false;
+                }
+            } else if (metaElement.tagName() == QLatin1String("Translations")) {
+                if (!verifyFileIntegrityFromElement(metaElement, QLatin1String("Translation"),
+                        QString(), packagePath, testChecksum)) {
+                    return false;
+                }
+            } else if (metaElement.tagName() == QLatin1String("Script")) {
+                if (!verifyFileIntegrityFromElement(metaElement.parentNode().toElement(),
+                        QLatin1String("Script"), QString(), packagePath, testChecksum)) {
+                    return false;
+                }
+            } else {
+                Q_ASSERT_X(false, Q_FUNC_INFO, "Unknown meta element.");
+            }
+        }
+    }
+
+    return true;
 }
 
 } // namespace QInstaller

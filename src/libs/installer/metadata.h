@@ -35,6 +35,8 @@
 
 #include <QDomDocument>
 
+class QFile;
+
 namespace QInstaller {
 
 class INSTALLER_EXPORT Metadata : public CacheableItem
@@ -62,6 +64,9 @@ public:
     QString persistentRepositoryPath();
 
     bool containsRepositoryUpdates() const;
+
+private:
+    bool verifyMetaFiles(QFile *updateFile) const;
 
 private:
     Repository m_repository;

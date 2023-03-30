@@ -43,6 +43,9 @@
 #include <QObject>
 #include <QTest>
 
+#define QUOTE_(x) #x
+#define QUOTE(x) QUOTE_(x)
+
 using namespace QInstaller;
 
 static const QByteArray scPlaceholderSha1("placeholder_sha1");
@@ -141,7 +144,7 @@ private slots:
 
     void testRegisterItemToEmptyCache()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -160,7 +163,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
         QVERIFY(itemsFromManifest(m_cachePath + "/manifest.json").contains(QLatin1String(m_oldMetadataItemChecksum)));
 
@@ -192,7 +195,7 @@ private slots:
         // 2. Test fail due to null metadata
         cache.setPath(m_cachePath);
         cache.setType("Metadata");
-        cache.setVersion("1.0.0");
+        cache.setVersion(QUOTE(IFW_CACHE_FORMAT_VERSION));
         QVERIFY(cache.initialize());
 
         QVERIFY(!cache.registerItem(metadata));
@@ -220,7 +223,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = cache.itemByChecksum(m_oldMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
@@ -234,7 +237,7 @@ private slots:
         QTest::addColumn<QString>("type");
         QTest::addColumn<QString>("version");
 
-        QTest::newRow("Type mismatch") << "MyCacheableType" << "1.0.0";
+        QTest::newRow("Type mismatch") << "MyCacheableType" << QUOTE(IFW_CACHE_FORMAT_VERSION);
         QTest::newRow("Version mismatch") << "Metadata" << "0.9.1";
     }
 
@@ -265,7 +268,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = cache.itemByChecksum(m_oldMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
@@ -279,7 +282,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         QVERIFY(!cache.removeItem("12345"));
         QCOMPARE(cache.errorString(), "Cannot remove item specified by checksum 12345: no such item exists.");
 
@@ -289,7 +292,7 @@ private slots:
 
     void testRetrieveItemFromCache()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -307,7 +310,7 @@ private slots:
 
     void testRetrieveItemFails()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
         const QString metadataPath = metadata->path();
 
@@ -325,7 +328,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -351,7 +354,7 @@ private slots:
 
     void testClearCacheFails()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", "1.0.0");
+        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));

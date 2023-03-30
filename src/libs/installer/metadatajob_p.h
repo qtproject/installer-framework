@@ -62,11 +62,16 @@ class UnzipArchiveTask : public AbstractTask<void>
 
 public:
     UnzipArchiveTask(const QString &arcive, const QString &target)
-        : m_archive(arcive), m_targetDir(target), m_removeArchive(false)
+        : m_archive(arcive)
+        , m_targetDir(target)
+        , m_removeArchive(false)
+        , m_storeChecksums(false)
     {}
+
     QString target() { return m_targetDir; }
     QString archive() { return m_archive; }
     void setRemoveArchive(bool remove) { m_removeArchive = remove; }
+    void setStoreChecksums(bool store) { m_storeChecksums = store; }
 
     void doTask(QFutureInterface<void> &fi) override
     {
@@ -82,12 +87,43 @@ public:
         if (!archive) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Unsupported archive \"%1\": no handler "
                 "registered for file suffix \"%2\".").arg(m_archive, QFileInfo(m_archive).suffix())));
+            return;
         } else if (!archive->open(QIODevice::ReadOnly)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
                 "reading: %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
+            return;
         } else if (!archive->extract(m_targetDir)) {
             fi.reportException(UnzipArchiveException(MetadataJob::tr("Error while extracting "
                 "archive \"%1\": %2").arg(QDir::toNativeSeparators(m_archive), archive->errorString())));
+            return;
+        }
+
+        if (m_storeChecksums) {
+            // Calculate and store checksums of extracted files for later use
+            const QVector<ArchiveEntry> entries = archive->list();
+            for (auto &entry : entries) {
+                if (entry.isDirectory)
+                    continue;
+
+                QFile file(m_targetDir + QDir::separator() + entry.path);
+                if (!file.open(QIODevice::ReadOnly)) {
+                    fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open extracted file \"%1\" for "
+                        "reading: %2").arg(QDir::toNativeSeparators(file.fileName()), file.errorString())));
+                    break;
+                }
+                QCryptographicHash hash(QCryptographicHash::Sha1);
+                hash.addData(&file);
+
+                const QByteArray hexChecksum = hash.result().toHex();
+                QFile hashFile(file.fileName() + QLatin1String(".sha1"));
+                if (!hashFile.open(QIODevice::WriteOnly)) {
+                    fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
+                        "writing: %2").arg(QDir::toNativeSeparators(hashFile.fileName()), hashFile.errorString())));
+                    break;
+                }
+                QTextStream stream(&hashFile);
+                stream << hexChecksum;
+            }
         }
 
         archive->close();
@@ -101,6 +137,7 @@ private:
     QString m_archive;
     QString m_targetDir;
     bool m_removeArchive;
+    bool m_storeChecksums;
 };
 
 class CacheTaskException : public QException

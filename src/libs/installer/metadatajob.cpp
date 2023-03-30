@@ -193,7 +193,7 @@ bool MetadataJob::resetCache(bool init)
 
     m_metaFromCache.setPath(m_core->settings().localCachePath());
     m_metaFromCache.setType(QLatin1String("Metadata"));
-    m_metaFromCache.setVersion(QLatin1String(QUOTE(IFW_REPOSITORY_FORMAT_VERSION)));
+    m_metaFromCache.setVersion(QLatin1String(QUOTE(IFW_CACHE_FORMAT_VERSION)));
 
     if (!init)
         return true;
@@ -630,6 +630,7 @@ void MetadataJob::metadataTaskFinished()
                     UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
                         item.value(TaskRole::UserRole).toString());
                     task->setRemoveArchive(true);
+                    task->setStoreChecksums(true);
 
                     QFutureWatcher<void> *watcher = new QFutureWatcher<void>();
                     m_unzipTasks.insert(watcher, qobject_cast<QObject*> (task));
