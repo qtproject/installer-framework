@@ -71,7 +71,7 @@ public:
 
     GenericDataCache();
     explicit GenericDataCache(const QString &path, const QString &type, const QString &version);
-    ~GenericDataCache();
+    virtual ~GenericDataCache();
 
     void setType(const QString &type);
     void setVersion(const QString &version);

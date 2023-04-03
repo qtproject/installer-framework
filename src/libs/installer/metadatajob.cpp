@@ -42,9 +42,6 @@
 #include <QtMath>
 #include <QRandomGenerator>
 
-#define QUOTE_(x) #x
-#define QUOTE(x) QUOTE_(x)
-
 namespace QInstaller {
 
 /*!
@@ -192,8 +189,6 @@ bool MetadataJob::resetCache(bool init)
         m_metaFromCache.clear();
 
     m_metaFromCache.setPath(m_core->settings().localCachePath());
-    m_metaFromCache.setType(QLatin1String("Metadata"));
-    m_metaFromCache.setVersion(QLatin1String(QUOTE(IFW_CACHE_FORMAT_VERSION)));
 
     if (!init)
         return true;

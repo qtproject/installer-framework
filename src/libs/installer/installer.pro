@@ -52,6 +52,7 @@ HEADERS += packagemanagercore.h \
     genericdatacache.h \
     loggingutils.h \
     metadata.h \
+    metadatacache.h \
     packagemanagercore_p.h \
     packagemanagergui.h \
     binaryformat.h \
@@ -158,6 +159,7 @@ SOURCES += packagemanagercore.cpp \
     genericdatacache.cpp \
     loggingutils.cpp \
     metadata.cpp \
+    metadatacache.cpp \
     operationtracer.cpp \
     packagemanagercore_p.cpp \
     packagemanagergui.cpp \

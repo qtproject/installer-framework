@@ -30,7 +30,7 @@
 
 #include <errors.h>
 #include <fileutils.h>
-#include <genericdatacache.h>
+#include <metadatacache.h>
 #include <metadata.h>
 #include <repository.h>
 
@@ -144,7 +144,7 @@ private slots:
 
     void testRegisterItemToEmptyCache()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -163,7 +163,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
         QVERIFY(itemsFromManifest(m_cachePath + "/manifest.json").contains(QLatin1String(m_oldMetadataItemChecksum)));
 
@@ -183,7 +183,7 @@ private slots:
     void testRegisterItemFails()
     {
         // 1. Test fail due to invalidated cache
-        GenericDataCache<Metadata> cache;
+        MetadataCache cache;
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(!cache.registerItem(metadata));
@@ -223,7 +223,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = cache.itemByChecksum(m_oldMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
@@ -248,7 +248,12 @@ private slots:
 
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, type, version);
+        MetadataCache cache;
+        cache.setType(type);
+        cache.setVersion(version);
+        cache.setPath(m_cachePath);
+        QVERIFY(cache.initialize());
+
         QVERIFY(cache.isValid());
         QVERIFY(!cache.itemByChecksum(m_oldMetadataItemChecksum));
 
@@ -259,7 +264,7 @@ private slots:
 
     void testInitializeCacheFails()
     {
-        GenericDataCache<Metadata> cache;
+        MetadataCache cache;
         QVERIFY(!cache.initialize());
         QCOMPARE(cache.errorString(), "Cannot initialize cache with empty path.");
     }
@@ -268,7 +273,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = cache.itemByChecksum(m_oldMetadataItemChecksum);
         QVERIFY(metadata);
         QVERIFY(metadata->isValid());
@@ -282,7 +287,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         QVERIFY(!cache.removeItem("12345"));
         QCOMPARE(cache.errorString(), "Cannot remove item specified by checksum 12345: no such item exists.");
 
@@ -292,7 +297,7 @@ private slots:
 
     void testRetrieveItemFromCache()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -310,7 +315,7 @@ private slots:
 
     void testRetrieveItemFails()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
         const QString metadataPath = metadata->path();
 
@@ -328,7 +333,7 @@ private slots:
     {
         copyExistingCacheFromResourceTree();
 
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));
@@ -354,7 +359,7 @@ private slots:
 
     void testClearCacheFails()
     {
-        GenericDataCache<Metadata> cache(m_cachePath, "Metadata", QUOTE(IFW_CACHE_FORMAT_VERSION));
+        MetadataCache cache(m_cachePath);
         Metadata *metadata = new Metadata(":/data/local-temp-repository/");
 
         QVERIFY(cache.registerItem(metadata));

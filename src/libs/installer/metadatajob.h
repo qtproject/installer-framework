@@ -33,7 +33,7 @@
 #include "fileutils.h"
 #include "job.h"
 #include "metadata.h"
-#include "genericdatacache.h"
+#include "metadatacache.h"
 #include "repository.h"
 
 #include <QFutureWatcher>
@@ -133,7 +133,7 @@ private:
 
     QSet<Repository> m_fetchedCategorizedRepositories;
     QHash<QString, Metadata *> m_fetchedMetadata;
-    GenericDataCache<Metadata> m_metaFromCache;
+    MetadataCache m_metaFromCache;
 };
 
 }   // namespace QInstaller

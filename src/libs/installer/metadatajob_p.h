@@ -163,7 +163,7 @@ class UpdateCacheTask : public AbstractTask<void>
     Q_DISABLE_COPY(UpdateCacheTask)
 
 public:
-    UpdateCacheTask(GenericDataCache<Metadata> &cache, QHash<QString, Metadata *> &updates)
+    UpdateCacheTask(MetadataCache &cache, QHash<QString, Metadata *> &updates)
         : m_cache(&cache)
         , m_updates(&updates)
     {}
@@ -177,7 +177,7 @@ public:
         QStringList registeredKeys;
         bool success = true;
         for (auto *meta : qAsConst(*m_updates)) {
-            if (!m_cache->registerItem(meta, true, GenericDataCache<Metadata>::Move)) {
+            if (!m_cache->registerItem(meta, true, MetadataCache::Move)) {
                 success = false;
                 break;
             }
@@ -211,7 +211,7 @@ public:
     }
 
 private:
-    GenericDataCache<Metadata> *const m_cache;
+    MetadataCache *const m_cache;
     QHash<QString, Metadata *> *const m_updates;
 };
 
