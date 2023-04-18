@@ -175,7 +175,6 @@ public:
     void installComponent(Component *component, double progressOperationSize,
         bool adminRightsGained = false);
 
-    bool runningProcessesFound();
     void setComponentSelection(const QString &id, Qt::CheckState state);
 
 signals:
@@ -264,8 +263,6 @@ private:
     bool fetchMetaInformationFromRepositories(DownloadType type = DownloadType::All);
     bool addUpdateResourcesFromRepositories(bool compressedRepository = false);
     void processFilesForDelayedDeletion();
-    void findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result);
-    QStringList runningInstallerProcesses(const QStringList &exludeFiles);
     bool calculateComponentsAndRun();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;

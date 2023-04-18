@@ -2668,8 +2668,6 @@ void PackageManagerCore::listInstalledPackages(const QString &regexp)
 */
 PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QStringList &componentsToUpdate)
 {
-    if (d->runningProcessesFound())
-        throw Error(tr("Running processes found."));
     setUpdater();
 
     ComponentModel *model = updaterComponentModel();
@@ -2804,9 +2802,6 @@ void PackageManagerCore::createAutoDependencyHash(const QString &component, cons
 */
 PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const QStringList& components)
 {
-    if (d->runningProcessesFound())
-        throw Error(tr("Running processes found."));
-
     if (components.isEmpty()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No components selected for uninstallation.";
         return PackageManagerCore::Canceled;
@@ -2845,8 +2840,6 @@ PackageManagerCore::Status PackageManagerCore::uninstallComponentsSilently(const
 PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
 {
     setCompleteUninstallation(true);
-    if (d->runningProcessesFound())
-        throw Error(tr("Running processes found."));
 
     qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
     if (!(d->m_autoConfirmCommand || d->askUserConfirmCommand())) {
@@ -2896,9 +2889,6 @@ PackageManagerCore::Status PackageManagerCore::createOfflineInstaller(const QStr
 PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently(const QStringList& components)
 {
     if (!isInstaller()) {
-        // Check if there are processes running in the install if maintenancetool is used.
-        if (d->runningProcessesFound())
-            throw Error(tr("Running processes found."));
         setPackageManager();
 
         //Check that packages are not already installed
@@ -3160,6 +3150,10 @@ bool PackageManagerCore::killProcess(const QString &absoluteFilePath) const
 }
 
 /*!
+    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    in the installation directory for CLI runs. To manually check for a process to stop, use
+    \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
+
     Sets additional \a processes that can run when
     updating with the maintenance tool.
 
@@ -3171,6 +3165,10 @@ void PackageManagerCore::setAllowedRunningProcesses(const QStringList &processes
 }
 
 /*!
+    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    in the installation directory for CLI runs. To manually check for a process to stop, use
+    \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
+
     Returns processes that are allowed to run when
     updating with the maintenance tool.
 

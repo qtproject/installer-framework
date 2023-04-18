@@ -633,12 +633,20 @@
 /*!
     \qmlmethod void installer::setAllowedRunningProcesses(stringlist processes)
 
+    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    in the installation directory for CLI runs. To check for a process to stop, use
+    \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
+
     Sets additional \a processes that can run when
     updating with the maintenance tool.
 */
 
 /*!
     \qmlmethod stringlist installer::allowedRunningProcesses()
+
+    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    in the installation directory for CLI runs. To check for a process to stop, use
+    \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
 
     Returns processes that are allowed to run when updating with
     the maintenance tool.

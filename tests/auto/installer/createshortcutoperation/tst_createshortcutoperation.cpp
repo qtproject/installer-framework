@@ -56,7 +56,6 @@ private:
             QList<OperationBlob> (), QString(), QString(), Protocol::DefaultAuthorizationKey,
             Protocol::Mode::Production, QHash<QString, QString>(), true));
 
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();
         core->setAutoConfirmCommand();
         QSet<Repository> repoList;

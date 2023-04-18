@@ -287,52 +287,6 @@ private slots:
         QVERIFY(QDir().rmdir(testDirectory));
     }
 
-    void testAllowRunningProcess()
-    {
-        #ifdef Q_OS_MACOS
-            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
-        #endif
-        PackageManagerCore core;
-        core.setPackageManager();
-        const QString testDirectory = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(testDirectory));
-        core.setValue(scTargetDir, testDirectory);
-
-        QString appFilePath = QCoreApplication::applicationFilePath();
-        core.setAllowedRunningProcesses(QStringList() << appFilePath);
-        const QString warningMessage =  QString("Failure to read packages from ");
-        const QRegularExpression re(warningMessage);
-        QTest::ignoreMessage(QtWarningMsg, re);
-        QTest::ignoreMessage(QtDebugMsg, "No updates available.");
-
-        QCOMPARE(PackageManagerCore::Canceled, core.updateComponentsSilently(QStringList()));
-        QVERIFY(QDir().rmdir(testDirectory));
-    }
-
-    void testDisallowRunningProcess()
-    {
-        #ifdef Q_OS_MACOS
-            QSKIP("In macOS the app path and maintenancetool differ, not possible to test running processes.");
-        #endif
-        PackageManagerCore core;
-        core.setPackageManager();
-        const QString testDirectory = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(testDirectory));
-        core.setValue(scTargetDir, testDirectory);
-
-        const QString warningMessageUp =  QString("Unable to update components. Please stop these processes: ");
-        const QRegularExpression reUp(warningMessageUp);
-        QTest::ignoreMessage(QtWarningMsg, reUp);
-        QVERIFY_EXCEPTION_THROWN(core.updateComponentsSilently(QStringList()), Error);
-
-        const QString warningMessageRm =  QString("Unable to remove components. Please stop these processes: ");
-        const QRegularExpression reRm(warningMessageRm);
-        QTest::ignoreMessage(QtWarningMsg, reRm);
-        QVERIFY_EXCEPTION_THROWN(core.removeInstallationSilently(), Error);
-
-        QVERIFY(QDir().rmdir(testDirectory));
-    }
-
     void testCoreDataValues()
     {
         QHash<QString, QString> userValues;

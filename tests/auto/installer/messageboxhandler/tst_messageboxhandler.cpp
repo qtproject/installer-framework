@@ -95,7 +95,6 @@ private slots:
         core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> (),
                                       QString(), QString(), Protocol::DefaultAuthorizationKey, Protocol::Mode::Production,
                                       QHash<QString, QString>(), true);
-        core->setAllowedRunningProcesses(QStringList() << QCoreApplication::applicationFilePath());
         core->disableWriteMaintenanceTool();
         core->setAutoConfirmCommand();
         m_installDir = QInstaller::generateTemporaryFileName();

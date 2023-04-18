@@ -176,8 +176,6 @@ private slots:
         QString loggingRules = (QLatin1String("ifw.installer.installog = true\n"));
         PackageManagerCore core;
         core.setPackageManager();
-        QString appFilePath = QCoreApplication::applicationFilePath();
-        core.setAllowedRunningProcesses(QStringList() << appFilePath);
         QLoggingCategory::setFilterRules(loggingRules);
 
         QVERIFY(QFile::copy(":/data/componentsFromInstallPackagesRepository.xml", m_installDir + "/components.xml"));

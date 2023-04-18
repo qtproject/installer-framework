@@ -2501,25 +2501,6 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
 }
 
-bool PackageManagerCorePrivate::runningProcessesFound()
-{
-    //Check if there are processes running in the install
-    QStringList excludeFiles = m_allowedRunningProcesses;
-    excludeFiles.append(maintenanceToolName());
-
-    const QString performModeWarning = m_completeUninstall
-        ? QLatin1String("Unable to remove components.")
-        : QLatin1String("Unable to update components.");
-
-    QStringList runningProcesses = runningInstallerProcesses(excludeFiles);
-    if (!runningProcesses.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << performModeWarning
-                 << " Please stop these processes: " << runningProcesses << " and try again.";
-        return true;
-    }
-    return false;
-}
-
 void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::CheckState state)
 {
     ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
@@ -3006,24 +2987,6 @@ void PackageManagerCorePrivate::processFilesForDelayedDeletion()
             m_filesForDelayedDeletion << i; // try again next time
         }
     }
-}
-
-void PackageManagerCorePrivate::findExecutablesRecursive(const QString &path, const QStringList &excludeFiles, QStringList *result)
-{
-    QDirIterator it(path, QDir::NoDotAndDotDot | QDir::Executable | QDir::Files | QDir::System, QDirIterator::Subdirectories );
-
-    while (it.hasNext())
-        result->append(QDir::toNativeSeparators(it.next().toLower()));
-
-    foreach (const QString &process, excludeFiles)
-        result->removeAll(QDir::toNativeSeparators(process.toLower()));
-}
-
-QStringList PackageManagerCorePrivate::runningInstallerProcesses(const QStringList &excludeFiles)
-{
-    QStringList resultFiles;
-    findExecutablesRecursive(QCoreApplication::applicationDirPath(), excludeFiles, &resultFiles);
-    return checkRunningProcessesFromList(resultFiles);
 }
 
 bool PackageManagerCorePrivate::calculateComponentsAndRun()

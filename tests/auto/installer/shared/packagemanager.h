@@ -61,7 +61,6 @@ struct PackageManager
 
         PackageManagerCore *core = new PackageManagerCore(BinaryContent::MagicInstallerMarker, QList<OperationBlob> ());
         QString appFilePath = QCoreApplication::applicationFilePath();
-        core->setAllowedRunningProcesses(QStringList() << appFilePath);
         core->disableWriteMaintenanceTool();
         core->setAutoConfirmCommand();
         QSet<Repository> repoList;
