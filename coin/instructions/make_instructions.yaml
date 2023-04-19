@@ -101,21 +101,15 @@ instructions:
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
-      - type: EnvironmentVariable
-        variableName: QT_CODESIGN_IDENTITY_KEY
-        variableValue: "A5GTH44LYL"
+      - type: ChangeDirectory
+        directory: "{{.AgentWorkingDir}}/qtsdk"
+      - type: ExecuteCommand
+        command: "python3 tqtc-qtsdk/jenkins-templates/jenkins/scripts/pkg_bootstrap.py"
+        maxTimeInSeconds: 1800
+        maxTimeBetweenOutput: 600
+        userMessageOnFailure: "pkg_bootstrap.py failed"
       - type: ChangeDirectory
         directory: "{{.AgentWorkingDir}}/qtsdk/qtsdk/packaging-tools"
-      - type: ExecuteCommand
-        command: "python3 -m pip install pipenv==2022.4.8 --user"
-        maxTimeInSeconds: 1800
-        maxTimeBetweenOutput: 600
-        userMessageOnFailure: "Failed to install Pipenv"
-      - type: ExecuteCommand
-        command: "python3 -m pipenv install --skip-lock"
-        maxTimeInSeconds: 1800
-        maxTimeBetweenOutput: 600
-        userMessageOnFailure: "Failed to install Pipenv requirements"
       - type: ExecuteCommand
         command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0.app"
         maxTimeInSeconds: 36000
