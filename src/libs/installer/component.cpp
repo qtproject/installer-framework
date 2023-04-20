@@ -960,6 +960,12 @@ QStringList Component::archives() const
     static const QRegularExpression regExp(scCaretSymbol);
     QString pathString = scInstallerPrefixWithOneArgs.arg(name());
     QStringList archivesNameList = QDir(pathString).entryList();
+
+    // In resources we may have older version of archives, this can happen
+    // when there is offline installer with same component with lower version
+    // number and newer version is available online
+    archivesNameList = archivesNameList.filter(value(scVersion));
+
     //RegExp "^" means line beginning
     archivesNameList.replaceInStrings(regExp, pathString);
     return archivesNameList;
