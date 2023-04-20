@@ -78,7 +78,9 @@ QStringList loggingCategories()
 {
     static QStringList categories = QStringList()
             << QLatin1String(IFW_INSTALLER_INSTALLLOG)
-            << QLatin1String(IFW_SERVER);
+            << QLatin1String(IFW_SERVER)
+            << QLatin1String(IFW_DEVELOPER_BUILD)
+            << QLatin1String("js");
     return categories;
 
 }

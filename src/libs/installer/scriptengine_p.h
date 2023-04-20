@@ -43,18 +43,6 @@ class PackageManagerCore;
 class PackageManagerGui;
 class ScriptEngine;
 
-class ConsoleProxy : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(ConsoleProxy)
-
-public:
-    ConsoleProxy() {}
-
-public slots :
-        void log(const QString &log) { qCDebug(QInstaller::lcInstallerInstallLog).noquote() << log; }
-};
-
 class InstallerProxy : public QObject
 {
     Q_OBJECT
@@ -178,7 +166,6 @@ private:
 
 } // namespace QInstaller
 
-Q_DECLARE_METATYPE(QInstaller::ConsoleProxy*)
 Q_DECLARE_METATYPE(QInstaller::InstallerProxy*)
 Q_DECLARE_METATYPE(QInstaller::QFileDialogProxy*)
 Q_DECLARE_METATYPE(QInstaller::QDesktopServicesProxy*)
