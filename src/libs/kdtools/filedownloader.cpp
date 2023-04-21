@@ -1509,9 +1509,9 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
                 qCWarning(QInstaller::lcInstallerInstallLog) << "File exists but installer is unable to open it.";
             else
                 qCWarning(QInstaller::lcInstallerInstallLog) << "File does not exist.";
-            d->shutDown();
             setDownloadAborted(tr("Cannot download %1. Cannot create file \"%2\": %3").arg(
                 url.toString(), d->destination->fileName(), d->destination->errorString()));
+            d->shutDown();
         }
     }
 }
