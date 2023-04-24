@@ -136,6 +136,10 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>No s&apos;ha pogut trobar la dependència «%1» que falta per a «%2».</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -305,6 +309,10 @@
     <message>
         <source>Try again</source>
         <translation>Torna a intentar-ho</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -487,10 +495,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>No s&apos;ha pogut llegir «%1»</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Error d&apos;anàlisi en %1 a %2, %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -744,24 +748,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>Els components no poden tenir elements secundaris en el mode actualitzador.</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>No s&apos;ha pogut obrir el fitxer UI «%1» sol·licitat: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>No s&apos;ha pogut carregar el fitxer UI «%1» sol·licitat: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>No s&apos;ha pogut obrir el fitxer de llicència «%1» sol·licitat: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -782,6 +778,26 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>No s&apos;ha pogut obrir el fitxer UI «%1» sol·licitat: %2. %3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>No s&apos;ha pogut carregar el fitxer UI «%1» sol·licitat: %2. %3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>No s&apos;ha pogut obrir el fitxer de llicència «%1» sol·licitat: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -862,10 +878,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>Explora els fitxers Q&amp;BSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -902,32 +914,24 @@
         <translation>Cal que actualitzeu els components obligatoris abans de poder seleccionar altres components per actualitzar-los.</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation type="unfinished">Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation type="unfinished">Alt+S</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation type="unfinished">Alt+D</translation>
-    </message>
-    <message>
         <source>Filter the enabled repository categories</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Search</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Error</translation>
     </message>
 </context>
 <context>
@@ -1634,6 +1638,18 @@ Error en descarregar %2</translation>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>No s&apos;ha pogut obrir el fitxer «%1» per a escriptura: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1764,10 +1780,6 @@ Voleu continuar?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1833,6 +1845,10 @@ Voleu continuar?</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2039,10 +2055,6 @@ Voleu continuar?</translation>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>No s&apos;ha pogut recuperar la informació de les metadades: %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>No s&apos;ha pogut afegir la informació temporal de la font d&apos;actualització.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2771,6 +2783,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Clear cache</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2999,6 +3015,10 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
