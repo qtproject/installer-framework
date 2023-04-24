@@ -216,8 +216,13 @@ void TabController::onClearCacheClicked()
             loop.quit();
     });
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    futureWatcher.setFuture(QtConcurrent::run(&PackageManagerCore::clearLocalCache,
+        d->m_core, &errorMessage));
+#else
     futureWatcher.setFuture(QtConcurrent::run(d->m_core,
         &PackageManagerCore::clearLocalCache, &errorMessage));
+#endif
 
     if (!futureWatcher.isFinished())
         loop.exec();
