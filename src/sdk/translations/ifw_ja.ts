@@ -16,11 +16,11 @@
     <name>BinaryContent</name>
     <message>
         <source>Cannot seek to %1 to read the operation data.</source>
-        <translation>操作データを読み取るための %1 のシークができません。</translation>
+        <translation>操作データを読み取るための %1 とうファイルポジションに移動できません。</translation>
     </message>
     <message>
         <source>Cannot seek to %1 to read the resource collection block.</source>
-        <translation>リソース コレクション ブロックを読み取るための %1 のシークができません。</translation>
+        <translation>リソース コレクション ブロックを読み取るため%1 とうファイルポジションに移動できません。</translation>
     </message>
     <message>
         <source>Cannot open meta resource %1.</source>
@@ -31,11 +31,11 @@
     <name>BinaryLayout</name>
     <message>
         <source>Cannot seek to %1 to read the embedded meta data count.</source>
-        <translation>埋め込みメタ データ数を読み取るための %1 のシークができません。</translation>
+        <translation>埋め込みメタ データ数を読み取るため%1 とうファイルポジションに移動できません。</translation>
     </message>
     <message>
         <source>Cannot seek to %1 to read the resource collection segment.</source>
-        <translation>リソース コレクション セグメントを読み取るための %1 のシークができません。</translation>
+        <translation>リソース コレクション セグメントを読み取るため %1 とうファイルポジションに移動できません。</translation>
     </message>
     <message>
         <source>Unexpected mismatch of meta resources. Read %1, expected: %2.</source>
@@ -136,12 +136,16 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>&quot;%2&quot; の欠落した依存関係 &quot;%1&quot; が見つかりません。</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>不可能な依存関係が検出されました。強制にインストールされる&quot;%1&quot;コンポーネントは、&quot;%1&quot;に依存する &quot;%2&quot;がアンインストールの対象ですので、アンインストールされます。&quot;%2&quot;のアンインストレーション理由は: &quot;%3&quot;。</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
     <message>
         <source>Canceled</source>
-        <translation>キャンセル</translation>
+        <translation>キャンセルされました</translation>
     </message>
 </context>
 <context>
@@ -209,7 +213,7 @@
     <name>KDUpdater::FileDownloader</name>
     <message>
         <source>Download finished.</source>
-        <translation>ダウンロードが終了しました。</translation>
+        <translation>ダウンロードが完了しました。</translation>
     </message>
     <message>
         <source>Cryptographic hashes do not match.</source>
@@ -284,7 +288,7 @@
     </message>
     <message>
         <source>Secure Connection Failed</source>
-        <translation>セキュリティで保護された接続に失敗しました</translation>
+        <translation>セキュアな接続が失敗しました</translation>
     </message>
     <message>
         <source>There was an error during connection to: %1.</source>
@@ -292,7 +296,7 @@
     </message>
     <message>
         <source>This could be a problem with the server&apos;s configuration, or it could be someone trying to impersonate the server.</source>
-        <translation>サーバーの構成に問題があるか、誰かがサーバーを偽装しようとした可能性があります。</translation>
+        <translation>サーバーの構成に問題があるか、誰かがサーバーを偽装しようとしている可能性があります。</translation>
     </message>
     <message>
         <source>If you have connected to this server successfully in the past or trust this server, the error may be temporary and you can try again.</source>
@@ -301,6 +305,10 @@
     <message>
         <source>Try again</source>
         <translation>再試行</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>%1をダウンロードできません。&quot;%2&quot;のためディレクトリを作成することができません。</translation>
     </message>
 </context>
 <context>
@@ -421,11 +429,11 @@
     </message>
     <message>
         <source>%1 cannot be paused</source>
-        <translation>%1 を解析できません</translation>
+        <translation>%1 を一時停止できません</translation>
     </message>
     <message>
         <source>Cannot pause task %1</source>
-        <translation>タスク %1 を解析できません</translation>
+        <translation>タスク　%1 を一時停止できません</translation>
     </message>
     <message>
         <source>Cannot resume task %1</source>
@@ -482,10 +490,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>&quot;%1&quot; を読み取れません</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>%2、%3 で %1 のエラーを解析します: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -739,24 +743,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>&quot;%1&quot; に無効なコンテンツがあります。</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>以下のキャッシュを削除した上でアプリケーションを再起動することで問題が解決することもあります。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>コンポーネントは、アップデーター モードで子を持つことができません。</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>要求された UI ファイル &quot;%1&quot; を開けません: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>要求された UI ファイル &quot;%1&quot; を読み込めません: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>要求されたライセンス ファイル &quot;%1&quot; を開けません: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -777,6 +773,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>選択したコンポーネントの読み込み中にエラーが発生しました。このコンポーネントをインストールできません。</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>要求された UI ファイル &quot;%1&quot; を開けません: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>要求された UI ファイル &quot;%1&quot; を読み込めません: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>要求されたライセンス ファイル &quot;%1&quot; を開けません: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -857,10 +877,6 @@
         <translation>ツリー表示ですべてのコンポーネントの選択を解除します。</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>QBSP ファイルの参照 (&amp;B)</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Qt Board Support Packageファイルを選択し、オンラインリポジトリから直接取得できない追加のコンテンツをインストールします。</translation>
     </message>
@@ -903,6 +919,18 @@
     <message>
         <source>Search</source>
         <translation>検索</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>QBSPファイルを検索</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>選択</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>エラー</translation>
     </message>
 </context>
 <context>
@@ -1172,11 +1200,11 @@ Error while loading %2</source>
     </message>
     <message>
         <source>Archive: </source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブ</translation>
     </message>
     <message>
         <source>Total: </source>
-        <translation type="unfinished"></translation>
+        <translation>合計</translation>
     </message>
 </context>
 <context>
@@ -1381,7 +1409,7 @@ Error while loading %2</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>ようこそ</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -1421,7 +1449,7 @@ Error while loading %2</source>
     </message>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
-        <translation type="unfinished"></translation>
+        <translation>重要な更新が見つかりました。まず&apos;%1&apos; を選択してください</translation>
     </message>
 </context>
 <context>
@@ -1562,6 +1590,18 @@ Error while loading %2</source>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>キャッシュディレクトリを空にしてアプリケーションを再起動すると、この問題が解決する場合があります。</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>キャッシュの更新中に不明な例外が発生しました。</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>読み取り用の、解凍されたファイル &quot;%1&quot; を開けません：%2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>書き込み用の、ファイル &quot;%1&quot; を開けません：%2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1700,10 +1740,6 @@ Do you want to continue?</source>
         <translation>%1 をインストールできません。コンポーネントが見つかりません。</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>実行中のプロセスが見つかりました。</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>コマンドラインから実行しているときはアクセス権限を昇格できません。管理者としてアプリケーションを再起動してください。</translation>
     </message>
@@ -1749,7 +1785,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>The estimated installer size %1 would exceed the supported executable size limit of %2. The application may not be able to run.</source>
-        <translation type="unfinished"></translation>
+        <translation>インストーラの推定サイズ %1 は、実行可能ファイルのサイズ制限 %2 を超えています。アプリケーションが実行できない場合があります。</translation>
     </message>
     <message>
         <source>Components about to be removed:</source>
@@ -1762,6 +1798,10 @@ Do you want to continue?</source>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>時ファイルを保存するのに十分なディスク容量がありません!&#x3000;%1 が利用可能ですが、必要な最小値は %2 です。 インストーラー設定からローカル キャッシュ パスを変更することにより、一時ファイルの別の場所を選択できます。</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>アンインストール対象のコンポーネントを解決できません。</translation>
     </message>
 </context>
 <context>
@@ -1989,10 +2029,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>メタ情報を取得できません: %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>一時的な更新ソース情報を追加できません。</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2545,7 +2581,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">カテゴリを選択</translation>
+        <translation>カテゴリを選択</translation>
     </message>
 </context>
 <context>
@@ -2702,6 +2738,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Clear cache</source>
         <translation>キャッシュの消去</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>キャッシュを消去しています…</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2762,7 +2802,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">コンポーネント情報</translation>
+        <translation>コンポーネント情報</translation>
     </message>
 </context>
 <context>
@@ -2799,7 +2839,7 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::ExtractArchiveOperation::Worker</name>
     <message>
         <source>Could not create handler object for archive &quot;%1&quot;: &quot;%2&quot;.</source>
-        <translation type="unfinished"></translation>
+        <translation>アーカイブ &quot;%1&quot; のハンドラ オブジェクトを作成できませんでした: &quot;%2&quot;。</translation>
     </message>
     <message>
         <source>Cannot open archive &quot;%1&quot; for reading: %2</source>
@@ -2967,6 +3007,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>無効化されたキャッシュを同期できません。</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>不明な登録モードが選択されました!</translation>
     </message>
 </context>
 <context>
