@@ -232,6 +232,10 @@
         <source>Clear cache</source>
         <translation>مسح ذاكرة التخزين المؤقت</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>جاري مسح ذاكرة التخزين المؤقت ...</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -410,6 +414,10 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>محتوى غير صالح في &quot;%1&quot;.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>يمكن حل هذا عن طريق إعادة تشغيل التطبيق بعد مسح ذاكرة التخزين المؤقت من:</translation>
+    </message>
 </context>
 <context>
     <name>BinaryLayout</name>
@@ -470,18 +478,6 @@
         <translation>لا يمكن للمكونات أن تحتوي على أطفال في وضع التحديث.</translation>
     </message>
     <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>لا يمكن فتح ملف واجهة المستخدم المطلوب &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>لا يمكن تحميل ملف واجهة المتسخدم المطلوب &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>لا يمكن فتح ملف الرخصة المطلوب &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
@@ -500,6 +496,26 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>كان هناك خطأ أثناء تحميل المكون المحدد. هذا المكون لا يمكن تثبيته.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>لا يمكن فتح ملف واجهة المستخدم المطلوب &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>لا يمكن تحميل ملف واجهة المتسخدم المطلوب &quot;%1&quot;: %2.%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>لا يمكن فتح ملف الرخصة المطلوب &quot;%1&quot;: %2.%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -580,10 +596,6 @@
         <translation>قم بإلغاء تحديد المكونات الافتراضية في عرض الشجري.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>&amp;تصفح ملفات QBSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>حدد ملف حزمة دعم لوحة Qt لتثبيت محتوى إضافي غير متاح مباشرة في المستودعات التي عبر الإنترنت.</translation>
     </message>
@@ -627,6 +639,18 @@
         <source>Search</source>
         <translation>بحث</translation>
     </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>تصفح ملفات &amp;QBSP</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>اختيار</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>خطأ</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -640,7 +664,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">معلومات المكون</translation>
+        <translation>معلومات المكون</translation>
     </message>
 </context>
 <context>
@@ -1147,6 +1171,10 @@ Error while loading %2</source>
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>لا يمكن العثور على الاعتمادية المفقودة &quot;%1&quot; لـ &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>تم الكشف عن تحليل تبعية مستحيلة. سيتم إلغاء تثبيت مكون التثبيت الإجباري &quot;%1&quot; بسبب أن التبعية &quot;%2&quot; تم تعليمها لإلغاء التثبيت بسبب: &quot;%3&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
@@ -1407,6 +1435,18 @@ Error while loading %2</source>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>قد يؤدي مسح دليل ذاكرة التخزين المؤقت وإعادة تشغيل التطبيق إلى حل هذه المشكلة.</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>حدث خطأ غير معروف أثناء تحديث ذاكرة التخزين المؤقت.</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>لا يمكن فتح الملف المستخرج &quot;%1&quot; للقراءة: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>لا يمكن فتح الملف &quot;%1&quot; للكتابة: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::FileTaskObserver</name>
@@ -1616,10 +1656,6 @@ Do you want to continue?</source>
         <translation>المكون افتراضي.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>وجدت العمليات الجارية.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>الرجاء إعادة تشغيل التطبيق كمسؤول.</translation>
     </message>
@@ -1674,6 +1710,10 @@ Do you want to continue?</source>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>لا توجد مساحة كافية على القرص لتخزين الملفات المؤقتة! يتوفر%1 ، بينما الحد الأدنى المطلوب هو%2. يمكنك تحديد موقع آخر للملفات المؤقتة عن طريق تعديل مسار ذاكرة التخزين المؤقت المحلية من إعدادات المثبت.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>لا يمكن تحديد المكونات المطلوب إزالتها.</translation>
     </message>
 </context>
 <context>
@@ -1893,10 +1933,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>لا يمكن الحصول على بيانات التعريف: %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>لا تمكن إضافة معلومات مصدر التحديث المؤقت.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2555,6 +2591,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Try again</source>
         <translation>حاول مرة آخرى</translation>
     </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>لا يمكن تحميل %1. لا يمكن إنشاء دليل لـ &quot;%2&quot;</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -2830,10 +2870,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>لا يمكن قراءة &quot;%1&apos;</translation>
     </message>
     <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>خطأ في فرز %1 في %2، %3:%4</translation>
-    </message>
-    <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
         <translation>عنصر الجذر %1 غير متوقع، يجب أن يكون &quot;Updates&quot;.</translation>
     </message>
@@ -3044,6 +3080,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>لا يمكن مزامنة ذاكرة التخزين المؤقت غير الصالحة.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>تم اختبار وضع تسجيل غير معروف!</translation>
     </message>
 </context>
 <context>
