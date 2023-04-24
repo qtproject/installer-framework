@@ -335,7 +335,7 @@
           <number>-1</number>
          </property>
          <property name="format">
-          <string>%p%</string>
+          <string notr="true">%p%</string>
          </property>
         </widget>
        </item>
