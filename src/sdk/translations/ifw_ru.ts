@@ -136,6 +136,10 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Не удалось найти компонент «%1», необходимый для «%2».</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>Выявлено невозможное разрешение зависимостей. Принудительная установка компонента &quot;%1&quot; будет удалена, потому что зависимый &quot;%2&quot; помечен для удаления по причине: &quot;%3&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -309,6 +313,10 @@
     <message>
         <source>Cannot download %1. Cannot create file &quot;%2&quot;: %3</source>
         <translation>Невозможно загрузить «%1». Не удалось создать «%2»: %3</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>Невозможно загрузить %1. Невозможно создать каталог для &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -492,10 +500,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>Невозможно прочитать «%1»</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ошибка разбора XML в %1 в %2, %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -749,6 +753,10 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>Недопустимые данные в «%1».</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>Это может быть решено перезапуском приложения после очистки кэша:</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
@@ -769,24 +777,36 @@
         <translation>Информация об обновлении: </translation>
     </message>
     <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Не удалось открыть запрошенный UI файл «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Не удалось загрузить запрошенный UI файл «%1»: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Не удалось открыть запрошенный файл лицензии «%1»: %2</translation>
-    </message>
-    <message>
         <source>Error: Operation %1 does not exist.</source>
         <translation>Ошибка: операция %1 не существует.</translation>
     </message>
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Возникла ошибка при загрузке выбранного компонента. Установить его не получится.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Не удалось открыть запрошенный UI файл «%1»: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Не удалось загрузить запрошенный UI файл «%1»: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Не удалось открыть запрошенный файл лицензии «%1»: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -867,10 +887,6 @@
         <translation>Отмените выбор всех компонентов в древовидном представлении.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>&amp;Обзор файлов QBSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Выберите файл инструментальных средств для разработки Qt Board Support Package, чтобы установить дополнительное содержимое, которое недоступно непосредственно из сетевых хранилищ.</translation>
     </message>
@@ -907,32 +923,24 @@
         <translation>Открытие файла</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
         <source>Filter the enabled repository categories</source>
         <translation>Отфильтруйте категории включенного хранилища по выбору.</translation>
     </message>
     <message>
         <source>Search</source>
         <translation>Поиск</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>Посмотреть &amp;QBSP файлы</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Выбрать</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Ошибка</translation>
     </message>
 </context>
 <context>
@@ -947,7 +955,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Сведения о компонентах</translation>
+        <translation>Сведения о компонентах</translation>
     </message>
 </context>
 <context>
@@ -1648,6 +1656,18 @@ Error while loading %2</source>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>Очистка кэш-директории и перезапуск приложения может исправить это.</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>Неизвестное исключение во время обновления кэша.</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>Невозможно открыть распакованный файл &quot;%1&quot; для чтения.</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Невозможно открыть файл &quot;%1&quot; для записи: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1758,10 +1778,6 @@ Do you want to continue?</source>
         <translation>Не удалось установить %1. Компонент не найден.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Обнаружены запущенные процессы.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>Невозможно повысить уровень прав доступа при запуске из командной строки. Перезапустите приложение от имени администратора.</translation>
     </message>
@@ -1848,6 +1864,10 @@ Do you want to continue?</source>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>Недостаточно места на диске для хранения временных файлов! %1 доступно, минимально необходимо %2. Вы можете выбрать другое место для временных файлов, изменив путь к локальному кэшу в настройках установщика.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>Невозможно определить компоненты для удаления.</translation>
     </message>
 </context>
 <context>
@@ -2036,10 +2056,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>Невозможно загрузить метаданные: %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Невозможно добавить информацию о временном сервере обновления.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2630,7 +2646,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Выберите категории пакетов</translation>
+        <translation>Выберите категории пакетов</translation>
     </message>
 </context>
 <context>
@@ -2786,6 +2802,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Clear cache</source>
         <translation>Очистить кэш</translation>
+    </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>Очистка кэша...</translation>
     </message>
 </context>
 <context>
@@ -3018,6 +3038,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>Не удается синхронизировать недействительный кеш.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>Выбран неизвестный режим регистра.</translation>
     </message>
 </context>
 <context>
