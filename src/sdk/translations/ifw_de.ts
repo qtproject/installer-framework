@@ -136,6 +136,10 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Konnte fehlende Abhängigkeit &apos;%1&apos; für &apos;%2&apos; nicht finden.</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>Die Abhängigkeiten sind nicht auflösbar. Die zur forcierten Installation vorgesehene Komponente &quot;%1&quot; würde deinstalliert werden, weil sie von Komponente &quot;%2&quot; abhängt, welche auf Grund von &quot;%3&quot; zur Deinstallation vorgesehen ist.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -305,6 +309,10 @@
     <message>
         <source>Try again</source>
         <translation>Erneut versuchen</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>Kann %1 nicht herunterladen. Es kann kein Verzeichnis für &quot;%2&quot; erstellt werden</translation>
     </message>
 </context>
 <context>
@@ -487,10 +495,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>Konnte Datei &quot;%1&quot; nicht lesen</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ungültiges XML in Datei %1, Zeile %2, Spalte %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -744,24 +748,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>Ungültiger Inhalt in &quot;%1&quot;.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>Das kann durch Neustart der Anwendung behoben werden; nach Löschen des Caches von:</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>Komponenten können im Updater-Modus keine Kinder haben.</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht öffnen: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Konnte angeforderte UI-Datei &apos;%1&apos; nicht laden: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Konnte angeforderte Lizenzdatei &apos;%1&apos; nicht öffnen: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -782,6 +778,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Es ist ein Fehler beim Laden der ausgewählten Komponente aufgetreten. Diese Komponente kann nicht installiert werden.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Konnte angeforderte UI-Datei &quot;%1&quot; nicht öffnen: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Konnte angeforderte UI-Datei &quot;%1&quot; nicht laden: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Konnte angeforderte Lizenzdatei &quot;%1&quot; nicht öffnen: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -870,10 +890,6 @@
         <translation>Datei öffnen</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>Durchsuche QBSP Dateien</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Wählen Sie eine Qt Board Support Package-Datei, um zusätzliche Inhalte zu installieren, die nicht direkt in den Online-Repositories verfügbar sind.</translation>
     </message>
@@ -909,6 +925,18 @@
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Obligatorische Komponenten müssen zuerst aktualisiert werden, bevor andere Komponenten zur Aktualisierung ausgewählt werden können.</translation>
     </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>Durchsuche QBSP Dateien</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Auswählen</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -922,7 +950,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Komponenteninformationen</translation>
+        <translation>Komponenteninformationen</translation>
     </message>
 </context>
 <context>
@@ -1615,6 +1643,18 @@ Fehler beim Laden von %2</translation>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>Das Löschen des Cache-Verzeichnisses and Neustarten der Anwendung kann das beheben.</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>Unbekannte Ausnahmebedingung beim Aktualisieren des Caches</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>Die extrahierte Datei &quot;%1&quot; konnte nicht zum Lesen geöffnet werden: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Die Datei &quot;%1&quot; konnte nicht zum Schreiben geöffnet werden: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1757,10 +1797,6 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <translation>%1 kann nicht installiert werden. Komponente nicht gefunden.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Laufende Prozesse gefunden.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>Bei der Ausführung über die Befehlszeile konnten die Zugriffsrechte nicht erhöht werden. Bitte starten Sie die Anwendung als Administrator neu.</translation>
     </message>
@@ -1815,6 +1851,10 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>Es gibt nicht ausreichend Plattenplatz, um die temporären Dateien zu speichern! %1 sind verfügbar, aber das erforderliche Minimum ist %2. Sie können einen anderen Speicherort für die temporären Dateien auswählen, indem Sie den lokalen Cache-Pfad in den Installationseinstellungen ändern.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>Die zu deinstallierenden Komponenten konnten nicht aufgelöst werden.</translation>
     </message>
 </context>
 <context>
@@ -2042,10 +2082,6 @@ Möchten Sie trotzdem fortsetzen?</translation>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>Konnte die Metainformationen nicht empfangen: %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Konnte Informationen nicht zu temporären Aktualisierungsquellen hinzufügen.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2603,7 +2639,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Kategorien auswählen</translation>
+        <translation>Kategorien auswählen</translation>
     </message>
 </context>
 <context>
@@ -2759,6 +2795,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Clear cache</source>
         <translation>Cache löschen</translation>
+    </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>Lösche Cache...</translation>
     </message>
 </context>
 <context>
@@ -2982,6 +3022,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>Ungültiger Cache kann nicht synchronisiert werden.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>Unbekannter Registrierungsmodus ausgewählt!</translation>
     </message>
 </context>
 <context>
