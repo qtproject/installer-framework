@@ -136,6 +136,10 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>找不到“%2”的缺失依赖项“%1”。</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>检测到无法解决的依赖关系。强制安装组件：“%1”将会被移除，因为它的依赖“%2”被标记为移除，原因：“%3”。</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -301,6 +305,10 @@
     <message>
         <source>Try again</source>
         <translation>重试</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>无法下载%1。无法为“%2”创建目录。</translation>
     </message>
 </context>
 <context>
@@ -482,10 +490,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>无法读取“%1”</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>%1 中 %2、%3 的解析错误：%4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -739,24 +743,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>“%1”中的内容无效。</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>清空此处缓存之后重启应用程序也许可以解决问题：</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>更新程序模式下组件不得包含子项。</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>无法打开请求的 UI 文件“%1”：%2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>无法加载请求的 UI 文件“%1”：%2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>无法打开请求的许可文件“%1”：%2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -777,6 +773,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>加载选中组件的过程中出现错误。这个组件不会被安装。</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>无法打开请求的 UI 文件“%1”：%2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>无法加载请求的 UI 文件“%1”：%2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>无法打开请求的许可文件“%1”：%2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -857,10 +877,6 @@
         <translation>在树视图中删除所有组件。</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>浏览 QBSP 文件(&amp;B)</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>选择 Qt Board Support Package 文件以安装无法直接从在线存储库中获得的附加内容。</translation>
     </message>
@@ -903,6 +919,18 @@
     <message>
         <source>Search</source>
         <translation>搜索</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>浏览&amp;QBSP文件</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>选择</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>错误</translation>
     </message>
 </context>
 <context>
@@ -1386,7 +1414,7 @@ Error while loading %2</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>欢迎</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -1567,6 +1595,18 @@ Error while loading %2</source>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>正在清空缓存目录并且重启应用程序也许可以解决这个问题。</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>更新缓存过程中的未知异常。</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>无法为了读取%2打开已经提取的文件”%1“</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>无法为了写入%2打开文件“%1”</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1705,10 +1745,6 @@ Do you want to continue?</source>
         <translation>无法安装 %1。未找到组件。</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>已找到正在运行的进程。</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>请以管理员身份重新启动应用程序。</translation>
     </message>
@@ -1766,7 +1802,11 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
-        <translation type="unfinished">没有足够的硬盘空间存储临时文件！有%1可用，但是最少需要%2。您可以通过修改安装程序设置中的本地缓存路径来为这些临时文件指定另外一个存储位置。</translation>
+        <translation>没有足够的硬盘空间存储临时文件！有%1可用，但是最少需要%2。您可以通过修改安装程序设置中的本地缓存路径来为这些临时文件指定另外一个存储位置。</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>无法解析要移除的组件。</translation>
     </message>
 </context>
 <context>
@@ -1994,10 +2034,6 @@ Do you want to continue?</source>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>无法检索元信息：%1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>无法添加临时更新源信息。</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2550,7 +2586,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">选择类别</translation>
+        <translation>类别</translation>
     </message>
 </context>
 <context>
@@ -2707,6 +2743,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Clear cache</source>
         <translation>清空缓存</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>正在清空缓存...</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2767,7 +2807,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">组件信息</translation>
+        <translation>组件信息</translation>
     </message>
 </context>
 <context>
@@ -2972,6 +3012,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>无法同步失效的缓存。</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>未知的注册模式被选中！</translation>
     </message>
 </context>
 <context>
