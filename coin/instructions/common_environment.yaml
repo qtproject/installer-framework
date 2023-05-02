@@ -105,5 +105,5 @@ instructions:
   - type: Group
     instructions:
       - type: EnvironmentVariable
-        variableName: PACKAGING_KEYS_CONFIG_URL
-        variableValue: "http://ci-files01-hki.intra.qt.io/input/semisecure/packaging/packaging_secure.ini"
+        variableName: CI
+        variableValue: "true"
