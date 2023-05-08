@@ -950,7 +950,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation>Komponenteninformationen</translation>
+        <translation>Informationen</translation>
     </message>
 </context>
 <context>
@@ -2639,7 +2639,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation>Kategorien auswählen</translation>
+        <translation>Kategorien</translation>
     </message>
 </context>
 <context>

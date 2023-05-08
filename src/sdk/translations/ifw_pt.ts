@@ -2818,7 +2818,7 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     </message>
     <message>
         <source>Information</source>
-        <translation>Informação do componente</translation>
+        <translation>Informação</translation>
     </message>
 </context>
 <context>

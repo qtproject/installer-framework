@@ -2597,7 +2597,7 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Sélectionner les catégories</translation>
+        <translation>Catégories</translation>
     </message>
 </context>
 <context>
@@ -2820,7 +2820,7 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Informations sur les composants</translation>
+        <translation>Informations</translation>
     </message>
 </context>
 <context>

@@ -955,7 +955,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation>Сведения о компонентах</translation>
+        <translation>Информация</translation>
     </message>
 </context>
 <context>
@@ -2646,7 +2646,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation>Выберите категории пакетов</translation>
+        <translation>Выберите категорию</translation>
     </message>
 </context>
 <context>
