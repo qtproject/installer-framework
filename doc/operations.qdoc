@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -155,6 +155,7 @@
                 drop any arguments to the target and any description set. In
                 this case, you should place the shortcut elsewhere and copy it
                 to the location desired.
+                \note Creating a shortcut to a network share is not supported.
                 The operation is currently not implemented on other platforms.
         \row
             \li CreateDesktopEntry
