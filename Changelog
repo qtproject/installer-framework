@@ -1,3 +1,28 @@
+4.6.0
+- Unify handling of processes to close for 'updating' components (QTIFW-2927,QTIFW-3009)
+- Fix wrong extract content (QTIFW-3010)
+- Verify meta file integrity from cache (QTIFW-3023)
+- Match title and message text on the first wizard page (SQUISH-9672)
+- Allow shortcuts for https links in Windows (QTIFW-964)
+- Metadata cache: register items by renaming instead of copying (QTIFW-2971)
+- Center PackageManagerPage title and subtitle texts (QTIFW-2995)
+- Fix showSettingsButton functionality (QTIFW-810)
+- Add more verbose when archive download fails (QTBUG-11068)
+- Fix custom error message in Execute operation (QTIFW-3007)
+- Add more detailed error messages (QTIFW-2998,QTIFW-2883)
+- Make messagebox texts selectable (QTIFW-3005)
+- Fix invalid cache state (QTIFW-2998)
+- UI update (QTIFW-2943)
+- Add support for skipping fetching already cached Updates.xml files (QTIFW-2873)
+- Performance optimizations (QTIFW-2805)
+- 3rdparty: update libarchive sources to 3.6.2 release
+- Fix building with Squish version 7.0.x (SQUISH-15697)
+- Workaround possible stalls on single core systems
+- Metadata cache: clear cache in a separate thread (QTIFW-2815)
+- Fix enabled navigation buttons while metadata fetch is still in progress (QTIFW-2849)
+- Add possibility to post load install scripts (QTIFW-2820)
+- ExtractOp: fix leftover empty directories when 'targetDir' arg is used (QTIFW-2764)
+
 4.5.2
 - Fix freezing UI while searching components (QTIFW-2886)
 - Show check box for AutoDependOn components in updater view (QTIFW-2855)
