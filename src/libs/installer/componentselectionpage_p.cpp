@@ -145,6 +145,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ComponentSelectionPagePrivate::updateAllCheckStates);
 
+    // Workaround invisible placeholder text
+    QPalette palette = m_checkStateComboBox->palette();
+    palette.setColor(QPalette::PlaceholderText, palette.color(QPalette::Text));
+    m_checkStateComboBox->setPalette(palette);
+
     m_checkStateComboBox->setPlaceholderText(ComponentSelectionPage::tr("Select"));
     if (m_core->isInstaller()) {
         m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Default"));
