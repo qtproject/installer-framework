@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -612,6 +612,18 @@
     Drops admin rights gained by gainAdminRights.
 
     \sa gainAdminRights()
+*/
+
+/*!
+    \qmlmethod bool installer::hasAdminRights()
+
+    Returns \c true if the installer has admin rights. For example, if the installer
+    was started with a root account, or the internal admin rights elevation is active.
+
+    Returns \c false otherwise.
+
+    \sa gainAdminRights()
+    \sa dropAdminRights()
 */
 
 /*!

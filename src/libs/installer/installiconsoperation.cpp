@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -57,7 +57,7 @@ QString InstallIconsOperation::targetDirectory()
         Qt::SkipEmptyParts);
     XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
 
-    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+    if (packageManager() && packageManager()->hasAdminRights())
         XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     QString directory;

@@ -169,11 +169,9 @@ public:
         m_performedOperationsCurrentSession.clear();
     }
 
-    void unpackComponents(const QList<Component *> &components, double progressOperationSize,
-        bool adminRightsGained = false);
+    void unpackComponents(const QList<Component *> &components, double progressOperationSize);
 
-    void installComponent(Component *component, double progressOperationSize,
-        bool adminRightsGained = false);
+    void installComponent(Component *component, double progressOperationSize);
 
     void setComponentSelection(const QString &id, Qt::CheckState state);
 
@@ -243,7 +241,7 @@ private slots:
 
 private:
     void unpackAndInstallComponents(const QList<Component *> &components,
-        const double progressOperationSize, const bool adminRightsGained);
+        const double progressOperationSize);
 
     void deleteMaintenanceTool();
     void deleteMaintenanceToolAlias();
@@ -256,7 +254,7 @@ private:
     void writeMaintenanceToolAppBundle(OperationList &performedOperations);
 
     void runUndoOperations(const OperationList &undoOperations, double undoOperationProgressSize,
-        bool adminRightsGained, bool deleteOperation);
+        bool deleteOperation);
 
     PackagesList remotePackages();
     LocalPackagesMap localInstalledPackages();

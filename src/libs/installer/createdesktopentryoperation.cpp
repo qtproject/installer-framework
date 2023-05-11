@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "globals.h"
 #include "adminauthorization.h"
 #include "remoteclient.h"
+#include "packagemanagercore.h"
 
 #include <QDir>
 #include <QFile>
@@ -64,7 +65,7 @@ QString CreateDesktopEntryOperation::absoluteFileName()
 
     XDG_DATA_HOME.push_back(QDir::home().absoluteFilePath(QLatin1String(".local/share"))); // default user-specific path
 
-    if (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive())
+    if (packageManager() && packageManager()->hasAdminRights())
         XDG_DATA_HOME.push_front(QLatin1String("/usr/local/share")); // default system-wide path
 
     const QStringList directories = XDG_DATA_HOME;

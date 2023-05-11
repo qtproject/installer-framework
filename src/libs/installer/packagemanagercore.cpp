@@ -2990,6 +2990,21 @@ void PackageManagerCore::dropAdminRights()
 }
 
 /*!
+    Returns \c true if the installer has admin rights. For example, if the installer
+    was started with a root account, or the internal admin rights elevation is active.
+
+    Returns \c false otherwise.
+
+    \sa {installer::hasAdminRights}{installer.hasAdminRights}
+    \sa gainAdminRights()
+    \sa dropAdminRights()
+*/
+bool PackageManagerCore::hasAdminRights() const
+{
+    return AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive();
+}
+
+/*!
     Sets checkAvailableSpace based on value of \a check.
 */
 void PackageManagerCore::setCheckAvailableSpace(bool check)

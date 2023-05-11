@@ -777,7 +777,7 @@ QString PackageManagerCorePrivate::maintenanceToolAliasPath() const
     if (aliasName.isEmpty())
         return QString();
 
-    const bool isRoot = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
+    const bool isRoot = m_core->hasAdminRights();
     const QString applicationsDir = m_core->value(
         isRoot ? QLatin1String("ApplicationsDir") : QLatin1String("ApplicationsDirUser")
     );
@@ -1744,7 +1744,7 @@ bool PackageManagerCorePrivate::runInstaller()
             throw Error(tr("It is not possible to install from network location"));
         }
 
-        if (!adminRightsGained) {
+        if (!m_core->hasAdminRights()) {
             foreach (Component *component, componentsToInstall) {
                 if (component->value(scRequiresAdminRights, scFalse) == scFalse)
                     continue;
@@ -1778,7 +1778,7 @@ bool PackageManagerCorePrivate::runInstaller()
         double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
         // Now install the requested components
-        unpackAndInstallComponents(componentsToInstall, progressOperationSize, adminRightsGained);
+        unpackAndInstallComponents(componentsToInstall, progressOperationSize);
 
         if (m_core->isOfflineOnly() && PackageManagerCore::createLocalRepositoryFromBinary()) {
             emit m_core->titleMessageChanged(tr("Creating local repository"));
@@ -1976,7 +1976,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         }
 
         // we did not request admin rights till we found out that a component/ undo needs admin rights
-        if (updateAdminRights && !adminRightsGained) {
+        if (updateAdminRights && !m_core->hasAdminRights()) {
             m_core->gainAdminRights();
             m_core->dropAdminRights();
         }
@@ -1997,7 +1997,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
 
         if (undoOperations.count() > 0) {
             ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(tr("Removing deselected components..."));
-            runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, true);
+            runUndoOperations(undoOperations, undoOperationProgressSize, true);
         }
         m_performedOperationsOld = nonRevertedOperations; // these are all operations left: those not reverted
 
@@ -2005,7 +2005,7 @@ bool PackageManagerCorePrivate::runPackageUpdater()
         const double progressOperationSize = componentsInstallPartProgressSize / progressOperationCount;
 
         // Now install the requested new components
-        unpackAndInstallComponents(componentsToInstall, progressOperationSize, adminRightsGained);
+        unpackAndInstallComponents(componentsToInstall, progressOperationSize);
 
         emit m_core->titleMessageChanged(tr("Creating Maintenance Tool"));
 
@@ -2074,7 +2074,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         }
 
         // We did not yet request elevated permissions but they are required.
-        if (updateAdminRights && !adminRightsGained) {
+        if (updateAdminRights && !m_core->hasAdminRights()) {
             m_core->gainAdminRights();
             m_core->dropAdminRights();
         }
@@ -2082,7 +2082,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         const int uninstallOperationCount = countProgressOperations(undoOperations);
         const double undoOperationProgressSize = double(1) / double(uninstallOperationCount);
 
-        runUndoOperations(undoOperations, undoOperationProgressSize, adminRightsGained, false);
+        runUndoOperations(undoOperations, undoOperationProgressSize, false);
         // No operation delete here, as all old undo operations are deleted in the destructor.
 
         deleteMaintenanceTool();    // this will also delete the TargetDir on Windows
@@ -2091,7 +2091,7 @@ bool PackageManagerCorePrivate::runUninstaller()
         // If not on Windows, we need to remove TargetDir manually.
 #ifndef Q_OS_WIN
         if (QVariant(m_core->value(scRemoveTargetDir)).toBool() && !targetDir().isEmpty()) {
-            if (updateAdminRights && !adminRightsGained)
+            if (updateAdminRights && !m_core->hasAdminRights())
                 adminRightsGained = m_core->gainAdminRights();
             removeDirectoryThreaded(targetDir(), true);
             qCDebug(QInstaller::lcInstallerInstallLog) << "Complete uninstallation was chosen.";
@@ -2253,7 +2253,7 @@ bool PackageManagerCorePrivate::runOfflineGenerator()
 }
 
 void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &components,
-    double progressOperationSize, bool adminRightsGained)
+    double progressOperationSize)
 {
     OperationList unpackOperations;
     bool becameAdmin = false;
@@ -2277,7 +2277,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
 
             // There's currently no way to control this on a per-operation basis, so
             // any op requesting execution as admin means all extracts are done as admin.
-            if (!adminRightsGained && !becameAdmin && op->value(QLatin1String("admin")).toBool())
+            if (!m_core->hasAdminRights() && op->value(QLatin1String("admin")).toBool())
                 becameAdmin = m_core->gainAdminRights();
         }
     }
@@ -2325,7 +2325,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
             continue;
         }
         // Backup may request performing operation as admin
-        if (!adminRightsGained && !becameAdmin && operation->value(QLatin1String("admin")).toBool())
+        if (!m_core->hasAdminRights() && operation->value(QLatin1String("admin")).toBool())
             becameAdmin = m_core->gainAdminRights();
     }
 
@@ -2394,8 +2394,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
 }
 
-void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize,
-    bool adminRightsGained)
+void PackageManagerCorePrivate::installComponent(Component *component, double progressOperationSize)
 {
     OperationList operations = component->operations(Operation::Install);
     if (!component->operationsCreatedSuccessfully())
@@ -2416,7 +2415,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 
         // maybe this operations wants us to be admin...
         bool becameAdmin = false;
-        if (!adminRightsGained && operation->value(QLatin1String("admin")).toBool()) {
+        if (!m_core->hasAdminRights() && operation->value(QLatin1String("admin")).toBool()) {
             becameAdmin = m_core->gainAdminRights();
             qCDebug(QInstaller::lcInstallerInstallLog) << operation->name() << "as admin:" << becameAdmin;
         }
@@ -2661,8 +2660,8 @@ void PackageManagerCorePrivate::unregisterMaintenanceTool()
 #endif
 }
 
-void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOperations, double progressSize,
-    bool adminRightsGained, bool deleteOperation)
+void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOperations,
+    double progressSize, bool deleteOperation)
 {
     try {
         const int operationsCount = undoOperations.size();
@@ -2673,7 +2672,7 @@ void PackageManagerCorePrivate::runUndoOperations(const OperationList &undoOpera
                 throw Error(tr("Installation canceled by user"));
 
             bool becameAdmin = false;
-            if (!adminRightsGained && undoOperation->value(QLatin1String("admin")).toBool())
+            if (!m_core->hasAdminRights() && undoOperation->value(QLatin1String("admin")).toBool())
                 becameAdmin = m_core->gainAdminRights();
 
             connectOperationToInstaller(undoOperation, progressSize);
@@ -2958,16 +2957,16 @@ void PackageManagerCorePrivate::addPathForDeletion(const QString &path)
 }
 
 void PackageManagerCorePrivate::unpackAndInstallComponents(const QList<Component *> &components,
-    const double progressOperationSize, const bool adminRightsGained)
+    const double progressOperationSize)
 {
     // Perform extract operations
-    unpackComponents(components, progressOperationSize, adminRightsGained);
+    unpackComponents(components, progressOperationSize);
 
     // Perform rest of the operations and mark component as installed
     const int componentsToInstallCount = components.size();
     int installedComponents = 0;
     foreach (Component *component, components) {
-        installComponent(component, progressOperationSize, adminRightsGained);
+        installComponent(component, progressOperationSize);
 
         ++installedComponents;
         ProgressCoordinator::instance()->emitAdditionalProgressStatus(tr("%1 of %2 components installed.")

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -103,7 +103,7 @@ void ExtractArchiveOperation::backup()
         return;
     }
 
-    const bool hasAdminRights = (AdminAuthorization::hasAdminRights() || RemoteClient::instance().isActive());
+    const bool hasAdminRights = (packageManager() && packageManager()->hasAdminRights());
     const bool canCreateSymLinks = QInstaller::canCreateSymbolicLinks();
     bool needsAdminRights = false;
 

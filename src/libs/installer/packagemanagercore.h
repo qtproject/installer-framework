@@ -307,6 +307,7 @@ public:
 
     Q_INVOKABLE bool gainAdminRights();
     Q_INVOKABLE void dropAdminRights();
+    Q_INVOKABLE bool hasAdminRights() const;
 
     void setCheckAvailableSpace(bool check);
     bool checkAvailableSpace(QString &message) const;
