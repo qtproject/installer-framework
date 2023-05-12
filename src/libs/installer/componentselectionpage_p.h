@@ -48,13 +48,13 @@ class QVBoxLayout;
 class QHBoxLayout;
 class QGridLayout;
 class QStackedLayout;
-class QComboBox;
 
 namespace QInstaller {
 
 class PackageManagerCore;
 class ComponentModel;
 class ComponentSelectionPage;
+class CustomComboBox;
 
 class ComponentSelectionPagePrivate : public QObject
 {
@@ -106,7 +106,7 @@ private:
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
     QPushButton *m_qbspPushButton;
-    QComboBox *m_checkStateComboBox;
+    CustomComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
