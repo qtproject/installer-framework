@@ -639,6 +639,12 @@ void PackageManagerCore::componentsToInstallNeedsRecalculation()
  */
 bool PackageManagerCore::recalculateAllComponents()
 {
+    // Clear previous results first, as the check states are updated
+    // at the end of both calculate methods, which refer to the results
+    // from both calculators. Needed to keep the state correct.
+    d->clearInstallerCalculator();
+    d->clearUninstallerCalculator();
+
     if (!calculateComponentsToInstall())
         return false;
     if (!isInstaller() && !calculateComponentsToUninstall())
