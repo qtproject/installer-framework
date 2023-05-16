@@ -556,7 +556,7 @@ public:
         foreach (const QString &argument, positionalArguments) {
             if (argument.contains(QLatin1Char('='))) {
                 const QString name = argument.section(QLatin1Char('='), 0, 0);
-                const QString value = argument.section(QLatin1Char('='), 1, 1);
+                const QString value = argument.section(QLatin1Char('='), 1);
                 params.insert(name, value);
             }
         }
