@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -771,7 +771,9 @@ private:
         (core->*func)(std::forward<Args>(args)...);
 
         std::cout.rdbuf(buf);
-        QVERIFY(stream && stream.str() == message.toStdString());
+        QVERIFY(stream && stream.tellp() == message.size());
+        for (const QString &line : message.split(QLatin1String("\n")))
+            QVERIFY(stream.str().find(line.toStdString()) != std::string::npos);
     }
 
 private:

@@ -369,7 +369,6 @@ private slots:
         QCOMPARE(settings.contains("key"), false);
 
         const QDateTime dateTime = QDateTime::currentDateTimeUtc();
-        QCOMPARE(settings.iniCodec(), nullptr);
         // The wrapper does not support this method, but assume:
         // QCOMPARE(wrapper.iniCodec(), QTextCodec::codecForName("UTF-8"));
         wrapper.setValue("dateTime", dateTime);

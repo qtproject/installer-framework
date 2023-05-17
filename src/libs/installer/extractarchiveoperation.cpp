@@ -215,7 +215,8 @@ bool ExtractArchiveOperation::performOperation()
             }
             files[i] = replacePath(files.at(i), installDir, QLatin1String(scRelocatable));
         }
-        out << files;
+        if (!files.isEmpty())
+            out << files;
         setValue(QLatin1String("files"), file.fileName());
         file.close();
     } else {
@@ -253,7 +254,8 @@ bool ExtractArchiveOperation::undoOperation()
         if (!readDataFileContents(targetDir, &files))
             return false;
     }
-    startUndoProcess(files);
+    if (!files.isEmpty())
+        startUndoProcess(files);
     if (!useStringListType)
         deleteDataFile(m_relocatedDataFileName);
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -168,7 +168,7 @@ private slots:
         categories.insert(category);
         settings.setRepositoryCategories(categories);
 
-        QHash<QString, QPair<Repository, Repository>> update;
+        QMultiHash<QString, QPair<Repository, Repository>> update;
 
         // non-empty update
         update.insert(QLatin1String("replace"), qMakePair(original, replacement));

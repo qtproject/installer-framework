@@ -2560,7 +2560,7 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     }
     ComponentModel *model = defaultComponentModel();
     const QModelIndex &idx = model->indexFromComponentName(component->treeName());
-    if (model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) {
+    if (model->data(idx, Qt::CheckStateRole) == QVariant()) {
         // Component cannot be unselected, check why
         if (component->forcedInstallation()) {
             qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace()
@@ -2602,7 +2602,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &compo
         }
         const QModelIndex &idx = model->indexFromComponentName(component->treeName());
         if (idx.isValid()) {
-            if ((model->data(idx, Qt::CheckStateRole) == QVariant::Invalid) && !component->forcedInstallation()) {
+            if ((model->data(idx, Qt::CheckStateRole) == QVariant()) && !component->forcedInstallation()) {
                 // User cannot select the component, check why
                 if (component->autoDependencies().count() > 0) {
                     errorMessage.append(tr("Cannot install component %1. Component is installed only as automatic "

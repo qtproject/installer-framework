@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -373,7 +373,11 @@ private slots:
     {
         QStringList localesToTest = { "en_US", "ru_RU", "de_DE", "fr_FR" };
         foreach (const QString &localeToTest, localesToTest) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            QLocale::setDefault(QLocale(localeToTest));
+#else
             QLocale::setDefault(localeToTest);
+#endif
             QString expectedName = rootComponentDisplayNames.contains(localeToTest.toLower())
                 ? rootComponentDisplayNames[localeToTest.toLower()]
                 : rootComponentDisplayNames[QString()];

@@ -429,7 +429,8 @@ void RemoteServerConnection::handleQSettings(RemoteServerReply *reply, const QSt
         QString key;
         QVariant defaultValue;
         data >> key;
-        data >> defaultValue;
+        if (!data.atEnd())
+            data >> defaultValue;
         reply->send(settings->value(key, defaultValue));
     } else if (command == QLatin1String(Protocol::QSettingsOrganizationName)) {
         reply->send(settings->organizationName());
