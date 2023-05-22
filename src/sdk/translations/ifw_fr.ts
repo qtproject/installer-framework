@@ -136,6 +136,10 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>La dépendance manquante &quot;%1&quot; est introuvable pour &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>Résolution de dépendance impossible détectée. Le composant dont l'installation est forcée &quot;%1&quot; serait désinstallé car sa dépendance &quot;%2&quot; est marquée pour désinstallation avec la raison : &quot;%3&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -305,6 +309,10 @@
     <message>
         <source>Try again</source>
         <translation>Réessayez</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>Impossible de télécharger %1. Impossible de créer le répertoire pour &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -487,10 +495,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>Impossible de lire &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Erreur d’analyse dans %1 sur %2, %3 : %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -744,24 +748,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>Contenu invalide dans &quot;%1&quot;.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>Cela peut être résolu en redémarrant l'application après avoir vidé le cache de :</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>Les composants ne peuvent pas comporter d’enfants en mode de mise à jour.</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Impossible d’ouvrir le fichier d’interface utilisateur demandé &quot;%1&quot; : %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Impossible de charger le fichier d’interface utilisateur demandé &quot;%1&quot; : %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Impossible d’ouvrir le fichier de licence demandé &quot;%1&quot; : %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -782,6 +778,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Une erreur s&amp;apos;est produite lors du chargement du composant sélectionné. Ce composant ne peut pas être installé.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Impossible d’ouvrir le fichier d’interface utilisateur demandé &quot;%1&quot; : %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Impossible de charger le fichier d’interface utilisateur demandé &quot;%1&quot; : %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Impossible d’ouvrir le fichier de licence demandé &quot;%1&quot; : %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -862,10 +882,6 @@
         <translation>Désélectionner tous les composants dans l&apos;arborescence.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>&amp;Parcourir les fichiers QBSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Sélectionner un fichier Qt Board Support Package pour installer du contenu supplémentaire qui n&apos;est pas directement disponible à partir des référentiels en ligne.</translation>
     </message>
@@ -908,6 +924,18 @@
     <message>
         <source>Search</source>
         <translation>Recherche</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>Parcourir les fichiers QBSP</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Sélectionner</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erreur</translation>
     </message>
 </context>
 <context>
@@ -1576,6 +1604,18 @@ Erreur lors du chargement de %2</translation>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>Effacer le répertoire de cache et redémarrer l&apos;application peut résoudre ce problème.</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>Exception inconnue lors de la mise à jour du cache.</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>Impossible d'ouvrir le fichier extrait &quot;%1&quot; en lecture : %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Impossible d’ouvrir le fichier &quot;%1&quot; en écriture : %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCore</name>
@@ -1714,10 +1754,6 @@ Souhaitez-vous continuer ?</translation>
         <translation>Impossible d&apos;installer le composant %1. Composant introuvable.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Processus en cours trouvés.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>Impossible d&apos;élever les droits d&apos;accès lors de l&apos;exécution à partir de la ligne de commande. Veuillez redémarrer l&apos;application en tant qu&apos;administrateur.</translation>
     </message>
@@ -1776,6 +1812,10 @@ Souhaitez-vous continuer ?</translation>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>L’espace disque est insuffisant pour stocker les fichiers temporaires ! %1 sont disponibles, alors qu’au moins %2 sont nécessaires. Vous pouvez sélectionner un autre emplacement pour les fichiers temporaires en modifiant le chemin du cache local à partir des paramètres du programme d&apos;installation.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>Impossible de résoudre les composants à désinstaller.</translation>
     </message>
 </context>
 <context>
@@ -2003,10 +2043,6 @@ Souhaitez-vous continuer ?</translation>
     <message>
         <source>Cannot retrieve meta information: %1</source>
         <translation>Impossible d’extraire les métadonnées : %1</translation>
-    </message>
-    <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Impossible d’ajouter des informations sur la source de mise à jour temporaire.</translation>
     </message>
     <message>
         <source>Cannot find any update source information.</source>
@@ -2561,7 +2597,7 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Sélectionner les catégories</translation>
+        <translation>Catégories</translation>
     </message>
 </context>
 <context>
@@ -2718,6 +2754,10 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
         <source>Clear cache</source>
         <translation>Vider le cache</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>Vidage du cache...</translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2780,7 +2820,7 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Informations sur les composants</translation>
+        <translation>Informations</translation>
     </message>
 </context>
 <context>
@@ -2985,6 +3025,10 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>Impossible de synchroniser le cache invalidé.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>Le mode de registre sélectionné est inconnu !</translation>
     </message>
 </context>
 <context>

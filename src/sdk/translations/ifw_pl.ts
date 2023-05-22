@@ -2593,7 +2593,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Wybierz kategorie</translation>
+        <translation>Kategorie</translation>
     </message>
 </context>
 <context>
@@ -2814,7 +2814,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Informacje o składnikach</translation>
+        <translation>Informacja</translation>
     </message>
 </context>
 <context>

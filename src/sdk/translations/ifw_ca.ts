@@ -946,7 +946,7 @@
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informació</translation>
     </message>
 </context>
 <context>
@@ -2626,7 +2626,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Selecciona les categories dels paquets</translation>
+        <translation>Categories</translation>
     </message>
 </context>
 <context>

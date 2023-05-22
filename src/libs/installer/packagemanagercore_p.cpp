@@ -468,6 +468,10 @@ void PackageManagerCorePrivate::cleanUpComponentEnvironment()
     // so we need to remove the current component script engine
     delete m_componentScriptEngine;
     m_componentScriptEngine = nullptr;
+
+    // Calculators become invalid after clearing components
+    clearInstallerCalculator();
+    clearUninstallerCalculator();
 }
 
 ScriptEngine *PackageManagerCorePrivate::componentScriptEngine() const

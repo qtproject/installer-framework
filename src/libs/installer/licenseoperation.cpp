@@ -31,6 +31,7 @@
 #include "packagemanagercore.h"
 #include "settings.h"
 #include "fileutils.h"
+#include "globals.h"
 
 #include <QtCore/QDir>
 #include <QtCore/QFile>
@@ -56,7 +57,7 @@ void LicenseOperation::backup()
 
 bool LicenseOperation::performOperation()
 {
-    QVariantMap licenses = value(scLicenses).toMap();
+    QVariantMap licenses = value(scLicensesValue).toMap();
     if (licenses.isEmpty()) {
         setError(UserDefinedError);
         setErrorString(tr("No license files found to copy."));
@@ -96,11 +97,10 @@ bool LicenseOperation::performOperation()
 
 bool LicenseOperation::undoOperation()
 {
-    const QVariantMap licenses = value(scLicenses).toMap();
+    const QVariantMap licenses = value(scLicensesValue).toMap();
     if (licenses.isEmpty()) {
-        setError(UserDefinedError);
-        setErrorString(tr("No license files found to delete."));
-        return false;
+        qCWarning(QInstaller::lcInstallerInstallLog) << "No license files found to delete.";
+        return true;
     }
 
     QString targetDir = arguments().value(0);

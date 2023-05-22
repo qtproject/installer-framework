@@ -232,6 +232,10 @@
         <source>Clear cache</source>
         <translation>Limpar cache</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>Limpando cache...</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -410,6 +414,10 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>O conteúdo em &quot;%1&quot; é inválido.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>Esta situação pode ficar resolvida se reiniciar a aplicação após limpar a cache:</translation>
+    </message>
 </context>
 <context>
     <name>BinaryLayout</name>
@@ -470,18 +478,6 @@
         <translation>Em modo de atualização os componentes não podem descendentes.</translation>
     </message>
     <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Ocorreu um erro a abrir o ficheiro da interface &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Ocorreu um erro a carregar o ficheiro da interface do utilizador &quot;%1&quot;:%2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Ocorreu um erro a abrir o ficheiro de licença &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
@@ -500,6 +496,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Ocorreu um erro ao carregar o componente selecionado. Este componente não pode ser instalado.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Ocorreu um erro a abrir o ficheiro da interface &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Ocorreu um erro a carregar o ficheiro da interface do utilizador &quot;%1&quot;:%2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Ocorreu um erro a abrir o ficheiro de licença &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -1002,6 +1022,10 @@ Erro ao carregar %2</translation>
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Não foi possível encontrar a dependência &quot;%1&quot; para &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>Foi detetado uma dependência impossível de resolver. A instalação do componente &quot;%1&quot; teria de ser desinstalado devido à dependência &quot;%2&quot; que se encontra sinalizada para desinstalar por: &quot;%3&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
@@ -1256,7 +1280,19 @@ Erro ao carregar %2</translation>
     </message>
     <message>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
-        <translation>Limpar o diretório de cache e reiniciar o aplicativo pode resolver isso.</translation>
+        <translation>Limpar o diretório de cache e reiniciar o aplicativo pode resolver esta situação.</translation>
+    </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>Ocorreu um erro durante a actualização da cache.</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>Não foi possível abrir o ficheiro &quot;%1&quot; para leitura: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>Não foi possível abrir o ficheiro &quot;%1&quot; para escrita: %2</translation>
     </message>
 </context>
 <context>
@@ -1447,10 +1483,6 @@ De certeza que deseja continuar?</translation>
         <translation>Não é possível instalar %1. O componente não foi encontrado.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Foram encontrados processos em execução.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>Não foi possível obter os direitos de acesso necessários durante a execução na linha de comandos. Por favor, reinicie a aplicação com privilégios de administrador.</translation>
     </message>
@@ -1509,6 +1541,10 @@ De certeza que deseja continuar?</translation>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>Não há espaço em disco suficiente para armazenar arquivos temporários! %1 estão disponíveis, enquanto o mínimo necessário é %2. Você pode selecionar outro local para os arquivos temporários modificando o caminho do cache local nas configurações do instalador.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>Não foi possível resolver os componentes a serem desinstalados</translation>
     </message>
 </context>
 <context>
@@ -1738,10 +1774,6 @@ De certeza que deseja continuar?</translation>
         <translation>Não é possível recuperar metadados: %1</translation>
     </message>
     <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Não é possível adicionar informações de fontes de atualização temporária.</translation>
-    </message>
-    <message>
         <source>Cannot find any update source information.</source>
         <translation>Não é possível encontrar informações de fonte de atualização.</translation>
     </message>
@@ -1839,7 +1871,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>Bem-vindo</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -1945,10 +1977,6 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Desselecione todos os componentes na visualização em árvore.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>&amp;Procurar ficheiros QBSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Selecione ficheiro &quot;Qt Board Support Package&quot; para instalar conteúdo adicional que não está disponível nos repositórios online.</translation>
     </message>
@@ -1991,6 +2019,18 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>Search</source>
         <translation>Pesquisa</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>Selecionar ficheiros do tipo &amp;QBSP</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Selecione</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Erro</translation>
     </message>
 </context>
 <context>
@@ -2269,7 +2309,7 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">Selecionar categorias</translation>
+        <translation>Categorias</translation>
     </message>
 </context>
 <context>
@@ -2459,6 +2499,10 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     <message>
         <source>Try again</source>
         <translation>Tente novamente</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>Não é possível fazer o descarregamento de %1. Não é possível criar o diretório &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -2731,10 +2775,6 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <translation>Não é possível ler &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Ocorreu um erro a análisar %1 em %2, %3: %4</translation>
-    </message>
-    <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
         <translation>Não é esperado este elemento raiz %1. Deveria ser &apos;Updates&apos;.</translation>
     </message>
@@ -2778,7 +2818,7 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Informação do componente</translation>
+        <translation>Informação</translation>
     </message>
 </context>
 <context>
@@ -2984,6 +3024,10 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>Não é possível sincronizar o cache invalidado.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>Foi selecionado um modo de registo desconhecido.</translation>
     </message>
 </context>
 <context>

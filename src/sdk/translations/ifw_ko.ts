@@ -232,6 +232,10 @@
         <source>Clear cache</source>
         <translation>캐시 모두 삭제</translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation>캐시 삭제 중...</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller</name>
@@ -342,6 +346,10 @@
     <message>
         <source>The specified module could not be found.</source>
         <translation>지정된 모듈을 찾을 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation>캐시를 삭제한 후에 애플리케이션을 재시작하면 해결될 수 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -470,18 +478,6 @@
         <translation>업데이터 모드에서는 구성요소에 하위 요소가 있으면 안 됩니다.</translation>
     </message>
     <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>요청된 UI 파일(&quot;%1&quot;)을 열 수 없음: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>요청된 UI 파일(&quot;%1&quot;)을 로드할 수 없음: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>요청된 라이선스 파일(&quot;%1&quot;)을 열 수 없음: %2</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>오류</translation>
     </message>
@@ -500,6 +496,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>선택한 구성요소를 로드하는 중에 오류가 발생했습니다. 이 구성요소를 설치할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>요청된 UI 파일(&quot;%1&quot;)을 열 수 없음: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>요청된 UI 파일(&quot;%1&quot;)을 로드할 수 없음: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>>요청된 라이선스 파일(&quot;%1&quot;)을 열 수 없음: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -580,10 +600,6 @@
         <translation>트리 보기에서 모든 구성요소를 선택 해제합니다.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>QBSP 파일 탐색(&amp;B)</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>QBSP(Qt Board Support Package) 파일을 선택하여 온라인 저장소에서 직접 사용할 수 없는 추가 콘텐츠를 설치합니다.</translation>
     </message>
@@ -626,6 +642,18 @@
     <message>
         <source>Search</source>
         <translation>검색</translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>QBSP 파일 탐색(&amp;Q)</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>선택</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>오류</translation>
     </message>
 </context>
 <context>
@@ -1117,6 +1145,10 @@ Error while loading %2</source>
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>&quot;%2&quot;에 대한 누락된 종속성 &quot;%1&quot;을(를) 찾을 수 없습니다.</translation>
     </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation>해결할 수 없는 종속성 문제가 발생. 설치된 구성 요소 &quot;%1&quot;이(가) 종속성 &quot;%2&quot;(으)로 설정되어 제거됩니다.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
@@ -1372,6 +1404,18 @@ Error while loading %2</source>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation>캐시 디렉터리를 모두 삭제하고 애플리케이션을 다시 시작하면 문제를 해결할 수 있습니다.</translation>
     </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation>캐시 업데이트 도중 알수 없는 예외 발생</translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation>&quot;%1&quot; 파일을 읽기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation>&quot;%1&quot; 파일을 쓰기 위해 열 수 없음: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::FileTaskObserver</name>
@@ -1569,10 +1613,6 @@ Do you want to continue?</source>
         <translation>%1을(를) 설치할 수 없습니다. 가상 구성요소입니다.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>실행 중인 프로세스를 찾았습니다.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>명령줄에서 실행할 때 접근 원한을 상승시킬 수 없습니다. 관리자로서 애플리케이션을 재시작하십시오.</translation>
     </message>
@@ -1619,6 +1659,10 @@ Do you want to continue?</source>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
         <translation>디스크 공간이 부족하여 임시 파일을 저장할 수 없습니다. %1은(는) 사용 가능하지만 최소한 %2이(가) 필요합니다. 설치 프로그램 설정에서 로컬 캐시 경로를 수정하여 임시 파일의 다른 위치를 선택할 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation>구성 요소들의 설치 제거를 해결 할 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -1848,10 +1892,6 @@ Do you want to continue?</source>
         <translation>메타 정보를 검색할 수 없음: %1</translation>
     </message>
     <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>임시 업데이트 소스 정보를 추가할 수 없습니다.</translation>
-    </message>
-    <message>
         <source>Cannot find any update source information.</source>
         <translation>어떠한 업데이트 소스 정보도 추가할 수 없습니다.</translation>
     </message>
@@ -1949,7 +1989,7 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>환영</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -2490,6 +2530,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Try again</source>
         <translation>다시 시도하기</translation>
     </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation>%1을(를) 다운로드 할 수 없음. &quot;%2&quot;을(를) 위한 디렉터리를 생성할 수 없음.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -2760,10 +2804,6 @@ or accept the elevation of access rights if being asked.</source>
         <translation>&quot;%1&quot;을(를) 읽을 수 없음</translation>
     </message>
     <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>%2의 %1에서 파싱 오류 발생, %3: %4</translation>
-    </message>
-    <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
         <translation>%1 루트 요소는 예상하지 못했습니다. &apos;Updates&apos;여야 합니다.</translation>
     </message>
@@ -2967,6 +3007,10 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
         <translation>무효화된 캐시를 동기화할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
+        <translation>알 수 없는 등록 방법이 사용됨!</translation>
     </message>
 </context>
 <context>

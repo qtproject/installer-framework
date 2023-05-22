@@ -1095,7 +1095,7 @@ OperationList Component::operations(const Operation::OperationGroups &mask) cons
                 licenses.insert(values.at(i).value(scFile).toString(),
                         values.at(i).value(scContent));
             }
-            d->m_licenseOperation->setValue(scLicenses, licenses);
+            d->m_licenseOperation->setValue(scLicensesValue, licenses);
             d->m_operations.append(d->m_licenseOperation);
         }
     }

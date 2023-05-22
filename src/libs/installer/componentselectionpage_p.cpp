@@ -35,6 +35,7 @@
 #include "component.h"
 #include "fileutils.h"
 #include "messageboxhandler.h"
+#include "customcombobox.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -50,7 +51,6 @@
 #include <QStackedLayout>
 #include <QStackedWidget>
 #include <QLineEdit>
-#include <QComboBox>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
 
@@ -136,14 +136,23 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_rightSideVLayout->addWidget(m_qbspPushButton, 0, Qt::AlignRight | Qt::AlignBottom);
 
     QHBoxLayout *topHLayout = new QHBoxLayout;
-    m_checkStateComboBox = new QComboBox(q);
+
+    // Using custom combobox to workaround QTBUG-90595
+    m_checkStateComboBox = new CustomComboBox(q);
+#ifdef Q_OS_MACOS
     QStyledItemDelegate *delegate = new QStyledItemDelegate(this);
     m_checkStateComboBox->setItemDelegate(delegate);
+#endif
     m_checkStateComboBox->setObjectName(QLatin1String("CheckStateComboBox"));
     topHLayout->addWidget(m_checkStateComboBox);
 
     connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ComponentSelectionPagePrivate::updateAllCheckStates);
+
+    // Workaround invisible placeholder text
+    QPalette palette = m_checkStateComboBox->palette();
+    palette.setColor(QPalette::PlaceholderText, palette.color(QPalette::Text));
+    m_checkStateComboBox->setPalette(palette);
 
     m_checkStateComboBox->setPlaceholderText(ComponentSelectionPage::tr("Select"));
     if (m_core->isInstaller()) {
