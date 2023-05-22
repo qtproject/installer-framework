@@ -41,6 +41,7 @@
 namespace QInstaller {
 
 class Component;
+class ComponentAlias;
 
 class INSTALLER_EXPORT LoggingHandler
 {
@@ -67,6 +68,7 @@ public:
     void printUpdateInformation(const QList<Component *> &components) const;
     void printLocalPackageInformation(const QList<KDUpdater::LocalPackage> &packages) const;
     void printPackageInformation(const PackagesList &matchedPackages, const LocalPackagesMap &installedPackages) const;
+    void printAliasInformation(const QList<ComponentAlias *> &aliases);
 
     friend VerbosityLevel &operator++(VerbosityLevel &level, int);
     friend VerbosityLevel &operator--(VerbosityLevel &level, int);

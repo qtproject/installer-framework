@@ -139,7 +139,17 @@ int CommandLineInterface::searchAvailablePackages()
     QString regexp;
     if (!m_positionalArguments.isEmpty())
         regexp = m_positionalArguments.first();
-    m_core->listAvailablePackages(regexp, parsePackageFilters());
+
+    bool searchAliases = true;
+    if (m_parser.isSet(CommandLineOptions::scTypeLong)) {
+        searchAliases = (m_parser.value(CommandLineOptions::scTypeLong)
+            != QLatin1String("packages"));
+    }
+    if (searchAliases)
+        m_core->listAvailableAliases(regexp);
+    else
+        m_core->listAvailablePackages(regexp, parsePackageFilters());
+
     return EXIT_SUCCESS;
 }
 

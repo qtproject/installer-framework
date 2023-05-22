@@ -39,6 +39,7 @@
         \li \l{Command Line Interface}
         \li \l{Configuration File}
         \li \l{Package Directory}
+        \li \l{Alias Definition File}
         \li \l{Controller Scripting}
         \li \l{Component Scripting}
         \li \l{Operations}

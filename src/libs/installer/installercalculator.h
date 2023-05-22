@@ -40,6 +40,7 @@
 namespace QInstaller {
 
 class Component;
+class ComponentAlias;
 class PackageManagerCore;
 
 class INSTALLER_EXPORT InstallerCalculator : public CalculatorBase
@@ -48,20 +49,28 @@ public:
     InstallerCalculator(PackageManagerCore *core, const AutoDependencyHash &autoDependencyComponentHash);
     ~InstallerCalculator();
 
+    bool solve();
     bool solve(const QList<Component *> &components) override;
+    bool solve(const QList<ComponentAlias *> &aliases);
+
     QString resolutionText(Component *component) const override;
 
 private:
     bool solveComponent(Component *component, const QString &version = QString()) override;
+    bool solveAlias(ComponentAlias *alias);
 
     void addComponentForInstall(Component *component, const QString &version = QString());
+    bool addComponentsFromAlias(ComponentAlias *alias);
     QSet<Component *> autodependencyComponents();
     QString recursionError(Component *component) const;
+
+    bool updateCheckState(Component *component, Qt::CheckState state);
 
 private:
     QHash<Component*, QSet<Component*> > m_visitedComponents;
     QList<const Component*> m_componentsForAutodepencencyCheck;
     QSet<QString> m_toInstallComponentIds; //for faster lookups
+    QSet<QString> m_toInstallComponentAliases;
     //Helper hash for quicker search for autodependency components
     AutoDependencyHash m_autoDependencyComponentHash;
 };

@@ -29,6 +29,8 @@
 #include "installercalculator.h"
 
 #include "component.h"
+#include "componentalias.h"
+#include "componentmodel.h"
 #include "packagemanagercore.h"
 #include "settings.h"
 #include <globals.h>
@@ -51,6 +53,19 @@ InstallerCalculator::~InstallerCalculator()
 {
 }
 
+bool InstallerCalculator::solve()
+{
+    if (!solve(m_core->aliasesMarkedForInstallation()))
+        return false;
+
+    // Subtract components added by aliases
+    QList<Component *> components = m_core->componentsMarkedForInstallation();
+    for (auto *component : qAsConst(m_resolvedComponents))
+        components.removeAll(component);
+
+    return solve(components);
+}
+
 QString InstallerCalculator::resolutionText(Component *component) const
 {
     const Resolution reason = resolutionType(component);
@@ -67,6 +82,9 @@ QString InstallerCalculator::resolutionText(Component *component) const
         case Resolution::Selected:
             return QCoreApplication::translate("InstallerCalculator",
                 "Selected components without dependencies:");
+        case Resolution::Alias:
+            return QCoreApplication::translate("InstallerCalculator",
+                "Components selected by alias \"%1\":").arg(referencedComponent(component));
         default:
             Q_ASSERT_X(false, Q_FUNC_INFO, "Invalid install resolution detected!");
     }
@@ -110,6 +128,44 @@ bool InstallerCalculator::solve(const QList<Component *> &components)
     return true;
 }
 
+bool InstallerCalculator::solve(const QList<ComponentAlias *> &aliases)
+{
+    if (aliases.isEmpty())
+        return true;
+
+    QList<ComponentAlias *> notAppendedAliases; // Aliases that require other aliases
+    for (auto *alias : aliases) {
+        if (!alias)
+            continue;
+
+        if (m_toInstallComponentAliases.contains(alias->name())) {
+            const QString errorMessage = QCoreApplication::translate("InstallerCalculator",
+                "Recursion detected, component alias \"%1\" already added.").arg(alias->name());
+            qCWarning(QInstaller::lcInstallerInstallLog).noquote() << errorMessage;
+            m_errorString.append(errorMessage);
+
+            Q_ASSERT_X(!m_toInstallComponentAliases.contains(alias->name()), Q_FUNC_INFO,
+                qPrintable(errorMessage));
+
+            return false;
+        }
+
+        if (alias->aliases().isEmpty()) {
+            if (!addComponentsFromAlias(alias))
+                return false;
+        } else {
+            notAppendedAliases.append(alias);
+        }
+    }
+
+    for (auto *alias : qAsConst(notAppendedAliases)) {
+        if (!solveAlias(alias))
+            return false;
+    }
+
+    return true;
+}
+
 void InstallerCalculator::addComponentForInstall(Component *component, const QString &version)
 {
     if (!m_componentsForAutodepencencyCheck.contains(component))
@@ -121,10 +177,38 @@ void InstallerCalculator::addComponentForInstall(Component *component, const QSt
     }
 }
 
+bool InstallerCalculator::addComponentsFromAlias(ComponentAlias *alias)
+{
+    QList<Component *> componentsToAdd;
+    for (auto *component : alias->components()) {
+        if (m_toInstallComponentIds.contains(component->name()))
+            continue; // Already added
+
+        componentsToAdd.append(component);
+        // Updates the model, so that we also check the descendant
+        // components when calculating components to install
+        updateCheckState(component, Qt::Checked);
+        insertResolution(component, Resolution::Alias, alias->name());
+    }
+
+    m_toInstallComponentAliases.insert(alias->name());
+    return solve(componentsToAdd);
+}
+
 QString InstallerCalculator::recursionError(Component *component) const
 {
     return QCoreApplication::translate("InstallerCalculator", "Recursion detected, component \"%1\" "
         "already added with reason: \"%2\"").arg(component->name(), resolutionText(component));
+}
+
+bool InstallerCalculator::updateCheckState(Component *component, Qt::CheckState state)
+{
+    ComponentModel *currentModel = m_core->isUpdater()
+        ? m_core->updaterComponentModel()
+        : m_core->defaultComponentModel();
+
+    const QModelIndex &idx = currentModel->indexFromComponentName(component->treeName());
+    return currentModel->setData(idx, state, Qt::CheckStateRole);
 }
 
 bool InstallerCalculator::solveComponent(Component *component, const QString &version)
@@ -198,6 +282,19 @@ bool InstallerCalculator::solveComponent(Component *component, const QString &ve
         insertResolution(component, Resolution::Resolved);
     }
     return true;
+}
+
+bool InstallerCalculator::solveAlias(ComponentAlias *alias)
+{
+    for (auto *requiredAlias : alias->aliases()) {
+        if (!solveAlias(requiredAlias))
+            return false;
+    }
+
+    if (m_toInstallComponentAliases.contains(alias->name()))
+        return true;
+
+    return addComponentsFromAlias(alias);
 }
 
 QSet<Component *> InstallerCalculator::autodependencyComponents()

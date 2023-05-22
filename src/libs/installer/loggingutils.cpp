@@ -29,6 +29,7 @@
 #include "loggingutils.h"
 
 #include "component.h"
+#include "componentalias.h"
 #include "globals.h"
 #include "fileutils.h"
 #include "packagemanagercore.h"
@@ -363,6 +364,41 @@ void LoggingHandler::printPackageInformation(const PackagesList &matchedPackages
     stream.writeEndElement();
 
     stream.writeEndDocument();
+    std::cout << qPrintable(output);
+}
+
+/*!
+    Prints basic or more detailed information about component \a aliases,
+    depending on the current verbosity level.
+*/
+void LoggingHandler::printAliasInformation(const QList<ComponentAlias *> &aliases)
+{
+    QList<ComponentAlias *> sortedAliases = aliases;
+    std::sort(sortedAliases.begin(), sortedAliases.end(),
+        [](const ComponentAlias *lhs, const ComponentAlias *rhs) {
+            return lhs->name() < rhs->name();
+        }
+    );
+
+    QString output;
+    QTextStream stream(&output);
+
+    stream << Qt::endl;
+    for (auto *alias : qAsConst(sortedAliases)) {
+        stream << "Name: " << alias->name() << Qt::endl;
+        stream << "Display name: " << alias->displayName() << Qt::endl;
+        stream << "Description: " << alias->description() << Qt::endl;
+        stream << "Version: " << alias->version() << Qt::endl;
+        if (verboseLevel() == VerbosityLevel::Detailed)
+            stream << "Virtual: " << alias->value(scVirtual) << Qt::endl;
+
+        stream << "Components: " << alias->value(scRequiresComponent) << Qt::endl;
+        stream << "Required aliases: " << alias->value(scRequiresAlias) << Qt::endl;
+
+        if (sortedAliases.indexOf(alias) != (sortedAliases.count() - 1))
+            stream << "========================================" << Qt::endl;
+    }
+
     std::cout << qPrintable(output);
 }
 

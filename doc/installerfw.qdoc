@@ -72,6 +72,7 @@
             \li \l{Command Line Interface}
             \li \l{Configuration File}
             \li \l{Package Directory}
+            \li \l{Alias Definition File}
             \li \l{Controller Scripting}
             \li \l{Component Scripting}
             \li \l{Operations}
@@ -255,6 +256,10 @@
             \li --cp, --cache-path <path>
             \li Sets the path used for local metadata cache. The path must be writable by the current user.
         \row
+            \li --type package|alias
+            \li [CLI] Sets the type of the given arguments for commands supporting multiple argument types,
+                like search. Defaults to alias.
+        \row
             \li --am, --accept-messages
             \li [CLI] Accepts all message queries without user input.
         \row
@@ -313,8 +318,8 @@
             \li Command
             \li Usage
         \row
-            \li in, install <pkg ...>
-            \li Install packages given as an argument. If no packages are given, install the default package set.
+            \li in, install <pkg|alias ...>
+            \li Install packages and aliases given as an argument. If no arguments are given, install the default package set.
         \row
             \li ch, check-updates
             \li Show information about available updates on the maintenance tool.
@@ -325,14 +330,17 @@
             \li rm, remove <pkg ...>
             \li Uninstall selected packages and their child components.
         \row
-            \li li, list <regexp>
+            \li li, list <regexp for pkg>
             \li List information about currently installed packages.
         \row
-            \li se, search <regexp>
-            \li Search available packages. If no search pattern is given, show all available packages.
+            \li se, search <regexp for pkg|alias>
+            \li Search available aliases or packages. If no search pattern is given, show all available packages.
 
                 \note The \c --filter-packages option can be used to specify additional filters for
                 the search operation. See \l{Summary of Options}.
+
+                \note The \c --type option can be used to specify the content type to search.
+                See \l{Summary of Options}.
         \row
             \li co, create-offline <pkg ...>
             \li Create offline installer from selected packages.
@@ -564,6 +572,11 @@
             \li TargetConfigurationFile
             \li Filename for the configuration file on the target. Default is components.xml.
         \row
+            \li AliasDefinitionsFile
+            \li Filename for a XML document containing the definitions for component aliases.
+                For more information about how to declare component aliases in the file,
+                see \l{Alias Definition File}.
+        \row
             \li Translations
             \li List of translation files to be used for translating the user interface. To add
                 several translation files, specify several \c <Translation> child elements that
@@ -605,6 +618,71 @@
 
     \endtable
 
+*/
+
+/*!
+    \previouspage ifw-globalconfig.html
+    \page ifw-aliasconfig.html
+    \nextpage noninteractive.html
+
+    \title Alias Definition File
+
+    The alias definition file defines the available component aliases and their
+    properties. The file is typically called \c aliases.xml and located in the
+    \c config directory.
+
+    The component names of the Qt Installer Framework follow a domain-like
+    identifier syntax, for example \c com.vendor.root, \c com.vendor.root.subcomponent,
+    and so on. While this allows an easy way to construct a tree from the components when
+    running the installer in graphical mode, the names can be unintuitive for command line usage,
+    where the components are not displayed in a tree view.
+
+    Instead of relying on the domain-like names for CLI usage, the packager can also define component
+    aliases for existing components. An alias is another name for a single component or a collection
+    of components. It can be used to declare alternative names for existing components that are
+    easier to type and combine multiple components under the same alias name, for easier selection.
+
+    The following example shows a possible alias definition file:
+
+    \quotefile examples/aliases.xml
+
+    \section1 Summary of Alias Definition File Elements
+
+    The following table summarizes the elements in the alias definition file.
+
+    \table
+        \header
+            \li Element
+            \li Description
+        \row
+            \li Name
+            \li Name of component alias.
+        \row
+            \li DisplayName
+            \li Human-readable name of the component alias.
+        \row
+            \li Description
+            \li Human-readable description of the component alias.
+        \row
+            \li Version
+            \li Version number of the component alias.
+        \row
+            \li Virtual
+            \li Set to \c true to hide the component alias from the installer. This also
+                makes the alias unselectable by the user.
+        \row
+            \li RequiresComponent
+            \li Comma-separated list of identifiers of components that this
+                component alias requires. The components are selected for installation
+                when the component alias is selected. Note that the components must be
+                selectable by the user, so virtual or otherwise unselectable components
+                cannot be listed as a requirement.
+        \row
+            \li RequiresAlias
+            \li Comma-separated list of aliases that this component alias requires. The
+                required aliases are selected for installation when this component alias
+                is selected.
+    \endtable
 */
 
 /*!
@@ -806,7 +884,7 @@
 /*!
     \previouspage ifw-globalconfig.html
     \page ifw-component-description.html
-    \nextpage noninteractive.html
+    \nextpage ifw-aliasconfig.html
 
     \title Package Directory
 

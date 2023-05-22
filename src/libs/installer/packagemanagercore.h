@@ -45,7 +45,9 @@
 
 namespace QInstaller {
 
+struct AliasSource;
 class ComponentModel;
+class ComponentAlias;
 class ScriptEngine;
 class PackageManagerCorePrivate;
 class PackageManagerProxyFactory;
@@ -202,6 +204,8 @@ public:
     void setOfflineBinaryName(const QString &name);
     QString offlineBinaryName() const;
 
+    void addAliasSource(const AliasSource &source);
+
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
     Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,
                                               bool replace = false, bool compressed = false);
@@ -244,6 +248,8 @@ public:
     Q_INVOKABLE QInstaller::Component *componentByName(const QString &identifier) const;
     Q_INVOKABLE QList<QInstaller::Component *> components(const QString &regexp = QString()) const;
 
+    ComponentAlias *aliasByName(const QString &name) const;
+
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;
 
@@ -252,6 +258,9 @@ public:
 
     Q_INVOKABLE bool calculateComponentsToUninstall() const;
     QList<Component*> componentsToUninstall() const;
+
+    QList<Component *> componentsMarkedForInstallation() const;
+    QList<ComponentAlias *> aliasesMarkedForInstallation() const;
 
     QString componentsToInstallError() const;
     QString componentsToUninstallError() const;
@@ -264,9 +273,12 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
+
     void listInstalledPackages(const QString &regexp = QString());
     void listAvailablePackages(const QString &regexp = QString(),
                                const QHash<QString, QString> &filters = QHash<QString, QString>());
+    void listAvailableAliases(const QString &regexp = QString());
+
     PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
     PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
     PackageManagerCore::Status installDefaultComponentsSilently();
@@ -449,11 +461,10 @@ private:
     QString findDisplayVersion(const QString &componentName, const QHash<QString, QInstaller::Component*> &components,
                                const QString& versionKey, QHash<QString, bool> &visited);
     ComponentModel *componentModel(PackageManagerCore *core, const QString &objectName) const;
-    QList<Component *> componentsMarkedForInstallation() const;
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesMap installedPackages);
     bool componentUninstallableFromCommandLine(const QString &componentName);
-    bool checkComponentsForInstallation(const QStringList &components, QString &errorMessage);
+    bool checkComponentsForInstallation(const QStringList &names, QString &errorMessage);
 
 private:
     PackageManagerCorePrivate *const d;

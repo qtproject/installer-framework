@@ -48,7 +48,7 @@ CommandLineParser::CommandLineParser()
         "headless mode. The installation operations can be invoked with the following commands and "
         "options. Note that the options marked with \"CLI\" are available in the headless mode only.\n")
         + QLatin1String("\nCommands:\n")
-        + indent + QString::fromLatin1("%1, %2 - install default or selected packages - <pkg ...>\n")
+        + indent + QString::fromLatin1("%1, %2 - install default or selected packages and aliases - <pkg|alias ...>\n")
             .arg(CommandLineOptions::scInstallShort, CommandLineOptions::scInstallLong)
         + indent + QString::fromLatin1("%1, %2 - show available updates information on maintenance tool\n")
             .arg(CommandLineOptions::scCheckUpdatesShort, CommandLineOptions::scCheckUpdatesLong)
@@ -56,13 +56,16 @@ CommandLineParser::CommandLineParser()
             .arg(CommandLineOptions::scUpdateShort, CommandLineOptions::scUpdateLong)
         + indent + QString::fromLatin1("%1, %2 - uninstall packages and their child components - <pkg ...>\n")
             .arg(CommandLineOptions::scRemoveShort, CommandLineOptions::scRemoveLong)
-        + indent + QString::fromLatin1("%1, %2 - list currently installed packages - <regexp>\n")
+        + indent + QString::fromLatin1("%1, %2 - list currently installed packages - <regexp for pkg>\n")
             .arg(CommandLineOptions::scListShort, CommandLineOptions::scListLong)
-        + indent + QString::fromLatin1("%1, %2 - search available packages - <regexp>\n")
+        + indent + QString::fromLatin1("%1, %2 - search available aliases or packages - <regexp for pkg|alias>\n")
             .arg(CommandLineOptions::scSearchShort, CommandLineOptions::scSearchLong)
         + indent + indent + QString::fromLatin1("Note: The --%1 option can be used to specify\n")
             .arg(CommandLineOptions::scFilterPackagesLong)
         + indent + indent + QLatin1String("additional filters for the search operation\n")
+        + indent + indent + QString::fromLatin1("Note: The --%1 option can be used to specify\n")
+            .arg(CommandLineOptions::scTypeLong)
+        + indent + indent + QLatin1String("the content type to search\n")
         + indent + QString::fromLatin1("%1, %2 - create offline installer from selected packages - <pkg ...>\n")
             .arg(CommandLineOptions::scCreateOfflineShort, CommandLineOptions::scCreateOfflineLong)
         + indent + QString::fromLatin1("%1, %2 - clear contents of the local metadata cache\n")
@@ -177,6 +180,11 @@ CommandLineParser::CommandLineParser()
         << CommandLineOptions::scLocalCachePathShort << CommandLineOptions::scLocalCachePathLong,
         QLatin1String("Sets the path used for local metadata cache. The path must be writable by the current user."),
         QLatin1String("path")));
+    addOption(QCommandLineOption(QStringList()
+        << CommandLineOptions::scTypeLong,
+        QLatin1String("[CLI] Sets the type of the given arguments for commands supporting multiple argument types, "
+                      "like \"search\". Defaults to \"alias\"."),
+        QLatin1String("package|alias")));
 
     // Message query options
     addOptionWithContext(QCommandLineOption(QStringList() << CommandLineOptions::scAcceptMessageQueryShort

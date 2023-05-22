@@ -28,4 +28,5 @@
             <Url>http://www.your-repo-location/packages/</Url>
         </Repository>
     </RemoteRepositories>
+    <AliasDefinitionsFile>aliases.xml</AliasDefinitionsFile>
 </Installer>

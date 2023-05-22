@@ -14,6 +14,7 @@
 #include "commandlineparser.h"
 #include "componentchecker.h"
 #include "component.h"
+#include "componentalias.h"
 #include "componentmodel.h"
 #include "concurrentoperationrunner.h"
 #include "constants.h"

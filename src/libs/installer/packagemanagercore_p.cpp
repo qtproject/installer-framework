@@ -45,6 +45,7 @@
 #include "qsettingswrapper.h"
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
+#include "componentalias.h"
 #include "componentchecker.h"
 #include "globals.h"
 #include "binarycreator.h"
@@ -156,6 +157,7 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     : m_updateFinder(nullptr)
+    , m_aliasFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -173,6 +175,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_autoConfirmCommand(false)
     , m_core(core)
     , m_updates(false)
+    , m_aliases(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(0) // initialize with pseudo marker
@@ -194,6 +197,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, qint64 magicInstallerMaker,
         const QList<OperationBlob> &performedOperations, const QString &datFileName)
     : m_updateFinder(nullptr)
+    , m_aliasFinder(nullptr)
     , m_localPackageHub(std::make_shared<LocalPackageHub>())
     , m_status(PackageManagerCore::Unfinished)
     , m_needsHardRestart(false)
@@ -211,6 +215,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_autoConfirmCommand(false)
     , m_core(core)
     , m_updates(false)
+    , m_aliases(false)
     , m_repoFetched(false)
     , m_updateSourcesAdded(false)
     , m_magicBinaryMarker(magicInstallerMaker)
@@ -270,6 +275,7 @@ PackageManagerCorePrivate::~PackageManagerCorePrivate()
     qDeleteAll(m_performedOperationsCurrentSession);
 
     delete m_updateFinder;
+    delete m_aliasFinder;
     delete m_proxyFactory;
 
     delete m_defaultModel;
@@ -430,6 +436,73 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
     return true;
 }
 
+bool PackageManagerCorePrivate::buildComponentAliases()
+{
+    {
+        const QList<ComponentAlias *> aliasList = componentAliases();
+        if (aliasList.isEmpty())
+            return true;
+
+        for (const auto *alias : aliasList) {
+            // Create a new alias object for package manager core to take ownership of
+            ComponentAlias *newAlias = new ComponentAlias(m_core);
+            for (const QString &key : alias->keys())
+                newAlias->setValue(key, alias->value(key));
+
+            m_componentAliases.insert(alias->name(), newAlias);
+        }
+    }
+
+    // Component check state is changed by alias selection, so store the initial state
+    storeCheckState();
+
+    Graph<QString> aliasGraph;
+    for (auto *alias : qAsConst(m_componentAliases)) {
+        aliasGraph.addNode(alias->name());
+        aliasGraph.addEdges(alias->name(),
+            QInstaller::splitStringWithComma(alias->value(scRequiresAlias)));
+
+        if (!m_core->componentByName(alias->name())) {
+            // Name ok, select for sanity check calculation
+            alias->setSelected(true);
+        } else {
+            alias->setUnstable(ComponentAlias::ComponentNameConfict,
+                tr("Alias declares name that conflicts with an existing component \"%1\"")
+                .arg(alias->name()));
+        }
+    }
+
+    aliasGraph.sort();
+    // Check for cyclic dependency errors
+    if (aliasGraph.hasCycle()) {
+        setStatus(PackageManagerCore::Failure, installerCalculator()->error());
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Unresolved component aliases"),
+            tr("Cyclic dependency between aliases \"%1\" and \"%2\" detected.")
+            .arg(aliasGraph.cycle().first, aliasGraph.cycle().second));
+
+        return false;
+    }
+
+    clearInstallerCalculator();
+    // Check for other errors preventing resolving components to install
+    if (!installerCalculator()->solve(m_componentAliases.values())) {
+        setStatus(PackageManagerCore::Failure, installerCalculator()->error());
+        MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
+            tr("Unresolved component aliases"), installerCalculator()->error());
+
+        return false;
+    }
+
+    for (auto *alias : qAsConst(m_componentAliases))
+        alias->setSelected(false);
+
+    // Restore original state
+    restoreCheckState();
+
+    return true;
+}
+
 template <typename T>
 bool PackageManagerCorePrivate::loadComponentScripts(const T &components, const bool postScript)
 {
@@ -491,6 +564,9 @@ ScriptEngine *PackageManagerCorePrivate::controlScriptEngine() const
 
 void PackageManagerCorePrivate::clearAllComponentLists()
 {
+    qDeleteAll(m_componentAliases);
+    m_componentAliases.clear();
+
     QList<QInstaller::Component*> toDelete;
 
     toDelete << m_rootComponents << m_deletedReplacedComponents;
@@ -649,6 +725,10 @@ void PackageManagerCorePrivate::initialize(const QHash<QString, QString> &params
 
     if (isInstaller())
         m_packageSources.insert(PackageSource(QUrl(QLatin1String("resource://metadata/")), 1));
+
+    const QString aliasFilePath = m_core->settings().aliasDefinitionsFile();
+    if (!aliasFilePath.isEmpty())
+        m_aliasSources.insert(AliasSource(AliasSource::SourceFileFormat::Xml, aliasFilePath, -1));
 
     m_metadataJob.disconnect();
     m_metadataJob.setAutoDelete(false);
@@ -2781,6 +2861,25 @@ LocalPackagesMap PackageManagerCorePrivate::localInstalledPackages()
             .arg(componentsXmlPath()));
     }
     return m_localPackageHub->localPackages();
+}
+
+QList<ComponentAlias *> PackageManagerCorePrivate::componentAliases()
+{
+    if (m_aliases && m_aliasFinder)
+        return m_aliasFinder->aliases();
+
+    m_aliases = false;
+    delete m_aliasFinder;
+
+    m_aliasFinder = new AliasFinder(m_core);
+    m_aliasFinder->setAliasSources(m_aliasSources);
+    if (!m_aliasFinder->run()) {
+        qCDebug(lcDeveloperBuild) << "No component aliases found." << Qt::endl;
+        return QList<ComponentAlias *>();
+    }
+
+    m_aliases = true;
+    return m_aliasFinder->aliases();
 }
 
 bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadType type)

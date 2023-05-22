@@ -60,6 +60,9 @@ static const QLatin1String scDisplayName("DisplayName");
 static const QLatin1String scTreeName("TreeName");
 static const QLatin1String scAutoTreeName("AutoTreeName");
 static const QLatin1String scDependencies("Dependencies");
+static const QLatin1String scAlias("Alias");
+static const QLatin1String scRequiresAlias("RequiresAlias");
+static const QLatin1String scRequiresComponent("RequiresComponent");
 static const QLatin1String scLocalDependencies("LocalDependencies");
 static const QLatin1String scAutoDependOn("AutoDependOn");
 static const QLatin1String scNewComponent("NewComponent");
@@ -175,6 +178,7 @@ static const QLatin1String scBanner("Banner");
 static const QLatin1String scLogo("Logo");
 static const QLatin1String scBackground("Background");
 static const QLatin1String scPageListPixmap("PageListPixmap");
+static const QLatin1String scAliasDefinitionsFile("AliasDefinitionsFile");
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
 
 static const QStringList scMetaElements = {
@@ -279,6 +283,7 @@ static const QLatin1String scFilterPackagesShort("fp");
 static const QLatin1String scFilterPackagesLong("filter-packages");
 static const QLatin1String scLocalCachePathShort("cp");
 static const QLatin1String scLocalCachePathLong("cache-path");
+static const QLatin1String scTypeLong("type");
 
 // Developer options
 static const QLatin1String scScriptShort("s");

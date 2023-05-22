@@ -49,7 +49,8 @@ public:
         VirtualDependent, // "No dependencies to virtual component"
         Dependent,        // "Added as dependency for %1." / "Removed as dependency component is removed"
         Automatic,        // "Component(s) added as automatic dependencies" / "Removed as autodependency component is removed"
-        Resolved          // "Component(s) that have resolved Dependencies"
+        Resolved,         // "Component(s) that have resolved Dependencies"
+        Alias             // "Components added from selected alias"
     };
 
     CalculatorBase(PackageManagerCore *core);
