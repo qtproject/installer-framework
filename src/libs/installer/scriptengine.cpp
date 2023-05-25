@@ -56,12 +56,6 @@ namespace QInstaller {
 
 /*!
     \inmodule QtInstallerFramework
-    \class QInstaller::InstallerProxy
-    \internal
-*/
-
-/*!
-    \inmodule QtInstallerFramework
     \class QInstaller::QDesktopServicesProxy
     \internal
 */
@@ -71,28 +65,6 @@ namespace QInstaller {
     \class QInstaller::QFileDialogProxy
     \internal
 */
-
-QJSValue InstallerProxy::components(const QString &regexp) const
-{
-    if (m_core) {
-        const QList<Component*> all = m_core->components(PackageManagerCore::ComponentType::All, regexp);
-        QJSValue scriptComponentsObject = m_engine->newArray(all.count());
-        for (int i = 0; i < all.count(); ++i) {
-            Component *const component = all.at(i);
-            QQmlEngine::setObjectOwnership(component, QQmlEngine::CppOwnership);
-            scriptComponentsObject.setProperty(i, m_engine->newQObject(component));
-        }
-        return scriptComponentsObject;
-    }
-    return m_engine->newArray();
-}
-
-QJSValue InstallerProxy::componentByName(const QString &componentName)
-{
-    if (m_core)
-        return m_engine->newQObject(m_core->componentByName(componentName), false);
-    return QJSValue();
-}
 
 QJSValue QDesktopServicesProxy::findFiles(const QString &path, const QString &pattern)
 {
@@ -380,9 +352,6 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) : QObject(core)
     QJSValue global = m_engine.globalObject();
 
     global.setProperty(QLatin1String("QFileDialog"), m_engine.newQObject(new QFileDialogProxy(core)));
-    const QJSValue proxy = m_engine.newQObject(new InstallerProxy(this, core));
-    global.setProperty(QLatin1String("InstallerProxy"), proxy);
-
     global.setProperty(QLatin1String("systemInfo"), m_engine.newQObject(new SystemInfo));
 
     global.setProperty(QLatin1String("QInstaller"), generateQInstallerObject());
@@ -402,11 +371,6 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) : QObject(core)
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }
     global.setProperty(QLatin1String("gui"), m_engine.newQObject(m_guiProxy));
-
-    global.property(QLatin1String("installer")).setProperty(QLatin1String("components"),
-        proxy.property(QLatin1String("components")));
-    global.property(QLatin1String("installer")).setProperty(QLatin1String("componentByName"),
-        proxy.property(QLatin1String("componentByName")));
 }
 
 /*!

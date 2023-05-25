@@ -241,7 +241,8 @@ public:
     void appendUpdaterComponent(Component *components);
 
     QList<Component *> components(ComponentTypes mask, const QString &regexp = QString()) const;
-    Component *componentByName(const QString &identifier) const;
+    Q_INVOKABLE QInstaller::Component *componentByName(const QString &identifier) const;
+    Q_INVOKABLE QList<QInstaller::Component *> components(const QString &regexp = QString()) const;
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
     QList<Component*> orderedComponentsToInstall() const;

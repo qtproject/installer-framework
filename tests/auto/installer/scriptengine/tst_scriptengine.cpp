@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -221,13 +221,6 @@ private slots:
             .hasProperty(QLatin1String("getExistingDirectory")), true);
         QCOMPARE(global.property(QLatin1String("QFileDialog"))
             .hasProperty(QLatin1String("getOpenFileName")), true);
-
-        QCOMPARE(global.hasProperty(QLatin1String("InstallerProxy")), true);
-        QCOMPARE(global.property(QLatin1String("InstallerProxy"))
-            .hasProperty(QLatin1String("componentByName")), true);
-        QCOMPARE(global.property(QLatin1String("InstallerProxy"))
-                 .hasProperty(QLatin1String("components")), true);
-
         QCOMPARE(global.hasProperty(QLatin1String("QDesktopServices")), true);
         QCOMPARE(global.property(QLatin1String("QDesktopServices"))
             .hasProperty(QLatin1String("openUrl")), true);

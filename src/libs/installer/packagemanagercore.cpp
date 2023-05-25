@@ -2138,6 +2138,18 @@ Component *PackageManagerCore::componentByName(const QString &name, const QList<
 }
 
 /*!
+    Returns an array of all components currently available. If the repository
+    metadata have not been fetched yet, the array will be empty. Optionally, a
+    \a regexp expression can be used to further filter the listed packages.
+
+    \sa {installer::components}{installer.components}
+ */
+QList<Component *> PackageManagerCore::components(const QString &regexp) const
+{
+    return components(PackageManagerCore::ComponentType::All, regexp);
+}
+
+/*!
     Returns \c true if directory specified by \a path is writable by
     the current user.
 */

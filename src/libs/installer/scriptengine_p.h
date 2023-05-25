@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -42,24 +42,6 @@ namespace QInstaller {
 class PackageManagerCore;
 class PackageManagerGui;
 class ScriptEngine;
-
-class InstallerProxy : public QObject
-{
-    Q_OBJECT
-    Q_DISABLE_COPY(InstallerProxy)
-
-public:
-    InstallerProxy(ScriptEngine *engine, PackageManagerCore *core)
-        : m_engine(engine), m_core(core) {}
-
-public slots:
-    QJSValue components(const QString &regexp = QString()) const;
-    QJSValue componentByName(const QString &componentName);
-
-private:
-    ScriptEngine *m_engine;
-    PackageManagerCore *m_core;
-};
 
 class QFileDialogProxy : public QObject
 {
@@ -166,7 +148,6 @@ private:
 
 } // namespace QInstaller
 
-Q_DECLARE_METATYPE(QInstaller::InstallerProxy*)
 Q_DECLARE_METATYPE(QInstaller::QFileDialogProxy*)
 Q_DECLARE_METATYPE(QInstaller::QDesktopServicesProxy*)
 

@@ -64,6 +64,11 @@
 #include <private/qv4object_p.h>
 
 #include <algorithm>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+#include <QJSEngine>
+#else
+#include <QQmlEngine>
+#endif
 
 using namespace QInstaller;
 
@@ -247,6 +252,11 @@ Component::Component(PackageManagerCore *core)
     : d(new ComponentPrivate(core, this))
     , m_defaultArchivePath(scTargetDirPlaceholder)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 5, 0)
+    QJSEngine::setObjectOwnership(this, QJSEngine::CppOwnership);
+#else
+    QQmlEngine::setObjectOwnership(this, QQmlEngine::CppOwnership);
+#endif
     setPrivate(d);
 
     connect(this, &Component::valueChanged, this, &Component::updateModelData);
