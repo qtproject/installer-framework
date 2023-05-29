@@ -35,6 +35,10 @@
 #include <QtNetwork/QNetworkReply>
 #include <QNetworkAccessManager>
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QNetworkInformation>
+#endif
+
 // these classes are not a part of the public API
 
 namespace KDUpdater {
