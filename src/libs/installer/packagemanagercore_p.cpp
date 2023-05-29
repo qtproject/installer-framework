@@ -1300,7 +1300,7 @@ void PackageManagerCorePrivate::writeMaintenanceToolAppBundle(OperationList &per
         const QString after = QLatin1String("<string>") + QFileInfo(maintenanceToolName()).baseName()
             + QLatin1String("</string>");
         while (!in.atEnd())
-            out << in.readLine().replace(before, after) << endl;
+            out << in.readLine().replace(before, after) << Qt::endl;
 
         // copy qt_menu.nib if it exists
         op = createOwnedOperation(QLatin1String("Mkdir"));
