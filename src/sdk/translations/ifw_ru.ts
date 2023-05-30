@@ -1423,7 +1423,7 @@ Error while loading %2</source>
         <translation>Установка %1 не удалась.</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Нажмите «%1» для выхода из мастера %2.</translation>
     </message>
 </context>

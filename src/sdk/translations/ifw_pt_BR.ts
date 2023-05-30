@@ -2224,7 +2224,7 @@ Por favor, copie o instalador para uma unidade local</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Clique em %1 para sair do Assistente %2.</translation>
     </message>
     <message>

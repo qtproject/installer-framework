@@ -2258,7 +2258,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Klikni %1 za izlaženje iz čarobnjaka %2.</translation>
     </message>
     <message>

@@ -1393,7 +1393,7 @@ Błąd podczas wczytywania %2</translation>
         <translation>Zakończone</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Kliknij pozycję %1, aby zamknąć Kreator %2.</translation>
     </message>
     <message>

@@ -1418,7 +1418,7 @@ Fehler beim Laden von %2</translation>
         <translation>Abschließen</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Klicken Sie %1, um den %2 Assistenten zu beenden.</translation>
     </message>
     <message>

@@ -1367,7 +1367,7 @@ Error while loading %2</source>
         <translation>終了</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>%2 ウィザードを終了するには、%1 をクリックします。</translation>
     </message>
     <message>

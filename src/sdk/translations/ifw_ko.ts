@@ -2192,7 +2192,7 @@ Please copy the installer to a local drive</source>
         <translation>완료됨</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>%2 마법사를 종료하려면 %1을(를) 클릭하십시오.</translation>
     </message>
     <message>

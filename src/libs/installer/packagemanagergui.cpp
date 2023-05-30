@@ -3056,7 +3056,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 */
 void FinishedPage::entering()
 {
-    m_msgLabel->setText(tr("Click %1 to exit the %2 Wizard.")
+    m_msgLabel->setText(tr("Click %1 to exit the %2 Setup.")
                         .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')))
                         .arg(productName()));
 

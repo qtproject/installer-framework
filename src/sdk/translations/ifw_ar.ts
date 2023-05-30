@@ -2302,7 +2302,7 @@ Please copy the installer to a local drive</source>
         <translation>مكتمل</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>اضغط %1 للخروج من معالج %2.</translation>
     </message>
     <message>

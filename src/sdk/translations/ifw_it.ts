@@ -1380,7 +1380,7 @@ Errore durante il caricamento di %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Fare clic su %1 per uscire dalla procedura guidata %2.</translation>
     </message>
     <message>

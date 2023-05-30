@@ -1352,7 +1352,7 @@ Error while loading %2</source>
         <translation>已完成</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>单击 %1 退出 %2 向导。</translation>
     </message>
     <message>

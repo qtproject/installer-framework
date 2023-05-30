@@ -1380,7 +1380,7 @@ Erreur lors du chargement de %2</translation>
         <translation>Terminé</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Cliquez sur %1 pour quitter l’assistant de %2.</translation>
     </message>
     <message>

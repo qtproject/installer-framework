@@ -1420,7 +1420,7 @@ Hiba %2 betöltése közben</translation>
         <translation>Befejezett</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Kattintson %1 gombra %2 varázslóból való kilépéshez.</translation>
     </message>
     <message>

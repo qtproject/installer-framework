@@ -1414,7 +1414,7 @@ Error en descarregar %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Feu clic a %1 per a sortir de l&apos;Assistent de %2.</translation>
     </message>
     <message>

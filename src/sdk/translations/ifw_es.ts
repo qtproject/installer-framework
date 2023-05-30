@@ -1360,7 +1360,7 @@ Error al descargar %2</translation>
         <translation>Terminado</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Haga clic en %1 para salir del asistente de %2.</translation>
     </message>
     <message>

@@ -1352,7 +1352,7 @@ Fejl under indlæsning af %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Klik på %1 for at afslutte %2-assistenten.</translation>
     </message>
     <message>

@@ -2225,7 +2225,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Concluído</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Wizard.</source>
+        <source>Click %1 to exit the %2 Setup.</source>
         <translation>Clique em %1 para fechar o Assistente %2.</translation>
     </message>
     <message>
