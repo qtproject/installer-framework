@@ -1654,21 +1654,12 @@ bool IntroductionPage::validatePage()
 
     // fetch common packages
     if (core->isInstaller() || core->isPackageManager()) {
-        bool localPackagesTreeFetched = false;
         if (!m_allPackagesFetched) {
             // first try to fetch the server side packages tree
             m_allPackagesFetched = core->fetchRemotePackagesTree();
             if (!m_allPackagesFetched) {
                 QString error = core->error();
-                if (core->isPackageManager() && core->status() != PackageManagerCore::ForceUpdate) {
-                    // if that fails and we're in maintenance mode, try to fetch local installed tree
-                    localPackagesTreeFetched = core->fetchLocalPackagesTree();
-                    if (localPackagesTreeFetched) {
-                        // if that succeeded, adjust error message
-                        error = QLatin1String("<font color=\"red\">") + error + tr(" Only local package "
-                            "management available.") + QLatin1String("</font>");
-                    }
-                } else if (core->status() == PackageManagerCore::ForceUpdate) {
+                if (core->status() == PackageManagerCore::ForceUpdate) {
                     // replaces the error string from packagemanagercore
                     error = tr("There is an important update available. Please select '%1' first")
                         .arg(m_updateComponents->text().remove(QLatin1Char('&')));
@@ -1686,7 +1677,7 @@ bool IntroductionPage::validatePage()
             }
         }
 
-        if (m_allPackagesFetched || localPackagesTreeFetched)
+        if (m_allPackagesFetched)
             setComplete(true);
     }
 
