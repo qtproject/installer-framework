@@ -228,9 +228,9 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_datFileName(datFileName)
 {
     foreach (const OperationBlob &operation, performedOperations) {
-        QScopedPointer<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
+        std::unique_ptr<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
             .create(operation.name, core));
-        if (op.isNull()) {
+        if (!op) {
             qCWarning(QInstaller::lcInstallerInstallLog) << "Failed to load unknown operation"
                 << operation.name;
             continue;
@@ -241,7 +241,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
                 << operation.name;
             continue;
         }
-        m_performedOperationsOld.append(op.take());
+        m_performedOperationsOld.append(op.release());
     }
 
     connect(this, &PackageManagerCorePrivate::installationStarted,

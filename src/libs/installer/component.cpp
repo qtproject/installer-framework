@@ -667,11 +667,11 @@ void Component::loadTranslations(const QDir &directory, const QStringList &qms)
             continue; // do not load the file if it does not match the UI language
         }
 
-        QScopedPointer<QTranslator> translator(new QTranslator(this));
+        std::unique_ptr<QTranslator> translator(new QTranslator(this));
         if (translator->load(filename)) {
             // Do not throw if translator returns false as it may just be an intentionally
             // empty file. See also QTBUG-31031
-            qApp->installTranslator(translator.take());
+            qApp->installTranslator(translator.release());
         }
     }
 }

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -615,8 +615,8 @@ bool GenericDataCache<T>::fromDisk()
     for (const auto &itemJsonValue : itemsJsonArray) {
         const QString checksum = itemJsonValue.toString();
 
-        QScopedPointer<T> item(new T(m_path + QDir::separator() + checksum));
-        m_items.insert(checksum.toLatin1(), item.take());
+        std::unique_ptr<T> item(new T(m_path + QDir::separator() + checksum));
+        m_items.insert(checksum.toLatin1(), item.release());
 
         // The cache directory may contain other entries (unrelated directories or
         // invalid old cache items) which we don't care about, unless registering

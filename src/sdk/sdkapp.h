@@ -209,7 +209,7 @@ public:
             if (translations.isEmpty()) {
                 for (const QString &language : QLocale().uiLanguages()) {
                     const QLocale locale(language);
-                    QScopedPointer<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
+                    std::unique_ptr<QTranslator> qtTranslator(new QTranslator(QCoreApplication::instance()));
                     bool qtLoaded = qtTranslator->load(locale, QLatin1String("qt"),
                                                       QLatin1String("_"), newDirectory);
                     if (!qtLoaded)
@@ -218,14 +218,14 @@ public:
 
                     if (qtLoaded || locale.language() == QLocale::English) {
                         if (qtLoaded)
-                            QCoreApplication::instance()->installTranslator(qtTranslator.take());
+                            QCoreApplication::instance()->installTranslator(qtTranslator.release());
 
-                        QScopedPointer<QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
+                        std::unique_ptr <QTranslator> ifwTranslator(new QTranslator(QCoreApplication::instance()));
                         bool ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), newDirectory);
                         if (!ifwLoaded)
                             ifwLoaded = ifwTranslator->load(locale, QLatin1String("ifw"), QLatin1String("_"), directory);
                         if (ifwLoaded) {
-                            QCoreApplication::instance()->installTranslator(ifwTranslator.take());
+                            QCoreApplication::instance()->installTranslator(ifwTranslator.release());
                         } else {
                             qCWarning(QInstaller::lcDeveloperBuild) << "Could not load IFW translation for language"
                                 << QLocale::languageToString(locale.language());
@@ -242,9 +242,9 @@ public:
                 }
             } else {
                 foreach (const QString &translation, translations) {
-                    QScopedPointer<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
+                    std::unique_ptr<QTranslator> translator(new QTranslator(QCoreApplication::instance()));
                     if (translator->load(translation, QLatin1String(":/translations")))
-                        QCoreApplication::instance()->installTranslator(translator.take());
+                        QCoreApplication::instance()->installTranslator(translator.release());
                 }
                 QLocale currentLocale(translations.at(0).section(QLatin1Char('_'), 1));
                 lang = currentLocale;

@@ -55,10 +55,10 @@ QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) co
     if (fileName.isEmpty() || fileName.startsWith(QLatin1String(":")))
         return 0; // empty filename or Qt resource
 
-    QScopedPointer<RemoteFileEngine> client(new RemoteFileEngine());
+    std::unique_ptr<RemoteFileEngine> client(new RemoteFileEngine());
     client->setFileName(fileName);
     if (client->isConnectedToServer())
-        return client.take();
+        return client.release();
     return 0;
 }
 

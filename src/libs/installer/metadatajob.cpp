@@ -758,7 +758,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         }
 
         QFileInfo fileInfo(result.target());
-        QScopedPointer<Metadata> metadata(new Metadata(fileInfo.absolutePath()));
+        std::unique_ptr<Metadata> metadata(new Metadata(fileInfo.absolutePath()));
         QFile file(result.target());
         if (!file.open(QIODevice::ReadOnly)) {
             qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot open Updates.xml for reading:"
@@ -859,7 +859,7 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             m_fetchedCategorizedRepositories.insert(metadataPtr->repository()); // For faster lookups
 
         const QString metadataPath = metadata->path();
-        m_fetchedMetadata.insert(metadataPath, metadata.take());
+        m_fetchedMetadata.insert(metadataPath, metadata.release());
 
         // search for additional repositories that we might need to check
         status = parseRepositoryUpdates(root, result, metadataPtr);

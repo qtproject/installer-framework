@@ -1522,7 +1522,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
                 continue;
             }
 
-            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            std::unique_ptr<QInstaller::Component> component(new QInstaller::Component(this));
             component->loadDataFromPackage(package);
             QString name = component->treeName();
             if (components.contains(name)) {
@@ -1548,7 +1548,7 @@ bool PackageManagerCore::fetchLocalPackagesTree()
             if (!treeName.isEmpty())
                 treeNameComponents.insert(component->name(), treeName);
 
-            components.insert(name, component.take());
+            components.insert(name, component.release());
         }
         // Second pass with leftover packages
         if (firstRun)
@@ -4149,10 +4149,10 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
                     continue;
                 }
 
-                QScopedPointer<QInstaller::Component> remoteComponent(new QInstaller::Component(this));
+                std::unique_ptr<QInstaller::Component> remoteComponent(new QInstaller::Component(this));
                 data.package = package;
                 remoteComponent->loadDataFromPackage(*package);
-                if (updateComponentData(data, remoteComponent.data())) {
+                if (updateComponentData(data, remoteComponent.get())) {
                     // Create a list where is name and treename. Repo can contain a package with
                     // a different treename of component which is already installed. We don't want
                     // to move already installed local packages.
@@ -4160,7 +4160,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
                     if (!treeName.isEmpty())
                         remoteTreeNameComponents.insert(remoteComponent->name(), treeName);
                     const QString name = remoteComponent->treeName();
-                    allComponents.insert(name, remoteComponent.take());
+                    allComponents.insert(name, remoteComponent.release());
                 }
             }
             // Second pass with leftover packages
@@ -4183,7 +4183,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
                       d->m_localVirtualComponents.append(package.name);
             }
 
-            QScopedPointer<QInstaller::Component> localComponent(new QInstaller::Component(this));
+            std::unique_ptr<QInstaller::Component> localComponent(new QInstaller::Component(this));
             localComponent->loadDataFromPackage(package);
             const QString name = localComponent->treeName();
 
@@ -4238,7 +4238,7 @@ bool PackageManagerCore::fetchAllPackages(const PackagesList &remotes, const Loc
             const QString treeName = localComponent->value(scTreeName);
             if (!treeName.isEmpty())
                 allTreeNameComponents.insert(localComponent->name(), treeName);
-            allComponents.insert(name, localComponent.take());
+            allComponents.insert(name, localComponent.release());
         }
 
         // store all components that got a replacement
@@ -4289,12 +4289,12 @@ bool PackageManagerCore::fetchUpdaterPackages(const PackagesList &remotes, const
             if (!ProductKeyCheck::instance()->isValidPackage(update->data(scName).toString()))
                 continue;
 
-            QScopedPointer<QInstaller::Component> component(new QInstaller::Component(this));
+            std::unique_ptr<QInstaller::Component> component(new QInstaller::Component(this));
             data.package = update;
             component->loadDataFromPackage(*update);
-            if (updateComponentData(data, component.data())) {
+            if (updateComponentData(data, component.get())) {
                 // Keep a reference so we can resolve dependencies during update.
-                d->m_updaterComponentsDeps.append(component.take());
+                d->m_updaterComponentsDeps.append(component.release());
 
     //            const QString isNew = update->data(scNewComponent).toString();
     //            if (isNew.toLower() != scTrue)
