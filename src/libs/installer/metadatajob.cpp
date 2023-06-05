@@ -1020,7 +1020,7 @@ bool MetadataJob::parsePackageUpdate(const QDomNodeList &c2, QString &packageNam
         else if ((element.tagName() == QLatin1String("SHA1")) && testCheckSum)
             packageHash = element.text();
         else {
-            foreach (QString meta, *scMetaElements) {
+            foreach (QString meta, scMetaElements) {
                 if (element.tagName() == meta) {
                     metaFound = true;
                     break;

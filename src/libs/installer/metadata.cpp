@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -381,7 +381,7 @@ bool Metadata::verifyMetaFiles(QFile *updateFile) const
             continue; // nothing to check for this package
 
         const QString packagePath = QString::fromLatin1("%1/%2/").arg(path(), packageName);
-        for (auto &metaTagName : qAsConst(*scMetaElements)) {
+        for (auto &metaTagName : scMetaElements) {
             const QDomElement metaElement = element.firstChildElement(metaTagName);
             if (metaElement.isNull())
                 continue;

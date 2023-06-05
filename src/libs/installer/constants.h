@@ -75,7 +75,7 @@ static const QLatin1String scMetadataName("MetadataName");
 static const QLatin1String scContentSha1("ContentSha1");
 static const QLatin1String scCheckSha1CheckSum("CheckSha1CheckSum");
 
-static const char *scClearCacheHint = QT_TR_NOOP(
+static const char * const scClearCacheHint = QT_TR_NOOP(
     "This may be solved by restarting the application after clearing the cache from:");
 
 // symbols
@@ -176,6 +176,13 @@ static const QLatin1String scLogo("Logo");
 static const QLatin1String scBackground("Background");
 static const QLatin1String scPageListPixmap("PageListPixmap");
 const char scRelocatable[] = "@RELOCATABLE_PATH@";
+
+static const QStringList scMetaElements = {
+    QLatin1String("Script"),
+    QLatin1String("Licenses"),
+    QLatin1String("UserInterfaces"),
+    QLatin1String("Translations")
+};
 }
 
 namespace CommandLineOptions {

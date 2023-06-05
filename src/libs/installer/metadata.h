@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -75,13 +75,6 @@ private:
 
     bool m_fromDefaultRepository;
 };
-
-Q_GLOBAL_STATIC_WITH_ARGS(QStringList, scMetaElements, (QStringList(
-    QLatin1String("Script")) <<
-    QLatin1String("Licenses") <<
-    QLatin1String("UserInterfaces") <<
-    QLatin1String("Translations")
-));
 
 } // namespace QInstaller
 

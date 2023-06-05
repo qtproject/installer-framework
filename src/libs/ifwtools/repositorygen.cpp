@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -188,7 +188,7 @@ static bool findMetaFile(const QString &repositoryDir, const QDomElement &packag
     const QDomNodeList c1 = packageUpdate.childNodes();
     for (int i = 0; i < c1.count(); ++i) {
         const QDomElement e1 = c1.at(i).toElement();
-        for (const QString &meta : qAsConst(*scMetaElements)) {
+        for (const QString &meta : scMetaElements) {
             if (e1.tagName() == meta) {
                 metaElementFound = true;
                 break;
