@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -177,6 +177,7 @@ static bool createLink(const QString &fileName, const QString &linkName, QString
     Q_UNUSED(linkName)
     Q_UNUSED(iconPath)
     Q_UNUSED(iconId)
+    Q_UNUSED(description)
     return true;
 #endif
 }

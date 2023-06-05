@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -110,6 +110,12 @@ bool handleRegExpandSz(const QString &regPath, const QString &name,
             }
         }
     }
+#else
+    Q_UNUSED(regPath)
+    Q_UNUSED(name)
+    Q_UNUSED(value)
+    Q_UNUSED(errorString)
+    Q_UNUSED(error)
 #endif
     return setAsExpandSZ;
 }

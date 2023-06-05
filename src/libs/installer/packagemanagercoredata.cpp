@@ -257,6 +257,8 @@ QVariant PackageManagerCoreData::value(const QString &key, const QVariant &_defa
         if (!filename.isEmpty() && !regKey.isEmpty() && registry.contains(regKey))
             return registry.value(regKey).toString();
     }
+#else
+    Q_UNUSED(format)
 #endif
 
     if (m_variables.contains(key))
