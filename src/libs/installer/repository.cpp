@@ -62,8 +62,8 @@ Repository::Repository(const Repository &other)
     , m_username(other.m_username)
     , m_password(other.m_password)
     , m_displayname(other.m_displayname)
-    , m_compressed(other.m_compressed)
     , m_categoryname(other.m_categoryname)
+    , m_compressed(other.m_compressed)
     , m_xmlChecksum(other.m_xmlChecksum)
 {
 }

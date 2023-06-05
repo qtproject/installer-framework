@@ -1245,10 +1245,10 @@ void PackageManagerGui::currentPageChanged(int newId)
 PackageManagerPage::PackageManagerPage(PackageManagerCore *core)
     : m_complete(true)
     , m_titleColor(QString())
+    , m_showOnPageList(true)
     , m_needsSettingsButton(false)
     , m_core(core)
     , validatorComponent(nullptr)
-    , m_showOnPageList(true)
 {
     if (!m_core->settings().titleColor().isEmpty())
         m_titleColor = m_core->settings().titleColor();

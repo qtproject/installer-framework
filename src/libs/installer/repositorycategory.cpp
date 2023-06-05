@@ -65,8 +65,8 @@ RepositoryCategory::RepositoryCategory()
     Constructs a new category by using all fields of the given category \a other.
 */
 RepositoryCategory::RepositoryCategory(const RepositoryCategory &other)
-    : m_displayname(other.m_displayname), m_data(other.m_data), m_enabled(other.m_enabled),
-      m_tooltip(other.m_tooltip)
+    : m_data(other.m_data), m_displayname(other.m_displayname), m_tooltip(other.m_tooltip),
+    m_enabled(other.m_enabled)
 {
     registerMetaType();
 }
