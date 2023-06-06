@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -577,14 +577,21 @@ QDomDocument UpdateOperation::toXml() const
         value.setAttribute(QLatin1String("name"), it.key());
         value.setAttribute(QLatin1String("type"), QLatin1String(variant.typeName()));
 
-        if (variant.type() != QVariant::List && variant.type() != QVariant::StringList
-            && variant.canConvert(QVariant::String)) {
-                // it can convert to string? great!
-                value.appendChild(doc.createTextNode(QInstaller::replacePath(variant.toString(),
-                    target, QLatin1String(QInstaller::scRelocatable))));
+        int variantType;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        variantType = variant.typeId();
+#else
+        variantType = variant.type();
+#endif
+
+        if (variantType != QMetaType::QStringList
+            && variant.canConvert<QString>()) {
+            // it can convert to string? great!
+            value.appendChild(doc.createTextNode(QInstaller::replacePath(variant.toString(),
+                target, QLatin1String(QInstaller::scRelocatable))));
         } else {
             // no? then we have to go the hard way...
-            if (variant.type() == QVariant::StringList) {
+            if (variantType == QMetaType::QStringList) {
                 QStringList list = variant.toStringList();
                 for (int i = 0; i < list.count(); ++i) {
                     list[i] = QInstaller::replacePath(list.at(i), target,
@@ -651,25 +658,31 @@ bool UpdateOperation::fromXml(const QDomDocument &doc)
         const QString type = v.attribute(QLatin1String("type"));
         const QString value = v.text();
 
+        int variantType;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        const QMetaType t = QMetaType::fromName(type.toLatin1().data());
+        variantType = t.id();
+#else
         const QVariant::Type t = QVariant::nameToType(type.toLatin1().data());
+        variantType = t;
+#endif
         QVariant var = QVariant::fromValue(value);
-        if (t == QVariant::List || t == QVariant::StringList || !var.convert(t)) {
-            QDataStream stream(QByteArray::fromBase64( value.toLatin1()));
+        if (variantType == QMetaType::QStringList || !var.canConvert(t)) {
+            QDataStream stream(QByteArray::fromBase64(value.toLatin1()));
             stream >> var;
-            if (t == QVariant::StringList) {
+            if (variantType == QMetaType::QStringList) {
                 QStringList list = var.toStringList();
                 for (int i = 0; i < list.count(); ++i) {
                     list[i] = QInstaller::replacePath(list.at(i),
-                        relocatable, target);
+                                                      relocatable, target);
                 }
                 var = QVariant::fromValue(list);
             }
-        } else if (t == QVariant::String) {
-              const QString str = QInstaller::replacePath(value,
-                        relocatable, target);
-              var = QVariant::fromValue(str);
+        } else if (variantType == QMetaType::QString) {
+            const QString str = QInstaller::replacePath(value,
+                                                        relocatable, target);
+            var = QVariant::fromValue(str);
         }
-
         m_values[name] = var;
     }
 

@@ -869,7 +869,7 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
         if (key == scRunProgramDescription || key == scRunProgram || key == scRunProgramArguments)
             continue;
         QVariant value = m_data.value(key);
-        if (value.canConvert(QVariant::String))
+        if (value.canConvert<QString>())
             value = replacePath(value.toString(), targetDir(), QLatin1String(scRelocatable));
         variables.insert(key, value);
     }

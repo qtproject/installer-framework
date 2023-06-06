@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -25,6 +25,8 @@
 ** $QT_END_LICENSE$
 **
 **************************************************************************/
+
+#include "../shared/packagemanager.h"
 
 #include <binarycontent.h>
 #include <binaryformat.h>
@@ -51,8 +53,8 @@ struct Layout : public QInstaller::BinaryLayout
 class TestOperation : public KDUpdater::UpdateOperation
 {
 public:
-    explicit TestOperation(const QString &name)
-        : KDUpdater::UpdateOperation(nullptr)
+    explicit TestOperation(const QString &name, PackageManagerCore *core = nullptr)
+        : KDUpdater::UpdateOperation(core)
     { setName(name); }
 
     virtual void backup() {}
@@ -390,6 +392,45 @@ private slots:
         QCOMPARE(resource->open(), true);
         QCOMPARE(resource->readAll(), QByteArray("Collection 2, Resource 2."));
         resource->close();
+    }
+
+    void testXmlDocumentParsing()
+    {
+        PackageManagerCore core;
+        core.setValue(scTargetDir, QLatin1String("relocatable_targetdir"));
+
+        TestOperation op(QLatin1String("Operation 3"), &core);
+        QStringList stringListValue = (QStringList() << QLatin1String("list_value1") << QLatin1String("list_value2"));
+        op.setValue(QLatin1String("string_list"), stringListValue);
+
+        const QString stringValue = core.value(scTargetDir) + QLatin1String(", string_value1");
+        op.setValue(QLatin1String("string"), stringValue);
+
+        QVariantMap map;
+        map.insert(QLatin1String("key1"), 1);
+        map.insert(QLatin1String("key2"), QLatin1String("map_value2"));
+        op.setValue(QLatin1String("variant_map"), map);
+
+        QDomDocument document = op.toXml();
+        QVERIFY2(document.toString().contains(QLatin1String("@RELOCATABLE_PATH@")),
+                 "TargetDir not replaced with @RELOCATABLE_PATH@");
+
+        op.fromXml(document); // Resets the operation values from written QDomDocuments
+
+        QCOMPARE(op.value(QLatin1String("string_list")), stringListValue);
+        QVERIFY2(!op.value(QLatin1String("string")).toString().contains(QLatin1String("@RELOCATABLE_PATH@")),
+                 "@RELOCATABLE@ not replaced with TargetDir");
+        QCOMPARE(op.value(QLatin1String("variant_map")), map);
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        QCOMPARE(op.value(QLatin1String("string_list")).metaType().id(), QMetaType::QStringList);
+        QCOMPARE(op.value(QLatin1String("string")).metaType().id(), QMetaType::QString);
+        QCOMPARE(op.value(QLatin1String("variant_map")).metaType().id(), QMetaType::QVariantMap);
+#else
+        QCOMPARE(op.value(QLatin1String("string_list")).type(), QMetaType::QStringList);
+        QCOMPARE(op.value(QLatin1String("string")).type(), QMetaType::QString);
+        QCOMPARE(op.value(QLatin1String("variant_map")).type(), QMetaType::QVariantMap);
+#endif
     }
 
     void cleanupTestCase()
