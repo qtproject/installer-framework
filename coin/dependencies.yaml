@@ -1,7 +1,7 @@
 
 product_dependency:
   ../../qt/qt5:
-    ref: "ifw-5.15.2"
+    ref: "6.5"
 dependency_source: supermodule
 dependencies: [
       "../../qt/qtbase",
@@ -9,5 +9,5 @@ dependencies: [
       "../../qt/qtdeclarative",
       "../../qt/qttools",
       "../../qt/qttranslations",
-      "../../qt/qtwinextras"
+      "../../qt/qt5compat"
       ]
