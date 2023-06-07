@@ -75,6 +75,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_allowCompressedRepositoryInstall(false)
+        , m_allowCreateOfflineInstaller(true)
         , m_categoryLayoutVisible(false)
         , m_allModel(m_core->defaultComponentModel())
         , m_updaterModel(m_core->updaterComponentModel())
@@ -121,19 +122,35 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     descriptionVLayout->addWidget(m_sizeLabel);
 
+    QHBoxLayout *pushButtonHLayout = new QHBoxLayout;
+    pushButtonHLayout->setObjectName(QLatin1String("PushButtonHLayout"));
+
+    m_createOfflinePushButton = new QPushButton(q);
+    m_createOfflinePushButton->setVisible(false);
+    m_createOfflinePushButton->setText(ComponentSelectionPage::tr("Create Offline Installer"));
+    m_createOfflinePushButton->setToolTip(
+            ComponentSelectionPage::tr("Create offline installer from selected components, instead "
+            "of installing now."));
+    pushButtonHLayout->addWidget(m_createOfflinePushButton);
+
+    connect(m_createOfflinePushButton, &QPushButton::clicked,
+            this, &ComponentSelectionPagePrivate::createOfflineButtonClicked);
+    connect(q, &ComponentSelectionPage::completeChanged,
+            this, [&]() { m_createOfflinePushButton->setEnabled(q->isComplete()); });
+
     m_qbspPushButton = new QPushButton(q);
     m_qbspPushButton->setVisible(false);
     m_qbspPushButton->setText(ComponentSelectionPage::tr("Browse &QBSP files"));
-    m_qbspPushButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     m_qbspPushButton->setToolTip(
             ComponentSelectionPage::tr("Select a Qt Board Support Package file to install "
             "additional content that is not directly available from the online repositories."));
+    pushButtonHLayout->addWidget(m_qbspPushButton);
 
     connect(m_qbspPushButton, &QPushButton::clicked,
             this, &ComponentSelectionPagePrivate::qbspButtonClicked);
 
     m_rightSideVLayout->addWidget(m_descriptionBaseWidget);
-    m_rightSideVLayout->addWidget(m_qbspPushButton, 0, Qt::AlignRight | Qt::AlignBottom);
+    m_rightSideVLayout->addLayout(pushButtonHLayout);
 
     QHBoxLayout *topHLayout = new QHBoxLayout;
 
@@ -240,6 +257,11 @@ void ComponentSelectionPagePrivate::allowCompressedRepositoryInstall()
     m_allowCompressedRepositoryInstall = true;
 }
 
+void ComponentSelectionPagePrivate::setAllowCreateOfflineInstaller(bool allow)
+{
+    m_allowCreateOfflineInstaller = allow;
+}
+
 void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 {
     if (m_allowCompressedRepositoryInstall)
@@ -249,6 +271,14 @@ void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 void ComponentSelectionPagePrivate::hideCompressedRepositoryButton()
 {
     m_qbspPushButton->setVisible(false);
+}
+
+void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
+{
+    if (show && m_allowCreateOfflineInstaller)
+        m_createOfflinePushButton->setVisible(m_core->isInstaller() && !m_core->isOfflineOnly());
+    else
+        m_createOfflinePushButton->setVisible(false);
 }
 
 void ComponentSelectionPagePrivate::setupCategoryLayout()
@@ -529,6 +559,12 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
     }
     updateWidgetVisibility(false);
     m_searchLineEdit->text().isEmpty() ? expandDefault() : expandSearchResults();
+}
+
+void ComponentSelectionPagePrivate::createOfflineButtonClicked()
+{
+    m_core->setOfflineGenerator();
+    q->gui()->button(QWizard::NextButton)->click();
 }
 
 void ComponentSelectionPagePrivate::qbspButtonClicked()

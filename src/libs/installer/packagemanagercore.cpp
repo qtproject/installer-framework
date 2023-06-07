@@ -3129,7 +3129,10 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         }
 #endif
     }
-    message = QString::fromLatin1("%1 %2").arg(message, tr("Installation will use %1 of disk space.")
+    message = QString::fromLatin1("%1 %2").arg(message,
+        (isOfflineGenerator()
+            ? tr("Created installer will use %1 of disk space.")
+            : tr("Installation will use %1 of disk space."))
         .arg(humanReadableSize(requiredDiskSpace()))).simplified();
 
     return true;
@@ -3823,6 +3826,7 @@ bool PackageManagerCore::isPackageManager() const
 void PackageManagerCore::setOfflineGenerator()
 {
     d->m_magicMarkerSupplement = BinaryContent::OfflineGenerator;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!
@@ -3841,6 +3845,7 @@ bool PackageManagerCore::isOfflineGenerator() const
 void PackageManagerCore::setPackageViewer()
 {
     d->m_magicMarkerSupplement = BinaryContent::PackageViewer;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
 }
 
 /*!

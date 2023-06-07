@@ -67,8 +67,10 @@ public:
     ~ComponentSelectionPagePrivate();
 
     void allowCompressedRepositoryInstall();
+    void setAllowCreateOfflineInstaller(bool allow);
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
+    void showCreateOfflineInstallerButton(bool show);
     void setupCategoryLayout();
     void showCategoryLayout(bool show);
     void updateTreeView();
@@ -84,6 +86,7 @@ public slots:
     void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();
+    void createOfflineButtonClicked();
     void qbspButtonClicked();
     void onProgressChanged(int progress);
     void setMessage(const QString &msg);
@@ -105,6 +108,7 @@ private:
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
+    QPushButton *m_createOfflinePushButton;
     QPushButton *m_qbspPushButton;
     CustomComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
@@ -114,6 +118,7 @@ private:
     QGridLayout *m_mainGLayout;
     QVBoxLayout *m_rightSideVLayout;
     bool m_allowCompressedRepositoryInstall;
+    bool m_allowCreateOfflineInstaller;
     bool m_categoryLayoutVisible;
     ComponentModel *m_allModel;
     ComponentModel *m_updaterModel;

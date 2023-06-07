@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -332,6 +332,8 @@ public:
     Q_INVOKABLE void deselectComponent(const QString &id);
     Q_INVOKABLE void allowCompressedRepositoryInstall();
     Q_INVOKABLE bool addVirtualComponentToUninstall(const QString &name);
+
+    void setAllowCreateOfflineInstaller(bool allow);
 
 protected:
     void entering() override;

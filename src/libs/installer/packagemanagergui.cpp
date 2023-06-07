@@ -2227,6 +2227,7 @@ void ComponentSelectionPage::entering()
         d->showCategoryLayout(false);
     }
     d->showCompressedRepositoryButton();
+    d->showCreateOfflineInstallerButton(true);
 }
 
 /*!
@@ -2236,6 +2237,7 @@ void ComponentSelectionPage::entering()
 void ComponentSelectionPage::leaving()
 {
     d->hideCompressedRepositoryButton();
+    d->showCreateOfflineInstallerButton(false);
 }
 
 /*!
@@ -2346,6 +2348,11 @@ bool ComponentSelectionPage::addVirtualComponentToUninstall(const QString &name)
         return true;
     }
     return false;
+}
+
+void ComponentSelectionPage::setAllowCreateOfflineInstaller(bool allow)
+{
+    d->setAllowCreateOfflineInstaller(allow);
 }
 
 void ComponentSelectionPage::setModified(bool modified)
@@ -2710,6 +2717,10 @@ void ReadyForInstallationPage::entering()
         setButtonText(QWizard::CommitButton, tr("U&pdate"));
         setColoredTitle(tr("Ready to Update Packages"));
         m_msgLabel->setText(tr("All required information is now available to begin updating your installation."));
+    } else if (packageManagerCore()->isOfflineGenerator()) {
+        setButtonText(QWizard::CommitButton, tr("Create Offline Installer"));
+        setColoredTitle(tr("Ready to Create Offline Installer"));
+        m_msgLabel->setText(tr("All required information is now available to create an offline installer for selected components."));
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setButtonText(QWizard::CommitButton, tr("&Install"));
@@ -2750,7 +2761,9 @@ void ReadyForInstallationPage::leaving()
 void ReadyForInstallationPage::updatePageListTitle()
 {
     PackageManagerCore *core = packageManagerCore();
-    if (core->isInstaller())
+    if (core->isOfflineGenerator())
+        setPageListTitle(tr("Ready to Create Offline Installer"));
+    else if (core->isInstaller())
         setPageListTitle(tr("Ready to Install"));
     else if (core->isMaintainer())
         setPageListTitle(tr("Ready to Update"));
@@ -2806,6 +2819,11 @@ PerformInstallationPage::PerformInstallationPage(PackageManagerCore *core)
     connect(core, &PackageManagerCore::installationStarted,
             this, &PerformInstallationPage::installationStarted);
     connect(core, &PackageManagerCore::installationFinished,
+            this, &PerformInstallationPage::installationFinished);
+
+    connect(core, &PackageManagerCore::offlineGenerationStarted,
+            this, &PerformInstallationPage::installationStarted);
+    connect(core, &PackageManagerCore::offlineGenerationFinished,
             this, &PerformInstallationPage::installationFinished);
 
     connect(core, &PackageManagerCore::uninstallationStarted,
@@ -2877,6 +2895,11 @@ void PerformInstallationPage::entering()
         setColoredTitle(tr("Updating components of %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
+    } else if (packageManagerCore()->isOfflineGenerator()) {
+        setButtonText(QWizard::CommitButton, tr("&Create Offline Installer"));
+        setColoredTitle(tr("Creating Offline Installer for %1").arg(productName()));
+
+        QTimer::singleShot(30, packageManagerCore(), SLOT(runOfflineGenerator()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Installing %1").arg(productName()));
@@ -2901,7 +2924,9 @@ void PerformInstallationPage::leaving()
 void PerformInstallationPage::updatePageListTitle()
 {
     PackageManagerCore *core = packageManagerCore();
-    if (core->isInstaller())
+    if (core->isOfflineGenerator())
+        setPageListTitle(tr("Creating Offline Installer"));
+    else if (core->isInstaller())
         setPageListTitle(tr("Installing"));
     else if (core->isMaintainer())
         setPageListTitle(tr("Updating"));
