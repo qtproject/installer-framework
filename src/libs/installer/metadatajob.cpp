@@ -220,7 +220,7 @@ void MetadataJob::doStart()
     setError(Job::NoError);
     setErrorString(QString());
     m_metadataResult.clear();
-    setProgressTotalAmount(100);
+    setProgressTotalAmount(0);
 
     if (!m_core) {
         emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
