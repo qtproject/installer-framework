@@ -1390,7 +1390,7 @@ Fehler beim Laden von %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Den %1-Assistent abschließen</translation>
     </message>
     <message>
@@ -2363,7 +2363,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Der %1-Assistent wird abgeschlossen</translation>
     </message>
 </context>

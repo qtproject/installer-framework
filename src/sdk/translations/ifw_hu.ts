@@ -1364,7 +1364,7 @@ Hiba %2 betöltése közben</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>%1 varázsló befejezése</translation>
     </message>
     <message>
@@ -2325,7 +2325,7 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>%1 telepítő varázsló befejezése</translation>
     </message>
 </context>

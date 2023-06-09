@@ -1344,7 +1344,7 @@ Fejl under indlæsning af %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Fuldfører %1-assistenten</translation>
     </message>
     <message>
@@ -2300,7 +2300,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Fuldfører opsætningsassistenten for %1</translation>
     </message>
 </context>

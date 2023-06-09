@@ -1352,7 +1352,7 @@ Erreur lors du chargement de %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Exécution de l’assistant de %1</translation>
     </message>
     <message>
@@ -2317,7 +2317,7 @@ Copiez le programme d’installation sur un disque local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Exécution de l’assistant d’installation de %1</translation>
     </message>
 </context>

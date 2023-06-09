@@ -1344,7 +1344,7 @@ Errore durante il caricamento di %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Completamento della procedura guidata %1</translation>
     </message>
     <message>
@@ -2300,7 +2300,7 @@ Copiare il programma di installazione in un&apos;unità locale</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Completamento dell&apos;installazione guidata di %1</translation>
     </message>
 </context>

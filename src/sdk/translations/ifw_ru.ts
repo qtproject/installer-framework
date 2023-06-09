@@ -1403,7 +1403,7 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Завершение установки %1</translation>
     </message>
     <message>
@@ -2368,7 +2368,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Завершение %1 мастера установки</translation>
     </message>
 </context>

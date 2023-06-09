@@ -2157,7 +2157,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>A concluir o Assistente %1</translation>
     </message>
     <message>
@@ -2184,7 +2184,7 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>A concluir o Assistente de Configuração %1</translation>
     </message>
 </context>

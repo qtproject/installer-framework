@@ -1357,7 +1357,7 @@ Błąd podczas wczytywania %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Wykonywanie Kreatora %1</translation>
     </message>
     <message>
@@ -2315,7 +2315,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Wykonywanie Kreatora instalacji %1</translation>
     </message>
 </context>

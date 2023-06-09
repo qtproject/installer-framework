@@ -1352,7 +1352,7 @@ Error al descargar %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Completando el Asistente de %1</translation>
     </message>
     <message>
@@ -2317,7 +2317,7 @@ Copie el instalador en una unidad local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Completando el Asistente de instalación de %1</translation>
     </message>
 </context>

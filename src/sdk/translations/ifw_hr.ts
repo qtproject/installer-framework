@@ -2170,7 +2170,7 @@ Kopiraj program za instaliranje na računalo</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Dovršavanje čarobnjaka %1</translation>
     </message>
     <message>
@@ -2197,7 +2197,7 @@ Kopiraj program za instaliranje na računalo</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>Dovršavanje čarobnjaka postavaka %1</translation>
     </message>
 </context>

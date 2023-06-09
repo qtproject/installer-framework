@@ -2233,7 +2233,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>إكمال معالج %1</translation>
     </message>
     <message>
@@ -2260,7 +2260,7 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>إكمال معالج إعداد %1</translation>
     </message>
 </context>

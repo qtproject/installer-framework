@@ -3005,7 +3005,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(nullptr)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setColoredTitle(tr("Completing the %1 Setup").arg(productName()));
+    setColoredTitle(tr("Finished the %1 Setup").arg(productName()));
     setPageListTitle(tr("Finished"));
 
     m_msgLabel = new QLabel(this);
@@ -3177,7 +3177,7 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setColoredTitle(tr("Completing the %1 Setup").arg(productName()));
+    setColoredTitle(tr("Finished the %1 Setup").arg(productName()));
 
     // Never show this page on the page list
     setShowOnPageList(false);

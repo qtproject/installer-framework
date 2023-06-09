@@ -1386,7 +1386,7 @@ Error en descarregar %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>S&apos;ha completat l&apos;Assistent de %1</translation>
     </message>
     <message>
@@ -2350,7 +2350,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
-        <source>Completing the %1 Setup</source>
+        <source>Finished the %1 Setup</source>
         <translation>S&apos;està completant l&apos;Assistent d&apos;instal·lació de %1</translation>
     </message>
 </context>
