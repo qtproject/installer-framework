@@ -40,6 +40,10 @@
     the installer and an \e UNDO step that contains instructions for the
     uninstaller.
 
+    Some operations especially in Windows might need native separators. Use
+    \c installer.toNativeSeparators() to convert separators to ones that are
+    appropriate for the underlying operating system.
+
     \section1 Summary of Operations
 
     The following table summarizes the available operations and their syntax in component
