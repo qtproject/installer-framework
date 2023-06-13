@@ -36,6 +36,7 @@
 #include <QDir>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QStandardPaths>
 
 #ifdef Q_OS_WIN
 # include <windows.h>
