@@ -377,7 +377,7 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
                     if (!filePath.endsWith(QLatin1String(".sha1"), Qt::CaseInsensitive)) {
                         const QString fileName = QFileInfo(filePath).fileName();
                         // remove unnecessary version string from filename and add it to the list
-                        realContentFiles.append(fileName.mid(info.version.count()));
+                        realContentFiles.append(fileName.mid(info.version.size()));
                     }
                 }
 
