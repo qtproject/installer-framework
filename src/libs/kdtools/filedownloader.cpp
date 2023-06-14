@@ -1646,7 +1646,7 @@ void KDUpdater::HttpDownloader::onSslErrors(QNetworkReply* reply, const QList<QS
         "the error may be temporary and you can try again.")));
 
     msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setButtonText(QMessageBox::Yes, tr("Try again"));
+    msgBox.addButton(tr("Try again"), QMessageBox::YesRole);
     msgBox.setDefaultButton(QMessageBox::Cancel);
 
     if (msgBox.exec() == QMessageBox::Cancel) {
