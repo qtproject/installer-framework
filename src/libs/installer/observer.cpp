@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -121,9 +121,9 @@ QByteArray FileTaskObserver::checkSum() const
     return m_hash.result();
 }
 
-void FileTaskObserver::addCheckSumData(const char *data, int length)
+void FileTaskObserver::addCheckSumData(const QByteArray &data)
 {
-    m_hash.addData(data, length);
+    m_hash.addData(data);
 }
 
 void FileTaskObserver::addSample(qint64 sample)

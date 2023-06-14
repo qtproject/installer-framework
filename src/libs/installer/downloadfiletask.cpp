@@ -1,7 +1,7 @@
 
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -197,7 +197,7 @@ void Downloader::onReadyRead()
 
         data.observer->addSample(read);
         data.observer->addBytesTransfered(read);
-        data.observer->addCheckSumData(buffer.data(), read);
+        data.observer->addCheckSumData(buffer.left(read));
 
         int progress = m_finished * 100;
         for (const auto &pair : m_downloads)
@@ -246,7 +246,7 @@ void Downloader::onFinished(QNetworkReply *reply)
     if (!ba.isEmpty()) {
         data.observer->addSample(ba.size());
         data.observer->addBytesTransfered(ba.size());
-        data.observer->addCheckSumData(ba.data(), ba.size());
+        data.observer->addCheckSumData(ba);
     }
 
     const QByteArray expectedCheckSum = data.taskItem.value(TaskRole::Checksum).toByteArray();

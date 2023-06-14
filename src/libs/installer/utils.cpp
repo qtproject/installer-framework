@@ -171,7 +171,7 @@ QByteArray QInstaller::calculateHash(QIODevice *device, QCryptographicHash::Algo
         const qint64 numRead = device->read(buffer.data(), buffer.size());
         if (numRead <= 0)
             return hash.result();
-        hash.addData(buffer.constData(), numRead);
+        hash.addData(buffer.left(numRead));
     }
     return QByteArray(); // never reached
 }

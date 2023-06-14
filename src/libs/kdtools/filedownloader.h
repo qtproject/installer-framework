@@ -1,6 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -142,7 +143,6 @@ protected:
     void emitEstimatedDownloadTime();
 
     void addCheckSumData(const QByteArray &data);
-    void addCheckSumData(const char *data, int length);
     void resetCheckSumData();
 
 private Q_SLOTS:

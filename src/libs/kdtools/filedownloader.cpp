@@ -658,14 +658,6 @@ void KDUpdater::FileDownloader::addCheckSumData(const QByteArray &data)
 }
 
 /*!
-    Adds the \a length of characters of \a data to the cryptographic hash of the downloaded file.
-*/
-void KDUpdater::FileDownloader::addCheckSumData(const char *data, int length)
-{
-    d->m_hash.addData(data, length);
-}
-
-/*!
     Resets SHA-1 checksum data of the downloaded file.
 */
 void KDUpdater::FileDownloader::resetCheckSumData()
@@ -921,7 +913,7 @@ void KDUpdater::LocalFileDownloader::timerEvent(QTimerEvent *event)
             toWrite -= numWritten;
         }
         addSample(numRead);
-        addCheckSumData(buffer.data(), numRead);
+        addCheckSumData(buffer.left(numRead));
         if (numRead > 0) {
             setProgress(d->source->pos(), d->source->size());
             emit downloadProgress(calcProgress(d->source->pos(), d->source->size()));
@@ -1113,7 +1105,7 @@ void KDUpdater::ResourceFileDownloader::timerEvent(QTimerEvent *event)
         const qint64 numRead = d->destFile.read(buffer.data(), buffer.size());
 
         addSample(numRead);
-        addCheckSumData(buffer.data(), numRead);
+        addCheckSumData(buffer.left(numRead));
 
         if (numRead > 0) {
             setProgress(d->destFile.pos(), d->destFile.size());
@@ -1319,7 +1311,7 @@ void KDUpdater::HttpDownloader::httpReadyRead()
             written += numWritten;
         }
         addSample(written);
-        addCheckSumData(buffer.data(), read);
+        addCheckSumData(buffer.left(read));
         updateBytesDownloadedBeforeResume(written);
     }
 }

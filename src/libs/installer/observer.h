@@ -60,7 +60,7 @@ public:
     QString progressText() const override;
 
     QByteArray checkSum() const;
-    void addCheckSumData(const char *data, int length);
+    void addCheckSumData(const QByteArray &data);
 
     void addSample(qint64 sample);
     void timerEvent(QTimerEvent *event) override;

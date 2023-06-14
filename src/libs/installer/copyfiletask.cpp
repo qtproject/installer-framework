@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -112,7 +112,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
         observer.addSample(read);
         observer.timerEvent(nullptr);
         observer.addBytesTransfered(read);
-        observer.addCheckSumData(buffer.data(), read);
+        observer.addCheckSumData(buffer.left(read));
 
         fi.setProgressValueAndText(observer.progressValue(), observer.progressText());
     }
