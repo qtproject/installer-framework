@@ -1260,7 +1260,7 @@ inline bool convert(QQmlV4Function *func, QStringList *toArgs)
             QV4::Object *array = val->as<QV4::Object>();
             uint length = array->getLength();
             for (uint ii = 0; ii < length; ++ii) {
-                valtmp = array->getIndexed(ii);
+                valtmp = array->get(ii);
                 *toArgs << valtmp->toQStringNoThrow();
             }
         } else {
