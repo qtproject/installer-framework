@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -485,11 +485,11 @@ static int lengthToInt(const QVariant &variant)
     QString length = variant.toString().trimmed();
     if (length.endsWith(QLatin1String("em"), Qt::CaseInsensitive)) {
         length.chop(2);
-        return qRound(length.toDouble() * QApplication::fontMetrics().height());
+        return qRound(length.toDouble() * QFontMetricsF(QApplication::font()).height());
     }
     if (length.endsWith(QLatin1String("ex"), Qt::CaseInsensitive)) {
         length.chop(2);
-        return qRound(length.toDouble() * QApplication::fontMetrics().xHeight());
+        return qRound(length.toDouble() * QFontMetricsF(QApplication::font()).xHeight());
     }
     if (length.endsWith(QLatin1String("px"), Qt::CaseInsensitive)) {
         length.chop(2);
