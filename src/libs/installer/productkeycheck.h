@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,6 +32,7 @@
 #include "installer_global.h"
 
 #include <QString>
+#include <QUiLoader>
 
 namespace QInstaller {
 
@@ -48,6 +49,8 @@ public:
     ~ProductKeyCheck();
     static ProductKeyCheck *instance();
     void init(QInstaller::PackageManagerCore *core);
+
+    static QUiLoader *uiLoader();
 
     // was validLicense
     bool hasValidKey();

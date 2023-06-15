@@ -706,13 +706,13 @@ void Component::loadUserInterfaces(const QDir &directory, const QStringList &uis
                             it.fileName(), file.errorString(), tr(scClearCacheHint), packageManagerCore()->settings().localCachePath()));
         }
 
-        static QUiLoader loader;
-        loader.setTranslationEnabled(true);
-        loader.setLanguageChangeEnabled(true);
-        QWidget *const widget = loader.load(&file, 0);
+        QUiLoader *const loader = ProductKeyCheck::instance()->uiLoader();
+        loader->setTranslationEnabled(true);
+        loader->setLanguageChangeEnabled(true);
+        QWidget *const widget = loader->load(&file, 0);
         if (!widget) {
             throw Error(tr("Cannot load the requested UI file \"%1\": %2.\n\n%3 \"%4\"").arg(
-                            it.fileName(), loader.errorString(), tr(scClearCacheHint), packageManagerCore()->settings().localCachePath()));
+                it.fileName(), loader->errorString(), tr(scClearCacheHint), packageManagerCore()->settings().localCachePath()));
         }
         d->scriptEngine()->newQObject(widget);
         d->m_userInterfaces.insert(widget->objectName(), widget);

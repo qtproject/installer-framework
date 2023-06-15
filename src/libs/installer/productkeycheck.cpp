@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,8 @@
 #include "productkeycheck.h"
 #include "packagemanagercore.h"
 
+#include <QtUiTools/QUiLoader>
+
 class ProductKeyCheckPrivate
 {
 };
@@ -47,6 +49,12 @@ ProductKeyCheck *ProductKeyCheck::instance()
 {
     static ProductKeyCheck instance;
     return &instance;
+}
+
+QUiLoader *ProductKeyCheck::uiLoader()
+{
+    static QUiLoader loader;
+    return &loader;
 }
 
 void ProductKeyCheck::init(QInstaller::PackageManagerCore *core)
