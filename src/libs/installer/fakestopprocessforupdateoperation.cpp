@@ -31,6 +31,8 @@
 #include "messageboxhandler.h"
 #include "packagemanagercore.h"
 
+#include <QDir>
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -79,11 +81,11 @@ bool FakeStopProcessForUpdateOperation::undoOperation()
 
     if (processes.count() == 1) {
         setError(UpdateOperation::UserDefinedError, tr("This process should be stopped before "
-            "continuing: %1").arg(processes.first()));
+            "continuing: %1").arg(QDir::toNativeSeparators(processes.first())));
     } else {
         const QString sep = QString::fromWCharArray(L"\n   \u2022 ");   // Unicode bullet
         setError(UpdateOperation::UserDefinedError, tr("These processes should be stopped before "
-            "continuing: %1").arg(sep + processes.join(sep)));
+            "continuing: %1").arg(sep + QDir::toNativeSeparators(processes.join(sep))));
     }
     return false;
 }
