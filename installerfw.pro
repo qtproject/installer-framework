@@ -1,10 +1,11 @@
 TEMPLATE = subdirs
-SUBDIRS += src tools doc
+SUBDIRS += src tools
 tools.depends = src
 
 requires(!cross_compile)
 
 include (installerfw.pri)
+include (doc/doc.pri)
 
 BUILD_TESTS = $$(BUILDTESTS)
 isEmpty(BUILD_TESTS):BUILD_TESTS=$${BUILDTESTS}

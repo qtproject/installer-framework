@@ -3,7 +3,7 @@ instructions:
   - type: Group
     instructions:
       - type: ChangeDirectory
-        directory: "{{.SourceDir}}\\doc"
+        directory: "{{.SourceDir}}"
         maxTimeInSeconds: 300
         maxTimeBetweenOutput: 120
         userMessageOnFailure: "Failed to change dir"
