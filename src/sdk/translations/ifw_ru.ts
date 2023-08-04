@@ -2109,7 +2109,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>%1 of %2 operations completed.</source>
-        <translation>1 из %2 операции завершены</translation>
+        <translation>%1 из %2 операции завершены</translation>
     </message>
     <message>
         <source>Unpacking components...</source>
