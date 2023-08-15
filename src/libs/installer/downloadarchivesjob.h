@@ -103,6 +103,8 @@ private:
     quint64 m_totalSizeToDownload;
     quint64 m_totalSizeDownloaded;
     QElapsedTimer m_totalDownloadSpeedTimer;
+
+    uint m_retryCount;
 };
 
 } // namespace QInstaller
