@@ -77,13 +77,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-4.6.0.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-4.6.1.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-4.6.0.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-4.6.0.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-4.6.1.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-4.6.1.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -97,7 +97,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.6.0.app"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.6.1.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
@@ -117,18 +117,18 @@ instructions:
         maxTimeBetweenOutput: 600
         userMessageOnFailure: "Failed to install Pipenv requirements"
       - type: ExecuteCommand
-        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.0.app"
+        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.1.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to sign the ifw installer"
       - type: ExecuteCommand
-        command: "python3 -m pipenv run python notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.0.dmg"
+        command: "python3 -m pipenv run python notarize.py --dmg={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.1.dmg"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to notarize the ifw installer"
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.0.dmg"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-4.6.0.dmg"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.6.1.dmg"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-4.6.1.dmg"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -142,7 +142,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.SourceDir}}"
       - type: ExecuteCommand
-        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-4.6.0"
+        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-4.6.1"
         maxTimeInSeconds: 1200
         maxTimeBetweenOutput: 1200
         userMessageOnFailure: "Failed to create ifw installer."
@@ -163,8 +163,8 @@ instructions:
       equals_value: Windows
 
   - type: Rename
-    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-4.6.0.exe"
-    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-4.6.0.exe"
+    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-4.6.1.exe"
+    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-4.6.1.exe"
     userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: property
