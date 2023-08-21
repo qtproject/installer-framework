@@ -235,12 +235,13 @@ void MetadataJob::doStart()
     if (m_downloadType != DownloadType::CompressedPackage) {
         emit infoMessage(this, tr("Fetching latest update information..."));
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
-        if (onlineInstaller || m_core->isMaintainer()) {
+        const QSet<Repository> repositories = getRepositories();
+
+        if (onlineInstaller || m_core->isMaintainer() || !repositories.isEmpty()) {
             static const QString updateFilePath(QLatin1Char('/') + scUpdatesXML + QLatin1Char('?'));
             static const QString randomQueryString = QString::number(QRandomGenerator::global()->generate());
 
             QList<FileTaskItem> items;
-            QSet<Repository> repositories = getRepositories();
             quint64 cachedCount = 0;
             foreach (const Repository &repo, repositories) {
                 // For not blocking the UI
