@@ -1,3 +1,8 @@
+4.6.1
+- Fix crash when filtering categories (QTIFW-3085)
+- Allow setting temporary repositories for offline-only installers (QTIFW-3078)
+- DownloadArchivesJob: allow download retries for command line runs (QTIFW-3098)
+
 4.6.0
 - Unify handling of processes to close for 'updating' components (QTIFW-2927,QTIFW-3009)
 - Fix wrong extract content (QTIFW-3010)
