@@ -471,6 +471,7 @@ private slots:
         QFETCH(bool, postLoad);
         try {
             setExpectedScriptOutput("checked: false");
+            TestGui testGui(&m_core);
             m_component->loadUserInterfaces(QDir(":///data"), QStringList() << QLatin1String("form.ui"));
             m_component->evaluateComponentScript(path, postLoad);
         } catch (const Error &error) {
