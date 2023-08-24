@@ -804,12 +804,13 @@ quint64 PackageManagerCore::requiredDiskSpace() const
  */
 quint64 PackageManagerCore::requiredTemporaryDiskSpace() const
 {
-    if (isOfflineOnly())
-        return 0;
-
     quint64 result = 0;
-    foreach (QInstaller::Component *component, orderedComponentsToInstall())
+    foreach (QInstaller::Component *component, orderedComponentsToInstall()) {
+        if (!component->isFromOnlineRepository())
+            continue;
+
         result += size(component, scCompressedSize);
+    }
     return result;
 }
 

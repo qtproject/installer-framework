@@ -195,7 +195,7 @@ private slots:
         setRepository(":///data/missingarchive");
         core->autoAcceptMessageBoxes();
         core->installSelectedComponentsSilently(QStringList () << "C");
-        QCOMPARE(PackageManagerCore::Canceled, core->status());
+        QCOMPARE(PackageManagerCore::Failure, core->status()); // Fails after retrying
     }
 
     void messageBoxFromScriptDefaultAnswer()
