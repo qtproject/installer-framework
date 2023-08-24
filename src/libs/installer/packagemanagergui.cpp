@@ -1452,9 +1452,10 @@ int PackageManagerPage::nextId() const
     if (next == PackageManagerCore::LicenseCheck) {
         // calculate the page after the license page
         const int nextNextId = gui()->pageIds().value(gui()->pageIds().indexOf(next) + 1, -1);
-        const PackageManagerCore *const core = packageManagerCore();
+        PackageManagerCore *const core = packageManagerCore();
         if (core->isUninstaller())
             return nextNextId;  // forcibly hide the license page if we run as uninstaller
+        core->recalculateAllComponents();
 
         foreach (Component* component, core->orderedComponentsToInstall()) {
             if (core->isMaintainer() && component->isInstalled())

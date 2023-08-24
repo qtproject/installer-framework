@@ -44,6 +44,8 @@ using namespace QInstaller;
 using namespace KDUpdater;
 
 
+static constexpr uint scMaxRetries = 5;
+
 /*!
     Creates a new DownloadArchivesJob with parent \a core.
 */
@@ -58,6 +60,7 @@ DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     , m_progressChangedTimerId(0)
     , m_totalSizeToDownload(0)
     , m_totalSizeDownloaded(0)
+    , m_retryCount(scMaxRetries)
 {
     setCapabilities(Cancelable);
 }
@@ -290,16 +293,21 @@ void DownloadArchivesJob::registerFile()
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("DownloadError"), tr("Download Error"), tr("Hash verification while "
             "downloading failed. This is a temporary error, please retry."),
-            QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Cancel);
+            QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry);
 
-        // If run from command line instance, do not continue if hash verification failed.
-        // Same download is tried again and again causing infinite loop if hash not
-        // fixed to repositories.
-        if (res == QMessageBox::Cancel || m_core->isCommandLineInstance()) {
+        if (res == QMessageBox::Cancel) {
             finishWithError(tr("Cannot verify Hash"));
             return;
         }
+        // When using command line instance, only retry a number of times to avoid
+        // infinite loop in case the automatic answer for the messagebox is "Retry"
+        if (m_core->isCommandLineInstance() && (--m_retryCount == 0)) {
+           finishWithError(tr("Retry count (%1) exceeded").arg(scMaxRetries));
+           return;
+        }
     } else {
+        m_retryCount = scMaxRetries;
+
         ++m_archivesDownloaded;
         m_totalSizeDownloaded += QFile(m_downloader->downloadedFileName()).size();
         if (m_progressChangedTimerId) {
@@ -330,14 +338,21 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
     const QMessageBox::StandardButton b =
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
         QLatin1String("archiveDownloadError"), tr("Download Error"), tr("Cannot download archive %1: %2")
-        .arg(m_archivesToDownload.first().sourceUrl, error), QMessageBox::Retry | QMessageBox::Cancel);
+        .arg(m_archivesToDownload.first().sourceUrl, error), QMessageBox::Retry | QMessageBox::Cancel,
+        QMessageBox::Retry);
 
-    // Do not call fetchNextArchiveHash when using command line instance,
-    // installer tries to download the same archive causing infinite loop
-    if (b == QMessageBox::Retry && !m_core->isCommandLineInstance())
+    if (b == QMessageBox::Retry) {
+        // When using command line instance, only retry a number of times to avoid
+        // infinite loop in case the automatic answer for the messagebox is "Retry"
+         if (m_core->isCommandLineInstance() && (--m_retryCount == 0)) {
+            finishWithError(tr("Retry count (%1) exceeded").arg(scMaxRetries));
+            return;
+         }
+
         QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
-    else
+    } else {
         downloadCanceled();
+    }
 }
 
 void DownloadArchivesJob::finishWithError(const QString &error)
