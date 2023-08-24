@@ -5,7 +5,7 @@
     "Description": "Multi-format archive and compression library.",
     "QtUsage": "Used for reading and writing archive files in Qt Installer Framework",
     "Homepage": "https://www.libarchive.org",
-    "Version": "3.6.2",
+    "Version": "3.7.1",
     "License": "BSD 2-clause \"Simplified\" License",
     "LicenseId": "BSD-2-Clause",
     "LicenseFile": "COPYING",
