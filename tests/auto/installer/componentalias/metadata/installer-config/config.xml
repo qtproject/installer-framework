@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Installer>
+    <Name>test</Name>
+    <Version>1.0.0</Version>
+    <AliasDefinitionsFile>aliases.xml</AliasDefinitionsFile>
+</Installer>

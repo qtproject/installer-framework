@@ -1,0 +1,43 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <Checksum>true</Checksum>
+ <PackageUpdate>
+  <Name>A</Name>
+  <DisplayName>A</DisplayName>
+  <Description>Example component A</Description>
+  <Version>1.0.2-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>false</Default>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>B</Name>
+  <DisplayName>B</DisplayName>
+  <Description>Example component B</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>false</Default>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>C</Name>
+  <DisplayName>C</DisplayName>
+  <Description>Example component C</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Default>false</Default>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>C.subcomponent</Name>
+  <DisplayName>Subcomponent of C</DisplayName>
+  <Description>Example subcomponent</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>C.subcomponent.subcomponent</Name>
+  <DisplayName>Subcomponent of subcomponent component</DisplayName>
+  <Description>Example subcomponent of subcomponent</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+ </PackageUpdate>
+</Updates>

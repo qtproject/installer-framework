@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/repository/Updates.xml</file>
+        <file>data/aliases-priority.xml</file>
+        <file>data/aliases-versions.xml</file>
+        <file>metadata/installer-config/config.xml</file>
+        <file>metadata/installer-config/aliases.xml</file>
+    </qresource>
+</RCC>

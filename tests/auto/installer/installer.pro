@@ -43,7 +43,8 @@ SUBDIRS += \
     contentshaupdate \
     componentreplace \
     metadatacache \
-    contentsha1check
+    contentsha1check \
+    componentalias
 
 CONFIG(libarchive) {
     SUBDIRS += libarchivearchive

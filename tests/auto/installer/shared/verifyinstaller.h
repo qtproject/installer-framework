@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,12 +29,17 @@
 #ifndef VERIFYINSTALLER_H
 #define VERIFYINSTALLER_H
 
+#include <packagemanagercore.h>
+
 #include <QString>
 #include <QStringList>
 #include <QCryptographicHash>
 #include <QFile>
 #include <QDir>
 #include <QtTest/QTest>
+
+#include <iostream>
+#include <sstream>
 
 struct VerifyInstaller
 {
@@ -113,6 +118,22 @@ struct VerifyInstaller
                 file.close();
             }
         }
+    }
+
+    template <typename Func, typename... Args>
+    static void verifyListPackagesMessage(QInstaller::PackageManagerCore *core, const QString &message,
+                                   Func func, Args... args)
+    {
+        std::ostringstream stream;
+        std::streambuf *buf = std::cout.rdbuf();
+        std::cout.rdbuf(stream.rdbuf());
+
+        (core->*func)(std::forward<Args>(args)...);
+
+        std::cout.rdbuf(buf);
+        QVERIFY(stream && stream.tellp() == message.size());
+        for (const QString &line : message.split(QLatin1String("\n")))
+            QVERIFY(stream.str().find(line.toStdString()) != std::string::npos);
     }
 };
 #endif

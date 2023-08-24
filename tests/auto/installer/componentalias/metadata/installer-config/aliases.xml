@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Aliases>
+    <Alias>
+        <Name>set-A</Name>
+        <DisplayName>Installation A</DisplayName>
+        <Description>Installs component A</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresComponent>A</RequiresComponent>
+    </Alias>
+    <Alias>
+        <Name>set-B</Name>
+        <DisplayName>Virtual installation B</DisplayName>
+        <Description>Installs component B</Description>
+        <Version>1.0.0</Version>
+        <Virtual>true</Virtual>
+        <RequiresComponent>B</RequiresComponent>
+    </Alias>
+        <Alias>
+        <Name>set-D</Name>
+        <DisplayName>Installation D (Unstable)</DisplayName>
+        <Description>Installs missing component D</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresComponent>D</RequiresComponent>
+    </Alias>
+        <Alias>
+        <Name>set-full</Name>
+        <DisplayName>Full installation</DisplayName>
+        <Description>Installs all components</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresAlias>set-A,set-B</RequiresAlias>
+        <RequiresComponent>C</RequiresComponent>
+    </Alias>
+</Aliases>

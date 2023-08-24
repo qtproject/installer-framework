@@ -35,9 +35,6 @@
 #include <QTest>
 #include <QRegularExpression>
 
-#include <iostream>
-#include <sstream>
-
 using namespace QInstaller;
 
 typedef QList<QPair<QString, QString> > ComponentResourceHash;
@@ -73,7 +70,7 @@ private slots:
                 (m_installDir, ":///data/repository"));
 
         auto func = &PackageManagerCore::listAvailablePackages;
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
@@ -81,29 +78,29 @@ private slots:
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("."), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("A.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^B.*"), QHash<QString, QString>());
 
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
             "<availablepackages>\n"
             "    <package name=\"C\" displayname=\"C\" version=\"1.0.0-1\"/>\n"
             "</availablepackages>\n"), func, QLatin1String("^C"), QHash<QString, QString>());
@@ -113,7 +110,7 @@ private slots:
             { "Version", "1.0.2" },
             { "DisplayName", "A" }
         };
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
              "<availablepackages>\n"
              "    <package name=\"AB\" displayname=\"AB\" version=\"1.0.2-1\"/>\n"
              "    <package name=\"A\" displayname=\"A\" version=\"1.0.2-1\"/>\n"
@@ -121,7 +118,7 @@ private slots:
 
         searchHash.clear();
         searchHash.insert("Default", "false");
-        verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("<?xml version=\"1.0\"?>\n"
              "<availablepackages>\n"
              "    <package name=\"B\" displayname=\"B\" version=\"1.0.0-1\"/>\n"
              "</availablepackages>\n"), func, QString(), searchHash);
@@ -214,13 +211,13 @@ private slots:
 
         core.setValue(scTargetDir, testDirectory);
 
-        verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
             "<localpackages>\n"
             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
             "    <package name=\"B\" displayname=\"B Title\" version=\"1.0.0-1\"/>\n"
             "</localpackages>\n"), func, QString());
 
-        verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
+        VerifyInstaller::verifyListPackagesMessage(&core, QLatin1String("<?xml version=\"1.0\"?>\n"
             "<localpackages>\n"
             "    <package name=\"A\" displayname=\"A Title\" version=\"1.0.2-1\"/>\n"
             "</localpackages>\n"), func, QLatin1String("A"));
@@ -757,23 +754,6 @@ private slots:
     {
         QDir dir(m_installDir);
         QVERIFY(dir.removeRecursively());
-    }
-
-private:
-    template <typename Func, typename... Args>
-    void verifyListPackagesMessage(PackageManagerCore *core, const QString &message,
-                                   Func func, Args... args)
-    {
-        std::ostringstream stream;
-        std::streambuf *buf = std::cout.rdbuf();
-        std::cout.rdbuf(stream.rdbuf());
-
-        (core->*func)(std::forward<Args>(args)...);
-
-        std::cout.rdbuf(buf);
-        QVERIFY(stream && stream.tellp() == message.size());
-        for (const QString &line : message.split(QLatin1String("\n")))
-            QVERIFY(stream.str().find(line.toStdString()) != std::string::npos);
     }
 
 private:
