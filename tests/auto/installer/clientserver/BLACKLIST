@@ -1,3 +1,2 @@
 [testQProcessWrapper]
 rhel-7.6 ci
-rhel-8.4 # QTIFW-3087
