@@ -9,6 +9,8 @@ QT += qml xml concurrent
 
 CONFIG -= import_plugins
 
+QTPLUGIN += qopensslbackend
+
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 
