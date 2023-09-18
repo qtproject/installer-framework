@@ -48,8 +48,6 @@ public:
     void ignoreAvailablePackagesMissingMessages()
     {
         QTest::ignoreMessage(QtDebugMsg, QRegularExpression("Searching packages with regular expression:"));
-        QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, "Loading component scripts...");
         QTest::ignoreMessage(QtDebugMsg, "No matching packages found.");
     }
 

@@ -140,15 +140,17 @@ int CommandLineInterface::searchAvailablePackages()
     if (!m_positionalArguments.isEmpty())
         regexp = m_positionalArguments.first();
 
-    bool searchAliases = true;
     if (m_parser.isSet(CommandLineOptions::scTypeLong)) {
-        searchAliases = (m_parser.value(CommandLineOptions::scTypeLong)
-            != QLatin1String("packages"));
+        // If type is specified, only list relevant contents
+        if (m_parser.value(CommandLineOptions::scTypeLong) == QLatin1String("package"))
+            m_core->listAvailablePackages(regexp, parsePackageFilters());
+        else if (m_parser.value(CommandLineOptions::scTypeLong) == QLatin1String("alias"))
+            m_core->listAvailableAliases(regexp);
+    } else {
+         // No type - we can try again with packages search if there were no matching aliases
+        if (!m_core->listAvailableAliases(regexp))
+            m_core->listAvailablePackages(regexp, parsePackageFilters());
     }
-    if (searchAliases)
-        m_core->listAvailableAliases(regexp);
-    else
-        m_core->listAvailablePackages(regexp, parsePackageFilters());
 
     return EXIT_SUCCESS;
 }

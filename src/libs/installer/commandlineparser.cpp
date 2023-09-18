@@ -183,7 +183,8 @@ CommandLineParser::CommandLineParser()
     addOption(QCommandLineOption(QStringList()
         << CommandLineOptions::scTypeLong,
         QLatin1String("[CLI] Sets the type of the given arguments for commands supporting multiple argument types, "
-                      "like \"search\". Defaults to \"alias\"."),
+                      "like \"search\". By default aliases are searched first, and if no matching aliases are found, "
+                      "then packages are searched with the same search pattern."),
         QLatin1String("package|alias")));
 
     // Message query options

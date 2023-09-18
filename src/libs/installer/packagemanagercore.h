@@ -275,9 +275,9 @@ public:
     ComponentModel *updaterComponentModel() const;
 
     void listInstalledPackages(const QString &regexp = QString());
-    void listAvailablePackages(const QString &regexp = QString(),
+    bool listAvailablePackages(const QString &regexp = QString(),
                                const QHash<QString, QString> &filters = QHash<QString, QString>());
-    void listAvailableAliases(const QString &regexp = QString());
+    bool listAvailableAliases(const QString &regexp = QString());
 
     PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
     PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);

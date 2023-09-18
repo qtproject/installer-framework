@@ -463,19 +463,31 @@
     The \c search command can be used to search components from available repositories, or
     from integrated binary content in case of an offline installer. It can be used with
     no arguments to list all available components or with a regular expression to get a list
-    of only components matching the pattern. The \c --filter-packages option can be
-    used to specify additional filters for the search operation. For a list of usable
-    information elements with the option, refer to \l{Summary of Package Information File Elements}.
+    of only components matching the pattern.
+
+    The \c --filter-packages option can be  used to specify additional filters for the search
+    operation. For a list of usable information elements with the option, refer to
+    \l{Summary of Package Information File Elements}.
+
+    When the value of the \c{--type} option is set to \c package, the search command will
+    search for available components only:
 
     \code
     installer.exe --type package --filter-packages "DisplayName=MyComponent, Version=1.0" search "expression"
     \endcode
 
-    When the \c{--type} option is omitted, or the value for the option is set to \c alias, the
-    search command will seach for available component aliases instead:
+    When the \c{--type} option is omitted, the search command will first search for matching
+    component aliases, and if none are found, component names:
 
     \code
     installer.exe search "expression"
+    \endcode
+
+    When the value of the \c{--type} option is set to \c alias, the search command will
+    search for available component aliases only:
+
+    \code
+    installer.exe --type alias search "expression"
     \endcode
 
     \section1 Performing Full Uninstallation

@@ -2506,12 +2506,13 @@ ComponentModel *PackageManagerCore::defaultComponentModel() const
     if (!d->m_defaultModel) {
         d->m_defaultModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("AllComponentsModel"));
+
+        connect(this, &PackageManagerCore::startAllComponentsReset, [&] {
+            d->m_defaultModel->reset();
+        });
+        connect(this, &PackageManagerCore::finishAllComponentsReset, d->m_defaultModel,
+            &ComponentModel::reset);
     }
-    connect(this, &PackageManagerCore::startAllComponentsReset, [&] {
-        d->m_defaultModel->reset();
-    });
-    connect(this, &PackageManagerCore::finishAllComponentsReset, d->m_defaultModel,
-        &ComponentModel::reset);
     return d->m_defaultModel;
 }
 
@@ -2524,12 +2525,13 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     if (!d->m_updaterModel) {
         d->m_updaterModel = componentModel(const_cast<PackageManagerCore*> (this),
             QLatin1String("UpdaterComponentsModel"));
+
+        connect(this, &PackageManagerCore::startUpdaterComponentsReset, [&] {
+            d->m_updaterModel->reset();
+        });
+        connect(this, &PackageManagerCore::finishUpdaterComponentsReset, d->m_updaterModel,
+            &ComponentModel::reset);
     }
-    connect(this, &PackageManagerCore::startUpdaterComponentsReset, [&] {
-        d->m_updaterModel->reset();
-    });
-    connect(this, &PackageManagerCore::finishUpdaterComponentsReset, d->m_updaterModel,
-        &ComponentModel::reset);
     return d->m_updaterModel;
 }
 
@@ -2539,29 +2541,39 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
     hash containing package information elements and regular expressions
     can be used to further filter listed packages.
 
+    Returns \c true if matching packages were found, \c false otherwise.
+
     \sa setVirtualComponentsVisible()
 */
-void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHash<QString, QString> &filters)
+bool PackageManagerCore::listAvailablePackages(const QString &regexp, const QHash<QString, QString> &filters)
 {
     setPackageViewer();
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching packages with regular expression:" << regexp;
 
     ComponentModel *model = defaultComponentModel();
-    d->fetchMetaInformationFromRepositories();
+    PackagesList packages;
 
-    d->addUpdateResourcesFromRepositories();
-    QRegularExpression re(regexp);
-    re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-    const PackagesList &packages = d->remotePackages();
-    if (!fetchAllPackages(packages, LocalPackagesMap())) {
-        qCWarning(QInstaller::lcInstallerInstallLog)
-            << "There was a problem with loading the package data.";
-        return;
+    if (!d->m_updates) {
+        d->fetchMetaInformationFromRepositories();
+        d->addUpdateResourcesFromRepositories();
+
+        packages = d->remotePackages();
+        if (!fetchAllPackages(packages, LocalPackagesMap())) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "There was a problem with loading the package data.";
+            return false;
+        }
+    } else {
+        // No need to fetch metadata again
+        packages = d->remotePackages();
     }
 
+    QRegularExpression re(regexp);
+    re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+
     PackagesList matchedPackages;
-    foreach (Package *package, packages) {
+    foreach (Package *package, qAsConst(packages)) {
         const QString name = package->data(scName).toString();
         Component *component = componentByName(name);
         if (!component)
@@ -2583,19 +2595,24 @@ void PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
                 matchedPackages.append(package);
         }
     }
-    if (matchedPackages.count() == 0)
+    if (matchedPackages.count() == 0) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching packages found.";
-    else
-        LoggingHandler::instance().printPackageInformation(matchedPackages, localInstalledPackages());
+        return false;
+    }
+
+    LoggingHandler::instance().printPackageInformation(matchedPackages, localInstalledPackages());
+    return true;
 }
 
 /*!
     Lists available component aliases filtered with \a regexp without GUI. Virtual
     aliases are not listed unless set visible.
 
+    Returns \c true if matching package aliases were found, \c false otherwise.
+
     \sa setVirtualComponentsVisible()
 */
-void PackageManagerCore::listAvailableAliases(const QString &regexp)
+bool PackageManagerCore::listAvailableAliases(const QString &regexp)
 {
     setPackageViewer();
     qCDebug(QInstaller::lcInstallerInstallLog)
@@ -2604,17 +2621,20 @@ void PackageManagerCore::listAvailableAliases(const QString &regexp)
     ComponentModel *model = defaultComponentModel();
     Q_UNUSED(model);
 
-    d->fetchMetaInformationFromRepositories();
-    d->addUpdateResourcesFromRepositories();
+    if (!d->m_updates) {
+        d->fetchMetaInformationFromRepositories();
+        d->addUpdateResourcesFromRepositories();
+
+        const PackagesList &packages = d->remotePackages();
+        if (!fetchAllPackages(packages, LocalPackagesMap())) {
+            qCWarning(QInstaller::lcInstallerInstallLog)
+                << "There was a problem with loading the package data.";
+            return false;
+        }
+    }
 
     QRegularExpression re(regexp);
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
-    const PackagesList &packages = d->remotePackages();
-    if (!fetchAllPackages(packages, LocalPackagesMap())) {
-        qCWarning(QInstaller::lcInstallerInstallLog)
-            << "There was a problem with loading the package data.";
-        return;
-    }
 
     QList<ComponentAlias *> matchedAliases;
     for (auto *alias : qAsConst(d->m_componentAliases)) {
@@ -2629,10 +2649,13 @@ void PackageManagerCore::listAvailableAliases(const QString &regexp)
         }
     }
 
-    if (matchedAliases.isEmpty())
+    if (matchedAliases.isEmpty()) {
         qCDebug(QInstaller::lcInstallerInstallLog) << "No matching package aliases found.";
-    else
-        LoggingHandler::instance().printAliasInformation(matchedAliases);
+        return false;
+    }
+
+    LoggingHandler::instance().printAliasInformation(matchedAliases);
+    return true;
 }
 
 bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &componentName)
