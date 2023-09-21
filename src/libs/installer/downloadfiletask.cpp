@@ -395,8 +395,10 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
             .arg(source.toString(), source.errorString())));
         return 0;
     }
+    QNetworkRequest request(source);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
 
-    QNetworkReply *reply = m_nam.get(QNetworkRequest(source));
+    QNetworkReply *reply = m_nam.get(request);
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
 

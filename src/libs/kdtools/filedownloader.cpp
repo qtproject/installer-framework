@@ -1473,7 +1473,11 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     d->m_authenticationCount = 0;
     d->manager.setProxyFactory(proxyFactory());
     clearBytesDownloadedBeforeResume();
-    d->http = d->manager.get(QNetworkRequest(url));
+
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
+
+    d->http = d->manager.get(request);
     connect(d->http, &QIODevice::readyRead, this, &HttpDownloader::httpReadyRead);
     connect(d->http, &QNetworkReply::downloadProgress,
             this, &HttpDownloader::httpReadProgress);
