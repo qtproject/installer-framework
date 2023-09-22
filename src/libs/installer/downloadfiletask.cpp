@@ -397,6 +397,7 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     }
     QNetworkRequest request(source);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
 
     QNetworkReply *reply = m_nam.get(request);
     std::unique_ptr<Data> data(new Data(item));

@@ -1476,6 +1476,7 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
 
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
 
     d->http = d->manager.get(request);
     connect(d->http, &QIODevice::readyRead, this, &HttpDownloader::httpReadyRead);
