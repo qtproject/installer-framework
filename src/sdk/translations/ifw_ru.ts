@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>Выявлено невозможное разрешение зависимостей. Принудительная установка компонента &quot;%1&quot; будет удалена, потому что зависимый &quot;%2&quot; помечен для удаления по причине: &quot;%3&quot;.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>Выбран компонент под именем &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>Замечено повторение, компонент с именем &quot;%1&quot; уже выбран.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -942,6 +950,14 @@
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Создать Автономный Установщик</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>Создать автономный установщик из выбранных компонентов вместо установки сейчас.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -1239,6 +1255,10 @@ Error while loading %2</source>
         <source>Total: </source>
         <translation>Всего: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>Превышено количество (%1) повторов</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1473,7 +1493,7 @@ Error while loading %2</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>Добро пожаловать</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -1502,10 +1522,6 @@ Error while loading %2</source>
     <message>
         <source>No updates available.</source>
         <translation>Нет доступных обновлений.</translation>
-    </message>
-    <message>
-        <source> Only local package management available.</source>
-        <translation> Доступно только локальное управление пакетами.</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
@@ -1553,10 +1569,6 @@ Error while loading %2</source>
     <message>
         <source>Needed installer object in %1 operation is empty.</source>
         <translation>В операции «%1» необходимый объект установщика пуст.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Невозможно удалить файл лицензии: файл не найден.</translation>
     </message>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
@@ -1869,6 +1881,18 @@ Do you want to continue?</source>
         <source>Cannot resolve components to uninstall.</source>
         <translation>Невозможно определить компоненты для удаления.</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>Невозможно выбрать псевдоним %1. Была проблема с загрузкой этого псевдонима, он был помечен нестабильным и не может быть выбран.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>Невозможно выбрать %1. Псевдоним помечен как виртуальный и не может быть выбран вручную.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>Созданный установщик займет %1 дискового пространства.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2135,6 +2159,18 @@ Do you want to continue?</source>
         <source>Loading component scripts...</source>
         <translation>Загрузка скриптов компонента...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>Псевдоним назван именем, которое конфликтует с существующим компонентом &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>Неразрешенные псевдонимы компонентов.</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>Цикличная зависимость между псевдонимами &quot;%1&quot; и &quot;%2&quot; замечена.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2238,6 +2274,18 @@ Please copy the installer to a local drive</source>
         <source>Uninstalling</source>
         <translation>Удаление</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>Создать Автономный Установщик.</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>Создание Автономного Установщика для %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>Создание Автономного Установщика</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2311,6 +2359,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Ready to Update</source>
         <translation>Всё готово к обновлению</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Создать Автономный Установщик.</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>Готов к установке Автономного Установщика.</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>Вся необходимая информация доступна для создания автономного установщика для выбранных компонентов.</translation>
     </message>
 </context>
 <context>
