@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>不可能な依存関係が検出されました。強制にインストールされる&quot;%1&quot;コンポーネントは、&quot;%1&quot;に依存する &quot;%2&quot;がアンインストールの対象ですので、アンインストールされます。&quot;%2&quot;のアンインストレーション理由は: &quot;%3&quot;。</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>エイリアス &quot;%1&quot; によって選択されたコンポーネント:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>再帰が検出されました。コンポーネント エイリアス &quot;%1&quot; がすでに追加されています。</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -433,7 +441,7 @@
     </message>
     <message>
         <source>Cannot pause task %1</source>
-        <translation>タスク　%1 を一時停止できません</translation>
+        <translation>タスク&#x3000;%1 を一時停止できません</translation>
     </message>
     <message>
         <source>Cannot resume task %1</source>
@@ -932,6 +940,14 @@
         <source>Error</source>
         <translation>エラー</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>オフラインインストーラーの作成</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>今すぐインストールするのではなく、選択したコンポーネントでオフライン インストーラーを作成します。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1206,6 +1222,10 @@ Error while loading %2</source>
         <source>Total: </source>
         <translation>合計</translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>再試行回数 (%1) を超えました</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1440,10 +1460,6 @@ Error while loading %2</source>
         <translation>利用できる更新はありません。</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation>ローカル パッケージ管理のみ利用可能です。</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>中止</translation>
     </message>
@@ -1493,10 +1509,6 @@ Error while loading %2</source>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>ライセンス ファイル &quot;%1&quot; に書き込めません</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>削除対象のライセンス ファイルが見つかりません。</translation>
     </message>
 </context>
 <context>
@@ -1803,6 +1815,18 @@ Do you want to continue?</source>
         <source>Cannot resolve components to uninstall.</source>
         <translation>アンインストール対象のコンポーネントを解決できません。</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>エイリアス %1 を選択できません。エイリアスのロード中に問題が発生したため、不安定と記され、選択できません。</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>%1を選択できません。エイリアスは仮想として記され、手動で選択できません。</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>作成されるインストーラーはディスク容量の %1 を使用します。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2070,6 +2094,18 @@ Do you want to continue?</source>
         <source>Loading component scripts...</source>
         <translation>コンポーネント スクリプトを読み込んでいます...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>エイリアスの名前が既存のコンポーネント &quot;%1&quot;　の名前と対立しまていす。</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>コンポーネントエイリアスが未解決です</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>エイリアス &quot;%1&quot; と &quot;%2&quot;　の間の循環依存関係が検出されました。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2173,6 +2209,18 @@ Please copy the installer to a local drive</source>
         <source>Uninstalling</source>
         <translation>アンインストールしています</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>&amp;オフラインインストーラーを作成</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>%1 のオフラインインストーラーを作成しています</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>オフラインインストーラーを作成しています</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2246,6 +2294,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Ready to Update</source>
         <translation>更新の準備ができました</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>オフラインインストーラーを作成</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>オフラインインストーラーの準備ができました</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>選択したコンポーネントのオフラインインストーラーを作成するために準備が整っています</translation>
     </message>
 </context>
 <context>
