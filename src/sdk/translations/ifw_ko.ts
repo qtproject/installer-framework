@@ -517,7 +517,7 @@
         <source>Cannot open the requested license file &quot;%1&quot;: %2.
 
 %3 &quot;%4&quot;</source>
-        <translation>>요청된 라이선스 파일(&quot;%1&quot;)을 열 수 없음: %2.
+        <translation>요청된 라이선스 파일(&quot;%1&quot;)을 열 수 없음: %2.
 
 %3 &quot;%4&quot;</translation>
     </message>
@@ -654,6 +654,14 @@
     <message>
         <source>Error</source>
         <translation>오류</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>오프라인 설치 프로그램 생성합니다.</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>지금 설치하지 않고 선택된 구성요소들로 부터 오프라인 설치 프로그램을 생성합니다.</translation>
     </message>
 </context>
 <context>
@@ -944,6 +952,10 @@ Error while loading %2</source>
         <source>Total: </source>
         <translation>총계:</translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>재시도 회수(%1) 초과</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1149,6 +1161,14 @@ Error while loading %2</source>
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>해결할 수 없는 종속성 문제가 발생. 설치된 구성 요소 &quot;%1&quot;이(가) 종속성 &quot;%2&quot;(으)로 설정되어 제거됩니다.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>별칭 &quot;%1&quot;으로 선택된 구성요소.</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>반복이 감지됨, 별칭 &quot;%1&quot;가 이미 추가됨.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
@@ -1307,10 +1327,6 @@ Error while loading %2</source>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>&quot;%1&quot; 라이선스 파일을 쓸 수 없습니다.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>삭제할 라이선스 파일을 찾을 수 없습니다.</translation>
     </message>
 </context>
 <context>
@@ -1664,6 +1680,18 @@ Do you want to continue?</source>
         <source>Cannot resolve components to uninstall.</source>
         <translation>구성 요소들의 설치 제거를 해결 할 수 없습니다.</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>별칭 %1을 선택할 수 없습니다. 이 명칭을 불러오는 데 문제가 발생해 불안정한 것으로 설정되며 선택할 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>%1을 선택할 수 없습니다. 명칭이 가상(virtual)로 설정되어 있으며 이는 수동으로 선택될 수 없습니다.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>생성된 설치 프로그램이 %1 디스크 공간을 사용할 것입니다.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -1931,6 +1959,18 @@ Do you want to continue?</source>
         <source>Loading component scripts...</source>
         <translation>구성요소 스크립트를 불러오는 중...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>별칭이 존재하는 구성요소 &quot;%1&quot;와 충돌하는 이름을 정의합니다.</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>해결되지 않은 구성 요소 별칭들</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>별칭들 &quot;%1&quot;와 &quot;%2&quot; 사이에 순환 의존성 발견됨.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2018,10 +2058,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>No updates available.</source>
         <translation>사용 가능한 업데이트가 없습니다.</translation>
-    </message>
-    <message>
-        <source> Only local package management available.</source>
-        <translation> 로컬 패키지 관리만 가능합니다.</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
@@ -2141,6 +2177,18 @@ Please copy the installer to a local drive</source>
         <source>Ready to Update</source>
         <translation>업데이트 준비 완료</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>오프라인 설치 프로그램을 생성합니다.</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>오프라인 설치 프로그램을 생성하기 위해 준비합니다.</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>선택된 구성요소들에 대한 오프라인 설치 프로그램을 생성하기 위한 모든 필요한 정보가 사용 가능합니다</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
@@ -2179,6 +2227,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Uninstalling</source>
         <translation>설치 제거 중</translation>
+    </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>오프라인 설치 프로그램을 생성합니다.</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>%1에 대한 오프라인 설치 프로그램을 생성하는 중</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>오프라인 설치 프로그램을 생성하는 중</translation>
     </message>
 </context>
 <context>
