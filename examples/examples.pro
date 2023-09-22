@@ -2,6 +2,7 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
   changeuserinterface \
+  componentalias \
   componenterror \
   dependencies \
   dynamicpage \

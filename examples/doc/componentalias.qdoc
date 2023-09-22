@@ -1,0 +1,160 @@
+/****************************************************************************
+**
+** Copyright (C) 2023 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** This file is part of the Qt Installer Framework.
+**
+** $QT_BEGIN_LICENSE:FDL$
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU Free Documentation License Usage
+** Alternatively, this file may be used under the terms of the GNU Free
+** Documentation License version 1.3 as published by the Free Software
+** Foundation and appearing in the file included in the packaging of
+** this file. Please review the following information to ensure
+** the GNU Free Documentation License version 1.3 requirements
+** will be met: https://www.gnu.org/licenses/fdl-1.3.html.
+** $QT_END_LICENSE$
+**
+****************************************************************************/
+
+/*!
+    \example componentalias
+    \ingroup qtifwexamples
+    \title Component Alias Example
+
+    \brief Using installer's aliases.xml file to define component aliases and their
+           relations to other aliases and components.
+
+    \e{Component Alias} illustrates how to specify component aliases and how they influence
+    the installation and maintenance processes for command line usage.
+
+    \include installerfw-examples-configuring.qdocinc
+
+    \list
+        \li The \c <AliasDefinitionsFile> element is set to \c aliases.xml to
+            tell the installer the source for the alias definitions.
+    \endlist
+
+    \quotefile componentalias/config/config.xml
+
+    In this example, the aliases.xml file declares three component aliases. Two aliases,
+    \c set1 and \c set2 require a subset of available components, while \c set-full
+    requires the former two aliases, thus all available components.
+
+    \quotefile componentalias/config/aliases.xml
+
+    For full reference of the alias definitions file syntax, see \l{Alias Definition File}.
+
+    \include installerfw-examples-packaging.qdocinc
+
+    \section1 Referring to Component Aliases from Command Line
+
+    The declared component aliases can be used from the installer's command line interface
+    with the \c search and \c install commands.
+
+    \section2 Searching Available Component Aliases
+
+    The \c search command will by default search available aliases first, and then normal
+    components:
+
+    \code
+    $ installer search
+    \endcode
+
+    The command will print a table of aliases that were declared in the alias definition file:
+
+    \code
+    Name: set-full
+    Display name: Full Component Set
+    Description: Alias for full installation
+    Version: 1.0.0
+    Components:
+    Required aliases: set1,set2
+    ========================================
+    Name: set1
+    Display name: Component Set 1
+    Description: Alias for components A, B, and C
+    Version: 1.0.0
+    Components: componentA,componentB,componentC
+    Required aliases:
+    ========================================
+    Name: set2
+    Display name: Component Set 2
+    Description: Alias for components D, and E
+    Version: 1.0.0
+    Components: componentD,componentE
+    Required aliases:
+    \endcode
+
+    \section2 Installing Available Component Aliases
+
+    The \c install command can be used to install the components referred by a component alias:
+
+    \code
+    $ installer install set1
+    \endcode
+
+    This command is practically equivalent to selecting the components explicitly by their names:
+
+    \code
+    $ installer install componentA componentB componentC
+    \endcode
+
+    When selecting aliases for installation, the component changes summary will show
+    separate sections for components selected by a aliases, to differentiate from manual
+    selection:
+
+    \code
+    $ installer install set1 componentD
+    \endcode
+
+    This will output the following component changes summary:
+
+    \code
+    Components selected by alias "set1":
+    componentA
+    componentB
+    componentC
+    Selected components without dependencies:
+    componentD
+    \endcode
+
+    The \c <RequiredComponents> property does not declare a hard dependency for components,
+    and those can be later on updated or uninstalled individually from the alias:
+
+    \code
+    $ maintenancetool remove componentA
+    \endcode
+
+    After this, selecting the \c set1 alias for installation again would also select
+    \c componentA for reinstallation.
+
+    \section1 Virtual Component Aliases
+
+    Component aliases may be declared \c <Virtual>. This works similarly with virtual components,
+    so that they cannot be manually selected by the user and do not show in component search results.
+    Such aliases must be included by other aliases with the \c <RequiredAliases> property.
+
+    \section1 Optional Dependencies for Component Aliases
+
+    In addition to dependencies declared with \c <RequiredComponents> and \c <RequiredAliases> as
+    shown in this example, aliases may have optional dependencies declared with \c <OptionalComponents>
+    and \c <OptionalAliases> properties. The latter properties differ from the requirements in that
+    they do not cause the alias declaring the requirement to become unselectable, in case the referenced
+    components or aliases are not known to the installer.
+
+    This provides the packager some flexibility for declaring the dependencies. For example, an
+    installer may be expected to use an optional repository, which contains components that a
+    component alias optionally depends on, but the alias should be also available for installation
+    when the repository is disabled.
+
+    \include installerfw-examples-generating.qdocinc
+*/

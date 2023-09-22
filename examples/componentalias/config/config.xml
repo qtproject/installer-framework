@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Component Alias Example</Name>
+    <Version>1.0.0</Version>
+    <Title>Component Alias Example</Title>
+    <Publisher>Qt-Project</Publisher>
+    <StartMenuDir>Qt IFW Examples</StartMenuDir>
+    <TargetDir>@HomeDir@/IfwExamples/componentalias</TargetDir>
+    <AliasDefinitionsFile>aliases.xml</AliasDefinitionsFile>
+</Installer>

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<Aliases>
+    <Alias>
+        <Name>set1</Name>
+        <DisplayName>Component Set 1</DisplayName>
+        <Description>Alias for components A, B, and C</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiredComponents>componentA,componentB,componentC</RequiredComponents>
+    </Alias>
+    <Alias>
+        <Name>set2</Name>
+        <DisplayName>Component Set 2</DisplayName>
+        <Description>Alias for components D, and E</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiredComponents>componentD,componentE</RequiredComponents>
+    </Alias>
+    <Alias>
+        <Name>set-full</Name>
+        <DisplayName>Full Component Set</DisplayName>
+        <Description>Alias for full installation</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiredAliases>set1,set2</RequiredAliases>
+    </Alias>
+</Aliases>
+
