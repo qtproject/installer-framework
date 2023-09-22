@@ -136,6 +136,18 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Nem található hiányzó &quot;%1&quot; függőség &quot;%2&quot; számára. </translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -301,6 +313,10 @@
     <message>
         <source>Try again</source>
         <translation>Próbálja újra</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -482,10 +498,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>&quot;%1&quot; olvasása nem sikerült</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Elemzési hiba %1-ben itt: %2, %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -739,24 +751,16 @@
         <source>The specified module could not be found.</source>
         <translation>A megadott modul nem található.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>A komponenseknek nem lehetnek gyermekei frissítés módban. </translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Nem tudja megnyitni a kért &quot;%1&quot; UI fájlt: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Nem tudja betölteni a kért &quot;%1&quot; UI fájlt: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Nem lehet megnyitni a kért &quot;%1&quot; licencfájlt: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -777,6 +781,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Hiba történt a kiválasztott komponens betöltésekor. Ez az komponens nem telepíthető.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nem tudja megnyitni a kért &quot;%1&quot; UI fájlt: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nem tudja betölteni a kért &quot;%1&quot; UI fájlt: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nem lehet megnyitni a kért &quot;%1&quot; licencfájlt: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -857,10 +885,6 @@
         <translation>Minden komponens kijelölésének a megszüntetése a fa nézetben.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>QBSP fájlok böngészése</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Qt Board támogatási csomagfájl kiválasztása a további tartalom telepítéséhez, amely közvetlenül nem érhető el az online tárolókból.</translation>
     </message>
@@ -903,6 +927,26 @@
     <message>
         <source>Search</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>QBSP fájlok böngészése</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Hiba</translation>
     </message>
 </context>
 <context>
@@ -1193,6 +1237,10 @@ Hiba %2 betöltése közben</translation>
         <source>Cannot find component for %1.</source>
         <translation>Nem található komponens %1 számára.</translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1465,10 +1513,6 @@ Hiba %2 betöltése közben</translation>
         <translation>Nincs elérhető frissítés.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation>Csak helyi csomagkezelés áll rendelkezésre.</translation>
-    </message>
-    <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>Egy fontos frissítés áll rendelkezésre. Kérjük, válassza előbb &apos;%1&apos; -t</translation>
     </message>
@@ -1518,10 +1562,6 @@ Hiba %2 betöltése közben</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>Nem lehet írni &quot;%1&quot; licencfájlt.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Nem található törlendő licencfájl.</translation>
     </message>
 </context>
 <context>
@@ -1614,6 +1654,18 @@ Hiba %2 betöltése közben</translation>
     <message>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation type="unfinished">Nem sikerült megnyitni &quot;%1&quot; fájlt írásra: %2</translation>
     </message>
 </context>
 <context>
@@ -1765,10 +1817,6 @@ Kívánja folytatni?</translation>
         <translation>%1 telepítése nem sikerült. A komponens virtuális.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Futó folyamatok találhatók.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>A parancssorból történő futtatás során nem növelhetők a hozzáférési jogok. Indítsa újra az alkalmazást rendszergazdaként.</translation>
     </message>
@@ -1814,6 +1862,22 @@ Kívánja folytatni?</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2042,10 +2106,6 @@ Kívánja folytatni?</translation>
         <translation>Nem sikerült lekérni metaadatokat: %1</translation>
     </message>
     <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Nem adhatók hozzá ideiglenes frissítési forrásadatok.</translation>
-    </message>
-    <message>
         <source>Cannot find any update source information.</source>
         <translation>Nem található frissítési forrás információ.</translation>
     </message>
@@ -2083,6 +2143,18 @@ Kívánja folytatni?</translation>
     </message>
     <message>
         <source>Loading component scripts...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2188,6 +2260,18 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <source>Uninstalling</source>
         <translation>Eltávolítás</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2268,6 +2352,18 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
     <message>
         <source>Ready to Update</source>
         <translation>Frissítésre kész</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2760,6 +2856,10 @@ a megfelelő jogokkal rendelkező felhasználóként, majd kattintson az OK gomb
         <source>Clear cache</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -2964,6 +3064,10 @@ a megfelelő jogokkal rendelkező felhasználóként, majd kattintson az OK gomb
     </message>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
