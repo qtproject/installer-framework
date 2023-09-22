@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>Resolución de dependencia imposible detectada. El componente de instalación forzada &quot;%1&quot; se desinstalaría porque su dependencia &quot;%2&quot; está marcada para desinstalación con el motivo: &quot;%3&quot;.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>Compoentes seleccionados por el alias &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>Recursión detectada, el alias del componente &quot;%1&quot; ya se agregó.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -937,6 +945,14 @@
         <source>Error</source>
         <translation>Error</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Crear instalador sin conexión</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>Crea un instalador sin conexión a partir de componentes seleccionados, en lugar de instalarlo ahora.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1215,6 +1231,10 @@ Error al descargar %2</translation>
         <source>Total: </source>
         <translation>Total: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>Se superó el recuento de reintentos (%1)</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1453,10 +1473,6 @@ Error al descargar %2</translation>
         <translation>No hay actualizaciones disponibles.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation> Solo está disponible la administración de paquetes locales.</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>Salir</translation>
     </message>
@@ -1506,10 +1522,6 @@ Error al descargar %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>No se puede escribir en el archivo de licencia &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>No se han encontrado archivos de licencia para eliminar.</translation>
     </message>
 </context>
 <context>
@@ -1817,6 +1829,18 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <source>Cannot resolve components to uninstall.</source>
         <translation>No se pueden resolver los componentes para desinstalar.</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>No se puede seleccionar el alias %1. Hubo un problema al cargar este alias, por lo que está marcado como inestable y no se puede seleccionar.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>No se puede seleccionar %1. El alias está marcado como virtual, lo que significa que no se puede seleccionar manualmente.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>El instalador creado utilizará %1 del espacio en disco.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2084,6 +2108,18 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
         <source>Loading component scripts...</source>
         <translation>Cargando scripts de componentes...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>El alias declara un nombre que entra en conflicto con un componente existente &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>Alias de componentes no resueltos</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>Se detectó dependencia cíclica entre los alias &quot;%1&quot; y &quot;%2&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2187,6 +2223,18 @@ Copie el instalador en una unidad local</translation>
         <source>Uninstalling</source>
         <translation>Desinstalando</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>&amp;Crear instalador sin conexión</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>Creando un instalador sin conexión para %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>Creando un instalador sin conexión</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2260,6 +2308,18 @@ Copie el instalador en una unidad local</translation>
     <message>
         <source>Ready to Update</source>
         <translation>Listo para la actualización</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Crear instalador sin conexión</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>Listo para crear instalador sin conexión</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>Toda la información requerida ahora está disponible para crear un instalador sin conexión para los componentes seleccionados.</translation>
     </message>
 </context>
 <context>
