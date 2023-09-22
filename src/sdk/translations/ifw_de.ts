@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>Die Abhängigkeiten sind nicht auflösbar. Die zur forcierten Installation vorgesehene Komponente &quot;%1&quot; würde deinstalliert werden, weil sie von Komponente &quot;%2&quot; abhängt, welche auf Grund von &quot;%3&quot; zur Deinstallation vorgesehen ist.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>Durch den Alias &quot;%1&quot; ausgewählte Komponenten</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>Es wurde eine Rekursion festegestellt; der Alias &quot;%1&quot; wurde bereits hinzugefügt.</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -937,6 +945,14 @@
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Offline-Installer Erstellen</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>Erstellt einen Offline-Installer von den ausgewählten Komponenten anstatt zu installieren</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -1230,6 +1246,10 @@ Fehler beim Laden von %2</translation>
         <source>Archive: </source>
         <translation>Archiv: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>Anzahl der Wiederholungen (%1) überschritten</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1491,10 +1511,6 @@ Fehler beim Laden von %2</translation>
         <translation>Keine Aktualisierungen verfügbar.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation> Nur lokale Paketverwaltung verfügbar.</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>Beenden</translation>
     </message>
@@ -1545,10 +1561,6 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>Konnte Lizenzdatei &quot;%1&quot; nicht schreiben.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Keine Lizenzdateien zum Löschen gefunden.</translation>
     </message>
 </context>
 <context>
@@ -1856,6 +1868,18 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <source>Cannot resolve components to uninstall.</source>
         <translation>Die zu deinstallierenden Komponenten konnten nicht aufgelöst werden.</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>Der Alias %1 kann nicht ausgewählt werden. Beim Laden trat ein Problem auf; er wurde daher als instabil gekennzeichnet und kann nicht ausgewählt werden.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>Der Alias %1 kann nicht ausgewählt werden. Er ist als virtuell gekennzeichnet und kann nicht daher nicht manuell ausgewählt werden.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>Der erstellte Installer wird %1 Festplattenplatz verwenden.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2123,6 +2147,18 @@ Möchten Sie trotzdem fortsetzen?</translation>
         <source>Loading component scripts...</source>
         <translation>Lade Komponenten-Skripte...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>Der Alias verwendet einen Namen, der mit der bereits existierenden Komponte &quot;%1&quot; kollidiert</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>Unaufgelöste Komponenten-Aliasse</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>Es wurde eine zyklische Abhängigkeit zwischen den Aliassen &quot;%1&quot; und &quot;%2&quot; festgestellt.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2226,6 +2262,18 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <source>Uninstalling</source>
         <translation>Wird deinstalliert</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>Offline-Installer &amp;Erstellen</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>Erstelle Offline-Installer für %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>Erstelle Offline-Installer</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2306,6 +2354,18 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
     <message>
         <source>Ready to Update</source>
         <translation>Bereit für Aktualisierung</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Offline-Installer Erstellen</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>Bereit zum Erstellen des Offline-Installers</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>Die erforderlichen Informationen zum Erstellen eines  Offline-Installers für die ausgewählten Komponenten stehen bereit.</translation>
     </message>
 </context>
 <context>
