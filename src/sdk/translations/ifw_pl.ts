@@ -136,6 +136,18 @@
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
         <translation>Nie można znaleźć brakującej zależności &quot;%1&quot; dla &quot;%2&quot;.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -309,6 +321,10 @@
     <message>
         <source>Try again</source>
         <translation>Spróbuj ponownie</translation>
+    </message>
+    <message>
+        <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -492,10 +508,6 @@
     <message>
         <source>Cannot read &quot;%1&quot;</source>
         <translation>Nie można odczytać &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Parse error in %1 at %2, %3: %4</source>
-        <translation>Błąd analizy w %1 przy %2, %3: %4</translation>
     </message>
     <message>
         <source>Root element %1 unexpected, should be &quot;Updates&quot;.</source>
@@ -749,24 +761,16 @@
         <source>Invalid content in &quot;%1&quot;.</source>
         <translation>Nieprawidłowa zawartość w &quot;%1&quot;.</translation>
     </message>
+    <message>
+        <source>This may be solved by restarting the application after clearing the cache from:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Component</name>
     <message>
         <source>Components cannot have children in updater mode.</source>
         <translation>Elementy nie mogą mieć elementów podrzędnych w trybie programu aktualizującego.</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Nie można otworzyć żądanego pliku interfejsu użytkownika &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot load the requested UI file &quot;%1&quot;: %2</source>
-        <translation>Nie można wczytać żądanego pliku interfejsu użytkownika &quot;%1&quot;: %2</translation>
-    </message>
-    <message>
-        <source>Cannot open the requested license file &quot;%1&quot;: %2</source>
-        <translation>Nie można otworzyć żądanego pliku licencji &quot;%1&quot;: %2</translation>
     </message>
     <message>
         <source>Error</source>
@@ -787,6 +791,30 @@
     <message>
         <source>There was an error loading the selected component. This component cannot be installed.</source>
         <translation>Podczas ładowania wybranego komponentu wystąpił błąd. Nie można zainstalować tego składnika.</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nie można otworzyć żądanego pliku interfejsu użytkownika &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot load the requested UI file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nie można wczytać żądanego pliku interfejsu użytkownika &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
+    </message>
+    <message>
+        <source>Cannot open the requested license file &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</source>
+        <translation>Nie można otworzyć żądanego pliku licencji &quot;%1&quot;: %2.
+
+%3 &quot;%4&quot;</translation>
     </message>
 </context>
 <context>
@@ -867,10 +895,6 @@
         <translation>Odznacz wszystkie komponenty.</translation>
     </message>
     <message>
-        <source>&amp;Browse QBSP files</source>
-        <translation>&amp;Znajdź pliki QBSP</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Wybierz plik Qt Board Support Package, aby zainstalować dodatkową zawartość, która nie jest bezpośrednio dostępna w repozytoriach online.</translation>
     </message>
@@ -907,32 +931,32 @@
         <translation>Wymagane komponenty muszą zostać zaktualizowane, zanim będzie można wybrać inne komponenty do aktualizacji</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <comment>Select default components</comment>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <comment>Reset to already installed components</comment>
-        <translation>Alt+R</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <comment>Select all components</comment>
-        <translation>Alt+S</translation>
-    </message>
-    <message>
-        <source>Alt+D</source>
-        <comment>Deselect all components</comment>
-        <translation>Alt+D</translation>
-    </message>
-    <message>
         <source>Filter the enabled repository categories</source>
         <translation>Filtruj włączone kategorie repozytorium</translation>
     </message>
     <message>
         <source>Search</source>
         <translation>Szukaj</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse &amp;QBSP files</source>
+        <translation>&amp;Znajdź pliki QBSP</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Błąd</translation>
     </message>
 </context>
 <context>
@@ -1216,6 +1240,10 @@ Błąd podczas wczytywania %2</translation>
         <source>Total: </source>
         <translation>Razem: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1458,10 +1486,6 @@ Błąd podczas wczytywania %2</translation>
         <translation>Brak dostępnych aktualizacji.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation> Dostępne jedynie lokalne zarządzanie pakietami.</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>Zakończ</translation>
     </message>
@@ -1511,10 +1535,6 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>Nie można zapisać pliku licencji: &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Nie znaleziono plików licencji do usunięcia.</translation>
     </message>
 </context>
 <context>
@@ -1609,6 +1629,18 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Clearing the cache directory and restarting the application may solve this.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown exception during updating cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file &quot;%1&quot; for writing: %2</source>
+        <translation type="unfinished">Nie można otworzyć pliku &quot;%1&quot; do zapisu: %2</translation>
     </message>
 </context>
 <context>
@@ -1740,10 +1772,6 @@ Czy chcesz kontynuować?</translation>
         <translation>Nie można zainstalować %1. Komponent nieznaleziony.</translation>
     </message>
     <message>
-        <source>Running processes found.</source>
-        <translation>Znaleziono uruchomione procesy.</translation>
-    </message>
-    <message>
         <source>Cannot elevate access rights while running from command line. Please restart the application as administrator.</source>
         <translation>Nie można podnieść praw dostępu podczas uruchamiania z wiersza poleceń. Uruchom ponownie aplikację jako administrator.</translation>
     </message>
@@ -1809,6 +1837,22 @@ Czy chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Not enough disk space to store temporary files! %1 are available, while the minimum required is %2. You may select another location for the temporary files by modifying the local cache path from the installer settings.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot resolve components to uninstall.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2017,10 +2061,6 @@ Czy chcesz kontynuować?</translation>
         <translation>Nie można pobrać metainformacji: %1</translation>
     </message>
     <message>
-        <source>Cannot add temporary update source information.</source>
-        <translation>Nie można dodać informacji o tymczasowym źródle aktualizacji.</translation>
-    </message>
-    <message>
         <source>Cannot find any update source information.</source>
         <translation>Nie można znaleźć żadnych informacji o źródle aktualizacji.</translation>
     </message>
@@ -2080,6 +2120,18 @@ Czy chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Loading component scripts...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2185,6 +2237,18 @@ Please copy the installer to a local drive</source>
         <source>Uninstalling</source>
         <translation>Odinstalowywanie</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2258,6 +2322,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Ready to Update</source>
         <translation>Gotowy do aktualizacji</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2750,6 +2826,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Clear cache</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Clearing cache...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UpdateOperation</name>
@@ -3018,6 +3098,10 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Cannot synchronize invalidated cache.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown register mode selected!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
