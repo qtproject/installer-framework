@@ -47,7 +47,7 @@ public:
 
     bool copy(const QString &newName) override;
     bool close() override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     bool open(QIODevice::OpenMode mode) override;
 #else
     bool open(QIODevice::OpenMode mode,

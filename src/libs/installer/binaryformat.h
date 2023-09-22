@@ -58,7 +58,7 @@ public:
     Resource(const QString &path, const Range<qint64> &segment);
     ~Resource();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     bool open();
 #else
     bool open(std::optional<QFile::Permissions> permissions = std::nullopt);

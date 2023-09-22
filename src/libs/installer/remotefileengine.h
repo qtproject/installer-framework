@@ -53,7 +53,7 @@ public:
     RemoteFileEngine();
     ~RemoteFileEngine();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     bool open(QIODevice::OpenMode mode) override;
 #else
     bool open(QIODevice::OpenMode mode,
@@ -71,7 +71,7 @@ public:
     bool rename(const QString &newName) override;
     bool renameOverwrite(const QString &newName) override;
     bool link(const QString &newName) override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 3, 0)
     bool mkdir(const QString &dirName, bool createParentDirectories) const override;
 #else
     bool mkdir(const QString &dirName, bool createParentDirectories,

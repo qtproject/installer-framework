@@ -141,7 +141,7 @@ QString QSettingsWrapper::applicationName() const
     return d->settings.applicationName();
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void QSettingsWrapper::beginGroup(const QString &prefix)
 #else
     void QSettingsWrapper::beginGroup(QAnyStringView prefix)
@@ -153,7 +153,7 @@ QString QSettingsWrapper::applicationName() const
         d->settings.beginGroup(prefix);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     int QSettingsWrapper::beginReadArray(const QString &prefix)
 #else
     int QSettingsWrapper::beginReadArray(QAnyStringView prefix)
@@ -164,7 +164,7 @@ QString QSettingsWrapper::applicationName() const
     return d->settings.beginReadArray(prefix);
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void QSettingsWrapper::beginWriteArray(const QString &prefix, int size)
 #else
     void QSettingsWrapper::beginWriteArray(QAnyStringView prefix, int size)
@@ -197,7 +197,7 @@ void QSettingsWrapper::clear()
     else d->settings.clear();
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     bool QSettingsWrapper::contains(const QString &key) const
 #else
     bool QSettingsWrapper::contains(QAnyStringView key) const
@@ -265,7 +265,7 @@ QString QSettingsWrapper::organizationName() const
     return d->settings.organizationName();
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void QSettingsWrapper::remove(const QString &key)
 #else
     void QSettingsWrapper::remove(QAnyStringView key)
@@ -298,7 +298,7 @@ void QSettingsWrapper::setFallbacksEnabled(bool param1)
     else
         d->settings.setFallbacksEnabled(param1);
 }
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 void QSettingsWrapper::setValue(const QString &key, const QVariant &value)
 #else
 void QSettingsWrapper::setValue(QAnyStringView key, const QVariant &value)
@@ -327,7 +327,7 @@ void QSettingsWrapper::sync()
         d->settings.sync();
 }
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
 QVariant QSettingsWrapper::value(const QString &key, const QVariant &value) const
 #else
 QVariant QSettingsWrapper::value(QAnyStringView key, const QVariant &value) const
@@ -338,7 +338,7 @@ QVariant QSettingsWrapper::value(QAnyStringView key, const QVariant &value) cons
     return d->settings.value(key, value);
 }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 4, 0)
 QVariant QSettingsWrapper::value(QAnyStringView key) const
 {
     if (createSocket())

@@ -70,7 +70,7 @@ public:
     void sync();
     Status status() const;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void beginGroup(const QString &prefix);
 #else
     void beginGroup(QAnyStringView prefix);
@@ -78,7 +78,7 @@ public:
     void endGroup();
     QString group() const;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     int beginReadArray(const QString &prefix);
     void beginWriteArray(const QString &prefix, int size = -1);
 #else
@@ -93,7 +93,7 @@ public:
     QStringList childGroups() const;
     bool isWritable() const;
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void setValue(const QString &key, const QVariant &value);
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
 #else
@@ -102,7 +102,7 @@ public:
     QVariant value(QAnyStringView key) const;
 #endif
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void remove(const QString &key);
     bool contains(const QString &key) const;
 #else
@@ -126,7 +126,7 @@ private: // we cannot support the following functionality
         : RemoteObject(QLatin1String(Protocol::QSettings), parent)
     {}
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK(6, 4, 0)
     void setIniCodec(QTextCodec * /*codec*/);
     void setIniCodec(const char * /*codecName*/);
     QTextCodec *iniCodec() const { return 0; }
