@@ -506,7 +506,6 @@ bool PackageManagerCorePrivate::buildComponentAliases()
 template <typename T>
 bool PackageManagerCorePrivate::loadComponentScripts(const T &components, const bool postScript)
 {
-    totalProgress(100);
     infoMessage(nullptr, tr("Loading component scripts..."));
 
     quint64 loadedComponents = 0;

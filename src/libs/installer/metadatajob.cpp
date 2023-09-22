@@ -219,7 +219,7 @@ void MetadataJob::doStart()
     setError(Job::NoError);
     setErrorString(QString());
     m_metadataResult.clear();
-    setProgressTotalAmount(0);
+    setProgressTotalAmount(100);
 
     if (!m_core) {
         emitFinishedWithError(Job::Canceled, tr("Missing package manager core engine."));
@@ -242,6 +242,7 @@ void MetadataJob::doStart()
 
             QList<FileTaskItem> items;
             quint64 cachedCount = 0;
+            setProgressTotalAmount(0); // Show only busy indicator during this loop as we have no progress to measure
             foreach (const Repository &repo, repositories) {
                 // For not blocking the UI
                 qApp->processEvents();
@@ -287,6 +288,7 @@ void MetadataJob::doStart()
                     items.append(item);
                 }
             }
+            setProgressTotalAmount(100);
             const quint64 totalCount = repositories.count();
             if (cachedCount > 0) {
                 qCDebug(lcInstallerInstallLog).nospace() << "Loaded from cache "
