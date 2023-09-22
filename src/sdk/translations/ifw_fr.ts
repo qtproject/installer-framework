@@ -138,7 +138,15 @@
     </message>
     <message>
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
-        <translation>Résolution de dépendance impossible détectée. Le composant dont l'installation est forcée &quot;%1&quot; serait désinstallé car sa dépendance &quot;%2&quot; est marquée pour désinstallation avec la raison : &quot;%3&quot;.</translation>
+        <translation>Résolution de dépendance impossible détectée. Le composant dont l&apos;installation est forcée &quot;%1&quot; serait désinstallé car sa dépendance &quot;%2&quot; est marquée pour désinstallation avec la raison : &quot;%3&quot;.</translation>
+    </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>Composants sélectionnés par alias &quot;%1&quot; :</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>Récursion détectée, componsant alias &quot;%1&quot; déjà ajouté.</translation>
     </message>
 </context>
 <context>
@@ -750,7 +758,7 @@
     </message>
     <message>
         <source>This may be solved by restarting the application after clearing the cache from:</source>
-        <translation>Cela peut être résolu en redémarrant l'application après avoir vidé le cache de :</translation>
+        <translation>Le problème peut être résolu en redémarrant l&apos;application après avoir vidé le cache de :</translation>
     </message>
 </context>
 <context>
@@ -936,6 +944,14 @@
     <message>
         <source>Error</source>
         <translation>Erreur</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Créer un programme d’installation hors ligne</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>Créer un programme d’installation hors ligne à partir des composants sélectionnés, au lieu d'installer maintenant.</translation>
     </message>
 </context>
 <context>
@@ -1215,6 +1231,10 @@ Erreur lors du chargement de %2</translation>
         <source>Total: </source>
         <translation>Total: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>Nombre de tentatives (%1) dépassé</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1453,10 +1473,6 @@ Erreur lors du chargement de %2</translation>
         <translation>Aucune mise à jour disponible.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation> Seule la gestion des paquetages locaux est disponible.</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>Quitter</translation>
     </message>
@@ -1506,10 +1522,6 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>Impossible d’écrire le fichier de licence &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Aucun fichier de licence à supprimer.</translation>
     </message>
 </context>
 <context>
@@ -1610,7 +1622,7 @@ Erreur lors du chargement de %2</translation>
     </message>
     <message>
         <source>Cannot open extracted file &quot;%1&quot; for reading: %2</source>
-        <translation>Impossible d'ouvrir le fichier extrait &quot;%1&quot; en lecture : %2</translation>
+        <translation>Impossible d&apos;ouvrir le fichier extrait &quot;%1&quot; en lecture : %2</translation>
     </message>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
@@ -1816,6 +1828,18 @@ Souhaitez-vous continuer ?</translation>
     <message>
         <source>Cannot resolve components to uninstall.</source>
         <translation>Impossible de résoudre les composants à désinstaller.</translation>
+    </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>Impossible de sélectionner l'alias %1. Un problème est survenu lors du chargement de cet alaias, il est donc marqué comme instable et ne peut pas être sélectionné</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>Impossible de sélectionner %1. L'alias est marqué virtuel, ce qui signifie qu'il ne peut pas être sélectionné manuellement.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>Le programme d'installation créé utilisera %1 d'espace disque.</translation>
     </message>
 </context>
 <context>
@@ -2084,6 +2108,18 @@ Souhaitez-vous continuer ?</translation>
         <source>Loading component scripts...</source>
         <translation>Chargement des scripts du composant...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>L'alias déclare un nom en conflit avec un composant existant : &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>Alias ​​de composants non résolus</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>Dépendance cyclique entre les alias &quot;%1&quot; et "%2" détectée.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2187,6 +2223,18 @@ Copiez le programme d’installation sur un disque local</translation>
         <source>Uninstalling</source>
         <translation>Désinstallation</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>&amp;Créer un programme d’installation hors ligne</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>Création d'un programme d’installation hors ligne pour %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>Création d'un programme d’installation hors ligne</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2260,6 +2308,18 @@ Copiez le programme d’installation sur un disque local</translation>
     <message>
         <source>Ready to Update</source>
         <translation>Prêt pour la mise à jour</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Créer un programme d’installation hors ligne</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>Prêt pour la création du programme d’installation hors ligne</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>La création du programme d’installation hors ligne pour les composants sélectionnés est maintenant prête.</translation>
     </message>
 </context>
 <context>
