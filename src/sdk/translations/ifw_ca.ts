@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -933,6 +941,14 @@
         <source>Error</source>
         <translation type="unfinished">Error</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -1226,6 +1242,10 @@ Error en descarregar %2</translation>
         <source>Total: </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1487,10 +1507,6 @@ Error en descarregar %2</translation>
         <translation>No hi ha disponible cap actualització.</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation> Només està disponible la gestió dels paquets locals.</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>Su&amp;rt</translation>
     </message>
@@ -1540,10 +1556,6 @@ Error en descarregar %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>No s&apos;ha pogut escriure en el fitxer de llicència «%1».</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>No s&apos;han trobat fitxers de llicència per a suprimir.</translation>
     </message>
 </context>
 <context>
@@ -1851,6 +1863,18 @@ Voleu continuar?</translation>
         <source>Cannot resolve components to uninstall.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2117,6 +2141,18 @@ Voleu continuar?</translation>
         <source>Loading component scripts...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2220,6 +2256,18 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <source>Uninstalling</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2292,6 +2340,18 @@ Copieu l&apos;instal·lador en una unitat local</translation>
     </message>
     <message>
         <source>Ready to Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
