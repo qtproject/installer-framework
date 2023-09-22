@@ -651,6 +651,14 @@
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>إنشاء المثبت دون اتصال</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>إنشاء برنامج تثبيت دون اتصال من المكونات المحددة، بدلاً من التثبيت الآن.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
@@ -960,6 +968,11 @@ Error while loading %2</source>
         <source>Total: </source>
         <translation>المجموع: </translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>تم تجاوز عدد مرات إعادة المحاولة (%1).
+</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1175,6 +1188,14 @@ Error while loading %2</source>
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>تم الكشف عن تحليل تبعية مستحيلة. سيتم إلغاء تثبيت مكون التثبيت الإجباري &quot;%1&quot; بسبب أن التبعية &quot;%2&quot; تم تعليمها لإلغاء التثبيت بسبب: &quot;%3&quot;.</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>المكونات المحددة بواسطة الاسم المستعار &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>تم اكتشاف التكرار، الاسم المستعار للمكون &quot;%1&quot; تم الاضافة مسبقا.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::InstallIconsOperation</name>
@@ -1333,10 +1354,6 @@ Error while loading %2</source>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>لا يمكن كتابة ملف الرخصة &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>لم يُعثر على ملفات ترخيص لحذفها.</translation>
     </message>
 </context>
 <context>
@@ -1715,6 +1732,18 @@ Do you want to continue?</source>
         <source>Cannot resolve components to uninstall.</source>
         <translation>لا يمكن تحديد المكونات المطلوب إزالتها.</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>لا يمكن تحديد الاسم المستعار %1. حدثت مشكلة أثناء تحميل هذا الاسم المستعار، لذا تم وضع علامة عليه كغير مستقر ولا يمكن تحديده.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>لا يمكن تحديد %1. تم وضع علامة على الاسم المستعار افتراضيًا، مما يعني أنه لا يمكن تحديده يدويًا.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>سيستخدم المثبت الذي تم إنشاؤه %1 من مساحة القرص.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -1980,6 +2009,18 @@ Do you want to continue?</source>
         <source>Loading component scripts...</source>
         <translation>جاري تحميل البرامج النصية للمكونات...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>الاسم المستعار يعلن عن اسم يتعارض مع مكون موجود &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>لم يتم التمكن من تحديد الأسماء المستعارة للمكونات</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>تم اكتشاف تبعية دورية بين الأسماء المستعارة &quot;%1&quot; و &quot;%2&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2067,10 +2108,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>No updates available.</source>
         <translation>لا تحديثات متوفرة.</translation>
-    </message>
-    <message>
-        <source> Only local package management available.</source>
-        <translation> إدارة الحزم المحلية هي المتاحة فقط.</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
@@ -2190,6 +2227,18 @@ Please copy the installer to a local drive</source>
         <source>Ready to Update</source>
         <translation>جاهز للتحديث</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>إنشاء المثبت دون اتصال</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>جاهز لإنشاء برنامج التثبيت دون اتصال</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>جميع المعلومات المطلوبة متاحة الآن لإنشاء برنامج تثبيت دون اتصال للمكونات المحددة.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
@@ -2228,6 +2277,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Uninstalling</source>
         <translation>إلغاء التثبيت</translation>
+    </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>&amp; إنشاء برنامج التثبيت دون اتصال</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>إنشاء برنامج تثبيت دون اتصال لـ %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>إنشاء المثبت دون اتصال</translation>
     </message>
 </context>
 <context>
