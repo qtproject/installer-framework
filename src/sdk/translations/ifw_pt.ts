@@ -842,6 +842,10 @@ Erro ao carregar %2</translation>
         <source>Total: </source>
         <translation>Total:</translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>Excedeu o número máximo de tentativas (%1).</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1016,7 +1020,7 @@ Erro ao carregar %2</translation>
     </message>
     <message>
         <source>Recursion detected, component &quot;%1&quot; already added with reason: &quot;%2&quot;</source>
-        <translation>Foi detectado um ciclo recursivo, componente &quot;%1&quot; já foi adicionado com o motivo: &quot;%2&quot;</translation>
+        <translation>Foi detectado um ciclo recursivo, o componente &quot;%1&quot; já foi adicionado devido a: &quot;%2&quot;</translation>
     </message>
     <message>
         <source>Cannot find missing dependency &quot;%1&quot; for &quot;%2&quot;.</source>
@@ -1025,6 +1029,14 @@ Erro ao carregar %2</translation>
     <message>
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>Foi detetado uma dependência impossível de resolver. A instalação do componente &quot;%1&quot; teria de ser desinstalado devido à dependência &quot;%2&quot; que se encontra sinalizada para desinstalar por: &quot;%3&quot;.</translation>
+    </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>Componentes selecionados pelo 'alias' &quot;%1&quot;:</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>Foi detectado um ciclo recursivo, o 'alias' do componente &quot;%1&quot; já foi adicionado devido a: &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -1184,10 +1196,6 @@ Erro ao carregar %2</translation>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>Não é possível guardar o ficheiro de licença &quot;%1&quot;.</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>Não foi encontrado ficheiro de licença para ser excluído.</translation>
     </message>
 </context>
 <context>
@@ -1546,6 +1554,18 @@ De certeza que deseja continuar?</translation>
         <source>Cannot resolve components to uninstall.</source>
         <translation>Não foi possível resolver os componentes a serem desinstalados</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>O 'alias' %1 não pode ser selecionado. Ocorreu um problema a carregar este 'alias', foi marcado com instável e não pode ser selecionado.</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>O 'alias' %1 não pode ser selecionado. Este 'alias' está categorizado como virtual, o que significa que não pode ser selecionado manualmente.</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>O instalador criado irá utilizar %1 de espaco de disco.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -1719,11 +1739,11 @@ De certeza que deseja continuar?</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
-        <translation>A geração offline foi concluída com sucesso.</translation>
+        <translation>A geração 'offline' foi concluída com sucesso.</translation>
     </message>
     <message>
         <source>Offline generation aborted!</source>
-        <translation>A geração offline foi cancelada!</translation>
+        <translation>A geração 'offline' foi cancelada!</translation>
     </message>
     <message>
         <source>Installing component %1</source>
@@ -1813,6 +1833,18 @@ De certeza que deseja continuar?</translation>
         <source>Loading component scripts...</source>
         <translation>Carregando scripts de componentes...</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>O 'alias' declara um nome em conflito com um componente pré-existente &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>'Alias' dos componentes não resolvidos.</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>Foi detetado um ciclo de dependência entre os alias &quot;%1&quot; e &quot;%2&quot;.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -1900,10 +1932,6 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>No updates available.</source>
         <translation>Nenhuma atualização disponível.</translation>
-    </message>
-    <message>
-        <source> Only local package management available.</source>
-        <translation> Apenas gestãoo de pacotes locais disponível.</translation>
     </message>
     <message>
         <source>&amp;Quit</source>
@@ -2032,6 +2060,14 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Criar um Instalador 'Offline'</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>Invés de instalar, criar um instalador 'Offline' a partir dos componentes selecionados.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::TargetDirectoryPage</name>
@@ -2114,6 +2150,18 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <source>Ready to Update</source>
         <translation>Pronto para atualizar</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>Criar um Instalador 'Offline'</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>Pronto para criar um Instalador 'Offline'</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>O assistente de configuração está pronto para criar um instalador offline para os componentes selecionados.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PerformInstallationPage</name>
@@ -2152,6 +2200,18 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>Uninstalling</source>
         <translation>A desinstalar</translation>
+    </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>Criar um Instalador 'Offline'</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>A criar um Instalador 'Offline' para %1</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>A criar um Instalador 'Offline'</translation>
     </message>
 </context>
 <context>
