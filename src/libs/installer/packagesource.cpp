@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -69,7 +69,7 @@ namespace QInstaller {
 /*!
     Returns the hash value for the \a key, using \a seed to seed the calculation.
 */
-uint qHash(const PackageSource &key, uint seed)
+hashValue qHash(const PackageSource &key, hashValue seed)
 {
     return qHash(key.url, seed) ^ key.priority;
 }

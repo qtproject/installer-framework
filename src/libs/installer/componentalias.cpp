@@ -81,7 +81,7 @@ AliasSource::AliasSource(const AliasSource &other)
 /*!
     Returns the hash value for the \a key, using \a seed to seed the calculation.
 */
-uint qHash(const AliasSource &key, uint seed)
+hashValue qHash(const AliasSource &key, hashValue seed)
 {
     return qHash(key.filename, seed) ^ key.priority;
 }

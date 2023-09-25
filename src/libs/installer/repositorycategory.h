@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -31,6 +31,7 @@
 
 #include "installer_global.h"
 #include "repository.h"
+#include "qinstallerglobal.h"
 
 #include <QtCore/QMetaType>
 #include <QtCore/QUrl>
@@ -63,7 +64,7 @@ public:
     bool operator==(const RepositoryCategory &other) const;
     bool operator!=(const RepositoryCategory &other) const;
 
-    uint qHash(const RepositoryCategory &repository);
+    hashValue qHash(const RepositoryCategory &repository);
 
     friend INSTALLER_EXPORT QDataStream &operator>>(QDataStream &istream, RepositoryCategory &repository);
     friend INSTALLER_EXPORT QDataStream &operator<<(QDataStream &ostream, const RepositoryCategory &repository);
@@ -75,7 +76,7 @@ private:
     bool m_enabled;
 };
 
-inline uint qHash(const RepositoryCategory &repository)
+inline hashValue qHash(const RepositoryCategory &repository)
 {
     return qHash(repository.displayname());
 }

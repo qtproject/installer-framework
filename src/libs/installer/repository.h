@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -74,7 +74,7 @@ public:
     bool operator==(const Repository &other) const;
     bool operator!=(const Repository &other) const;
 
-    uint qHash(const Repository &repository);
+    hashValue qHash(const Repository &repository);
     const Repository &operator=(const Repository &other);
 
     friend INSTALLER_EXPORT QDataStream &operator>>(QDataStream &istream, Repository &repository);
@@ -92,7 +92,7 @@ private:
     QByteArray m_xmlChecksum;
 };
 
-inline uint qHash(const Repository &repository)
+inline hashValue qHash(const Repository &repository)
 {
     return qHash(repository.url());
 }

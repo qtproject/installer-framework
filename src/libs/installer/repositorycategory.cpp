@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,7 +35,7 @@
 #include <QStringList>
 
 /*!
-    \fn inline uint QInstaller::qHash(const RepositoryCategory &repository)
+    \fn inline hashValue QInstaller::qHash(const RepositoryCategory &repository)
 
     Returns a hash of the repository category \a repository.
 */

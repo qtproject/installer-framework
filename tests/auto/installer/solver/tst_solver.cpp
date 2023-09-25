@@ -48,7 +48,7 @@ public:
     Data() {}
     explicit Data(const QString &data)
         : m_data(data) {}
-    inline uint qHash(const Data &test);
+    inline hashValue qHash(const Data &test);
     QString data() const { return m_data; }
     bool operator==(const Data &rhs) const { return m_data == rhs.m_data; }
     const Data &operator=(const Data &rhs) { if (this != &rhs) { m_data = rhs.m_data; } return *this; }
@@ -56,7 +56,7 @@ public:
 private:
     QString m_data;
 };
-inline uint qHash(const Data &data)
+inline hashValue qHash(const Data &data)
 {
     return qHash(data.data());
 }

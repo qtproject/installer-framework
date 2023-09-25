@@ -58,7 +58,7 @@ struct INSTALLER_EXPORT AliasSource
     int priority;
 };
 
-INSTALLER_EXPORT uint qHash(const AliasSource &key, uint seed);
+INSTALLER_EXPORT hashValue qHash(const AliasSource &key, hashValue seed);
 INSTALLER_EXPORT bool operator==(const AliasSource &lhs, const AliasSource &rhs);
 
 class INSTALLER_EXPORT AliasFinder

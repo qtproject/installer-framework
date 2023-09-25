@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -38,6 +38,12 @@
 #  endif
 #else
 #  define INSTALLER_EXPORT
+#endif
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+typedef uint hashValue;
+#else
+typedef size_t hashValue;
 #endif
 
 #endif //INSTALLER_GLOBAL_H

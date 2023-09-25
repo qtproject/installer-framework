@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,7 +40,7 @@
 using namespace QInstaller;
 
 QT_BEGIN_NAMESPACE
-uint qHash(QPointer<QObject> key)
+hashValue qHash(QPointer<QObject> key)
 {
     return qHash(key.data());
 }
