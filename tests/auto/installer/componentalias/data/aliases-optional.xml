@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Aliases>
+    <Alias>
+        <Name>set-A</Name>
+        <DisplayName>Installation A (optional component requirement)</DisplayName>
+        <Description>Installs component A</Description>
+        <Version>2.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresComponent>A</RequiresComponent>
+        <OptionalComponent>component-nonexistent,B</OptionalComponent>
+    </Alias>
+    <Alias>
+        <Name>set-full</Name>
+        <DisplayName>Full installation (optional alias requirement)</DisplayName>
+        <Description>Installs all components</Description>
+        <Version>2.0.0</Version>
+        <Virtual>false</Virtual>
+        <OptionalAlias>set-A,set-nonexistent</OptionalAlias>
+    </Alias>
+    <Alias>
+        <Name>set-optional-broken</Name>
+        <DisplayName>Optionally requires broken alias</DisplayName>
+        <Description>Optionally requires broken alias</Description>
+        <Version>2.0.0</Version>
+        <Virtual>false</Virtual>
+        <OptionalAlias>set-broken</OptionalAlias>
+    </Alias>
+    <Alias>
+        <Name>set-broken</Name>
+        <DisplayName>Requires non-existent alias</DisplayName>
+        <Description>Requires non-existent alias</Description>
+        <Version>2.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresAlias>set-nonexistent</RequiresAlias>
+    </Alias>
+</Aliases>

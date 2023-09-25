@@ -135,6 +135,10 @@ public:
     void setUnstable(UnstableError error, const QString &message = QString());
 
 private:
+    void addRequiredAliases(const QStringList &aliases, const bool optional);
+    void addRequiredComponents(const QStringList &components, const bool optional);
+
+private:
     PackageManagerCore *const m_core;
 
     QHash<QString, QString> m_variables;

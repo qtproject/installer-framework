@@ -682,6 +682,18 @@
             \li Comma-separated list of aliases that this component alias requires. The
                 required aliases are selected for installation when this component alias
                 is selected.
+        \row
+            \li OptionalComponent
+            \li Comma-separated list of identifiers of components that this component alias
+                optionally depends on. The components are selected for installation when the
+                component alias is selected, if the components exists and are user selectable.
+                Even if the components cannot be found in the installer, this alias is not marked unstable.
+        \row
+            \li OptionalAlias
+            \li Comma-separated list of aliases that this component alias optionally depends on. The
+                listed aliases are selected for installation when this component alias is selected,
+                if the aliases exist. Even if the aliases don't exists in the installer,
+                this alias is not marked unstable.
     \endtable
 */
 

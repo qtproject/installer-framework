@@ -71,13 +71,17 @@ private slots:
             "Version: 1.0.0\n"
             "Components: A\n"
             "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n"
             "========================================\n"
             "Name: set-full\n"
             "Display name: Full installation\n"
             "Description: Installs all components\n"
             "Version: 1.0.0\n"
             "Components: C\n"
-            "Required aliases: set-A,set-B\n"), listMethod, QString());
+            "Required aliases: set-A,set-B\n"
+            "Optional components: \n"
+            "Optional aliases: \n"), listMethod, QString());
 
         VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("\n"
             "Name: set-A\n"
@@ -85,7 +89,9 @@ private slots:
             "Description: Installs component A\n"
             "Version: 1.0.0\n"
             "Components: A\n"
-            "Required aliases: \n"), listMethod, QLatin1String("A"));
+            "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n"), listMethod, QLatin1String("A"));
     }
 
     void testAliasSourceWithPriority()
@@ -108,13 +114,17 @@ private slots:
             "Version: 1.0.0\n"
             "Components: A\n"
             "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n"
             "========================================\n"
             "Name: set-full\n"
             "Display name: Full installation (priority)\n"
             "Description: Installs all components\n"
             "Version: 1.0.0\n"
             "Components: C\n"
-            "Required aliases: set-A,set-B\n"), listMethod, QString());
+            "Required aliases: set-A,set-B\n"
+            "Optional components: \n"
+            "Optional aliases: \n"), listMethod, QString());
     }
 
     void testAliasSourceWithVersionCompare()
@@ -137,34 +147,60 @@ private slots:
             "Version: 2.0.0\n"
             "Components: A\n"
             "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n"
             "========================================\n"
             "Name: set-full\n"
             "Display name: Full installation (updated)\n"
             "Description: Installs all components\n"
             "Version: 3.0.0\n"
             "Components: C\n"
-            "Required aliases: set-A,set-B\n"), listMethod, QString());
+            "Required aliases: set-A,set-B\n"
+            "Optional components: \n"
+            "Optional aliases: \n"), listMethod, QString());
     }
 
     void testInstallAlias_data()
     {
+        QTest::addColumn<QString>("additionalSource");
         QTest::addColumn<QStringList>("selectedAliases");
         QTest::addColumn<PackageManagerCore::Status>("status");
         QTest::addColumn<QStringList>("installedComponents");
 
         QTest::newRow("Simple alias")
+            << QString()
             << (QStringList() << "set-A")
             << PackageManagerCore::Success
             << (QStringList() << "A");
 
         QTest::newRow("Alias with dependencies")
+            << QString()
             << (QStringList() << "set-full")
             << PackageManagerCore::Success
             << (QStringList() << "A" << "B" << "C" << "C.subcomponent" << "C.subcomponent.subcomponent");
+
+        QTest::newRow("Alias with optional components (existent and non-existent)")
+            << ":///data/aliases-optional.xml"
+            << (QStringList() << "set-A")
+            << PackageManagerCore::Success
+            << (QStringList() << "A" << "B");
+
+        QTest::newRow("Alias with optional aliases (existent and non-existent)")
+            << ":///data/aliases-optional.xml"
+            << (QStringList() << "set-full")
+            << PackageManagerCore::Success
+            << (QStringList() << "A" << "B");
+
+        QTest::newRow("Alias with optional broken alias (will not install)")
+            << ":///data/aliases-optional.xml"
+            << (QStringList() << "set-optional-broken")
+            << PackageManagerCore::Canceled
+            << QStringList();
     }
 
     void testInstallAlias()
     {
+        QFETCH(QString, additionalSource);
         QFETCH(QStringList, selectedAliases);
         QFETCH(PackageManagerCore::Status, status);
         QFETCH(QStringList, installedComponents);
@@ -172,7 +208,10 @@ private slots:
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
             (m_installDir, ":///data/repository"));
 
-        QCOMPARE(status, core->installSelectedComponentsSilently(selectedAliases));
+        if (!additionalSource.isEmpty())
+            core->addAliasSource(AliasSource(AliasSource::SourceFileFormat::Xml, additionalSource, -1));
+
+        QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
 
         for (const QString &component : installedComponents)
             QVERIFY(core->componentByName(component)->isInstalled());

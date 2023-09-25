@@ -246,7 +246,9 @@ bool AliasFinder::parseXml(AliasSource source)
                     && tag2 != scVersion
                     && tag2 != scVirtual
                     && tag2 != scRequiresComponent
-                    && tag2 != scRequiresAlias) {
+                    && tag2 != scRequiresAlias
+                    && tag2 != scOptionalComponent
+                    && tag2 != scOptionalAlias) {
                 qCWarning(lcInstallerInstallLog) << "Unexpected element name:" << tag2;
                 continue;
             }
@@ -424,28 +426,11 @@ QList<Component *> ComponentAlias::components()
         const QStringList componentList = QInstaller::splitStringWithComma(
             m_variables.value(scRequiresComponent));
 
-        for (const auto &componentName : componentList) {
-            Component *component = m_core->componentByName(componentName);
-            if (!component) {
-                const QString error = QLatin1String("No required component found by name: ")
-                    + componentName;
-                qCWarning(lcInstallerInstallLog) << error;
+        const QStringList optionalComponentList = QInstaller::splitStringWithComma(
+            m_variables.value(scOptionalComponent));
 
-                setUnstable(UnstableError::MissingComponent, error);
-                continue;
-            }
-
-            if (component->isUnstable() || !component->isCheckable()) {
-                const QString error = QLatin1String("Alias requires component that is uncheckable or unstable: ")
-                    + componentName;
-                qCWarning(lcInstallerInstallLog) << error;
-
-                setUnstable(UnstableError::UnselectableComponent, error);
-                continue;
-            }
-
-            m_components.append(component);
-        }
+        addRequiredComponents(componentList, false);
+        addRequiredComponents(optionalComponentList, true);
     }
 
     return m_components;
@@ -461,27 +446,11 @@ QList<ComponentAlias *> ComponentAlias::aliases()
         const QStringList aliasList = QInstaller::splitStringWithComma(
             m_variables.value(scRequiresAlias));
 
-        for (const auto &aliasName : aliasList) {
-            ComponentAlias *alias = m_core->aliasByName(aliasName);
-            if (!alias) {
-                const QString error = QLatin1String("No required alias found by name: ") + aliasName;
-                qCWarning(lcInstallerInstallLog) << error;
+        const QStringList optionalAliasList = QInstaller::splitStringWithComma(
+            m_variables.value(scOptionalAlias));
 
-                setUnstable(UnstableError::MissingAlias, error);
-                continue;
-            }
-
-            if (alias->isUnstable()) {
-                const QString error = QLatin1String("Alias requires another alias "
-                    "that is marked unstable: ") + aliasName;
-                qCWarning(lcInstallerInstallLog) << error;
-
-                setUnstable(UnstableError::ReferenceToUnstable, error);
-                continue;
-            }
-
-            m_aliases.append(alias);
-        }
+        addRequiredAliases(aliasList, false);
+        addRequiredAliases(optionalAliasList, true);
     }
 
     return m_aliases;
@@ -535,6 +504,75 @@ void ComponentAlias::setUnstable(UnstableError error, const QString &message)
     const QMetaEnum metaEnum = QMetaEnum::fromType<ComponentAlias::UnstableError>();
     emit m_core->unstableComponentFound(
         QLatin1String(metaEnum.valueToKey(error)), message, name());
+}
+
+/*!
+    \internal
+
+    Adds the \a aliases to the list of required aliases by this alias. If \a optional
+    is \c true, missing alias references are ignored.
+*/
+void ComponentAlias::addRequiredAliases(const QStringList &aliases, const bool optional)
+{
+    for (const auto &aliasName : aliases) {
+        ComponentAlias *alias = m_core->aliasByName(aliasName);
+        if (!alias) {
+            if (optional)
+                continue;
+
+            const QString error = QLatin1String("No required alias found by name: ") + aliasName;
+            qCWarning(lcInstallerInstallLog) << error;
+
+            setUnstable(UnstableError::MissingAlias, error);
+            continue;
+        }
+
+        if (alias->isUnstable()) {
+            const QString error = QLatin1String("Alias requires another alias "
+                                                "that is marked unstable: ") + aliasName;
+            qCWarning(lcInstallerInstallLog) << error;
+
+            setUnstable(UnstableError::ReferenceToUnstable, error);
+            continue;
+        }
+
+        m_aliases.append(alias);
+    }
+}
+
+/*!
+    \internal
+
+    Adds the \a components to the list of required components by this alias. If \a optional
+    is \c true, missing component references are ignored.
+*/
+void ComponentAlias::addRequiredComponents(const QStringList &components, const bool optional)
+{
+    for (const auto &componentName : components) {
+        Component *component = m_core->componentByName(componentName);
+        if (!component) {
+            if (optional)
+                continue;
+
+            const QString error = QLatin1String("No required component found by name: ")
+                                  + componentName;
+            qCWarning(lcInstallerInstallLog) << error;
+
+            setUnstable(UnstableError::MissingComponent, error);
+            continue;
+        }
+
+        if (component->isUnstable() || !component->isCheckable()) {
+            const QString error = QLatin1String("Alias requires component that is uncheckable or unstable: ")
+                                  + componentName;
+            qCWarning(lcInstallerInstallLog) << error;
+
+            setUnstable(UnstableError::UnselectableComponent, error);
+            continue;
+        }
+
+        m_components.append(component);
+    }
 }
 
 } // namespace QInstaller
