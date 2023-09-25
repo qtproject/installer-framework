@@ -421,7 +421,7 @@ T *GenericDataCache<T>::itemByPath(const QString &path) const
 }
 
 /*!
-    \fn template <typename T> QInstaller::GenericDataCache<T>::registerItem(T *item, bool replace)
+    \fn template <typename T> QInstaller::GenericDataCache<T>::registerItem(T *item, bool replace, RegisterMode mode)
 
     Registers the \a item to the cache. If \a replace is set to \c true,
     the new \a item replaces a previous item with the same checksum.

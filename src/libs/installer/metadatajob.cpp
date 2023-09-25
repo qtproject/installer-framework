@@ -49,7 +49,6 @@ namespace QInstaller {
 
     \value All
     \value CompressedPackage
-    \value UpdatesXML
 */
 
 /*!

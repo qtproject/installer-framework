@@ -50,6 +50,8 @@ qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
 qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
 qhp.InstallerFramework.subprojects.manual.type = manual
 
+macro.IFW = "Qt Installer Framework"
+
 # For docs, QT_VERSION resolves to IFW version
 macro.ifwversion = $QT_VERSION
 
