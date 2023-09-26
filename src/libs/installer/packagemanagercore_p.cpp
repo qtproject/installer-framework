@@ -452,8 +452,9 @@ bool PackageManagerCorePrivate::buildComponentAliases()
             m_componentAliases.insert(alias->name(), newAlias);
         }
     }
+    // After aliases are loaded, perform sanity checks:
 
-    // Component check state is changed by alias selection, so store the initial state
+    // 1. Component check state is changed by alias selection, so store the initial state
     storeCheckState();
 
     Graph<QString> aliasGraph;
@@ -473,8 +474,8 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         }
     }
 
-    aliasGraph.sort();
-    // Check for cyclic dependency errors
+    const QList<QString> sortedAliases = aliasGraph.sort();
+    // 2. Check for cyclic dependency errors
     if (aliasGraph.hasCycle()) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
@@ -485,8 +486,19 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         return false;
     }
 
+    // 3. Test for required aliases and components, this triggers setting the
+    // alias unstable in case of a broken reference.
+    for (const auto &aliasName : sortedAliases) {
+        ComponentAlias *alias = m_componentAliases.value(aliasName);
+        if (!alias) // sortedAliases may contain dependencies that don't exist, we don't know it yet
+            continue;
+
+        alias->components();
+        alias->aliases();
+    }
+
     clearInstallerCalculator();
-    // Check for other errors preventing resolving components to install
+    // 4. Check for other errors preventing resolving components to install
     if (!installerCalculator()->solve(m_componentAliases.values())) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
@@ -498,7 +510,7 @@ bool PackageManagerCorePrivate::buildComponentAliases()
     for (auto *alias : qAsConst(m_componentAliases))
         alias->setSelected(false);
 
-    // Restore original state
+    // 5. Restore original state
     restoreCheckState();
 
     return true;

@@ -24,7 +24,23 @@
         <Virtual>false</Virtual>
         <RequiresComponent>D</RequiresComponent>
     </Alias>
-        <Alias>
+    <Alias>
+        <Name>set-E</Name>
+        <DisplayName>Installation E (Requires unstable)</DisplayName>
+        <Description>Installs set E</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresAlias>set-D</RequiresAlias>
+    </Alias>
+    <Alias>
+        <Name>set-F</Name>
+        <DisplayName>Installation F (Requires alias that refers another unstable)</DisplayName>
+        <Description>Installs set F</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiresAlias>set-E</RequiresAlias>
+    </Alias>
+    <Alias>
         <Name>set-full</Name>
         <DisplayName>Full installation</DisplayName>
         <Description>Installs all components</Description>

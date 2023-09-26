@@ -229,6 +229,10 @@ private slots:
         QTest::newRow("Unstable alias")
             << (QStringList() << "set-D")
             << PackageManagerCore::Canceled;
+
+        QTest::newRow("Nested reference to unstable alias")
+            << (QStringList() << "set-F")
+            << PackageManagerCore::Canceled;
     }
 
     void testInstallAliasFails()
