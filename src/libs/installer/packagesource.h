@@ -40,13 +40,15 @@ struct INSTALLER_EXPORT PackageSource
     PackageSource()
         : priority(-1)
     {}
-    PackageSource(const QUrl &u, int p)
+    PackageSource(const QUrl &u, int p, bool pl = false)
         : url(u)
         , priority(p)
+        , postLoadComponentScript(pl)
     {}
 
     QUrl url;
     int priority;
+    bool postLoadComponentScript;
 };
 
 INSTALLER_EXPORT hashValue qHash(const PackageSource &key, hashValue seed);

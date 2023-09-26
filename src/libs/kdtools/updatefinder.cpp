@@ -301,9 +301,9 @@ bool UpdateFinder::downloadUpdateXMLFiles()
             connect(downloader, SIGNAL(downloadCanceled()), this, SLOT(slotDownloadDone()));
             connect(downloader, SIGNAL(downloadCompleted()), this, SLOT(slotDownloadDone()));
             connect(downloader, SIGNAL(downloadAborted(QString)), this, SLOT(slotDownloadDone()));
-            m_updatesInfoList.insert(new UpdatesInfo, Data(info, downloader));
+            m_updatesInfoList.insert(new UpdatesInfo(info.postLoadComponentScript), Data(info, downloader));
         } else {
-            UpdatesInfo *updatesInfo = new UpdatesInfo;
+            UpdatesInfo *updatesInfo = new UpdatesInfo(info.postLoadComponentScript);
             updatesInfo->setFileName(QInstaller::pathFromUrl(url));
             m_updatesInfoList.insert(updatesInfo, Data(info));
         }

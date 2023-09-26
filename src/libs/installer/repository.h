@@ -71,6 +71,9 @@ public:
     void setXmlChecksum(const QByteArray &checksum);
 
     bool isCompressed() const;
+    bool postLoadComponentScript() const;
+    void setPostLoadComponentScript(const bool postLoad);
+
     bool operator==(const Repository &other) const;
     bool operator!=(const Repository &other) const;
 
@@ -90,6 +93,7 @@ private:
     QString m_categoryname;
     bool m_compressed;
     QByteArray m_xmlChecksum;
+    bool m_postLoadComponentScript;
 };
 
 inline hashValue qHash(const Repository &repository)

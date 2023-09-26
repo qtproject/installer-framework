@@ -59,7 +59,7 @@ public:
         InvalidContentError
     };
 
-    UpdatesInfo();
+    UpdatesInfo(const bool postLoadComponentScript = false);
     ~UpdatesInfo();
 
     bool isValid() const;

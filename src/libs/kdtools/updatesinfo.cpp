@@ -40,8 +40,9 @@
 
 using namespace KDUpdater;
 
-UpdatesInfoData::UpdatesInfoData()
+UpdatesInfoData::UpdatesInfoData(const bool postLoadComponentScript)
      : error(UpdatesInfo::NotYetReadError)
+    , m_postLoadComponentScript(postLoadComponentScript)
 {
 }
 
@@ -135,7 +136,14 @@ bool UpdatesInfoData::parsePackageUpdateElement(QXmlStreamReader &reader, const 
             parseOperations(reader, info.data);
         } else if (elementName == QLatin1String("Script")) {
             const QXmlStreamAttributes attr = reader.attributes();
-            const bool postLoad = attr.value(QLatin1String("postLoad")).toString().toLower() == QInstaller::scTrue ? true : false;
+            bool postLoad = false;
+            // postLoad can be set either to individual components or to whole repositories.
+            // If individual components has the postLoad attribute, it overwrites the repository value.
+            if (attr.hasAttribute(QLatin1String("postLoad")))
+                postLoad = attr.value(QLatin1String("postLoad")).toString().toLower() == QInstaller::scTrue ? true : false;
+            else if (m_postLoadComponentScript)
+                postLoad = true;
+
             if (postLoad)
                 scriptHash.insert(QLatin1String("postLoadScript"), reader.readElementText());
             else
@@ -238,8 +246,8 @@ void UpdatesInfoData::parseLicenses(QXmlStreamReader &reader, QHash<QString, QVa
 //
 // UpdatesInfo
 //
-UpdatesInfo::UpdatesInfo()
-    : d(new UpdatesInfoData)
+UpdatesInfo::UpdatesInfo(const bool postLoadComponentScript)
+    : d(new UpdatesInfoData(postLoadComponentScript))
 {
 }
 

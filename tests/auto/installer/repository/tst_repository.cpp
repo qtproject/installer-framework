@@ -39,6 +39,8 @@
 
 using namespace QInstaller;
 
+typedef QList<QPair<QString, QString>> SettingsPairList;
+
 class tst_Repository : public QObject
 {
     Q_OBJECT
@@ -209,6 +211,102 @@ private slots:
         QDir dir(installDir);
         QVERIFY(dir.removeRecursively());
         core->deleteLater();
+    }
+
+    void testPostLoadScriptFromRepository_data()
+    {
+        QTest::addColumn<QStringList>("installComponent");
+        QTest::addColumn<bool>("repositoryPostLoadSetting");
+        QTest::addColumn<SettingsPairList>("expectedSettingsBeforeInstall");
+        QTest::addColumn<SettingsPairList>("expectedSettingsAfterInstall");
+        QTest::addColumn<QStringList>("unexpectedSettings");
+
+        // component A has postLoad = true in component.xml
+        // component B has no postLoad attribute
+        // component C has postLoad = false in component.xml
+
+        SettingsPairList expectedSettingsListAfterInstall;
+        expectedSettingsListAfterInstall.append(QPair<QString, QString>("componentAKey", "componentAValue"));
+
+        SettingsPairList expectedSettingsListBeforeInstall;
+        expectedSettingsListBeforeInstall.append(QPair<QString, QString>("componentBKey", "componentBValue"));
+        expectedSettingsListBeforeInstall.append(QPair<QString, QString>("componentCKey", "componentCValue"));
+
+        QTest::newRow("noRepoPostLoadComponentA")
+                            << (QStringList() << "A")
+                            << false
+                            << expectedSettingsListBeforeInstall
+                            << expectedSettingsListAfterInstall
+                            << (QStringList());
+
+        // Component B is installed so values from component A and component C should not be set
+        expectedSettingsListAfterInstall.clear();
+        expectedSettingsListAfterInstall.append(QPair<QString, QString>("componentBKey", "componentBValue"));
+        QTest::newRow("noRepoPostLoadComponentB")
+                            << (QStringList() << "B")
+                            << false
+                            << expectedSettingsListBeforeInstall
+                            << expectedSettingsListAfterInstall
+                            << (QStringList() << "componentAValue" << "componentCValue");
+
+        // PostLoad is set to whole repository. Since only A is installed,
+        // values from component B and component C values are not set
+        expectedSettingsListBeforeInstall.clear();
+        expectedSettingsListAfterInstall.clear();
+        expectedSettingsListAfterInstall.append(QPair<QString, QString>("componentAKey", "componentAValue"));
+        QTest::newRow("repoPostLoadComponentA") << (QStringList() << "A")
+                            << true
+                            << expectedSettingsListBeforeInstall
+                            << expectedSettingsListAfterInstall
+                            << (QStringList() << "componentBValue" << "componentCValue");
+
+        // PostLoad is set to whole repository. Since only B is installed,
+        // values from component C and component A are not set.
+        expectedSettingsListAfterInstall.clear();
+        expectedSettingsListAfterInstall.append(QPair<QString, QString>("componentBKey", "componentBValue"));
+        QTest::newRow("repoPostLoadComponentB") << (QStringList() << "B")
+                            << true
+                            << expectedSettingsListBeforeInstall
+                            << expectedSettingsListAfterInstall
+                            << (QStringList() << "componentCValue" << "componentAValue");
+
+        // PostLoad is set to whole repository. Since component C has its postload = false,
+        // value is set to component C before install
+        expectedSettingsListBeforeInstall.clear();
+        expectedSettingsListAfterInstall.clear();
+        expectedSettingsListBeforeInstall.append(QPair<QString, QString>("componentCKey", "componentCValue"));
+        QTest::newRow("repoPostLoadComponentC") << (QStringList() << "C")
+                            << true
+                            << expectedSettingsListBeforeInstall
+                            << expectedSettingsListAfterInstall
+                            << (QStringList() << "componentAValue" << "componentBValue");
+    }
+
+    void testPostLoadScriptFromRepository()
+    {
+        QFETCH(QStringList, installComponent);
+        QFETCH(bool, repositoryPostLoadSetting);
+        QFETCH(SettingsPairList, expectedSettingsBeforeInstall);
+        QFETCH(SettingsPairList, expectedSettingsAfterInstall);
+        QFETCH(QStringList, unexpectedSettings);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit(installDir));
+        QSet<Repository> repoList;
+        Repository repo = Repository::fromUserInput(":///data/repository");
+        repo.setPostLoadComponentScript(repositoryPostLoadSetting);
+        repoList.insert(repo);
+        core->settings().setDefaultRepositories(repoList);
+        QVERIFY(core->fetchRemotePackagesTree());
+
+        for (const QPair<QString, QString> settingValue : expectedSettingsBeforeInstall)
+            QCOMPARE(core->value(settingValue.first), settingValue.second);
+
+        core->installSelectedComponentsSilently(installComponent);
+        for (const QPair<QString, QString> settingValue : expectedSettingsAfterInstall)
+            QCOMPARE(core->value(settingValue.first), settingValue.second);
+        for (const QString unexpectedSetting : unexpectedSettings)
+            QVERIFY2(!core->containsValue(unexpectedSetting), "Core contains unexpected value");
     }
 };
 

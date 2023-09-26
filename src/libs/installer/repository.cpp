@@ -49,6 +49,7 @@ Repository::Repository()
     : m_default(false)
     , m_enabled(false)
     , m_compressed(false)
+    , m_postLoadComponentScript(false)
 {
 }
 
@@ -65,6 +66,7 @@ Repository::Repository(const Repository &other)
     , m_categoryname(other.m_categoryname)
     , m_compressed(other.m_compressed)
     , m_xmlChecksum(other.m_xmlChecksum)
+    , m_postLoadComponentScript(other.m_postLoadComponentScript)
 {
 }
 
@@ -77,6 +79,7 @@ Repository::Repository(const QUrl &url, bool isDefault, bool compressed)
     , m_default(isDefault)
     , m_enabled(true)
     , m_compressed(compressed)
+    , m_postLoadComponentScript(false)
 {
 }
 
@@ -252,6 +255,22 @@ bool Repository::isCompressed() const
 }
 
 /*!
+    \internal
+*/
+bool Repository::postLoadComponentScript() const
+{
+    return m_postLoadComponentScript;
+}
+
+/*!
+    \internal
+*/
+void Repository::setPostLoadComponentScript(const bool postLoad)
+{
+    m_postLoadComponentScript = postLoad;
+}
+
+/*!
     Compares the values of this repository to \a other and returns true if they are equal (same server,
     default state, enabled state as well as username and password). \sa operator!=()
 */
@@ -259,7 +278,8 @@ bool Repository::operator==(const Repository &other) const
 {
     return m_url == other.m_url && m_default == other.m_default && m_enabled == other.m_enabled
         && m_username == other.m_username && m_password == other.m_password
-        && m_displayname == other.m_displayname && m_xmlChecksum == other.m_xmlChecksum;
+        && m_displayname == other.m_displayname && m_xmlChecksum == other.m_xmlChecksum
+        && m_postLoadComponentScript == other.m_postLoadComponentScript;
 }
 
 /*!
@@ -288,6 +308,7 @@ const Repository &Repository::operator=(const Repository &other)
     m_compressed = other.m_compressed;
     m_categoryname = other.m_categoryname;
     m_xmlChecksum = other.m_xmlChecksum;
+    m_postLoadComponentScript = other.m_postLoadComponentScript;
 
     return *this;
 }
@@ -307,7 +328,7 @@ QDataStream &operator>>(QDataStream &istream, Repository &repository)
 {
     QByteArray url, username, password, displayname, compressed;
     istream >> url >> repository.m_default >> repository.m_enabled >> username >> password
-            >> displayname >> repository.m_categoryname >> repository.m_xmlChecksum;
+        >> displayname >> repository.m_categoryname >> repository.m_xmlChecksum >> repository.m_postLoadComponentScript;
     repository.setUrl(QUrl::fromEncoded(QByteArray::fromBase64(url)));
     repository.setUsername(QString::fromUtf8(QByteArray::fromBase64(username)));
     repository.setPassword(QString::fromUtf8(QByteArray::fromBase64(password)));
@@ -323,7 +344,7 @@ QDataStream &operator<<(QDataStream &ostream, const Repository &repository)
     return ostream << repository.m_url.toEncoded().toBase64() << repository.m_default << repository.m_enabled
         << repository.m_username.toUtf8().toBase64() << repository.m_password.toUtf8().toBase64()
         << repository.m_displayname.toUtf8().toBase64() << repository.m_categoryname.toUtf8().toBase64()
-        << repository.m_xmlChecksum.toBase64();
+        << repository.m_xmlChecksum.toBase64() << repository.m_postLoadComponentScript;
 }
 
 }

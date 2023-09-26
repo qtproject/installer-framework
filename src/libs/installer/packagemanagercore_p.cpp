@@ -2960,9 +2960,9 @@ bool PackageManagerCorePrivate::addUpdateResourcesFromRepositories(bool compress
             continue;
 
         if (data->repository().isCompressed())
-            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 2));
+            m_compressedPackageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 2, data->repository().postLoadComponentScript()));
         else
-            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 0));
+            m_packageSources.insert(PackageSource(QUrl::fromLocalFile(data->path()), 0, data->repository().postLoadComponentScript()));
 
         ProductKeyCheck::instance()->addPackagesFromXml(data->path() + QLatin1String("/Updates.xml"));
     }

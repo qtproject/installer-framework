@@ -43,7 +43,7 @@ struct UpdatesInfoData : public QSharedData
     Q_DECLARE_TR_FUNCTIONS(KDUpdater::UpdatesInfoData)
 
 public:
-    UpdatesInfoData();
+    UpdatesInfoData(const bool postLoadComponentScript);
     ~UpdatesInfoData();
 
     int error;
@@ -53,6 +53,7 @@ public:
     QString applicationVersion;
     QString checkSha1CheckSum;
     QList<UpdateInfo> updateInfoList;
+    bool m_postLoadComponentScript;
 
     void parseFile(const QString &updateXmlFile);
     bool parsePackageUpdateElement(QXmlStreamReader &reader, const QString &checkSha1CheckSum);
