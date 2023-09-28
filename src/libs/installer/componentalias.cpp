@@ -245,10 +245,10 @@ bool AliasFinder::parseXml(AliasSource source)
                     && tag2 != scDescription
                     && tag2 != scVersion
                     && tag2 != scVirtual
-                    && tag2 != scRequiresComponent
-                    && tag2 != scRequiresAlias
-                    && tag2 != scOptionalComponent
-                    && tag2 != scOptionalAlias) {
+                    && tag2 != scRequiredComponents
+                    && tag2 != scRequiredAliases
+                    && tag2 != scOptionalComponents
+                    && tag2 != scOptionalAliases) {
                 qCWarning(lcInstallerInstallLog) << "Unexpected element name:" << tag2;
                 continue;
             }
@@ -424,10 +424,10 @@ QList<Component *> ComponentAlias::components()
 {
     if (m_components.isEmpty()) {
         const QStringList componentList = QInstaller::splitStringWithComma(
-            m_variables.value(scRequiresComponent));
+            m_variables.value(scRequiredComponents));
 
         const QStringList optionalComponentList = QInstaller::splitStringWithComma(
-            m_variables.value(scOptionalComponent));
+            m_variables.value(scOptionalComponents));
 
         addRequiredComponents(componentList, false);
         addRequiredComponents(optionalComponentList, true);
@@ -444,10 +444,10 @@ QList<ComponentAlias *> ComponentAlias::aliases()
 {
     if (m_aliases.isEmpty()) {
         const QStringList aliasList = QInstaller::splitStringWithComma(
-            m_variables.value(scRequiresAlias));
+            m_variables.value(scRequiredAliases));
 
         const QStringList optionalAliasList = QInstaller::splitStringWithComma(
-            m_variables.value(scOptionalAlias));
+            m_variables.value(scOptionalAliases));
 
         addRequiredAliases(aliasList, false);
         addRequiredAliases(optionalAliasList, true);

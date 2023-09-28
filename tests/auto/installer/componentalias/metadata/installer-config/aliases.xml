@@ -6,7 +6,7 @@
         <Description>Installs component A</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresComponent>A</RequiresComponent>
+        <RequiredComponents>A</RequiredComponents>
     </Alias>
     <Alias>
         <Name>set-B</Name>
@@ -14,7 +14,7 @@
         <Description>Installs component B</Description>
         <Version>1.0.0</Version>
         <Virtual>true</Virtual>
-        <RequiresComponent>B</RequiresComponent>
+        <RequiredComponents>B</RequiredComponents>
     </Alias>
         <Alias>
         <Name>set-D</Name>
@@ -22,7 +22,7 @@
         <Description>Installs missing component D</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresComponent>D</RequiresComponent>
+        <RequiredComponents>D</RequiredComponents>
     </Alias>
     <Alias>
         <Name>set-E</Name>
@@ -30,7 +30,7 @@
         <Description>Installs set E</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresAlias>set-D</RequiresAlias>
+        <RequiredAliases>set-D</RequiredAliases>
     </Alias>
     <Alias>
         <Name>set-F</Name>
@@ -38,7 +38,7 @@
         <Description>Installs set F</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresAlias>set-E</RequiresAlias>
+        <RequiredAliases>set-E</RequiredAliases>
     </Alias>
     <Alias>
         <Name>set-full</Name>
@@ -46,7 +46,7 @@
         <Description>Installs all components</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresAlias>set-A,set-B</RequiresAlias>
-        <RequiresComponent>C</RequiresComponent>
+        <RequiredAliases>set-A,set-B</RequiredAliases>
+        <RequiredComponents>C</RequiredComponents>
     </Alias>
 </Aliases>

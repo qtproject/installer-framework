@@ -392,11 +392,11 @@ void LoggingHandler::printAliasInformation(const QList<ComponentAlias *> &aliase
         if (verboseLevel() == VerbosityLevel::Detailed)
             stream << "Virtual: " << alias->value(scVirtual) << Qt::endl;
 
-        stream << "Components: " << alias->value(scRequiresComponent) << Qt::endl;
-        stream << "Required aliases: " << alias->value(scRequiresAlias) << Qt::endl;
+        stream << "Components: " << alias->value(scRequiredComponents) << Qt::endl;
+        stream << "Required aliases: " << alias->value(scRequiredAliases) << Qt::endl;
 
-        stream << "Optional components: " << alias->value(scOptionalComponent) << Qt::endl;
-        stream << "Optional aliases: " << alias->value(scOptionalAlias) << Qt::endl;
+        stream << "Optional components: " << alias->value(scOptionalComponents) << Qt::endl;
+        stream << "Optional aliases: " << alias->value(scOptionalAliases) << Qt::endl;
 
         if (sortedAliases.indexOf(alias) != (sortedAliases.count() - 1))
             stream << "========================================" << Qt::endl;

@@ -6,9 +6,9 @@
         <Description>Complete installation of the product</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresAlias>package-essential</RequiresAlias>
-        <RequiresComponent>com.vendor.root.extras</RequiresComponent>
-        <OptionalAlias>package-optional</OptionalAlias>
+        <RequiredAliases>package-essential</RequiredAliases>
+        <RequiredComponents>com.vendor.root.extras</RequiredComponents>
+        <OptionalAliases>package-optional</OptionalAliases>
     </Alias>
     <Alias>
         <Name>package-essential</Name>
@@ -16,7 +16,7 @@
         <Description>Essential components for the product</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <RequiresComponent>com.vendor.root.essential</RequiresComponent>
+        <RequiredComponents>com.vendor.root.essential</RequiredComponents>
     </Alias>
     <Alias>
         <Name>package-optional</Name>
@@ -24,7 +24,7 @@
         <Description>Optional components for the product</Description>
         <Version>1.0.0</Version>
         <Virtual>false</Virtual>
-        <OptionalComponent>com.vendor.root.optional1,com.vendor.root.optional2</OptionalComponent>
+        <OptionalComponents>com.vendor.root.optional1,com.vendor.root.optional2</OptionalComponents>
     </Alias>
 </Aliases>
 

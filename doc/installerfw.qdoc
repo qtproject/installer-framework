@@ -671,25 +671,25 @@
             \li Set to \c true to hide the component alias from the installer. This also
                 makes the alias unselectable by the user.
         \row
-            \li RequiresComponent
+            \li RequiredComponents
             \li Comma-separated list of identifiers of components that this
                 component alias requires. The components are selected for installation
                 when the component alias is selected. Note that the components must be
                 selectable by the user, so virtual or otherwise unselectable components
                 cannot be listed as a requirement.
         \row
-            \li RequiresAlias
+            \li RequiredAliases
             \li Comma-separated list of aliases that this component alias requires. The
                 required aliases are selected for installation when this component alias
                 is selected.
         \row
-            \li OptionalComponent
+            \li OptionalComponents
             \li Comma-separated list of identifiers of components that this component alias
                 optionally depends on. The components are selected for installation when the
                 component alias is selected, if the components exists and are user selectable.
                 Even if the components cannot be found in the installer, this alias is not marked unstable.
         \row
-            \li OptionalAlias
+            \li OptionalAliases
             \li Comma-separated list of aliases that this component alias optionally depends on. The
                 listed aliases are selected for installation when this component alias is selected,
                 if the aliases exist. Even if the aliases don't exists in the installer,

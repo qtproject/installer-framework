@@ -461,8 +461,8 @@ bool PackageManagerCorePrivate::buildComponentAliases()
     for (auto *alias : qAsConst(m_componentAliases)) {
         aliasGraph.addNode(alias->name());
         aliasGraph.addEdges(alias->name(),
-            QInstaller::splitStringWithComma(alias->value(scRequiresAlias)) <<
-            QInstaller::splitStringWithComma(alias->value(scOptionalAlias)));
+            QInstaller::splitStringWithComma(alias->value(scRequiredAliases)) <<
+            QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
 
         if (!m_core->componentByName(alias->name())) {
             // Name ok, select for sanity check calculation
