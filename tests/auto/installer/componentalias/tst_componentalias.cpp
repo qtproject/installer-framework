@@ -62,6 +62,8 @@ private slots:
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
             (m_installDir, ":///data/repository"));
 
+        core->setCommandLineInstance(true);
+
         auto listMethod = &PackageManagerCore::listAvailableAliases;
 
         VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("\n"
@@ -102,6 +104,7 @@ private slots:
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
             (m_installDir, ":///data/repository"));
 
+        core->setCommandLineInstance(true);
         core->addAliasSource(AliasSource(AliasSource::SourceFileFormat::Xml,
             ":///data/aliases-priority.xml", 1));
 
@@ -135,6 +138,7 @@ private slots:
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManager
             (m_installDir, ":///data/repository"));
 
+        core->setCommandLineInstance(true);
         core->addAliasSource(AliasSource(AliasSource::SourceFileFormat::Xml,
             ":///data/aliases-versions.xml", -1));
 
@@ -208,6 +212,8 @@ private slots:
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
             (m_installDir, ":///data/repository"));
 
+        core->setCommandLineInstance(true);
+
         if (!additionalSource.isEmpty())
             core->addAliasSource(AliasSource(AliasSource::SourceFileFormat::Xml, additionalSource, -1));
 
@@ -242,6 +248,8 @@ private slots:
 
         QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
             (m_installDir, ":///data/repository"));
+
+        core->setCommandLineInstance(true);
 
         QCOMPARE(status, core->installSelectedComponentsSilently(selectedAliases));
     }

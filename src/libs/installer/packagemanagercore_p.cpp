@@ -438,6 +438,10 @@ bool PackageManagerCorePrivate::buildComponentTree(QHash<QString, Component*> &c
 
 bool PackageManagerCorePrivate::buildComponentAliases()
 {
+    // For now, aliases are only used for command line runs
+    if (!m_core->isCommandLineInstance())
+        return true;
+
     {
         const QList<ComponentAlias *> aliasList = componentAliases();
         if (aliasList.isEmpty())
