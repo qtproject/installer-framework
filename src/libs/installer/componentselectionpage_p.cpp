@@ -75,7 +75,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_allowCompressedRepositoryInstall(false)
-        , m_allowCreateOfflineInstaller(true)
+        , m_allowCreateOfflineInstaller(false)
         , m_categoryLayoutVisible(false)
         , m_allModel(m_core->defaultComponentModel())
         , m_updaterModel(m_core->updaterComponentModel())
