@@ -240,7 +240,7 @@
             \li --sv, --show-virtual-components
             \li Show virtual components in the installer and the package manager.
         \row
-            \li -i, --install-compressed-repository <URI,...>
+            \li -i, --install-compressed-repository <file,...>
             \li Installs a QBSP or a 7z file. The QBSP (Board Support Package) file must be a .7z file
                 which contains a valid repository.
         \row
