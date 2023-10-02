@@ -155,15 +155,15 @@
 
         \row
         \li \c PackageManagerRadioButton
-        \li The package manager radio button shown on the page while running as maintenance tool.
+        \li The package manager radio button shown on the page while running as \MT.
 
         \row
         \li \c UpdaterRadioButton
-        \li The updater radio button shown on the page while running as maintenance tool.
+        \li The updater radio button shown on the page while running as \MT.
 
         \row
         \li \c UninstallerRadioButton
-        \li The uninstaller radio button shown on the page while running as maintenance tool.
+        \li The uninstaller radio button shown on the page while running as \MT.
             Selected by default.
     \endtable
 
@@ -184,10 +184,10 @@
 
         \row
         \li \c packageManagerCoreTypeChanged()
-        \li Connect to this signal if you want to be notified when the type of maintenance tool
+        \li Connect to this signal if you want to be notified when the type of \MT
             changes.
             \note The signal is only emitted when the user has started the binary as so called
-            maintenance tool (after the installation) and switches between the radio buttons.
+            \MT (after the installation) and switches between the radio buttons.
     \endtable
 
     Example code:
@@ -567,7 +567,7 @@
         \row
         \li \c WriteError
         \li OK
-        \li An error occurred while writing the maintenance tool.
+        \li An error occurred while writing the \MT.
 
         \row
         \li \c ElevationError

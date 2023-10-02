@@ -33,12 +33,12 @@
     \title End User Workflows
 
     The end user experience is similar for offline and online installers.
-    Along with your application, the installers install a maintenance tool that
+    Along with your application, the installers install a \MT that
     consists of a package manager, an updater, and an uninstaller. End users can
-    use the maintenance tool to add, update, and remove components. The
-    maintenance tool connects to an external repository to fetch the components
+    use the \MT to add, update, and remove components. The
+    \MT connects to an external repository to fetch the components
     to add or update. You can specify the repository in the configuration file
-    or end users can specify it in the maintenance tool settings.
+    or end users can specify it in the \MT settings.
 
     You can support the following end user workflows:
 
@@ -177,7 +177,7 @@
     If end users did not select all the components available for installation
     during the initial installation, they can use the package manager to install
     the remaining components from a repository later. The package manager is
-    part of a maintenance tool that is installed together with the application
+    part of a \MT that is installed together with the application
     during the initial installation. This only works if a repository that
     contains the components is available either locally or externally.
 
@@ -186,14 +186,14 @@
 
     \image ifw-user-flow-adding.png "Add components workflow"
 
-    This section uses the \e {Maintenance Tool} installed by the Qt 5 installer
+    This section uses the \e {\MT} installed by the Qt 5 installer
     run on macOS as an example implementation of how end users can add components
-    after the initial installation. The Maintenance Tool contains the package
+    after the initial installation. The \MT contains the package
     manager, updater, and uninstaller.
 
     \section1 Starting Package Manager
 
-    When end users start the Maintenance Tool, the introduction page opens:
+    When end users start the \MT, the introduction page opens:
 
     \image ifw-add-components-introduction.png "Introduction page"
 
@@ -242,12 +242,12 @@
 
     \image ifw-user-flow-removing.png "Remove components workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on macOS as an example
+    This section uses the Qt 5 \MT run on macOS as an example
     implementation of how end users can remove all or selected components.
 
     \section1 Removing All Components
 
-    When end users start the Maintenance Tool, the introduction page opens:
+    When end users start the \MT, the introduction page opens:
 
     \image ifw-add-components-introduction.png "Introduction page"
 
@@ -294,12 +294,12 @@
 
     \image ifw-user-flow-updating.png "Updating workflow"
 
-    This section uses the Qt 5 Maintenance Tool run on macOS as an example
+    This section uses the Qt 5 \MT run on macOS as an example
     implementation of how end users can update installed components.
 
     \section1 Starting Updater
 
-    When end users start the Maintenance Tool, the introduction page opens:
+    When end users start the \MT, the introduction page opens:
 
     \image ifw-updating-introduction.png "Introduction page"
 
@@ -391,7 +391,7 @@
 
     \section1 Installing Components
 
-    Both the installer and the maintenance tool support installation of new components from
+    Both the installer and the \MT support installation of new components from
     command line. The following will install the components given as an argument and
     their respective dependencies:
 
@@ -418,7 +418,7 @@
     \section1 Checking for Available Updates
 
     To print information about available component updates, run the \c check-updates
-    command with the maintenance tool:
+    command with the \MT:
 
     \code
     maintenancetool.exe check-updates
@@ -451,7 +451,7 @@
     \section1 Listing Installed Components
 
     To get a list and print additional information about currently installed components, run the
-    \c list command with the maintenance tool. The command also accepts an optional regular
+    \c list command with the \MT. The command also accepts an optional regular
     expression argument to filter the shown component list.
 
     \code
@@ -492,7 +492,7 @@
 
     \section1 Performing Full Uninstallation
 
-    To uninstall all components and remove the program directory, including maintenance tool,
+    To uninstall all components and remove the program directory, including \MT,
     run \c purge command:
 
     \code
@@ -544,7 +544,7 @@
     \c {--auto-answer OverwriteTargetDirectory=Yes}. Automatic answers are shown on the
     console output and installation log.
 
-    By default, the installer and maintenance tool will print a summary of components to be
+    By default, the installer and \MT will print a summary of components to be
     affected by the command and then ask for permission to continue performing the action,
     to prevent accidental changes. For unattended usage, this can be skipped by using the
     \c --confirm-command option.

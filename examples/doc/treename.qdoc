@@ -106,7 +106,7 @@
     \section2 Multiple Tree Names in One Component Branch
 
     Components in a single branch (\e A, \e{A.sub1}, \e{A.sub1.sub1}, \e{A.sub1.sub1.sub2} and so
-    on) may each declare a separate tree name. The installer or maintenance tool calculates the
+    on) may each declare a separate tree name. The installer or \MT calculates the
     new locations for components in an ascending order from leaf components to root components, so that
     \e{A.sub1.sub1.sub2} is moved first and \e A last.
 
@@ -120,18 +120,18 @@
             of the installer has installed component \e A with tree name \e ANewName1, and the
             repository is updated with a new version of component \e A that declares tree name
             \e ANewName2, the new location is only applied when the user updates the component
-            locally with the maintenance tool.
+            locally with the \MT.
         \li The automatic tree names of children of components with tree name and \c moveChildren
             set to \c true are moved with the parent regardless if installed or not. Therefore, if
             the user has installed component \e{A.sub1} but not component \e A, and \e A is updated
             in the repository with a new tree name, the \e{A.sub1} uses also the new tree name in
-            maintenance tool's component tree.
+            \MT's component tree.
     \endlist
 
     \section2 Tree Name and Name Conflicts
 
     The tree names may conflict with existing component names or other tree names. Depending on whether
-    the installer or maintenance tool is configured to allow unstable components with
+    the installer or \MT is configured to allow unstable components with
     \c <AllowUnstableComponents> configuration file element, the offending components are either
     registered as unstable components with their original name or not registered at all.
 

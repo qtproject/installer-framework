@@ -37,7 +37,7 @@
     \l{console::log()}{log} method and \l installer object
     \l{installer::isUpdater()}, \l{installer::isUninstaller()}, and
     \l{installer::isPackageManager()} methods to display a message that
-    indicates whether the maintenance tool is currently being used to update,
+    indicates whether the \MT is currently being used to update,
     remove, or add components.
 
     \code

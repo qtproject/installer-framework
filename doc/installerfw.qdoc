@@ -322,7 +322,7 @@
             \li Install packages and aliases given as an argument. If no arguments are given, install the default package set.
         \row
             \li ch, check-updates
-            \li Show information about available updates on the maintenance tool.
+            \li Show information about available updates on the \MT.
         \row
             \li up, update <pkg ...>
             \li Update packages given as an argument. If no packages are given, install all available updates.
@@ -530,16 +530,16 @@
                 For more information,  see \l{Configuring Repository Categories}.
         \row
             \li MaintenanceToolName
-            \li Filename of the generated maintenance tool. Defaults to
+            \li Filename of the generated \MT. Defaults to
                 \e maintenancetool. The platform-specific executable file extension is
                 appended.
         \row
             \li MaintenanceToolIniFile
-            \li Filename for the configuration of the generated maintenance tool. Defaults to
+            \li Filename for the configuration of the generated \MT. Defaults to
                 \e {MaintenanceToolName}.ini.
         \row
             \li MaintenanceToolAlias
-            \li Filename for an alias of the maintenance tool that will be created to the
+            \li Filename for an alias of the \MT that will be created to the
                 Applications directory. Optional. Only used on macOS.
         \row
             \li RemoveTargetDir
@@ -1001,7 +1001,7 @@
                 but this does not change the visibility of the check box in the updater view
                 where the end user may still manually select the component for update.
 
-                When running an installer or a maintenance tool in package manager
+                When running an installer or a \MT in package manager
                 mode, the selection will be performed automatically.
                 If the component was not installed before, it will
                 be selected for installation only when all components
@@ -1539,9 +1539,9 @@
 
     \section1 devtool
 
-    You can use \c devtool to update an existing installer or maintenance tool
+    You can use \c devtool to update an existing installer or \MT
     with a new installer base, to dump binary content from an installer or
-    maintenance tool to a target, and to execute operations. For a summary of
+    \MT to a target, and to execute operations. For a summary of
     available operations, see \l {Operations}.
 
     \c devtool expects the following parameters in the following order:
@@ -1570,12 +1570,12 @@
             \li Display additional information.
         \row
             \li update <binary> <installerbase>
-            \li Update an existing installer or maintenance tool with a new
+            \li Update an existing installer or \MT with a new
                 installer base.
         \row
             \li dump <binary> <folder>
             \li Dump the binary content that belongs to an installer or
-                maintenance tool into the target.
+                \MT into the target.
         \row
             \li operation <mode,name,args,...>
             \li Execute an operation with a list of arguments.
@@ -1648,7 +1648,7 @@
     \endcode
 
     The installer works only if it can access the repository. If the repository is
-    accessed after the installation, the maintenance tool rejects installation.
+    accessed after the installation, the \MT rejects installation.
     However, uninstallation is still possible.
     A repository can be enabled or disabled by default.
     For repositories requiring authentication, the details can also be set here,
@@ -1870,7 +1870,7 @@
     If \c{url} is itself relative, it will be resolved against the base URL of the current document.
 
     \c{displayname} specifies how the repository should be named in the \gui Settings page
-    of the Maintenance Tool.
+    of the \MT.
 
     \c{name} and \c{password} optionally specify credentials for a protected repository.
 
@@ -1926,22 +1926,22 @@
     \section1 Promoting Updates for the Maintenance Tool
 
     Without additional configuration, both online and offline installers install the
-    \e {maintenance tool}, that can be later used to add, update, and remove components.
-    Online installers also have an option to install the maintenance tool from an online repository.
-    This makes it possible to promote updates for the maintenance tool to take the advantage of latest
+    \e {\MT}, that can be later used to add, update, and remove components.
+    Online installers also have an option to install the \MT from an online repository.
+    This makes it possible to promote updates for the \MT to take the advantage of latest
     new features and fixes to the Qt Installer Framework.
 
     You should download the latest release of the Installer Framework distribution that
     includes new versions of \l{binarycreator} and \l{installerbase} tools. However, to only
     update vendor specific configuration like \c <Name>, \c <Title>, and \c <Publisher> to the new
-    maintenance tool, you can use the tools that were used to create the original installer.
+    \MT, you can use the tools that were used to create the original installer.
 
     \section2 Creating the Component Directory Structure for Maintenance Tool
 
-    To make the maintenance tool update installable for end users, you need to prepare an installer
-    component for the maintenance tool and create a repository for that component.
+    To make the \MT update installable for end users, you need to prepare an installer
+    component for the \MT and create a repository for that component.
 
-    \note If you already have a component for the maintenance tool available in a repository, you
+    \note If you already have a component for the \MT available in a repository, you
     can skip the instructions in this section.
 
     A common convention is to create a \c packages directory containing the metadata and data for
@@ -1952,10 +1952,10 @@
     \section2 Compiling the Update Resource
 
     If you want to apply configuration changes, like updating the title, publisher, or product URL
-    when the end user updates the maintenance tool, you need to create an update resource file.
+    when the end user updates the \MT, you need to create an update resource file.
     Otherwise this step is optional.
 
-    First, you need to compile the resource file that will contain the new maintenance tool
+    First, you need to compile the resource file that will contain the new \MT
     configuration and related files:
 
     \code
@@ -1965,8 +1965,8 @@
     The command outputs the result into \c update.rcc in the current path.
 
     The \c packages directory argument refers to the previously created directory for the maintenance
-    tool component. \c config.xml contains the maintenance tool configuration. This can be the same
-    file that was used for creating the online installer that is going to consume the maintenance tool
+    tool component. \c config.xml contains the \MT configuration. This can be the same
+    file that was used for creating the online installer that is going to consume the \MT
     repository, or you could make modifications to change some configuration elements like the window
     title and product version.
 
@@ -1974,9 +1974,9 @@
 
     \section2 Getting the Maintenance Tool
 
-    The maintenance tool for Linux and Windows is the same as the \c installerbase
+    The \MT for Linux and Windows is the same as the \c installerbase
     executable located in your Qt Installer Framework's installation \c bin folder.
-    For macOS the maintenance tool app bundle can be created using the \c binarycreator
+    For macOS the \MT app bundle can be created using the \c binarycreator
     tool with the command line switch \c --mt or \c --create-maintenancetool. The
     name of the macOS app bundle can be configured in config.xml using
     the \c <MaintenanceToolName> element. The app bundle can be later signed and
@@ -1989,7 +1989,7 @@
     \section2 Populating the Maintenance Tool Component
 
     In Linux and in Windows the \c installerbase executable from Qt Installer
-    Framework's installation folder, or in macOS the maintenance tool app bundle,
+    Framework's installation folder, or in macOS the \MT app bundle,
     should be copied to the component's data directory. If you generated the
     \c update.rcc in the \l{Compiling the Update Resource} step, copy that to
     the data directory as well. The meta directory should contain a \c package.xml
@@ -2001,7 +2001,7 @@
     For further information about the \c package.xml file, see
     \l{Summary of Package Information File Elements}.
 
-    \note If you are providing an update for an existing maintenance tool component, copy and overwrite the
+    \note If you are providing an update for an existing \MT component, copy and overwrite the
     existing files with the updated content to the package directory and increase the value of the
     \c <Version> element in the \c package.xml file.
 
@@ -2049,7 +2049,7 @@
     After preparation the component should be uploaded to an existing or a new online repository
     to make it available for end users. The instructions on how to create repositories on
     this page and \l{Creating Repositories} apply also for the component containing the
-    maintenance tool update.
+    \MT update.
 */
 
 /*!

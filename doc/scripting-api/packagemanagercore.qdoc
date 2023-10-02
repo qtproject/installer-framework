@@ -645,23 +645,23 @@
 /*!
     \qmlmethod void installer::setAllowedRunningProcesses(stringlist processes)
 
-    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    \deprecated [4.6] The \MT no longer automatically checks for all running processes
     in the installation directory for CLI runs. To check for a process to stop, use
     \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
 
     Sets additional \a processes that can run when
-    updating with the maintenance tool.
+    updating with the \MT.
 */
 
 /*!
     \qmlmethod stringlist installer::allowedRunningProcesses()
 
-    \deprecated [4.6] Maintenance tool no longer automatically checks for all running processes
+    \deprecated [4.6] The \MT no longer automatically checks for all running processes
     in the installation directory for CLI runs. To check for a process to stop, use
     \l {component::addStopProcessForUpdateRequest}{component.addStopProcessForUpdateRequest} instead.
 
     Returns processes that are allowed to run when updating with
-    the maintenance tool.
+    the \MT.
 */
 
 /*!
@@ -776,7 +776,7 @@
 /*!
     \qmlmethod void installer::setInstallerBaseBinary(string path)
 
-    Sets the \c installerbase binary to use when writing the maintenance tool.
+    Sets the \c installerbase binary to use when writing the \MT.
     Set the \a path if an update to the binary is available.
 
     If not set, the executable segment of the running installer or uninstaller

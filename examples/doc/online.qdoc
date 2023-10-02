@@ -150,7 +150,7 @@
     only updates packages that are new, or have a higher version number.
     See also the \l{Summary of repogen Parameters}.
 
-    If you then run the maintenance tool from the previous installation and
+    If you then run the \MT from the previous installation and
     select \gui {Update Components}, you should see that an update of package
     \c A is available.
 

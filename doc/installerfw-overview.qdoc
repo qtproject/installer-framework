@@ -55,10 +55,10 @@
 
     \image ifw-overview.png
 
-    Both installers install a \e {maintenance tool}, which allows you to later
+    Both installers install a \e {\MT}, which allows you to later
     add, update, and remove components. Offline installers contain all the
     installable components and do not require network connections during the
-    installation. Online installers only install the maintenance tool that then
+    installation. Online installers only install the \MT that then
     downloads and installs components from an online repository on a web server.
     Therefore, the size of an online installer binary is smaller and its
     download time is shorter than that of an offline installer binary. The total
@@ -66,12 +66,12 @@
     than downloading and running an offline installer if the end users do not
     install all the available components.
 
-    End users can use the maintenance tool to install more components from
+    End users can use the \MT to install more components from
     the server after the initial installation, as well as to receive automatic
     updates to content as soon as the updates are available on the server.
     However, this works for an offline installation only if you specify a
     repository address in the offline installer configuration or if end users
-    specify the repository address themselves in the maintenance tool settings.
+    specify the repository address themselves in the \MT settings.
 
     Create an offline installer to enable users to directly download the
     installation package on a media for installation on a computer later. You
