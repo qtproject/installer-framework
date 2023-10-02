@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>data/repository/Updates.xml</file>
+        <file>data/aliases.json</file>
         <file>data/aliases-priority.xml</file>
         <file>data/aliases-versions.xml</file>
         <file>data/aliases-optional.xml</file>

@@ -33,7 +33,23 @@
 #include "packagemanagercore.h"
 #include "updater.h"
 
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 namespace QInstaller {
+
+static const QStringList scPossibleElements {
+    scName,
+    scDisplayName,
+    scDescription,
+    scVersion,
+    scVirtual,
+    scRequiredComponents,
+    scRequiredAliases,
+    scOptionalComponents,
+    scOptionalAliases
+};
 
 /*!
     \inmodule QtInstallerFramework
@@ -50,6 +66,8 @@ namespace QInstaller {
             Invalid or unknown file format.
     \value  Xml
             XML file format.
+    \value  Json
+            JSON file format.
 */
 
 /*!
@@ -143,6 +161,8 @@ bool AliasFinder::run()
         }
         if (source.format == AliasSource::SourceFileFormat::Xml)
             parseXml(source);
+        else if (source.format == AliasSource::SourceFileFormat::Json)
+            parseJson(source);
     }
 
     // 2. Create aliases based on priority & version
@@ -240,19 +260,68 @@ bool AliasFinder::parseXml(AliasSource source)
         for (int j = 0; j < c2.count(); ++j) {
             const QDomElement el2 = c2.at(j).toElement();
             const QString tag2 = el2.tagName();
-            if (tag2 != scName
-                    && tag2 != scDisplayName
-                    && tag2 != scDescription
-                    && tag2 != scVersion
-                    && tag2 != scVirtual
-                    && tag2 != scRequiredComponents
-                    && tag2 != scRequiredAliases
-                    && tag2 != scOptionalComponents
-                    && tag2 != scOptionalAliases) {
+            if (!scPossibleElements.contains(tag2)) {
                 qCWarning(lcInstallerInstallLog) << "Unexpected element name:" << tag2;
                 continue;
             }
             data.insert(tag2, el2.text());
+        }
+
+        m_aliasData.insert(data.value(scName).toString(), data);
+    }
+
+    return true;
+}
+
+/*!
+    Reads a JSON file specified by \a source, and constructs a variant map of
+    the data for each alias.
+
+    Returns \c true on success, \c false otherwise.
+*/
+bool AliasFinder::parseJson(AliasSource source)
+{
+    QFile file(source.filename);
+    if (!file.open(QIODevice::ReadOnly)) {
+        qCWarning(QInstaller::lcInstallerInstallLog)
+            << "Cannot open alias definition for reading:" << file.errorString();
+        return false;
+    }
+
+    const QByteArray jsonData = file.readAll();
+    const QJsonDocument doc(QJsonDocument::fromJson(jsonData));
+    const QJsonObject docJsonObject = doc.object();
+
+    const QJsonArray aliases = docJsonObject.value(QLatin1String("alias-packages")).toArray();
+    for (auto &it : aliases) {
+        AliasData data;
+        data.insert(QLatin1String("source"), QVariant::fromValue(source));
+
+        QJsonObject aliasObj = it.toObject();
+        for (const auto &key : aliasObj.keys()) {
+            if (!scPossibleElements.contains(key)) {
+                qCWarning(lcInstallerInstallLog) << "Unexpected element name:" << key;
+                continue;
+            }
+
+            const QJsonValue jsonValue = aliasObj.value(key);
+            if (key == scRequiredComponents || key == scRequiredAliases
+                    || key == scOptionalComponents || key == scOptionalAliases) {
+                const QJsonArray requirements = jsonValue.toArray();
+                QString requiresString;
+
+                for (const auto &it2 : requirements) {
+                    requiresString.append(it2.toString());
+                    if (it2 != requirements.last())
+                        requiresString.append(QLatin1Char(','));
+                }
+
+                data.insert(key, requiresString);
+            } else if (key == scVirtual) {
+                data.insert(key, QVariant(jsonValue.toBool()))->toString();
+            } else {
+                data.insert(key, jsonValue.toString());
+            }
         }
 
         m_aliasData.insert(data.value(scName).toString(), data);

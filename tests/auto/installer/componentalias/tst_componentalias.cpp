@@ -166,37 +166,43 @@ private slots:
 
     void testInstallAlias_data()
     {
-        QTest::addColumn<QString>("additionalSource");
+        QTest::addColumn<AliasSource>("additionalSource");
         QTest::addColumn<QStringList>("selectedAliases");
         QTest::addColumn<PackageManagerCore::Status>("status");
         QTest::addColumn<QStringList>("installedComponents");
 
         QTest::newRow("Simple alias")
-            << QString()
+            << AliasSource()
             << (QStringList() << "set-A")
             << PackageManagerCore::Success
             << (QStringList() << "A");
 
         QTest::newRow("Alias with dependencies")
-            << QString()
+            << AliasSource()
             << (QStringList() << "set-full")
             << PackageManagerCore::Success
             << (QStringList() << "A" << "B" << "C" << "C.subcomponent" << "C.subcomponent.subcomponent");
 
+        QTest::newRow("Alias with dependencies (JSON source)")
+            << AliasSource(AliasSource::SourceFileFormat::Json, ":///data/aliases.json", -1)
+            << (QStringList() << "set-full-json")
+            << PackageManagerCore::Success
+            << (QStringList() << "A" << "B" << "C" << "C.subcomponent" << "C.subcomponent.subcomponent");
+
         QTest::newRow("Alias with optional components (existent and non-existent)")
-            << ":///data/aliases-optional.xml"
+            << AliasSource(AliasSource::SourceFileFormat::Xml, ":///data/aliases-optional.xml", -1)
             << (QStringList() << "set-A")
             << PackageManagerCore::Success
             << (QStringList() << "A" << "B");
 
         QTest::newRow("Alias with optional aliases (existent and non-existent)")
-            << ":///data/aliases-optional.xml"
+            << AliasSource(AliasSource::SourceFileFormat::Xml, ":///data/aliases-optional.xml", -1)
             << (QStringList() << "set-full")
             << PackageManagerCore::Success
             << (QStringList() << "A" << "B");
 
         QTest::newRow("Alias with optional broken alias (will not install)")
-            << ":///data/aliases-optional.xml"
+            << AliasSource(AliasSource::SourceFileFormat::Xml, ":///data/aliases-optional.xml", -1)
             << (QStringList() << "set-optional-broken")
             << PackageManagerCore::Canceled
             << QStringList();
@@ -204,7 +210,7 @@ private slots:
 
     void testInstallAlias()
     {
-        QFETCH(QString, additionalSource);
+        QFETCH(AliasSource, additionalSource);
         QFETCH(QStringList, selectedAliases);
         QFETCH(PackageManagerCore::Status, status);
         QFETCH(QStringList, installedComponents);
@@ -214,8 +220,8 @@ private slots:
 
         core->setCommandLineInstance(true);
 
-        if (!additionalSource.isEmpty())
-            core->addAliasSource(AliasSource(AliasSource::SourceFileFormat::Xml, additionalSource, -1));
+        if (!additionalSource.filename.isEmpty())
+            core->addAliasSource(additionalSource);
 
         QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
 

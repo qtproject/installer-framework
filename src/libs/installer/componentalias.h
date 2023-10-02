@@ -46,7 +46,8 @@ struct INSTALLER_EXPORT AliasSource
 {
     enum class SourceFileFormat {
         Unknown = -1,
-        Xml = 0
+        Xml = 0,
+        Json
     };
 
     AliasSource();
@@ -86,6 +87,7 @@ private:
     Resolution checkPriorityAndVersion(const AliasData &data) const;
 
     bool parseXml(AliasSource source);
+    bool parseJson(AliasSource source);
 
 private:
     PackageManagerCore *const m_core;

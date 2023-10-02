@@ -1,0 +1,38 @@
+{
+    "alias-packages": [
+        {
+            "Description": "Installs component A",
+            "DisplayName": "Installation A (JSON)",
+            "Name": "set-A-json",
+            "RequiredComponents": [
+                "A"
+            ],
+            "Version": "1.0.0",
+            "Virtual": false
+        },
+        {
+            "Description": "Installs component B",
+            "DisplayName": "Virtual installation B (JSON)",
+            "Name": "set-B-json",
+            "RequiredComponents": [
+                "B"
+            ],
+            "Version": "1.0.0",
+            "Virtual": true
+        },
+        {
+            "Description": "Installs all components",
+            "DisplayName": "Full installation (JSON)",
+            "Name": "set-full-json",
+            "RequiredAliases": [
+                "set-A-json",
+                "set-B-json"
+            ],
+            "RequiredComponents": [
+                "C"
+            ],
+            "Version": "1.0.0",
+            "Virtual": false
+        }
+    ]
+}
