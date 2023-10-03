@@ -1,7 +1,7 @@
 
 product_dependency:
-  ../../qt/qt5:
-    ref: "6.5"
+  ../../qt/tqtc-qt5:
+    ref: "tqtc/6.6"
 dependency_source: supermodule
 dependencies: [
       "../../qt/qtbase",
