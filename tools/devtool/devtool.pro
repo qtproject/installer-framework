@@ -10,6 +10,9 @@ CONFIG -= import_plugins
 CONFIG += console
 DESTDIR = $$IFW_APP_PATH
 
+!macos:QTPLUGIN += qopensslbackend
+macos:QTPLUGIN += qsecuretransportbackend
+
 HEADERS += operationrunner.h \
     binaryreplace.h \
     binarydump.h
