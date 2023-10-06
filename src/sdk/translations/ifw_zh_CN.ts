@@ -140,6 +140,14 @@
         <source>Impossible dependency resolution detected. Forced install component &quot;%1&quot; would be uninstalled because its dependency &quot;%2&quot; is marked for uninstallation with reason: &quot;%3&quot;.</source>
         <translation>检测到无法解决的依赖关系。强制安装组件：“%1”将会被移除，因为它的依赖“%2”被标记为移除，原因：“%3”。</translation>
     </message>
+    <message>
+        <source>Components selected by alias &quot;%1&quot;:</source>
+        <translation>通过别名“%1”选中的组件：</translation>
+    </message>
+    <message>
+        <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
+        <translation>检测到递归，组件别名“%1”已添加。</translation>
+    </message>
 </context>
 <context>
     <name>Job</name>
@@ -932,6 +940,14 @@
         <source>Error</source>
         <translation>错误</translation>
     </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>创建离线安装程序</translation>
+    </message>
+    <message>
+        <source>Create offline installer from selected components, instead of installing now.</source>
+        <translation>根据选中组件创建离线安装程序，而不是现在就安装。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ConsumeOutputOperation</name>
@@ -1206,6 +1222,10 @@ Error while loading %2</source>
         <source>Total: </source>
         <translation>总计：</translation>
     </message>
+    <message>
+        <source>Retry count (%1) exceeded</source>
+        <translation>超过重试次数(%1)</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
@@ -1445,10 +1465,6 @@ Error while loading %2</source>
         <translation>无可用更新。</translation>
     </message>
     <message>
-        <source> Only local package management available.</source>
-        <translation>仅本地软件包管理可用。</translation>
-    </message>
-    <message>
         <source>&amp;Quit</source>
         <translation>退出</translation>
     </message>
@@ -1498,10 +1514,6 @@ Error while loading %2</source>
     <message>
         <source>Can not write license file &quot;%1&quot;.</source>
         <translation>无法写入许可文件“%1”。</translation>
-    </message>
-    <message>
-        <source>No license files found to delete.</source>
-        <translation>未找到要删除的许可文件。</translation>
     </message>
 </context>
 <context>
@@ -1808,6 +1820,18 @@ Do you want to continue?</source>
         <source>Cannot resolve components to uninstall.</source>
         <translation>无法解析要移除的组件。</translation>
     </message>
+    <message>
+        <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
+        <translation>无法选择别名%1。加载这一别名时发生问题，所以它被标识为不稳定，并且无法被选中。</translation>
+    </message>
+    <message>
+        <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
+        <translation>无法选择%1。别名被标记为虚拟，意味着它不能被手动选中。</translation>
+    </message>
+    <message>
+        <source>Created installer will use %1 of disk space.</source>
+        <translation>创建的安装程序将使用%1的磁盘空间。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerCorePrivate</name>
@@ -2075,6 +2099,18 @@ Do you want to continue?</source>
         <source>Loading component scripts...</source>
         <translation>正在加载组件脚本……</translation>
     </message>
+    <message>
+        <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
+        <translation>别名声明的名称与已经存在的组件“%1”冲突。</translation>
+    </message>
+    <message>
+        <source>Unresolved component aliases</source>
+        <translation>无法解析的组件别名</translation>
+    </message>
+    <message>
+        <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
+        <translation>检测到别名“%1”和“%2”之间的依赖项循环。</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::PackageManagerGui</name>
@@ -2178,6 +2214,18 @@ Please copy the installer to a local drive</source>
         <source>Uninstalling</source>
         <translation>正在卸载</translation>
     </message>
+    <message>
+        <source>&amp;Create Offline Installer</source>
+        <translation>创建离线安装程序(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer for %1</source>
+        <translation>正在为%1创建离线安装程序</translation>
+    </message>
+    <message>
+        <source>Creating Offline Installer</source>
+        <translation>正在创建离线安装程序</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::ProxyCredentialsDialog</name>
@@ -2251,6 +2299,18 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Ready to Update</source>
         <translation>准备更新</translation>
+    </message>
+    <message>
+        <source>Create Offline Installer</source>
+        <translation>创建离线安装程序</translation>
+    </message>
+    <message>
+        <source>Ready to Create Offline Installer</source>
+        <translation>准备创建离线安装程序</translation>
+    </message>
+    <message>
+        <source>All required information is now available to create an offline installer for selected components.</source>
+        <translation>为所选组件创建离线安装程序的所需信息都已经准备好。</translation>
     </message>
 </context>
 <context>
