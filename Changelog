@@ -1,6 +1,8 @@
 4.7.0
+- Add support for component aliases (QTIFW-2978)
+- Enable building with Qt6.2 (QTIFW-3083)
 - Enable building with Qt6.5 (QTIFW-1829)
-- Build IFW binaries with Qt6.5
+- Build IFW binaries with Qt6.6
 - 3rdparty: update libarchive sources to 3.7.1 release
 - Use directory separators in path asking for process to be stopped
 - Allow generating offline installers from Gui (QTIFW-3072)
