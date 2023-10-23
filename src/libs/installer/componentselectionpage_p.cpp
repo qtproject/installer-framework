@@ -122,16 +122,12 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
     descriptionVLayout->addWidget(m_sizeLabel);
 
-    QHBoxLayout *pushButtonHLayout = new QHBoxLayout;
-    pushButtonHLayout->setObjectName(QLatin1String("PushButtonHLayout"));
-
     m_createOfflinePushButton = new QPushButton(q);
     m_createOfflinePushButton->setVisible(false);
     m_createOfflinePushButton->setText(ComponentSelectionPage::tr("Create Offline Installer"));
     m_createOfflinePushButton->setToolTip(
             ComponentSelectionPage::tr("Create offline installer from selected components, instead "
             "of installing now."));
-    pushButtonHLayout->addWidget(m_createOfflinePushButton);
 
     connect(m_createOfflinePushButton, &QPushButton::clicked,
             this, &ComponentSelectionPagePrivate::createOfflineButtonClicked);
@@ -144,13 +140,13 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_qbspPushButton->setToolTip(
             ComponentSelectionPage::tr("Select a Qt Board Support Package file to install "
             "additional content that is not directly available from the online repositories."));
-    pushButtonHLayout->addWidget(m_qbspPushButton);
 
     connect(m_qbspPushButton, &QPushButton::clicked,
             this, &ComponentSelectionPagePrivate::qbspButtonClicked);
 
     m_rightSideVLayout->addWidget(m_descriptionBaseWidget);
-    m_rightSideVLayout->addLayout(pushButtonHLayout);
+    m_rightSideVLayout->addWidget(m_createOfflinePushButton);
+    m_rightSideVLayout->addWidget(m_qbspPushButton);
 
     QHBoxLayout *topHLayout = new QHBoxLayout;
 
@@ -327,11 +323,11 @@ void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
     if (show) {
         m_rightSideVLayout->removeWidget(m_descriptionBaseWidget);
         m_tabWidget->insertTab(0, m_descriptionBaseWidget, tr("Information"));
-        m_rightSideVLayout->insertWidget(m_rightSideVLayout->count() - 1, m_tabWidget);
+        m_rightSideVLayout->insertWidget(0, m_tabWidget);
     } else {
         m_tabWidget->removeTab(0);
         m_rightSideVLayout->removeWidget(m_tabWidget);
-        m_rightSideVLayout->insertWidget(m_rightSideVLayout->count() - 1, m_descriptionBaseWidget);
+        m_rightSideVLayout->insertWidget(0, m_descriptionBaseWidget);
         m_descriptionBaseWidget->setVisible(true);
     }
     m_tabWidget->setVisible(show);
