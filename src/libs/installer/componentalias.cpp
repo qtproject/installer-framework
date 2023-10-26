@@ -48,7 +48,8 @@ static const QStringList scPossibleElements {
     scRequiredComponents,
     scRequiredAliases,
     scOptionalComponents,
-    scOptionalAliases
+    scOptionalAliases,
+    scReleaseDate
 };
 
 /*!
