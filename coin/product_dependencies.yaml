@@ -1,0 +1,3 @@
+dependencies:
+  ../../qt/tqtc-qt5.git:
+    ref: "tqtc/6.6.0"
