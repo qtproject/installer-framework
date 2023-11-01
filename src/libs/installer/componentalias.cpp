@@ -177,9 +177,10 @@ bool AliasFinder::run()
             delete m_aliases.take(name);
 
         ComponentAlias *alias = new ComponentAlias(m_core);
-        for (auto &value : data) {
-            if (value.canConvert<QString>())
-                alias->setValue(data.key(value), value.toString());
+        AliasData::const_iterator it;
+        for (it = data.cbegin(); it != data.cend(); ++it) {
+            if (it.value().canConvert<QString>())
+                alias->setValue(it.key(), it.value().toString());
         }
         m_aliases.insert(name, alias);
     }
