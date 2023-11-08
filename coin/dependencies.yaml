@@ -17,6 +17,3 @@ dependencies:
     ../../qt/qt5compat.git:
         ref: "e1fe0c83bc547ba34142c2ab06fdfea0bced7308"
         required: true
-#     ssh://git.qt.io/coin-additional-projects/squish:
-#         ref: "6f6de132dc6983f82f32d3eba880b3099bb480c4"
-#        required: true
