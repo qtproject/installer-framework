@@ -1,4 +1,5 @@
 4.7.0
+- Prepare for Linux on ARM support (QTIFW-3073)
 - Add support for component aliases (QTIFW-2978)
 - Enable building with Qt6.2 (QTIFW-3083)
 - Enable building with Qt6.5 (QTIFW-1829)
