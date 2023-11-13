@@ -291,6 +291,7 @@
             \li Sets or removes the \c value of \c key in the settings file located at
                 \c path, depending on the value of \c method: \c set, \c remove,
                 \c add_array_value, and \c remove_array_value.
+                Example: \c{component.addOperation("Settings", "path=settings.ini", "method=add", "key=myKey", "value=myValue")}
     \endtable
 
     The Extract, License, and MinimumProgress operations are automatically added for matching
