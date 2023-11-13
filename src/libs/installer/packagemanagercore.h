@@ -394,8 +394,6 @@ Q_SIGNALS:
     void aboutCalculateComponentsToUninstall() const;
     void finishedCalculateComponentsToUninstall() const;
     void componentAdded(QInstaller::Component *comp);
-    void rootComponentsAdded(QList<QInstaller::Component*> components);
-    void updaterComponentsAdded(QList<QInstaller::Component*> components);
     void valueChanged(const QString &key, const QString &value);
     void statusChanged(QInstaller::PackageManagerCore::Status);
     void defaultTranslationsLoadedForLanguage(QLocale::Language lang);

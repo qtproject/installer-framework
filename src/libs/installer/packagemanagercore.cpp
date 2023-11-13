@@ -182,25 +182,6 @@ using namespace QInstaller;
     Emitted when the new root component \a comp is added.
 
     \sa {installer::componentAdded}{installer.componentAdded}
-    \sa rootComponentsAdded(), updaterComponentsAdded()
-*/
-
-/*!
-    \fn QInstaller::PackageManagerCore::rootComponentsAdded(QList<QInstaller::Component*> components)
-
-    Emitted when the list of root components specified by \a components is added.
-
-    \sa {installer::rootComponentsAdded}{installer.rootComponentsAdded}
-    \sa componentAdded(), updaterComponentsAdded()
-*/
-
-/*!
-    \fn QInstaller::PackageManagerCore::updaterComponentsAdded(QList<QInstaller::Component*> components)
-
-    Emitted when a new list of updater components specified by \a components is added.
-
-    \sa {installer::updaterComponentsAdded}{installer.updaterComponentsAdded}
-    \sa componentAdded(), rootComponentsAdded()
 */
 
 /*!

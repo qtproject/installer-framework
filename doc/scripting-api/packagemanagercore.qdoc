@@ -71,24 +71,6 @@
     \qmlsignal installer::componentAdded(Component component)
 
     Emitted when a new root \a component is added.
-
-    \sa rootComponentsAdded(), updaterComponentsAdded()
-*/
-
-/*!
-    \qmlsignal installer::rootComponentsAdded(list<Component> components)
-
-    Emitted when a new list of root \a components is added.
-
-    \sa componentAdded(), updaterComponentsAdded()
-*/
-
-/*!
-    \qmlsignal installer::updaterComponentsAdded(list<Component> components)
-
-    Emitted when a new list of updater \a components is added.
-
-    \sa componentAdded(), rootComponentsAdded()
 */
 
 /*!
