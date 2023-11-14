@@ -74,7 +74,7 @@
 
     Build Qt:
     \code
-    nmake (or 'mingw32-make') module-qtbase module-qtdeclarative module-qttools module-qttranslations module-qtwinextras
+    nmake module-qtbase module-qtdeclarative module-qttools module-qttranslations module-qtwinextras
     \endcode
 
     \section3 Configuring Qt for Linux
