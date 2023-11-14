@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -39,6 +39,7 @@ class SystemInfo : public QObject
     Q_DISABLE_COPY(SystemInfo)
 
     Q_PROPERTY(QString currentCpuArchitecture READ currentCpuArchitecture CONSTANT)
+    Q_PROPERTY(QString buildCpuArchitecture READ buildCpuArchitecture CONSTANT)
     Q_PROPERTY(QString kernelType READ kernelType CONSTANT)
     Q_PROPERTY(QString kernelVersion READ kernelVersion CONSTANT)
     Q_PROPERTY(QString productType READ productType CONSTANT)
@@ -49,7 +50,7 @@ public:
     explicit SystemInfo(QObject *parent = 0);
 
     QString currentCpuArchitecture() const;
-
+    QString buildCpuArchitecture() const;
     QString kernelType() const;
     QString kernelVersion() const;
     QString productType() const;

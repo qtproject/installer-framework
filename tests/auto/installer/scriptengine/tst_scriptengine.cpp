@@ -242,6 +242,8 @@ private slots:
         QJSValue sinfo = global.property(QLatin1String("systemInfo"));
         QCOMPARE(sinfo.property(QLatin1String("currentCpuArchitecture")).toString(),
                  QSysInfo::currentCpuArchitecture());
+        QCOMPARE(sinfo.property(QLatin1String("buildCpuArchitecture")).toString(),
+                 QSysInfo::buildCpuArchitecture());
         QCOMPARE(sinfo.property(QLatin1String("kernelType")).toString(), QSysInfo::kernelType());
         QCOMPARE(sinfo.property(QLatin1String("kernelVersion")).toString(),
                  QSysInfo::kernelVersion());

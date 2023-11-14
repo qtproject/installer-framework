@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -55,6 +55,7 @@ SystemInfo::SystemInfo(QObject *parent) : QObject(parent)
     \list
         \li "i386"
         \li "x86_64"
+        \li "arm64"
     \endlist
 
     \note This function depends on what the OS will report and may not detect the actual CPU
@@ -62,11 +63,34 @@ SystemInfo::SystemInfo(QObject *parent) : QObject(parent)
     OS running on a 64-bit CPU is usually unable to determine whether the CPU is actually capable
     of running 64-bit programs.
 
-    \sa QSysInfo::currentCpuArchitecture()
+    \sa QSysInfo::currentCpuArchitecture() \sa buildCpuArchitecture()
 */
 QString SystemInfo::currentCpuArchitecture() const
 {
     return QSysInfo::currentCpuArchitecture();
+}
+
+/*!
+    \property SystemInfo::buildCpuArchitecture
+
+    The architecture of the CPU that the application was compiled for, in text format.
+
+    Possible values include:
+    \list
+        \li "i386"
+        \li "x86_64"
+        \li "arm64"
+    \endlist
+
+    \note  Note that this may not match the actual CPU that the application is running on if
+    there's an emulation layer or if the CPU supports multiple architectures (like x86-64
+    processors supporting i386 applications). To detect that, use \c installer.currentCpuArchitecture()
+
+    \sa QSysInfo::buildCpuArchitecture() \sa currentCpuArchitecture()
+*/
+QString SystemInfo::buildCpuArchitecture() const
+{
+    return QSysInfo::buildCpuArchitecture();
 }
 
 /*!

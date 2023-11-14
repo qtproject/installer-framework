@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2023 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -49,6 +49,25 @@
     of running 64-bit programs.
 
     \sa QSysInfo::currentCpuArchitecture()
+*/
+
+/*!
+    \qmlproperty string systemInfo::buildCpuArchitecture
+
+    The architecture of the CPU that the application was compiled for, in text format.
+
+    Possible values include:
+    \list
+        \li "i386"
+        \li "x86_64"
+        \li "arm64"
+    \endlist
+
+    Note that this may not match the actual CPU that the application is running on if
+    there's an emulation layer or if the CPU supports multiple architectures (like x86-64
+    processors supporting i386 applications). To detect that, use \c installer.currentCpuArchitecture()
+
+    \sa QSysInfo::buildCpuArchitecture() \sa currentCpuArchitecture()
 */
 
 /*!
