@@ -562,12 +562,11 @@ QSet<QModelIndex> ComponentModel::updateCheckedState(const ComponentSet &compone
     for (int i = sortedNodes.count(); i > 0; i--) {
         Component * const node = sortedNodes.at(i - 1);
 
-        bool checkable = true;
-        if (node->value(scCheckable, scTrue).toLower() == scFalse) {
-            checkable = false;
-        }
+        if (!node->isEnabled() || node->isUnstable())
+            continue;
 
-        if ((!node->isCheckable() && checkable) || !node->isEnabled() || node->isUnstable())
+        //Do not let forced installations to be uninstalled
+        if (!m_core->isUpdater() && node->forcedInstallation() && (node->checkState() != Qt::Unchecked))
             continue;
 
         if (!m_core->isUpdater() && !node->autoDependencies().isEmpty())

@@ -188,6 +188,7 @@ void ComponentModelHelper::setCheckable(bool checkable)
             setData(Qt::Unchecked, Qt::CheckStateRole);
     }
     changeFlags(checkable, Qt::ItemIsUserCheckable);
+    m_componentPrivate->m_vars[scCheckable] = checkable ? scTrue : scFalse;
 }
 
 /*!
