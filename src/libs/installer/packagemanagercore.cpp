@@ -1604,7 +1604,7 @@ void PackageManagerCore::networkSettingsChanged()
     d->m_repoFetched = false;
     d->m_updateSourcesAdded = false;
 
-    if (isMaintainer() ) {
+    if (!isInstaller()) {
         bool gainedAdminRights = false;
         if (!directoryWritable(d->targetDir())) {
             gainAdminRights();
