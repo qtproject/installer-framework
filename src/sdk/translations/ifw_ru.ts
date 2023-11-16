@@ -919,8 +919,8 @@
         <translation>Пожалуйста, выберите компоненты, которые вы хотите удалить.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Выберите компоненты для установки. Для удаления уже установленных компонентов снимите отметки выбора. Уже установленные компоненты не будут обновлены.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Выберите компоненты для установки. Для удаления уже установленных компонентов снимите отметки выбора.&lt;br&gt;Уже установленные компоненты не будут обновлены.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

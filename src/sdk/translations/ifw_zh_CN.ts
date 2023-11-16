@@ -917,7 +917,7 @@
         <translation>请选择要卸载的组件。</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
         <translation>选择要安装的组件。 取消选择已安装组件以卸载它们。 所有已安装的组件均不会更新。</translation>
     </message>
     <message>

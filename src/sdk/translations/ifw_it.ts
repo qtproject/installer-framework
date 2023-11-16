@@ -918,8 +918,8 @@
         <translation>Selezionare i componenti che si desidera disinstallare.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Selezionare i componenti da installare. Deselezionare i componenti installati per disinstallarli. I componenti già installati non verranno aggiornati.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Selezionare i componenti da installare. Deselezionare i componenti installati per disinstallarli.&lt;br&gt;I componenti già installati non verranno aggiornati.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

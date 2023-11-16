@@ -628,7 +628,7 @@
         <translation>يرجى تحديد المكونات التي تريد إزالتها.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
         <translation>حدّد المكونات التي تريد تثبيتها. ألغِ تحديد المكونات المثبتة لإزالتها. أي مكونات مثبتة بالفعل لن يتم تحديثها.</translation>
     </message>
     <message>

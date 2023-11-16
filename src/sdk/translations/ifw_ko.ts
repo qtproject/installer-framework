@@ -632,7 +632,7 @@
         <translation>설치 제거하려는 구성요소를 선택하십시오.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
         <translation>설치할 구성요소를 선택하십시오. 설치 제거할 설치된 구성요소를 선택 해제하십시오. 이미 설치된 모든 구성요소는 업데이트되지 않습니다.</translation>
     </message>
     <message>

@@ -2037,8 +2037,8 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Por favor, selecione os componentes que você deseja desinstalar.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Selecione componentes para os instalar. Deselecione componentes instalados para desinstalá-los. Os componentes previamente instalados não serão atualizados.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Selecione componentes para os instalar. Deselecione componentes instalados para desinstalá-los.&lt;br&gt;Os componentes previamente instalados não serão atualizados.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

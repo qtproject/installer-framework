@@ -2202,7 +2202,7 @@ void ComponentSelectionPage::entering()
         QT_TR_NOOP("Please select the components you want to update."),
         QT_TR_NOOP("Please select the components you want to install."),
         QT_TR_NOOP("Please select the components you want to uninstall."),
-        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated."),
+        QT_TR_NOOP("Select the components to install. Deselect installed components to uninstall them.<br>Any components already installed will not be updated."),
         QT_TR_NOOP("Mandatory components need to be updated first before you can select other components to update.")
      };
 

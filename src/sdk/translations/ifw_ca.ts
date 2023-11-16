@@ -914,8 +914,8 @@
         <translation>Seleccioneu els components que voleu desinstal·lar.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Seleccioneu els components que voleu instal·lar. Desseleccioneu els components instal·lats per a desinstal·lar-los. No s&apos;actualitzaran els components ja instal·lats.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Seleccioneu els components que voleu instal·lar. Desseleccioneu els components instal·lats per a desinstal·lar-los.&lt;br&gt;No s&apos;actualitzaran els components ja instal·lats.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

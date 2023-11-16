@@ -917,8 +917,8 @@
         <translation>Kérem válassza ki az eltávolítani kívánt komponenseket.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Válassza ki a telepítendő összetevőket. Törölje a telepített összetevők kijelölését az eltávolításhoz. A már telepített összetevők nem frissülnek.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Válassza ki a telepítendő összetevőket. Törölje a telepített összetevők kijelölését az eltávolításhoz.&lt;br&gt;A már telepített összetevők nem frissülnek.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

@@ -917,7 +917,7 @@
         <translation>アンインストールするコンポーネントを選択してください。</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
         <translation>インストールするコンポーネントを選択します。 コンポーネントをアンインストールするには、インストール済みのコンポーネントを選択解除します。 すでにインストールされているコンポーネントは更新されません。</translation>
     </message>
     <message>

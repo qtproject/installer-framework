@@ -923,8 +923,8 @@
         <translation>Wybierz elementy, które chcesz odinstalować.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Wybierz elementy do zainstalowania. Anuluj zaznaczenie zainstalowanych elementów, aby je dezinstalować. Elementy, które są już zainstalowane, nie zostaną zaktualizowane.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Wybierz elementy do zainstalowania. Anuluj zaznaczenie zainstalowanych elementów, aby je dezinstalować.&lt;br&gt;Elementy, które są już zainstalowane, nie zostaną zaktualizowane.</translation>
     </message>
     <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>

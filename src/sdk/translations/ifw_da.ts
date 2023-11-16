@@ -894,8 +894,8 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Vælg de komponenter du vil installere. Fravælg installeret komponenter for at afinstallere dem. Komponenter som allerede er installeret vil ikke blive opdateret.</translation>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Vælg de komponenter du vil installere. Fravælg installeret komponenter for at afinstallere dem.&lt;br&gt;Komponenter som allerede er installeret vil ikke blive opdateret.</translation>
     </message>
     <message>
         <source>This component will occupy approximately %1 on your hard disk drive.</source>
