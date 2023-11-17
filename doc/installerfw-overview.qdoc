@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -32,21 +32,30 @@
 
     \title Overview of Qt Installer Framework
 
-    The Qt Installer Framework provides a set of tools and utilities to
-    create installers once, and deploy them across all the supported desktop
-    Qt platforms without rewriting the source code. The installers will have
-    the native look and feel of the platform on which they run: Linux,
+    With Qt Installer Framework you can create both simple and complex installers
+    with thousands of components and deploy your installers across all the supported
+    desktop Qt platforms without rewriting the source code. Your final installers
+    have the native look and feel of the platform on which they run: Linux,
     Microsoft Windows, and macOS.
 
-    The Qt Installer Framework tools generate installers with a set of pages
-    that guide the users during the installation, update, or uninstall
+    For example Qt installers are made with the Qt Installer Framework.
+
+    Both open-source and commercial users can download Qt Installer Framework from their
+    Qt Account.
+
+    Qt Installer Framework tools generate installers with a set of pages
+    that guide the users during the installation, update, or uninstallation
     process. You supply the installable content and specify information about
     it, such as the name of the product and the installer and the text for the
     license agreement.
 
     You can customize the installers by adding widgets to the predefined pages
-    or by adding whole pages to offer users more options. You can
-    create scripts to add operations to the installer.
+    or by adding whole pages to offer users more options.
+
+    Each installable package in the installer can contain one component script that
+    gives a comprehensive API to fine-tune how the package should be installed
+    on the system. You can, for example, add shortcuts to the desktop or register
+    file extensions for your tool.
 
     \section1 Choosing Installer Type
 
@@ -55,17 +64,8 @@
 
     \image ifw-overview.png
 
-    Both installers install a \e {\MT}, which allows you to later
-    add, update, and remove components. Offline installers contain all the
-    installable components and do not require network connections during the
-    installation. Online installers only install the \MT that then
-    downloads and installs components from an online repository on a web server.
-    Therefore, the size of an online installer binary is smaller and its
-    download time is shorter than that of an offline installer binary. The total
-    time spent downloading and running an online installer might also be shorter
-    than downloading and running an offline installer if the end users do not
-    install all the available components.
-
+    Both installers install a \e {\MT}, which allows your end users to later
+    add, update, and remove components.
     End users can use the \MT to install more components from
     the server after the initial installation, as well as to receive automatic
     updates to content as soon as the updates are available on the server.
@@ -73,15 +73,47 @@
     repository address in the offline installer configuration or if end users
     specify the repository address themselves in the \MT settings.
 
+    \section2 Offline Installers
+
+    Offline installers contain all the installable components and do not require
+    network connections during the installation.
+
     Create an offline installer to enable users to directly download the
     installation package on a media for installation on a computer later. You
     can also distribute the installation package on a CD-ROM or USB stick, for
     example.
 
-    Create an online installer to enable users to always install the latest
-    versions of the content binaries.
+    \section2 Online installers
 
-    \section1 Promoting Updates
+    Online installers install the \MT and components from an online
+    repository on a web server. After installation, the \MT can be used to
+    modify the installation from an online repository.
+
+    The size of an online installer binary is smaller and its
+    download time is shorter than that of an offline installer binary. The total
+    time spent downloading and running an online installer might also be shorter
+    than downloading and running an offline installer if the end users do not
+    install all the available components.
+
+    Create an online installer to enable users to always install the latest
+    versions of the content packages.
+    \list
+        \li Online repositories
+        \li Online installer
+    \endlist
+
+    \section2 Signing installers
+
+    Signing your installer is an integral step in finalizing your product. Signing
+    shows that your code is safe and secure.
+
+    Find more information on signing your installer on Windows platform
+    on \l{https://learn.microsoft.com/en-us/windows/win32/seccrypto/signtool} {Microsoft website}.
+    For more information on signing your installer in macOS, see Apple website for
+    \l{https://developer.apple.com/documentation/security/code_signing_services} {code signing}
+    and \{https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution} {notarizing}.
+
+    \section1 Promoting Updates for Online Installers
 
     Make online repositories available to promote updates to end users who
     install your product. The easiest way to offer an update is to recreate

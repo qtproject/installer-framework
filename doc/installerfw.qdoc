@@ -39,9 +39,14 @@
 
     \section1 Version \ifwversion
 
-    The Qt Installer Framework provides a set of tools and utilities to
-    create installers for the supported desktop Qt platforms: Linux, Microsoft
-    Windows, and macOS.
+    Qt Installer Framework is a robust toolset for creating custom online
+    and offline installers. It’s highly configurable and customizable and works for all
+    supported Qt platforms: Linux, Microsoft Windows, and macOS.
+
+    Here are some examples to illustrate the versatility
+    of Qt Installer Framework.
+
+
 
     \note Report bugs and suggestions for the Qt Installer Framework project
     in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
