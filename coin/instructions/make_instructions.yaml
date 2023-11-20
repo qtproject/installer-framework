@@ -77,13 +77,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-4.7.0-alpha.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-4.7.0-beta.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-4.7.0-alpha.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-4.7.0-alpha.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-4.7.0-beta.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-4.7.0-beta.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -100,13 +100,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-aarch64-4.7.0-alpha.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-aarch64-4.7.0-beta.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-aarch64-4.7.0-alpha.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-aarch64-4.7.0-alpha.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-aarch64-4.7.0-beta.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-aarch64-4.7.0-beta.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -123,7 +123,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.7.0-alpha.app"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.7.0-beta.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
@@ -140,18 +140,18 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.AgentWorkingDir}}/qtsdk/tqtc-qtsdk/packaging_tools"
       - type: ExecuteCommand
-        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-alpha.app"
+        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-beta.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to sign the ifw installer"
       - type: ExecuteCommand
-        command: "python3 -m pipenv run python notarize.py --path={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-alpha.dmg"
+        command: "python3 -m pipenv run python notarize.py --path={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-beta.dmg"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to notarize the ifw installer"
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-alpha.dmg"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-4.7.0-alpha.dmg"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-4.7.0-beta.dmg"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-4.7.0-beta.dmg"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -165,7 +165,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.SourceDir}}"
       - type: ExecuteCommand
-        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-4.7.0-alpha"
+        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-4.7.0-beta"
         maxTimeInSeconds: 1200
         maxTimeBetweenOutput: 1200
         userMessageOnFailure: "Failed to create ifw installer."
@@ -186,8 +186,8 @@ instructions:
       equals_value: Windows
 
   - type: Rename
-    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-4.7.0-alpha.exe"
-    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-4.7.0-alpha.exe"
+    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-4.7.0-beta.exe"
+    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-4.7.0-beta.exe"
     userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: property
