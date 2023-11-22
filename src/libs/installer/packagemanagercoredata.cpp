@@ -96,7 +96,7 @@ PackageManagerCoreData::PackageManagerCoreData(const QHash<QString, QString> &va
     if (isInstaller) {
         addNewVariable(scTargetDir, replaceVariables(m_settings.targetDir()));
         addNewVariable(scTargetConfigurationFile, m_settings.configurationFileName());
-        addNewVariable(scStartMenuDir, m_settings.startMenuDir());
+        addNewVariable(scStartMenuDir, replaceVariables(m_settings.startMenuDir()));
     } else {
 #ifdef Q_OS_MACOS
         addNewVariable(scTargetDir, QFileInfo(QCoreApplication::applicationDirPath() + QLatin1String("/../../..")).absoluteFilePath());
