@@ -63,7 +63,7 @@ SystemInfo::SystemInfo(QObject *parent) : QObject(parent)
     OS running on a 64-bit CPU is usually unable to determine whether the CPU is actually capable
     of running 64-bit programs.
 
-    \sa QSysInfo::currentCpuArchitecture() \sa buildCpuArchitecture()
+    \sa QSysInfo::currentCpuArchitecture() buildCpuArchitecture()
 */
 QString SystemInfo::currentCpuArchitecture() const
 {
@@ -86,7 +86,7 @@ QString SystemInfo::currentCpuArchitecture() const
     there's an emulation layer or if the CPU supports multiple architectures (like x86-64
     processors supporting i386 applications). To detect that, use \c installer.currentCpuArchitecture()
 
-    \sa QSysInfo::buildCpuArchitecture() \sa currentCpuArchitecture()
+    \sa QSysInfo::buildCpuArchitecture() currentCpuArchitecture()
 */
 QString SystemInfo::buildCpuArchitecture() const
 {

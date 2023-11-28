@@ -1,4 +1,4 @@
-QT += core-private widgets concurrent network qml xml
+QT += widgets concurrent network qml xml
 
 DOC_TARGETDIR = html
 INSTALL_DOC_PATH = $$IFW_BUILD_TREE/doc/$$DOC_TARGETDIR
@@ -29,7 +29,8 @@ DOC_QCH_INSTALLDIR = $$INSTALL_DOC_PATH
 for (include_path, INCLUDEPATH): \
     DOC_INCLUDES += -I $$shell_quote($$include_path)
 for (module, QT) {
-    MOD_INCLUDES = $$eval(QT.$${module}.includes)
+    MOD = $$replace(module, \-,_)
+    MOD_INCLUDES = $$eval(QT.$${MOD}.includes)
     for (include_path, MOD_INCLUDES): \
         DOC_INCLUDES += -I $$shell_quote($$include_path)
 }

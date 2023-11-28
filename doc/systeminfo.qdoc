@@ -67,7 +67,7 @@
     there's an emulation layer or if the CPU supports multiple architectures (like x86-64
     processors supporting i386 applications). To detect that, use \c installer.currentCpuArchitecture()
 
-    \sa QSysInfo::buildCpuArchitecture() \sa currentCpuArchitecture()
+    \sa QSysInfo::buildCpuArchitecture() currentCpuArchitecture
 */
 
 /*!

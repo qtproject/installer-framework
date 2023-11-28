@@ -428,7 +428,7 @@ T *GenericDataCache<T>::itemByPath(const QString &path) const
 
     The cache takes ownership of the object pointed by \a item. The contents of the
     item are copied or moved to the cache with a subdirectory name that matches the checksum
-    of the item. The \c mode decides how the contents of the item are registered, either by
+    of the item. The \a mode decides how the contents of the item are registered, either by
     copying or moving.
 
     Returns \c true on success or \c false if the item could not be registered.

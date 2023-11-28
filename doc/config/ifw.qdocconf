@@ -2,23 +2,21 @@ include($QT_INSTALL_DOCS/global/qt-cpp-defines.qdocconf)
 include($QT_INSTALL_DOCS/global/compat.qdocconf)
 include($QT_INSTALL_DOCS/global/fileextensions.qdocconf)
 
-moduleheader  = IFWDoc
-includepaths += -I ./includes \
-                -I ../src/libs/installer \
-                -I ../src/libs/kdtools \
-                -I ../src/libs/3rdparty/7zip/unix/CPP \
-                -I ../src/libs/3rdparty/7zip/win/CPP \
-                -I ../src/libs/3rdparty/libarchive
+includepaths += \
+                ../../src/libs/installer \
+                ../../src/libs/3rdparty/7zip/unix/CPP \
+                ../../src/libs/3rdparty/7zip/win/CPP \
+                ../../src/libs/3rdparty/libarchive
 
 language    = Cpp
 project     = "QtInstallerFramework"
 description = "Qt Installer Framework Manual"
-url         = http://qt-project.org/doc/qtinstallerframework/
+url         = https://doc.qt.io/qtinstallerframework/
 
 sourcedirs += ../../src/libs/installer ../../src/libs/kdtools ../includes
 headerdirs += ../../src/libs/installer ../../src/libs/kdtools
 
-imagedirs = ../images ../templates/images
+imagedirs = ../images
 exampledirs = .. \
               ../../examples
 

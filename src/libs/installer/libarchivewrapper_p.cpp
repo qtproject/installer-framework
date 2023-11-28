@@ -41,12 +41,14 @@ namespace QInstaller {
 */
 
 /*!
+    \internal
     \fn QInstaller::LibArchiveWrapperPrivate::dataBlockRequested()
 
     Emitted when the server process has requested another data block.
 */
 
 /*!
+    \internal
     \fn QInstaller::LibArchiveWrapperPrivate::remoteWorkerFinished()
 
     Emitted when the server process has finished extracting an archive.

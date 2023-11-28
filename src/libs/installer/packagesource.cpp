@@ -50,7 +50,7 @@ namespace QInstaller {
 */
 
 /*!
-    \fn QInstaller::PackageSource::PackageSource(const QUrl &u, int p)
+    \fn QInstaller::PackageSource::PackageSource(const QUrl &u, int p, bool pl)
 
     Constructs a package source info object. The object's url is set to \a u, while the priority
     is set to \a p.

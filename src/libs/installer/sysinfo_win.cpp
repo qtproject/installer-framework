@@ -64,7 +64,7 @@ VolumeInfo updateVolumeSizeInformation(const VolumeInfo &info)
     return update;
 }
 
-/*!
+/*
     Returns a list of volume info objects that are mounted as network drive shares.
 */
 QList<VolumeInfo> networkVolumeInfosFromMountPoints()
@@ -95,7 +95,7 @@ QList<VolumeInfo> networkVolumeInfosFromMountPoints()
     return volumes;
 }
 
-/*!
+/*
     Returns a list of volume info objects based on the given \a volumeGUID. The function also solves mounted
     volume folder paths. It does not return any network drive shares.
 */
