@@ -236,7 +236,8 @@ void MetadataJob::doStart()
         const bool onlineInstaller = m_core->isInstaller() && !m_core->isOfflineOnly();
         const QSet<Repository> repositories = getRepositories();
 
-        if (onlineInstaller || m_core->isMaintainer() || !repositories.isEmpty()) {
+        if (onlineInstaller || m_core->isMaintainer()
+                || (m_core->settings().allowRepositoriesForOfflineInstaller() && !repositories.isEmpty())) {
             static const QString updateFilePath(QLatin1Char('/') + scUpdatesXML + QLatin1Char('?'));
             static const QString randomQueryString = QString::number(QRandomGenerator::global()->generate());
 

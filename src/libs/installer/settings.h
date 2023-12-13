@@ -145,6 +145,8 @@ public:
 
     bool allowSpaceInPath() const;
     bool allowNonAsciiCharacters() const;
+    bool allowRepositoriesForOfflineInstaller() const;
+
     bool disableAuthorizationFallback() const;
     bool disableCommandLineInterface() const;
 

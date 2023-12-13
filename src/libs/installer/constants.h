@@ -158,6 +158,7 @@ static const QLatin1String scRemoteRepositories("RemoteRepositories");
 static const QLatin1String scRepositoryCategories("RepositoryCategories");
 static const QLatin1String scRepositorySettingsPageVisible("RepositorySettingsPageVisible");
 static const QLatin1String scAllowSpaceInPath("AllowSpaceInPath");
+static const QLatin1String scAllowRepositoriesForOfflineInstaller("AllowRepositoriesForOfflineInstaller");
 static const QLatin1String scWizardStyle("WizardStyle");
 static const QLatin1String scStyleSheet("StyleSheet");
 static const QLatin1String scTitleColor("TitleColor");
