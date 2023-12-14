@@ -30,6 +30,7 @@
 #include "qsettingswrapper.h"
 
 #include <stdlib.h>
+#include <QDir>
 
 #include "environment.h"
 #include "globals.h"
@@ -168,11 +169,11 @@ UpdateOperation::Error undoSetting(const QString &regPath,
 
     if (actual != value)
     {
-        //For unknown reason paths with @TargetDir@ variable get modified
-        //so that Windows file separators get replaced with unix style separators,
-        //fix separators before matching to actual value in register
+        //Ignore the separators
+        static const QRegularExpression regex(QLatin1String("(\\\\|/)"));
         QString tempValue = value;
-        QString fixedValue = tempValue.replace(QLatin1Char('/'), QLatin1Char('\\'));
+        QString fixedValue = tempValue.replace(regex, QDir::separator());
+        actual = actual.replace(regex, QDir::separator());
 
         if (actual != fixedValue) //key changed, don't undo
             return UpdateOperation::UserDefinedError;
