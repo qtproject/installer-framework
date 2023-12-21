@@ -2232,6 +2232,10 @@ void ComponentSelectionPage::entering()
     }
     d->showCompressedRepositoryButton();
     d->showCreateOfflineInstallerButton(true);
+
+    // Reset to default supplement state. The page may set it to OfflineGenerator
+    // which needs to be reset after navigating back to the page.
+    core->resetBinaryMarkerSupplement();
 }
 
 /*!
