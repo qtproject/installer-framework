@@ -412,8 +412,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
 
-    // both queued to show the finished page once everything is done
+    // all queued to show the finished page once everything is done
     connect(m_core, &PackageManagerCore::installationFinished,
+            this, &PackageManagerGui::showFinishedPage,
+        Qt::QueuedConnection);
+    connect(m_core, &PackageManagerCore::offlineGenerationFinished,
             this, &PackageManagerGui::showFinishedPage,
         Qt::QueuedConnection);
     connect(m_core, &PackageManagerCore::uninstallationFinished,
