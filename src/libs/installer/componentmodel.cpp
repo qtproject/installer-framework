@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -333,6 +333,22 @@ QSet<Component *> ComponentModel::unchecked() const
 QSet<Component *> ComponentModel::uncheckable() const
 {
     return m_uncheckable;
+}
+
+bool ComponentModel::componentsSelected() const
+{
+    if (m_core->isInstaller() || m_core->isUpdater())
+        return checked().count();
+
+    if (checkedState().testFlag(ComponentModel::DefaultChecked) == false)
+        return true;
+
+    const QSet<Component *> uncheckables = uncheckable();
+    for (auto &component : uncheckables) {
+        if (component->forcedInstallation() && !component->isInstalled())
+            return true; // allow installation for new forced components
+    }
+    return false;
 }
 
 /*!

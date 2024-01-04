@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -188,9 +188,15 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_proxyFactory(nullptr)
     , m_defaultModel(nullptr)
     , m_updaterModel(nullptr)
+    , m_componentSortFilterProxyModel(nullptr)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(nullptr)
     , m_datFileName(QString())
+#ifdef INSTALLCOMPRESSED
+    , m_allowCompressedRepositoryInstall(true)
+#else
+    , m_allowCompressedRepositoryInstall(false)
+#endif
 {
 }
 
@@ -228,9 +234,15 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_proxyFactory(nullptr)
     , m_defaultModel(nullptr)
     , m_updaterModel(nullptr)
+    , m_componentSortFilterProxyModel(nullptr)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
     , m_datFileName(datFileName)
+#ifdef INSTALLCOMPRESSED
+    , m_allowCompressedRepositoryInstall(true)
+#else
+    , m_allowCompressedRepositoryInstall(false)
+#endif
 {
     foreach (const OperationBlob &operation, performedOperations) {
         std::unique_ptr<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -3126,9 +3138,8 @@ bool PackageManagerCorePrivate::calculateComponentsAndRun()
         qCDebug(QInstaller::lcInstallerInstallLog).noquote()
             << htmlToString(m_core->componentResolveReasons());
 
-        QString spaceInfo;
-        const bool spaceOk = m_core->checkAvailableSpace(spaceInfo);
-        qCDebug(QInstaller::lcInstallerInstallLog) << spaceInfo;
+        const bool spaceOk = m_core->checkAvailableSpace();
+        qCDebug(QInstaller::lcInstallerInstallLog) << m_core->availableSpaceMessage();
 
         if (!spaceOk || !(m_autoConfirmCommand || askUserConfirmCommand())) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Installation aborted.";

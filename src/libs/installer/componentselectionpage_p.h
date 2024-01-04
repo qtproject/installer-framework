@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -66,7 +66,6 @@ public:
     explicit ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core);
     ~ComponentSelectionPagePrivate();
 
-    void allowCompressedRepositoryInstall();
     void setAllowCreateOfflineInstaller(bool allow);
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
@@ -83,7 +82,6 @@ public slots:
     void updateAllCheckStates(int which);
     void selectAll();
     void deselectAll();
-    void enableRepositoryCategory(const QString &repositoryName, bool enable);
     void updateWidgetVisibility(bool show);
     void fetchRepositoryCategories();
     void createOfflineButtonClicked();
@@ -117,7 +115,6 @@ private:
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
     QVBoxLayout *m_rightSideVLayout;
-    bool m_allowCompressedRepositoryInstall;
     bool m_allowCreateOfflineInstaller;
     bool m_categoryLayoutVisible;
     ComponentModel *m_allModel;

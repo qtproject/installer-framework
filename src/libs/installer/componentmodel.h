@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -80,6 +80,7 @@ public:
     QSet<Component *> partially() const;
     QSet<Component *> unchecked() const;
     QSet<Component *> uncheckable() const;
+    bool componentsSelected() const;
 
     PackageManagerCore *core() const;
     ComponentModel::ModelState checkedState() const;

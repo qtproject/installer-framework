@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -53,6 +53,7 @@ class ScriptEngine;
 class PackageManagerCorePrivate;
 class PackageManagerProxyFactory;
 class Settings;
+class ComponentSortFilterProxyModel;
 
 // -- PackageManagerCore
 
@@ -210,6 +211,15 @@ public:
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
     Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,
                                               bool replace = false, bool compressed = false);
+    bool addQBspRepositories(const QStringList &repositories);
+    bool validRepositoriesAvailable() const;
+    Q_INVOKABLE void setAllowCompressedRepositoryInstall(bool allow);
+    bool allowCompressedRepositoryInstall() const;
+    bool showRepositoryCategories() const;
+    QVariantMap organizedRepositoryCategories() const;
+    void enableRepositoryCategory(const QString &repositoryName, bool enable);
+    void runProgram();
+
     Q_INVOKABLE void autoAcceptMessageBoxes();
     Q_INVOKABLE void autoRejectMessageBoxes();
     Q_INVOKABLE void setMessageBoxAutomaticAnswer(const QString &identifier, int button);
@@ -274,6 +284,7 @@ public:
 
     ComponentModel *defaultComponentModel() const;
     ComponentModel *updaterComponentModel() const;
+    ComponentSortFilterProxyModel *componentSortFilterProxyModel();
 
     void listInstalledPackages(const QString &regexp = QString());
     bool listAvailablePackages(const QString &regexp = QString(),
@@ -326,7 +337,8 @@ public:
     Q_INVOKABLE bool hasAdminRights() const;
 
     void setCheckAvailableSpace(bool check);
-    bool checkAvailableSpace(QString &message) const;
+    bool checkAvailableSpace();
+    QString availableSpaceMessage() const;
 
     Q_INVOKABLE quint64 requiredDiskSpace() const;
     Q_INVOKABLE quint64 requiredTemporaryDiskSpace() const;
@@ -370,6 +382,7 @@ public:
     void clearLicenses();
     QHash<QString, QMap<QString, QString>> sortedLicenses();
     void addLicenseItem(const QHash<QString, QVariantMap> &licenses);
+    bool hasLicenses() const;
     void createLocalDependencyHash(const QString &component, const QString &dependencies) const;
     void createAutoDependencyHash(const QString &component, const QString &oldDependencies, const QString &newDependencies) const;
 
@@ -472,6 +485,7 @@ private:
     friend class PackageManagerCorePrivate;
     QHash<QString, QString> m_fileDialogAutomaticAnswers;
     QHash<QString, QStringList> m_localVirtualWithDependants;
+    QString m_availableSpaceMessage;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

@@ -262,7 +262,6 @@ private:
     void leaving() override;
 
     void showWidgets(bool show);
-    bool validRepositoriesAvailable() const;
 
 private:
     bool m_updatesFetched;
@@ -331,7 +330,6 @@ public:
     Q_INVOKABLE void selectDefault();
     Q_INVOKABLE void selectComponent(const QString &id);
     Q_INVOKABLE void deselectComponent(const QString &id);
-    Q_INVOKABLE void allowCompressedRepositoryInstall();
     Q_INVOKABLE bool addVirtualComponentToUninstall(const QString &name);
 
     void setAllowCreateOfflineInstaller(bool allow);

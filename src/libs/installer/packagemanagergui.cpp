@@ -1475,16 +1475,8 @@ int PackageManagerPage::nextId() const
         if (core->isUninstaller())
             return nextNextId;  // forcibly hide the license page if we run as uninstaller
         core->recalculateAllComponents();
-
-        foreach (Component* component, core->orderedComponentsToInstall()) {
-            if (core->isMaintainer() && component->isInstalled())
-                continue; // package manager or updater, hide as long as the component is installed
-
-            // The component is about to be installed and provides a license, so the page needs to
-            // be shown.
-            if (!component->licenses().isEmpty())
-                return next;
-        }
+        if (core->hasLicenses())
+            return next;
         return nextNextId;  // no component with a license or all components with license installed
     }
     return next;    // default, show the next page
@@ -1627,7 +1619,7 @@ bool IntroductionPage::validatePage()
 
     bool isOfflineOnlyInstaller = core->isInstaller() && core->isOfflineOnly();
     // If not offline only installer, at least one valid repository needs to be available
-    if (!isOfflineOnlyInstaller && !validRepositoriesAvailable()) {
+    if (!isOfflineOnlyInstaller && !core->validRepositoriesAvailable()) {
         setErrorMessage(QLatin1String("<font color=\"red\">") + tr("At least one valid and enabled "
             "repository required for this action to succeed.") + QLatin1String("</font>"));
         return isComplete();
@@ -1844,22 +1836,6 @@ void IntroductionPage::setErrorMessage(const QString &error)
 #endif
 }
 
-/*!
-    Returns \c true if at least one valid and enabled repository is available.
-*/
-bool IntroductionPage::validRepositoriesAvailable() const
-{
-    const PackageManagerCore *const core = packageManagerCore();
-    bool valid = false;
-
-    foreach (const Repository &repo, core->settings().repositories()) {
-        if (repo.isEnabled() && repo.isValid()) {
-            valid = true;
-            break;
-        }
-    }
-    return valid;
-}
 
 // -- private slots
 
@@ -1903,9 +1879,9 @@ void IntroductionPage::setPackageManager(bool value)
 */
 void IntroductionPage::initializePage()
 {
-    const bool repositoriesAvailable = validRepositoriesAvailable();
-
     PackageManagerCore *core = packageManagerCore();
+    const bool repositoriesAvailable = core->validRepositoriesAvailable();
+
     if (core->isPackageManager()) {
         m_packageManager->setChecked(true);
     } else if (core->isUpdater()) {
@@ -1938,7 +1914,7 @@ void IntroductionPage::onCoreNetworkSettingsChanged()
 
     PackageManagerCore *core = packageManagerCore();
     if (core->isUninstaller() || core->isMaintainer()) {
-        m_offlineMaintenanceTool = !validRepositoriesAvailable();
+        m_offlineMaintenanceTool = !core->validRepositoriesAvailable();
 
         setMaintainerToolsEnabled(!m_offlineMaintenanceTool);
         m_removeAllComponents->setChecked(m_offlineMaintenanceTool);
@@ -2239,13 +2215,7 @@ void ComponentSelectionPage::entering()
     d->onModelStateChanged(d->m_currentModel->checkedState());
 
     setModified(isComplete());
-    if (core->settings().repositoryCategories().count() > 0 && !core->isOfflineOnly()
-        && !core->isUpdater()) {
-        d->showCategoryLayout(true);
-        core->settings().setAllowUnstableComponents(true);
-    } else {
-        d->showCategoryLayout(false);
-    }
+    d->showCategoryLayout(core->showRepositoryCategories());
     d->showCompressedRepositoryButton();
     d->showCreateOfflineInstallerButton(true);
 
@@ -2345,16 +2315,6 @@ void ComponentSelectionPage::deselectComponent(const QString &id)
 }
 
 /*!
-   Adds the possibility to install a compressed repository on component selection
-   page. A new button which opens a file browser is added for compressed
-   repository selection.
-*/
-void ComponentSelectionPage::allowCompressedRepositoryInstall()
-{
-    d->allowCompressedRepositoryInstall();
-}
-
-/*!
     Adds an additional virtual component with the \a name to be installed.
 
     Returns \c true if the virtual component is found and not installed.
@@ -2392,18 +2352,7 @@ bool ComponentSelectionPage::isComplete() const
     if (!d->componentsResolved())
         return false;
 
-    if (packageManagerCore()->isInstaller() || packageManagerCore()->isUpdater())
-        return d->m_currentModel->checked().count();
-
-    if (d->m_currentModel->checkedState().testFlag(ComponentModel::DefaultChecked) == false)
-        return true;
-
-    const QSet<Component *> uncheckable = d->m_currentModel->uncheckable();
-    for (auto &component : uncheckable) {
-        if (component->forcedInstallation() && !component->isInstalled())
-            return true; // allow installation for new forced components
-    }
-    return false;
+    return d->m_currentModel->componentsSelected();
 }
 
 
@@ -2761,11 +2710,10 @@ void ReadyForInstallationPage::entering()
     m_taskDetailsBrowser->setVisible(!componentsOk || LoggingHandler::instance().isVerbose());
     setComplete(componentsOk);
 
-    QString spaceInfo;
-    if (packageManagerCore()->checkAvailableSpace(spaceInfo)) {
-        m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(), spaceInfo));
+    if (packageManagerCore()->checkAvailableSpace()) {
+        m_msgLabel->setText(QString::fromLatin1("%1 %2").arg(m_msgLabel->text(), packageManagerCore()->availableSpaceMessage()));
     } else {
-        m_msgLabel->setText(spaceInfo);
+        m_msgLabel->setText(packageManagerCore()->availableSpaceMessage());
         setComplete(false);
     }
 }
@@ -3172,16 +3120,8 @@ void FinishedPage::leaving()
 */
 void FinishedPage::handleFinishClicked()
 {
-    const QString program =
-        packageManagerCore()->replaceVariables(packageManagerCore()->value(scRunProgram));
-
-    const QStringList args = packageManagerCore()->replaceVariables(packageManagerCore()
-        ->values(scRunProgramArguments));
-    if (!m_runItCheckBox->isChecked() || program.isEmpty())
-        return;
-
-    qCDebug(QInstaller::lcInstallerInstallLog) << "starting" << program << args;
-    QProcess::startDetached(program, args);
+    if (m_runItCheckBox->isChecked())
+        packageManagerCore()->runProgram();
 }
 
 /*!

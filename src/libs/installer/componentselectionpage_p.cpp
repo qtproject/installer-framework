@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -74,20 +74,17 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_tabWidget(nullptr)
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
-        , m_allowCompressedRepositoryInstall(false)
         , m_allowCreateOfflineInstaller(false)
         , m_categoryLayoutVisible(false)
         , m_allModel(m_core->defaultComponentModel())
         , m_updaterModel(m_core->updaterComponentModel())
         , m_currentModel(m_allModel)
-        , m_proxyModel(new ComponentSortFilterProxyModel(q))
+        , m_proxyModel(m_core->componentSortFilterProxyModel())
         , m_componentsResolved(false)
         , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
     m_treeView->setUniformRowHeights(true);
-    m_proxyModel->setRecursiveFilteringEnabled(true);
-    m_proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
     m_descriptionBaseWidget = new QWidget(q);
     m_descriptionBaseWidget->setObjectName(QLatin1String("DescriptionBaseWidget"));
@@ -237,20 +234,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_core, SIGNAL(metaJobInfoMessage(QString)), this, SLOT(setMessage(QString)));
     connect(m_core, &PackageManagerCore::metaJobTotalProgress, this,
             &ComponentSelectionPagePrivate::setTotalProgress);
-
-#ifdef INSTALLCOMPRESSED
-    allowCompressedRepositoryInstall();
-#endif
 }
 
 ComponentSelectionPagePrivate::~ComponentSelectionPagePrivate()
 {
 
-}
-
-void ComponentSelectionPagePrivate::allowCompressedRepositoryInstall()
-{
-    m_allowCompressedRepositoryInstall = true;
 }
 
 void ComponentSelectionPagePrivate::setAllowCreateOfflineInstaller(bool allow)
@@ -260,7 +248,7 @@ void ComponentSelectionPagePrivate::setAllowCreateOfflineInstaller(bool allow)
 
 void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 {
-    if (m_allowCompressedRepositoryInstall)
+    if (m_core->allowCompressedRepositoryInstall())
         m_qbspPushButton->setVisible(true);
 }
 
@@ -498,27 +486,6 @@ void ComponentSelectionPagePrivate::deselectAll()
     m_currentModel->setCheckedState(ComponentModel::AllUnchecked);
 }
 
-void ComponentSelectionPagePrivate::enableRepositoryCategory(const QString &repositoryName, bool enable)
-{
-    QMap<QString, RepositoryCategory> organizedRepositoryCategories = m_core->settings().organizedRepositoryCategories();
-
-    QMap<QString, RepositoryCategory>::iterator i = organizedRepositoryCategories.find(repositoryName);
-    RepositoryCategory repoCategory;
-    while (i != organizedRepositoryCategories.end() && i.key() == repositoryName) {
-        repoCategory = i.value();
-        i++;
-    }
-
-    RepositoryCategory replacement = repoCategory;
-    replacement.setEnabled(enable);
-    QSet<RepositoryCategory> tmpRepoCategories = m_core->settings().repositoryCategories();
-    if (tmpRepoCategories.contains(repoCategory)) {
-        tmpRepoCategories.remove(repoCategory);
-        tmpRepoCategories.insert(replacement);
-        m_core->settings().addRepositoryCategories(tmpRepoCategories);
-    }
-}
-
 void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 {
     if (show)
@@ -546,7 +513,7 @@ void ComponentSelectionPagePrivate::fetchRepositoryCategories()
     QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
     for (int i = 0; i < checkboxes.count(); i++) {
         QCheckBox *checkbox = checkboxes.at(i);
-        enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
+        m_core->enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
     }
 
     if (!m_core->fetchRemotePackagesTree()) {
@@ -571,15 +538,8 @@ void ComponentSelectionPagePrivate::qbspButtonClicked()
         ComponentSelectionPage::tr("Open File"),defaultDownloadDirectory,
         QLatin1String("QBSP or 7z Files (*.qbsp *.7z)"));
 
-    QSet<Repository> set;
-    foreach (QString fileName, fileNames) {
-        Repository repository = Repository::fromUserInput(fileName, true);
-        repository.setEnabled(true);
-        set.insert(repository);
-    }
-    if (set.count() > 0) {
+    if (m_core->addQBspRepositories(fileNames)) {
         updateWidgetVisibility(true);
-        m_core->settings().addTemporaryRepositories(set, false);
         if (!m_core->fetchCompressedPackagesTree()) {
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("FailToFetchPackages"), tr("Error"), m_core->error());

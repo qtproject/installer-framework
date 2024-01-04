@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -47,6 +47,7 @@
 #include "installercalculator.h"
 #include "uninstallercalculator.h"
 #include "loggingutils.h"
+#include "componentsortfilterproxymodel.h"
 
 #include <productkeycheck.h>
 
@@ -1940,6 +1941,92 @@ void PackageManagerCore::setTemporaryRepositories(const QStringList &repositorie
     settings().setTemporaryRepositories(repositorySet, replace);
 }
 
+bool PackageManagerCore::addQBspRepositories(const QStringList &repositories)
+{
+    QSet<Repository> set;
+    foreach (QString fileName, repositories) {
+        Repository repository = Repository::fromUserInput(fileName, true);
+        repository.setEnabled(true);
+        set.insert(repository);
+    }
+    if (set.count() > 0) {
+        settings().addTemporaryRepositories(set, false);
+        return true;
+    }
+    return false;
+}
+
+bool PackageManagerCore::validRepositoriesAvailable() const
+{
+    foreach (const Repository &repo, settings().repositories()) {
+        if (repo.isEnabled() && repo.isValid()) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void PackageManagerCore::setAllowCompressedRepositoryInstall(bool allow)
+{
+    d->m_allowCompressedRepositoryInstall = allow;
+}
+
+bool PackageManagerCore::allowCompressedRepositoryInstall() const
+{
+    return d->m_allowCompressedRepositoryInstall;
+}
+
+bool PackageManagerCore::showRepositoryCategories() const
+{
+    bool showCagetories = settings().repositoryCategories().count() > 0 && !isOfflineOnly() && !isUpdater();
+    if (showCagetories)
+        settings().setAllowUnstableComponents(true);
+    return showCagetories;
+}
+
+QVariantMap PackageManagerCore::organizedRepositoryCategories() const
+{
+    QVariantMap map;
+    QSet<RepositoryCategory> categories = settings().repositoryCategories();
+    foreach (const RepositoryCategory &category, categories)
+        map.insert(category.displayname(), QVariant::fromValue(category));
+    return map;
+}
+
+void PackageManagerCore::enableRepositoryCategory(const QString &repositoryName, bool enable)
+{
+    QMap<QString, RepositoryCategory> organizedRepositoryCategories = settings().organizedRepositoryCategories();
+
+    QMap<QString, RepositoryCategory>::iterator i = organizedRepositoryCategories.find(repositoryName);
+    RepositoryCategory repoCategory;
+    while (i != organizedRepositoryCategories.end() && i.key() == repositoryName) {
+        repoCategory = i.value();
+        i++;
+    }
+
+    RepositoryCategory replacement = repoCategory;
+    replacement.setEnabled(enable);
+    QSet<RepositoryCategory> tmpRepoCategories = settings().repositoryCategories();
+    if (tmpRepoCategories.contains(repoCategory)) {
+        tmpRepoCategories.remove(repoCategory);
+        tmpRepoCategories.insert(replacement);
+        settings().addRepositoryCategories(tmpRepoCategories);
+    }
+}
+
+void PackageManagerCore::runProgram()
+{
+    const QString program = replaceVariables(value(scRunProgram));
+
+    const QStringList args = replaceVariables(values(scRunProgramArguments));
+    if (program.isEmpty())
+        return;
+
+    qCDebug(QInstaller::lcInstallerInstallLog) << "starting" << program << args;
+    QProcess::startDetached(program, args);
+}
+
+
 /*!
     Returns the script engine that prepares and runs the component scripts.
 
@@ -2517,6 +2604,20 @@ ComponentModel *PackageManagerCore::updaterComponentModel() const
 }
 
 /*!
+  Returns the proxy model
+*/
+
+ComponentSortFilterProxyModel *PackageManagerCore::componentSortFilterProxyModel()
+{
+    if (!d->m_componentSortFilterProxyModel) {
+        d->m_componentSortFilterProxyModel = new ComponentSortFilterProxyModel(this);
+        d->m_componentSortFilterProxyModel->setRecursiveFilteringEnabled(true);
+        d->m_componentSortFilterProxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+    }
+    return d->m_componentSortFilterProxyModel;
+}
+
+/*!
     Lists available packages filtered with \a regexp without GUI. Virtual
     components are not listed unless set visible. Optionally, a \a filters
     hash containing package information elements and regular expressions
@@ -2898,6 +2999,20 @@ void PackageManagerCore::addLicenseItem(const QHash<QString, QVariantMap> &licen
     }
 }
 
+bool PackageManagerCore::hasLicenses() const
+{
+    foreach (Component* component, orderedComponentsToInstall()) {
+        if (isMaintainer() && component->isInstalled())
+            continue; // package manager or updater, hide as long as the component is installed
+
+        // The component is about to be installed and provides a license, so the page needs to
+        // be shown.
+        if (!component->licenses().isEmpty())
+            return true;
+    }
+    return false;
+}
+
 /*!
  * Adds \a component local \a dependencies to a hash table for quicker search for
  * uninstall dependency components.
@@ -3127,12 +3242,22 @@ void PackageManagerCore::setCheckAvailableSpace(bool check)
 }
 
 /*!
-    Checks available disk space if the feature is not explicitly disabled. Informative
-    text about space status can be retrieved by passing \a message parameter. Returns
-    \c true if there is sufficient free space on installation and temporary volumes.
-*/
-bool PackageManagerCore::checkAvailableSpace(QString &message) const
+ * Returns informative text about disk space status
+ */
+QString PackageManagerCore::availableSpaceMessage() const
 {
+    return m_availableSpaceMessage;
+}
+
+/*!
+    Checks available disk space if the feature is not explicitly disabled. Returns
+    \c true if there is sufficient free space on installation and temporary volumes.
+
+    \sa availableSpaceMessage()
+*/
+bool PackageManagerCore::checkAvailableSpace()
+{
+    m_availableSpaceMessage.clear();
     const quint64 extraSpace = 256 * 1024 * 1024LL;
     quint64 required(requiredDiskSpace());
     quint64 tempRequired(requiredTemporaryDiskSpace());
@@ -3188,21 +3313,21 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
         }
 
         if (cacheOnSameVolume && (installVolumeAvailableSize <= (required + tempRequired))) {
-            message = tr("Not enough disk space to store temporary files and the "
+            m_availableSpaceMessage = tr("Not enough disk space to store temporary files and the "
                 "installation. %1 are available, while the minimum required is %2.").arg(
                 humanReadableSize(installVolumeAvailableSize), humanReadableSize(required + tempRequired));
             return false;
         }
 
         if (installVolumeAvailableSize < required) {
-            message = tr("Not enough disk space to store all selected components! %1 are "
+            m_availableSpaceMessage = tr("Not enough disk space to store all selected components! %1 are "
                 "available, while the minimum required is %2.").arg(humanReadableSize(installVolumeAvailableSize),
                 humanReadableSize(required));
             return false;
         }
 
         if (cacheVolumeAvailableSize < tempRequired) {
-            message = tr("Not enough disk space to store temporary files! %1 are available, "
+            m_availableSpaceMessage = tr("Not enough disk space to store temporary files! %1 are available, "
                 "while the minimum required is %2. You may select another location for the "
                 "temporary files by modifying the local cache path from the installer settings.")
                 .arg(humanReadableSize(cacheVolumeAvailableSize), humanReadableSize(tempRequired));
@@ -3211,22 +3336,22 @@ bool PackageManagerCore::checkAvailableSpace(QString &message) const
 
         if (installVolumeAvailableSize - required < 0.01 * targetVolume.size()) {
             // warn for less than 1% of the volume's space being free
-            message = tr("The volume you selected for installation seems to have sufficient space for "
+            m_availableSpaceMessage = tr("The volume you selected for installation seems to have sufficient space for "
                 "installation, but there will be less than 1% of the volume's space available afterwards.");
         } else if (installVolumeAvailableSize - required < 100 * 1024 * 1024LL) {
             // warn for less than 100MB being free
-            message = tr("The volume you selected for installation seems to have sufficient "
+            m_availableSpaceMessage = tr("The volume you selected for installation seems to have sufficient "
                 "space for installation, but there will be less than 100 MB available afterwards.");
         }
 #ifdef Q_OS_WIN
         if (isOfflineGenerator() && (required > UINT_MAX)) {
-            message = tr("The estimated installer size %1 would exceed the supported executable "
+            m_availableSpaceMessage = tr("The estimated installer size %1 would exceed the supported executable "
                 "size limit of %2. The application may not be able to run.")
                 .arg(humanReadableSize(required), humanReadableSize(UINT_MAX));
         }
 #endif
     }
-    message = QString::fromLatin1("%1 %2").arg(message,
+    m_availableSpaceMessage = QString::fromLatin1("%1 %2").arg(m_availableSpaceMessage,
         (isOfflineGenerator()
             ? tr("Created installer will use %1 of disk space.")
             : tr("Installation will use %1 of disk space."))

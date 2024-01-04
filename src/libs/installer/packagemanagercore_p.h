@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -62,6 +62,7 @@ class ComponentAlias;
 class InstallerCalculator;
 class UninstallerCalculator;
 class RemoteFileEngineHandler;
+class ComponentSortFilterProxyModel;
 
 class PackageManagerCorePrivate : public QObject
 {
@@ -314,6 +315,7 @@ private:
 
     ComponentModel *m_defaultModel;
     ComponentModel *m_updaterModel;
+    ComponentSortFilterProxyModel *m_componentSortFilterProxyModel;
 
     QObject *m_guiObject;
     QScopedPointer<RemoteFileEngineHandler> m_remoteFileEngineHandler;
@@ -331,6 +333,7 @@ private:
     QHash<QString, QStringList > m_componentReplaces;
 
     QString m_datFileName;
+    bool m_allowCompressedRepositoryInstall;
 };
 
 } // namespace QInstaller
