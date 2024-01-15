@@ -53,18 +53,24 @@
     \section2 Supported Compilers
 
     You can compile the Qt Installer Framework with Microsoft Visual Studio
-    2015 and newer, GCC 5 and newer, and Clang 11.0.0 and newer. Currently, the
-    tested combination for Windows is Qt 5.15.2 with MSVC 2015 (Windows 10).
+    2019 and newer, GCC 9 and newer, and Clang 13.0.0 and newer. Currently, the
+    tested combination for Windows is Qt 6.6.0 with MSVC 2019 (Windows 10).
 
     \section2 Configuring Qt
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
     installers as one file. For more information about statically linking
-    against OpenSSL libraries, see \l{http://doc.qt.io/qt-5/ssl.html}{SSL
+    against OpenSSL libraries, see \l{http://doc.qt.io/qt-6/ssl.html}{SSL
     Import and Export Restrictions}.
 
-    The supported Qt version is 5.15.2.
+    The supported Qt version is 6.6.0.
+
+    Get Qt sources:
+    \code
+    \l{https://wiki.qt.io/Building_Qt_6_from_Git}{Get Qt sources from git}.
+    Call init-repository with --module-subset=qt5compat, qtbase, qtdeclarative, qttools, qttranslations
+    \endcode
 
     \section3 Configuring Qt for Windows
 
@@ -75,22 +81,12 @@
 
     \endcode
 
-    Build Qt:
-    \code
-    nmake module-qtbase module-qtdeclarative module-qttools module-qttranslations module-qtwinextras
-    \endcode
-
     \section3 Configuring Qt for Linux
 
     Use the following configuration options for Linux:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev
-    \endcode
-
-    Build Qt:
-    \code
-    make module-qtbase module-qtdeclarative module-qttools module-qttranslations
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev -bundled-xcb-xinput -qt-harfbuzz -qt-doubleconversion
     \endcode
 
     \section3 Configuring Qt for macOS
@@ -98,12 +94,13 @@
     Use the following configuration options for macOS:
 
     \code
-    configure -prefix $PWD/qtbase -release -static -no-securetransport -accessibility -qt-zlib -qt-libpng -qt-libjpeg -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
+    configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
     \endcode
 
     Build Qt:
     \code
-    make module-qtbase module-qtdeclarative module-qttools module-qttranslations
+    cmake --build . --parallel
+    cmake --install .
     \endcode
 
     \section2 Third Party Dependencies
