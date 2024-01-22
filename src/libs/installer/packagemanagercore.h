@@ -29,6 +29,7 @@
 #define PACKAGEMANAGERCORE_H
 
 #include "binaryformat.h"
+#include "binarycontent.h"
 #include "component.h"
 #include "protocol.h"
 #include "repository.h"
@@ -305,6 +306,8 @@ public:
 
     void setPackageViewer();
     Q_INVOKABLE bool isPackageViewer() const;
+
+    void resetBinaryMarkerSupplement();
 
     void setUserSetBinaryMarker(qint64 magicMarker);
     Q_INVOKABLE bool isUserSetBinaryMarker() const;

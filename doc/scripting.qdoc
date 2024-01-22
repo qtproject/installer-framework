@@ -94,7 +94,7 @@
             \li Reference to the \l QInstaller of the component
         \row
             \li component
-            \li Reference to the \l Component of the component
+            \li Reference to the \l{https://doc.qt.io/qtinstallerframework/qinstaller-component.html}{Component}. of the component
     \endtable
 
     \section1 Message Boxes

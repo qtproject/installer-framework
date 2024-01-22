@@ -109,6 +109,7 @@ void tst_Settings::loadTutorialConfig()
     QCOMPARE(settings.repositorySettingsPageVisible(), true);
     QCOMPARE(settings.allowSpaceInPath(), true);
     QCOMPARE(settings.allowNonAsciiCharacters(), false);
+    QCOMPARE(settings.allowRepositoriesForOfflineInstaller(), true);
     QCOMPARE(settings.disableAuthorizationFallback(), false);
     QCOMPARE(settings.disableCommandLineInterface(), false);
     QCOMPARE(settings.createLocalRepository(), false);

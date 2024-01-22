@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -86,7 +86,7 @@ private slots:
     void progressChanged(int progress);
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
-    void startXMLTask(const QList<FileTaskItem> &items);
+    bool startXMLTask();
 
 private:
     bool fetchMetaDataPackages();
@@ -108,6 +108,7 @@ private:
                             const FileTaskResult &result, const Metadata &metadata);
     MetadataJob::Status setAdditionalRepositories(QMultiHash<QString, QPair<Repository, Repository> > repositoryUpdates,
                             const FileTaskResult &result, const Metadata& metadata);
+    void setInfoMessage(const QString &message);
 
 private:
     friend class Metadata;
@@ -116,6 +117,7 @@ private:
     PackageManagerCore *m_core;
 
     QList<FileTaskItem> m_packages;
+    QList<FileTaskItem> m_updatesXmlItems;
     TempPathDeleter m_tempDirDeleter;
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
@@ -123,8 +125,8 @@ private:
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
     DownloadType m_downloadType;
-    QList<FileTaskItem> m_unzipRepositoryitems;
     QList<FileTaskResult> m_metadataResult;
+    QList<FileTaskResult> m_updatesXmlResult;
     int m_downloadableChunkSize;
     int m_taskNumber;
     int m_totalTaskCount;

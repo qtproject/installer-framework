@@ -13,8 +13,8 @@ doc directory. The documentation is also available online at
 Notes
 --------------------------
 
-To build an installer, it is advised to use a statically linked Qt (5.15.2 or
-newer). The tested and supported Qt version is 5.15.2.
+To build an installer, it is advised to use a statically linked Qt (6.6.0 or
+newer). The tested and supported Qt version is 6.6.0
 
 See the documentation at
     https://doc.qt.io/qtinstallerframework/ifw-getting-started.html

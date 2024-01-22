@@ -3964,6 +3964,17 @@ bool PackageManagerCore::isPackageViewer() const
 }
 
 /*!
+    Resets the binary marker supplement of the installer to \c Default.
+    The supplement enables or disables additional features on top of the binary
+    marker state (\c Installer, \c Updater, \c PackageManager, \c Uninstaller).
+*/
+void PackageManagerCore::resetBinaryMarkerSupplement()
+{
+    d->m_magicMarkerSupplement = BinaryContent::Default;
+    emit installerBinaryMarkerChanged(d->m_magicBinaryMarker);
+}
+
+/*!
     Sets the installer magic binary marker based on \a magicMarker and
     userSetBinaryMarker to \c true.
 */

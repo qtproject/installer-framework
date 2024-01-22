@@ -323,8 +323,8 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scRemoveTargetDir << scLocalCacheDir << scPersistentLocalCache
                 << scRunProgram << scRunProgramArguments << scRunProgramDescription
                 << scDependsOnLocalInstallerBinary
-                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scDisableAuthorizationFallback
-                << scDisableCommandLineInterface
+                << scAllowSpaceInPath << scAllowNonAsciiCharacters << scAllowRepositoriesForOfflineInstaller
+                << scDisableAuthorizationFallback << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
                 << scWizardDefaultWidth << scWizardDefaultHeight << scWizardMinimumWidth << scWizardMinimumHeight
                 << scWizardShowPageList << scProductImages
@@ -647,6 +647,11 @@ bool Settings::allowSpaceInPath() const
 bool Settings::allowNonAsciiCharacters() const
 {
     return d->m_data.value(scAllowNonAsciiCharacters, false).toBool();
+}
+
+bool Settings::allowRepositoriesForOfflineInstaller() const
+{
+    return d->m_data.value(scAllowRepositoriesForOfflineInstaller, true).toBool();
 }
 
 bool Settings::disableAuthorizationFallback() const

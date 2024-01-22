@@ -566,6 +566,11 @@
             \li RepositorySettingsPageVisible
             \li Set to \c false to hide the repository settings page inside the settings dialog.
         \row
+            \li AllowRepositoriesForOfflineInstaller
+            \li Set to \c false to disable usage of any temporary or user configured repositories
+                set for offline installers. The maintenance tool written by an offline installer
+                can still access the repositories. Defaults to \c true.
+        \row
             \li AllowSpaceInPath
             \li Set to \c false if the installation path cannot contain space characters.
         \row
