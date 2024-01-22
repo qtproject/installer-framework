@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -116,6 +116,7 @@ public:
     Q_INVOKABLE void clickButton(int wizardButton, int delayInMs = 0);
     Q_INVOKABLE void clickButton(const QString &objectName, int delayInMs = 0) const;
     Q_INVOKABLE bool isButtonEnabled(int wizardButton);
+    Q_INVOKABLE void setWizardPageButtonText(int pageId, int buttonId, const QString &buttonText);
 
     Q_INVOKABLE void showSettingsButton(bool show);
     Q_INVOKABLE void setSettingsButtonEnabled(bool enable);

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -82,6 +82,7 @@ public:
     void clickButton(int wizardButton, int delayInMs = 0);
     void clickButton(const QString &objectName, int delayInMs = 0) const;
     bool isButtonEnabled(int wizardButton);
+    void setWizardPageButtonText(int pageId, int buttonId, const QString &buttonText);
 
     void showSettingsButton(bool show);
     void requestSettingsButtonByInstaller(bool request);

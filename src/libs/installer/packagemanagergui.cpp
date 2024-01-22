@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -689,6 +689,22 @@ bool PackageManagerGui::isButtonEnabled(int wb)
 
     qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(wb) << "not found!";
     return false;
+}
+
+/*!
+    Sets \a buttonText for button specified by \a buttonId to a installer page \a pageId.
+
+    \note In some pages, installer will change the button text when entering
+    the page. In that case, you need to connect to \c entered() -signal of the
+    page to change the \a buttonText.
+
+    \sa {gui::setWizardPageButtonText}{gui.setWizardPageButtonText}
+*/
+void PackageManagerGui::setWizardPageButtonText(int pageId, int buttonId, const QString &buttonText)
+{
+    PackageManagerPage *const p = qobject_cast<PackageManagerPage*> (page(pageId));
+    if (p)
+        p->setButtonText(static_cast<QWizard::WizardButton>(buttonId), buttonText);
 }
 
 /*!

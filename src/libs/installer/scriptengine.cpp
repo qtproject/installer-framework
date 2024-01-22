@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -187,6 +187,12 @@ bool GuiProxy::isButtonEnabled(int wizardButton)
     if (!m_gui)
         return false;
     return m_gui->isButtonEnabled(wizardButton);
+}
+
+void GuiProxy::setWizardPageButtonText(int pageId, int buttonId, const QString &buttonText)
+{
+    if (m_gui)
+        m_gui->setWizardPageButtonText(pageId, buttonId, buttonText);
 }
 
 void GuiProxy::showSettingsButton(bool show)
