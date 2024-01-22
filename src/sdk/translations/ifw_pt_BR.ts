@@ -1244,14 +1244,6 @@ Erro ao carregar %2</translation>
         <translation>Incompatibilidade detectada na soma de verificação para &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Recuperando metadados do repositório remoto...%1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Recuperando metadados do repositório remoto... </translation>
-    </message>
-    <message>
         <source>Failure to fetch repositories.</source>
         <translation>Falha ao buscar repositórios.</translation>
     </message>
@@ -1301,6 +1293,14 @@ Erro ao carregar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Não é possível abrir o arquivo &quot;%1&quot; para gravação: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Recuperando informações de repositórios remotos...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Recuperando metadados do repositório remoto...</translation>
     </message>
 </context>
 <context>

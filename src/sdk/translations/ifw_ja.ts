@@ -1569,14 +1569,6 @@ Error while loading %2</source>
         <translation>&quot;%1&quot; でチェックサムの不一致が検出されました。</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>リモート リポジトリからメタ情報を取得しています... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>リモート リポジトリからメタ情報を取得しています... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>アーカイブ &quot;%1&quot; の抽出中にエラーが発生しました: %2</translation>
     </message>
@@ -1613,6 +1605,14 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>書き込み用の、ファイル &quot;%1&quot; を開けません：%2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>リモート リポジトリから情報を取得しています...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>リモート リポジトリからメタ情報を取得しています... </translation>
     </message>
 </context>
 <context>
@@ -2096,7 +2096,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
-        <translation>エイリアスの名前が既存のコンポーネント &quot;%1&quot;　の名前と対立しまていす。</translation>
+        <translation>エイリアスの名前が既存のコンポーネント &quot;%1&quot;&#x3000;の名前と対立しまていす。</translation>
     </message>
     <message>
         <source>Unresolved component aliases</source>
@@ -2104,7 +2104,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
-        <translation>エイリアス &quot;%1&quot; と &quot;%2&quot;　の間の循環依存関係が検出されました。</translation>
+        <translation>エイリアス &quot;%1&quot; と &quot;%2&quot;&#x3000;の間の循環依存関係が検出されました。</translation>
     </message>
 </context>
 <context>

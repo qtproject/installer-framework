@@ -1574,14 +1574,6 @@ Error while loading %2</source>
         <translation>检测到“%1”的校验和不匹配。</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>正在从远程资料档案库中检索元信息... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>正在从远程资料档案库中检索元信息... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>提取存档“%1”时出错：%2</translation>
     </message>
@@ -1618,6 +1610,14 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>无法为了写入%2打开文件“%1”</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>正在从远程存储库检索信息...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>正在从远程资料档案库中检索元信息...</translation>
     </message>
 </context>
 <context>

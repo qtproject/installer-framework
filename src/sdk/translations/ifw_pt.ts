@@ -1032,11 +1032,11 @@ Erro ao carregar %2</translation>
     </message>
     <message>
         <source>Components selected by alias &quot;%1&quot;:</source>
-        <translation>Componentes selecionados pelo 'alias' &quot;%1&quot;:</translation>
+        <translation>Componentes selecionados pelo &apos;alias&apos; &quot;%1&quot;:</translation>
     </message>
     <message>
         <source>Recursion detected, component alias &quot;%1&quot; already added.</source>
-        <translation>Foi detectado um ciclo recursivo, o 'alias' do componente &quot;%1&quot; já foi adicionado devido a: &quot;%2&quot;</translation>
+        <translation>Foi detectado um ciclo recursivo, o &apos;alias&apos; do componente &quot;%1&quot; já foi adicionado devido a: &quot;%2&quot;</translation>
     </message>
 </context>
 <context>
@@ -1248,14 +1248,6 @@ Erro ao carregar %2</translation>
         <translation>Incompatibilidade detectada na verificação para &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>A obter metadados do repositório remoto...%1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>A obter metainformação do repositório remoto... </translation>
-    </message>
-    <message>
         <source>Failure to fetch repositories.</source>
         <translation>Ocorreu um erro ao obter repositórios.</translation>
     </message>
@@ -1301,6 +1293,14 @@ Erro ao carregar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Não foi possível abrir o ficheiro &quot;%1&quot; para escrita: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>A obter informações de repositórios remotos...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>A obter metainformação do repositório remoto...</translation>
     </message>
 </context>
 <context>
@@ -1556,11 +1556,11 @@ De certeza que deseja continuar?</translation>
     </message>
     <message>
         <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
-        <translation>O 'alias' %1 não pode ser selecionado. Ocorreu um problema a carregar este 'alias', foi marcado com instável e não pode ser selecionado.</translation>
+        <translation>O &apos;alias&apos; %1 não pode ser selecionado. Ocorreu um problema a carregar este &apos;alias&apos;, foi marcado com instável e não pode ser selecionado.</translation>
     </message>
     <message>
         <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
-        <translation>O 'alias' %1 não pode ser selecionado. Este 'alias' está categorizado como virtual, o que significa que não pode ser selecionado manualmente.</translation>
+        <translation>O &apos;alias&apos; %1 não pode ser selecionado. Este &apos;alias&apos; está categorizado como virtual, o que significa que não pode ser selecionado manualmente.</translation>
     </message>
     <message>
         <source>Created installer will use %1 of disk space.</source>
@@ -1739,11 +1739,11 @@ De certeza que deseja continuar?</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
-        <translation>A geração 'offline' foi concluída com sucesso.</translation>
+        <translation>A geração &apos;offline&apos; foi concluída com sucesso.</translation>
     </message>
     <message>
         <source>Offline generation aborted!</source>
-        <translation>A geração 'offline' foi cancelada!</translation>
+        <translation>A geração &apos;offline&apos; foi cancelada!</translation>
     </message>
     <message>
         <source>Installing component %1</source>
@@ -1835,11 +1835,11 @@ De certeza que deseja continuar?</translation>
     </message>
     <message>
         <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
-        <translation>O 'alias' declara um nome em conflito com um componente pré-existente &quot;%1&quot;</translation>
+        <translation>O &apos;alias&apos; declara um nome em conflito com um componente pré-existente &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Unresolved component aliases</source>
-        <translation>'Alias' dos componentes não resolvidos.</translation>
+        <translation>&apos;Alias&apos; dos componentes não resolvidos.</translation>
     </message>
     <message>
         <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
@@ -2062,11 +2062,11 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     </message>
     <message>
         <source>Create Offline Installer</source>
-        <translation>Criar um Instalador 'Offline'</translation>
+        <translation>Criar um Instalador &apos;Offline&apos;</translation>
     </message>
     <message>
         <source>Create offline installer from selected components, instead of installing now.</source>
-        <translation>Invés de instalar, criar um instalador 'Offline' a partir dos componentes selecionados.</translation>
+        <translation>Invés de instalar, criar um instalador &apos;Offline&apos; a partir dos componentes selecionados.</translation>
     </message>
 </context>
 <context>
@@ -2152,11 +2152,11 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     </message>
     <message>
         <source>Create Offline Installer</source>
-        <translation>Criar um Instalador 'Offline'</translation>
+        <translation>Criar um Instalador &apos;Offline&apos;</translation>
     </message>
     <message>
         <source>Ready to Create Offline Installer</source>
-        <translation>Pronto para criar um Instalador 'Offline'</translation>
+        <translation>Pronto para criar um Instalador &apos;Offline&apos;</translation>
     </message>
     <message>
         <source>All required information is now available to create an offline installer for selected components.</source>
@@ -2203,15 +2203,15 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     </message>
     <message>
         <source>&amp;Create Offline Installer</source>
-        <translation>Criar um Instalador 'Offline'</translation>
+        <translation>Criar um Instalador &apos;Offline&apos;</translation>
     </message>
     <message>
         <source>Creating Offline Installer for %1</source>
-        <translation>A criar um Instalador 'Offline' para %1</translation>
+        <translation>A criar um Instalador &apos;Offline&apos; para %1</translation>
     </message>
     <message>
         <source>Creating Offline Installer</source>
-        <translation>A criar um Instalador 'Offline'</translation>
+        <translation>A criar um Instalador &apos;Offline&apos;</translation>
     </message>
 </context>
 <context>

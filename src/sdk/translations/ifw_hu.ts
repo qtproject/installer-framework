@@ -1622,14 +1622,6 @@ Hiba %2 betöltése közben</translation>
         <translation>Ellenőrző összeg eltérést észlelt &quot;%1&quot; fájlnál.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Metainformációk lekérése távoli tárolóból... %1/ %2</translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Metainformációk lekérése távoli tárolóból...</translation>
-    </message>
-    <message>
         <source>Cannot open file &quot;%1&quot; for reading: %2</source>
         <translation>Nem sikerült megnyitni &quot;%1&quot; fájlt olvasásra: %2</translation>
     </message>
@@ -1666,6 +1658,14 @@ Hiba %2 betöltése közben</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Nem sikerült megnyitni &quot;%1&quot; fájlt írásra: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Információk lekérése távoli tárolóból...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Metainformációk lekérése távoli tárolóból...</translation>
     </message>
 </context>
 <context>

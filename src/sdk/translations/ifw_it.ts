@@ -1578,14 +1578,6 @@ Errore durante il caricamento di %2</translation>
         <translation>Rilevata mancata corrispondenza checksum per &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Recupero delle informazioni sui metadati dal repository remoto in corso... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Recupero delle informazioni sui metadati dal repository remoto in corso... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Errore durante l&apos;estrazione dell&apos;archivio &quot;%1&quot;: %2</translation>
     </message>
@@ -1627,6 +1619,14 @@ Errore durante il caricamento di %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Impossibile aprire il file &quot;%1&quot; per la scrittura: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Recupero di informazioni da repository remoti in corso...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Recupero delle informazioni sui metadati dal repository remoto in corso...</translation>
     </message>
 </context>
 <context>

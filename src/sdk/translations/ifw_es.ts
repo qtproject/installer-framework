@@ -1582,14 +1582,6 @@ Error al descargar %2</translation>
         <translation>Discrepancia de suma de comprobación detectada para &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Recuperando información de metadatos del repositorio remoto... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Recuperando información de metadatos del repositorio remoto... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Error al extraer el archivo &quot;%1&quot;: %2</translation>
     </message>
@@ -1627,6 +1619,14 @@ Error al descargar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>No se puede abrir el archivo &apos;%1&apos; para la escritura: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Recuperando información de repositorios remotos...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Recuperando información de metadatos del repositorio remoto...</translation>
     </message>
 </context>
 <context>
