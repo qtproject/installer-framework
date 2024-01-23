@@ -84,7 +84,8 @@ public:
         Canceled = 3,
         Unfinished = 4,
         ForceUpdate = 5,
-        EssentialUpdated = 6
+        EssentialUpdated = 6,
+        NoPackagesFound = 7
     };
     Status status() const;
     QString error() const;
@@ -149,8 +150,9 @@ public:
     void setProxyFactory(PackageManagerProxyFactory *factory);
 
     PackagesList remotePackages();
-    bool fetchRemotePackagesTree();
+    bool fetchRemotePackagesTree(const QStringList& components = QStringList());
     bool fetchCompressedPackagesTree();
+    bool fetchPackagesWithFallbackRepositories(const QStringList& components, bool &fallBackReposFetched);
 
     bool run();
     void reset();
@@ -478,7 +480,7 @@ private:
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesMap installedPackages);
     bool componentUninstallableFromCommandLine(const QString &componentName);
-    bool checkComponentsForInstallation(const QStringList &names, QString &errorMessage);
+    bool checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound);
 
 private:
     PackageManagerCorePrivate *const d;

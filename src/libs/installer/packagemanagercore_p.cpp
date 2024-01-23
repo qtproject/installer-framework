@@ -62,6 +62,7 @@
 
 #include <QSettings>
 #include <QtConcurrentRun>
+#include <QtConcurrent>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QDirIterator>
@@ -152,6 +153,27 @@ static void deferredRename(const QString &oldName, const QString &newName, bool 
 #endif
 }
 
+static bool filterMissingAliasesToInstall(const QString& component, const QList<ComponentAlias *> packages)
+{
+    bool packageFound = false;
+    for (qsizetype i = 0; i < packages.size(); ++i) {
+        packageFound = (packages.at(i)->name() == component);
+        if (packageFound)
+            break;
+    }
+    return !packageFound;
+}
+
+static bool filterMissingPackagesToInstall(const QString& component, const PackagesList& packages)
+{
+    bool packageFound = false;
+    for (qsizetype i = 0; i < packages.size(); ++i) {
+        packageFound = (packages.at(i)->data(scName).toString() == component);
+        if (packageFound)
+            break;
+    }
+    return !packageFound;
+}
 
 // -- PackageManagerCorePrivate
 
@@ -2615,6 +2637,56 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
         ProgressCoordinator::instance()->emitDetailTextChanged(tr("Done"));
 }
 
+PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(const QStringList& components)
+{
+    // init default model before fetching remote packages tree
+    ComponentModel *model = m_core->defaultComponentModel();
+    Q_UNUSED(model);
+
+    bool fallbackReposFetched = false;
+    auto fetchComponents = [&]() {
+        bool packagesFound = m_core->fetchPackagesWithFallbackRepositories(components, fallbackReposFetched);
+
+        if (!packagesFound) {
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace()
+                << "No components available with the current selection.";
+            setStatus(PackageManagerCore::Canceled);
+            return false;
+        }
+        QString errorMessage;
+        bool unstableAliasFound = false;
+        if (m_core->checkComponentsForInstallation(components, errorMessage, unstableAliasFound)) {
+            if (!errorMessage.isEmpty())
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
+            if (calculateComponentsAndRun()) {
+                if (m_core->isOfflineGenerator())
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Created installer to:" << offlineBinaryName();
+                else
+                    qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
+            }
+        } else {
+            // We found unstable alias and all repos were not fetched. Alias might have dependency to component
+            // which exists in non-default repository. Fetch all repositories now.
+            if (unstableAliasFound && !fallbackReposFetched) {
+                return false;
+            }
+            else {
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
+                    << "No components available with the current selection.";
+            }
+        }
+        return true;
+    };
+
+    if (!fetchComponents() && !fallbackReposFetched) {
+        setStatus(PackageManagerCore::Running);
+        enableAllCategories();
+        fetchComponents();
+    }
+
+    return m_core->status();
+}
+
 void PackageManagerCorePrivate::setComponentSelection(const QString &id, Qt::CheckState state)
 {
     ComponentModel *model = m_core->isUpdater() ? m_core->updaterComponentModel() : m_core->defaultComponentModel();
@@ -3025,6 +3097,63 @@ void PackageManagerCorePrivate::updateComponentInstallActions()
         component->setInstallAction(ComponentModelHelper::Uninstall);
     for (Component *component : installerCalculator()->resolvedComponents())
         component->setInstallAction(ComponentModelHelper::Install);
+}
+
+bool PackageManagerCorePrivate::enableAllCategories()
+{
+    QSet<RepositoryCategory> repoCategories = m_data.settings().repositoryCategories();
+    bool additionalRepositoriesEnabled = false;
+    for (const auto &category : repoCategories) {
+        if (!category.isEnabled()) {
+            additionalRepositoriesEnabled = true;
+            enableRepositoryCategory(category, true);
+        }
+    }
+    return additionalRepositoriesEnabled;
+}
+
+void PackageManagerCorePrivate::enableRepositoryCategory(const RepositoryCategory &repoCategory, const bool enable)
+{
+    RepositoryCategory replacement = repoCategory;
+    replacement.setEnabled(enable);
+    QSet<RepositoryCategory> tmpRepoCategories = m_data.settings().repositoryCategories();
+    if (tmpRepoCategories.contains(repoCategory)) {
+        tmpRepoCategories.remove(repoCategory);
+        tmpRepoCategories.insert(replacement);
+        m_data.settings().addRepositoryCategories(tmpRepoCategories);
+    }
+}
+
+bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& components)
+{
+    if (components.isEmpty())
+        return true;
+
+    PackagesList remotes = remotePackages();
+
+    auto componentsNotFoundForInstall = QtConcurrent::blockingFiltered(
+        components,
+        [remotes](const QString& installerPackage) {
+            return filterMissingPackagesToInstall(installerPackage, remotes);
+        }
+        );
+
+    if (componentsNotFoundForInstall.count() > 0) {
+        QList<ComponentAlias *> aliasList = componentAliases();
+        auto aliasesNotFoundForInstall = QtConcurrent::blockingFiltered(
+            components,
+            [aliasList](const QString& installerPackage) {
+                return filterMissingAliasesToInstall(installerPackage, aliasList);
+            }
+            );
+
+        if (aliasesNotFoundForInstall.count() > 0) {
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << aliasesNotFoundForInstall.join(QLatin1String(", ")) << ". Component(s) not found.";
+            setStatus(PackageManagerCore::NoPackagesFound);
+            return false;
+        }
+    }
+    return true;
 }
 
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)

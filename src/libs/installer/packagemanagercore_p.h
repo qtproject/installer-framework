@@ -177,6 +177,7 @@ public:
     void unpackComponents(const QList<Component *> &components, double progressOperationSize);
 
     void installComponent(Component *component, double progressOperationSize);
+    PackageManagerCore::Status fetchComponentsAndInstall(const QStringList& components);
 
     void setComponentSelection(const QString &id, Qt::CheckState state);
 
@@ -281,6 +282,11 @@ private:
     void createAutoDependencyHash(const QString &componentName, const QString &oldValue, const QString &newValue);
     void createLocalDependencyHash(const QString &componentName, const QString &dependencies);
     void updateComponentInstallActions();
+
+    bool enableAllCategories();
+    void enableRepositoryCategory(const RepositoryCategory &repoCategory, const bool enable);
+
+    bool installablePackagesFound(const QStringList& components);
 
     // remove once we deprecate isSelected, setSelected etc...
     void restoreCheckState();

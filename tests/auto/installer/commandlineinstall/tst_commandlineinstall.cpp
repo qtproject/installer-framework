@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -34,6 +34,7 @@
 #include <QLoggingCategory>
 #include <QTest>
 #include <QRegularExpression>
+#include <QSignalSpy>
 
 using namespace QInstaller;
 
@@ -54,7 +55,6 @@ public:
     void ignoreInstallPackageFailsMessages(const QRegularExpression &regExp)
     {
         QTest::ignoreMessage(QtDebugMsg, "Fetching latest update information...");
-        QTest::ignoreMessage(QtDebugMsg, "Loading component scripts...");
         QTest::ignoreMessage(QtDebugMsg, regExp);
     }
 
@@ -159,8 +159,6 @@ private slots:
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("B.subcomponent")));
 
-        ignoreInstallPackageFailsMessages(QRegularExpression("Cannot install MissingComponent. "
-                                                             "Component not found.\n"));
         QCOMPARE(PackageManagerCore::Canceled, core->installSelectedComponentsSilently(QStringList()
                 << QLatin1String("MissingComponent")));
         QCOMPARE(PackageManagerCore::Canceled, core->status());
@@ -222,6 +220,57 @@ private slots:
 
         QDir dir(testDirectory);
         QVERIFY(dir.removeRecursively());
+    }
+
+    void testCategoryInstall_data()
+    {
+        QTest::addColumn<QString>("repository");
+        QTest::addColumn<QStringList>("installComponents");
+        QTest::addColumn<PackageManagerCore::Status>("status");
+
+
+        QTest::newRow("Category installation")
+            << ":///data/installPackagesRepository"
+            << (QStringList() << "componentE")
+            << PackageManagerCore::Success;
+    }
+
+    void testCategoryInstall()
+    {
+        QFETCH(QString, repository);
+        QFETCH(QStringList, installComponents);
+        QFETCH(PackageManagerCore::Status, status);
+
+
+        QString loggingRules = (QLatin1String("ifw.* = true\n"));
+        QLoggingCategory::setFilterRules(loggingRules);
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+            (m_installDir));
+
+        RepositoryCategory category;
+        category.setEnabled(false);
+        category.setDisplayName(QLatin1String("category"));
+
+        Repository repo = Repository::fromUserInput(repository);
+        category.addRepository(repo);
+
+        QSet<RepositoryCategory> categories;
+        categories.insert(category);
+
+        core->settings().addRepositoryCategories(categories);
+
+        QSignalSpy spy(core.data(), &PackageManagerCore::statusChanged);
+        QCOMPARE(core->installSelectedComponentsSilently(QStringList() << installComponents), status);
+
+        QList<int> statusArguments;
+
+        for (qsizetype i = 0; i < spy.size(); ++i) {
+            QList<QVariant> tempList = spy.at(i);
+            statusArguments << tempList.at(0).toInt();
+        }
+
+        QVERIFY(statusArguments.contains(PackageManagerCore::NoPackagesFound));
+        QVERIFY(statusArguments.contains(PackageManagerCore::Success));
     }
 
     void testInstall_data()

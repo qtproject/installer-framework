@@ -1659,11 +1659,39 @@ bool PackageManagerCore::fetchCompressedPackagesTree()
     return fetchPackagesTree(packages, installedPackages);
 }
 
+bool PackageManagerCore::fetchPackagesWithFallbackRepositories(const QStringList& components, bool &fallBackReposFetched)
+{
+    auto checkComponents = [&]() {
+        if (!fetchRemotePackagesTree(components))
+            return false;
+        return true;
+    };
+
+    if (!checkComponents()) {
+        // error when fetching packages tree
+        if (status() != NoPackagesFound)
+            return false;
+        //retry fetching packages with all categories enabled
+        fallBackReposFetched = true;
+        if (!d->enableAllCategories())
+            return false;
+
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote()
+            << "Components not found for installation with the current selection."
+            << "Searching from additional repositories";
+        if (!checkComponents()) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /*!
     Checks for packages to install. Returns \c true if newer versions exist
-    and they can be installed.
+    and they can be installed. Returns \c false if not \a components are found
+    for install, or if error occurred when fetching and generating package tree.
 */
-bool PackageManagerCore::fetchRemotePackagesTree()
+bool PackageManagerCore::fetchRemotePackagesTree(const QStringList& components)
 {
     d->setStatus(Running);
 
@@ -1691,8 +1719,14 @@ bool PackageManagerCore::fetchRemotePackagesTree()
         return false;
 
     const PackagesList &packages = d->remotePackages();
-    if (packages.isEmpty())
+    if (packages.isEmpty()) {
+        d->setStatus(PackageManagerCore::NoPackagesFound);
         return false;
+    }
+
+    if (!d->installablePackagesFound(components))
+        return false;
+
     return fetchPackagesTree(packages, installedPackages);
 }
 
@@ -1998,19 +2032,9 @@ void PackageManagerCore::enableRepositoryCategory(const QString &repositoryName,
     QMap<QString, RepositoryCategory> organizedRepositoryCategories = settings().organizedRepositoryCategories();
 
     QMap<QString, RepositoryCategory>::iterator i = organizedRepositoryCategories.find(repositoryName);
-    RepositoryCategory repoCategory;
     while (i != organizedRepositoryCategories.end() && i.key() == repositoryName) {
-        repoCategory = i.value();
+        d->enableRepositoryCategory(i.value(), enable);
         i++;
-    }
-
-    RepositoryCategory replacement = repoCategory;
-    replacement.setEnabled(enable);
-    QSet<RepositoryCategory> tmpRepoCategories = settings().repositoryCategories();
-    if (tmpRepoCategories.contains(repoCategory)) {
-        tmpRepoCategories.remove(repoCategory);
-        tmpRepoCategories.insert(replacement);
-        settings().addRepositoryCategories(tmpRepoCategories);
     }
 }
 
@@ -2782,7 +2806,7 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     eligible for installation, otherwise returns \c false. An error message can be retrieved
     with \a errorMessage.
 */
-bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage)
+bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound)
 {
     bool installComponentsFound = false;
 
@@ -2795,6 +2819,7 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names
                 if (alias->isUnstable()) {
                     errorMessage.append(tr("Cannot select alias %1. There was a problem loading this alias, "
                         "so it is marked unstable and cannot be selected.").arg(name) + QLatin1Char('\n'));
+                    unstableAliasFound = true;
                     continue;
                 } else if (alias->isVirtual()) {
                     errorMessage.append(tr("Cannot select %1. Alias is marked virtual, meaning it cannot "
@@ -2893,7 +2918,16 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
 
     ComponentModel *model = updaterComponentModel();
 
-    fetchRemotePackagesTree();
+    bool fallbackReposFetched = false;
+    bool packagesFound = fetchPackagesWithFallbackRepositories(componentsToUpdate, fallbackReposFetched);
+
+    if (!packagesFound) {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace()
+            << "No components available for update with the current selection.";
+        d->setStatus(Canceled);
+        return status();
+    }
+
     // List contains components containing update, if essential found contains only essential component
     const QList<QInstaller::Component*> componentList = componentsMarkedForInstallation();
 
@@ -3096,23 +3130,7 @@ PackageManagerCore::Status PackageManagerCore::removeInstallationSilently()
 PackageManagerCore::Status PackageManagerCore::createOfflineInstaller(const QStringList &componentsToAdd)
 {
     setOfflineGenerator();
-    // init default model before fetching remote packages tree
-    ComponentModel *model = defaultComponentModel();
-    Q_UNUSED(model);
-    if (!fetchRemotePackagesTree())
-        return status();
-
-    QString errorMessage;
-    if (checkComponentsForInstallation(componentsToAdd, errorMessage)) {
-        if (d->calculateComponentsAndRun()) {
-            qCDebug(QInstaller::lcInstallerInstallLog)
-                << "Created installer to:" << offlineBinaryName();
-        }
-    } else {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
-            << "\nNo components available with the current selection.";
-    }
-    return status();
+    return d->fetchComponentsAndInstall(componentsToAdd);
 }
 
 /*!
@@ -3136,24 +3154,7 @@ PackageManagerCore::Status PackageManagerCore::installSelectedComponentsSilently
             return PackageManagerCore::Canceled;
         }
     }
-
-    // init default model before fetching remote packages tree
-    ComponentModel *model = defaultComponentModel();
-    Q_UNUSED(model);
-    if (!fetchRemotePackagesTree())
-        return status();
-
-    QString errorMessage;
-    if (checkComponentsForInstallation(components, errorMessage)) {
-        if (!errorMessage.isEmpty())
-            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
-        if (d->calculateComponentsAndRun())
-            qCDebug(QInstaller::lcInstallerInstallLog) << "Components installed successfully";
-    } else {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
-            << "\nNo components available for installation with the current selection.";
-    }
-    return status();
+    return d->fetchComponentsAndInstall(components);
 }
 
 /*!
