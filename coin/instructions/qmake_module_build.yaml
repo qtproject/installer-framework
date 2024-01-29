@@ -9,7 +9,7 @@ instructions:
         maxTimeInSeconds: 600
         maxTimeBetweenOutput: 600
         project: qtsdk/tqtc-qtsdk
-        ref: master
+        ref: production
         directory: qtsdk/tqtc-qtsdk
         userMessageOnFailure: "Could not install qtsdk/tqtc-qtsdk source archive. Please investigate why."
 
