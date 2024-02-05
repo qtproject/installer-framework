@@ -1281,14 +1281,6 @@ Greška prilikom učitavanja %2</translation>
         <translation>Ustanovljena je neusklađenost kontrolnog zbroja za &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Dohvaćanje meta informacija s udaljenih spremišta … %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Dohvaćanje meta informacija s udaljenih spremišta … </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Greška prilikom raspakiravanja arhive &quot;%1&quot;: %2</translation>
     </message>
@@ -1331,6 +1323,14 @@ Greška prilikom učitavanja %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Nije moguće otvoriti datoteku &quot;%1&quot; za zapisivanje: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Dohvaćanje informacija s udaljenih spremišta …</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Dohvaćanje meta informacija s udaljenih spremišta …</translation>
     </message>
 </context>
 <context>

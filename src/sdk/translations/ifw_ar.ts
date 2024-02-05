@@ -1414,14 +1414,6 @@ Error while loading %2</source>
         <translation>اكتُشف عدم تطابق تدقيق المجموع لـ &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>جارٍ الحصول على معلومات التعريف من المستودع البعيد... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>جارٍ الحصول على معلومات التعريف من المستودع البعيد... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>حدث خطأ أثناء إستخراج الأرشيف &quot;%1&quot;: %2</translation>
     </message>
@@ -1463,6 +1455,14 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>لا يمكن فتح الملف &quot;%1&quot; للكتابة: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>الحصول على المعلومات من المستودع البعيد...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>جارٍ الحصول على معلومات التعريف من المستودع البعيد...</translation>
     </message>
 </context>
 <context>

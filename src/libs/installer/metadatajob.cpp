@@ -353,7 +353,7 @@ bool MetadataJob::startXMLTask()
                 &MetadataJob::progressChanged);
         m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
 
-        setInfoMessage(QLatin1String("Retrieving Updates.xml files from remote repository..."));
+        setInfoMessage(tr("Retrieving information from remote repositories..."));
         return true;
     }
     return false;
@@ -707,7 +707,7 @@ bool MetadataJob::fetchMetaDataPackages()
         DownloadFileTask *const metadataTask = new DownloadFileTask(tempPackages);
         metadataTask->setProxyFactory(m_core->proxyFactory());
         m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
-        setInfoMessage(QLatin1String("Retrieving meta information from remote repository..."));
+        setInfoMessage(tr("Retrieving meta information from remote repository..."));
         return true;
     }
     return false;
@@ -1151,7 +1151,7 @@ void MetadataJob::setInfoMessage(const QString &message)
     m_taskNumber++;
     QString metaInformation = message;
     if (m_totalTaskCount > 1)
-        metaInformation = tr("%1 %2/%3 ").arg(message).arg(m_taskNumber).arg(m_totalTaskCount);
+        metaInformation = QLatin1String(" %1 %2/%3 ").arg(message).arg(m_taskNumber).arg(m_totalTaskCount);
     emit infoMessage(this, metaInformation);
 
 }

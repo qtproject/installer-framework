@@ -1591,14 +1591,6 @@ Błąd podczas wczytywania %2</translation>
         <translation>Wykryto niezgodność sumy kontrolnej dla &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Pobieranie metainformacji z repozytorium zdalnego... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Pobieranie metainformacji z repozytorium zdalnego... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Błąd podczas wyodrębniania archiwum &quot;%1&quot;: %2</translation>
     </message>
@@ -1641,6 +1633,14 @@ Błąd podczas wczytywania %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Nie można otworzyć pliku &quot;%1&quot; do zapisu: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Pobieranie informacji ze zdalnych repozytoriów...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Pobieranie metainformacji z repozytorium zdalnego...</translation>
     </message>
 </context>
 <context>

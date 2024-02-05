@@ -1586,14 +1586,6 @@ Fejl under indlæsning af %2</translation>
         <translation>Tjeksum uoverensstemmelse registreret for &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Henter metainformation fra fjern-repository... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Henter metainformation fra fjern-repository... </translation>
-    </message>
-    <message>
         <source>Metadata download canceled.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1627,6 +1619,14 @@ Fejl under indlæsning af %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation type="unfinished">Kan ikke åbne filen &quot;%1&quot; til skrivning: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Henter information fra fjern-repository...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Henter metainformation fra fjern-repository...</translation>
     </message>
 </context>
 <context>

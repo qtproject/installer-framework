@@ -1621,14 +1621,6 @@ Fehler beim Laden von %2</translation>
         <translation>Checksummen stimmen nicht überein &apos;%1&apos;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Metainformationen werden vom Installationsserver empfangen... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Metainformationen werden vom Installationsserver empfangen ... </translation>
-    </message>
-    <message>
         <source>Unsupported archive &quot;%1&quot;: no handler registered for file suffix &quot;%2&quot;.</source>
         <translation>Nicht unterstütztes Archivformat: &quot;%1&quot;: Für die Dateiendung &quot;%2&quot; ist keine Behandlungsroutine registriert.</translation>
     </message>
@@ -1666,6 +1658,14 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Die Datei &quot;%1&quot; konnte nicht zum Schreiben geöffnet werden: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Informationen werden vom Installationsserver empfangen...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Metainformationen werden vom Installationsserver empfangen...</translation>
     </message>
 </context>
 <context>

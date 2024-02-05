@@ -1612,14 +1612,6 @@ Error en descarregar %2</translation>
         <translation>S&apos;ha detectat una discrepància en la suma de verificació per a «%1».</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>S&apos;està recuperant la informació de les metadades des del repositori remot... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>S&apos;està recuperant la informació de les metadades des del repositori remot... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Error en extreure l&apos;arxiu «%1»: %2</translation>
     </message>
@@ -1661,6 +1653,14 @@ Error en descarregar %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>No s&apos;ha pogut obrir el fitxer «%1» per a escriptura: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>S&apos;està recuperant la informació des de repositoris remots...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>S&apos;està recuperant la informació de les metadades des del repositori remot...</translation>
     </message>
 </context>
 <context>

@@ -951,7 +951,7 @@
     </message>
     <message>
         <source>Create offline installer from selected components, instead of installing now.</source>
-        <translation>Créer un programme d’installation hors ligne à partir des composants sélectionnés, au lieu d'installer maintenant.</translation>
+        <translation>Créer un programme d’installation hors ligne à partir des composants sélectionnés, au lieu d&apos;installer maintenant.</translation>
     </message>
 </context>
 <context>
@@ -1582,14 +1582,6 @@ Erreur lors du chargement de %2</translation>
         <translation>Non-concordance des sommes de contrôle détectée pour &quot;%1&quot;.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Extraction des métadonnées depuis le référentiel distant... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Extraction des métadonnées depuis le référentiel distant... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>Erreur lors de l’extraction de l’archive &quot;%1&quot; : %2</translation>
     </message>
@@ -1627,6 +1619,14 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Impossible d’ouvrir le fichier &quot;%1&quot; en écriture : %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Extraction des informations depuis le référentiels distants...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Extraction des métadonnées depuis le référentiel distant...</translation>
     </message>
 </context>
 <context>
@@ -1831,15 +1831,15 @@ Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>Cannot select alias %1. There was a problem loading this alias, so it is marked unstable and cannot be selected.</source>
-        <translation>Impossible de sélectionner l'alias %1. Un problème est survenu lors du chargement de cet alaias, il est donc marqué comme instable et ne peut pas être sélectionné</translation>
+        <translation>Impossible de sélectionner l&apos;alias %1. Un problème est survenu lors du chargement de cet alaias, il est donc marqué comme instable et ne peut pas être sélectionné</translation>
     </message>
     <message>
         <source>Cannot select %1. Alias is marked virtual, meaning it cannot be selected manually.</source>
-        <translation>Impossible de sélectionner %1. L'alias est marqué virtuel, ce qui signifie qu'il ne peut pas être sélectionné manuellement.</translation>
+        <translation>Impossible de sélectionner %1. L&apos;alias est marqué virtuel, ce qui signifie qu&apos;il ne peut pas être sélectionné manuellement.</translation>
     </message>
     <message>
         <source>Created installer will use %1 of disk space.</source>
-        <translation>Le programme d'installation créé utilisera %1 d'espace disque.</translation>
+        <translation>Le programme d&apos;installation créé utilisera %1 d&apos;espace disque.</translation>
     </message>
 </context>
 <context>
@@ -2110,7 +2110,7 @@ Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
-        <translation>L'alias déclare un nom en conflit avec un composant existant : &quot;%1&quot;</translation>
+        <translation>L&apos;alias déclare un nom en conflit avec un composant existant : &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Unresolved component aliases</source>
@@ -2118,7 +2118,7 @@ Souhaitez-vous continuer ?</translation>
     </message>
     <message>
         <source>Cyclic dependency between aliases &quot;%1&quot; and &quot;%2&quot; detected.</source>
-        <translation>Dépendance cyclique entre les alias &quot;%1&quot; et "%2" détectée.</translation>
+        <translation>Dépendance cyclique entre les alias &quot;%1&quot; et &quot;%2&quot; détectée.</translation>
     </message>
 </context>
 <context>
@@ -2229,11 +2229,11 @@ Copiez le programme d’installation sur un disque local</translation>
     </message>
     <message>
         <source>Creating Offline Installer for %1</source>
-        <translation>Création d'un programme d’installation hors ligne pour %1</translation>
+        <translation>Création d&apos;un programme d’installation hors ligne pour %1</translation>
     </message>
     <message>
         <source>Creating Offline Installer</source>
-        <translation>Création d'un programme d’installation hors ligne</translation>
+        <translation>Création d&apos;un programme d’installation hors ligne</translation>
     </message>
 </context>
 <context>
