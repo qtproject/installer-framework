@@ -1387,14 +1387,6 @@ Error while loading %2</source>
         <translation>&quot;%1&quot;에 대한 체크섬 불일치가 감지되었습니다.</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>원격 저장소에서 메타 정보 검색 중... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>원격 저장소에서 메타 정보 검색 중... </translation>
-    </message>
-    <message>
         <source>Error while extracting archive &quot;%1&quot;: %2</source>
         <translation>자료 보관소 &quot;%1&quot; 추출 중에 오류 발생: %2</translation>
     </message>
@@ -1431,6 +1423,14 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>&quot;%1&quot; 파일을 쓰기 위해 열 수 없음: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>원격 저장소에서 정보를 검색하는 중...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>원격 저장소에서 메타 정보 검색 중...</translation>
     </message>
 </context>
 <context>

@@ -1617,14 +1617,6 @@ Error while loading %2</source>
         <translation>Обнаружено несовпадение контрольной суммы у «%1».</translation>
     </message>
     <message>
-        <source>Retrieving meta information from remote repository... %1/%2 </source>
-        <translation>Получение метаданных из внешнего хранилища... %1/%2 </translation>
-    </message>
-    <message>
-        <source>Retrieving meta information from remote repository... </source>
-        <translation>Получение метаданных из внешнего хранилища... </translation>
-    </message>
-    <message>
         <source>Failure to fetch repositories.</source>
         <translation>Не удалось загрузить хранилища.</translation>
     </message>
@@ -1679,6 +1671,14 @@ Error while loading %2</source>
     <message>
         <source>Cannot open file &quot;%1&quot; for writing: %2</source>
         <translation>Невозможно открыть файл &quot;%1&quot; для записи: %2</translation>
+    </message>
+    <message>
+        <source>Retrieving information from remote repositories...</source>
+        <translation>Получение информации из внешнего хранилища...</translation>
+    </message>
+    <message>
+        <source>Retrieving meta information from remote repository...</source>
+        <translation>Получение метаданных из внешнего хранилища...</translation>
     </message>
 </context>
 <context>
