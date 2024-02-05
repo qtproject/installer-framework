@@ -2,7 +2,7 @@
 <Package>
     <DisplayName>Qt Installer Framework Binaries</DisplayName>
     <Description>Installs the binaries, examples and help files.</Description>
-    <Version>4.7.0</Version>
-    <ReleaseDate>2023-04-27</ReleaseDate>
+    <Version>4.8.0</Version>
+    <ReleaseDate>2024-02-05</ReleaseDate>
     <Default>True</Default>
 </Package>
