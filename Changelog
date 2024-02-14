@@ -1,4 +1,5 @@
 4.7.0
+- Fix CLI fail on huge amount of Updates.xml download (QTIFW-3249)
 - Prepare for Linux on ARM support (QTIFW-3073)
 - Add support for component aliases (QTIFW-2978)
 - Enable building with Qt6.2 (QTIFW-3083)
