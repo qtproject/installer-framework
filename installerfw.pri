@@ -98,6 +98,15 @@ win32 {
     LCONVERT = $${LCONVERT}.exe
     QMAKE_BINARY = $${QMAKE_BINARY}.exe
 }
+
+#6.6.0 rcc has been moved to libexec in linux/mac and the RCC variable no longer
+#points to correct location
+!exists($$RCC) {
+    RCC = $$toNativeSeparators($$cleanPath($$[QT_INSTALL_LIBEXECS]/rcc))
+}
+!exists($$RCC) {
+    warning("Resource compiler '$$RCC' not found.")
+}
 win32-g++*:QMAKE_CXXFLAGS += -Wno-attributes
 macx:QMAKE_CXXFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
