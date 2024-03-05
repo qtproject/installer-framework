@@ -2104,7 +2104,7 @@ void LicenseAgreementPage::entering()
 */
 bool LicenseAgreementPage::isComplete() const
 {
-    return m_acceptCheckBox->isChecked();
+    return m_acceptCheckBox->isChecked() && ProductKeyCheck::instance()->hasAcceptedAllLicenses();
 }
 
 void LicenseAgreementPage::openLicenseUrl(const QUrl &url)

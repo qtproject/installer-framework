@@ -114,3 +114,8 @@ bool ProductKeyCheck::hasValidLicense() const
 {
     return true;
 }
+
+bool ProductKeyCheck::hasAcceptedAllLicenses() const
+{
+    return true;
+}

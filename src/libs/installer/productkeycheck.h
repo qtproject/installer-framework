@@ -70,6 +70,7 @@ public:
 
     QList<int> registeredPages() const;
     bool hasValidLicense() const;
+    bool hasAcceptedAllLicenses() const;
 
 private:
     ProductKeyCheck();
