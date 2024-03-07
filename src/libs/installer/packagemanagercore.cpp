@@ -589,6 +589,14 @@ bool PackageManagerCore::clearLocalCache(QString *error)
 }
 
 /*!
+    Returns \c true if the metadata cache is initialized and valid, \c false otherwise.
+*/
+bool PackageManagerCore::isValidCache() const
+{
+    return d->m_metadataJob.isValidCache();
+}
+
+/*!
     \internal
  */
 template <typename T>

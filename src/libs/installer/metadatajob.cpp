@@ -212,6 +212,11 @@ bool MetadataJob::clearCache()
     return false;
 }
 
+bool MetadataJob::isValidCache() const
+{
+    return m_metaFromCache.isValid();
+}
+
 // -- private slots
 
 void MetadataJob::doStart()

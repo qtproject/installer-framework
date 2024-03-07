@@ -390,6 +390,8 @@ public:
 
     bool resetLocalCache(bool init = false);
     bool clearLocalCache(QString *error = nullptr);
+    bool isValidCache() const;
+
     template <typename T>
     bool loadComponentScripts(const T &components, const bool postScript = false);
 

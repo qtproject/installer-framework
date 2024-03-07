@@ -242,8 +242,19 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
 
     connect(m_ui->m_clearPushButton, &QAbstractButton::clicked,
             this, &SettingsDialog::clearLocalCacheClicked);
-    connect(m_ui->m_clearPushButton, &QAbstractButton::clicked,
-            this, [&] { m_cacheCleared = true; });
+    connect(m_ui->m_clearPushButton, &QAbstractButton::clicked, this, [&] {
+        // Disable the button as the new settings will only take effect after
+        // closing the dialog.
+        m_ui->m_clearPushButton->setEnabled(false);
+        m_cacheCleared = true;
+    });
+    connect(m_ui->m_cachePathLineEdit, &QLineEdit::textChanged, this, [&] {
+        if (!m_cacheCleared) {
+            // Disable the button if the path is modified between applying settings
+            m_ui->m_clearPushButton->setEnabled(
+                settings.localCachePath() == m_ui->m_cachePathLineEdit->text());
+        }
+    });
 
     useTmpRepositoriesOnly(settings.hasReplacementRepos());
     m_ui->m_useTmpRepositories->setChecked(settings.hasReplacementRepos());
@@ -256,8 +267,9 @@ SettingsDialog::SettingsDialog(PackageManagerCore *core, QWidget *parent)
         m_ui->m_repositories->setVisible(settings.repositorySettingsPageVisible());
     }
 
-   m_ui->m_cachePathLineEdit->setText(settings.localCachePath());
-   showClearCacheProgress(false);
+    m_ui->m_cachePathLineEdit->setText(settings.localCachePath());
+    m_ui->m_clearPushButton->setEnabled(m_core->isValidCache());
+    showClearCacheProgress(false);
 }
 
 void SettingsDialog::showClearCacheProgress(bool show)

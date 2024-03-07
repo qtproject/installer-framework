@@ -74,6 +74,7 @@ public:
 
     bool resetCache(bool init = false);
     bool clearCache();
+    bool isValidCache() const;
 
 private slots:
     void doStart() override;
