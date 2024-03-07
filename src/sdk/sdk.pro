@@ -40,7 +40,9 @@ exists($$LRELEASE) {
         "<RCC>" \
         "    <qresource prefix=\"/\">"
     for (file, IB_TRANSLATIONS) {
-        lang = $$replace(file, .*_([^/]*)\\.ts, \\1)
+        lang = $$basename(file)
+        lang = $$replace(lang, .ts, "")
+        lang = $$replace(lang, ifw_, "")
         qlang = $${lang}
         qfile = $$[QT_INSTALL_TRANSLATIONS]/qtbase_$${lang}.qm
         !exists($$qfile) {
