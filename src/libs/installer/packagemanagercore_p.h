@@ -276,6 +276,7 @@ private:
     bool calculateComponentsAndRun();
     bool acceptLicenseAgreements() const;
     bool askUserAcceptLicense(const QString &name, const QString &content) const;
+    bool acceptRejectCliQuery() const;
     bool askUserConfirmCommand() const;
     bool packageNeedsUpdate(const LocalPackage &localPackage, const Package *update) const;
     void commitPendingUnstableComponents();

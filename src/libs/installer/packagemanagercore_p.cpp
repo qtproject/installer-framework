@@ -3295,6 +3295,13 @@ bool PackageManagerCorePrivate::acceptLicenseAgreements() const
         m_core->addLicenseItem(component->licenses());
     }
 
+    const QString acceptanceText = ProductKeyCheck::instance()->licenseAcceptanceText();
+    if (!acceptanceText.isEmpty()) {
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote() << acceptanceText;
+        if (!m_autoAcceptLicenses && !acceptRejectCliQuery())
+            return false;
+    }
+
     QHash<QString, QMap<QString, QString>> priorityHash = m_core->sortedLicenses();
     QStringList priorities = priorityHash.keys();
     priorities.sort();
@@ -3338,6 +3345,23 @@ bool PackageManagerCorePrivate::askUserAcceptLicense(const QString &name, const 
                 || QString::compare(input, QLatin1String("S"), Qt::CaseInsensitive) == 0) {
             qCDebug(QInstaller::lcInstallerInstallLog).noquote() << content;
         } else {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
+        }
+    }
+}
+
+bool PackageManagerCorePrivate::acceptRejectCliQuery() const
+{
+    forever {
+        const QString input = m_core->readConsoleLine(QLatin1String("Accept|Reject"));
+
+        if (QString::compare(input, QLatin1String("Accept"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("A"), Qt::CaseInsensitive) == 0) {
+            return true;
+        } else if (QString::compare(input, QLatin1String("Reject"), Qt::CaseInsensitive) == 0
+                || QString::compare(input, QLatin1String("R"), Qt::CaseInsensitive) == 0) {
+            return false;
+        }  else {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Unknown answer:" << input;
         }
     }

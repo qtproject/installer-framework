@@ -71,6 +71,7 @@ public:
     QList<int> registeredPages() const;
     bool hasValidLicense() const;
     bool hasAcceptedAllLicenses() const;
+    QString licenseAcceptanceText() const;
 
 private:
     ProductKeyCheck();

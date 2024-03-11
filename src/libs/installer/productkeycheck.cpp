@@ -119,3 +119,8 @@ bool ProductKeyCheck::hasAcceptedAllLicenses() const
 {
     return true;
 }
+
+QString ProductKeyCheck::licenseAcceptanceText() const
+{
+    return QString();
+}
