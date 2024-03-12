@@ -124,3 +124,7 @@ QString ProductKeyCheck::licenseAcceptanceText() const
 {
     return QString();
 }
+QString ProductKeyCheck::securityWarning() const
+{
+    return QString();
+}

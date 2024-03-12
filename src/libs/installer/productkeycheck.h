@@ -72,6 +72,7 @@ public:
     bool hasValidLicense() const;
     bool hasAcceptedAllLicenses() const;
     QString licenseAcceptanceText() const;
+    QString securityWarning() const;
 
 private:
     ProductKeyCheck();
