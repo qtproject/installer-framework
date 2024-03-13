@@ -292,11 +292,13 @@ void DownloadArchivesJob::registerFile()
         const QMessageBox::Button res =
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
             QLatin1String("DownloadError"), tr("Download Error"), tr("Hash verification while "
-            "downloading failed. This is a temporary error, please retry."),
+            "downloading failed. This is a temporary error, please retry.\n\n"
+            "Expected: %1 \nDownloaded: %2").arg(QString::fromLatin1(m_currentHash), QString::fromLatin1(m_downloader->sha1Sum().toHex())),
             QMessageBox::Retry | QMessageBox::Cancel, QMessageBox::Retry);
 
         if (res == QMessageBox::Cancel) {
-            finishWithError(tr("Cannot verify Hash"));
+            finishWithError(tr("Cannot verify Hash\nExpected: %1 \nDownloaded: %2")
+                .arg(QString::fromLatin1(m_currentHash), QString::fromLatin1(m_downloader->sha1Sum().toHex())));
             return;
         }
         // When using command line instance, only retry a number of times to avoid
