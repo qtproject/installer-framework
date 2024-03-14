@@ -115,14 +115,14 @@ public:
                 hash.addData(&file);
 
                 const QByteArray hexChecksum = hash.result().toHex();
-                QFile hashFile(file.fileName() + QLatin1String(".sha1"));
+                QFileInfo fileInfo(file.fileName());
+                QFile hashFile(fileInfo.absolutePath() + QDir::separator()
+                    + QString::fromLatin1(hexChecksum) + QLatin1String(".sha1"));
                 if (!hashFile.open(QIODevice::WriteOnly)) {
                     fi.reportException(UnzipArchiveException(MetadataJob::tr("Cannot open file \"%1\" for "
                         "writing: %2").arg(QDir::toNativeSeparators(hashFile.fileName()), hashFile.errorString())));
                     break;
                 }
-                QTextStream stream(&hashFile);
-                stream << hexChecksum;
             }
         }
 

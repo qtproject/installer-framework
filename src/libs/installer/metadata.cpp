@@ -78,20 +78,12 @@ static bool verifyFileIntegrityFromElement(const QDomElement &element, const QSt
         if (!testChecksum)
             continue;
 
-        QFile hashFile(file.fileName() + QLatin1String(".sha1"));
-        if (!hashFile.open(QIODevice::ReadOnly)) {
-            qCWarning(QInstaller::lcInstallerInstallLog)
-                << "Cannot open" << hashFile.fileName()
-                << "for reading:" << hashFile.errorString();
-            return false;
-        }
-
         QCryptographicHash hash(QCryptographicHash::Sha1);
         hash.addData(&file);
 
         const QByteArray checksum = hash.result().toHex();
-        const QByteArray expectedChecksum = hashFile.readAll();
-        if (checksum != expectedChecksum) {
+        if (!QFileInfo::exists(dir.absolutePath() + QDir::separator()
+                + QString::fromLatin1(checksum) + QLatin1String(".sha1"))) {
             qCWarning(QInstaller::lcInstallerInstallLog)
                 << "Unexpected checksum for file" << file.fileName();
             return false;
