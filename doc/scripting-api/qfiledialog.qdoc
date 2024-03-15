@@ -42,17 +42,19 @@
 */
 
 /*!
-    \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir)
+    \qmlmethod string QFileDialog::getExistingDirectory(string caption, string dir, string identifier)
 
     Returns an existing directory selected by the user.
 
     The dialog's working directory is set to \a dir, and the caption is set to
     \a caption. Either of these may be an empty string, in which case the
     current directory and a default caption will be used, respectively.
+    The \a identifier is used in command line interface to allow to identify
+    specific file dialogs for automatic answer.
 */
 
 /*!
-    \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter)
+    \qmlmethod string QFileDialog::getOpenFileName(string caption, string dir, string filter, string identifier)
 
     Returns an existing file selected by the user. If the user selects
     \uicontrol Cancel, returns a null string.
@@ -63,6 +65,9 @@
     The file dialog's working directory is set to \a dir. If \c dir includes a
     file name, the file will be selected. Only files that match the specified
     \a filter are shown. Either of these may be an empty string.
+
+    The \a identifier is used in command line interface to allow to identify
+    specific file dialogs for automatic answer.
 
     To specify multiple filters, separate them with two semicolons (;;). For
     example:
