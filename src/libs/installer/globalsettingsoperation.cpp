@@ -77,7 +77,7 @@ bool GlobalSettingsOperation::performOperation()
 
 bool GlobalSettingsOperation::undoOperation()
 {
-    if (parseUndoOperationArguments().count() > 0)
+    if (skipUndoOperation())
         return true;
 
     const QStringList args = parsePerformOperationArguments();

@@ -93,7 +93,7 @@ bool SimpleMoveFileOperation::performOperation()
 
 bool SimpleMoveFileOperation::undoOperation()
 {
-    if (parseUndoOperationArguments().count() > 0)
+    if (skipUndoOperation())
         return true;
     const QString source = arguments().at(0);
     const QString target = arguments().at(1);

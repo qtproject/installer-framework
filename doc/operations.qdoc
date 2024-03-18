@@ -69,10 +69,16 @@
             \li Copy
             \li "Copy" \c source \c target
             \li Copies a file from \c source to \c target.
+            \note The file will be restored during unistallation. If you want
+                to skip the copying, you can overwrite the \e UNDO by passing
+                \e UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li Move
             \li "Move" \c source \c target
             \li Moves a file from \c source to \c target.
+            \note Files restored during uninstallation. If you want to move the
+            files persistently, you can overwrite the \e UNDO by passing \e
+            UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li SimpleMoveFile
             \li "SimpleMoveFile" \c source \c target
@@ -85,14 +91,25 @@
             \li Delete
             \li "Delete" \c filename
             \li Deletes the file specified by \c filename.
+            \note File will be restored during uninstallation. If you want to
+            delete the files persistently, you can overwrite the \e UNDO by
+            passing \e UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li Mkdir
             \li "Mkdir" \c path
             \li Creates the directory path \c path.
+            \note Directory will be deleted during uninstallation.
+            If you want to create the directory persistently, you can overwrite the \e UNDO
+            by passing \e UNDOOPERATION and \e "", to the end of the argument list. Note that
+            during full uninstall, directory will be deleted if it was created to target directory
+            and \c RemoveTargetDir is false.
         \row
             \li Rmdir
             \li "Rmdir" \c path
             \li Removes the directory path \c path.
+            \note Directory will be recreated during uninstallation.
+            If you want to remove the directory persistently, you can overwrite the \e UNDO
+            by passing \e UNDOOPERATION and \e "", to the end of the argument list.
         \row
             \li CopyDirectory
             \li "CopyDirectory" \c sourcePath \c targetPath
@@ -105,11 +122,17 @@
             \li "AppendFile" \c filename \c text
             \li Appends \c text to the file specified by \c filename. \c text is
                 treated as ASCII text.
+            \note Text will be removed from file during unistallation. If you want to append the
+                text persistently, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li PrependFile
             \li "PrependFile" \c filename \c text
             \li Prepends \c text to the file specified by \c filename. \c text
                 is treated as ASCII text.
+            \note Text will be removed from file during unistallation. If you want to append the
+                text persistently, you can overwrite the \e UNDO by passing \e UNDOOPERATION
+                and \e "", to the end of the argument list.
         \row
             \li Replace
             \li "Replace" \c file \c search \c replace \c mode

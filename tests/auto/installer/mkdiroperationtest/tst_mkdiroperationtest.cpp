@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -60,32 +60,42 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in Mkdir: "
-                                           "0 arguments given, exactly 1 arguments expected."));
-
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Mkdir: 0 arguments given, 1 to 3 "
+            "arguments expected in the form: <file to remove> [UNDOOPERATION, \"\"]."));
     }
 
     void testCreateDirectory_data()
     {
-         QTest::addColumn<QString>("directory");
-         QTest::newRow("/test") << "/test";
-         QTest::newRow("/test/test") << "/test/test";
-         QTest::newRow("/test/test/test") << "/test/test/test";
+        QTest::addColumn<QString>("directory");
+        QTest::addColumn<bool>("overrideUndo");
+        QTest::newRow("/test") << "/test" << false;
+        QTest::newRow("/test/test") << "/test/test" << false;
+        QTest::newRow("/test/test/test") << "/test/test/test" << false;
+        QTest::newRow("no undo") << "/test" << true;
     }
 
     void testCreateDirectory()
     {
         QFETCH(QString, directory);
+        QFETCH(bool, overrideUndo);
+
         QString path = QDir::current().path() + QDir::toNativeSeparators(directory);
 
         QVERIFY2(!QDir(path).exists(), path.toLatin1());
         MkdirOperation op;
         op.setArguments(QStringList() << path);
+        if (overrideUndo)
+            op.setArguments(op.arguments() << QLatin1String("UNDOOPERATION"));
         op.backup();
         QVERIFY2(op.performOperation(), op.errorString().toLatin1());
         QVERIFY2(QDir(path).exists(), path.toLatin1());
         QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
-        QVERIFY2(!QDir(path).exists(), path.toLatin1());
+        if (overrideUndo) {
+            QVERIFY2(QDir(path).exists(), path.toLatin1());
+            QVERIFY(QDir(path).removeRecursively());
+        } else {
+            QVERIFY2(!QDir(path).exists(), path.toLatin1());
+        }
     }
 
     void testCreateDirectory_customFile_data()

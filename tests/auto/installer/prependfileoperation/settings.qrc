@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/repository/Updates.xml</file>
+        <file>data/repository/B/1.0.2-1content.7z</file>
+        <file>data/repository/B/1.0.2-1meta.7z</file>
+        <file>data/xmloperationrepository/Updates.xml</file>
+        <file>data/xmloperationrepository/C/1.0.0content.7z</file>
+    </qresource>
+</RCC>

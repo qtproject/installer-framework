@@ -292,23 +292,18 @@ QStringList UpdateOperation::parsePerformOperationArguments()
 }
 
 /*!
-    Returns undo operation argument list. If the installation is
-    cancelled or failed, returns an empty list so that full undo
-    operation can be performed.
+    Returns \c true if operation undo should not be performed.
+    Returns \c false if the installation is cancelled or failed, or
+    \c UNDOOPERATION is not set in operation call.
 */
-QStringList UpdateOperation::parseUndoOperationArguments()
+bool UpdateOperation::skipUndoOperation()
 {
     //Install has failed, allow a normal undo
     if (m_core && (m_core->status() == QInstaller::PackageManagerCore::Canceled
               || m_core->status() == QInstaller::PackageManagerCore::Failure)) {
-        return QStringList();
+        return false;
     }
-    int index = arguments().indexOf(QLatin1String("UNDOOPERATION"));
-    QStringList args;
-    if ((index != -1) && (arguments().length() > index + 1)) {
-        args = arguments().mid(index + 1);
-    }
-    return args;
+    return arguments().contains(QLatin1String("UNDOOPERATION"));
 }
 
 /*!

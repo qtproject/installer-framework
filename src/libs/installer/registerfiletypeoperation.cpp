@@ -153,7 +153,7 @@ bool RegisterFileTypeOperation::undoOperation()
 {
 #ifdef Q_OS_WIN
     ensureOptionalArgumentsRead();
-    if (parseUndoOperationArguments().count() > 0)
+    if (skipUndoOperation())
         return true;
 
     QStringList args = arguments();

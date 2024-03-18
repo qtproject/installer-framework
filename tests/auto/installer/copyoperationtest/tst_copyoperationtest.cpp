@@ -87,37 +87,48 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in Copy: "
-                                           "0 arguments given, exactly 2 arguments expected."));
-
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Copy: 0 arguments given, "
+            "2 to 4 arguments expected in the form: <source filename> <destination filename> [UNDOOPERATION, \"\"]."));
     }
 
     void testCopySomething_data()
     {
-         QTest::addColumn<QString>("source");
-         QTest::addColumn<QString>("destination");
-         QTest::newRow("full path syntax") << qApp->applicationFilePath() << m_testDestinationFilePath;
-         QTest::newRow("short destination syntax") << qApp->applicationFilePath() << m_testDestinationPath;
-         QTest::newRow("short destination syntax with ending separator") << qApp->applicationFilePath()
-            << m_testDestinationPath + QDir::separator();
+        QTest::addColumn<QString>("source");
+        QTest::addColumn<QString>("destination");
+        QTest::addColumn<bool>("overrideUndo");
+        QTest::newRow("full path syntax") << qApp->applicationFilePath() << m_testDestinationFilePath << false;
+        QTest::newRow("short destination syntax") << qApp->applicationFilePath() << m_testDestinationPath << false;
+        QTest::newRow("short destination syntax with ending separator") << qApp->applicationFilePath()
+            << m_testDestinationPath + QDir::separator() << false;
+        QTest::newRow("override undo") << qApp->applicationFilePath() << m_testDestinationFilePath << true;
     }
 
     void testCopySomething()
     {
         QFETCH(QString, source);
         QFETCH(QString, destination);
+        QFETCH(bool, overrideUndo);
 
-        QVERIFY2(QFileInfo(source).exists(), QString("Source file \"%1\" does not exist.").arg(source).toLatin1());
-        CopyOperation op;
-        op.setArguments(QStringList() << source << destination);
-        op.backup();
-        QVERIFY2(op.performOperation(), op.errorString().toLatin1());
+        QVERIFY2(QFileInfo::exists(source), QString("Source file \"%1\" does not exist.").arg(source).toLatin1());
+        CopyOperation *op = new CopyOperation();
+        op->setArguments(QStringList() << source << destination);
+        if (overrideUndo)
+            op->setArguments(op->arguments() << QLatin1String("UNDOOPERATION"));
+        op->backup();
+        QVERIFY2(op->performOperation(), op->errorString().toLatin1());
 
-        QVERIFY2(QFileInfo(m_testDestinationFilePath).exists(), QString("Copying from \"%1\" to \"%2\" was "
+        QVERIFY2(QFileInfo::exists(m_testDestinationFilePath), QString("Copying from \"%1\" to \"%2\" was "
             "not working: '%3' does not exist").arg(source, destination, m_testDestinationFilePath).toLatin1());
-        QVERIFY2(op.undoOperation(), op.errorString().toLatin1());
-        QVERIFY2(!QFileInfo(m_testDestinationFilePath).exists(), QString("Undo of copying from \"%1\" to "
-            "\"%2\" was not working.").toLatin1());
+        QVERIFY2(op->undoOperation(), op->errorString().toLatin1());
+        if (!overrideUndo) {
+            QVERIFY2(!QFileInfo::exists(m_testDestinationFilePath), QString("Undo of copying from \"%1\" to "
+                "\"%2\" was not working.").toLatin1());
+        } else {
+            QVERIFY(QFileInfo::exists(m_testDestinationFilePath));
+        }
+        QString backupFileName = op->value("backupOfExistingDestination").toString();
+        delete op;
+        QVERIFY(!QFileInfo::exists(backupFileName));
     }
 
     void testCopyIfDestinationExist_data()

@@ -378,7 +378,7 @@ bool CreateLocalRepositoryOperation::performOperation()
 
 bool CreateLocalRepositoryOperation::undoOperation()
 {
-    if (parseUndoOperationArguments().count() > 0)
+    if (skipUndoOperation())
         return true;
 
     if (!checkArgumentCount(2))

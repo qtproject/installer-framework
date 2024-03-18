@@ -109,6 +109,7 @@ class KDTOOLS_EXPORT AppendFileOperation : public UpdateOperation
     Q_DECLARE_TR_FUNCTIONS(KDUpdater::AppendFileOperation)
 public:
     explicit AppendFileOperation(QInstaller::PackageManagerCore *core = 0);
+    ~AppendFileOperation();
 
     void backup() override;
     bool performOperation() override;
@@ -121,6 +122,7 @@ class KDTOOLS_EXPORT PrependFileOperation : public UpdateOperation
     Q_DECLARE_TR_FUNCTIONS(KDUpdater::PrependFileOperation)
 public:
     explicit PrependFileOperation(QInstaller::PackageManagerCore *core = 0);
+    ~PrependFileOperation();
 
     void backup() override;
     bool performOperation() override;

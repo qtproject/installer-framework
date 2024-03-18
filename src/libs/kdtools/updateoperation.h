@@ -112,7 +112,7 @@ protected:
     bool checkArgumentCount(int minArgCount, int maxArgCount, const QString &argDescription = QString());
     bool checkArgumentCount(int argCount);
     QStringList parsePerformOperationArguments();
-    QStringList parseUndoOperationArguments();
+    bool skipUndoOperation();
     void setRequiresUnreplacedVariables(bool isRequired);
     bool variableReplacement(QString *variableValue);
 

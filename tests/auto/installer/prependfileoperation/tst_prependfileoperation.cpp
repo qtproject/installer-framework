@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2020 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -36,36 +36,9 @@
 using namespace KDUpdater;
 using namespace QInstaller;
 
-class tst_appendfileoperation : public QObject
+class tst_prependfileoperation : public QObject
 {
     Q_OBJECT
-
-private:
-    void installFromCLI(const QString &repository)
-    {
-        QString installDir = QInstaller::generateTemporaryFileName();
-        QVERIFY(QDir().mkpath(installDir));
-        PackageManagerCore *core = PackageManager::getPackageManagerWithInit
-                (installDir, repository);
-        core->installDefaultComponentsSilently();
-
-        QFile file(installDir + QDir::separator() + "A.txt");
-        QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
-        QTextStream stream(&file);
-        QCOMPARE(stream.readAll(), QLatin1String("Appended text: lorem ipsum"));
-        file.close();
-
-        core->setPackageManager();
-        core->commitSessionOperations();
-        // We cannot check the file contents here as it will be deleted on
-        // undo Extract, but at least check that the uninstallation succeeds.
-        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently
-                 (QStringList()<< "A"));
-
-        QDir dir(installDir);
-        QVERIFY(dir.removeRecursively());
-        core->deleteLater();
-    }
 
 private slots:
     void initTestCase()
@@ -75,42 +48,41 @@ private slots:
 
     void testMissingArguments()
     {
-        AppendFileOperation op;
+        PrependFileOperation op;
 
         QVERIFY(op.testOperation());
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in AppendFile: 0 arguments given, 2 to 4 arguments expected in the form: <filename> <text to apply> [UNDOOPERATION, \"\"]."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in PrependFile: 0 arguments given, 2 to 4 arguments expected in the form: <filename> <text to prepend> [UNDOOPERATION, \"\"]."));
 
         op.setArguments(QStringList() << "" << "");
         QTest::ignoreMessage(QtWarningMsg, "QFSFileEngine::open: No file name specified");
-        QTest::ignoreMessage(QtWarningMsg, "QFile::rename: Empty or null file name");
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::UserDefinedError);
-        QCOMPARE(op.errorString(), QString("Cannot open file \"\" for writing: No file name specified"));
+        QCOMPARE(op.errorString(), QString("Cannot open file \"\" for reading: No file name specified"));
     }
 
-    void testAppendText_data()
+    void testPrependText_data()
     {
         QTest::addColumn<QString>("source");
-        QTest::addColumn<QString>("append");
+        QTest::addColumn<QString>("prepend");
         QTest::addColumn<QString>("expected");
         QTest::addColumn<bool>("overrideUndo");
-        QTest::newRow("newline") << "Line1\nLine2\nLine3\n" << "AppendedText"
-            << "Line1\nLine2\nLine3\nAppendedText" << false;
-        QTest::newRow("no newline") << "Lorem ipsum " << "dolore sit amet"
+        QTest::newRow("newline") << "Line1\nLine2\nLine3\n" << "PrependedText"
+                                 << "PrependedTextLine1\nLine2\nLine3\n" << false;
+        QTest::newRow("no newline") << "dolore sit amet" << "Lorem ipsum "
             << "Lorem ipsum dolore sit amet" << false;
 
-        QTest::newRow("no undo") << "Lorem ipsum " << "dolore sit amet"
+        QTest::newRow("no undo")<< "dolore sit amet"  << "Lorem ipsum "
             << "Lorem ipsum dolore sit amet" << true;
     }
 
-    void testAppendText()
+    void testPrependText()
     {
         QFETCH(QString, source);
-        QFETCH(QString, append);
+        QFETCH(QString, prepend);
         QFETCH(QString, expected);
         QFETCH(bool, overrideUndo);
 
@@ -121,8 +93,8 @@ private slots:
         stream << source << Qt::flush;
         file.close();
 
-        AppendFileOperation *op = new AppendFileOperation();
-        op->setArguments(QStringList() << m_testFilePath << append);
+        PrependFileOperation *op = new PrependFileOperation();
+        op->setArguments(QStringList() << m_testFilePath << prepend);
         if (overrideUndo)
             op->setArguments(op->arguments() << QLatin1String("UNDOOPERATION"));
 
@@ -140,29 +112,69 @@ private slots:
             QCOMPARE(stream.readAll(), expected);
         else
             QCOMPARE(stream.readAll(), source);
-        QString backupFileName = op->value("backupOfFile").toString();
-        delete op;
-        QVERIFY(!QFileInfo::exists(backupFileName));
-
         file.close();
 
         QVERIFY(file.remove());
+
+        QString backupFileName = op->value("backupOfFile").toString();
+        delete op;
+        QVERIFY(!QFileInfo::exists(backupFileName));
     }
 
-    void testApppendFromScript()
+    void testPrependFromCLI_data()
     {
-        installFromCLI(":///data/repository");
+        QTest::addColumn<QString>("repository");
+        QTest::addColumn<QString>("fileName");
+        QTest::addColumn<QString>("componentName");
+        QTest::addColumn<QString>("expected");
+
+        QTest::newRow("operationFromScript")
+            << (":///data/repository")
+            << ("B.txt")
+            << ("B")
+            << ("Prepended text: lorem ipsum");
+
+        QTest::newRow("operationFromXML")
+            << (":///data/xmloperationrepository")
+            << ("C.txt")
+            << ("C")
+            << ("Prepended text: lorem ipsum");
     }
 
-    void testAppendFromComponentXML()
+    void testPrependFromCLI()
     {
-        installFromCLI(":///data/xmloperationrepository");
+        QFETCH(QString, repository);
+        QFETCH(QString, fileName);
+        QFETCH(QString, componentName);
+        QFETCH(QString, expected);
+
+        QString installDir = QInstaller::generateTemporaryFileName();
+        QVERIFY(QDir().mkpath(installDir));
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+                                                (installDir, repository));
+        core->installSelectedComponentsSilently(QStringList() << componentName);
+
+        QFile file(installDir + QDir::separator() + fileName);
+        QVERIFY(file.open(QIODevice::ReadOnly | QIODevice::Text));
+        QTextStream stream(&file);
+        QCOMPARE(stream.readAll(), expected);
+        file.close();
+
+        core->setPackageManager();
+        core->commitSessionOperations();
+        // We cannot check the file contents here as it will be deleted on
+        // undo Extract, but at least check that the uninstallation succeeds.
+        QCOMPARE(PackageManagerCore::Success, core->uninstallComponentsSilently
+                                              (QStringList()<< componentName));
+
+        QDir dir(installDir);
+        QVERIFY(dir.removeRecursively());
     }
 
 private:
     QString m_testFilePath;
 };
 
-QTEST_MAIN(tst_appendfileoperation)
+QTEST_MAIN(tst_prependfileoperation)
 
-#include "tst_appendfileoperation.moc"
+#include "tst_prependfileoperation.moc"

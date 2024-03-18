@@ -15,6 +15,7 @@ SUBDIRS += \
     scriptengine \
     consumeoutputoperationtest \
     mkdiroperationtest \
+    rmdiroperationtest \
     copyoperationtest \
     solver \
     binaryformat \
@@ -29,6 +30,7 @@ SUBDIRS += \
     linereplaceoperation \
     metadatajob \
     appendfileoperation \
+    prependfileoperation \
     simplemovefileoperation \
     deleteoperation \
     copydirectoryoperation \

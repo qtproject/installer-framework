@@ -86,8 +86,8 @@ private slots:
         QVERIFY(!op.performOperation());
 
         QCOMPARE(UpdateOperation::Error(op.error()), UpdateOperation::InvalidArguments);
-        QCOMPARE(op.errorString(), QString("Invalid arguments in Move: "
-                                           "0 arguments given, exactly 2 arguments expected."));
+        QCOMPARE(op.errorString(), QString("Invalid arguments in Move: 0 arguments given, 2 to 4 arguments "
+            "expected in the form: <complete source file name> <complete destination file name> [UNDOOPERATION, \"\"]."));
     }
 
     void testMoveFile()

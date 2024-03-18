@@ -153,7 +153,7 @@ bool CopyDirectoryOperation::performOperation()
 
 bool CopyDirectoryOperation::undoOperation()
 {
-    if (parseUndoOperationArguments().count() > 0)
+    if (skipUndoOperation())
         return true;
 
     if (!checkArgumentCount(2))

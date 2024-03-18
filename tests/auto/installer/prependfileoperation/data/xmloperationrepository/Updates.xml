@@ -1,0 +1,20 @@
+<Updates>
+ <ApplicationName>{AnyApplication}</ApplicationName>
+ <ApplicationVersion>1.0.0</ApplicationVersion>
+ <PackageUpdate>
+  <Name>C</Name>
+  <DisplayName>C</DisplayName>
+  <Description>Example component C</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2020-01-01</ReleaseDate>
+  <Default>true</Default>
+  <UpdateFile CompressedSize="224" OS="Any" UncompressedSize="74"/>
+  <DownloadableArchives>content.7z</DownloadableArchives>
+  <Operations>
+    <Operation name="PrependFile">
+      <Argument>@TargetDir@/C.txt</Argument>
+      <Argument>Prepended text: </Argument>
+    </Operation>
+  </Operations>
+ </PackageUpdate>
+</Updates>

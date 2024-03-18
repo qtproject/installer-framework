@@ -127,14 +127,13 @@ QString CopyOperation::sourcePath()
 
 QString CopyOperation::destinationPath()
 {
-    QString destination = arguments().last();
+    QString destination = arguments().at(1);
 
     // if the target is a directory use the source filename to complete the destination path
     if (QFileInfo(destination).isDir())
         destination = QDir(destination).filePath(QFileInfo(sourcePath()).fileName());
     return destination;
 }
-
 
 void CopyOperation::backup()
 {
@@ -156,8 +155,8 @@ void CopyOperation::backup()
 bool CopyOperation::performOperation()
 {
     // We need two args to complete the copy operation. First arg provides the complete file name of source
-    // Second arg provides the complete file name of dest
-    if (!checkArgumentCount(2))
+    // Second arg provides the complete file name of dest. Optionally UNDOOPERATION can be added as well
+    if (!checkArgumentCount(2, 4, QLatin1String("<source filename> <destination filename> [UNDOOPERATION, \"\"]")))
         return false;
 
     QString source = sourcePath();
@@ -193,6 +192,8 @@ bool CopyOperation::performOperation()
 
 bool CopyOperation::undoOperation()
 {
+    if (skipUndoOperation())
+        return true;
     QString source = sourcePath();
     QString destination = destinationPath();
 
@@ -270,7 +271,7 @@ MoveOperation::~MoveOperation()
 
 void MoveOperation::backup()
 {
-    const QString dest = arguments().last();
+    const QString dest = arguments().at(1);
     if (!QFile::exists(dest)) {
         clearValue(QLatin1String("backupOfExistingDestination"));
         return;
@@ -286,9 +287,10 @@ void MoveOperation::backup()
 
 bool MoveOperation::performOperation()
 {
-    // We need two args to complete the copy operation. // First arg provides the complete file name of
-    // source, second arg provides the complete file name of dest
-    if (!checkArgumentCount(2))
+    // We need two args to complete the copy operation. First arg provides the complete file name of
+    // source, second arg provides the complete file name of dest. Optionally UNDOOPERATION can be added as well
+    if (!checkArgumentCount(2, 4, QLatin1String("<complete source file name> <complete destination "
+            "file name> [UNDOOPERATION, \"\"]")))
         return false;
 
     const QStringList args = arguments();
@@ -318,8 +320,10 @@ bool MoveOperation::performOperation()
 
 bool MoveOperation::undoOperation()
 {
+    if (skipUndoOperation())
+        return true;
     const QStringList args = arguments();
-    const QString dest = args.last();
+    const QString dest = args.at(1);
     // first: copy back the destination to source
     QFile destF(dest);
     if (!destF.copy(args.first())) {
@@ -391,7 +395,8 @@ void DeleteOperation::backup()
 bool DeleteOperation::performOperation()
 {
     // Requires only one parameter. That is the name of the file to remove.
-    if (!checkArgumentCount(1))
+    // Optionally UNDOOPERATION can be added as well
+    if (!checkArgumentCount(1, 3, QLatin1String("<file to remove> [UNDOOPERATION, \"\"]")))
         return false;
 
     return deleteFileNowOrLater(arguments().at(0));
@@ -399,7 +404,7 @@ bool DeleteOperation::performOperation()
 
 bool DeleteOperation::undoOperation()
 {
-    if (!hasValue(QLatin1String("backupOfExistingFile")))
+    if (skipUndoOperation())
         return true;
 
     const QString fileName = arguments().first();
@@ -478,7 +483,8 @@ void MkdirOperation::backup()
 bool MkdirOperation::performOperation()
 {
     // Requires only one parameter. That is the path which should be created
-    if (!checkArgumentCount(1))
+    // Optionally UNDOOPERATION can be added as well
+    if (!checkArgumentCount(1, 3, QLatin1String("<file to remove> [UNDOOPERATION, \"\"]")))
         return false;
 
     const QString dirName = arguments().at(0);
@@ -493,7 +499,8 @@ bool MkdirOperation::performOperation()
 
 bool MkdirOperation::undoOperation()
 {
-    Q_ASSERT(arguments().count() == 1);
+    if (skipUndoOperation())
+        return true;
 
     QString createdDirValue = value(QLatin1String("createddir")).toString();
     if (packageManager()) {
@@ -572,7 +579,8 @@ void RmdirOperation::backup()
 bool RmdirOperation::performOperation()
 {
     // Requires only one parameter. That is the name of the file to remove.
-    if (!checkArgumentCount(1))
+    // Optionally UNDOOPERATION can be added as well
+    if (!checkArgumentCount(1, 3, QLatin1String("<file to remove> [UNDOOPERATION, \"\"]")))
         return false;
 
     const QString firstArg = arguments().at(0);
@@ -597,7 +605,7 @@ bool RmdirOperation::performOperation()
 
 bool RmdirOperation::undoOperation()
 {
-   if (!value(QLatin1String("removed")).toBool())
+    if (!value(QLatin1String("removed")).toBool() || skipUndoOperation())
         return true;
 
     errno = 0;
@@ -633,6 +641,12 @@ AppendFileOperation::AppendFileOperation(QInstaller::PackageManagerCore *core)
     setName(QLatin1String("AppendFile"));
 }
 
+AppendFileOperation::~AppendFileOperation()
+{
+    if (skipUndoOperation())
+        deleteFileNowOrLater(value(QLatin1String("backupOfFile")).toString());
+}
+
 void AppendFileOperation::backup()
 {
     const QString filename = arguments().first();
@@ -653,10 +667,10 @@ bool AppendFileOperation::performOperation()
 {
     // This operation takes two arguments. First argument is the name of the file into which a text has to be
     // appended. Second argument is the text to append.
-    if (!checkArgumentCount(2))
+    if (!checkArgumentCount(2, 4, QLatin1String("<filename> <text to apply> [UNDOOPERATION, \"\"]")))
         return false;
 
-    const QStringList args = this->arguments();
+    const QStringList args = arguments();
     const QString fName = args.at(0);
     QFile file(fName);
     if (!file.open(QFile::Append)) {
@@ -695,6 +709,9 @@ bool AppendFileOperation::performOperation()
 
 bool AppendFileOperation::undoOperation()
 {
+    if (skipUndoOperation())
+        return true;
+
    // backupOfFile being empty -> file didn't exist before -> no error
     const QString filename = arguments().first();
     const QString backupOfFile = value(QLatin1String("backupOfFile")).toString();
@@ -746,6 +763,12 @@ PrependFileOperation::PrependFileOperation(QInstaller::PackageManagerCore *core)
     setName(QLatin1String("PrependFile"));
 }
 
+PrependFileOperation::~PrependFileOperation()
+{
+    if (skipUndoOperation())
+        deleteFileNowOrLater(value(QLatin1String("backupOfFile")).toString());
+}
+
 void PrependFileOperation::backup()
 {
     const QString filename = arguments().first();
@@ -767,10 +790,10 @@ bool PrependFileOperation::performOperation()
     // This operation takes two arguments. First argument is the name
     // of the file into which a text has to be appended. Second argument
     // is the text to append.
-    if (!checkArgumentCount(2))
+    if (!checkArgumentCount(2, 4, QLatin1String("<filename> <text to prepend> [UNDOOPERATION, \"\"]")))
         return false;
 
-    const QStringList args = this->arguments();
+    const QStringList args = arguments();
     const QString fName = args.at(0);
     // Load the file first.
     QFile file(fName);
@@ -810,7 +833,9 @@ bool PrependFileOperation::performOperation()
 
 bool PrependFileOperation::undoOperation()
 {
-    // bockupOfFile being empty -> file didn't exist before -> no error
+    if (skipUndoOperation())
+        return true;
+
     const QString filename = arguments().first();
     const QString backupOfFile = value(QLatin1String("backupOfFile")).toString();
     if (!backupOfFile.isEmpty() && !QFile::exists(backupOfFile)) {
