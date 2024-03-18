@@ -173,6 +173,7 @@ void TabController::restartWizard()
 void TabController::onSettingsButtonClicked()
 {
     SettingsDialog dialog(d->m_core);
+    dialog.adjustSize();
     connect(&dialog, &SettingsDialog::networkSettingsChanged,
             this, &TabController::onNetworkSettingsChanged);
     connect(&dialog, &SettingsDialog::clearLocalCacheClicked,
