@@ -368,7 +368,9 @@ static QMessageBox::StandardButton showNewMessageBox(QWidget *parent, QMessageBo
     QMessageBox::StandardButton defaultButton)
 {
     QMessageBox msgBox(icon, title, text, QMessageBox::NoButton, parent);
-    msgBox.setTextInteractionFlags(Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard);
+    msgBox.setTextInteractionFlags(Qt::TextBrowserInteraction);
+    msgBox.setTextFormat(Qt::RichText);
+
     QDialogButtonBox *buttonBox = msgBox.findChild<QDialogButtonBox *>();
     Q_ASSERT(buttonBox != nullptr);
 

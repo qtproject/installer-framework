@@ -1563,6 +1563,8 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 
     m_errorLabel = new QLabel(this);
     m_errorLabel->setWordWrap(true);
+    m_errorLabel->setTextFormat(Qt::RichText);
+    m_errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     boxLayout->addWidget(m_errorLabel);
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
 

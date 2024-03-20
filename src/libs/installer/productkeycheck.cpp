@@ -128,3 +128,8 @@ QString ProductKeyCheck::securityWarning() const
 {
     return QString();
 }
+
+QString ProductKeyCheck::additionalMetaDownloadWarning() const
+{
+    return QString();
+}

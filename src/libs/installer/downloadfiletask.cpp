@@ -30,6 +30,7 @@
 
 #include "downloadfiletask_p.h"
 #include "globals.h"
+#include "productkeycheck.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -286,6 +287,10 @@ void Downloader::errorOccurred(QNetworkReply::NetworkError error)
         if (data.taskItem.source().contains(QLatin1String("Updates.xml"), Qt::CaseInsensitive)) {
             qCWarning(QInstaller::lcServer) << QString::fromLatin1("Network error while downloading '%1': %2.").arg(
                    data.taskItem.source(), reply->errorString());
+        } else if (data.taskItem.source().contains(QLatin1String("_meta"), Qt::CaseInsensitive)) {
+            QString errorString = tr("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString());
+            errorString.append(ProductKeyCheck::instance()->additionalMetaDownloadWarning());
+            m_futureInterface->reportException(TaskException(errorString));
         } else {
             m_futureInterface->reportException(
                 TaskException(tr("Network error while downloading '%1': %2.").arg(
