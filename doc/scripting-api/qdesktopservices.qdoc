@@ -56,14 +56,18 @@
         \li DesktopServices.PicturesLocation
         \li DesktopServices.TempLocation
         \li DesktopServices.HomeLocation
-        \li DesktopServices.DataLocation
+        \li DesktopServices.AppLocalDataLocation
         \li DesktopServices.CacheLocation
+        \li DesktopServices.GenericCacheLocation
         \li DesktopServices.GenericDataLocation
         \li DesktopServices.RuntimeLocation
         \li DesktopServices.ConfigLocation
         \li DesktopServices.DownloadLocation
-        \li DesktopServices.GenericCacheLocation
         \li DesktopServices.GenericConfigLocation
+        \li DesktopServices.AppDataLocation
+        \li DesktopServices.AppConfigLocation
+        \li DesktopServices.PublicShareLocation
+        \li DesktopServices.TemplatesLocation
     \endlist
 
     The enum values correspond to the values of the
