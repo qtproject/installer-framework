@@ -1195,9 +1195,6 @@ Operation *Component::createOperation(const QString &operationName, const QStrin
         return operation;
     }
 
-    if (operation->name() == scDelete)
-        operation->setValue(scPerformUndo, false);
-
     // Operation can contain variables which are resolved when performing the operation
     if (operation->requiresUnreplacedVariables())
         operation->setArguments(parameters);

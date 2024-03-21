@@ -129,7 +129,6 @@ static const QLatin1String scMinimumProgress("MinimumProgress");
 static const QLatin1String scDelete("Delete");
 static const QLatin1String scCopy("Copy");
 static const QLatin1String scMkdir("Mkdir");
-static const QLatin1String scPerformUndo("performUndo");
 static const QLatin1String scIsDefault("isDefault");
 static const QLatin1String scAdmin("admin");
 static const QLatin1String scTwoArgs("%1/%2/");
