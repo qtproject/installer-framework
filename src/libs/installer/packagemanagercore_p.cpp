@@ -57,6 +57,7 @@
 #include "selfrestarter.h"
 #include "filedownloaderfactory.h"
 #include "updateoperationfactory.h"
+#include "constants.h"
 
 #include <productkeycheck.h>
 
@@ -2804,9 +2805,12 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
-    settings.setValue(QLatin1String("UninstallString"), quoted(maintenanceTool));
-    settings.setValue(QLatin1String("ModifyPath"), QString(quoted(maintenanceTool)
-        + QLatin1String(" --manage-packages")));
+    settings.setValue(QLatin1String("UninstallString"), QString(quoted(maintenanceTool)
+        + QLatin1String(" --") + CommandLineOptions::scStartUninstallerLong));
+    if (!isOfflineOnly()) {
+        settings.setValue(QLatin1String("ModifyPath"), QString(quoted(maintenanceTool)
+            + QLatin1String(" --") + CommandLineOptions::scStartPackageManagerLong));
+    }
     // required disk space of the installed components
     quint64 estimatedSizeKB = m_core->requiredDiskSpace() / 1024;
     // add required space for the maintenance tool
