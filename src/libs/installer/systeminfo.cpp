@@ -148,7 +148,7 @@ QString SystemInfo::kernelVersion() const
     \list
         \li "windows"
         \li "opensuse" (for the Linux openSUSE distribution)
-        \li "osx"
+        \li "macos"
     \endlist
 
     \sa QSysInfo::productType()
