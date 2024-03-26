@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -29,6 +29,14 @@
 #include <QMetaEnum>
 
 #include "globals.h"
+
+#if defined(Q_OS_MACOS) || defined(Q_OS_LINUX)
+#include <termios.h>
+#include <unistd.h>
+#elif defined(Q_OS_WIN)
+#include <conio.h>
+#endif
+#include <iostream>
 
 const char IFW_SERVER[] = "ifw.server";
 const char IFW_INSTALLER_INSTALLLOG[] = "ifw.installer.installlog";
@@ -117,6 +125,53 @@ QString enumToString(const QMetaObject& metaObject, const char *enumerator, int 
         value = QLatin1String(en.valueToKey(key));
     }
     return value;
+}
+
+void askForCredentials(QString *username, QString *password, const QString &usernameTitle, const QString &passwordTitle)
+{
+    std::string usernameStdStr;
+    std::string passwordStdStr;
+
+    std::cout << qPrintable(usernameTitle);
+    std::cin >> usernameStdStr;
+
+    std::cout << qPrintable(passwordTitle);
+#if defined(Q_OS_MACOS) || defined(Q_OS_LINUX)
+    termios oldTerm;
+    termios term;
+
+    // Turn off echoing
+    tcgetattr(STDIN_FILENO, &oldTerm);
+    term = oldTerm;
+    term.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+
+    std::cin >> passwordStdStr;
+
+    // Clear input buffer
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+    // Restore old attributes
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldTerm);
+#elif defined(Q_OS_WIN)
+    char ch;
+    while ((ch = _getch()) != '\r') { // Return key
+        if (ch == '\b') { // Backspace key
+            if (!passwordStdStr.empty())
+                passwordStdStr.pop_back();
+        } else {
+            passwordStdStr.push_back(ch);
+        }
+    }
+    // Clear input buffer
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+#endif
+    std::cout << "\n";
+
+    *username = username->fromStdString(usernameStdStr);
+    *password = password->fromStdString(passwordStdStr);
 }
 
 } // namespace QInstaller

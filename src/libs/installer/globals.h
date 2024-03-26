@@ -59,6 +59,8 @@ QSet<T> toQSet(const C<T> &container)
     return QSet<T>(container.begin(), container.end());
 }
 
+void askForCredentials(QString *username, QString *password, const QString &usernameTitle, const QString &passwordTitle);
+
 }   // QInstaller
 
 #endif  // GLOBALS_H

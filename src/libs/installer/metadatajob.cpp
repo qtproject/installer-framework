@@ -41,6 +41,7 @@
 #include <QtConcurrent>
 #include <QtMath>
 #include <QRandomGenerator>
+#include <QApplication>
 
 namespace QInstaller {
 
@@ -520,13 +521,25 @@ void MetadataJob::xmlTaskFinished()
             }
         } else if (e.type() == AuthenticationRequiredException::Type::Server) {
             qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
-            ServerAuthenticationDialog dlg(e.message(), e.taskItem());
-            if (dlg.exec() == QDialog::Accepted) {
+            QString username;
+            QString password;
+            if (m_core->isCommandLineInstance()) {
+                qCDebug(QInstaller::lcInstallerInstallLog) << "Server Requires Authentication";
+                qCDebug(QInstaller::lcInstallerInstallLog) << "You need to supply a username and password to access this site.";
+                askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+            } else {
+                ServerAuthenticationDialog dlg(e.message(), e.taskItem());
+                if (dlg.exec() == QDialog::Accepted) {
+                    username = dlg.user();
+                    password = dlg.password();
+                }
+            }
+            if (!username.isEmpty()) {
                 Repository original = e.taskItem().value(TaskRole::UserRole)
                     .value<Repository>();
                 Repository replacement = original;
-                replacement.setUsername(dlg.user());
-                replacement.setPassword(dlg.password());
+                replacement.setUsername(username);
+                replacement.setPassword(password);
 
                 Settings &s = m_core->settings();
                 QSet<Repository> temporaries = s.temporaryRepositories();
@@ -580,8 +593,9 @@ void MetadataJob::xmlTaskFinished()
             // No new metadata packages to fetch, still need to update the cache
             // for refreshed repositories.
             startUpdateCacheTask();
-        }        
+        }
     } else if (status == XmlDownloadRetry) {
+        reset();
         QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {
         reset();
