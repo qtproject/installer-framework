@@ -503,16 +503,25 @@ void MetadataJob::xmlTaskFinished()
         }
     } catch (const AuthenticationRequiredException &e) {
         if (e.type() == AuthenticationRequiredException::Type::Proxy) {
-            const QNetworkProxy proxy = e.proxy();
-            ProxyCredentialsDialog proxyCredentials(proxy);
             qCWarning(QInstaller::lcInstallerInstallLog) << e.message();
-
-            if (proxyCredentials.exec() == QDialog::Accepted) {
+            QString username;
+            QString password;
+            const QNetworkProxy proxy = e.proxy();
+            if (m_core->isCommandLineInstance()) {
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("The proxy %1:%2 requires a username and password").arg(proxy.hostName(), proxy.port());
+                askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+            } else {
+                ProxyCredentialsDialog proxyCredentials(proxy);
+                if (proxyCredentials.exec() == QDialog::Accepted) {
+                    username = proxyCredentials.userName();
+                    password = proxyCredentials.password();
+                }
+            }
+            if (!username.isEmpty()) {
                 qCDebug(QInstaller::lcInstallerInstallLog) << "Retrying with new credentials ...";
                 PackageManagerProxyFactory *factory = m_core->proxyFactory();
 
-                factory->setProxyCredentials(proxy, proxyCredentials.userName(),
-                                             proxyCredentials.password());
+                factory->setProxyCredentials(proxy, username, password);
                 m_core->setProxyFactory(factory);
                 status = XmlDownloadRetry;
             } else {
