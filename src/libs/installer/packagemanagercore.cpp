@@ -4286,13 +4286,6 @@ bool PackageManagerCore::updateComponentData(struct Data &data, Component *compo
 
         component->setUninstalled();
         const QString localPath = component->localTempPath();
-        if (LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed) {
-            static QString lastLocalPath;
-            if (lastLocalPath != localPath)
-                qCDebug(QInstaller::lcDeveloperBuild()) << "Url is:" << localPath;
-            lastLocalPath = localPath;
-        }
-
 
         const Repository repo = d->m_metadataJob.repositoryForCacheDirectory(localPath);
         if (repo.isValid()) {
