@@ -609,6 +609,22 @@ template bool PackageManagerCore::loadComponentScripts<QList<Component *>>(const
 template bool PackageManagerCore::loadComponentScripts<QHash<QString, Component *>>(const QHash<QString, Component *> &, const bool);
 
 /*!
+    Saves the installer \a args user has given when running installer. Command and option arguments
+    are not saved.
+*/
+void PackageManagerCore::saveGivenArguments(const QStringList &args)
+{
+    m_arguments = args;
+}
+
+/*!
+    Returns the commands and options user has given when running installer.
+*/
+QStringList PackageManagerCore::givenArguments() const
+{
+    return m_arguments;
+}
+/*!
     \deprecated [4.5] Use recalculateAllComponents() instead.
 
     \sa {installer::componentsToInstallNeedsRecalculation}{installer.componentsToInstallNeedsRecalculation}

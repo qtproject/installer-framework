@@ -395,6 +395,9 @@ public:
     template <typename T>
     bool loadComponentScripts(const T &components, const bool postScript = false);
 
+    void saveGivenArguments(const QStringList &args);
+    QStringList givenArguments() const;
+
 public Q_SLOTS:
     bool runInstaller();
     bool runUninstaller();
@@ -490,6 +493,7 @@ private:
     QHash<QString, QString> m_fileDialogAutomaticAnswers;
     QHash<QString, QStringList> m_localVirtualWithDependants;
     QString m_availableSpaceMessage;
+    QStringList m_arguments;
 
 private:
     // remove once we deprecate isSelected, setSelected etc...

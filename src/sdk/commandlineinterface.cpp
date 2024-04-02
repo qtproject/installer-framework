@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2021 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -63,6 +63,7 @@ bool CommandLineInterface::initialize()
         return false;
     }
     // Filter the arguments list by removing any key=value pair occurrences.
+    QString command;
     m_positionalArguments = m_parser.positionalArguments();
     foreach (const QString &argument, m_positionalArguments) {
         if (argument.contains(QLatin1Char('=')))
@@ -76,9 +77,10 @@ bool CommandLineInterface::initialize()
     } else {
         // Sanity and order of arguments already checked in main(), we should be
         // quite safe to assume that command is the first positional argument.
+        command = m_positionalArguments.first();
         m_positionalArguments.removeFirst();
     }
-
+    m_core->saveGivenArguments(QStringList() << command << m_parser.optionNames());
     QString ctrlScript = controlScript();
     if (!ctrlScript.isEmpty()) {
         m_core->controlScriptEngine()->loadInContext(
