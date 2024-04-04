@@ -853,7 +853,7 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
         + tr("Downloading packages..."));
 
-    DownloadArchivesJob archivesJob(this);
+    DownloadArchivesJob archivesJob(this, QLatin1String("downloadArchiveJob"));
     archivesJob.setAutoDelete(false);
     archivesJob.setArchivesToDownload(archivesToDownload);
     archivesJob.setExpectedTotalSize(archivesToDownloadTotalSize);

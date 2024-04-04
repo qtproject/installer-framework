@@ -220,6 +220,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
 #else
     , m_allowCompressedRepositoryInstall(false)
 #endif
+    , m_connectedOperations(0)
 {
 }
 
@@ -266,6 +267,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
 #else
     , m_allowCompressedRepositoryInstall(false)
 #endif
+    , m_connectedOperations(0)
 {
     foreach (const OperationBlob &operation, performedOperations) {
         std::unique_ptr<QInstaller::Operation> op(KDUpdater::UpdateOperationFactory::instance()
@@ -1208,8 +1210,11 @@ void PackageManagerCorePrivate::connectOperationToInstaller(Operation *const ope
             connect(m_core, SIGNAL(installationInterrupted()), operationObject, SLOT(cancelOperation()));
 
         if (mo->indexOfSignal(QMetaObject::normalizedSignature("progressChanged(double)")) > -1) {
+            // create unique object names for progress information track
+            operationObject->setObjectName(QLatin1String("operation_%1").arg(QString::number(m_connectedOperations)));
             ProgressCoordinator::instance()->registerPartProgress(operationObject,
                 SIGNAL(progressChanged(double)), operationPartSize);
+            m_connectedOperations++;
         }
     }
 }

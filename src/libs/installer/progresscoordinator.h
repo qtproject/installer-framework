@@ -85,12 +85,12 @@ protected:
     explicit ProgressCoordinator(QObject *parent);
 
 private:
-    double allPendingCalculatedPartPercentages(QObject *excludeKeyObject = 0);
+    double allPendingCalculatedPartPercentages(const QString &excludeKeyObject = QString());
     void disconnectAllSenders();
 
 private:
-    QHash<QPointer<QObject>, double> m_senderPendingCalculatedPercentageHash;
-    QHash<QPointer<QObject>, double> m_senderPartProgressSizeHash;
+    QHash<QString, double> m_senderPendingCalculatedPercentageHash;
+    QHash<QString, double> m_senderPartProgressSizeHash;
     ProgressSpinner *m_progressSpinner;
     QString m_installationLabelText;
     double m_currentCompletePercentage;

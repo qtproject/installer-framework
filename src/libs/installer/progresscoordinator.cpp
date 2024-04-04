@@ -76,7 +76,8 @@ ProgressCoordinator *ProgressCoordinator::instance()
 
 void ProgressCoordinator::reset()
 {
-    disconnectAllSenders();
+    m_senderPartProgressSizeHash.clear();
+    m_senderPendingCalculatedPercentageHash.clear();
     m_installationLabelText.clear();
     m_currentCompletePercentage = 0;
     m_currentBasePercentage = 0;
@@ -90,10 +91,11 @@ void ProgressCoordinator::reset()
 void ProgressCoordinator::registerPartProgress(QObject *sender, const char *signal, double partProgressSize)
 {
     Q_ASSERT(sender);
+    Q_ASSERT(!sender->objectName().isEmpty());
     Q_ASSERT(QString::fromLatin1(signal).contains(QLatin1String("(double)")));
     Q_ASSERT(partProgressSize <= 1);
 
-    m_senderPartProgressSizeHash.insert(sender, partProgressSize);
+    m_senderPartProgressSizeHash.insert(sender->objectName(), partProgressSize);
     bool isConnected = connect(sender, signal, this, SLOT(partProgressChanged(double)));
     Q_UNUSED(isConnected);
     Q_ASSERT(isConnected);
@@ -116,16 +118,17 @@ void ProgressCoordinator::partProgressChanged(double fraction)
     }
 
     // no fraction no change
-    if (fraction == 0)
+    if (fraction == 0 || !sender())
         return;
+    QString senderObjectName = sender()->objectName();
 
     // ignore senders sending 100% multiple times
-    if (fraction == 1 && m_senderPendingCalculatedPercentageHash.contains(sender())
-        && m_senderPendingCalculatedPercentageHash.value(sender()) == 0) {
+    if (fraction == 1 && m_senderPendingCalculatedPercentageHash.contains(senderObjectName)
+        && m_senderPendingCalculatedPercentageHash.value(senderObjectName) == 0) {
         return;
     }
 
-    double partProgressSize = m_senderPartProgressSizeHash.value(sender(), 0);
+    double partProgressSize = m_senderPartProgressSizeHash.value(senderObjectName, 0);
     if (partProgressSize == 0) {
         qCWarning(QInstaller::lcInstallerInstallLog) << "It seems that this sender was not registered "
             "in the right way:" << sender();
@@ -138,7 +141,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
 
          // allPendingCalculatedPartPercentages has negative values
         double newCurrentCompletePercentage = m_currentBasePercentage - pendingCalculatedPartPercentage
-            + allPendingCalculatedPartPercentages(sender());
+            + allPendingCalculatedPartPercentages(senderObjectName);
 
         //we can't check this here, because some round issues can make it little bit under 0 or over 100
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
@@ -163,9 +166,9 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         m_currentCompletePercentage = newCurrentCompletePercentage;
         if (fraction == 1) {
             m_currentBasePercentage = m_currentBasePercentage - pendingCalculatedPartPercentage;
-            m_senderPendingCalculatedPercentageHash.insert(sender(), 0);
+            m_senderPendingCalculatedPercentageHash.insert(senderObjectName, 0);
         } else {
-            m_senderPendingCalculatedPercentageHash.insert(sender(), pendingCalculatedPartPercentage);
+            m_senderPendingCalculatedPercentageHash.insert(senderObjectName, pendingCalculatedPartPercentage);
         }
 
     } else { //if (m_undoMode)
@@ -174,7 +177,7 @@ void ProgressCoordinator::partProgressChanged(double fraction)
         //double checkValue = allPendingCalculatedPartPercentages(sender());
 
         double newCurrentCompletePercentage = m_manualAddedPercentage + m_currentBasePercentage
-            + pendingCalculatedPartPercentage + allPendingCalculatedPartPercentages(sender());
+            + pendingCalculatedPartPercentage + allPendingCalculatedPartPercentages(senderObjectName);
 
         //we can't check this here, because some round issues can make it little bit under 0 or over 100
         //Q_ASSERT(newCurrentCompletePercentage >= 0);
@@ -199,9 +202,9 @@ void ProgressCoordinator::partProgressChanged(double fraction)
 
         if (fraction == 1) {
             m_currentBasePercentage = m_currentBasePercentage + pendingCalculatedPartPercentage;
-            m_senderPendingCalculatedPercentageHash.insert(sender(), 0);
+            m_senderPendingCalculatedPercentageHash.insert(senderObjectName, 0);
         } else {
-            m_senderPendingCalculatedPercentageHash.insert(sender(), pendingCalculatedPartPercentage);
+            m_senderPendingCalculatedPercentageHash.insert(senderObjectName, pendingCalculatedPartPercentage);
         }
     } //if (m_undoMode)
     printProgressPercentage(progressInPercentage());
@@ -219,25 +222,13 @@ int ProgressCoordinator::progressInPercentage() const
     return currentValue;
 }
 
-void ProgressCoordinator::disconnectAllSenders()
-{
-    foreach (QPointer<QObject> sender, m_senderPartProgressSizeHash.keys()) {
-        if (!sender.isNull()) {
-            bool isDisconnected = sender->disconnect(this);
-            Q_UNUSED(isDisconnected);
-            Q_ASSERT(isDisconnected);
-        }
-    }
-    m_senderPartProgressSizeHash.clear();
-    m_senderPendingCalculatedPercentageHash.clear();
-}
-
 void ProgressCoordinator::setUndoMode()
 {
     Q_ASSERT(!m_undoMode);
     m_undoMode = true;
 
-    disconnectAllSenders();
+    m_senderPartProgressSizeHash.clear();
+    m_senderPendingCalculatedPercentageHash.clear();
     m_reachedPercentageBeforeUndo = progressInPercentage();
     m_currentBasePercentage = m_reachedPercentageBeforeUndo;
 }
@@ -294,10 +285,10 @@ void ProgressCoordinator::emitLabelAndDetailTextChanged(const QString &text)
     qApp->processEvents(); //makes the result available in the ui
 }
 
-double ProgressCoordinator::allPendingCalculatedPartPercentages(QObject *excludeKeyObject)
+double ProgressCoordinator::allPendingCalculatedPartPercentages(const QString &excludeKeyObject)
 {
     double result = 0;
-    QHash<QPointer<QObject>, double>::iterator it = m_senderPendingCalculatedPercentageHash.begin();
+    QHash<QString, double>::iterator it = m_senderPendingCalculatedPercentageHash.begin();
     while (it != m_senderPendingCalculatedPercentageHash.end()) {
         if (it.key() != excludeKeyObject)
             result += it.value();

@@ -51,7 +51,7 @@ class DownloadArchivesJob : public Job
     Q_OBJECT
 
 public:
-    explicit DownloadArchivesJob(PackageManagerCore *core);
+    explicit DownloadArchivesJob(PackageManagerCore *core, const QString &objectName);
     ~DownloadArchivesJob();
 
     int numberOfDownloads() const { return m_archivesDownloaded; }

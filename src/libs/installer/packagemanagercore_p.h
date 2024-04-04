@@ -341,6 +341,7 @@ private:
 
     QString m_datFileName;
     bool m_allowCompressedRepositoryInstall;
+    int m_connectedOperations;
 };
 
 } // namespace QInstaller

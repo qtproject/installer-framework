@@ -49,7 +49,7 @@ static constexpr uint scMaxRetries = 5;
 /*!
     Creates a new DownloadArchivesJob with parent \a core.
 */
-DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
+DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core, const QString &objectName)
     : Job(core)
     , m_core(core)
     , m_downloader(nullptr)
@@ -63,6 +63,7 @@ DownloadArchivesJob::DownloadArchivesJob(PackageManagerCore *core)
     , m_retryCount(scMaxRetries)
 {
     setCapabilities(Cancelable);
+    setObjectName(objectName);
 }
 
 /*!
