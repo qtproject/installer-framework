@@ -93,7 +93,7 @@ private slots:
             << PackageManagerCore::Canceled;
         QTest::newRow("Invalid repository")
             << ":///data/repository-invalid" << "a.dummy.component"
-            << PackageManagerCore::Failure;
+            << PackageManagerCore::Canceled;
     }
 
     void testCreateOfflineInstaller()
@@ -136,13 +136,13 @@ private slots:
             << true << PackageManagerCore::Canceled;
         QTest::newRow("Disallow unstable | Missing dependency with selected component")
             << ":///data/repository-missingdependency" << "example.with.unstable.dependency"
-            << false << PackageManagerCore::Failure;
+            << false << PackageManagerCore::Canceled;
         QTest::newRow("Allow unstable | Missing dependency with other component")
             << ":///data/repository-missingdependency" << "example.without.unstable.dependency"
             << true << PackageManagerCore::Success;
         QTest::newRow("Disallow unstable | Missing dependency with other component")
             << ":///data/repository-missingdependency" << "example.without.unstable.dependency"
-            << false << PackageManagerCore::Failure;
+            << false << PackageManagerCore::Canceled;
     }
 
     void testCreateOfflineWithUnstableComponent()
