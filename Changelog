@@ -1,3 +1,23 @@
+4.8.0
+- Fix occasional crash in install phase (QTIFW-3314)
+- Allow overwriting undo in some operations (QTIFW-3333, QTIFW-393)
+- Add possibility to add extra log when meta fetch fails (QTIFW-3012)
+- Fix http authorization login (QTIFW-3301)
+- Fix QDesktopServices properties (QTIFW-3334)
+- Fix maintenance tool register path parameters
+- Fix productType function return value in macos (QTIFW-3309)
+- Speed up cache validation (QTIFW-3328)
+- Fix QFileDialog documentation (QTIFW-3320)
+- Disable 'clear cache' button until new cache settings are applied (QTIFW-3252)
+- Add detailed warning when hash verification fails
+- Add security warning possibility when using additional repositories (QTIFW-3305)
+- Add possibility to add additional license text to CLI (QTIFW-3319)
+- Include minimal qt.conf file (QTIFW-3292)
+- Add Chinese and Portuquese languages (QTIFW-3325)
+- Fix translations missing in Linux and macOS (QTIFW-3310)
+- CLI: Perform commands primarily from default repositories (QTIFW-3251)
+- Add possibility to change button text (QTIFW-711)
+
 4.7.0
 - Fix CLI fail on huge amount of Updates.xml download (QTIFW-3249)
 - Prepare for Linux on ARM support (QTIFW-3073)
