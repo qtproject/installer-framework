@@ -2079,7 +2079,7 @@ Please copy the installer to a local drive</source>
     <name>QInstaller::IntroductionPage</name>
     <message>
         <source>Welcome</source>
-        <translation type="unfinished"></translation>
+        <translation>مَرْحَبًا</translation>
     </message>
     <message>
         <source>Welcome to the %1 Setup.</source>
@@ -2445,7 +2445,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">حدد الاقسام</translation>
+        <translation>حدد الاقسام</translation>
     </message>
 </context>
 <context>
