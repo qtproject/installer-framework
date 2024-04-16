@@ -875,14 +875,6 @@
         <translation>다운로드 오류</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>다운로드 중에 해시를 검증하지 못했습니다. 일시적인 오류이니 다시 시도하십시오.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>해시를 검증할 수 없음</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>%1 아카이브를 다운로드할 수 없음: %2</translation>
     </message>
@@ -955,6 +947,24 @@ Error while loading %2</source>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>재시도 회수(%1) 초과</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>다운로드 중에 해시를 검증하지 못했습니다. 일시적인 오류이니 다시 시도하십시오.
+
+예상 해시값: %1
+다운로드 해시값: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>해시를 검증할 수 없음
+예상 해시값: %1
+다운로드 해시값: %2</translation>
     </message>
 </context>
 <context>
