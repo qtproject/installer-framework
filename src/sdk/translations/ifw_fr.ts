@@ -1150,14 +1150,6 @@
         <translation>Erreur de téléchargement</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>La vérification du hachage lors du téléchargement a échoué. Cette erreur est temporaire, réessayez.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>Impossible de vérifier le hachage</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>Impossible de télécharger l’archive %1 : %2</translation>
     </message>
@@ -1234,6 +1226,24 @@ Erreur lors du chargement de %2</translation>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>Nombre de tentatives (%1) dépassé</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>La vérification du hachage lors du téléchargement a échoué. Cette erreur est temporaire, réessayez.
+
+Attendu: %1
+Téléchargé: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Impossible de vérifier le hachage
+Attendu: %1
+Téléchargé: %2</translation>
     </message>
 </context>
 <context>
