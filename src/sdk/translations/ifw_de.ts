@@ -926,10 +926,6 @@
         <translation>Bitte wählen Sie die Komponenten aus, die Sie entfernen möchten.</translation>
     </message>
     <message>
-        <source>Select the components to install. Deselect installed components to uninstall them. Any components already installed will not be updated.</source>
-        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
-    </message>
-    <message>
         <source>Mandatory components need to be updated first before you can select other components to update.</source>
         <translation>Obligatorische Komponenten müssen zuerst aktualisiert werden, bevor andere Komponenten zur Aktualisierung ausgewählt werden können.</translation>
     </message>
@@ -952,6 +948,10 @@
     <message>
         <source>Create offline installer from selected components, instead of installing now.</source>
         <translation>Erstellt einen Offline-Installer von den ausgewählten Komponenten anstatt zu installieren</translation>
+    </message>
+    <message>
+        <source>Select the components to install. Deselect installed components to uninstall them.&lt;br&gt;Any components already installed will not be updated.</source>
+        <translation>Bitte wählen Sie die Komponenten aus, die Sie installieren möchten. Wählen Sie die Komponenten ab, die Sie entfernen möchten.</translation>
     </message>
 </context>
 <context>
@@ -1165,14 +1165,6 @@
         <translation>Fehler beim Herunterladen</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>Prüfsumme ungültig beim Herunterladen. Dies ist ein kurzzeitiger Fehler, bitte erneut versuchen.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>Prüfsumme konnte nicht geprüft werden</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>Konnte Archiv %1 nicht herunterladen: %2</translation>
     </message>
@@ -1249,6 +1241,24 @@ Fehler beim Laden von %2</translation>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>Anzahl der Wiederholungen (%1) überschritten</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Prüfsumme ungültig beim Herunterladen. Dies ist ein kurzzeitiger Fehler, bitte erneut versuchen.
+
+Erwartet: %1
+Heruntergeladen: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Prüfsumme konnte nicht geprüft werden
+Erwartet: %1
+Heruntergeladen: %2</translation>
     </message>
 </context>
 <context>
