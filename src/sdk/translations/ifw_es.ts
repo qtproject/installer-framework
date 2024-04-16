@@ -1150,14 +1150,6 @@
         <translation>Error de descarga</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>Error de verificación del hash durante la descarga. Es un error temporal, vuelva a intentarlo.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>No se puede verificar el hash</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>No se puede descargar el archivo %1: %2</translation>
     </message>
@@ -1234,6 +1226,24 @@ Error al descargar %2</translation>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>Se superó el recuento de reintentos (%1)</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Error de verificación del hash durante la descarga. Es un error temporal, vuelva a intentarlo.
+
+Esperados: %1
+Descargado: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>No se puede verificar el hash
+Esperados: %1
+Descargado: %2</translation>
     </message>
 </context>
 <context>
