@@ -1170,14 +1170,6 @@
         <translation>Ошибка загрузки</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>Не удалось проверить целостность хеша в процессе загрузки. Пожалуйста, повторите операцию.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>Невозможно проверить хеш</translation>
-    </message>
-    <message>
         <source>Cannot fetch archives: %1
 Error while loading %2</source>
         <translation>Невозможно получить архивы :%1
@@ -1258,6 +1250,24 @@ Error while loading %2</source>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>Превышено количество (%1) повторов</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Не удалось проверить целостность хеша в процессе загрузки. Пожалуйста, повторите операцию.
+
+ожидалось: %1
+загружено: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Невозможно проверить хеш
+ожидалось: %1
+загружено: %2</translation>
     </message>
 </context>
 <context>
