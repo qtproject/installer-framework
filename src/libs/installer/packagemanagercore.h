@@ -419,7 +419,7 @@ Q_SIGNALS:
     void componentAdded(QInstaller::Component *comp);
     void valueChanged(const QString &key, const QString &value);
     void statusChanged(QInstaller::PackageManagerCore::Status);
-    void defaultTranslationsLoadedForLanguage(QLocale::Language lang);
+    void defaultTranslationsLoadedForLanguage(QLocale lang);
     void currentPageChanged(int page);
     void finishButtonClicked();
 

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -428,7 +428,7 @@ public:
         }
 
         m_core->setValue(QInstaller::scUILanguage, lang.name());
-        emit m_core->defaultTranslationsLoadedForLanguage(lang.language());
+        emit m_core->defaultTranslationsLoadedForLanguage(lang);
         ProductKeyCheck::instance()->addPackagesFromXml(QLatin1String(":/metadata/Updates.xml"));
 
         return true;

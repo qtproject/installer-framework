@@ -202,7 +202,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \fn QInstaller::PackageManagerCore::defaultTranslationsLoadedForLanguage(QLocale::Language lang)
+    \fn QInstaller::PackageManagerCore::defaultTranslationsLoadedForLanguage(QLocale lang)
 
     Emitted when the language \a lang has changed.
 
