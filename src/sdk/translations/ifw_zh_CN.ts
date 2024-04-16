@@ -1145,14 +1145,6 @@
         <translation>下载错误</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>下载时的哈希验证失败。 此错误为临时错误，请重试。</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>无法验证哈希</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>无法下载存档 %1：%2</translation>
     </message>
@@ -1225,6 +1217,23 @@ Error while loading %2</source>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>超过重试次数(%1)</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>下载时的哈希验证失败。 此错误为临时错误，请重试。
+预期的：%1
+已下载：%2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>无法验证哈希
+预期的：%1
+已下载：%2</translation>
     </message>
 </context>
 <context>
