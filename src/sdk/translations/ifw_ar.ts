@@ -871,14 +871,6 @@
         <translation>خطأ في التنزيل</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>فشل التحقق من التجزئة أثناء التنزيل. هذا خطأ مؤقت، يرجى إعادة المحاولة.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>لا يمكن التحقق من التحزئة</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>لا يمكن تنزيل الأرشيف %1: %2</translation>
     </message>
@@ -972,6 +964,24 @@ Error while loading %2</source>
         <source>Retry count (%1) exceeded</source>
         <translation>تم تجاوز عدد مرات إعادة المحاولة (%1).
 </translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>فشل التحقق من التجزئة أثناء التنزيل. هذا خطأ مؤقت، يرجى إعادة المحاولة.
+
+المتوقع: %1
+تم التنزيل: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>لا يمكن التحقق من التجزئة
+المتوقع: %1
+تم التنزيل: %2</translation>
     </message>
 </context>
 <context>
