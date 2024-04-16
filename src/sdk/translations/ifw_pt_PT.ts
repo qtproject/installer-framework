@@ -846,6 +846,24 @@ Erro ao carregar %2</translation>
         <source>Retry count (%1) exceeded</source>
         <translation>Excedeu o número máximo de tentativas (%1).</translation>
     </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Falhou a verificação do código hash durante o download. Este é um erro temporário. Por favor, tente novamente.
+
+Previsto: %1
+Descarregado: %2</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation>Não é possível verificar o código hash
+Previsto: %1
+Descarregado: %2</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::Downloader</name>
