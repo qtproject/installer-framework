@@ -853,48 +853,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>デフォルト</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>ツリー表示でデフォルトのコンポーネントを選択します。</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>リセット</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>ツリー表示ですべてのコンポーネントを元の選択状態にリセットします。</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>すべて選択</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>ツリー表示ですべてのコンポーネントを選択します。</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>すべて選択解除</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>ツリー表示ですべてのコンポーネントの選択を解除します。</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Qt Board Support Packageファイルを選択し、オンラインリポジトリから直接取得できない追加のコンテンツをインストールします。</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>有効なリポジトリカテゴリをフィルタリングして選択します。</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>このコンポーネントはハード ディスク ドライブの約 %1 を占有します。</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -931,10 +891,6 @@
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>QBSPファイルを検索</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>選択</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1145,14 +1101,6 @@
         <translation>ダウンロード エラー</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>ダウンロード中にハッシュを検証できませんでした。 これは一時的なエラーです。再試行してください。</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>ハッシュを検証できません</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>アーカイブ %1 をダウンロードできません: %2</translation>
     </message>
@@ -1225,6 +1173,19 @@ Error while loading %2</source>
     <message>
         <source>Retry count (%1) exceeded</source>
         <translation>再試行回数 (%1) を超えました</translation>
+    </message>
+    <message>
+        <source>Hash verification while downloading failed. This is a temporary error, please retry.
+
+Expected: %1 
+Downloaded: %2</source>
+        <translation type="unfinished">ダウンロード中にハッシュを検証できませんでした。 これは一時的なエラーです。再試行してください。</translation>
+    </message>
+    <message>
+        <source>Cannot verify Hash
+Expected: %1 
+Downloaded: %2</source>
+        <translation type="unfinished">ハッシュを検証できません</translation>
     </message>
 </context>
 <context>
@@ -1359,16 +1320,8 @@ Error while loading %2</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>%1 ウィザードを完了しています</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>終了</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>%2 ウィザードを終了するには、%1 をクリックします。</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1379,8 +1332,36 @@ Error while loading %2</source>
         <translation>今すぐ %1 を実行します。</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>%1 ウィザードが正常に実行されませんでした。</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1466,6 +1447,14 @@ Error while loading %2</source>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>重要な更新が見つかりました。まず&apos;%1&apos; を選択してください</translation>
+    </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2361,13 +2350,6 @@ Please copy the installer to a local drive</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::RestartPage</name>
-    <message>
-        <source>Finished the %1 Setup</source>
-        <translation>%1 設定ウィザードを完了しています</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open script file at %1: %2</source>
@@ -2452,17 +2434,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>ファイル &quot;%1&quot; を &quot;%2&quot; に移動しています。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>スタート メニューのショートカット</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>プログラムのショートカットを作成するスタート メニューを選択します。 名前を入力して、新しいディレクトリを作成することもできます。</translation>
     </message>
 </context>
 <context>
@@ -2853,16 +2824,56 @@ or accept the elevation of access rights if being asked.</source>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>フィルター</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>エラー</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>コンポーネント情報</translation>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">選択</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation type="unfinished">ツリー表示ですべてのコンポーネントを選択します。</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation type="unfinished">ツリー表示ですべてのコンポーネントの選択を解除します。</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">デフォルト</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation type="unfinished">ツリー表示でデフォルトのコンポーネントを選択します。</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">リセット</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation type="unfinished">ツリー表示ですべてのコンポーネントを元の選択状態にリセットします。</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3078,6 +3089,42 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cache cleared successfully!</source>
         <translation>キャッシュが正常に消去されました!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished">終了</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
