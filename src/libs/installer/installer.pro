@@ -147,7 +147,8 @@ HEADERS += packagemanagercore.h \
     directoryguard.h \
     archivefactory.h \
     operationtracer.h \
-    customcombobox.h
+    customcombobox.h \
+    qawizard.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -237,7 +238,8 @@ SOURCES += packagemanagercore.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp \
     commandlineparser.cpp \
-    customcombobox.cpp
+    customcombobox.cpp \
+    qawizard.cpp
 
 macos:SOURCES += fileutils_mac.mm
 
