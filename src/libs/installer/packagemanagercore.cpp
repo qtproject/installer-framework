@@ -2681,6 +2681,7 @@ ComponentSortFilterProxyModel *PackageManagerCore::componentSortFilterProxyModel
 bool PackageManagerCore::listAvailablePackages(const QString &regexp, const QHash<QString, QString> &filters)
 {
     setPackageViewer();
+    d->enableAllCategories();
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching packages with regular expression:" << regexp;
 
@@ -2748,6 +2749,7 @@ bool PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
 bool PackageManagerCore::listAvailableAliases(const QString &regexp)
 {
     setPackageViewer();
+    d->enableAllCategories();
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching aliases with regular expression:" << regexp;
 
