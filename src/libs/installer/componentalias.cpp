@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -604,7 +604,8 @@ void ComponentAlias::addRequiredAliases(const QStringList &aliases, const bool o
             if (optional)
                 continue;
 
-            const QString error = QLatin1String("No required alias found by name: ") + aliasName;
+            const QString error = name() + QLatin1String(" alias requires alias ") + aliasName
+                + QLatin1String(", that is not found");
             qCWarning(lcInstallerInstallLog) << error;
 
             setUnstable(UnstableError::MissingAlias, error);
@@ -614,8 +615,8 @@ void ComponentAlias::addRequiredAliases(const QStringList &aliases, const bool o
         if (alias->isUnstable()) {
             if (optional)
                 continue;
-            const QString error = QLatin1String("Alias requires another alias "
-                                                "that is marked unstable: ") + aliasName;
+            const QString error = name() + QLatin1String(" alias requires alias ")
+                 + aliasName + QLatin1String(", that is marked unstable");
             qCWarning(lcInstallerInstallLog) << error;
 
             setUnstable(UnstableError::ReferenceToUnstable, error);
@@ -642,8 +643,8 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
                 continue;
             }
 
-            const QString error = QLatin1String("No required component found by name: ")
-                                  + componentName;
+            const QString error = name() + QLatin1String(" alias requires component ")
+                + componentName + QLatin1String(", that is not found");
             if (!m_componentErrorMessages.isEmpty())
                 m_componentErrorMessages.append(QLatin1String("\n"));
             m_componentErrorMessages.append(error);
@@ -655,8 +656,8 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
         if (component->isUnstable() || !component->isCheckable()) {
             if (optional)
                 continue;
-            const QString error = QLatin1String("Alias requires component that is uncheckable or unstable: ")
-                                  + componentName;
+            const QString error = name() + QLatin1String(" alias requires component ")
+                + componentName + QLatin1String(", that is uncheckable or unstable");
             if (!m_componentErrorMessages.isEmpty())
                 m_componentErrorMessages.append(QLatin1String("\n"));
             m_componentErrorMessages.append(error);
