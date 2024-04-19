@@ -2936,6 +2936,25 @@ void PackageManagerCore::listInstalledPackages(const QString &regexp)
     LoggingHandler::instance().printLocalPackageInformation(packages);
 }
 
+PackageManagerCore::Status PackageManagerCore::searchAvailableUpdates()
+{
+    setUpdater();
+    d->enableAllCategories();
+    if (!fetchRemotePackagesTree()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << error();
+        return status();
+    }
+
+    const QList<QInstaller::Component *> availableUpdates =
+        components(QInstaller::PackageManagerCore::ComponentType::Root);
+    if (availableUpdates.isEmpty()) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "There are currently no updates available.";
+        return status();
+    }
+    QInstaller::LoggingHandler::instance().printUpdateInformation(availableUpdates);
+    return status();
+}
+
 /*!
     Updates the selected components \a componentsToUpdate without GUI.
     If essential components are found, then only those will be updated.
@@ -2947,14 +2966,19 @@ PackageManagerCore::Status PackageManagerCore::updateComponentsSilently(const QS
 
     ComponentModel *model = updaterComponentModel();
 
-    bool fallbackReposFetched = false;
-    bool packagesFound = fetchPackagesWithFallbackRepositories(componentsToUpdate, fallbackReposFetched);
+    if (componentsToUpdate.isEmpty()) {
+        d->enableAllCategories();
+        fetchRemotePackagesTree();
+    } else {
+        bool fallbackReposFetched = false;
+        bool packagesFound = fetchPackagesWithFallbackRepositories(componentsToUpdate, fallbackReposFetched);
 
-    if (!packagesFound) {
-        qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace()
-            << "No components available for update with the current selection.";
-        d->setStatus(Canceled);
-        return status();
+        if (!packagesFound) {
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace()
+                << "No components available for update with the current selection.";
+            d->setStatus(Canceled);
+            return status();
+        }
     }
 
     // List contains components containing update, if essential found contains only essential component

@@ -142,9 +142,6 @@ QList<Metadata *> MetadataJob::metadata() const
 
         QHash<RepositoryCategory, QSet<Repository>>::const_iterator it;
         for (it = repositoryHash.constBegin(); it != repositoryHash.constEnd(); ++it) {
-            if (m_core->isUpdater())
-                return true;
-
             if (!it.key().isEnabled())
                 continue; // Let's try the next one
 
@@ -1024,9 +1021,8 @@ QSet<Repository> MetadataJob::getRepositories()
 
     // Fetch repositories under archive which are selected in UI.
     // If repository is already fetched, do not fetch it again.
-    // In updater mode, fetch always all archive repositories to get updates
     for (const RepositoryCategory &repositoryCategory : m_core->settings().repositoryCategories()) {
-        if (!m_core->isUpdater() && !repositoryCategory.isEnabled())
+        if (!repositoryCategory.isEnabled())
             continue;
 
         for (const Repository &repository : repositoryCategory.repositories()) {

@@ -98,20 +98,15 @@ int CommandLineInterface::checkUpdates()
         qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot check updates with installer.";
         return EXIT_FAILURE;
     }
-    m_core->setUpdater();
-    if (!m_core->fetchRemotePackagesTree()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << m_core->error();
+    try {
+        if (m_core->searchAvailableUpdates() != QInstaller::PackageManagerCore::Success) {
+            return EXIT_FAILURE;
+        }
+        return EXIT_SUCCESS;
+    } catch (const QInstaller::Error &err) {
+        qCCritical(QInstaller::lcInstallerInstallLog) << err.message();
         return EXIT_FAILURE;
     }
-
-    const QList<QInstaller::Component *> components =
-        m_core->components(QInstaller::PackageManagerCore::ComponentType::Root);
-    if (components.isEmpty()) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "There are currently no updates available.";
-        return EXIT_SUCCESS;
-    }
-    QInstaller::LoggingHandler::instance().printUpdateInformation(components);
-    return EXIT_SUCCESS;
 }
 
 int CommandLineInterface::listInstalledPackages()

@@ -293,6 +293,7 @@ public:
                                const QHash<QString, QString> &filters = QHash<QString, QString>());
     bool listAvailableAliases(const QString &regexp = QString());
 
+    PackageManagerCore::Status searchAvailableUpdates();
     PackageManagerCore::Status updateComponentsSilently(const QStringList &componentsToUpdate);
     PackageManagerCore::Status installSelectedComponentsSilently(const QStringList& components);
     PackageManagerCore::Status installDefaultComponentsSilently();
