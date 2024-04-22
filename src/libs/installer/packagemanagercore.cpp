@@ -1701,7 +1701,7 @@ bool PackageManagerCore::fetchPackagesWithFallbackRepositories(const QStringList
             return false;
 
         qCDebug(QInstaller::lcInstallerInstallLog).noquote()
-            << "Components not found for installation with the current selection."
+            << "Components not found with the current selection."
             << "Searching from additional repositories";
         if (!ProductKeyCheck::instance()->securityWarning().isEmpty()) {
             qCWarning(QInstaller::lcInstallerInstallLog) << ProductKeyCheck::instance()->securityWarning();

@@ -3157,7 +3157,7 @@ bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& comp
             );
 
         if (aliasesNotFoundForInstall.count() > 0) {
-            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot install " << aliasesNotFoundForInstall.join(QLatin1String(", ")) << ". Component(s) not found.";
+            qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << "Cannot select " << aliasesNotFoundForInstall.join(QLatin1String(", ")) << ". Component(s) not found.";
             setStatus(PackageManagerCore::NoPackagesFound);
             return false;
         }
