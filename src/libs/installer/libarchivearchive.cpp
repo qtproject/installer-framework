@@ -832,7 +832,7 @@ QVector<ArchiveEntry> LibArchiveArchive::list()
 
             ArchiveEntry archiveEntry;
             archiveEntry.path = ArchiveEntryPaths::callWithSystemLocale<QString>(ArchiveEntryPaths::pathname, entry);
-            archiveEntry.utcTime = QDateTime::fromSecsSinceEpoch(archive_entry_mtime(entry));
+            archiveEntry.utcTime = QDateTime::fromSecsSinceEpoch(archive_entry_mtime(entry), Qt::UTC);
             archiveEntry.isDirectory = (archive_entry_filetype(entry) == AE_IFDIR);
             archiveEntry.isSymbolicLink = (archive_entry_filetype(entry) == AE_IFLNK);
             archiveEntry.uncompressedSize = archive_entry_size(entry);

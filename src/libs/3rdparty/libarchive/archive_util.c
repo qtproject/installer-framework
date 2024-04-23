@@ -25,7 +25,6 @@
  */
 
 #include "archive_platform.h"
-__FBSDID("$FreeBSD: head/lib/libarchive/archive_util.c 201098 2009-12-28 02:58:14Z kientzle $");
 
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -256,10 +255,9 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
 #endif
 	fd = -1;
 	ws = NULL;
+	archive_string_init(&temp_name);
 
 	if (template == NULL) {
-		archive_string_init(&temp_name);
-
 		/* Get a temporary directory. */
 		if (tmpdir == NULL) {
 			size_t l;
