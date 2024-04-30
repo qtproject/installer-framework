@@ -120,12 +120,18 @@ public:
     Q_INVOKABLE void showSettingsButton(bool show);
     Q_INVOKABLE void setSettingsButtonEnabled(bool enable);
 
+    Q_INVOKABLE QJSValue findChildFromGUI(const QString &objectName);
+    Q_INVOKABLE QList<QJSValue> findChildrenFromGUI(const QString &objectName);
+
     Q_INVOKABLE QJSValue findChild(QObject *parent, const QString &objectName);
     Q_INVOKABLE QList<QJSValue> findChildren(QObject *parent, const QString &objectName);
 
     Q_INVOKABLE void setSilent(bool silent);
 
     Q_INVOKABLE void setTextItems(QObject *object, const QStringList &items);
+
+    Q_INVOKABLE void setStyle(const QString& styleFile);
+
 
 signals:
     void interrupted();

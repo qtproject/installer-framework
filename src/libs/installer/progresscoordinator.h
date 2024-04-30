@@ -80,6 +80,7 @@ signals:
     void detailTextChanged(const QString &text);
     void detailTextResetNeeded();
     void additionalProgressStatusChanged(const QString &status);
+    void totalProcentageChanged(int);
 
 protected:
     explicit ProgressCoordinator(QObject *parent);

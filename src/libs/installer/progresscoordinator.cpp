@@ -254,6 +254,8 @@ void ProgressCoordinator::addManualPercentagePoints(int value)
     if (m_currentCompletePercentage > 100.0)
         m_currentCompletePercentage = 100.0;
 
+    emit totalProcentageChanged(m_currentCompletePercentage);
+
     qApp->processEvents(); //makes the result available in the ui
 }
 
@@ -313,6 +315,8 @@ void ProgressCoordinator::emitAdditionalProgressStatus(const QString &status)
 
 void ProgressCoordinator::printProgressPercentage(int progress)
 {
+    emit totalProcentageChanged(progress);
+
     if (!LoggingHandler::instance().isVerbose())
         return;
 

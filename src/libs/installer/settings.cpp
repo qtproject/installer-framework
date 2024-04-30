@@ -326,7 +326,7 @@ Settings Settings::fromFileAndPrefix(const QString &path, const QString &prefix,
                 << scAllowSpaceInPath << scAllowNonAsciiCharacters << scAllowRepositoriesForOfflineInstaller
                 << scDisableAuthorizationFallback << scDisableCommandLineInterface
                 << scWizardStyle << scStyleSheet << scTitleColor
-                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardMinimumWidth << scWizardMinimumHeight
+                << scWizardDefaultWidth << scWizardDefaultHeight << scWizardMinimumWidth << scWizardMinimumHeight << scWizardMaximumWidth << scWizardMaximumHeight
                 << scWizardShowPageList << scProductImages
                 << scRepositorySettingsPageVisible << scTargetConfigurationFile
                 << scRemoteRepositories << scTranslations << scUrlQueryString << QLatin1String(scControlScript)
@@ -518,6 +518,16 @@ int Settings::wizardMinimumWidth() const
 int Settings::wizardMinimumHeight() const
 {
     return lengthToInt(d->m_data.value(scWizardMinimumHeight));
+}
+
+int Settings::wizardMaximumWidth() const {
+    return lengthToInt(d->m_data.value(scWizardMaximumWidth));
+
+}
+
+int Settings::wizardMaximumHeight() const {
+    return lengthToInt(d->m_data.value(scWizardMaximumHeight));
+
 }
 
 bool Settings::wizardShowPageList() const

@@ -133,6 +133,7 @@ private Q_SLOTS:
 protected:
     bool event(QEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    void childEvent(QChildEvent * event) override;
     PackageManagerCore *packageManagerCore() const { return m_core; }
     void executeControlScript(int pageId);
 

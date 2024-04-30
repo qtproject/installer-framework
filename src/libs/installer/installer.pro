@@ -46,6 +46,7 @@ greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 
 HEADERS += packagemanagercore.h \
     aspectratiolabel.h \
+    eventfilter.h \
     calculatorbase.h \
     componentalias.h \
     componentsortfilterproxymodel.h \
@@ -148,7 +149,6 @@ HEADERS += packagemanagercore.h \
     archivefactory.h \
     operationtracer.h \
     customcombobox.h \
-    qawizard.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -158,6 +158,7 @@ SOURCES += packagemanagercore.cpp \
     componentalias.cpp \
     concurrentoperationrunner.cpp \
     directoryguard.cpp \
+    eventfilter.cpp \
     fileguard.cpp \
     componentsortfilterproxymodel.cpp \
     genericdatacache.cpp \
@@ -239,7 +240,6 @@ SOURCES += packagemanagercore.cpp \
     componentselectionpage_p.cpp \
     commandlineparser.cpp \
     customcombobox.cpp \
-    qawizard.cpp
 
 macos:SOURCES += fileutils_mac.mm
 

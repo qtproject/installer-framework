@@ -201,6 +201,20 @@ void GuiProxy::setSettingsButtonEnabled(bool enable)
         m_gui->setSettingsButtonEnabled(enable);
 }
 
+QJSValue GuiProxy::findChildFromGUI(const QString &objectName) {
+    if (!m_gui)
+        return findChild(m_gui, objectName);
+
+    return {};
+}
+
+QList<QJSValue> GuiProxy::findChildrenFromGUI(const QString &objectName) {
+    if (!m_gui)
+        return findChildren(m_gui, objectName);
+
+    return {};
+}
+
 /*!
     Returns the first descendant of \a parent that has \a objectName as name.
 
@@ -237,6 +251,11 @@ void GuiProxy::setTextItems(QObject *object, const QStringList &items)
 {
     if (m_gui)
         m_gui->setTextItems(object, items);
+}
+
+void GuiProxy::setStyle(const QString &styleFile) {
+    if (m_gui)
+        m_gui->setStyleSheet(styleFile);
 }
 
 void GuiProxy::cancelButtonClicked()

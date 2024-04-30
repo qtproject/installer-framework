@@ -91,6 +91,8 @@ public:
     int wizardDefaultHeight() const;
     int wizardMinimumWidth() const;
     int wizardMinimumHeight() const;
+    int wizardMaximumWidth() const;
+    int wizardMaximumHeight() const;
     bool wizardShowPageList() const;
     QMap<QString, QVariant> productImages() const;
     void setProductImages(const QMap<QString, QVariant> &images);

@@ -81,6 +81,7 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QScreen>
+#include "eventfilter.h"
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -92,6 +93,7 @@
 
 using namespace KDUpdater;
 using namespace QInstaller;
+
 
 
 class DynamicInstallerPage : public PackageManagerPage
@@ -265,6 +267,18 @@ public:
 };
 
 
+void getAllChildren(QObject *parent, QList<QObject *> &childrenList) {
+    // Получаем список дочерних объектов текущего родителя
+    QList<QObject *> children = parent->children();
+
+    // Добавляем дочерние объекты в общий список
+    for (QObject *child : children) {
+        childrenList.append(child);
+        // Рекурсивно вызываем эту функцию для каждого дочернего объекта
+        getAllChildren(child, childrenList);
+    }
+}
+
 // -- PackageManagerGui
 
 /*!
@@ -325,6 +339,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         setWindowTitle(tr("Maintain %1").arg(m_core->value(scTitle)));
     setWindowFlags(windowFlags() &~ Qt::WindowContextHelpButtonHint);
 
+
 #ifdef Q_OS_MACOS
     QMenuBar *menuBar = new QMenuBar(this);
     QMenu *applicationMenu = new QMenu(menuBar);
@@ -370,6 +385,8 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     setOption(QWizard::NoBackButtonOnStartPage);
     setOption(QWizard::NoBackButtonOnLastPage);
+    setOption(QWizard::CancelButtonOnLeft);
+
 #ifdef Q_OS_MACOS
     setOptions(options() & ~QWizard::NoDefaultButton);
     if (QPushButton *nextButton = qobject_cast<QPushButton *>(button(QWizard::NextButton)))
@@ -464,6 +481,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     // We need to create this ugly hack so that the installer doesn't exceed the maximum size of the
     // screen. The screen size where the widget lies is not available until the widget is visible.
     QTimer::singleShot(30, this, SLOT(setMaxSize()));
+
 }
 
 /*!
@@ -471,12 +489,26 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 */
 void PackageManagerGui::setMaxSize()
 {
+
+
     QSize size = this->screen()->availableGeometry().size();
     int windowFrameHeight = frameGeometry().height() - geometry().height();
     int availableHeight = size.height() - windowFrameHeight;
 
     size.setHeight(availableHeight);
-    setMaximumSize(size);
+
+    QSize maximumSize;
+
+    maximumSize.setWidth(m_core->settings().wizardMaximumWidth()
+                             ? m_core->settings().wizardMaximumWidth()
+                             : size.width());
+
+    maximumSize.setHeight(m_core->settings().wizardMaximumHeight()
+                              ? m_core->settings().wizardMaximumHeight()
+                              : availableHeight);
+
+    setMaximumSize(maximumSize);
+
 }
 
 /*!
@@ -772,6 +804,7 @@ bool PackageManagerGui::event(QEvent *event)
     case QEvent::LanguageChange:
         emit languageChanged();
         break;
+
     default:
         break;
     }
@@ -795,6 +828,8 @@ void PackageManagerGui::showEvent(QShowEvent *event)
             }
         }
         QSize minimumSize;
+        QSize maximumSize;
+
         minimumSize.setWidth(m_core->settings().wizardMinimumWidth()
             ? m_core->settings().wizardMinimumWidth()
             : width());
@@ -803,7 +838,17 @@ void PackageManagerGui::showEvent(QShowEvent *event)
             ? m_core->settings().wizardMinimumHeight()
             : height());
 
+        maximumSize.setWidth(m_core->settings().wizardMaximumWidth()
+                                 ? m_core->settings().wizardMaximumWidth()
+                                 : width());
+
+        maximumSize.setHeight(m_core->settings().wizardMaximumHeight()
+                                  ? m_core->settings().wizardMaximumHeight()
+                                  : height());
+
         setMinimumSize(minimumSize);
+        setMaximumSize(maximumSize);
+
         if (minimumWidth() < m_core->settings().wizardDefaultWidth())
             resize(m_core->settings().wizardDefaultWidth(), height());
         if (minimumHeight() < m_core->settings().wizardDefaultHeight())
@@ -811,6 +856,10 @@ void PackageManagerGui::showEvent(QShowEvent *event)
     }
     QWizard::showEvent(event);
     QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);
+}
+
+void PackageManagerGui::childEvent(QChildEvent *event) {
+    qDebug() << QString::number(event->type()) << event->child()->objectName() << event->child()->metaObject()->className();
 }
 
 /*!
@@ -1100,8 +1149,11 @@ void PackageManagerGui::updateButtonLayout()
 
     setOption(QWizard::NoBackButtonOnLastPage, true);
     setOption(QWizard::NoBackButtonOnStartPage, true);
+    setOption(QWizard::NoCancelButtonOnLastPage, true);
+
 
     setButtonLayout(buttons.toList());
+
 }
 
 /*!

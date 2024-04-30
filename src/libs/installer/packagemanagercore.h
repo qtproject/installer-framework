@@ -409,6 +409,10 @@ Q_SIGNALS:
     void metaJobTotalProgress(int progress);
     void metaJobInfoMessage(const QString &message);
 
+    void installProgressChanged(int progress);
+    void installInfoChanged(const QString& message);
+    void installInfoReset();
+
     void startAllComponentsReset();
     void finishAllComponentsReset(const QList<QInstaller::Component*> &rootComponents);
 
