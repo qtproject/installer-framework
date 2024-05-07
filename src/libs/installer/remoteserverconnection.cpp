@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -580,7 +580,11 @@ void RemoteServerConnection::handleQFSFileEngine(RemoteServerReply *reply, const
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileTime)) {
         qint32 filetime;
         data >> filetime;
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
         reply->send(m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
+#else
+        reply->send(m_engine->fileTime(static_cast<QFile::FileTime> (filetime)));
+#endif
     } else if (!command.isEmpty()) {
         qCDebug(QInstaller::lcServer) << "Unknown QAbstractFileEngine command:" << command;
     }

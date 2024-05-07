@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -87,7 +87,11 @@ public:
     QString fileName(FileName file = DefaultName) const override;
     uint ownerId(FileOwner owner) const override;
     QString owner(FileOwner owner) const override;
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
     QDateTime fileTime(FileTime time) const override;
+#else
+    QDateTime fileTime(QFile::FileTime time) const override;
+#endif
     void setFileName(const QString &fileName) override;
     int handle() const override;
     bool atEnd() const;

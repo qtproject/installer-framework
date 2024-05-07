@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -554,7 +554,11 @@ bool RemoteFileEngine::renameOverwrite(const QString &newName)
     return m_fileEngine.renameOverwrite(newName);
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
 QDateTime RemoteFileEngine::fileTime(FileTime time) const
+#else
+QDateTime RemoteFileEngine::fileTime(QFile::FileTime time) const
+#endif
 {
     if ((const_cast<RemoteFileEngine *>(this))->connectToServer()) {
         return callRemoteMethod<QDateTime>
