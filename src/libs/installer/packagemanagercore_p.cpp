@@ -498,8 +498,39 @@ bool PackageManagerCorePrivate::buildComponentAliases()
     // 1. Component check state is changed by alias selection, so store the initial state
     storeCheckState();
 
+    QStringList aliasNamesSelectedForInstall;
+    if (m_core->isPackageViewer()) {
+        aliasNamesSelectedForInstall.append(m_componentAliases.keys());
+    } else {
+        // 2. Get a list of alias names to be installed, dependency aliases needs to be listed first
+        // to get proper unstable state for parents
+        std::function<void(QStringList)> fetchAliases = [&](QStringList aliases) {
+            for (const QString &aliasName : aliases) {
+                ComponentAlias *alias = m_componentAliases.value(aliasName);
+                if (!alias || aliasNamesSelectedForInstall.contains(aliasName))
+                    continue;
+                if (!aliasNamesSelectedForInstall.contains(aliasName))
+                    aliasNamesSelectedForInstall.prepend(aliasName);
+                fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
+                    << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
+            }
+        };
+        for (const QString &installComponent : m_componentsToBeInstalled) {
+            ComponentAlias *alias = m_componentAliases.value(installComponent);
+            if (!alias)
+                continue;
+            if (!aliasNamesSelectedForInstall.contains(installComponent))
+                aliasNamesSelectedForInstall.prepend(installComponent);
+            fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
+                << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
+        }
+    }
     Graph<QString> aliasGraph;
-    for (auto *alias : qAsConst(m_componentAliases)) {
+    QList<ComponentAlias *> aliasesSelectedForInstall;
+    for (auto &aliasName : std::as_const(aliasNamesSelectedForInstall)) {
+        ComponentAlias *alias = m_componentAliases.value(aliasName);
+        if (!alias)
+            continue;
         aliasGraph.addNode(alias->name());
         aliasGraph.addEdges(alias->name(),
             QInstaller::splitStringWithComma(alias->value(scRequiredAliases)) <<
@@ -513,10 +544,12 @@ bool PackageManagerCorePrivate::buildComponentAliases()
                 tr("Alias declares name that conflicts with an existing component \"%1\"")
                 .arg(alias->name()));
         }
+        if (!aliasesSelectedForInstall.contains(alias))
+            aliasesSelectedForInstall.append(alias);
     }
 
     const QList<QString> sortedAliases = aliasGraph.sort();
-    // 2. Check for cyclic dependency errors
+    // 3. Check for cyclic dependency errors
     if (aliasGraph.hasCycle()) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
@@ -527,7 +560,7 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         return false;
     }
 
-    // 3. Test for required aliases and components, this triggers setting the
+    // 4. Test for required aliases and components, this triggers setting the
     // alias unstable in case of a broken reference.
     for (const auto &aliasName : sortedAliases) {
         ComponentAlias *alias = m_componentAliases.value(aliasName);
@@ -539,8 +572,8 @@ bool PackageManagerCorePrivate::buildComponentAliases()
     }
 
     clearInstallerCalculator();
-    // 4. Check for other errors preventing resolving components to install
-    if (!installerCalculator()->solve(m_componentAliases.values())) {
+    // 5. Check for other errors preventing resolving components to install
+    if (!installerCalculator()->solve(aliasesSelectedForInstall)) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
             tr("Unresolved component aliases"), installerCalculator()->error());
@@ -548,10 +581,10 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         return false;
     }
 
-    for (auto *alias : qAsConst(m_componentAliases))
+    for (auto *alias : std::as_const(m_componentAliases))
         alias->setSelected(false);
 
-    // 5. Restore original state
+    // 6. Restore original state
     restoreCheckState();
 
     return true;
@@ -2674,6 +2707,7 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
             // We found unstable alias and all repos were not fetched. Alias might have dependency to component
             // which exists in non-default repository. Fetch all repositories now.
             if (unstableAliasFound && !fallbackReposFetched) {
+                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
                 return false;
             }
             else {
@@ -2686,6 +2720,12 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
 
     if (!fetchComponents() && !fallbackReposFetched) {
         setStatus(PackageManagerCore::Running);
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote()
+            << "Components not found with the current selection."
+            << "Searching from additional repositories";
+        if (!ProductKeyCheck::instance()->securityWarning().isEmpty()) {
+            qCWarning(QInstaller::lcInstallerInstallLog) << ProductKeyCheck::instance()->securityWarning();
+        }
         enableAllCategories();
         fetchComponents();
     }

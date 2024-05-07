@@ -201,10 +201,10 @@ private slots:
             << PackageManagerCore::Success
             << (QStringList() << "A" << "B");
 
-        QTest::newRow("Alias with optional broken alias (will not install)")
+        QTest::newRow("Alias with optional broken alias (will install)")
             << AliasSource(AliasSource::SourceFileFormat::Xml, ":///data/aliases-optional.xml", -1)
             << (QStringList() << "set-optional-broken")
-            << PackageManagerCore::Canceled
+            << PackageManagerCore::Success
             << QStringList();
     }
 
@@ -257,7 +257,7 @@ private slots:
 
         core->setCommandLineInstance(true);
 
-        QCOMPARE(status, core->installSelectedComponentsSilently(selectedAliases));
+        QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
     }
 
 private:

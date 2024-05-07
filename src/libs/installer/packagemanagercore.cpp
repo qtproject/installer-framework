@@ -1754,6 +1754,7 @@ bool PackageManagerCore::fetchRemotePackagesTree(const QStringList& components)
     if (!d->installablePackagesFound(components))
         return false;
 
+    d->m_componentsToBeInstalled = components;
     return fetchPackagesTree(packages, installedPackages);
 }
 
@@ -2849,7 +2850,8 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names
                     errorMessage.append(tr("Cannot select alias %1. There was a problem loading this alias, "
                         "so it is marked unstable and cannot be selected.").arg(name) + QLatin1Char('\n'));
                     unstableAliasFound = true;
-                    continue;
+                    setCanceled();
+                    return false;
                 } else if (alias->isVirtual()) {
                     errorMessage.append(tr("Cannot select %1. Alias is marked virtual, meaning it cannot "
                         "be selected manually.").arg(name) + QLatin1Char('\n'));

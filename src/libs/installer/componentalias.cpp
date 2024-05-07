@@ -599,6 +599,8 @@ void ComponentAlias::addRequiredAliases(const QStringList &aliases, const bool o
         }
 
         if (alias->isUnstable()) {
+            if (optional)
+                continue;
             const QString error = QLatin1String("Alias requires another alias "
                                                 "that is marked unstable: ") + aliasName;
             qCWarning(lcInstallerInstallLog) << error;
