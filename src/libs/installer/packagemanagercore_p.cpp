@@ -3150,7 +3150,7 @@ bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& comp
     if (componentsNotFoundForInstall.count() > 0) {
         QList<ComponentAlias *> aliasList = componentAliases();
         auto aliasesNotFoundForInstall = QtConcurrent::blockingFiltered(
-            components,
+            componentsNotFoundForInstall,
             [aliasList](const QString& installerPackage) {
                 return filterMissingAliasesToInstall(installerPackage, aliasList);
             }
