@@ -2708,10 +2708,15 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
             // We found unstable alias and all repos were not fetched. Alias might have dependency to component
             // which exists in non-default repository. Fetch all repositories now.
             if (unstableAliasFound && !fallbackReposFetched) {
-                qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
                 return false;
-            }
-            else {
+            } else {
+                for (const QString &possibleAliasName : components) {
+                    if (ComponentAlias *alias = m_core->aliasByName(possibleAliasName)) {
+                        if (alias->componentErrorMessage().isEmpty())
+                            continue;
+                        qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << alias->componentErrorMessage();
+                    }
+                }
                 qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
                     << "No components available with the current selection.";
             }
@@ -2720,6 +2725,7 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
     };
 
     if (!fetchComponents() && !fallbackReposFetched) {
+        fallbackReposFetched = true;
         setStatus(PackageManagerCore::Running);
         qCDebug(QInstaller::lcInstallerInstallLog).noquote()
             << "Components not found with the current selection."

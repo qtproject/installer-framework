@@ -135,6 +135,7 @@ public:
 
     bool isUnstable() const;
     void setUnstable(UnstableError error, const QString &message = QString());
+    QString componentErrorMessage() const;
 
 private:
     void addRequiredAliases(const QStringList &aliases, const bool optional);
@@ -150,6 +151,7 @@ private:
 
     QList<Component *> m_components;
     QList<ComponentAlias *> m_aliases;
+    QString m_componentErrorMessages;
 };
 
 } // namespace QInstaller

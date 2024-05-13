@@ -494,6 +494,7 @@ void ComponentAlias::setSelected(bool selected)
 QList<Component *> ComponentAlias::components()
 {
     if (m_components.isEmpty()) {
+        m_componentErrorMessages.clear();
         const QStringList componentList = QInstaller::splitStringWithComma(
             m_variables.value(scRequiredComponents));
 
@@ -577,6 +578,11 @@ void ComponentAlias::setUnstable(UnstableError error, const QString &message)
         QLatin1String(metaEnum.valueToKey(error)), message, name());
 }
 
+QString ComponentAlias::componentErrorMessage() const
+{
+    return m_componentErrorMessages;
+}
+
 /*!
     \internal
 
@@ -629,7 +635,9 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
 
             const QString error = QLatin1String("No required component found by name: ")
                                   + componentName;
-            qCWarning(lcInstallerInstallLog) << error;
+            if (!m_componentErrorMessages.isEmpty())
+                m_componentErrorMessages.append(QLatin1String("\n"));
+            m_componentErrorMessages.append(error);
 
             setUnstable(UnstableError::MissingComponent, error);
             continue;
@@ -640,7 +648,9 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
                 continue;
             const QString error = QLatin1String("Alias requires component that is uncheckable or unstable: ")
                                   + componentName;
-            qCWarning(lcInstallerInstallLog) << error;
+            if (!m_componentErrorMessages.isEmpty())
+                m_componentErrorMessages.append(QLatin1String("\n"));
+            m_componentErrorMessages.append(error);
 
             setUnstable(UnstableError::UnselectableComponent, error);
             continue;
