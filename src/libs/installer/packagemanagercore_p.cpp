@@ -493,38 +493,39 @@ bool PackageManagerCorePrivate::buildComponentAliases()
             m_componentAliases.insert(alias->name(), newAlias);
         }
     }
+
+    if (m_core->isPackageViewer())
+        return true;
     // After aliases are loaded, perform sanity checks:
 
     // 1. Component check state is changed by alias selection, so store the initial state
     storeCheckState();
 
     QStringList aliasNamesSelectedForInstall;
-    if (m_core->isPackageViewer()) {
-        aliasNamesSelectedForInstall.append(m_componentAliases.keys());
-    } else {
-        // 2. Get a list of alias names to be installed, dependency aliases needs to be listed first
-        // to get proper unstable state for parents
-        std::function<void(QStringList)> fetchAliases = [&](QStringList aliases) {
-            for (const QString &aliasName : aliases) {
-                ComponentAlias *alias = m_componentAliases.value(aliasName);
-                if (!alias || aliasNamesSelectedForInstall.contains(aliasName))
-                    continue;
-                if (!aliasNamesSelectedForInstall.contains(aliasName))
-                    aliasNamesSelectedForInstall.prepend(aliasName);
-                fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
-                    << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
-            }
-        };
-        for (const QString &installComponent : m_componentsToBeInstalled) {
-            ComponentAlias *alias = m_componentAliases.value(installComponent);
-            if (!alias)
+
+    // 2. Get a list of alias names to be installed, dependency aliases needs to be listed first
+    // to get proper unstable state for parents
+    std::function<void(QStringList)> fetchAliases = [&](QStringList aliases) {
+        for (const QString &aliasName : aliases) {
+            ComponentAlias *alias = m_componentAliases.value(aliasName);
+            if (!alias || aliasNamesSelectedForInstall.contains(aliasName))
                 continue;
-            if (!aliasNamesSelectedForInstall.contains(installComponent))
-                aliasNamesSelectedForInstall.prepend(installComponent);
+            if (!aliasNamesSelectedForInstall.contains(aliasName))
+                aliasNamesSelectedForInstall.prepend(aliasName);
             fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
                 << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
         }
+    };
+    for (const QString &installComponent : m_componentsToBeInstalled) {
+        ComponentAlias *alias = m_componentAliases.value(installComponent);
+        if (!alias)
+            continue;
+        if (!aliasNamesSelectedForInstall.contains(installComponent))
+            aliasNamesSelectedForInstall.prepend(installComponent);
+        fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
+            << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
     }
+
     Graph<QString> aliasGraph;
     QList<ComponentAlias *> aliasesSelectedForInstall;
     for (auto &aliasName : std::as_const(aliasNamesSelectedForInstall)) {

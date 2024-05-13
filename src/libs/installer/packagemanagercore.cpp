@@ -2756,30 +2756,18 @@ bool PackageManagerCore::listAvailableAliases(const QString &regexp)
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching aliases with regular expression:" << regexp;
 
-    ComponentModel *model = defaultComponentModel();
-    Q_UNUSED(model);
-
-    if (!d->m_updates) {
-        d->fetchMetaInformationFromRepositories();
-        d->addUpdateResourcesFromRepositories();
-
-        const PackagesList &packages = d->remotePackages();
-        if (!fetchAllPackages(packages, LocalPackagesMap())) {
-            qCWarning(QInstaller::lcInstallerInstallLog)
-                << "There was a problem with loading the package data.";
-            return false;
-        }
-    }
+    if (!d->buildComponentAliases())
+        return false;
 
     QRegularExpression re(regexp);
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
     QList<ComponentAlias *> matchedAliases;
-    for (auto *alias : qAsConst(d->m_componentAliases)) {
+    for (auto *alias : std::as_const(d->m_componentAliases)) {
         if (!alias)
             continue;
 
-        if (re.match(alias->name()).hasMatch() && !alias->isUnstable()) {
+        if (re.match(alias->name()).hasMatch()) {
             if (alias->isVirtual() && !virtualComponentsVisible())
                 continue;
 
