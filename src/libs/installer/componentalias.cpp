@@ -636,6 +636,8 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
         }
 
         if (component->isUnstable() || !component->isCheckable()) {
+            if (optional)
+                continue;
             const QString error = QLatin1String("Alias requires component that is uncheckable or unstable: ")
                                   + componentName;
             qCWarning(lcInstallerInstallLog) << error;

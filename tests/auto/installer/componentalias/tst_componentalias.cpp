@@ -283,6 +283,12 @@ private slots:
             << (QStringList() << "set-optional-broken")
             << PackageManagerCore::Success
             << QStringList();
+
+        QTest::newRow("Alias with optional broken component (will install)")
+            << AliasSource(AliasSource::SourceFileFormat::Xml, ":///data/aliases-optional.xml", -1)
+            << (QStringList() << "set-optional-broken-component")
+            << PackageManagerCore::Success
+            << QStringList();
     }
 
     void testInstallAlias()
@@ -299,7 +305,7 @@ private slots:
 
         if (!additionalSource.filename.isEmpty())
             core->addAliasSource(additionalSource);
-
+        core->settings().setAllowUnstableComponents(true);
         QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
 
         for (const QString &component : installedComponents)

@@ -40,4 +40,12 @@
   <Version>1.0.0-1</Version>
   <ReleaseDate>2015-01-01</ReleaseDate>
  </PackageUpdate>
+  <PackageUpdate>
+  <Name>UnstableComponent</Name>
+  <DisplayName>Subcomponent of subcomponent component</DisplayName>
+  <Description>Example subcomponent of subcomponent</Description>
+  <Version>1.0.0-1</Version>
+  <ReleaseDate>2015-01-01</ReleaseDate>
+  <Dependencies>missing.component</Dependencies>
+ </PackageUpdate>
 </Updates>
