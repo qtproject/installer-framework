@@ -650,7 +650,7 @@ void KDUpdater::FileDownloader::emitEstimatedDownloadTime()
 }
 
 /*!
-    \overload addCheckSumData()
+    Adds checksum \a data.
 */
 void KDUpdater::FileDownloader::addCheckSumData(const QByteArray &data)
 {

@@ -33,6 +33,8 @@
     \brief Using installer's aliases.xml file to define component aliases and their
            relations to other aliases and components.
 
+    \image qtifw-examples-componentalias.png
+
     \e{Component Alias} illustrates how to specify component aliases and how they influence
     the installation and maintenance processes for command line usage.
 

@@ -146,6 +146,8 @@ using namespace QInstaller;
             Installation has to be updated.
     \value  EssentialUpdated
             Installation essential components were updated.
+    \value  NoPackagesFound
+            No packages found from remote.
 */
 
 /*!
