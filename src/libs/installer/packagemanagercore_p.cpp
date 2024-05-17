@@ -2695,7 +2695,7 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
         }
         QString errorMessage;
         bool unstableAliasFound = false;
-        if (m_core->checkComponentsForInstallation(components, errorMessage, unstableAliasFound)) {
+        if (m_core->checkComponentsForInstallation(components, errorMessage, unstableAliasFound, fallbackReposFetched)) {
             if (!errorMessage.isEmpty())
                 qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
             if (calculateComponentsAndRun()) {

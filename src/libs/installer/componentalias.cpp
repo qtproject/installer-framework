@@ -414,6 +414,7 @@ ComponentAlias::ComponentAlias(PackageManagerCore *core)
     : m_core(core)
     , m_selected(false)
     , m_unstable(false)
+    , m_missingOptionalComponents (false)
 {
 }
 
@@ -495,6 +496,7 @@ QList<Component *> ComponentAlias::components()
 {
     if (m_components.isEmpty()) {
         m_componentErrorMessages.clear();
+        m_missingOptionalComponents = false;
         const QStringList componentList = QInstaller::splitStringWithComma(
             m_variables.value(scRequiredComponents));
 
@@ -583,6 +585,11 @@ QString ComponentAlias::componentErrorMessage() const
     return m_componentErrorMessages;
 }
 
+bool ComponentAlias::missingOptionalComponents() const
+{
+    return m_missingOptionalComponents;
+}
+
 /*!
     \internal
 
@@ -630,8 +637,10 @@ void ComponentAlias::addRequiredComponents(const QStringList &components, const 
     for (const auto &componentName : components) {
         Component *component = m_core->componentByName(componentName);
         if (!component) {
-            if (optional)
+            if (optional) {
+                m_missingOptionalComponents = true;
                 continue;
+            }
 
             const QString error = QLatin1String("No required component found by name: ")
                                   + componentName;

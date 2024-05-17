@@ -2826,7 +2826,7 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     eligible for installation, otherwise returns \c false. An error message can be retrieved
     with \a errorMessage.
 */
-bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound)
+bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound, bool fallbackReposFetched)
 {
     bool installComponentsFound = false;
 
@@ -2846,6 +2846,10 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names
                     errorMessage.append(tr("Cannot select %1. Alias is marked virtual, meaning it cannot "
                         "be selected manually.").arg(name) + QLatin1Char('\n'));
                     continue;
+                } else if (alias->missingOptionalComponents() && !fallbackReposFetched) {
+                    unstableAliasFound = true;
+                    setCanceled();
+                    return false;
                 }
 
                 alias->setSelected(true);
