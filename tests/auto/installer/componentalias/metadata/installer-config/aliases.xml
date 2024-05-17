@@ -49,4 +49,36 @@
         <RequiredAliases>set-A,set-B</RequiredAliases>
         <RequiredComponents>C</RequiredComponents>
     </Alias>
+    <Alias>
+        <Name>set-required-component-from-fallback</Name>
+        <DisplayName>Installation (fetches component from fallback repository)</DisplayName>
+        <Description>Installs component</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiredComponents>A</RequiredComponents>
+    </Alias>
+    <Alias>
+        <Name>set-optional-component-from-fallback</Name>
+        <DisplayName>Installation (fetches optional component from fallback repository)</DisplayName>
+        <Description>Installs component</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <OptionalComponents>A</OptionalComponents>
+    </Alias>
+    <Alias>
+        <Name>set-optional-broken-component-from-fallback</Name>
+        <DisplayName>Installation (fetches optional component from fallback repository)</DisplayName>
+        <Description>Installs component</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <OptionalComponents>UnstableComponent</OptionalComponents>
+    </Alias>
+        <Alias>
+        <Name>set-required-broken-component-from-fallback</Name>
+        <DisplayName>Installation (fetches optional component from fallback repository)</DisplayName>
+        <Description>Installs component</Description>
+        <Version>1.0.0</Version>
+        <Virtual>false</Virtual>
+        <RequiredComponents>UnstableComponent</RequiredComponents>
+    </Alias>
 </Aliases>

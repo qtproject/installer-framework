@@ -46,6 +46,40 @@ private slots:
     {
         m_installDir = QInstaller::generateTemporaryFileName();
         QVERIFY(QDir().mkpath(m_installDir));
+        m_fallbackRepositoryData = QLatin1String("========================================\n"
+            "Name: set-optional-broken-component-from-fallback\n"
+            "Display name: Installation (fetches optional component from fallback repository)\n"
+            "Description: Installs component\n"
+            "Version: 1.0.0\n"
+            "Components: \n"
+            "Required aliases: \n"
+            "Optional components: UnstableComponent\n"
+            "Optional aliases: \n"
+            "========================================\n"
+            "Name: set-optional-component-from-fallback\n"
+            "Display name: Installation (fetches optional component from fallback repository)\n"
+            "Description: Installs component\n"
+            "Version: 1.0.0\nComponents: \n"
+            "Required aliases: \n"
+            "Optional components: A\n"
+            "Optional aliases: \n"
+            "========================================\n"
+            "Name: set-required-broken-component-from-fallback\n"
+            "Display name: Installation (fetches optional component from fallback repository)\n"
+            "Description: Installs component\n"
+            "Version: 1.0.0\n"
+            "Components: UnstableComponent\n"
+            "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n"
+            "========================================\n"
+            "Name: set-required-component-from-fallback\n"
+            "Display name: Installation (fetches component from fallback repository)\n"
+            "Description: Installs component\n"
+            "Version: 1.0.0\nComponents: A\n"
+            "Required aliases: \n"
+            "Optional components: \n"
+            "Optional aliases: \n");
     }
 
     void cleanup()
@@ -106,7 +140,7 @@ private slots:
             "Components: C\n"
             "Required aliases: set-A,set-B\n"
             "Optional components: \n"
-            "Optional aliases: \n"), listMethod, QString());
+            "Optional aliases: \n") + m_fallbackRepositoryData, listMethod, QString());
 
         VerifyInstaller::verifyListPackagesMessage(core.get(), QLatin1String("\n"
             "Name: set-A\n"
@@ -116,7 +150,7 @@ private slots:
             "Components: A\n"
             "Required aliases: \n"
             "Optional components: \n"
-            "Optional aliases: \n"), listMethod, QLatin1String("A"));
+            "Optional aliases: \n"), listMethod, QLatin1String("-A"));
     }
 
     void testAliasSourceWithPriority()
@@ -177,7 +211,7 @@ private slots:
             "Components: C\n"
             "Required aliases: set-A,set-B\n"
             "Optional components: \n"
-            "Optional aliases: \n"), listMethod, QString());
+            "Optional aliases: \n") + m_fallbackRepositoryData, listMethod, QString());
     }
 
     void testAliasSourceWithVersionCompare()
@@ -238,7 +272,7 @@ private slots:
             "Components: C\n"
             "Required aliases: set-A,set-B\n"
             "Optional components: \n"
-            "Optional aliases: \n"), listMethod, QString());
+            "Optional aliases: \n") + m_fallbackRepositoryData, listMethod, QString());
     }
 
     void testInstallAlias_data()
@@ -343,8 +377,55 @@ private slots:
         QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
     }
 
+    void testInstallAliasWithFallbackRepositories_data()
+    {
+        QTest::addColumn<QStringList>("selectedAliases");
+        QTest::addColumn<PackageManagerCore::Status>("status");
+        QTest::addColumn<QStringList>("installedComponents");
+
+        QTest::newRow("Component from fallback")
+            << (QStringList() << "set-required-component-from-fallback")
+            << PackageManagerCore::Success
+            << (QStringList() << "A");
+        QTest::newRow("Optional component from fallback")
+            << (QStringList() << "set-optional-component-from-fallback")
+            << PackageManagerCore::Success
+            << (QStringList() << "A");
+        QTest::newRow("Optional broken component from fallback")
+            << (QStringList() << "set-optional-broken-component-from-fallback")
+            << PackageManagerCore::Success
+            << (QStringList());
+        QTest::newRow("Required broke component from fallback")
+            << (QStringList() << "set-required-broken-component-from-fallback")
+            << PackageManagerCore::Canceled
+            << (QStringList());
+    }
+
+    void testInstallAliasWithFallbackRepositories()
+    {
+        QFETCH(QStringList, selectedAliases);
+        QFETCH(PackageManagerCore::Status, status);
+        QFETCH(QStringList, installedComponents);
+
+        QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit(m_installDir));
+
+        core->setCommandLineInstance(true);
+        core->settings().setAllowUnstableComponents(true);
+        QSet<RepositoryCategory> repositoryCategories;
+        RepositoryCategory repositoryCategory;
+        repositoryCategory.setEnabled(false);
+        repositoryCategory.addRepository(Repository::fromUserInput(":///data/repository"));
+        repositoryCategories.insert(repositoryCategory);
+        core->settings().addRepositoryCategories(repositoryCategories);
+        QCOMPARE(core->installSelectedComponentsSilently(selectedAliases), status);
+
+        for (const QString &component : installedComponents)
+            QVERIFY(core->componentByName(component)->isInstalled());
+    }
+
 private:
     QString m_installDir;
+    QString m_fallbackRepositoryData;
 };
 
 QTEST_GUILESS_MAIN(tst_ComponentAlias)
