@@ -123,37 +123,6 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
     return stillRunningProcesses;
 }
 
-static void deferredRename(const QString &oldName, const QString &newName, bool restart = false)
-{
-#ifdef Q_OS_WIN
-    const QString currentExecutable = QCoreApplication::applicationFilePath();
-    const QString tmpExecutable = generateTemporaryFileName(currentExecutable);
-
-    QFile::rename(currentExecutable, tmpExecutable);
-    QFile::rename(oldName, newName);
-
-    QStringList arguments;
-    if (restart) {
-        // Restart with same command line arguments as first executable
-        arguments = QCoreApplication::arguments();
-        arguments.removeFirst(); // Remove program name
-        arguments.prepend(tmpExecutable);
-        arguments.prepend(QLatin1String("--")
-                          + CommandLineOptions::scCleanupUpdate);
-    } else {
-        arguments.append(QLatin1String("--")
-                         + CommandLineOptions::scCleanupUpdateOnly);
-        arguments.append(tmpExecutable);
-    }
-    QProcessWrapper::startDetached2(newName, arguments);
-
-#else
-        QFile::remove(newName);
-        QFile::rename(oldName, newName);
-        SelfRestarter::setRestartOnQuit(restart);
-#endif
-}
-
 static bool filterMissingAliasesToInstall(const QString& component, const QList<ComponentAlias *> packages)
 {
     bool packageFound = false;
@@ -174,6 +143,17 @@ static bool filterMissingPackagesToInstall(const QString& component, const Packa
             break;
     }
     return !packageFound;
+}
+
+static QString getAppBundlePath() {
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QDir dir(appDirPath);
+    while (!dir.isRoot()) {
+        if (dir.dirName().endsWith(QLatin1String(".app")))
+            return dir.absolutePath();
+        dir.cdUp();
+    }
+    return QString();
 }
 
 // -- PackageManagerCorePrivate
@@ -1567,6 +1547,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         bool newBinaryWritten = false;
         QString mtName = maintenanceToolName();
         const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
+        bool macOsMTBundleExtracted = false;
         if (!installerBaseBinary.isEmpty() && QFileInfo::exists(installerBaseBinary)) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << installerBaseBinary;
@@ -1574,25 +1555,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 // In macOS the installerbase is a whole app bundle. We do not modify the maintenancetool name in app bundle
                 // so that possible signing and notarization will remain. Therefore, the actual maintenance tool name might
                 // differ from the one defined in the settings.
-                try {
-                    const QString maintenanceToolRenamedName = installerBaseBinary + QLatin1String(".new");
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Writing maintenance tool " << maintenanceToolRenamedName;
-                    QInstaller::copyDirectoryContents(installerBaseBinary, maintenanceToolRenamedName);
-
-                    newBinaryWritten = true;
-                    mtName = installerBaseBinary;
-                } catch (const Error &error) {
-                    qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
-                }
-                try {
-                    QInstaller::removeDirectory(installerBaseBinary);
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
-                        << installerBaseBinary << "after updating the maintenance tool.";
-                } catch (const Error &error) {
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
-                        << installerBaseBinary << "after updating the maintenance tool:"
-                        << error.message();
-                }
+                newBinaryWritten = true;
+                mtName = installerBaseBinary;
+                macOsMTBundleExtracted = true;
             } else {
                 writeMaintenanceToolAppBundle(performedOperations);
                 QFile replacementBinary(installerBaseBinary);
@@ -1734,7 +1699,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             << (restart ? "true." : "false.");
 
         if (newBinaryWritten) {
-            if (isInstaller())
+            if (macOsMTBundleExtracted)
+                deferredRename(mtName, targetDir() + QDir::separator() + fi.fileName(), restart);
+            else if (isInstaller())
                 QFile::rename(mtName + QLatin1String(".new"), mtName);
             else
                 deferredRename(mtName + QLatin1String(".new"), mtName, restart);
@@ -3210,6 +3177,68 @@ bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& comp
         }
     }
     return true;
+}
+
+void PackageManagerCorePrivate::deferredRename(const QString &oldName, const QString &newName, bool restart)
+{
+
+#ifdef Q_OS_WINDOWS
+    const QString currentExecutable = QCoreApplication::applicationFilePath();
+    QString tmpExecutable = generateTemporaryFileName(currentExecutable);
+    QFile::rename(currentExecutable, tmpExecutable);
+    QFile::rename(oldName, newName);
+
+    QStringList arguments;
+    if (restart) {
+        // Restart with same command line arguments as first executable
+        arguments = QCoreApplication::arguments();
+        arguments.removeFirst(); // Remove program name
+        arguments.prepend(tmpExecutable);
+        arguments.prepend(QLatin1String("--")
+                          + CommandLineOptions::scCleanupUpdate);
+    } else {
+        arguments.append(QLatin1String("--")
+                         + CommandLineOptions::scCleanupUpdateOnly);
+        arguments.append(tmpExecutable);
+    }
+    QProcessWrapper::startDetached2(newName, arguments);
+#elif defined Q_OS_MACOS
+    // In macos oldName is the name of the maintenancetool we got from repository
+    // It might be extracted to a folder to avoid overlapping with running maintenancetool
+    // Here, ditto renames it to newName (and possibly moves from the subfolder).
+    if (oldName != newName) {
+        //1. Rename/move maintenancetool
+        QProcessWrapper process;
+        process.start(QLatin1String("ditto"), QStringList() << oldName << newName);
+        if (!process.waitForFinished()) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Failed to rename maintenancetool from :" << oldName << " to "<<newName;
+        }
+        //2. Remove subfolder
+        QDir subDirectory(oldName);
+        subDirectory.cdUp();
+        QString subDirectoryPath = QDir::cleanPath(subDirectory.absolutePath());
+        QString targetDirectoryPath = QDir::cleanPath(targetDir());
+
+        //Make sure there is subdirectory in the targetdir so we don't delete the installation
+        if (subDirectoryPath.startsWith(targetDirectoryPath) && subDirectoryPath != targetDirectoryPath)
+            subDirectory.removeRecursively();
+    }
+
+    //3. If new maintenancetool name differs from original, remove the original maintenance tool
+    if (!isInstaller()) {
+        QString currentAppBundlePath = getAppBundlePath();
+        if (currentAppBundlePath != newName) {
+            QDir oldBundlePath(currentAppBundlePath);
+            oldBundlePath.removeRecursively();
+        }
+    }
+    SelfRestarter::setRestartOnQuit(restart);
+
+#elif defined Q_OS_LINUX
+    QFile::remove(newName);
+    QFile::rename(oldName, newName);
+    SelfRestarter::setRestartOnQuit(restart);
+#endif
 }
 
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)
