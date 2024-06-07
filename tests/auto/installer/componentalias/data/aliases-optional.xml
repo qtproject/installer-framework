@@ -33,4 +33,12 @@
         <Virtual>false</Virtual>
         <RequiredAliases>set-nonexistent</RequiredAliases>
     </Alias>
+    <Alias>
+        <Name>set-optional-broken-component</Name>
+        <DisplayName>Dependency to optional unstable component</DisplayName>
+        <Description>Dependency to optional unstable component</Description>
+        <Version>2.0.0</Version>
+        <Virtual>false</Virtual>
+        <OptionalComponents>UnstableComponent</OptionalComponents>
+    </Alias>
 </Aliases>

@@ -289,6 +289,8 @@ private:
 
     bool installablePackagesFound(const QStringList& components);
 
+    void deferredRename(const QString &oldName, const QString &newName, bool restart = false);
+
     // remove once we deprecate isSelected, setSelected etc...
     void restoreCheckState();
     void storeCheckState();
@@ -342,6 +344,7 @@ private:
     QString m_datFileName;
     bool m_allowCompressedRepositoryInstall;
     int m_connectedOperations;
+    QStringList m_componentsToBeInstalled;
 };
 
 } // namespace QInstaller

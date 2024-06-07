@@ -144,7 +144,6 @@ int TabController::init()
 
 void TabController::restartWizard()
 {
-    d->m_core->reset();
     if (d->m_networkSettingsChanged) {
         d->m_networkSettingsChanged = false;
 
@@ -166,6 +165,7 @@ void TabController::restartWizard()
     // empty component list (if no updates are found).
     d->m_core->writeMaintenanceTool();
 
+    d->m_core->reset();
     // restart and switch back to intro page
     QTimer::singleShot(0, this, &TabController::init);
 }

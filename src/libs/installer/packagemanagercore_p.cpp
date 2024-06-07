@@ -123,37 +123,6 @@ static QStringList checkRunningProcessesFromList(const QStringList &processList)
     return stillRunningProcesses;
 }
 
-static void deferredRename(const QString &oldName, const QString &newName, bool restart = false)
-{
-#ifdef Q_OS_WIN
-    const QString currentExecutable = QCoreApplication::applicationFilePath();
-    const QString tmpExecutable = generateTemporaryFileName(currentExecutable);
-
-    QFile::rename(currentExecutable, tmpExecutable);
-    QFile::rename(oldName, newName);
-
-    QStringList arguments;
-    if (restart) {
-        // Restart with same command line arguments as first executable
-        arguments = QCoreApplication::arguments();
-        arguments.removeFirst(); // Remove program name
-        arguments.prepend(tmpExecutable);
-        arguments.prepend(QLatin1String("--")
-                          + CommandLineOptions::scCleanupUpdate);
-    } else {
-        arguments.append(QLatin1String("--")
-                         + CommandLineOptions::scCleanupUpdateOnly);
-        arguments.append(tmpExecutable);
-    }
-    QProcessWrapper::startDetached2(newName, arguments);
-
-#else
-        QFile::remove(newName);
-        QFile::rename(oldName, newName);
-        SelfRestarter::setRestartOnQuit(restart);
-#endif
-}
-
 static bool filterMissingAliasesToInstall(const QString& component, const QList<ComponentAlias *> packages)
 {
     bool packageFound = false;
@@ -174,6 +143,17 @@ static bool filterMissingPackagesToInstall(const QString& component, const Packa
             break;
     }
     return !packageFound;
+}
+
+static QString getAppBundlePath() {
+    QString appDirPath = QCoreApplication::applicationDirPath();
+    QDir dir(appDirPath);
+    while (!dir.isRoot()) {
+        if (dir.dirName().endsWith(QLatin1String(".app")))
+            return dir.absolutePath();
+        dir.cdUp();
+    }
+    return QString();
 }
 
 // -- PackageManagerCorePrivate
@@ -493,13 +473,45 @@ bool PackageManagerCorePrivate::buildComponentAliases()
             m_componentAliases.insert(alias->name(), newAlias);
         }
     }
+
+    if (m_core->isPackageViewer())
+        return true;
     // After aliases are loaded, perform sanity checks:
 
     // 1. Component check state is changed by alias selection, so store the initial state
     storeCheckState();
 
+    QStringList aliasNamesSelectedForInstall;
+
+    // 2. Get a list of alias names to be installed, dependency aliases needs to be listed first
+    // to get proper unstable state for parents
+    std::function<void(QStringList)> fetchAliases = [&](QStringList aliases) {
+        for (const QString &aliasName : aliases) {
+            ComponentAlias *alias = m_componentAliases.value(aliasName);
+            if (!alias || aliasNamesSelectedForInstall.contains(aliasName))
+                continue;
+            if (!aliasNamesSelectedForInstall.contains(aliasName))
+                aliasNamesSelectedForInstall.prepend(aliasName);
+            fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
+                << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
+        }
+    };
+    for (const QString &installComponent : m_componentsToBeInstalled) {
+        ComponentAlias *alias = m_componentAliases.value(installComponent);
+        if (!alias)
+            continue;
+        if (!aliasNamesSelectedForInstall.contains(installComponent))
+            aliasNamesSelectedForInstall.prepend(installComponent);
+        fetchAliases(QStringList() << QInstaller::splitStringWithComma(alias->value(scRequiredAliases))
+            << QInstaller::splitStringWithComma(alias->value(scOptionalAliases)));
+    }
+
     Graph<QString> aliasGraph;
-    for (auto *alias : qAsConst(m_componentAliases)) {
+    QList<ComponentAlias *> aliasesSelectedForInstall;
+    for (auto &aliasName : std::as_const(aliasNamesSelectedForInstall)) {
+        ComponentAlias *alias = m_componentAliases.value(aliasName);
+        if (!alias)
+            continue;
         aliasGraph.addNode(alias->name());
         aliasGraph.addEdges(alias->name(),
             QInstaller::splitStringWithComma(alias->value(scRequiredAliases)) <<
@@ -513,10 +525,12 @@ bool PackageManagerCorePrivate::buildComponentAliases()
                 tr("Alias declares name that conflicts with an existing component \"%1\"")
                 .arg(alias->name()));
         }
+        if (!aliasesSelectedForInstall.contains(alias))
+            aliasesSelectedForInstall.append(alias);
     }
 
     const QList<QString> sortedAliases = aliasGraph.sort();
-    // 2. Check for cyclic dependency errors
+    // 3. Check for cyclic dependency errors
     if (aliasGraph.hasCycle()) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
@@ -527,7 +541,7 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         return false;
     }
 
-    // 3. Test for required aliases and components, this triggers setting the
+    // 4. Test for required aliases and components, this triggers setting the
     // alias unstable in case of a broken reference.
     for (const auto &aliasName : sortedAliases) {
         ComponentAlias *alias = m_componentAliases.value(aliasName);
@@ -539,8 +553,8 @@ bool PackageManagerCorePrivate::buildComponentAliases()
     }
 
     clearInstallerCalculator();
-    // 4. Check for other errors preventing resolving components to install
-    if (!installerCalculator()->solve(m_componentAliases.values())) {
+    // 5. Check for other errors preventing resolving components to install
+    if (!installerCalculator()->solve(aliasesSelectedForInstall)) {
         setStatus(PackageManagerCore::Failure, installerCalculator()->error());
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(), QLatin1String("Error"),
             tr("Unresolved component aliases"), installerCalculator()->error());
@@ -548,10 +562,10 @@ bool PackageManagerCorePrivate::buildComponentAliases()
         return false;
     }
 
-    for (auto *alias : qAsConst(m_componentAliases))
+    for (auto *alias : std::as_const(m_componentAliases))
         alias->setSelected(false);
 
-    // 5. Restore original state
+    // 6. Restore original state
     restoreCheckState();
 
     return true;
@@ -1533,6 +1547,7 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
         bool newBinaryWritten = false;
         QString mtName = maintenanceToolName();
         const QString installerBaseBinary = replaceVariables(m_installerBaseBinaryUnreplaced);
+        bool macOsMTBundleExtracted = false;
         if (!installerBaseBinary.isEmpty() && QFileInfo::exists(installerBaseBinary)) {
             qCDebug(QInstaller::lcInstallerInstallLog) << "Got a replacement installer base binary:"
                 << installerBaseBinary;
@@ -1540,25 +1555,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
                 // In macOS the installerbase is a whole app bundle. We do not modify the maintenancetool name in app bundle
                 // so that possible signing and notarization will remain. Therefore, the actual maintenance tool name might
                 // differ from the one defined in the settings.
-                try {
-                    const QString maintenanceToolRenamedName = installerBaseBinary + QLatin1String(".new");
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Writing maintenance tool " << maintenanceToolRenamedName;
-                    QInstaller::copyDirectoryContents(installerBaseBinary, maintenanceToolRenamedName);
-
-                    newBinaryWritten = true;
-                    mtName = installerBaseBinary;
-                } catch (const Error &error) {
-                    qCWarning(QInstaller::lcInstallerInstallLog) << error.message();
-                }
-                try {
-                    QInstaller::removeDirectory(installerBaseBinary);
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Removed installer base binary"
-                        << installerBaseBinary << "after updating the maintenance tool.";
-                } catch (const Error &error) {
-                    qCDebug(QInstaller::lcInstallerInstallLog) << "Cannot remove installer base binary"
-                        << installerBaseBinary << "after updating the maintenance tool:"
-                        << error.message();
-                }
+                newBinaryWritten = true;
+                mtName = installerBaseBinary;
+                macOsMTBundleExtracted = true;
             } else {
                 writeMaintenanceToolAppBundle(performedOperations);
                 QFile replacementBinary(installerBaseBinary);
@@ -1700,7 +1699,9 @@ void PackageManagerCorePrivate::writeMaintenanceTool(OperationList performedOper
             << (restart ? "true." : "false.");
 
         if (newBinaryWritten) {
-            if (isInstaller())
+            if (macOsMTBundleExtracted)
+                deferredRename(mtName, targetDir() + QDir::separator() + fi.fileName(), restart);
+            else if (isInstaller())
                 QFile::rename(mtName + QLatin1String(".new"), mtName);
             else
                 deferredRename(mtName + QLatin1String(".new"), mtName, restart);
@@ -2661,7 +2662,7 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
         }
         QString errorMessage;
         bool unstableAliasFound = false;
-        if (m_core->checkComponentsForInstallation(components, errorMessage, unstableAliasFound)) {
+        if (m_core->checkComponentsForInstallation(components, errorMessage, unstableAliasFound, fallbackReposFetched)) {
             if (!errorMessage.isEmpty())
                 qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage;
             if (calculateComponentsAndRun()) {
@@ -2675,8 +2676,14 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
             // which exists in non-default repository. Fetch all repositories now.
             if (unstableAliasFound && !fallbackReposFetched) {
                 return false;
-            }
-            else {
+            } else {
+                for (const QString &possibleAliasName : components) {
+                    if (ComponentAlias *alias = m_core->aliasByName(possibleAliasName)) {
+                        if (alias->componentErrorMessage().isEmpty())
+                            continue;
+                        qCWarning(QInstaller::lcInstallerInstallLog).noquote().nospace() << alias->componentErrorMessage();
+                    }
+                }
                 qCDebug(QInstaller::lcInstallerInstallLog).noquote().nospace() << errorMessage
                     << "No components available with the current selection.";
             }
@@ -2685,7 +2692,14 @@ PackageManagerCore::Status PackageManagerCorePrivate::fetchComponentsAndInstall(
     };
 
     if (!fetchComponents() && !fallbackReposFetched) {
+        fallbackReposFetched = true;
         setStatus(PackageManagerCore::Running);
+        qCDebug(QInstaller::lcInstallerInstallLog).noquote()
+            << "Components not found with the current selection."
+            << "Searching from additional repositories";
+        if (!ProductKeyCheck::instance()->securityWarning().isEmpty()) {
+            qCWarning(QInstaller::lcInstallerInstallLog) << ProductKeyCheck::instance()->securityWarning();
+        }
         enableAllCategories();
         fetchComponents();
     }
@@ -3150,7 +3164,7 @@ bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& comp
     if (componentsNotFoundForInstall.count() > 0) {
         QList<ComponentAlias *> aliasList = componentAliases();
         auto aliasesNotFoundForInstall = QtConcurrent::blockingFiltered(
-            components,
+            componentsNotFoundForInstall,
             [aliasList](const QString& installerPackage) {
                 return filterMissingAliasesToInstall(installerPackage, aliasList);
             }
@@ -3163,6 +3177,68 @@ bool PackageManagerCorePrivate::installablePackagesFound(const QStringList& comp
         }
     }
     return true;
+}
+
+void PackageManagerCorePrivate::deferredRename(const QString &oldName, const QString &newName, bool restart)
+{
+
+#ifdef Q_OS_WINDOWS
+    const QString currentExecutable = QCoreApplication::applicationFilePath();
+    QString tmpExecutable = generateTemporaryFileName(currentExecutable);
+    QFile::rename(currentExecutable, tmpExecutable);
+    QFile::rename(oldName, newName);
+
+    QStringList arguments;
+    if (restart) {
+        // Restart with same command line arguments as first executable
+        arguments = QCoreApplication::arguments();
+        arguments.removeFirst(); // Remove program name
+        arguments.prepend(tmpExecutable);
+        arguments.prepend(QLatin1String("--")
+                          + CommandLineOptions::scCleanupUpdate);
+    } else {
+        arguments.append(QLatin1String("--")
+                         + CommandLineOptions::scCleanupUpdateOnly);
+        arguments.append(tmpExecutable);
+    }
+    QProcessWrapper::startDetached2(newName, arguments);
+#elif defined Q_OS_MACOS
+    // In macos oldName is the name of the maintenancetool we got from repository
+    // It might be extracted to a folder to avoid overlapping with running maintenancetool
+    // Here, ditto renames it to newName (and possibly moves from the subfolder).
+    if (oldName != newName) {
+        //1. Rename/move maintenancetool
+        QProcessWrapper process;
+        process.start(QLatin1String("ditto"), QStringList() << oldName << newName);
+        if (!process.waitForFinished()) {
+            qCDebug(QInstaller::lcInstallerInstallLog) << "Failed to rename maintenancetool from :" << oldName << " to "<<newName;
+        }
+        //2. Remove subfolder
+        QDir subDirectory(oldName);
+        subDirectory.cdUp();
+        QString subDirectoryPath = QDir::cleanPath(subDirectory.absolutePath());
+        QString targetDirectoryPath = QDir::cleanPath(targetDir());
+
+        //Make sure there is subdirectory in the targetdir so we don't delete the installation
+        if (subDirectoryPath.startsWith(targetDirectoryPath) && subDirectoryPath != targetDirectoryPath)
+            subDirectory.removeRecursively();
+    }
+
+    //3. If new maintenancetool name differs from original, remove the original maintenance tool
+    if (!isInstaller()) {
+        QString currentAppBundlePath = getAppBundlePath();
+        if (currentAppBundlePath != newName) {
+            QDir oldBundlePath(currentAppBundlePath);
+            oldBundlePath.removeRecursively();
+        }
+    }
+    SelfRestarter::setRestartOnQuit(restart);
+
+#elif defined Q_OS_LINUX
+    QFile::remove(newName);
+    QFile::rename(oldName, newName);
+    SelfRestarter::setRestartOnQuit(restart);
+#endif
 }
 
 void PackageManagerCorePrivate::connectOperationCallMethodRequest(Operation *const operation)

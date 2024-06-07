@@ -486,7 +486,7 @@ private:
 
     bool fetchPackagesTree(const PackagesList &packages, const LocalPackagesMap installedPackages);
     bool componentUninstallableFromCommandLine(const QString &componentName);
-    bool checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound);
+    bool checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound, bool fallbackReposFetched);
 
 private:
     PackageManagerCorePrivate *const d;

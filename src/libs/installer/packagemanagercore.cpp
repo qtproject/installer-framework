@@ -146,6 +146,8 @@ using namespace QInstaller;
             Installation has to be updated.
     \value  EssentialUpdated
             Installation essential components were updated.
+    \value  NoPackagesFound
+            No packages found from remote.
 */
 
 /*!
@@ -1754,6 +1756,7 @@ bool PackageManagerCore::fetchRemotePackagesTree(const QStringList& components)
     if (!d->installablePackagesFound(components))
         return false;
 
+    d->m_componentsToBeInstalled = components;
     return fetchPackagesTree(packages, installedPackages);
 }
 
@@ -2753,30 +2756,18 @@ bool PackageManagerCore::listAvailableAliases(const QString &regexp)
     qCDebug(QInstaller::lcInstallerInstallLog)
         << "Searching aliases with regular expression:" << regexp;
 
-    ComponentModel *model = defaultComponentModel();
-    Q_UNUSED(model);
-
-    if (!d->m_updates) {
-        d->fetchMetaInformationFromRepositories();
-        d->addUpdateResourcesFromRepositories();
-
-        const PackagesList &packages = d->remotePackages();
-        if (!fetchAllPackages(packages, LocalPackagesMap())) {
-            qCWarning(QInstaller::lcInstallerInstallLog)
-                << "There was a problem with loading the package data.";
-            return false;
-        }
-    }
+    if (!d->buildComponentAliases())
+        return false;
 
     QRegularExpression re(regexp);
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
     QList<ComponentAlias *> matchedAliases;
-    for (auto *alias : qAsConst(d->m_componentAliases)) {
+    for (auto *alias : std::as_const(d->m_componentAliases)) {
         if (!alias)
             continue;
 
-        if (re.match(alias->name()).hasMatch() && !alias->isUnstable()) {
+        if (re.match(alias->name()).hasMatch()) {
             if (alias->isVirtual() && !virtualComponentsVisible())
                 continue;
 
@@ -2835,7 +2826,7 @@ bool PackageManagerCore::componentUninstallableFromCommandLine(const QString &co
     eligible for installation, otherwise returns \c false. An error message can be retrieved
     with \a errorMessage.
 */
-bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound)
+bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names, QString &errorMessage, bool &unstableAliasFound, bool fallbackReposFetched)
 {
     bool installComponentsFound = false;
 
@@ -2849,11 +2840,16 @@ bool PackageManagerCore::checkComponentsForInstallation(const QStringList &names
                     errorMessage.append(tr("Cannot select alias %1. There was a problem loading this alias, "
                         "so it is marked unstable and cannot be selected.").arg(name) + QLatin1Char('\n'));
                     unstableAliasFound = true;
-                    continue;
+                    setCanceled();
+                    return false;
                 } else if (alias->isVirtual()) {
                     errorMessage.append(tr("Cannot select %1. Alias is marked virtual, meaning it cannot "
                         "be selected manually.").arg(name) + QLatin1Char('\n'));
                     continue;
+                } else if (alias->missingOptionalComponents() && !fallbackReposFetched) {
+                    unstableAliasFound = true;
+                    setCanceled();
+                    return false;
                 }
 
                 alias->setSelected(true);

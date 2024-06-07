@@ -100,13 +100,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-aarch64-5.0.0.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-arm64-5.0.0.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-aarch64-5.0.0.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-aarch64-5.0.0.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-arm64-5.0.0.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-arm64-5.0.0.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and

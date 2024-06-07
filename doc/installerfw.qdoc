@@ -1940,6 +1940,8 @@
     Online installers also have an option to install the \MT from an online repository.
     This makes it possible to promote updates for the \MT to take the advantage of latest
     new features and fixes to the Qt Installer Framework.
+    If \MT in offline installer needs signing, you need to provide the \MT as a
+    component, see \l{Populating the Maintenance Tool Component}.
 
     You should download the latest release of the Installer Framework distribution that
     includes new versions of \l{binarycreator} and \l{installerbase} tools. However, to only
@@ -2000,7 +2002,8 @@
 
     In Linux and in Windows the \c installerbase executable from Qt Installer
     Framework's installation folder, or in macOS the \MT app bundle,
-    should be copied to the component's data directory. If you generated the
+    should be copied to the component's data directory. For signed \MT,
+    sign the \c installerbase, or \MT app bundle. If you generated the
     \c update.rcc in the \l{Compiling the Update Resource} step, copy that to
     the data directory as well. The meta directory should contain a \c package.xml
     file with the package information elements of your choice. However, it is a
@@ -2022,6 +2025,7 @@
     \code
     function Component()
     {
+        component.ifwVersion = installer.value("FrameworkVersion");
         installer.installationStarted.connect(this, Component.prototype.onInstallationStarted);
     }
 
@@ -2041,13 +2045,28 @@
                 // Use either of the following (not both):
 
                 // component.installerbaseBinaryPath = "@TargetDir@/installerbase";
-                component.installerbaseBinaryPath = "@TargetDir@/MaintenanceTool.app";
+                if (installer.versionMatches(component.ifwVersion, "<4.8.0"))
+                    component.installerbaseBinaryPath = "@TargetDir@/MaintenanceTool.app";
+                else
+                    component.installerbaseBinaryPath = "@TargetDir@/tmpMaintenanceToolApp/MaintenanceTool.app";
             }
             installer.setInstallerBaseBinary(component.installerbaseBinaryPath);
 
             var updateResourceFilePath = installer.value("TargetDir") + "/update.rcc";
             installer.setValue("DefaultResourceReplacement", updateResourceFilePath);
         }
+    }
+
+    Component.prototype.createOperationsForArchive = function(archive)
+    {
+        // IFW versions 4.8.1 onwards supports extracting the maintenance tool to a folder.
+        // It is a good practice to extract the maintenance tool to a folder, so it won't
+        // interfere the current running maintenance tool. As the last step of the
+        // installation, IFW will move the maintenance tool to the root of the installation.
+        if (installer.versionMatches(component.ifwVersion, "<4.8.0"))
+            component.createOperationsForArchive(archive)
+        else
+            component.addOperation("Extract", archive, "@TargetDir@/tmpMaintenanceToolApp");
     }
     \endcode
 
