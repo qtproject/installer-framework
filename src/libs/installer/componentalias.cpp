@@ -154,7 +154,7 @@ bool AliasFinder::run()
         return false;
 
     // 1. Parse source files
-    for (auto &source : qAsConst(m_sources)) {
+    for (auto &source : std::as_const(m_sources)) {
         if (source.format == AliasSource::SourceFileFormat::Unknown) {
             qCWarning(QInstaller::lcInstallerInstallLog)
                 << "Unknown alias source format for file:" << source.filename;
@@ -167,7 +167,7 @@ bool AliasFinder::run()
     }
 
     // 2. Create aliases based on priority & version
-    for (auto &data : qAsConst(m_aliasData)) {
+    for (auto &data : std::as_const(m_aliasData)) {
         const QString name = data.value(scName).toString();
         const Resolution resolution = checkPriorityAndVersion(data);
         if (resolution == Resolution::KeepExisting)

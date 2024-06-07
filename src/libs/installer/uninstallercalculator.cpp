@@ -164,7 +164,7 @@ void UninstallerCalculator::appendVirtualComponentsToUninstall()
 {
     QList<Component*> unneededVirtualList;
     // Check for virtual components without dependees
-    for (const QString &componentName : qAsConst(m_localVirtualComponents)) {
+    for (const QString &componentName : std::as_const(m_localVirtualComponents)) {
         Component *virtualComponent = m_core->componentByName(componentName, m_core->components(PackageManagerCore::ComponentType::All));
         if (!virtualComponent)
             continue;

@@ -775,7 +775,7 @@ void Component::loadLicenses(const QString &directory, const QHash<QString, QVar
 */
 void Component::loadXMLOperations()
 {
-    for (auto operation: qAsConst(m_operationsList)) {
+    for (auto operation: std::as_const(m_operationsList)) {
         if (operation.first != scExtract)
            addOperation(operation.first, operation.second.toStringList());
     }
@@ -787,7 +787,7 @@ void Component::loadXMLOperations()
 */
 void Component::loadXMLExtractOperations()
 {
-    for (auto &operation: qAsConst(m_operationsList)) {
+    for (auto &operation: std::as_const(m_operationsList)) {
         if (operation.first == scExtract) {
             // Create hash for Extract operations. Operation has a mandatory extract folder as
             // first argument and optional archive name as second argument.

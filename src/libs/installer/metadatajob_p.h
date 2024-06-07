@@ -176,7 +176,7 @@ public:
         // Register items from current run to cache
         QStringList registeredKeys;
         bool success = true;
-        for (auto *meta : qAsConst(*m_updates)) {
+        for (auto *meta : std::as_const(*m_updates)) {
             if (!m_cache->registerItem(meta, true, MetadataCache::Move)) {
                 success = false;
                 break;
@@ -185,7 +185,7 @@ public:
             registeredKeys.append(m_updates->key(meta));
         }
         // Remove items whose ownership was transferred to cache
-        for (auto &key : qAsConst(registeredKeys))
+        for (auto &key : std::as_const(registeredKeys))
             m_updates->remove(key);
 
         // Bail out if there was error while registering items

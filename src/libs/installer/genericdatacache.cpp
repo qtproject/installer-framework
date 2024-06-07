@@ -276,7 +276,7 @@ bool GenericDataCache<T>::clear()
     }
 
     bool success = true;
-    for (T *item : qAsConst(m_items)) {
+    for (T *item : std::as_const(m_items)) {
         try {
             QInstaller::removeDirectory(item->path());
         } catch (const Error &e) {
@@ -529,7 +529,7 @@ QList<T *> GenericDataCache<T>::obsoleteItems() const
             if (item1->isActive()) // We can skip the iteration for active entries
                 return false;
 
-            for (T *item2 : qAsConst(m_items)) {
+            for (T *item2 : std::as_const(m_items)) {
                 if (item2->obsoletes(item1))
                     return true;
             }

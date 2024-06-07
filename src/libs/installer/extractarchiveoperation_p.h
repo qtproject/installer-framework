@@ -95,7 +95,7 @@ public:
             return lhsParts > rhsParts;
         });
 
-        for (auto &directory : qAsConst(directories)) {
+        for (auto &directory : std::as_const(directories)) {
             removeSystemGeneratedFiles(directory);
             QDir(directory).rmdir(directory); // directory may not exist
         }

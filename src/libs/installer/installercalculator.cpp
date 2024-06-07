@@ -60,7 +60,7 @@ bool InstallerCalculator::solve()
 
     // Subtract components added by aliases
     QList<Component *> components = m_core->componentsMarkedForInstallation();
-    for (auto *component : qAsConst(m_resolvedComponents))
+    for (auto *component : std::as_const(m_resolvedComponents))
         components.removeAll(component);
 
     return solve(components);
@@ -97,7 +97,7 @@ bool InstallerCalculator::solve(const QList<Component *> &components)
         return true;
 
     QList<Component*> notAppendedComponents; // for example components with unresolved dependencies
-    for (Component *component : qAsConst(components)){
+    for (Component *component : std::as_const(components)){
         if (!component)
             continue;
         if (m_toInstallComponentIds.contains(component->name())) {
@@ -115,7 +115,7 @@ bool InstallerCalculator::solve(const QList<Component *> &components)
             notAppendedComponents.append(component);
     }
 
-    for (Component *component : qAsConst(notAppendedComponents)) {
+    for (Component *component : std::as_const(notAppendedComponents)) {
         if (!solveComponent(component))
             return false;
     }
@@ -158,7 +158,7 @@ bool InstallerCalculator::solve(const QList<ComponentAlias *> &aliases)
         }
     }
 
-    for (auto *alias : qAsConst(notAppendedAliases)) {
+    for (auto *alias : std::as_const(notAppendedAliases)) {
         if (!solveAlias(alias))
             return false;
     }
@@ -304,7 +304,7 @@ QSet<Component *> InstallerCalculator::autodependencyComponents()
     // (normal components and regular dependencies components), and we check possible installable auto
     // dependency components based on that list.
     QSet<Component *> foundAutoDependOnList;
-    for (const Component *component : qAsConst(m_componentsForAutodepencencyCheck)) {
+    for (const Component *component : std::as_const(m_componentsForAutodepencencyCheck)) {
         if (!m_autoDependencyComponentHash.contains(component->name())
                 || (m_core->isUpdater() && !component->updateRequested()))
             continue;

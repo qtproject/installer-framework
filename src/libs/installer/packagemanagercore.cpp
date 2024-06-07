@@ -2332,7 +2332,7 @@ QList<ComponentAlias *> PackageManagerCore::aliasesMarkedForInstallation() const
         return QList<ComponentAlias *>();
 
     QList<ComponentAlias *> markedForInstallation;
-    for (auto *alias : qAsConst(d->m_componentAliases)) {
+    for (auto *alias : std::as_const(d->m_componentAliases)) {
         if (alias && alias->isSelected())
             markedForInstallation.append(alias);
     }
@@ -2610,7 +2610,7 @@ QStringList PackageManagerCore::localDependenciesToComponent(const Component *co
     QString version;
 
     QMap<QString, LocalPackage> localPackages = d->m_localPackageHub->localPackages();
-    for (const KDUpdater::LocalPackage &localPackage : qAsConst(localPackages)) {
+    for (const KDUpdater::LocalPackage &localPackage : std::as_const(localPackages)) {
         for (const QString &dependency : localPackage.dependencies) {
             parseNameAndVersion(dependency, &name, &version);
             if (componentMatches(component, name, version)) {
@@ -2712,7 +2712,7 @@ bool PackageManagerCore::listAvailablePackages(const QString &regexp, const QHas
     re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
 
     PackagesList matchedPackages;
-    foreach (Package *package, qAsConst(packages)) {
+    foreach (Package *package, std::as_const(packages)) {
         const QString name = package->data(scName).toString();
         Component *component = componentByName(name);
         if (!component)

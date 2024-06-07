@@ -148,7 +148,7 @@ QHash<Operation *, bool> ConcurrentOperationRunner::run()
     reset();
 
     QEventLoop loop;
-    for (auto &operation : qAsConst(*m_operations)) {
+    for (auto &operation : std::as_const(*m_operations)) {
         auto futureWatcher = new QFutureWatcher<bool>();
         m_operationWatchers.insert(operation, futureWatcher);
 

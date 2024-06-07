@@ -384,7 +384,7 @@ void LoggingHandler::printAliasInformation(const QList<ComponentAlias *> &aliase
     QTextStream stream(&output);
 
     stream << Qt::endl;
-    for (auto *alias : qAsConst(sortedAliases)) {
+    for (auto *alias : std::as_const(sortedAliases)) {
         stream << "Name: " << alias->name() << Qt::endl;
         stream << "Display name: " << alias->displayName() << Qt::endl;
         stream << "Description: " << alias->description() << Qt::endl;

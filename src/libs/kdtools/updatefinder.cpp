@@ -332,7 +332,7 @@ bool UpdateFinder::parseUpdateXMLFiles()
     m_updatesXmlTasks = 0;
     m_updatesXmlTasksToComplete = 0;
     QList<UpdatesInfo *> keys = m_updatesInfoList.keys();
-    for (UpdatesInfo *updatesInfo : qAsConst(keys)) {
+    for (UpdatesInfo *updatesInfo : std::as_const(keys)) {
         const Data data = m_updatesInfoList.value(updatesInfo);
         if (data.downloader) {
             if (!data.downloader->isDownloaded()) {
@@ -390,7 +390,7 @@ bool UpdateFinder::computeApplicableUpdates()
 {
     int i = 0;
     QList<UpdatesInfo *> keys = m_updatesInfoList.keys();
-    for (UpdatesInfo *updatesInfo : qAsConst(keys)) {
+    for (UpdatesInfo *updatesInfo : std::as_const(keys)) {
         // Fetch updates applicable to this application.
         QList<UpdateInfo> updates = applicableUpdates(updatesInfo);
         if (!updates.count())

@@ -277,9 +277,9 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
     }
 
     QStringList entries;
-    for (const QString &i : qAsConst(result)) {
+    for (const QString &i : std::as_const(result)) {
         bool matched = false;
-        for (const QRegularExpression &reg : qAsConst(regexps)) {
+        for (const QRegularExpression &reg : std::as_const(regexps)) {
             matched = reg.match(i).hasMatch();
             if (matched)
                 break;
