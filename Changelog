@@ -1,3 +1,11 @@
+4.8.1
+- Fix macos app bundle update (QTIFW-3408)
+- Fix maintenance tool update on restart (QTIFW-3397)
+- Search optional components from fallback repositories (QTIFW-3398)
+- Fix confusing component warnings when installing alias (QTIFW-3391)
+- Install alias if optional component is unstable (QTIFW-3389)
+- Optimize alias search (QTIFW-3392)
+
 4.8.0
 - Fix occasional crash in install phase (QTIFW-3314)
 - Allow overwriting undo in some operations (QTIFW-3333, QTIFW-393)
