@@ -72,6 +72,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QRegularExpression>
+#include <QtConcurrentFilter>
 
 #include "sysinfo.h"
 #include "updateoperationfactory.h"
@@ -2176,13 +2177,14 @@ QList<Component *> PackageManagerCore::components(ComponentTypes mask, const QSt
 
     if (!regexp.isEmpty()) {
         QRegularExpression re(regexp);
-        QList<Component*>::iterator iter = components.begin();
-        while (iter != components.end()) {
-            if (!re.match((*iter)->name()).hasMatch())
-                iter = components.erase(iter);
-            else
-                iter++;
-        }
+        auto componentMatches = QtConcurrent::blockingFiltered(components,
+            [&](Component *component) {
+                if (re.match(component->name()).hasMatch())
+                    return true;
+                return false;
+            }
+        );
+        return componentMatches;
     }
 
     return components;
