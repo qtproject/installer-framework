@@ -56,7 +56,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \enum LocalPackageHub::Error
+    \enum KDUpdater::LocalPackageHub::Error
     Error codes related to retrieving information about installed packages:
 
     \value NoError                          No error occurred.
@@ -544,26 +544,26 @@ void LocalPackageHub::clearPackageInfos()
 */
 
 /*!
-    \variable LocalPackage::name
+    \variable KDUpdater::LocalPackage::name
     \brief The name of the package.
 */
 
 /*!
-    \variable LocalPackage::title
+    \variable KDUpdater::LocalPackage::title
 */
 
 /*!
-    \variable LocalPackage::description
+    \variable KDUpdater::LocalPackage::description
 */
 
 /*!
-    \variable LocalPackage::version
+    \variable KDUpdater::LocalPackage::version
 */
 
 /*!
-    \variable LocalPackage::lastUpdateDate
+    \variable KDUpdater::LocalPackage::lastUpdateDate
 */
 
 /*!
-    \variable LocalPackage::installDate
+    \variable KDUpdater::LocalPackage::installDate
 */

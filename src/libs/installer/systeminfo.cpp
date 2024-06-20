@@ -47,7 +47,7 @@ SystemInfo::SystemInfo(QObject *parent) : QObject(parent)
 
 
 /*!
-    \property SystemInfo::currentCpuArchitecture
+    \property QInstaller::SystemInfo::currentCpuArchitecture
 
     The architecture of the CPU that the application is running on, in text format.
 
@@ -71,7 +71,7 @@ QString SystemInfo::currentCpuArchitecture() const
 }
 
 /*!
-    \property SystemInfo::buildCpuArchitecture
+    \property QInstaller::SystemInfo::buildCpuArchitecture
 
     The architecture of the CPU that the application was compiled for, in text format.
 
@@ -94,7 +94,7 @@ QString SystemInfo::buildCpuArchitecture() const
 }
 
 /*!
-    \property SystemInfo::kernelType
+    \property QInstaller::SystemInfo::kernelType
 
     The type of the operating system kernel the installer was compiled for. It is also the
     kernel the installer is running on, unless the host operating system is running a form of
@@ -117,7 +117,7 @@ QString SystemInfo::kernelType() const
 }
 
 /*!
-    \property SystemInfo::kernelVersion
+    \property QInstaller::SystemInfo::kernelVersion
 
     The release version of the operating system kernel. On Windows, it returns the version of the
     NT or CE kernel. On Unix systems, including macOS, it returns the same as the \c {uname -r}
@@ -139,7 +139,7 @@ QString SystemInfo::kernelVersion() const
 }
 
 /*!
-    \property SystemInfo::productType
+    \property QInstaller::SystemInfo::productType
 
     The product name of the operating system this application is running in.
 
@@ -159,7 +159,7 @@ QString SystemInfo::productType() const
 }
 
 /*!
-    \property SystemInfo::productVersion
+    \property QInstaller::SystemInfo::productVersion
 
     The product version of the operating system in string form. If the version could not be
     determined, this function returns "unknown".
@@ -180,7 +180,7 @@ QString SystemInfo::productVersion() const
 }
 
 /*!
-    \property SystemInfo::prettyProductName
+    \property QInstaller::SystemInfo::prettyProductName
 
     A prettier form of SystemInfo::productType and SystemInfo::productVersion, containing other
     tokens like the operating system type, codenames and other information. The result of this

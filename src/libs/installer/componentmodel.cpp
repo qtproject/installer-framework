@@ -42,7 +42,7 @@ namespace QInstaller {
 */
 
 /*!
-    \enum ComponentModel::ModelStateFlag
+    \enum QInstaller::ComponentModel::ModelStateFlag
 
     This enum value holds the checked state of the components available for
     installation.

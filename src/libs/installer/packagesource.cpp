@@ -57,12 +57,12 @@ namespace QInstaller {
 */
 
 /*!
-    \variable PackageSource::url
+    \variable QInstaller::PackageSource::url
     \brief The URL of the package source.
 */
 
 /*!
-    \variable PackageSource::priority
+    \variable QInstaller::PackageSource::priority
     \brief The priority of the package source.
 */
 

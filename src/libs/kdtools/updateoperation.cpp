@@ -56,7 +56,7 @@ using namespace KDUpdater;
 */
 
 /*!
-    \enum UpdateOperation::Error
+    \enum KDUpdater::UpdateOperation::Error
     This enum code specifies error codes related to operation arguments and
     operation runtime failures.
 
@@ -70,7 +70,7 @@ using namespace KDUpdater;
 */
 
 /*!
-    \enum UpdateOperation::OperationType
+    \enum KDUpdater::UpdateOperation::OperationType
     This enum code specifies the operation type.
 
     \value  Backup
@@ -82,7 +82,7 @@ using namespace KDUpdater;
 */
 
 /*!
-    \enum UpdateOperation::OperationGroup
+    \enum KDUpdater::UpdateOperation::OperationGroup
     This enum specifies the execution group of the operation.
 
     \value  Unpack

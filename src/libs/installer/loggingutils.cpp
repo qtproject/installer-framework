@@ -89,7 +89,7 @@ namespace QInstaller {
 */
 
 /*!
-    \enum LoggingHandler::VerbosityLevel
+    \enum QInstaller::LoggingHandler::VerbosityLevel
     \brief This enum holds the possible levels of output verbosity.
 
     \value Silent

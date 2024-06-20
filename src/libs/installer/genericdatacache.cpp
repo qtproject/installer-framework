@@ -120,7 +120,7 @@ CacheableItem::~CacheableItem()
 */
 
 /*!
-    \enum GenericDataCache::RegisterMode
+    \enum QInstaller::GenericDataCache::RegisterMode
     This enum holds the possible values for modes of registering items to cache.
 
     \value Copy

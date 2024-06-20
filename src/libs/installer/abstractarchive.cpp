@@ -46,7 +46,7 @@ namespace QInstaller {
 */
 
 /*!
-    \enum AbstractArchive::CompressionLevel
+    \enum QInstaller::AbstractArchive::CompressionLevel
     This enum holds the possible values for archive compression level.
 
     \value Non

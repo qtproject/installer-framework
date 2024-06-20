@@ -51,7 +51,7 @@ using namespace KDUpdater;
 */
 
 /*!
-    \enum Task::Capability
+    \enum KDUpdater::Task::Capability
     This enum value sets the capabilities of the task.
 
     \value NoCapability

@@ -39,12 +39,12 @@ namespace QInstaller {
 
 /*!
     \inmodule QtInstallerFramework
-    \namespace TaskRole
+    \namespace QInstaller::TaskRole
     \brief Contains identifiers for tasks.
 */
 
 /*!
-    \enum TaskRole::TaskRole
+    \enum QInstaller::TaskRole::TaskRole
 
     \value Checksum
     \value TaskItem

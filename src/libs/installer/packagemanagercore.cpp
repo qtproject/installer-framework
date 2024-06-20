@@ -104,7 +104,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \enum PackageManagerCore::WizardPage
+    \enum QInstaller::PackageManagerCore::WizardPage
 
     This enum type holds the pre-defined package manager pages:
 
@@ -129,7 +129,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \enum PackageManagerCore::Status
+    \enum QInstaller::PackageManagerCore::Status
 
     This enum type holds the package manager status:
 
@@ -152,7 +152,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \property PackageManagerCore::status
+    \property QInstaller::PackageManagerCore::status
     \brief Installation status.
 */
 
@@ -2119,7 +2119,7 @@ void PackageManagerCore::appendRootComponent(Component *component)
 }
 
 /*!
-    \enum PackageManagerCore::ComponentType
+    \enum QInstaller::PackageManagerCore::ComponentType
     \brief This enum holds the type of the component list to be returned:
 
     \value  Root
@@ -2144,7 +2144,7 @@ void PackageManagerCore::appendRootComponent(Component *component)
 */
 
 /*!
-    \typedef PackageManagerCore::ComponentTypes
+    \typedef QInstaller::PackageManagerCore::ComponentTypes
 
     Synonym for QList<Component>.
 

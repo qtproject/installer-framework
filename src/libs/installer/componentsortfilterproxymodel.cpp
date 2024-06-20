@@ -43,7 +43,7 @@ namespace QInstaller {
 */
 
 /*!
-    \enum ComponentSortFilterProxyModel::AcceptType
+    \enum QInstaller::ComponentSortFilterProxyModel::AcceptType
 
     This enum holds the possible values for filter acception type for model indexes.
 

@@ -84,7 +84,7 @@ using namespace QInstaller;
 // -- MessageBoxHandler
 
 /*!
-    \enum MessageBoxHandler::DefaultAction
+    \enum QInstaller::MessageBoxHandler::DefaultAction
 
     This enum value holds the default action for the message box handler:
 
@@ -99,7 +99,7 @@ using namespace QInstaller;
 */
 
 /*!
-    \enum MessageBoxHandler::MessageType
+    \enum QInstaller::MessageBoxHandler::MessageType
 
     This enum value holds the severity level of the message displayed in the message box:
 
