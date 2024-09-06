@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -33,7 +33,9 @@
     \title Controller Scripting
 
     For each installer, you can specify a control script that interacts with certain parts of
-    the installer's UI or functionality. The control script can add and remove pages to the
+    the installer's UI or functionality. To add the script to the installer, use the
+    \l{Configuration File} element \c{ControlScript}, or from the command line enter
+    \c{--script} <script_file>. The control script can add and remove pages to the
     wizard, change existing pages, do additional checks, and interact with the UI by
     simulating user clicks. This allows for example unattended installations.
 
