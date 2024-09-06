@@ -70,7 +70,7 @@ instructions:
     enable_if:
       condition: property
       property: target.compiler
-      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019, MSVC2022]
 
   - type: Group
     instructions:

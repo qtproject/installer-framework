@@ -23,7 +23,7 @@ else:if(ctest_testcase) { !insignificant_test:write_file($$PWD/GeneralTestPlan, 
     enable_if:
       condition: property
       property: target.compiler
-      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019, MSVC2022]
   - type: ExecuteCommand
     command: "{{.BuildDir}}/bin/qmake -r {{.SourceDir}}/tests"
     maxTimeInSeconds: 6000
@@ -32,6 +32,6 @@ else:if(ctest_testcase) { !insignificant_test:write_file($$PWD/GeneralTestPlan, 
     enable_if:
       condition: property
       property: target.compiler
-      not_in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+      not_in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019, MSVC2022]
   - type: UploadTestPlan
     qtestlibTestPlanPath: "{{.AgentWorkingDir}}/test_plan_hook/TestLibTestPlan"

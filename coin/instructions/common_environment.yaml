@@ -4,7 +4,7 @@ instructions:
     enable_if:
       condition: property
       property: target.compiler
-      in_values: [MSVC2015, MSVC2017, MSVC2019]
+      in_values: [MSVC2015, MSVC2017, MSVC2019, MSVC2022]
     instructions:
       - type: EnvironmentVariable
         variableName: MAKEFLAGS
@@ -14,9 +14,27 @@ instructions:
     variableName: PATH
     variableValue: "{{.InstallDir}}\\bin;"
     enable_if:
-      condition: property
-      property: target.os
-      equals_value: Windows
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          not_equals_value: AARCH64
+
+  - type: PrependToEnvironmentVariable
+    variableName: PATH
+    variableValue: "{{.InstallDir}}\\target\\bin;"
+    enable_if:
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          equals_value: AARCH64
 
   - type: PrependToEnvironmentVariable
     variableName: PATH
@@ -76,19 +94,55 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: INCLUDE
-    variableValue: "C:\\Utils\\bzip2-1.0.8-x64;C:\\Utils\\xz-5.2.5-x64\\src\\liblzma\\api;"
+    variableValue: "{{.Env.BZIP2}};{{.Env.XZ}}\\src\\liblzma\\api;"
     enable_if:
-      condition: property
-      property: host.os
-      equals_value: Windows
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          not_equals_value: AARCH64
 
   - type: PrependToEnvironmentVariable
     variableName: LIB
-    variableValue: "C:\\Utils\\bzip2-1.0.8-x64;C:\\Utils\\xz-5.2.5-x64\\windows\\vs2019\\ReleaseMT\\x64\\liblzma;"
+    variableValue: "{{.Env.BZIP2}};{{.Env.XZ}}\\Build\\Release;"
     enable_if:
-      condition: property
-      property: target.compiler
-      equals_value: MSVC2019
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          not_equals_value: AARCH64
+
+  - type: PrependToEnvironmentVariable
+    variableName: INCLUDE
+    variableValue: "{{.Env.BZIP2_ARM}};{{.Env.XZ_ARM}}\\src\\liblzma\\api;"
+    enable_if:
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          equals_value: AARCH64
+
+  - type: PrependToEnvironmentVariable
+    variableName: LIB
+    variableValue: "{{.Env.BZIP2_ARM}};{{.Env.XZ_ARM}}\\Build\\Release;"
+    enable_if:
+      condition: and
+      conditions:
+        - condition: property
+          property: target.os
+          equals_value: Windows
+        - condition: property
+          property: target.arch
+          equals_value: AARCH64
 
   - type: Group
     instructions:
