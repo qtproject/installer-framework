@@ -46,7 +46,7 @@ private slots:
     void initTestCase()
     {
         m_file.path = "valid";
-        m_file.permissions_mode = 0666;
+        m_file.permissions_mode = 0644;
         m_file.compressedSize = 0; // unused
         m_file.uncompressedSize = 5242880;
         m_file.isDirectory = false;

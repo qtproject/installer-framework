@@ -1,19 +1,12 @@
-dependencies:
-    ../../qt/qtbase.git:
-        ref: "33f5e985e480283bb0ca9dea5f82643e825ba87c"
-        required: true
-    ../../qt/qtsvg.git:
-        ref: "da7e04eaa56c54d5486e39d2e0bd0ddb2a62b74b"
-        required: true
-    ../../qt/qtdeclarative.git:
-        ref: "e559d5cf2b66c4a973f83f173d57676a21d287ef"
-        required: true
-    ../../qt/qttools.git:
-        ref: "d7c950e5cfcda823544d3a0092a2bf435015f94d"
-        required: true
-    ../../qt/qttranslations.git:
-        ref: "94e46555acd71eb7d14dc340b623c13876101c00"
-        required: true
-    ../../qt/qt5compat.git:
-        ref: "e1fe0c83bc547ba34142c2ab06fdfea0bced7308"
-        required: true
+product_dependency:
+  ../../qt/tqtc-qt5:
+    ref: "tqtc/6.6.0"
+dependency_source: supermodule
+dependencies: [
+      "../../qt/tqtc-qtbase.git",
+      "../../qt/qtsvg.git",
+      "../../qt/qtdeclarative.git",
+      "../../qt/qttools.git",
+      "../../qt/qttranslations.git",
+      "../../qt/qt5compat.git",
+      ]

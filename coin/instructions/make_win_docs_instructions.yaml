@@ -28,6 +28,11 @@ instructions:
         maxTimeInSeconds: 1800
         maxTimeBetweenOutput: 1800
     enable_if:
-      condition: property
-      property: target.compiler
-      in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019]
+      condition: and
+      conditions:
+        - condition: property
+          property: target.compiler
+          in_values: [MSVC2013, MSVC2015, MSVC2017, MSVC2019, MSVC2022]
+        - condition: property
+          property: target.arch
+          not_equals_value: AARCH64
