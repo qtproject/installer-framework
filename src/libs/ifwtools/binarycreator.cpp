@@ -50,6 +50,10 @@
 
 #include <iostream>
 
+#ifdef Q_OS_LINUX
+#include <sys/resource.h>
+#endif
+
 #ifdef Q_OS_MACOS
 #include <QtCore/QtEndian>
 #include <QtCore/QFile>
@@ -689,10 +693,14 @@ void QInstallerTools::copyHighDPIImage(const QFileInfo &childFileInfo,
 int QInstallerTools::createBinary(BinaryCreatorArgs args, QString &argumentError)
 {
     // increase maximum numbers of file descriptors
-#if defined (Q_OS_MACOS)
+#if defined (Q_OS_UNIX)
     struct rlimit rl;
     getrlimit(RLIMIT_NOFILE, &rl);
+#if defined (Q_OS_LINUX)
+    rl.rlim_cur = rl.rlim_max;
+#elif defined (Q_OS_MACOS)
     rl.rlim_cur = qMin(static_cast<rlim_t>(OPEN_MAX), rl.rlim_max);
+#endif
     setrlimit(RLIMIT_NOFILE, &rl);
 #endif
     QString suffix;
