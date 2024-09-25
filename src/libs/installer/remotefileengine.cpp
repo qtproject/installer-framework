@@ -43,7 +43,11 @@ namespace QInstaller {
 
 // -- RemoteFileEngineHandler
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+std::unique_ptr<QAbstractFileEngine> RemoteFileEngineHandler::create(const QString &fileName) const
+#else
 QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) const
+#endif
 {
     if (!RemoteClient::instance().isActive())
         return 0;
@@ -57,34 +61,61 @@ QAbstractFileEngine* RemoteFileEngineHandler::create(const QString &fileName) co
 
     std::unique_ptr<RemoteFileEngine> client(new RemoteFileEngine());
     client->setFileName(fileName);
-    if (client->isConnectedToServer())
+    if (client->isConnectedToServer()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        return client;
+#else
         return client.release();
+#endif
+    }
     return 0;
 }
 
 
-// -- RemoteFileEngineIterator
-
+/*!
+    \class QInstaller::RemoteFileEngineIterator
+    \inmodule QtInstallerFramework
+    \internal
+*/
 class RemoteFileEngineIterator : public QAbstractFileEngineIterator
 {
 public:
-    RemoteFileEngineIterator(QDir::Filters filters, const QStringList &nameFilters,
+    RemoteFileEngineIterator(const QString &path, QDir::Filters filters, const QStringList &nameFilters,
             const QStringList &files)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        : QAbstractFileEngineIterator(path, filters, nameFilters)
+#else
         : QAbstractFileEngineIterator(filters, nameFilters)
+#endif
         , index(-1)
         , entries(files)
     {
     }
-
-    QString next();
-    bool hasNext() const;
-    QString currentFileName() const;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    bool advance() override;
+#else
+    QString next() override;
+    bool hasNext() const override;
+#endif
+    QString currentFileName() const override;
 
 private:
     qint32 index;
     QStringList entries;
 };
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+/*!
+    \reimp
+*/
+bool RemoteFileEngineIterator::advance()
+{
+    if (index < entries.size() - 1) {
+        ++index;
+        return true;
+    }
+    return false;
+}
+#else
 /*
     Advances the iterator to the next entry, and returns the current file path of this new
     entry. If hasNext() returns \c false, the function does nothing and returns an empty QString.
@@ -105,12 +136,15 @@ QString RemoteFileEngineIterator::next()
     ++index;
     return currentFilePath();
 }
+#endif
 
-/*
-    Returns the name of the current directory entry, excluding the path.
+/*!
+    \reimp
 */
 QString RemoteFileEngineIterator::currentFileName() const
 {
+    if (index < 0 || index > entries.size())
+        return QString();
     return entries.at(index);
 }
 
@@ -141,19 +175,34 @@ bool RemoteFileEngine::atEnd() const
 /*!
     \reimp
 */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+QAbstractFileEngine::IteratorUniquePtr
+RemoteFileEngine::beginEntryList(const QString &path, QDir::Filters filters,
+                                   const QStringList &filterNames)
+#else
 QAbstractFileEngine::Iterator* RemoteFileEngine::beginEntryList(QDir::Filters filters,
     const QStringList &filterNames)
+#endif
 {
     if (connectToServer()) {
         QStringList entries = entryList(filters, filterNames);
         entries.removeAll(QString());
-        return new RemoteFileEngineIterator(filters, filterNames, entries);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        return std::make_unique<RemoteFileEngineIterator>(path, filters, filterNames, entries);
+    }
+    return m_fileEngine.beginEntryList(path, filters, filterNames);
+#else
+        return new RemoteFileEngineIterator(QString(), filters, filterNames, entries);
     }
     return m_fileEngine.beginEntryList(filters, filterNames);
-
+#endif
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+QAbstractFileEngine::IteratorUniquePtr RemoteFileEngine::endEntryList()
+#else
 QAbstractFileEngine::Iterator* RemoteFileEngine::endEntryList()
+#endif
 {
     if (connectToServer())
         return 0;   // right now all other implementations return 0 too

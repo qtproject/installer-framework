@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -61,8 +61,17 @@ public:
     QString fileName(FileName file = DefaultName) const override;
     FileFlags fileFlags(FileFlags type = FileInfoAll) const override;
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    IteratorUniquePtr beginEntryList(const QString &path, QDir::Filters filters, const QStringList &filterNames) override;
+    IteratorUniquePtr beginEntryList(const QString &path, QDirListing::IteratorFlags filters, const QStringList &filterNames) override;
+    QStringList entryList(QDirListing::IteratorFlags filters, const QStringList &filterNames) const override;
+#else
     Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames) override;
+#endif
     QStringList entryList(QDir::Filters filters, const QStringList &filterNames) const override;
+
+private:
+    QStringList filterResults(QStringList result, const QStringList &filterNames) const;
 
 private:
     QString m_fileNamePath;

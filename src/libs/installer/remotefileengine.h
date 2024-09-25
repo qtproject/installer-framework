@@ -42,7 +42,11 @@ class INSTALLER_EXPORT RemoteFileEngineHandler : public QAbstractFileEngineHandl
 
 public:
     RemoteFileEngineHandler() : QAbstractFileEngineHandler() {}
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    std::unique_ptr<QAbstractFileEngine> create(const QString &fileName) const override;
+#else
     QAbstractFileEngine* create(const QString &fileName) const override;
+#endif
 };
 
 class RemoteFileEngine : public RemoteObject, public QAbstractFileEngine
@@ -97,9 +101,13 @@ public:
     bool atEnd() const;
     uchar *map(qint64, qint64, QFile::MemoryMapFlags) { return 0; }
     bool unmap(uchar *) { return true; }
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    IteratorUniquePtr beginEntryList(const QString &path, QDir::Filters filters, const QStringList &filterNames) override;
+    IteratorUniquePtr endEntryList() override;
+#else
     Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames) override;
     Iterator *endEntryList() override;
+#endif
 
     qint64 read(char *data, qint64 maxlen) override;
     qint64 readLine(char *data, qint64 maxlen) override;

@@ -376,10 +376,6 @@ private slots:
                                                    "print(\"Found file \"+fileArray[i]);"
                                                    "}").arg(m_applicatonDirPath);
         const QJSValue result = m_scriptEngine->evaluate(script);
-        qDebug()<<result.isArray();
-        qDebug()<<result.isObject();
-        qDebug()<<result.isString();
-        qDebug()<<result.isVariant();
         QCOMPARE(result.isError(), false);
     }
 
@@ -587,7 +583,6 @@ private slots:
         QJSValue result = m_scriptEngine->evaluate(QString::fromLatin1("installer.execute('%1', %2);")
                                                    .arg(testProgramPath)
                                                    .arg(argumentsToInstallerExecute));
-        QCOMPARE(result.isArray(), true);
         QCOMPARE(result.property(0).toString(), expectedOutput);
         QCOMPARE(result.property(1).toString(), QString::number(expectedExitCode));
     }

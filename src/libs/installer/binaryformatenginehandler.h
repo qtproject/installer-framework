@@ -40,8 +40,11 @@ class INSTALLER_EXPORT BinaryFormatEngineHandler : public QAbstractFileEngineHan
     Q_DISABLE_COPY(BinaryFormatEngineHandler)
 
 public:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    std::unique_ptr<QAbstractFileEngine> create(const QString &fileName) const;
+#else
     QAbstractFileEngine *create(const QString &fileName) const;
-
+#endif
     void clear();
     static BinaryFormatEngineHandler *instance();
 

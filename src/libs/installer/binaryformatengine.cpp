@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,27 +35,48 @@ namespace {
 class StringListIterator : public QAbstractFileEngineIterator
 {
 public:
-    StringListIterator( const QStringList &list, QDir::Filters filters, const QStringList &nameFilters)
+    StringListIterator(const QString &path, const QStringList &list, QDir::Filters filters, const QStringList &nameFilters)
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+        : QAbstractFileEngineIterator(path, filters, nameFilters)
+#else
         : QAbstractFileEngineIterator(filters, nameFilters)
+#endif
+        , list(list)
+        , index(-1)
+    {
+    }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+    StringListIterator(const QString &path, const QStringList &list, QDirListing::IteratorFlags filters, const QStringList &nameFilters)
+
+        : QAbstractFileEngineIterator(path, filters, nameFilters)
         , list(list)
         , index(-1)
     {
     }
 
-    bool hasNext() const
+    bool advance() override
+    {
+        if (index < list.size() - 1) {
+            ++index;
+            return true;
+        }
+        return false;
+    }
+#else
+    bool hasNext() const override
     {
         return index < list.size() - 1;
     }
 
-    QString next()
+    QString next() override
     {
         if(!hasNext())
             return QString();
         ++index;
         return currentFilePath();
     }
-
-    QString currentFileName() const
+#endif
+    QString currentFileName() const override
     {
         return index < 0 ? QString() : list[index];
     }
@@ -243,11 +264,50 @@ QAbstractFileEngine::FileFlags BinaryFormatEngine::fileFlags(FileFlags type) con
 /*!
     \internal
 */
+#if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
+QAbstractFileEngine::IteratorUniquePtr
+BinaryFormatEngine::beginEntryList(const QString &path, QDir::Filters filters,
+                                    const QStringList &filterNames)
+{
+    const QStringList entries = entryList(filters, filterNames);
+    return std::make_unique<StringListIterator>(path, entries, filters, filterNames);
+}
+
+QAbstractFileEngine::IteratorUniquePtr
+BinaryFormatEngine::beginEntryList(const QString &path, QDirListing::IteratorFlags filters, const QStringList &filterNames)
+{
+    const QStringList entries = entryList(filters, filterNames);
+    return std::make_unique<StringListIterator>(path, entries, filters, filterNames);
+}
+
+/*!
+    \internal
+*/
+QStringList BinaryFormatEngine::entryList(QDirListing::IteratorFlags filters, const QStringList &filterNames) const
+{
+    if (!m_resource.isNull())
+        return QStringList();
+
+    QStringList result;
+    if (!m_collection.name().isEmpty()
+            && (filters.testFlag(QDirListing::IteratorFlag::Default) || filters.testFlag(QDirListing::IteratorFlag::FilesOnly))) {
+        foreach (const QSharedPointer<Resource> &resource, m_collection.resources())
+            result.append(QString::fromUtf8(resource->name()));
+    } else if (m_collection.name().isEmpty()
+            && (filters.testFlag(QDirListing::IteratorFlag::Default) || filters.testFlag(QDirListing::IteratorFlag::DirsOnly))) {
+        foreach (const ResourceCollection &collection, m_collections)
+            result.append(QString::fromUtf8(collection.name()));
+    }
+    return filterResults(result, filterNames);
+}
+#else
 QAbstractFileEngineIterator *BinaryFormatEngine::beginEntryList(QDir::Filters filters, const QStringList &filterNames)
 {
     const QStringList entries = entryList(filters, filterNames);
-    return new StringListIterator(entries, filters, filterNames);
+    return new StringListIterator(QString(), entries, filters, filterNames);
 }
+#endif
+
 
 /*!
     \internal
@@ -265,6 +325,23 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
         foreach (const ResourceCollection &collection, m_collections)
             result.append(QString::fromUtf8(collection.name()));
     }
+    return filterResults(result, filterNames);
+}
+
+
+/*!
+    \internal
+*/
+qint64 BinaryFormatEngine::size() const
+{
+    return m_resource.isNull() ? 0 : m_resource->size();
+}
+
+/*!
+    \internal
+*/
+QStringList BinaryFormatEngine::filterResults(QStringList result, const QStringList &filterNames) const
+{
     result.removeAll(QString()); // Remove empty names, will crash while using directory iterator.
 
     if (filterNames.isEmpty())
@@ -289,14 +366,6 @@ QStringList BinaryFormatEngine::entryList(QDir::Filters filters, const QStringLi
     }
 
     return entries;
-}
-
-/*!
-    \internal
-*/
-qint64 BinaryFormatEngine::size() const
-{
-    return m_resource.isNull() ? 0 : m_resource->size();
 }
 
 } // namespace QInstaller
