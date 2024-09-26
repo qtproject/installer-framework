@@ -700,12 +700,10 @@ quint64 UpdateOperation::sizeHint()
 bool UpdateOperation::fromXml(const QString &xml)
 {
     QDomDocument doc;
-    QString errorMsg;
-    int errorLine;
-    int errorColumn;
-    if (!doc.setContent( xml, &errorMsg, &errorLine, &errorColumn)) {
-        qCWarning(QInstaller::lcInstallerInstallLog) << "Error parsing xml error=" << errorMsg
-            << "line=" << errorLine << "column=" << errorColumn;
+    QDomDocument::ParseResult result = doc.setContent(xml);
+    if (!result) {
+        qCWarning(QInstaller::lcInstallerInstallLog) << "Error parsing xml error=" << result.errorMessage
+            << "line=" << result.errorLine << "column=" << result.errorColumn;
         return false;
     }
     return fromXml(doc);

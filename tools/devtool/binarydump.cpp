@@ -73,11 +73,11 @@ int BinaryDump::dump(const QInstaller::ResourceCollectionManager &manager, const
         QFile updatesXml(targetDir.filePath(QLatin1String("Updates.xml")));
         QInstaller::openForRead(&updatesXml);
 
-        QString error;
         QDomDocument doc;
-        if (!doc.setContent(&updatesXml, &error)) {
+        QDomDocument::ParseResult docResult = doc.setContent(&updatesXml);
+        if (!docResult) {
             throw QInstaller::Error(QString::fromLatin1("Cannot read: \"%1\": %2").arg(
-                                        QDir::toNativeSeparators(updatesXml.fileName()), error));
+                                        QDir::toNativeSeparators(updatesXml.fileName()), docResult.errorMessage));
         }
 
         QHash<QString, QString> versionMap;

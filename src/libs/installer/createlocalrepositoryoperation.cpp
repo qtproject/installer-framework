@@ -268,11 +268,11 @@ bool CreateLocalRepositoryOperation::performOperation()
                                         QDir::toNativeSeparators(updatesXml.fileName())));
 
         // read the content of the updates xml
-        QString error;
         QDomDocument doc;
-        if (!doc.setContent(&updatesXml, &error))
+        QDomDocument::ParseResult result = doc.setContent(&updatesXml);
+        if (!result)
             throw QInstaller::Error(tr("Cannot read file \"%1\": %2").arg(
-                                        QDir::toNativeSeparators(updatesXml.fileName()), error));
+                QDir::toNativeSeparators(updatesXml.fileName()), result.errorMessage));
 
         // build for each available package a name - version mapping
         QHash<QString, QString> nameVersionHash;

@@ -231,15 +231,12 @@ bool AliasFinder::parseXml(AliasSource source)
         return false;
     }
 
-    QString error;
-    int errorLine;
-    int errorColumn;
-
     QDomDocument doc;
-    if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
+    QDomDocument::ParseResult result = doc.setContent(&file);
+    if (!result) {
         qCWarning(QInstaller::lcInstallerInstallLog)
-            << "Cannot read alias definition document:" << error
-            << "line:" << errorLine << "column:" << errorColumn;
+            << "Cannot read alias definition document:" << result.errorMessage
+            << "line:" << result.errorLine << "column:" << result.errorColumn;
         return false;
     }
     file.close();

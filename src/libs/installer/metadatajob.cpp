@@ -835,11 +835,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
 
         file.seek(0);
 
-        QString error;
         QDomDocument doc;
-        if (!doc.setContent(&file, &error)) {
+        QDomDocument::ParseResult docResult = doc.setContent(&file);
+        if (!docResult) {
             qCWarning(QInstaller::lcInstallerInstallLog).nospace() << "Cannot fetch a valid version of Updates.xml from repository "
-                               << metadata->repository().displayname() << ": " << error;
+                               << metadata->repository().displayname() << ": " << docResult.errorMessage;
             //If there are other repositories, try to use those
             continue;
         }

@@ -157,10 +157,10 @@ QDomDocument Metadata::updatesDocument() const
     }
 
     QDomDocument doc;
-    QString errorString;
-    if (!doc.setContent(&updateFile, &errorString)) {
+    QDomDocument::ParseResult result = doc.setContent(&updateFile);
+    if (!result) {
         qCWarning(QInstaller::lcInstallerInstallLog)
-            << "Cannot set document content:" << errorString;
+            << "Cannot set document content:" << result.errorMessage;
         return QDomDocument();
     }
 
@@ -343,10 +343,11 @@ bool Metadata::containsRepositoryUpdates() const
 bool Metadata::verifyMetaFiles(QFile *updateFile) const
 {
     QDomDocument doc;
-    QString errorString;
-    if (!doc.setContent(updateFile, &errorString)) {
+    QDomDocument::ParseResult result = doc.setContent(updateFile);
+
+    if (!result) {
         qCWarning(QInstaller::lcInstallerInstallLog)
-            << "Cannot set document content:" << errorString;
+            << "Cannot set document content:" << result.errorMessage;
         return false;
     }
 

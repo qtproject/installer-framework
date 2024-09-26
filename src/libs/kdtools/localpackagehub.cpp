@@ -266,16 +266,14 @@ void LocalPackageHub::refresh()
 
     // Parse the XML document
     QDomDocument doc;
-    QString parseErrorMessage;
-    int parseErrorLine;
-    int parseErrorColumn;
-    if (!doc.setContent(&file, &parseErrorMessage, &parseErrorLine, &parseErrorColumn)) {
+    QDomDocument::ParseResult result = doc.setContent(&file);
+    if (!result) {
         d->error = InvalidXmlError;
         d->errorMessage = tr("Parse error in %1 at %2, %3: %4")
                           .arg(d->fileName,
-                               QString::number(parseErrorLine),
-                               QString::number(parseErrorColumn),
-                               parseErrorMessage);
+                               QString::number(result.errorLine),
+                               QString::number(result.errorColumn),
+                               result.errorMessage);
         return;
     }
     file.close();

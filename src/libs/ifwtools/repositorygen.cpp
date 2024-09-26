@@ -245,13 +245,12 @@ void QInstallerTools::copyMetaData(const QString &_targetDir, const QString &met
             QFile file(packageXmlPath);
             QInstaller::openForRead(&file);
 
-            QString errMsg;
-            int line = 0;
-            int column = 0;
             QDomDocument packageXml;
-            if (!packageXml.setContent(&file, &errMsg, &line, &column)) {
+            QDomDocument::ParseResult result = packageXml.setContent(&file);
+            if (!result) {
                 throw QInstaller::Error(QString::fromLatin1("Cannot parse \"%1\": line: %2, column: %3: %4 (%5)")
-                                        .arg(QDir::toNativeSeparators(packageXmlPath)).arg(line).arg(column).arg(errMsg, info.name));
+                    .arg(QDir::toNativeSeparators(packageXmlPath)).arg(result.errorLine)
+                    .arg(result.errorColumn).arg(result.errorMessage, info.name));
             }
 
             QDomElement update = doc.createElement(QLatin1String("PackageUpdate"));
@@ -529,16 +528,14 @@ PackageInfoVector QInstallerTools::createListOfPackages(const QStringList &packa
         file.open(QIODevice::ReadOnly);
 
         QDomDocument doc;
-        QString error;
-        int errorLine = 0;
-        int errorColumn = 0;
-        if (!doc.setContent(&file, &error, &errorLine, &errorColumn)) {
+        QDomDocument::ParseResult result = doc.setContent(&file);
+        if (!result) {
             if (ignoreInvalidPackages)
                 continue;
             throw QInstaller::Error(QString::fromLatin1("Component package description in \"%1\" is invalid. "
                 "Error at line: %2, column: %3 -> %4").arg(QDir::toNativeSeparators(fileInfo.absoluteFilePath()),
-                                                           QString::number(errorLine),
-                                                           QString::number(errorColumn), error));
+                QString::number(result.errorLine),
+                QString::number(result.errorColumn), result.errorMessage));
         }
 
         const QDomElement packageElement = doc.firstChildElement(QLatin1String("Package"));
@@ -638,11 +635,11 @@ PackageInfoVector QInstallerTools::createListOfRepositoryPackages(const QStringL
             continue;
         }
 
-        QString error;
         QDomDocument doc;
-        if (!doc.setContent(&file, &error)) {
+        QDomDocument::ParseResult result = doc.setContent(&file);
+        if (!result) {
             qDebug().nospace() << "Cannot fetch a valid version of Updates.xml from repository "
-                               << it->fileName() << ": " << error;
+                               << it->fileName() << ": " << result.errorMessage;
             continue;
         }
         file.close();

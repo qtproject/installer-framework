@@ -124,10 +124,10 @@ void TestRepository::downloadCompleted()
         QFile file(m_xmlTask.future().results().value(0).target());
         if (file.open(QIODevice::ReadOnly)) {
             QDomDocument doc;
-            QString errorMsg;
-            if (!doc.setContent(&file, &errorMsg)) {
+            QDomDocument::ParseResult result = doc.setContent(&file);
+            if (!result) {
                 emitFinishedWithError(QInstaller::InvalidUpdatesXml,
-                    tr("Cannot parse Updates.xml: %1").arg(errorMsg));
+                    tr("Cannot parse Updates.xml: %1").arg(result.errorMessage));
             } else {
                 emitFinishedWithError(Job::NoError, QString(/*Success*/)); // OPK
             }
