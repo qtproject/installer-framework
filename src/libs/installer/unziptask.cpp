@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -91,7 +91,7 @@ public:
     {
         if (m_futureInterface->isCanceled())
             return E_FAIL;
-        if (m_futureInterface->isPaused())
+        if (m_futureInterface->isSuspended())
             m_futureInterface->waitForResume();
 
         COM_TRY_BEGIN
@@ -281,7 +281,7 @@ void UnzipTask::doTask(QFutureInterface<QString> &fi)
     for (unsigned i = 0; i < archiveLink.Arcs.Size(); ++i) {
         if (fi.isCanceled())
             break;
-        if (fi.isPaused())
+        if (fi.isSuspended())
             fi.waitForResume();
 
         const UInt32 extractAll = UInt32(-1);

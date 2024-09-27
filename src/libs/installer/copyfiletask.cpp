@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -95,7 +95,7 @@ void CopyFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
     while (!source.atEnd() && source.error() == QFile::NoError) {
         if (fi.isCanceled())
             break;
-        if (fi.isPaused())
+        if (fi.isSuspended())
             fi.waitForResume();
 
         const qint64 read = source.read(buffer.data(), buffer.size());

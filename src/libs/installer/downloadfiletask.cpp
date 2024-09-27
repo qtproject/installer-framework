@@ -1,7 +1,7 @@
 
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -383,8 +383,8 @@ void Downloader::onTimeout()
 bool Downloader::testCanceled()
 {
     // TODO: figure out how to implement pause and resume
-    if (m_futureInterface->isPaused()) {
-        m_futureInterface->togglePaused();  // Note: this will trigger cancel
+    if (m_futureInterface->isSuspended()) {
+        m_futureInterface->toggleSuspended();  // Note: this will trigger cancel
         m_futureInterface->reportException(
                     TaskException(tr("Pause and resume not supported by network transfers.")));
     }
