@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -554,7 +554,8 @@ QString QInstaller::getShortPathName(const QString &name)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
     GetShortPathName(nameC, buffer.data(), length);
-    const QString rc = QString::fromUtf16(reinterpret_cast<const ushort *>(buffer.data()), length - 1);
+    const QString rc = QString::fromUtf16(reinterpret_cast<const char16_t *>(buffer.data()), length - 1);
+
     return rc;
 }
 
@@ -573,7 +574,7 @@ QString QInstaller::getLongPathName(const QString &name)
         return name;
     QScopedArrayPointer<TCHAR> buffer(new TCHAR[length]);
     GetLongPathName(nameC, buffer.data(), length);
-    const QString rc = QString::fromUtf16(reinterpret_cast<const ushort *>(buffer.data()), length - 1);
+    const QString rc = QString::fromUtf16(reinterpret_cast<const char16_t *>(buffer.data()), length - 1);
     return rc;
 }
 

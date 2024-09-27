@@ -3632,7 +3632,7 @@ QString PackageManagerCore::environmentVariable(const QString &name) const
 #ifdef Q_OS_WIN
     static TCHAR buffer[32767];
     DWORD size = GetEnvironmentVariable(LPCWSTR(name.utf16()), buffer, 32767);
-    QString value = QString::fromUtf16((const unsigned short *) buffer, size);
+    QString value = QString::fromUtf16(reinterpret_cast<const char16_t *>(buffer), size);
 
     if (value.isEmpty()) {
         static QLatin1String userEnvironmentRegistryPath("HKEY_CURRENT_USER\\Environment");
