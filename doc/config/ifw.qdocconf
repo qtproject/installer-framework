@@ -50,6 +50,7 @@ qhp.InstallerFramework.subprojects.manual.type = manual
 
 macro.IFW = "Qt Installer Framework"
 macro.MT = "maintenance tool"
+macro.QOI = "Qt Online Installer"
 
 # For docs, QT_VERSION resolves to IFW version
 macro.ifwversion = $QT_VERSION

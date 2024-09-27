@@ -26,15 +26,44 @@
 ****************************************************************************/
 
 /*!
-    \previouspage ifw-overview.html
+    \previouspage index.html
     \page ifw-getting-started.html
-    \nextpage ifw-use-cases.html
+    \nextpage ifw-overview.html
 
     \title Getting Started
 
     You can use the Qt Installer Framework to create installation programs for
     all kinds of applications, including (but not limited to) applications built
     with Qt.
+
+    To get started with Qt Installer Framework:
+
+    \list 1
+        \li Install a pre-built version with \QOI or build the framework from
+            sources. For more information, see \l{Installation} and
+            \l{Building from Sources}.
+        \li Choose the installer type: \e online or \e offline. For more
+            information, see \l{Overview of Qt Installer Framework}.
+        \li Follow the tutorial to create an installer. For more information, see
+            \l{Tutorial: Creating an Installer}.
+        \li Use the examples to learn how to use component scripts for
+            customizing installers. For more information, see
+        \l{Qt Installer Framework Examples}.
+    \endlist
+*/
+
+/*!
+    \previouspage ifw-overview.html
+    \page ifw-installation.html
+    \nextpage ifw-building-from-sources.html
+
+    \title Installation
+
+    You can use \l{https://doc.qt.io/qt-6/get-and-install-qt.html}{\QOI} to
+    install a pre-built version of the \IFW, or you can build it yourself from
+    sources.
+
+    \image ifw-installation.webp {Installing with Qt Online Installer}
 
     \section1 Supported Platforms
 
@@ -44,19 +73,29 @@
     If you use Linux, install also
     \l {https://doc.qt.io/qt-6/linux-requirements.html} {Platform Plugin dependencies}.
 
-    \section1 Building from Sources
+    \sa {Building from Sources}
+*/
+
+/*!
+    \previouspage ifw-installation.html
+    \page ifw-building-from-sources.html
+    \nextpage ifw-use-cases.html
+
+    \title Building from Sources
 
     The following steps describe how to build the Qt Installer Framework
-    yourself. You can skip this if you have downloaded a pre-built version
-    of the framework.
+    yourself.
 
-    \section2 Supported Compilers
+    For more information about how to install a pre-built version, see
+    \l{Installation}.
+
+    \section1 Supported Compilers
 
     You can compile the Qt Installer Framework with Microsoft Visual Studio
     2019 and newer, GCC 9 and newer, and Clang 13.0.0 and newer. Currently, the
     tested combination for Windows is Qt 6.6.0 with MSVC 2019 (Windows 10).
 
-    \section2 Configuring Qt
+    \section1 Configuring Qt
 
     If you use a statically built Qt to build the Qt Installer Framework
     you do not have to deliver Qt libraries, which enables you to distribute
@@ -72,7 +111,7 @@
     Call init-repository with --module-subset=qt5compat, qtbase, qtdeclarative, qttools, qttranslations
     \endcode
 
-    \section3 Configuring Qt for Windows
+    \section2 Configuring Qt for Windows
 
     Use the following configuration options for Windows:
 
@@ -81,7 +120,7 @@
 
     \endcode
 
-    \section3 Configuring Qt for Linux
+    \section2 Configuring Qt for Linux
 
     Use the following configuration options for Linux:
 
@@ -89,7 +128,7 @@
     configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev -bundled-xcb-xinput -qt-harfbuzz -qt-doubleconversion
     \endcode
 
-    \section3 Configuring Qt for macOS
+    \section2 Configuring Qt for macOS
 
     Use the following configuration options for macOS:
 
@@ -103,7 +142,7 @@
     cmake --install .
     \endcode
 
-    \section2 Third Party Dependencies
+    \section1 Third Party Dependencies
 
     The Qt Installer Framework sources contain a redistribution of parts of the
     \c libarchive compression and archive library, which requires you to link
@@ -133,7 +172,7 @@
 
     \note Building IFW with LZMA SDK is deprecated and may not be available in future versions.
 
-    \section3 Installing Dependencies for Windows
+    \section2 Installing Dependencies for Windows
 
     You can download the source archives for the dependencies from:
 
@@ -148,7 +187,7 @@
     to select the run-time library matches the configuration options for Qt
     (debug/release, static/dynamic runtime).
 
-    \section3 Installing Dependencies for Linux
+    \section2 Installing Dependencies for Linux
 
     The required third party compression libraries are likely available from
     your distribution's package manager repositories.
@@ -160,7 +199,7 @@
     sudo apt install zlib1g-dev liblzma-dev libbz2-dev
     \endcode
 
-    \section3 Installing Dependencies for macOS
+    \section2 Installing Dependencies for macOS
 
     The easiest way to install the missing libraries is with a third party
     package manager solution, like Homebrew or MacPorts. On macOS 10.15 you
@@ -172,14 +211,14 @@
     brew install xz
     \endcode
 
-    \section3 Troubleshooting
+    \section2 Troubleshooting
 
     For \c libarchive related compilation errors, you may need to edit the definitions in
     a configuration header file respective to your platform. You can find this file in
     the \c src/libs/3rdparty/libarchive/config/ directory of the Installer Framework sources.
 
 
-    \section2 Setting up Qt Installer Framework
+    \section1 Setting up Qt Installer Framework
 
     \list 1
 
@@ -195,4 +234,5 @@
     Qt processes and guidelines. For more information, see
     \l{http://wiki.qt.io/Contribute}{Contribute to Qt}.
 
+    \sa {Installation}
 */
