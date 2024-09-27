@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -422,15 +422,9 @@ private slots:
                  "@RELOCATABLE@ not replaced with TargetDir");
         QCOMPARE(op.value(QLatin1String("variant_map")), map);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QCOMPARE(op.value(QLatin1String("string_list")).metaType().id(), QMetaType::QStringList);
         QCOMPARE(op.value(QLatin1String("string")).metaType().id(), QMetaType::QString);
         QCOMPARE(op.value(QLatin1String("variant_map")).metaType().id(), QMetaType::QVariantMap);
-#else
-        QCOMPARE(op.value(QLatin1String("string_list")).type(), QMetaType::QStringList);
-        QCOMPARE(op.value(QLatin1String("string")).type(), QMetaType::QString);
-        QCOMPARE(op.value(QLatin1String("variant_map")).type(), QMetaType::QVariantMap);
-#endif
     }
 
     void cleanupTestCase()

@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2017 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -93,7 +93,7 @@ bool AdminAuthorization::execute(QWidget *, const QString &program, const QStrin
             "Policies\\System");
         QSettings registry(key, QSettings::NativeFormat);
         const QVariant enableLUA = registry.value(QLatin1String("EnableLUA"));
-        if ((enableLUA.type() == QVariant::Int) && (enableLUA.toInt() == 0))
+        if ((enableLUA.typeId() == QMetaType::Int) && (enableLUA.toInt() == 0))
             return false;
     }
 

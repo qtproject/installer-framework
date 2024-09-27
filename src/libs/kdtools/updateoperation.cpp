@@ -1,7 +1,7 @@
 /****************************************************************************
 **
 ** Copyright (C) 2013 Klaralvdalens Datakonsult AB (KDAB)
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -572,12 +572,7 @@ QDomDocument UpdateOperation::toXml() const
         value.setAttribute(QLatin1String("name"), it.key());
         value.setAttribute(QLatin1String("type"), QLatin1String(variant.typeName()));
 
-        int variantType;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        variantType = variant.typeId();
-#else
-        variantType = variant.type();
-#endif
+        int variantType = variant.typeId();
 
         if (variantType != QMetaType::QStringList
             && variant.canConvert<QString>()) {

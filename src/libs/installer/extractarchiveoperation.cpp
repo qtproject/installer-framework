@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -243,7 +243,7 @@ bool ExtractArchiveOperation::undoOperation()
 
     // For backward compatibility, check if "files" can be converted to QStringList.
     // If yes, files are listed in .dat instead of in a separate file.
-    bool useStringListType(value(QLatin1String("files")).type() == QVariant::StringList);
+    bool useStringListType(value(QLatin1String("files")).typeId() == QMetaType::QStringList);
     QString targetDir = arguments().at(1);
     if (packageManager())
         targetDir = packageManager()->value(scTargetDir);
