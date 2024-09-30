@@ -10,7 +10,7 @@ includepaths += \
 
 language    = Cpp
 project     = "QtInstallerFramework"
-description = "Qt Installer Framework Manual"
+description = "Qt Installer Framework Documentation"
 url         = https://doc.qt.io/qtinstallerframework/
 
 sourcedirs += ../../src/libs/installer ../../src/libs/kdtools ../includes
@@ -37,15 +37,15 @@ qhp.projects            = InstallerFramework
 qhp.InstallerFramework.file             = ifw.qhp
 qhp.InstallerFramework.namespace        = org.qt-project.ifw.$QT_VERSION_TAG
 qhp.InstallerFramework.virtualFolder    = doc
-qhp.InstallerFramework.indexTitle       = Qt Installer Framework Manual
+qhp.InstallerFramework.indexTitle       = Qt Installer Framework Documentation
 qhp.InstallerFramework.filterAttributes = ifw
 qhp.InstallerFramework.customFilters.InstallerFramework.name = Installer Framework
 qhp.InstallerFramework.customFilters.InstallerFramework.filterAttributes = ifw
 qhp.InstallerFramework.indexRoot        =
 
 qhp.InstallerFramework.subprojects = manual
-qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Manual
-qhp.InstallerFramework.subprojects.manual.indexTitle = Qt Installer Framework Manual
+qhp.InstallerFramework.subprojects.manual.title = Qt Installer Framework Documentation
+qhp.InstallerFramework.subprojects.manual.indexTitle = All Topics
 qhp.InstallerFramework.subprojects.manual.type = manual
 
 macro.IFW = "Qt Installer Framework"
@@ -72,4 +72,4 @@ macro.function                  = "\\fn"
 outputprefixes = QML
 outputprefixes.QML =
 
-navigation.homepage = "Qt Installer Framework Manual"
+navigation.homepage = "Qt Installer Framework Documentation"

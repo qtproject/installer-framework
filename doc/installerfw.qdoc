@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -35,21 +35,114 @@
     \page index.html
     \nextpage ifw-overview.html
 
-    \title Qt Installer Framework Manual
+    \title Qt Installer Framework Documentation
 
-    \section1 Version \ifwversion
+    \raw HTML
+    <style>
+    .main-navigation table { table-layout: fixed; }
+    .main-navigation table tr:first-child { text-align: center; background: none; }
+    </style>
+    \endraw
+
+    \div {class="main-navigation"}
+    \table borderless 100%
+        \row
+            \li \inlineimage images/installation.png
+            \li \inlineimage images/getting-started.png
+            \li \inlineimage images/tutorials.png
+        \row
+            \li \b {INSTALLATION}
+
+                Use Qt Online Installer to install a pre-built version of the Qt
+                Installer Framework, or build it yourself from sources.
+
+                \l {Installation}
+            \li \b {GETTING STARTED}
+
+                Use the Qt Installer Framework to create installation programs
+                for all kinds of applications, including (but not limited to) applications
+                built with Qt.
+
+                \l{Getting Started}
+            \li \b {TUTORIALS AND EXAMPLES}
+
+                Have a look at tutorials and examples for step by step instructions
+                and demonstrations on how to use component scripts for customizing
+                installers.
+
+                \l{Tutorials and Examples}
+    \endtable
+    \enddiv
+
+    \section1 About
 
     Qt Installer Framework is a robust toolset for creating custom online
     and offline installers. It’s highly configurable and customizable and works for all
     supported Qt platforms: Linux, Microsoft Windows, and macOS.
 
-    Here are some examples to illustrate the versatility
-    of Qt Installer Framework.
+    For more information, see \l {Overview of Qt Installer Framework}.
 
+    \b {WORKING WITH}
 
+    \raw HTML
+    <style>
+    .link-list table { table-layout: fixed; }
+    .link-list table, .link-list table tr:first-child { background: none; border: none; }
+    </style>
+    \endraw
 
-    \note Report bugs and suggestions for the Qt Installer Framework project
-    in the \l{https://bugreports.qt.io/browse/QTIFW}{Qt Bugtracker}.
+    \div {class="link-list"}
+    \table 100%
+        \row
+            \li \inlineimage images/demo-32x32.png
+            \li \inlineimage images/build-32x32.png
+            \li \inlineimage images/settings-32x32.png
+        \row
+            \li End User Workflows
+                \list
+                  \li \l{Initial Installation}
+                  \li \l{Adding Components}
+                  \li \l{Removing Components}
+                  \li \l{Updating Components}
+                  \li \l{Specifying Settings}
+                  \li \l{Using From Command Line}
+                \endlist
+            \li Installers
+                \list
+                  \li \l{Creating Installers}
+                  \li \l{Creating Offline Installers}
+                  \li \l{Creating Online Installers}
+                  \li \l{Promoting Updates}
+                  \li \l{Customizing Installers}
+                \endlist
+            \li Reference
+                \list
+                  \li \l{Command Line Interface}
+                  \li \l{Configuration File}
+                  \li \l{Package Directory}
+                  \li \l{Alias Definition File}
+                  \li \l{Controller Scripting}
+                  \li \l{Component Scripting}
+                  \li \l{Operations}
+                  \li \l{Tools}
+                  \li \l{Scripting API}
+                  \li \l{C++ API}
+                  \li \l {Known Issues}
+                \endlist
+
+    \endtable
+    \enddiv
+*/
+
+/*!
+    \page ifw-all-topics.html
+
+    \title All Topics
+
+    \note The following list has links to all the individual topics (HTML files) in the \IFW
+    documentation. Use your browser's page search to find a link to a particular topic
+    in the list. For a more extensive search, use the \uicontrol Search function in the
+    \l{https://doc.qt.io/}{Qt Documentation} portal.
 
     \list
         \li \l{Overview of Qt Installer Framework}
@@ -63,7 +156,15 @@
             \li \l{Specifying Settings}
             \li \l{Using From Command Line}
         \endlist
-        \li \l{Tutorial: Creating an Installer}
+        \li \l{Tutorials and Examples}
+            \list
+                \li \l{Tutorials}
+                    \list
+                        \li \l {Tutorial: Creating an Installer}
+                    \endlist
+                \li \l{Examples}
+                    \generatelist qtifwexamples
+            \endlist
         \li \l{Creating Installers}
         \list
             \li \l{Creating Offline Installers}
@@ -71,7 +172,6 @@
             \li \l{Promoting Updates}
             \li \l{Customizing Installers}
         \endlist
-        \li \l{Qt Installer Framework Examples}
         \li \l{Reference}
         \list
             \li \l{Command Line Interface}
@@ -710,7 +810,7 @@
 /*!
     \previouspage ifw-updates.html
     \page ifw-customizing-installers.html
-    \nextpage Qt Installer Framework Examples
+    \nextpage Tutorials and Examples
 
     \title Customizing Installers
 
