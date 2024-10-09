@@ -517,10 +517,7 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
         return f.fileName();
     }
 
-    static const QString characters = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
-    QString suffix;
-    for (int i = 0; i < 5; ++i)
-        suffix += characters[QRandomGenerator::global()->generate() % characters.length()];
+    QString suffix = generateSuffix();
 
     const QString tmp = QLatin1String("%1.tmp.%2.%3");
     int count = 1;
@@ -534,6 +531,30 @@ QString QInstaller::generateTemporaryFileName(const QString &templ)
     }
     f.remove();
     return f.fileName();
+}
+
+/*!
+    \internal
+
+    Generates and returns a temporary directory. Directory is created to QDir::tempPath()
+    and the name can start with a template \a templ. Caller is responsible of deleting
+    the directory
+*/
+QDir QInstaller::generateTemporaryDirectory(const QString &templ)
+{
+    const QString tmp = QDir::tempPath() + QDir::separator() + templ + generateSuffix() + QLatin1String("%1");
+    int count = 1;
+    QDir dir;
+
+    while (true) {
+        dir.setPath(tmp.arg(count));
+        if (!dir.exists()) {
+            dir.mkdir(dir.path());
+            break;
+        }
+        count++;
+    }
+    return dir;
 }
 
 #ifdef Q_OS_WIN
@@ -881,4 +902,17 @@ void QInstaller::copyConfigChildElements(QDomDocument &dom, const QDomNodeList &
                 "Cannot copy file \"%1\" to \"%2\".").arg(elementFileInfo.absoluteFilePath(), targetFile));
         }
     }
+}
+
+/*!
+    \internal
+*/
+QString QInstaller::generateSuffix()
+{
+    static const QString characters = QLatin1String("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+
+    QString suffix;
+    for (int i = 0; i < 5; ++i)
+        suffix += characters[QRandomGenerator::global()->generate() % characters.length()];
+    return suffix;
 }

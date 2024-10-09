@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2022 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -40,6 +40,7 @@ QT_BEGIN_NAMESPACE
 class QFileInfo;
 class QFile;
 class QUrl;
+class QDir;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -80,6 +81,7 @@ private:
     bool INSTALLER_EXPORT setDefaultFilePermissions(QFile *file, DefaultFilePermissions permissions);
 
     QString INSTALLER_EXPORT generateTemporaryFileName(const QString &templ=QString());
+    QDir INSTALLER_EXPORT generateTemporaryDirectory(const QString &templ=QString());
 
     void INSTALLER_EXPORT moveDirectoryContents(const QString &sourceDir, const QString &targetDir);
     void INSTALLER_EXPORT copyDirectoryContents(const QString &sourceDir, const QString &targetDir);
@@ -102,6 +104,8 @@ private:
 
     void INSTALLER_EXPORT trimmedCopyConfigData(const QString &source, const QString &target, const QStringList &elementsToRemoveTags);
     void copyConfigChildElements(QDomDocument &dom, const QDomNodeList &objects, const QString &sourceDir, const QString &targetDir);
+
+    QString generateSuffix();
 
 #ifdef Q_OS_WIN
     QString INSTALLER_EXPORT getLongPathName(const QString &name);

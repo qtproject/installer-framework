@@ -278,12 +278,12 @@ void MetadataJob::doStart()
                         return;
                     }
 
-                    QTemporaryDir tmp(QDir::tempPath() + QLatin1String("/remoterepo-XXXXXX"));
-                    if (!tmp.isValid()) {
+                    // Creating a directory with QDir as QTemporaryDir does not have right permissions
+                    QDir tmp = generateTemporaryDirectory(QLatin1String("remoterepo-"));
+                    if (!tmp.exists()) {
                         qCWarning(QInstaller::lcInstallerInstallLog) << "Cannot create unique temporary directory.";
                         continue;
                     }
-                    tmp.setAutoRemove(false);
                     m_tempDirDeleter.add(tmp.path());
                     FileTaskItem item(url, tmp.path() + QLatin1String("/Updates.xml"));
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
