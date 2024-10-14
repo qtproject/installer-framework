@@ -3010,8 +3010,8 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     , m_commitButton(nullptr)
 {
     setObjectName(QLatin1String("FinishedPage"));
-    setColoredTitle(tr("Finished the %1 Setup").arg(productName()));
-    setPageListTitle(tr("Finished"));
+    setColoredTitle(tr("Finished"));
+    setColoredSubTitle(tr("Completed the %1 Setup").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -3035,10 +3035,16 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 */
 void FinishedPage::entering()
 {
-    m_msgLabel->setText(tr("Click %1 to exit the %2 Setup.")
-                        .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')))
-                        .arg(productName()));
+    QString finishedText = tr("%1 has now been installed on your computer.").arg(productName());
+    finishedText.append(QLatin1String("\n\n"));
+    finishedText.append(tr("You will find your installation in this location on your computer:"));
+    finishedText.append(QLatin1String("\n"));
+    finishedText.append(packageManagerCore()->value(scTargetDir));
+    finishedText.append(QLatin1String("\n\n"));
+    finishedText.append(tr("Click %1 to close the %2 Setup.")
+        .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')), productName()));
 
+    m_msgLabel->setText(finishedText);
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
         m_commitButton = nullptr;
@@ -3174,7 +3180,9 @@ RestartPage::RestartPage(PackageManagerCore *core)
     : PackageManagerPage(core)
 {
     setObjectName(QLatin1String("RestartPage"));
-    setColoredTitle(tr("Finished the %1 Setup").arg(productName()));
+
+    setColoredTitle(tr("Finished"));
+    setColoredSubTitle(tr("Completed the %1 Setup").arg(productName()));
 
     // Never show this page on the page list
     setShowOnPageList(false);
