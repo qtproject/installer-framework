@@ -282,6 +282,12 @@
 */
 
 /*!
+    \qmlsignal installer::guiElementsReady()
+
+    Emitted after installer has finished making QWizard and common QWizard pages.
+*/
+
+/*!
     \qmlmethod void installer::selectComponent(string id)
 
     Selects the component with \a id.

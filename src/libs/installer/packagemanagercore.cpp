@@ -442,6 +442,12 @@ using namespace QInstaller;
     this signal is emitted also after the categories are fetched.
 */
 
+/*!
+    \fn QInstaller::PackageManagerCore::guiElementsReady()
+
+    Emitted after installer has finished making QWizard and common QWizard pages.
+*/
+
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
 static QFont *sVirtualComponentsFont = nullptr;
 Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);

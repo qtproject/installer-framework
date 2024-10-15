@@ -91,6 +91,7 @@ int InstallerBase::run()
         controller.setGui(new InstallerGui(m_core));
     else
         controller.setGui(new MaintenanceGui(m_core));
+    emit m_core->guiElementsReady();
 
     QInstaller::PackageManagerCore::Status status =
         QInstaller::PackageManagerCore::Status(controller.init());
