@@ -1515,7 +1515,6 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     , m_removeAllComponents(nullptr)
 {
     setObjectName(QLatin1String("IntroductionPage"));
-    setColoredTitle(tr("Welcome"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     setLayout(layout);
@@ -1523,7 +1522,14 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
-    m_msgLabel->setText(tr("Welcome to the %1 Setup.").arg(productName()));
+    if (packageManagerCore()->isInstaller()) {
+        setColoredTitle(tr("Welcome"));
+        m_msgLabel->setText(tr("Welcome to the %1 Setup.").arg(productName()));
+    } else {
+        setColoredTitle(tr("Maintenance Actions"));
+        setColoredSubTitle(tr("Configure your kind of setup"));
+        m_msgLabel->setText(tr("Select from following options, which way you want to proceed."));
+    }
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
