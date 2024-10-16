@@ -1,9 +1,9 @@
 product_dependency:
   ../../qt/tqtc-qt5:
-    ref: "tqtc/6.6.0"
+    ref: "tqtc/6.7.2"
 dependency_source: supermodule
 dependencies: [
-      "../../qt/tqtc-qtbase.git",
+      "../../qt/qtbase.git",
       "../../qt/qtsvg.git",
       "../../qt/qtdeclarative.git",
       "../../qt/qttools.git",
