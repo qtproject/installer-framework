@@ -73,3 +73,4 @@ outputprefixes = QML
 outputprefixes.QML =
 
 navigation.homepage = "Qt Installer Framework Documentation"
+navigation.toctitles = "All Topics"
