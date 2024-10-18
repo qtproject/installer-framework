@@ -3,16 +3,6 @@ instructions:
   - type: MakeDirectory
     directory: ".git"
 
-  - type: Group
-    instructions:
-      - type: InstallSourceArchive
-        maxTimeInSeconds: 600
-        maxTimeBetweenOutput: 600
-        project: qtsdk/tqtc-qtsdk
-        ref: production
-        directory: qtsdk/tqtc-qtsdk
-        userMessageOnFailure: "Could not install qtsdk/tqtc-qtsdk source archive. Please investigate why."
-
   - type: SetBuildDirectory
     directory: "{{.SourceDir}}"
     disable_if:

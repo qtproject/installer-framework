@@ -127,32 +127,6 @@ instructions:
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
-      - type: ChangeDirectory
-        directory: "{{.AgentWorkingDir}}/qtsdk"
-      - type: ExecuteCommand
-        command: "python3 tqtc-qtsdk/jenkins-templates/jenkins/scripts/pkg_bootstrap.py"
-        maxTimeInSeconds: 1800
-        maxTimeBetweenOutput: 600
-        userMessageOnFailure: "pkg_bootstrap.py failed"
-      - type: EnvironmentVariable
-        variableName: PKG_NODE_ROOT
-        variableValue: "{{.AgentWorkingDir}}/qtsdk"
-      - type: ChangeDirectory
-        directory: "{{.AgentWorkingDir}}/qtsdk/tqtc-qtsdk/packaging_tools"
-      - type: ExecuteCommand
-        command: "python3 -m pipenv run python sign_installer.py mac --file={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-5.0.0.app"
-        maxTimeInSeconds: 36000
-        maxTimeBetweenOutput: 3600
-        userMessageOnFailure: "Failed to sign the ifw installer"
-      - type: ExecuteCommand
-        command: "python3 -m pipenv run python notarize.py --path={{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-5.0.0.dmg"
-        maxTimeInSeconds: 36000
-        maxTimeBetweenOutput: 3600
-        userMessageOnFailure: "Failed to notarize the ifw installer"
-      - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-macOS-x64-5.0.0.dmg"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-macOS-x64-5.0.0.dmg"
-        userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
       conditions:
