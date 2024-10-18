@@ -1177,8 +1177,8 @@ void PackageManagerGui::currentPageChanged(int newId)
     PackageManagerPage *newPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
     if (newPage) {
         newPage->entering();
-        emit newPage->entered();
         updatePageListWidget();
+        emit newPage->entered();
     }
 
     executeControlScript(newId);
