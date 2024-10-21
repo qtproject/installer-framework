@@ -77,13 +77,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-5.0.0.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-x64-4.9.0.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-5.0.0.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-5.0.0.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-x64-4.9.0.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-x64-4.9.0.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -100,13 +100,13 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-arm64-5.0.0.run"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-linux-arm64-4.9.0.run"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
       - type: Rename
-        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-arm64-5.0.0.run"
-        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-arm64-5.0.0.run"
+        sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-linux-arm64-4.9.0.run"
+        targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-linux-arm64-4.9.0.run"
         userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -123,7 +123,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.InstallRoot}}/{{.AgentWorkingDir}}"
       - type: ExecuteCommand
-        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-5.0.0.app"
+        command: "python3 {{.SourceDir}}/coin/create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir {{.SourceDir}}/IfwInstaller --target-name QtInstallerFramework-macOS-x64-4.9.0.app"
         maxTimeInSeconds: 36000
         maxTimeBetweenOutput: 3600
         userMessageOnFailure: "Failed to create ifw installer."
@@ -139,7 +139,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.SourceDir}}"
       - type: ExecuteCommand
-        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-5.0.0"
+        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-x64-4.9.0"
         maxTimeInSeconds: 1200
         maxTimeBetweenOutput: 1200
         userMessageOnFailure: "Failed to create ifw installer."
@@ -158,7 +158,7 @@ instructions:
       - type: ChangeDirectory
         directory: "{{.SourceDir}}"
       - type: ExecuteCommand
-        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-arm64-4.8.1"
+        command: "{{.Env.PYTHON3_PATH}}\\python {{.SourceDir}}\\coin\\create_ifw_installer.py --src-dir {{.SourceDir}} --bld-dir {{.SourceDir}} --target-dir C:\\{{.SourceDir}}\\IfwInstaller  --target-name QtInstallerFramework-windows-arm64-4.9.0"
         maxTimeInSeconds: 1200
         maxTimeBetweenOutput: 1200
         userMessageOnFailure: "Failed to create ifw installer."
@@ -182,8 +182,8 @@ instructions:
       equals_value: Windows
 
   - type: Rename
-    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-5.0.0.exe"
-    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-5.0.0.exe"
+    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-x64-4.9.0.exe"
+    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-x64-4.9.0.exe"
     userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
@@ -196,8 +196,8 @@ instructions:
           equals_value: X86_64
 
   - type: Rename
-    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-arm64-4.8.1.exe"
-    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-arm64-4.8.1.exe"
+    sourcePath: "{{.SourceDir}}/IfwInstaller/QtInstallerFramework-windows-arm64-4.9.0.exe"
+    targetPath: "{{.InstallRoot}}/{{.AgentWorkingDir}}/QtInstallerFramework-windows-arm64-4.9.0.exe"
     userMessageOnFailure: "Failed to copy installer."
     enable_if:
       condition: and
