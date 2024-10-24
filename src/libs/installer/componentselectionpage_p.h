@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QHeaderView>
+#include <QComboBox>
 
 #include "componentmodel.h"
 #include "packagemanagergui.h"
@@ -54,7 +55,7 @@ namespace QInstaller {
 class PackageManagerCore;
 class ComponentModel;
 class ComponentSelectionPage;
-class CustomComboBox;
+class CheckableComboBox;
 
 class ComponentSelectionPagePrivate : public QObject
 {
@@ -70,8 +71,7 @@ public:
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
     void showCreateOfflineInstallerButton(bool show);
-    void setupCategoryLayout();
-    void showCategoryLayout(bool show);
+    void showRepositoryCategories();
     void updateTreeView();
     void expandDefault();
     void expandSearchResults();
@@ -97,23 +97,24 @@ private:
     void storeHeaderResizeModes();
     void restoreHeaderResizeModes();
     void setComboBoxItemEnabled(int index, bool enabled);
+    void addCategorySelection(QHBoxLayout *topHLayout);
 
 private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
-    QTabWidget *m_tabWidget;
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
     QPushButton *m_createOfflinePushButton;
     QPushButton *m_qbspPushButton;
-    CustomComboBox *m_checkStateComboBox;
+    QComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
+    QHBoxLayout *m_topHLayout;
     QVBoxLayout *m_rightSideVLayout;
     bool m_allowCreateOfflineInstaller;
     bool m_categoryLayoutVisible;
@@ -124,6 +125,7 @@ private:
     ComponentSortFilterProxyModel *m_proxyModel;
     QLineEdit *m_searchLineEdit;
     bool m_componentsResolved;
+    CheckableComboBox* m_categoryCombobox;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;

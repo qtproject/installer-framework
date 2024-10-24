@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,29 +26,35 @@
 **
 **************************************************************************/
 
-#include "customcombobox.h"
+#ifndef CHECKABLECOMBOBOX_H
+#define CHECKABLECOMBOBOX_H
 
-#include <QStylePainter>
+#include <QComboBox>
 
-using namespace QInstaller;
+namespace QInstaller {
 
-CustomComboBox::CustomComboBox(QWidget *parent)
-    : QComboBox(parent)
+class CheckableComboBox : public QComboBox
 {
-}
+    Q_OBJECT
+public:
+    CheckableComboBox(const QString &placeholderText, QWidget *parent = nullptr);
 
-void CustomComboBox::paintEvent(QPaintEvent *e)
-{
-    if (currentIndex() < 0 && !placeholderText().isEmpty()) {
-        QStylePainter painter(this);
-        painter.setPen(palette().color(QPalette::Text));
-        QStyleOptionComboBox opt;
-        initStyleOption(&opt);
-        painter.drawComplexControl(QStyle::CC_ComboBox, opt);
-        opt.palette.setBrush(QPalette::ButtonText, opt.palette.placeholderText());
-        opt.currentText = placeholderText();
-        painter.drawControl(QStyle::CE_ComboBoxLabel, opt);
-    } else {
-        QComboBox::paintEvent(e);
-    }
-}
+public:
+    void addCheckableItem(const QString &text, const QString &tooltip, bool isChecked);
+    QStringList checkedItems() const;
+    QStringList uncheckedItems() const;
+
+Q_SIGNALS:
+    void currentIndexesChanged();
+
+public Q_SLOTS:
+    void updateCheckbox(int index);
+
+protected:
+    void hidePopup() override;
+    void showPopup() override;
+};
+
+}   // namespace QInstaller
+
+#endif // CHECKABLECOMBOBOX_H

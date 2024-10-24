@@ -377,6 +377,10 @@ ScriptEngine::ScriptEngine(PackageManagerCore *core) : QObject(core)
         global.setProperty(QLatin1String("installer"), m_engine.newQObject(new QObject));
     }
     global.setProperty(QLatin1String("gui"), m_engine.newQObject(m_guiProxy));
+
+    // Qt classes should not need registering, but unless QWidget is registered it causes
+    // Unknown method return type: QWidget* warning when using UI files from script
+    qRegisterMetaType<QWidget*>("QWidget*");
 }
 
 /*!

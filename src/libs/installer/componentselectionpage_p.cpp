@@ -35,7 +35,7 @@
 #include "component.h"
 #include "fileutils.h"
 #include "messageboxhandler.h"
-#include "customcombobox.h"
+#include "checkablecombobox.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -71,7 +71,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         : q(qq)
         , m_core(core)
         , m_treeView(new QTreeView(q))
-        , m_tabWidget(nullptr)
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_allowCreateOfflineInstaller(false)
@@ -81,6 +80,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_currentModel(m_allModel)
         , m_proxyModel(m_core->componentSortFilterProxyModel())
         , m_componentsResolved(false)
+        , m_categoryCombobox(nullptr)
         , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
@@ -92,11 +92,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     QVBoxLayout *descriptionVLayout = new QVBoxLayout(m_descriptionBaseWidget);
     descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
     descriptionVLayout->setContentsMargins(0, 0, 0, 0);
-
-    m_tabWidget = new QTabWidget(q);
-    m_tabWidget->setObjectName(QLatin1String("ComponentSelectionTabWidget"));
-    m_tabWidget->tabBar()->setObjectName(QLatin1String("ComponentSelectionTabBar"));
-    m_tabWidget->hide();
 
     m_rightSideVLayout = new QVBoxLayout;
 
@@ -145,16 +140,16 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_rightSideVLayout->addWidget(m_createOfflinePushButton);
     m_rightSideVLayout->addWidget(m_qbspPushButton);
 
-    QHBoxLayout *topHLayout = new QHBoxLayout;
+    m_topHLayout = new QHBoxLayout;
 
     // Using custom combobox to workaround QTBUG-90595
-    m_checkStateComboBox = new CustomComboBox(q);
+    m_checkStateComboBox = new QComboBox(q);
 #ifdef Q_OS_MACOS
     QStyledItemDelegate *delegate = new QStyledItemDelegate(this);
     m_checkStateComboBox->setItemDelegate(delegate);
 #endif
     m_checkStateComboBox->setObjectName(QLatin1String("CheckStateComboBox"));
-    topHLayout->addWidget(m_checkStateComboBox);
+    m_topHLayout->addWidget(m_checkStateComboBox);
 
     connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ComponentSelectionPagePrivate::updateAllCheckStates);
@@ -199,7 +194,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_searchLineEdit, &QLineEdit::textChanged,
             this, &ComponentSelectionPagePrivate::setSearchPattern);
     connect(q, &ComponentSelectionPage::entered, m_searchLineEdit, &QLineEdit::clear);
-    topHLayout->addWidget(m_searchLineEdit);
+    m_topHLayout->addWidget(m_searchLineEdit);
 
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
@@ -214,7 +209,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         m_mainGLayout->getContentsMargins(&left, &top, nullptr, &bottom);
         m_mainGLayout->setContentsMargins(left, top, 0, bottom);
     }
-    m_mainGLayout->addLayout(topHLayout, 0, 0);
+    m_mainGLayout->addLayout(m_topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
     m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
     m_mainGLayout->setColumnStretch(0, 3);
@@ -265,61 +260,22 @@ void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
         m_createOfflinePushButton->setVisible(false);
 }
 
-void ComponentSelectionPagePrivate::setupCategoryLayout()
+void ComponentSelectionPagePrivate::showRepositoryCategories()
 {
-    if (m_categoryWidget)
+    if (m_categoryCombobox)
         return;
-    m_categoryWidget = new QWidget();
-    QVBoxLayout *vLayout = new QVBoxLayout;
-    vLayout->setContentsMargins(0, 0, 0, 0);
-    m_categoryWidget->setLayout(vLayout);
-    m_categoryGroupBox = new QGroupBox(q);
-    m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
-    QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
-    fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
-    fetchCategoryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    fetchCategoryButton->setToolTip(
-        ComponentSelectionPage::tr("Filter the enabled repository categories"));
-    connect(fetchCategoryButton, &QPushButton::clicked, this,
-            &ComponentSelectionPagePrivate::fetchRepositoryCategories);
+    m_categoryCombobox = new CheckableComboBox(tr("Show"));
+    m_topHLayout->addWidget(m_categoryCombobox);
+    m_categoryCombobox->setObjectName(QLatin1String("CategoryGroupBox"));
 
-    foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setObjectName(repository.displayname());
-        checkBox->setChecked(repository.isEnabled());
-        checkBox->setText(repository.displayname());
-        checkBox->setToolTip(repository.tooltip());
-        categoryLayout->addWidget(checkBox);
-    }
-    categoryLayout->addWidget(fetchCategoryButton);
+    QMap<QString, RepositoryCategory> repositoryCategories = m_core->settings().organizedRepositoryCategories();
+    for (const RepositoryCategory &repository : std::as_const(repositoryCategories))
+        m_categoryCombobox->addCheckableItem(repository.displayname(), repository.tooltip(), repository.isEnabled());
 
-    vLayout->addWidget(m_categoryGroupBox);
-    vLayout->addStretch();
-    m_tabWidget->insertTab(1, m_categoryWidget, m_core->settings().repositoryCategoryDisplayName());
-}
-
-void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
-{
-    if (!show && !m_categoryWidget)
-        return;
-
-    if (show == m_categoryLayoutVisible)
-        return;
-
-    setupCategoryLayout();
-    if (show) {
-        m_rightSideVLayout->removeWidget(m_descriptionBaseWidget);
-        m_tabWidget->insertTab(0, m_descriptionBaseWidget, tr("Information"));
-        m_rightSideVLayout->insertWidget(0, m_tabWidget);
-    } else {
-        m_tabWidget->removeTab(0);
-        m_rightSideVLayout->removeWidget(m_tabWidget);
-        m_rightSideVLayout->insertWidget(0, m_descriptionBaseWidget);
-        m_descriptionBaseWidget->setVisible(true);
-    }
-    m_tabWidget->setVisible(show);
-    m_categoryLayoutVisible = show;
+    m_categoryCombobox->setCurrentIndex(-1);
+    connect(m_categoryCombobox, &QComboBox::currentIndexChanged, m_categoryCombobox, &CheckableComboBox::updateCheckbox);
+    connect(m_categoryCombobox, &CheckableComboBox::currentIndexesChanged,
+            this, &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 }
 
 void ComponentSelectionPagePrivate::updateTreeView()
@@ -509,12 +465,10 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 void ComponentSelectionPagePrivate::fetchRepositoryCategories()
 {
     updateWidgetVisibility(true);
-
-    QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
-    for (int i = 0; i < checkboxes.count(); i++) {
-        QCheckBox *checkbox = checkboxes.at(i);
-        m_core->enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
-    }
+    for (const QString &category : m_categoryCombobox->checkedItems())
+        m_core->enableRepositoryCategory(category, true);
+    for (const QString &category : m_categoryCombobox->uncheckedItems())
+        m_core->enableRepositoryCategory(category, false);
 
     if (!m_core->fetchRemotePackagesTree()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),

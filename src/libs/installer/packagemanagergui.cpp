@@ -2230,7 +2230,8 @@ void ComponentSelectionPage::entering()
     d->onModelStateChanged(d->m_currentModel->checkedState());
 
     setModified(isComplete());
-    d->showCategoryLayout(core->showRepositoryCategories());
+    if (core->showRepositoryCategories())
+        d->showRepositoryCategories();
     d->showCompressedRepositoryButton();
     d->showCreateOfflineInstallerButton(true);
 
