@@ -56,6 +56,7 @@ class PackageManagerCore;
 class ComponentModel;
 class ComponentSelectionPage;
 class CheckableComboBox;
+class ClickableLabel;
 
 class ComponentSelectionPagePrivate : public QObject
 {
@@ -79,7 +80,6 @@ public:
 
 public slots:
     void currentSelectedChanged(const QModelIndex &current);
-    void updateAllCheckStates(int which);
     void selectAll();
     void deselectAll();
     void updateWidgetVisibility(bool show);
@@ -96,7 +96,6 @@ public slots:
 private:
     void storeHeaderResizeModes();
     void restoreHeaderResizeModes();
-    void setComboBoxItemEnabled(int index, bool enabled);
     void addCategorySelection(QHBoxLayout *topHLayout);
 
 private:
@@ -108,7 +107,6 @@ private:
     QLabel *m_descriptionLabel;
     QPushButton *m_createOfflinePushButton;
     QPushButton *m_qbspPushButton;
-    QComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
@@ -126,6 +124,9 @@ private:
     QLineEdit *m_searchLineEdit;
     bool m_componentsResolved;
     CheckableComboBox* m_categoryCombobox;
+    ClickableLabel *m_selectAll;
+    ClickableLabel *m_selectNone;
+    ClickableLabel *m_reset;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;
