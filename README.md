@@ -27,3 +27,13 @@ If you think you found a bug, please report it to
 https://bugreports.qt.io/browse/QTIFW
 
 General questions are best asked on interest@qt-project.org.
+
+Contribution
+------------------------
+
+You can contribute to this project by:
+
+1. Creating a pull request (needs a fork of the project)
+2. Creating a issue on https://bugreports.qt.io/browse/QTIFW (use your Qt account to login)
+
+
