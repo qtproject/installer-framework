@@ -19,8 +19,11 @@ Building the Qt Installer Framework from sources requires at least Qt version 6.
 Supported compilers are MSVC 2019 or newer, GCC 9 or newer,
 and Clang 13.0.0 or newer. Currently, the tested combination for Windows is Qt 6.6.0 with MSVC 2019 (Windows 10).
 
-If you want to ship your installer as a single file you have to build
-Qt and the Qt Installer Framework statically.
+> [!Important]
+> If you want to ship your installer as a single file you can use a binary release of the QTIFW.
+
+> [!Note]
+> If you whant to build the Qt Installer Framework you have to build Qt and the Qt Installer Framework statically.
 
 See the Qt documentation for the prerequisites and steps to build Qt from sources.
 Please read SSL Import and Export Restrictions from http://doc.qt.io/qt-6/ssl.html if
