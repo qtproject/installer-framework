@@ -73,6 +73,7 @@ public:
     void hideCompressedRepositoryButton();
     void showCreateOfflineInstallerButton(bool show);
     void showRepositoryCategories();
+    void setAdvancedTitleVisibility();
     void updateTreeView();
     void expandDefault();
     void expandSearchResults();
@@ -127,6 +128,7 @@ private:
     ClickableLabel *m_selectAll;
     ClickableLabel *m_selectNone;
     ClickableLabel *m_reset;
+    QLabel *m_advancedTitle;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;

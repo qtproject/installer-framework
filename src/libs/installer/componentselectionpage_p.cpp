@@ -82,14 +82,14 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
     m_treeView->setUniformRowHeights(true);
 
-    m_descriptionBaseWidget = new QWidget(q);
-    m_descriptionBaseWidget->setObjectName(QLatin1String("DescriptionBaseWidget"));
-
-    QVBoxLayout *descriptionVLayout = new QVBoxLayout(m_descriptionBaseWidget);
-    descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
-    descriptionVLayout->setContentsMargins(0, 0, 0, 0);
+    QFont captionFont = m_treeView->font();
+    captionFont.setPixelSize(16);
 
     m_rightSideVLayout = new QVBoxLayout;
+
+    QLabel *detailsLabel = new QLabel(tr("Details"));
+    detailsLabel->setFont(captionFont);
+    m_rightSideVLayout->addWidget(detailsLabel);
 
     QScrollArea *descriptionScrollArea = new QScrollArea(q);
     descriptionScrollArea->setWidgetResizable(true);
@@ -103,12 +103,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
     m_descriptionLabel->setAlignment(Qt::AlignTop);
     descriptionScrollArea->setWidget(m_descriptionLabel);
-    descriptionVLayout->addWidget(descriptionScrollArea);
+    m_rightSideVLayout->addWidget(descriptionScrollArea);
 
-    m_sizeLabel = new QLabel(m_descriptionBaseWidget);
-    m_sizeLabel->setWordWrap(true);
-    m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-    descriptionVLayout->addWidget(m_sizeLabel);
+    m_advancedTitle = new QLabel(tr("Advanced"), q);
+    m_advancedTitle->setFont(captionFont);
+    m_advancedTitle->setVisible(false);
 
     m_createOfflinePushButton = new QPushButton(q);
     m_createOfflinePushButton->setVisible(false);
@@ -132,7 +131,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_qbspPushButton, &QPushButton::clicked,
             this, &ComponentSelectionPagePrivate::qbspButtonClicked);
 
-    m_rightSideVLayout->addWidget(m_descriptionBaseWidget);
+    m_rightSideVLayout->addWidget(m_advancedTitle);
     m_rightSideVLayout->addWidget(m_createOfflinePushButton);
     m_rightSideVLayout->addWidget(m_qbspPushButton);
 
@@ -241,11 +240,13 @@ void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 {
     if (m_core->allowCompressedRepositoryInstall())
         m_qbspPushButton->setVisible(true);
+    setAdvancedTitleVisibility();
 }
 
 void ComponentSelectionPagePrivate::hideCompressedRepositoryButton()
 {
     m_qbspPushButton->setVisible(false);
+    setAdvancedTitleVisibility();
 }
 
 void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
@@ -254,6 +255,7 @@ void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
         m_createOfflinePushButton->setVisible(m_core->isInstaller() && !m_core->isOfflineOnly());
     else
         m_createOfflinePushButton->setVisible(false);
+    setAdvancedTitleVisibility();
 }
 
 void ComponentSelectionPagePrivate::showRepositoryCategories()
@@ -272,6 +274,14 @@ void ComponentSelectionPagePrivate::showRepositoryCategories()
     connect(m_categoryCombobox, &QComboBox::currentIndexChanged, m_categoryCombobox, &CheckableComboBox::updateCheckbox);
     connect(m_categoryCombobox, &CheckableComboBox::currentIndexesChanged,
             this, &ComponentSelectionPagePrivate::fetchRepositoryCategories);
+}
+
+void ComponentSelectionPagePrivate::setAdvancedTitleVisibility()
+{
+    if (m_createOfflinePushButton->isVisible() || m_qbspPushButton->isVisible())
+        m_advancedTitle->setVisible(true);
+    else
+        m_advancedTitle->setVisible(false);
 }
 
 void ComponentSelectionPagePrivate::updateTreeView()
@@ -384,22 +394,10 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
     if (!current.isValid())
         return;
 
-    m_sizeLabel->setText(QString());
-
     QString description = m_proxyModel->data(m_proxyModel->index(current.row(),
         ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
 
     m_descriptionLabel->setText(description);
-
-    Component *component = m_currentModel->componentFromIndex(m_proxyModel->mapToSource(current));
-    if ((m_core->isUninstaller()) || (!component))
-        return;
-
-    if (component->isSelected() && (component->value(scUncompressedSizeSum).toLongLong() > 0)) {
-        m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
-            "will occupy approximately %1 on your hard disk drive.")
-            .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
-    }
 }
 
 void ComponentSelectionPagePrivate::selectAll()
@@ -420,6 +418,7 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
         m_stackedLayout->setCurrentIndex(0);
 
     m_qbspPushButton->setEnabled(!show);
+    setAdvancedTitleVisibility();
 
     if (show) {
         q->gui()->button(QWizard::NextButton)->setEnabled(false);
