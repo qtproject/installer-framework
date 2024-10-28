@@ -33,32 +33,49 @@ you are statically linking against OpenSSL libraries.
 
 Recommended configuration options for Microsoft Windows:
 
+```shell
 configure -prefix %CD%\qtbase -release -static -static-runtime -accessibility -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests
+```
+
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
+```
+
 ### Linux
 
 Recommended configuration options for Linux:
 
+```shell
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev -bundled-xcb-xinput -qt-harfbuzz -qt-doubleconversion
+```
 
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
+```
+
 ### macOS
 
 Recommended configuration options for macOS:
 
+```shell
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
+```
 
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
-
+```
 
 Third party dependencies
----------------------
+------------------------
 
 The Qt Installer Framework sources contain a redistribution of parts of the
 libarchive compression and archive library, which requires you to link against
