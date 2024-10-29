@@ -116,6 +116,8 @@ void PerformInstallationForm::setupUi(QWidget *widget)
 {
     QVBoxLayout *baseLayout = new QVBoxLayout(widget);
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
+    if (m_core->settings().wizardShowPageList())
+        baseLayout->setContentsMargins(QMargins(0, -1, -1, -1));
 
     QVBoxLayout *topLayout = new QVBoxLayout();
     topLayout->setObjectName(QLatin1String("TopLayout"));

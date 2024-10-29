@@ -1517,6 +1517,8 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     setObjectName(QLatin1String("IntroductionPage"));
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout->setContentsMargins(QMargins(0, -1, -1, -1));
     setLayout(layout);
 
     m_msgLabel = new QLabel(this);
@@ -2075,6 +2077,9 @@ LicenseAgreementPage::LicenseAgreementPage(PackageManagerCore *core)
     gridLayout->setColumnStretch(1, 1);
     gridLayout->addWidget(m_acceptCheckBox, 0, 0);
     gridLayout->addWidget(m_acceptLabel, 0, 1);
+
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout->setContentsMargins(QMargins(0, -1, -1, -1));
     layout->addLayout(gridLayout);
 
     connect(m_acceptCheckBox, &QAbstractButton::toggled, this, &QWizardPage::completeChanged);
@@ -2184,6 +2189,8 @@ ComponentSelectionPage::ComponentSelectionPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("ComponentSelectionPage"));
     setColoredTitle(tr("Select Components"));
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout()->setContentsMargins(QMargins(0, -1, -1, -1));
 }
 
 /*!
@@ -2438,6 +2445,8 @@ TargetDirectoryPage::TargetDirectoryPage(PackageManagerCore *core)
     m_warningLabel->setObjectName(QLatin1String("WarningLabel"));
     layout->addWidget(m_warningLabel);
 
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout->setContentsMargins(QMargins(0, -1, -1, -1));
     setLayout(layout);
 }
 
@@ -2581,6 +2590,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     layout->addWidget(m_lineEdit);
     layout->addWidget(m_listWidget);
 
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout->setContentsMargins(QMargins(0, -1, -1, -1));
     setLayout(layout);
 
     connect(m_listWidget, &QListWidget::currentItemChanged, this,
@@ -2667,6 +2678,9 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     baseLayout->addLayout(bottomLayout);
 
     setCommitPage(true);
+
+    if (packageManagerCore()->settings().wizardShowPageList())
+        baseLayout->setContentsMargins(QMargins(0, -1, -1, -1));
     setLayout(baseLayout);
 
     connect(core, &PackageManagerCore::installerBinaryMarkerChanged,
@@ -3024,6 +3038,8 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_msgLabel);
     layout->addWidget(m_runItCheckBox);
+    if (packageManagerCore()->settings().wizardShowPageList())
+        layout->setContentsMargins(QMargins(0, -1, -1, -1));
     setLayout(layout);
 
     setCommitPage(true);
