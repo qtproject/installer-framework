@@ -37,6 +37,7 @@
 #include "messageboxhandler.h"
 #include "checkablecombobox.h"
 #include "clickablelabel.h"
+#include "sysinfo.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -62,6 +63,8 @@ namespace QInstaller {
     \class QInstaller::ComponentSelectionPagePrivate
     \internal
 */
+
+const QLatin1String SPACE_ITEM("|");
 
 ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core)
         : q(qq)
@@ -144,14 +147,14 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_selectAll->setToolTip(tr("Select all components in the tree view."));
     m_topHLayout->addWidget(m_selectAll);
 
-    QLabel *spaceMark = new QLabel(QLatin1String("|"));
+    QLabel *spaceMark = new QLabel(SPACE_ITEM);
     m_topHLayout->addWidget(spaceMark);
 
     m_selectNone = new ClickableLabel(tr("None"), QLatin1String("SelectNone"));
     m_selectNone->setToolTip(tr("Deselect all components in the tree view."));
     m_topHLayout->addWidget(m_selectNone);
 
-    QLabel *spaceMark2 = new QLabel(QLatin1String("|"));
+    QLabel *spaceMark2 = new QLabel(SPACE_ITEM);
     m_topHLayout->addWidget(spaceMark2);
 
     if (m_core->isInstaller()) {
@@ -194,6 +197,17 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
+
+    QHBoxLayout *spaceLabelLayout = new QHBoxLayout;
+    m_sizeRequiredLabel = new QLabel(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
+
+    const KDUpdater::VolumeInfo targetVolume = KDUpdater::VolumeInfo::fromPath(m_core->value(scTargetDir));
+    QLabel *sizeAvailableLabel = new QLabel(tr("Space available: %1").arg(humanReadableSize(targetVolume.availableSize())));
+    spaceLabelLayout->addWidget(m_sizeRequiredLabel);
+    spaceLabelLayout->addWidget(new QLabel(SPACE_ITEM));
+    spaceLabelLayout->addWidget(sizeAvailableLabel);
+    spaceLabelLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    treeViewVLayout->addLayout(spaceLabelLayout);
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
@@ -398,6 +412,7 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
         ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
 
     m_descriptionLabel->setText(description);
+    m_sizeRequiredLabel->setText(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
 }
 
 void ComponentSelectionPagePrivate::selectAll()

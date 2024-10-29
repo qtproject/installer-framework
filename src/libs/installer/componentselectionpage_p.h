@@ -129,6 +129,7 @@ private:
     ClickableLabel *m_selectNone;
     ClickableLabel *m_reset;
     QLabel *m_advancedTitle;
+    QLabel *m_sizeRequiredLabel;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;
