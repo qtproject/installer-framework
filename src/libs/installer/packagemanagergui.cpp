@@ -3028,6 +3028,7 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
+    m_msgLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
 
     m_runItCheckBox = new QCheckBox(this);
     m_runItCheckBox->setObjectName(QLatin1String("RunItCheckBox"));
@@ -3049,16 +3050,6 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 */
 void FinishedPage::entering()
 {
-    QString finishedText = tr("%1 has now been installed on your computer.").arg(productName());
-    finishedText.append(QLatin1String("\n\n"));
-    finishedText.append(tr("You will find your installation in this location on your computer:"));
-    finishedText.append(QLatin1String("\n"));
-    finishedText.append(packageManagerCore()->value(scTargetDir));
-    finishedText.append(QLatin1String("\n\n"));
-    finishedText.append(tr("Click %1 to close the %2 Setup.")
-        .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')), productName()));
-
-    m_msgLabel->setText(finishedText);
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
         m_commitButton = nullptr;
@@ -3102,24 +3093,47 @@ void FinishedPage::entering()
         connect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
     }
 
+    QString finishedText;
+    finishedText.append(QLatin1String("\n\n"));
+    finishedText.append(tr("Click %1 to close the %2 Setup.")
+                            .arg(gui()->defaultButtonText(QWizard::FinishButton).remove(QLatin1Char('&')), productName()));
     if (packageManagerCore()->status() == PackageManagerCore::Success
             || packageManagerCore()->status() == PackageManagerCore::EssentialUpdated) {
-        const QString finishedText = packageManagerCore()->value(QLatin1String("FinishedText"));
-        if (!finishedText.isEmpty())
-            m_msgLabel->setText(finishedText);
 
-        if (!packageManagerCore()->isUninstaller() && !packageManagerCore()->value(scRunProgram)
-            .isEmpty()) {
-                m_runItCheckBox->show();
-                m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription,
-                    tr("Run %1 now.")).arg(productName()));
+        if (packageManagerCore()->containsValue(QLatin1String("FinishedText"))) {
+            finishedText = packageManagerCore()->value(QLatin1String("FinishedText"));
+        } else {
+            if (!packageManagerCore()->isUninstaller()) {
+                finishedText.prepend(packageManagerCore()->value(scTargetDir));
+                finishedText.prepend(QLatin1String("\n"));
+                finishedText.prepend(tr("You will find your installation in this location on your computer:"));
+                finishedText.prepend(QLatin1String("\n\n"));
+            }
+            if (packageManagerCore()->isUninstaller())
+                finishedText.prepend(tr("%1 has now been uninstalled from your computer.").arg(productName()));
+            else if (packageManagerCore()->isUpdater())
+                finishedText.prepend(tr("%1 has now been updated on your computer.").arg(productName()));
+            else if (packageManagerCore()->isOfflineGenerator())
+                finishedText.prepend(tr("Offline installer has now been generated."));
+            else
+                finishedText.prepend(tr("%1 has now been installed on your computer.").arg(productName()));
+        }
+        if (!packageManagerCore()->isUninstaller()
+                && !packageManagerCore()->value(scRunProgram).isEmpty()) {
+            m_runItCheckBox->show();
+            m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription,
+                tr("Run %1 now.")).arg(productName()));
+            m_msgLabel->setText(finishedText);
             return; // job done
         }
     } else {
         // TODO: how to handle this using the config.xml
-        setColoredTitle(tr("The %1 Setup failed.").arg(productName()));
+        finishedText.prepend(tr("%1 installation was not complete or was interrupted by some reason.").arg(productName()));
+        setColoredTitle(tr("%1 installation was unsuccessful.").arg(productName()));
+        setColoredSubTitle(QString());
+        setPageListTitle(tr("Finished"));
     }
-
+    m_msgLabel->setText(finishedText);
     m_runItCheckBox->hide();
     m_runItCheckBox->setChecked(false);
 }
