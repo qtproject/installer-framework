@@ -35,7 +35,7 @@
 #include "component.h"
 #include "fileutils.h"
 #include "messageboxhandler.h"
-#include "checkablecombobox.h"
+#include "categorycombobox.h"
 #include "clickablelabel.h"
 #include "sysinfo.h"
 
@@ -278,7 +278,7 @@ void ComponentSelectionPagePrivate::showRepositoryCategories()
 {
     if (m_categoryCombobox)
         return;
-    m_categoryCombobox = new CheckableComboBox(tr("Show"));
+    m_categoryCombobox = new CategoryComboBox(tr("Show"));
     m_topHLayout->addWidget(m_categoryCombobox);
     m_categoryCombobox->setObjectName(QLatin1String("CategoryGroupBox"));
 

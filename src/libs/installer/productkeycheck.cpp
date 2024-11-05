@@ -133,3 +133,9 @@ QString ProductKeyCheck::additionalMetaDownloadWarning() const
 {
     return QString();
 }
+
+QString ProductKeyCheck::additionalAcceptanceForCategory(const QStandardItem *item) const
+{
+    Q_UNUSED(item)
+    return QString();
+}

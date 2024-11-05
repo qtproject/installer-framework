@@ -33,6 +33,7 @@
 
 #include <QString>
 #include <QUiLoader>
+#include <QStandardItem>
 
 namespace QInstaller {
 
@@ -74,6 +75,7 @@ public:
     QString licenseAcceptanceText() const;
     QString securityWarning() const;
     QString additionalMetaDownloadWarning() const;
+    QString additionalAcceptanceForCategory(const QStandardItem *item) const;
 
 private:
     ProductKeyCheck();

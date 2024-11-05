@@ -27,6 +27,8 @@
 **************************************************************************/
 
 #include "checkablecombobox.h"
+#include "productkeycheck.h"
+#include "messageboxhandler.h"
 
 #include <QStandardItem>
 #include <QApplication>
@@ -117,7 +119,7 @@ void CheckableComboBox::showPopup()
 
 void CheckableComboBox::updateCheckbox(int index)
 {
-    if (index!= -1) {
+    if (index != -1) {
         QStandardItemModel *comboModel=qobject_cast<QStandardItemModel*>(model());
         if (comboModel->item(index)->checkState() == Qt::Checked)
             comboModel->item(index)->setCheckState(Qt::Unchecked);

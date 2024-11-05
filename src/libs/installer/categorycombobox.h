@@ -26,35 +26,23 @@
 **
 **************************************************************************/
 
-#ifndef CHECKABLECOMBOBOX_H
-#define CHECKABLECOMBOBOX_H
+#ifndef CATEGORYCOMBOBOX_H
+#define CATEGORYCOMBOBOX_H
 
-#include <QComboBox>
+#include "checkablecombobox.h"
 
 namespace QInstaller {
 
-class CheckableComboBox : public QComboBox
+class CategoryComboBox : public CheckableComboBox
 {
     Q_OBJECT
 public:
-    CheckableComboBox(const QString &placeholderText, QWidget *parent = nullptr);
-
-public:
-    void addCheckableItem(const QString &text, const QString &tooltip, bool isChecked);
-    Q_INVOKABLE QStringList checkedItems() const;
-    Q_INVOKABLE QStringList uncheckedItems() const;
-
-Q_SIGNALS:
-    void currentIndexesChanged();
+    CategoryComboBox(const QString &placeholderText, QWidget *parent = nullptr);
 
 public Q_SLOTS:
-    virtual void updateCheckbox(int index);
-
-protected:
-    void hidePopup() override;
-    void showPopup() override;
+    virtual void updateCheckbox(int index) override;
 };
 
 }   // namespace QInstaller
 
-#endif // CHECKABLECOMBOBOX_H
+#endif // CATEGORYCOMBOBOX_H

@@ -55,7 +55,7 @@ namespace QInstaller {
 class PackageManagerCore;
 class ComponentModel;
 class ComponentSelectionPage;
-class CheckableComboBox;
+class CategoryComboBox;
 class ClickableLabel;
 
 class ComponentSelectionPagePrivate : public QObject
@@ -124,7 +124,7 @@ private:
     ComponentSortFilterProxyModel *m_proxyModel;
     QLineEdit *m_searchLineEdit;
     bool m_componentsResolved;
-    CheckableComboBox* m_categoryCombobox;
+    CategoryComboBox* m_categoryCombobox;
     ClickableLabel *m_selectAll;
     ClickableLabel *m_selectNone;
     ClickableLabel *m_reset;
