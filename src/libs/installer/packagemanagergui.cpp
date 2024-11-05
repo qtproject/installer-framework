@@ -2568,6 +2568,11 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     setColoredTitle(tr("Choose a Start Menu folder"));
     setColoredSubTitle(tr("Choose a Start Menu folder for the application shortcuts"));
 
+    QLabel *infoLabel = new QLabel(this);
+    infoLabel->setWordWrap(true);
+    infoLabel->setText(tr("Select the Start Menu folder in which you would like to create the "
+        "program’s shortcuts. You can also enter a name to create a new directory"));
+
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setText(core->value(scStartMenuDir, productName()));
     m_lineEdit->setObjectName(QLatin1String("StartMenuPathLineEdit"));
@@ -2585,6 +2590,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
         new QListWidgetItem(dir, m_listWidget);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(infoLabel);
     layout->addWidget(m_lineEdit);
     layout->addWidget(m_listWidget);
 
