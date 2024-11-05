@@ -113,6 +113,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_advancedTitle->setVisible(false);
 
     m_createOfflinePushButton = new QPushButton(q);
+    m_createOfflinePushButton->setObjectName("CreateOfflineInstallerButton");
     m_createOfflinePushButton->setVisible(false);
     m_createOfflinePushButton->setText(ComponentSelectionPage::tr("Create Offline Installer"));
     m_createOfflinePushButton->setToolTip(
@@ -125,6 +126,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
             this, [&]() { m_createOfflinePushButton->setEnabled(q->isComplete()); });
 
     m_qbspPushButton = new QPushButton(q);
+    m_qbspPushButton->setObjectName("BrowseQbspButton");
     m_qbspPushButton->setVisible(false);
     m_qbspPushButton->setText(ComponentSelectionPage::tr("Browse &QBSP files"));
     m_qbspPushButton->setToolTip(
