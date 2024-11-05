@@ -2155,12 +2155,10 @@ void LicenseAgreementPage::updateUi()
     QString subTitleText;
     QString acceptButtonText;
     if (m_licenseListWidget->count() == 1) {
-        subTitleText = tr("Please read the following license agreement. You must accept the terms "
-                          "contained in this agreement before continuing with the installation.");
+        subTitleText = tr("Read and agree to the license for the components which will be installed");
         acceptButtonText = tr("I accept the license.");
     } else {
-        subTitleText = tr("Please read the following license agreements. You must accept the terms "
-                          "contained in these agreements before continuing with the installation.");
+        subTitleText = tr("Read and agree to the licenses for the components which will be installed");
         acceptButtonText = tr("I accept the licenses.");
     }
     m_licenseListWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
@@ -2567,9 +2565,8 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
 {
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
-    setColoredTitle(tr("Start Menu shortcuts"));
-    setColoredSubTitle(tr("Select the Start Menu in which you would like to create the program's "
-        "shortcuts. You can also enter a name to create a new directory."));
+    setColoredTitle(tr("Choose a Start Menu folder"));
+    setColoredSubTitle(tr("Choose a Start Menu folder for the application shortcuts"));
 
     m_lineEdit = new QLineEdit(this);
     m_lineEdit->setText(core->value(scStartMenuDir, productName()));
@@ -2883,21 +2880,25 @@ void PerformInstallationPage::entering()
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Uninstalling %1").arg(productName()));
+        setColoredSubTitle(tr("Please wait while your selected setup is being uninstalled"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isMaintainer()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
         setColoredTitle(tr("Updating components of %1").arg(productName()));
+        setColoredSubTitle(tr("Please wait while your selected setup is being updated"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else if (packageManagerCore()->isOfflineGenerator()) {
         setButtonText(QWizard::CommitButton, tr("&Create Offline Installer"));
+        setColoredSubTitle(tr("Please wait while your Offline Installer is being created"));
         setColoredTitle(tr("Creating Offline Installer for %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runOfflineGenerator()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Installing %1").arg(productName()));
+        setColoredSubTitle(tr("Please wait while your selected setup is being installed"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
