@@ -41,8 +41,8 @@ public:
 
 public:
     void addCheckableItem(const QString &text, const QString &tooltip, bool isChecked);
-    QStringList checkedItems() const;
-    QStringList uncheckedItems() const;
+    Q_INVOKABLE QStringList checkedItems() const;
+    Q_INVOKABLE QStringList uncheckedItems() const;
 
 Q_SIGNALS:
     void currentIndexesChanged();
