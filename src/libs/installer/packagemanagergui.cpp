@@ -2659,27 +2659,17 @@ ReadyForInstallationPage::ReadyForInstallationPage(PackageManagerCore *core)
     QVBoxLayout *baseLayout = new QVBoxLayout();
     baseLayout->setObjectName(QLatin1String("BaseLayout"));
 
-    QVBoxLayout *topLayout = new QVBoxLayout();
-    topLayout->setObjectName(QLatin1String("TopLayout"));
-
     m_msgLabel->setWordWrap(true);
     m_msgLabel->setObjectName(QLatin1String("MessageLabel"));
     m_msgLabel->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    topLayout->addWidget(m_msgLabel);
-    baseLayout->addLayout(topLayout);
-
-    QVBoxLayout *bottomLayout = new QVBoxLayout();
-    bottomLayout->setObjectName(QLatin1String("BottomLayout"));
-    bottomLayout->addStretch();
+    baseLayout->addWidget(m_msgLabel);
 
     m_taskDetailsBrowser = new QTextBrowser(this);
     m_taskDetailsBrowser->setReadOnly(true);
     m_taskDetailsBrowser->setObjectName(QLatin1String("TaskDetailsBrowser"));
     m_taskDetailsBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_taskDetailsBrowser->setVisible(false);
-    bottomLayout->addWidget(m_taskDetailsBrowser);
-    bottomLayout->setStretch(1, 10);
-    baseLayout->addLayout(bottomLayout);
+    baseLayout->addWidget(m_taskDetailsBrowser, 1);
 
     setCommitPage(true);
 
