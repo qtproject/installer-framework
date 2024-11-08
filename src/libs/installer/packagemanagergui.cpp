@@ -393,7 +393,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         m_pageListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
         QVBoxLayout *sideWidgetLayout = new QVBoxLayout(sideWidget);
-
+        sideWidgetLayout->setContentsMargins(0, 0, 0, 0);
         QString pageListPixmap = m_core->settings().pageListPixmap();
         if (!pageListPixmap.isEmpty()) {
             QInstaller::replaceHighDpiImage(pageListPixmap);

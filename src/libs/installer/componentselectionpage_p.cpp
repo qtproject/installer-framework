@@ -213,13 +213,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
-    {
-        int left = 0;
-        int top = 0;
-        int bottom = 0;
-        m_mainGLayout->getContentsMargins(&left, &top, nullptr, &bottom);
-        m_mainGLayout->setContentsMargins(left, top, 0, bottom);
-    }
+    m_mainGLayout->setSpacing(10);
     m_mainGLayout->addLayout(m_topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
     m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
