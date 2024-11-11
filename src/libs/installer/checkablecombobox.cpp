@@ -40,7 +40,7 @@ CheckableComboBox::CheckableComboBox(const QString &placeholderText, QWidget *pa
     : QComboBox(parent)
 {
     //Workaround for showing the checkboxes in Linux
-#ifdef Q_OS_LINUX
+#ifndef Q_OS_WINDOWS
     setView(new QListView);
 #endif
     setPlaceholderText(placeholderText);
