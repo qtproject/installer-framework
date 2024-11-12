@@ -80,6 +80,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_proxyModel(m_core->componentSortFilterProxyModel())
         , m_componentsResolved(false)
         , m_categoryCombobox(nullptr)
+        , m_searchAction(nullptr)
         , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
@@ -188,6 +189,11 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     metaLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_searchLineEdit = new QLineEdit(q);
+    m_searchAction = new QAction(this);
+    QString searchImageStr = QLatin1String(":/search.png");
+    QInstaller::replaceHighDpiImage(searchImageStr);
+    m_searchAction->setIcon(QIcon(searchImageStr));
+    m_searchLineEdit->addAction(m_searchAction, QLineEdit::TrailingPosition);
     m_searchLineEdit->setObjectName(QLatin1String("SearchLineEdit"));
     m_searchLineEdit->setPlaceholderText(ComponentSelectionPage::tr("Search"));
     m_searchLineEdit->setClearButtonEnabled(true);
@@ -564,6 +570,10 @@ void ComponentSelectionPagePrivate::setSearchPattern(const QString &text)
     } else {
         expandSearchResults();
     }
+    if (!text.isEmpty())
+        m_searchLineEdit->removeAction(m_searchAction);
+    else
+        m_searchLineEdit->addAction(m_searchAction, QLineEdit::TrailingPosition);
 }
 
 /*!

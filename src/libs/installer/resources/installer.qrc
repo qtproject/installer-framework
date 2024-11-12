@@ -7,6 +7,8 @@
         <file>uninstall.png</file>
         <file>keepinstalled.png</file>
         <file>keepuninstalled.png</file>
+        <file>search.png</file>
+        <file>search@2x.png</file>
         <file>qt/etc/qt.conf</file>
     </qresource>
 </RCC>
