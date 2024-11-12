@@ -38,6 +38,7 @@
 #include "categorycombobox.h"
 #include "clickablelabel.h"
 #include "sysinfo.h"
+#include "horizontalruler.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -215,6 +216,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     spaceLabelLayout->addWidget(new QLabel(SPACE_ITEM));
     spaceLabelLayout->addWidget(sizeAvailableLabel);
     spaceLabelLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    treeViewVLayout->addWidget(new HorizontalRuler());
     treeViewVLayout->addLayout(spaceLabelLayout);
 
     QWidget *mainStackedWidget = new QWidget();

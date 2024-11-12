@@ -149,7 +149,8 @@ HEADERS += packagemanagercore.h \
     operationtracer.h \
     checkablecombobox.h \
     clickablelabel.h \
-    categorycombobox.h
+    categorycombobox.h \
+    horizontalruler.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -241,7 +242,8 @@ SOURCES += packagemanagercore.cpp \
     commandlineparser.cpp \
     checkablecombobox.cpp \
     clickablelabel.cpp \
-    categorycombobox.cpp
+    categorycombobox.cpp \
+    horizontalruler.cpp
 
 macos:SOURCES += fileutils_mac.mm
 
