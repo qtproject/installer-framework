@@ -39,6 +39,7 @@
 #include "clickablelabel.h"
 #include "sysinfo.h"
 #include "horizontalruler.h"
+#include "spacewidget.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -83,6 +84,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_categoryCombobox(nullptr)
         , m_searchAction(nullptr)
         , m_headerStretchLastSection(false)
+        , m_spaceWidget(nullptr)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
     m_treeView->setUniformRowHeights(true);
@@ -207,17 +209,9 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
 
-    QHBoxLayout *spaceLabelLayout = new QHBoxLayout;
-    m_sizeRequiredLabel = new QLabel(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
-
-    const KDUpdater::VolumeInfo targetVolume = KDUpdater::VolumeInfo::fromPath(m_core->value(scTargetDir));
-    QLabel *sizeAvailableLabel = new QLabel(tr("Space available: %1").arg(humanReadableSize(targetVolume.availableSize())));
-    spaceLabelLayout->addWidget(m_sizeRequiredLabel);
-    spaceLabelLayout->addWidget(new QLabel(SPACE_ITEM));
-    spaceLabelLayout->addWidget(sizeAvailableLabel);
-    spaceLabelLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum));
     treeViewVLayout->addWidget(new HorizontalRuler());
-    treeViewVLayout->addLayout(spaceLabelLayout);
+    m_spaceWidget = new SpaceWidget(m_core);
+    treeViewVLayout->addWidget(m_spaceWidget);
 
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
@@ -416,7 +410,8 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
         ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
 
     m_descriptionLabel->setText(description);
-    m_sizeRequiredLabel->setText(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
+    if (m_spaceWidget)
+        m_spaceWidget->updateSpaceRequiredText();
 }
 
 void ComponentSelectionPagePrivate::selectAll()

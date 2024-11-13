@@ -462,6 +462,7 @@ Q_SIGNALS:
     void installerBinaryMarkerChanged(qint64 magicMarker);
     void componentsRecalculated();
     void guiElementsReady();
+    void installDirectoryChanged(const QString &newDirectory);
 
 private:
     struct Data {

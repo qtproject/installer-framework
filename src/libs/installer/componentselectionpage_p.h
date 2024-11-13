@@ -57,6 +57,7 @@ class ComponentModel;
 class ComponentSelectionPage;
 class CategoryComboBox;
 class ClickableLabel;
+class SpaceWidget;
 
 class ComponentSelectionPagePrivate : public QObject
 {
@@ -129,7 +130,7 @@ private:
     ClickableLabel *m_selectNone;
     ClickableLabel *m_reset;
     QLabel *m_advancedTitle;
-    QLabel *m_sizeRequiredLabel;
+    SpaceWidget *m_spaceWidget;
     QAction *m_searchAction;
 
     bool m_headerStretchLastSection;

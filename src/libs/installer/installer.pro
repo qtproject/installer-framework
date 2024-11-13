@@ -150,7 +150,8 @@ HEADERS += packagemanagercore.h \
     checkablecombobox.h \
     clickablelabel.h \
     categorycombobox.h \
-    horizontalruler.h
+    horizontalruler.h \
+    spacewidget.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -243,7 +244,8 @@ SOURCES += packagemanagercore.cpp \
     checkablecombobox.cpp \
     clickablelabel.cpp \
     categorycombobox.cpp \
-    horizontalruler.cpp
+    horizontalruler.cpp \
+    spacewidget.cpp
 
 macos:SOURCES += fileutils_mac.mm
 

@@ -2544,8 +2544,13 @@ void TargetDirectoryPage::dirRequested()
 */
 bool TargetDirectoryPage::isComplete() const
 {
-    m_warningLabel->setText(packageManagerCore()->targetDirWarning(targetDir()));
-    return m_warningLabel->text().isEmpty();
+    const QString warning = packageManagerCore()->targetDirWarning(targetDir());
+    if (warning.isEmpty()) {
+        // Inform possible mount change
+        emit packageManagerCore()->installDirectoryChanged(targetDir());
+    }
+    m_warningLabel->setText(warning);
+    return warning.isEmpty();
 }
 
 // -- StartMenuDirectoryPage

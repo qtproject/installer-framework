@@ -288,6 +288,12 @@
 */
 
 /*!
+    \qmlsignal installer::installDirectoryChanged(string newDirectory)
+
+    Emitted when the installation directory is changed to \a newDirectory.
+*/
+
+/*!
     \qmlmethod void installer::selectComponent(string id)
 
     Selects the component with \a id.

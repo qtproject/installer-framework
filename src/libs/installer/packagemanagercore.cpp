@@ -448,6 +448,14 @@ using namespace QInstaller;
     Emitted after installer has finished making QWizard and common QWizard pages.
 */
 
+/*!
+    \fn QInstaller::PackageManagerCore::installDirectoryChanged(const QString &newDirectory)
+
+    Emitted when the installation directory is changed to \a newDirectory.
+
+    \sa {installer::installDirectoryChanged}{installer.installDirectoryChanged}
+*/
+
 Q_GLOBAL_STATIC(QMutex, globalModelMutex);
 static QFont *sVirtualComponentsFont = nullptr;
 Q_GLOBAL_STATIC(QMutex, globalVirtualComponentsFontMutex);
