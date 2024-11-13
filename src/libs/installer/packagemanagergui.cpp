@@ -3119,6 +3119,7 @@ void FinishedPage::entering()
                 finishedText.prepend(tr("%1 has now been installed on your computer.").arg(productName()));
         }
         if (!packageManagerCore()->isUninstaller()
+                && !packageManagerCore()->isOfflineGenerator()
                 && !packageManagerCore()->value(scRunProgram).isEmpty()) {
             m_runItCheckBox->show();
             m_runItCheckBox->setText(packageManagerCore()->value(scRunProgramDescription,
