@@ -33,7 +33,8 @@ Contribution
 
 You can contribute to this project by:
 
-1. Creating a pull request (needs a fork of the project)
-2. Creating a issue on https://bugreports.qt.io/browse/QTIFW (use your Qt account to login)
+1. Accept our Contribution Agreement (https://cla-assistant.io/qtproject/installer-framework) with your Github account.
+2. Creating a pull request (needs a fork of the project)
+3. Creating a issue on https://bugreports.qt.io/browse/QTIFW (use your Qt account to login)
 
 
