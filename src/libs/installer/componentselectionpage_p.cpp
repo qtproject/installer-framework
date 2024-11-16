@@ -35,7 +35,10 @@
 #include "component.h"
 #include "fileutils.h"
 #include "messageboxhandler.h"
-#include "customcombobox.h"
+#include "categorycombobox.h"
+#include "clickablelabel.h"
+#include "sysinfo.h"
+#include "horizontalruler.h"
 
 #include <QTreeView>
 #include <QLabel>
@@ -62,16 +65,12 @@ namespace QInstaller {
     \internal
 */
 
-constexpr int scNoCheckSelectionIndex = -1;
-constexpr int scCheckDefaultIndex = 0;
-constexpr int scCheckAllIndex = 1;
-constexpr int scUncheckAllIndex = 2;
+const QLatin1String SPACE_ITEM("|");
 
 ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionPage *qq, PackageManagerCore *core)
         : q(qq)
         , m_core(core)
         , m_treeView(new QTreeView(q))
-        , m_tabWidget(nullptr)
         , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_allowCreateOfflineInstaller(false)
@@ -81,24 +80,21 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         , m_currentModel(m_allModel)
         , m_proxyModel(m_core->componentSortFilterProxyModel())
         , m_componentsResolved(false)
+        , m_categoryCombobox(nullptr)
+        , m_searchAction(nullptr)
         , m_headerStretchLastSection(false)
 {
     m_treeView->setObjectName(QLatin1String("ComponentsTreeView"));
     m_treeView->setUniformRowHeights(true);
 
-    m_descriptionBaseWidget = new QWidget(q);
-    m_descriptionBaseWidget->setObjectName(QLatin1String("DescriptionBaseWidget"));
-
-    QVBoxLayout *descriptionVLayout = new QVBoxLayout(m_descriptionBaseWidget);
-    descriptionVLayout->setObjectName(QLatin1String("DescriptionLayout"));
-    descriptionVLayout->setContentsMargins(0, 0, 0, 0);
-
-    m_tabWidget = new QTabWidget(q);
-    m_tabWidget->setObjectName(QLatin1String("ComponentSelectionTabWidget"));
-    m_tabWidget->tabBar()->setObjectName(QLatin1String("ComponentSelectionTabBar"));
-    m_tabWidget->hide();
+    QFont captionFont = m_treeView->font();
+    captionFont.setPixelSize(16);
 
     m_rightSideVLayout = new QVBoxLayout;
+
+    QLabel *detailsLabel = new QLabel(tr("Details"));
+    detailsLabel->setFont(captionFont);
+    m_rightSideVLayout->addWidget(detailsLabel);
 
     QScrollArea *descriptionScrollArea = new QScrollArea(q);
     descriptionScrollArea->setWidgetResizable(true);
@@ -112,14 +108,14 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
     m_descriptionLabel->setAlignment(Qt::AlignTop);
     descriptionScrollArea->setWidget(m_descriptionLabel);
-    descriptionVLayout->addWidget(descriptionScrollArea);
+    m_rightSideVLayout->addWidget(descriptionScrollArea);
 
-    m_sizeLabel = new QLabel(m_descriptionBaseWidget);
-    m_sizeLabel->setWordWrap(true);
-    m_sizeLabel->setObjectName(QLatin1String("ComponentSizeLabel"));
-    descriptionVLayout->addWidget(m_sizeLabel);
+    m_advancedTitle = new QLabel(tr("Advanced"), q);
+    m_advancedTitle->setFont(captionFont);
+    m_advancedTitle->setVisible(false);
 
     m_createOfflinePushButton = new QPushButton(q);
+    m_createOfflinePushButton->setObjectName("CreateOfflineInstallerButton");
     m_createOfflinePushButton->setVisible(false);
     m_createOfflinePushButton->setText(ComponentSelectionPage::tr("Create Offline Installer"));
     m_createOfflinePushButton->setToolTip(
@@ -132,6 +128,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
             this, [&]() { m_createOfflinePushButton->setEnabled(q->isComplete()); });
 
     m_qbspPushButton = new QPushButton(q);
+    m_qbspPushButton->setObjectName("BrowseQbspButton");
     m_qbspPushButton->setVisible(false);
     m_qbspPushButton->setText(ComponentSelectionPage::tr("Browse &QBSP files"));
     m_qbspPushButton->setToolTip(
@@ -141,45 +138,45 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(m_qbspPushButton, &QPushButton::clicked,
             this, &ComponentSelectionPagePrivate::qbspButtonClicked);
 
-    m_rightSideVLayout->addWidget(m_descriptionBaseWidget);
+    m_rightSideVLayout->addWidget(m_advancedTitle);
     m_rightSideVLayout->addWidget(m_createOfflinePushButton);
     m_rightSideVLayout->addWidget(m_qbspPushButton);
 
-    QHBoxLayout *topHLayout = new QHBoxLayout;
+    m_topHLayout = new QHBoxLayout;
 
-    // Using custom combobox to workaround QTBUG-90595
-    m_checkStateComboBox = new CustomComboBox(q);
-#ifdef Q_OS_MACOS
-    QStyledItemDelegate *delegate = new QStyledItemDelegate(this);
-    m_checkStateComboBox->setItemDelegate(delegate);
-#endif
-    m_checkStateComboBox->setObjectName(QLatin1String("CheckStateComboBox"));
-    topHLayout->addWidget(m_checkStateComboBox);
+    QLabel *select = new QLabel(tr("Select"));
+    m_topHLayout->addWidget(select);
 
-    connect(m_checkStateComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &ComponentSelectionPagePrivate::updateAllCheckStates);
+    m_selectAll = new ClickableLabel(tr("All"), QLatin1String("SelectAll"));
+    m_selectAll->setToolTip(tr("Select all components in the tree view."));
+    m_topHLayout->addWidget(m_selectAll);
 
-    // Workaround invisible placeholder text
-    QPalette palette = m_checkStateComboBox->palette();
-    palette.setColor(QPalette::PlaceholderText, palette.color(QPalette::Text));
-    m_checkStateComboBox->setPalette(palette);
+    QLabel *spaceMark = new QLabel(SPACE_ITEM);
+    m_topHLayout->addWidget(spaceMark);
 
-    m_checkStateComboBox->setPlaceholderText(ComponentSelectionPage::tr("Select"));
+    m_selectNone = new ClickableLabel(tr("None"), QLatin1String("SelectNone"));
+    m_selectNone->setToolTip(tr("Deselect all components in the tree view."));
+    m_topHLayout->addWidget(m_selectNone);
+
+    QLabel *spaceMark2 = new QLabel(SPACE_ITEM);
+    m_topHLayout->addWidget(spaceMark2);
+
     if (m_core->isInstaller()) {
-        m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Default"));
-        m_checkStateComboBox->setItemData(scCheckDefaultIndex,
-            ComponentSelectionPage::tr("Select default components in the tree view."), Qt::ToolTipRole);
+        m_reset = new ClickableLabel(tr("Default"), QLatin1String("Default"));
+        m_reset->setToolTip(tr("Select default components in the tree view."));
+        m_topHLayout->addWidget(m_reset);
     } else {
-        m_checkStateComboBox->insertItem(scCheckDefaultIndex, ComponentSelectionPage::tr("Reset"));
-        m_checkStateComboBox->setItemData(scCheckDefaultIndex,
-            ComponentSelectionPage::tr("Reset all components to their original selection state in the tree view."), Qt::ToolTipRole);
+        m_reset = new ClickableLabel(tr("Reset"), QLatin1String("Reset"));
+        m_reset->setToolTip(tr("Reset all components to their original selection state in the tree view."));
+        m_topHLayout->addWidget(m_reset);
     }
-    m_checkStateComboBox->insertItem(scCheckAllIndex, ComponentSelectionPage::tr("Select All"));
-    m_checkStateComboBox->setItemData(scCheckAllIndex,
-        ComponentSelectionPage::tr("Select all components in the tree view."), Qt::ToolTipRole);
-    m_checkStateComboBox->insertItem(scUncheckAllIndex, ComponentSelectionPage::tr("Deselect All"));
-    m_checkStateComboBox->setItemData(scUncheckAllIndex,
-        ComponentSelectionPage::tr("Deselect all components in the tree view."), Qt::ToolTipRole);
+
+    connect(m_selectAll, &ClickableLabel::clicked,
+            this, &ComponentSelectionPagePrivate::selectAll);
+    connect(m_selectNone, &ClickableLabel::clicked,
+           this, &ComponentSelectionPagePrivate::deselectAll);
+    connect(m_reset, &ClickableLabel::clicked,
+            this, &ComponentSelectionPagePrivate::selectDefault);
 
     QWidget *progressStackedWidget = new QWidget();
     QVBoxLayout *metaLayout = new QVBoxLayout(progressStackedWidget);
@@ -193,28 +190,39 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     metaLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     m_searchLineEdit = new QLineEdit(q);
+    m_searchAction = new QAction(this);
+    QString searchImageStr = QLatin1String(":/search.png");
+    QInstaller::replaceHighDpiImage(searchImageStr);
+    m_searchAction->setIcon(QIcon(searchImageStr));
+    m_searchLineEdit->addAction(m_searchAction, QLineEdit::TrailingPosition);
     m_searchLineEdit->setObjectName(QLatin1String("SearchLineEdit"));
     m_searchLineEdit->setPlaceholderText(ComponentSelectionPage::tr("Search"));
     m_searchLineEdit->setClearButtonEnabled(true);
     connect(m_searchLineEdit, &QLineEdit::textChanged,
             this, &ComponentSelectionPagePrivate::setSearchPattern);
     connect(q, &ComponentSelectionPage::entered, m_searchLineEdit, &QLineEdit::clear);
-    topHLayout->addWidget(m_searchLineEdit);
+    m_topHLayout->addWidget(m_searchLineEdit);
 
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
 
+    QHBoxLayout *spaceLabelLayout = new QHBoxLayout;
+    m_sizeRequiredLabel = new QLabel(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
+
+    const KDUpdater::VolumeInfo targetVolume = KDUpdater::VolumeInfo::fromPath(m_core->value(scTargetDir));
+    QLabel *sizeAvailableLabel = new QLabel(tr("Space available: %1").arg(humanReadableSize(targetVolume.availableSize())));
+    spaceLabelLayout->addWidget(m_sizeRequiredLabel);
+    spaceLabelLayout->addWidget(new QLabel(SPACE_ITEM));
+    spaceLabelLayout->addWidget(sizeAvailableLabel);
+    spaceLabelLayout->addSpacerItem(new QSpacerItem(1, 1, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    treeViewVLayout->addWidget(new HorizontalRuler());
+    treeViewVLayout->addLayout(spaceLabelLayout);
+
     QWidget *mainStackedWidget = new QWidget();
     m_mainGLayout = new QGridLayout(mainStackedWidget);
-    {
-        int left = 0;
-        int top = 0;
-        int bottom = 0;
-        m_mainGLayout->getContentsMargins(&left, &top, nullptr, &bottom);
-        m_mainGLayout->setContentsMargins(left, top, 0, bottom);
-    }
-    m_mainGLayout->addLayout(topHLayout, 0, 0);
+    m_mainGLayout->setSpacing(10);
+    m_mainGLayout->addLayout(m_topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
     m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
     m_mainGLayout->setColumnStretch(0, 3);
@@ -250,11 +258,13 @@ void ComponentSelectionPagePrivate::showCompressedRepositoryButton()
 {
     if (m_core->allowCompressedRepositoryInstall())
         m_qbspPushButton->setVisible(true);
+    setAdvancedTitleVisibility();
 }
 
 void ComponentSelectionPagePrivate::hideCompressedRepositoryButton()
 {
     m_qbspPushButton->setVisible(false);
+    setAdvancedTitleVisibility();
 }
 
 void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
@@ -263,68 +273,38 @@ void ComponentSelectionPagePrivate::showCreateOfflineInstallerButton(bool show)
         m_createOfflinePushButton->setVisible(m_core->isInstaller() && !m_core->isOfflineOnly());
     else
         m_createOfflinePushButton->setVisible(false);
+    setAdvancedTitleVisibility();
 }
 
-void ComponentSelectionPagePrivate::setupCategoryLayout()
+void ComponentSelectionPagePrivate::showRepositoryCategories()
 {
-    if (m_categoryWidget)
+    if (m_categoryCombobox)
         return;
-    m_categoryWidget = new QWidget();
-    QVBoxLayout *vLayout = new QVBoxLayout;
-    vLayout->setContentsMargins(0, 0, 0, 0);
-    m_categoryWidget->setLayout(vLayout);
-    m_categoryGroupBox = new QGroupBox(q);
-    m_categoryGroupBox->setObjectName(QLatin1String("CategoryGroupBox"));
-    QVBoxLayout *categoryLayout = new QVBoxLayout(m_categoryGroupBox);
-    QPushButton *fetchCategoryButton = new QPushButton(tr("Filter"));
-    fetchCategoryButton->setObjectName(QLatin1String("FetchCategoryButton"));
-    fetchCategoryButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    fetchCategoryButton->setToolTip(
-        ComponentSelectionPage::tr("Filter the enabled repository categories"));
-    connect(fetchCategoryButton, &QPushButton::clicked, this,
-            &ComponentSelectionPagePrivate::fetchRepositoryCategories);
+    m_categoryCombobox = new CategoryComboBox(tr("Show"));
+    m_topHLayout->addWidget(m_categoryCombobox);
+    m_categoryCombobox->setObjectName(QLatin1String("CategoryGroupBox"));
 
-    foreach (RepositoryCategory repository, m_core->settings().organizedRepositoryCategories()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setObjectName(repository.displayname());
-        checkBox->setChecked(repository.isEnabled());
-        checkBox->setText(repository.displayname());
-        checkBox->setToolTip(repository.tooltip());
-        categoryLayout->addWidget(checkBox);
-    }
-    categoryLayout->addWidget(fetchCategoryButton);
+    QMap<QString, RepositoryCategory> repositoryCategories = m_core->settings().organizedRepositoryCategories();
+    for (const RepositoryCategory &repository : std::as_const(repositoryCategories))
+        m_categoryCombobox->addCheckableItem(repository.displayname(), repository.tooltip(), repository.isEnabled());
 
-    vLayout->addWidget(m_categoryGroupBox);
-    vLayout->addStretch();
-    m_tabWidget->insertTab(1, m_categoryWidget, m_core->settings().repositoryCategoryDisplayName());
+    m_categoryCombobox->setCurrentIndex(-1);
+    connect(m_categoryCombobox, &QComboBox::currentIndexChanged, m_categoryCombobox, &CheckableComboBox::updateCheckbox);
+    connect(m_categoryCombobox, &CheckableComboBox::currentIndexesChanged,
+            this, &ComponentSelectionPagePrivate::fetchRepositoryCategories);
 }
 
-void ComponentSelectionPagePrivate::showCategoryLayout(bool show)
+void ComponentSelectionPagePrivate::setAdvancedTitleVisibility()
 {
-    if (!show && !m_categoryWidget)
-        return;
-
-    if (show == m_categoryLayoutVisible)
-        return;
-
-    setupCategoryLayout();
-    if (show) {
-        m_rightSideVLayout->removeWidget(m_descriptionBaseWidget);
-        m_tabWidget->insertTab(0, m_descriptionBaseWidget, tr("Information"));
-        m_rightSideVLayout->insertWidget(0, m_tabWidget);
-    } else {
-        m_tabWidget->removeTab(0);
-        m_rightSideVLayout->removeWidget(m_tabWidget);
-        m_rightSideVLayout->insertWidget(0, m_descriptionBaseWidget);
-        m_descriptionBaseWidget->setVisible(true);
-    }
-    m_tabWidget->setVisible(show);
-    m_categoryLayoutVisible = show;
+    if (m_createOfflinePushButton->isVisible() || m_qbspPushButton->isVisible())
+        m_advancedTitle->setVisible(true);
+    else
+        m_advancedTitle->setVisible(false);
 }
 
 void ComponentSelectionPagePrivate::updateTreeView()
 {
-    setComboBoxItemEnabled(scCheckDefaultIndex, m_core->isInstaller() || m_core->isPackageManager());
+    m_reset->setEnabled(m_core->isInstaller() || m_core->isPackageManager());
     if (m_treeView->selectionModel()) {
         disconnect(m_treeView->selectionModel(), &QItemSelectionModel::currentChanged,
             this, &ComponentSelectionPagePrivate::currentSelectedChanged);
@@ -432,48 +412,11 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
     if (!current.isValid())
         return;
 
-    m_sizeLabel->setText(QString());
-
     QString description = m_proxyModel->data(m_proxyModel->index(current.row(),
         ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
 
     m_descriptionLabel->setText(description);
-
-    Component *component = m_currentModel->componentFromIndex(m_proxyModel->mapToSource(current));
-    if ((m_core->isUninstaller()) || (!component))
-        return;
-
-    if (component->isSelected() && (component->value(scUncompressedSizeSum).toLongLong() > 0)) {
-        m_sizeLabel->setText(ComponentSelectionPage::tr("This component "
-            "will occupy approximately %1 on your hard disk drive.")
-            .arg(humanReadableSize(component->value(scUncompressedSizeSum).toLongLong())));
-    }
-}
-
-/*!
-    Updates the checkstate of the components based on the value of \c which.
-*/
-void ComponentSelectionPagePrivate::updateAllCheckStates(int which)
-{
-    switch (which) {
-    case scNoCheckSelectionIndex:
-        // A 'helper' text index, no selection
-        return;
-    case scCheckDefaultIndex:
-        selectDefault();
-        break;
-    case scCheckAllIndex:
-        selectAll();
-        break;
-    case scUncheckAllIndex:
-        deselectAll();
-        break;
-    default:
-        qCWarning(lcInstallerInstallLog) << "Invalid index for check state selection!";
-        break;
-    }
-    // Reset back to 'helper' text index
-    m_checkStateComboBox->setCurrentIndex(scNoCheckSelectionIndex);
+    m_sizeRequiredLabel->setText(tr("Space required: %1").arg(humanReadableSize(m_core->requiredDiskSpace())));
 }
 
 void ComponentSelectionPagePrivate::selectAll()
@@ -494,6 +437,7 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
         m_stackedLayout->setCurrentIndex(0);
 
     m_qbspPushButton->setEnabled(!show);
+    setAdvancedTitleVisibility();
 
     if (show) {
         q->gui()->button(QWizard::NextButton)->setEnabled(false);
@@ -509,12 +453,10 @@ void ComponentSelectionPagePrivate::updateWidgetVisibility(bool show)
 void ComponentSelectionPagePrivate::fetchRepositoryCategories()
 {
     updateWidgetVisibility(true);
-
-    QList<QCheckBox*> checkboxes = m_categoryGroupBox->findChildren<QCheckBox *>();
-    for (int i = 0; i < checkboxes.count(); i++) {
-        QCheckBox *checkbox = checkboxes.at(i);
-        m_core->enableRepositoryCategory(checkbox->objectName(), checkbox->isChecked());
-    }
+    for (const QString &category : m_categoryCombobox->checkedItems())
+        m_core->enableRepositoryCategory(category, true);
+    for (const QString &category : m_categoryCombobox->uncheckedItems())
+        m_core->enableRepositoryCategory(category, false);
 
     if (!m_core->fetchRemotePackagesTree()) {
         MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
@@ -580,9 +522,9 @@ void ComponentSelectionPagePrivate::selectDefault()
 void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentModel::ModelState state)
 {
     if (state.testFlag(ComponentModel::Empty)) {
-        setComboBoxItemEnabled(scCheckAllIndex, false);
-        setComboBoxItemEnabled(scUncheckAllIndex, false);
-        setComboBoxItemEnabled(scCheckDefaultIndex, false);
+        m_selectAll->setEnabled(false);
+        m_selectNone->setEnabled(false);
+        m_reset->setEnabled(false);
         return;
     }
 
@@ -602,11 +544,9 @@ void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentMod
         && (m_currentModel->checked() == m_currentModel->uncheckable())) {
             state |= ComponentModel::AllUnchecked;
     }
-    // enable the button if the corresponding flag is not set
-    setComboBoxItemEnabled(scCheckAllIndex, state.testFlag(ComponentModel::AllChecked) == false);
-    setComboBoxItemEnabled(scUncheckAllIndex, state.testFlag(ComponentModel::AllUnchecked) == false);
-    setComboBoxItemEnabled(scCheckDefaultIndex, state.testFlag(ComponentModel::DefaultChecked) == false);
-
+    m_selectAll->setEnabled(state.testFlag(ComponentModel::AllChecked) == false);
+    m_selectNone->setEnabled(state.testFlag(ComponentModel::AllUnchecked) == false);
+    m_reset->setEnabled(state.testFlag(ComponentModel::DefaultChecked) == false);
     // update the current selected node (important to reflect possible sub-node changes)
     if (m_treeView->selectionModel())
         currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
@@ -632,6 +572,10 @@ void ComponentSelectionPagePrivate::setSearchPattern(const QString &text)
     } else {
         expandSearchResults();
     }
+    if (!text.isEmpty())
+        m_searchLineEdit->removeAction(m_searchAction);
+    else
+        m_searchLineEdit->addAction(m_searchAction, QLineEdit::TrailingPosition);
 }
 
 /*!
@@ -657,22 +601,6 @@ void ComponentSelectionPagePrivate::restoreHeaderResizeModes()
     m_treeView->header()->setStretchLastSection(m_headerStretchLastSection);
     for (int i = 0; i < ComponentModelHelper::LastColumn; ++i)
         m_treeView->header()->setSectionResizeMode(i, m_headerResizeModes.value(i));
-}
-
-/*!
-    Sets the enabled state of the combo box item in \a index to \a enabled.
-*/
-void ComponentSelectionPagePrivate::setComboBoxItemEnabled(int index, bool enabled)
-{
-    auto *model = qobject_cast<QStandardItemModel *>(m_checkStateComboBox->model());
-    if (!model)
-        return;
-
-    QStandardItem *item = model->item(index);
-    if (!item)
-        return;
-
-    item->setEnabled(enabled);
 }
 
 }  // namespace QInstaller

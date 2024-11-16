@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,29 +26,25 @@
 **
 **************************************************************************/
 
-#include "customcombobox.h"
+#ifndef HORIZONTALRULER_H
+#define HORIZONTALRULER_H
 
-#include <QStylePainter>
+#include "installer_global.h"
 
-using namespace QInstaller;
+#include <QWidget>
 
-CustomComboBox::CustomComboBox(QWidget *parent)
-    : QComboBox(parent)
+namespace QInstaller {
+
+class INSTALLER_EXPORT HorizontalRuler : public QWidget
 {
+    Q_OBJECT
+public:
+    explicit HorizontalRuler(QWidget *parent = nullptr);
+
+protected:
+    void paintEvent(QPaintEvent *event) override;
+};
+
 }
 
-void CustomComboBox::paintEvent(QPaintEvent *e)
-{
-    if (currentIndex() < 0 && !placeholderText().isEmpty()) {
-        QStylePainter painter(this);
-        painter.setPen(palette().color(QPalette::Text));
-        QStyleOptionComboBox opt;
-        initStyleOption(&opt);
-        painter.drawComplexControl(QStyle::CC_ComboBox, opt);
-        opt.palette.setBrush(QPalette::ButtonText, opt.palette.placeholderText());
-        opt.currentText = placeholderText();
-        painter.drawControl(QStyle::CE_ComboBoxLabel, opt);
-    } else {
-        QComboBox::paintEvent(e);
-    }
-}
+#endif // HORIZONTALRULER_H

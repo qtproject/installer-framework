@@ -1,6 +1,6 @@
 /**************************************************************************
 **
-** Copyright (C) 2023 The Qt Company Ltd.
+** Copyright (C) 2024 The Qt Company Ltd.
 ** Contact: https://www.qt.io/licensing/
 **
 ** This file is part of the Qt Installer Framework.
@@ -26,23 +26,23 @@
 **
 **************************************************************************/
 
-#ifndef CUSTOMCOMBOBOX_H
-#define CUSTOMCOMBOBOX_H
+#ifndef CATEGORYCOMBOBOX_H
+#define CATEGORYCOMBOBOX_H
 
-#include <QComboBox>
+#include "checkablecombobox.h"
 
 namespace QInstaller {
 
-class CustomComboBox : public QComboBox
+class CategoryComboBox : public CheckableComboBox
 {
     Q_OBJECT
 public:
-    CustomComboBox(QWidget *parent = nullptr);
+    CategoryComboBox(const QString &placeholderText, QWidget *parent = nullptr);
 
-protected:
-    void paintEvent(QPaintEvent *e) override;
+public Q_SLOTS:
+    virtual void updateCheckbox(int index) override;
 };
 
 }   // namespace QInstaller
 
-#endif // CUSTOMCOMBOBOX_H
+#endif // CATEGORYCOMBOBOX_H

@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QWidget>
 #include <QHeaderView>
+#include <QComboBox>
 
 #include "componentmodel.h"
 #include "packagemanagergui.h"
@@ -54,7 +55,8 @@ namespace QInstaller {
 class PackageManagerCore;
 class ComponentModel;
 class ComponentSelectionPage;
-class CustomComboBox;
+class CategoryComboBox;
+class ClickableLabel;
 
 class ComponentSelectionPagePrivate : public QObject
 {
@@ -70,8 +72,8 @@ public:
     void showCompressedRepositoryButton();
     void hideCompressedRepositoryButton();
     void showCreateOfflineInstallerButton(bool show);
-    void setupCategoryLayout();
-    void showCategoryLayout(bool show);
+    void showRepositoryCategories();
+    void setAdvancedTitleVisibility();
     void updateTreeView();
     void expandDefault();
     void expandSearchResults();
@@ -79,7 +81,6 @@ public:
 
 public slots:
     void currentSelectedChanged(const QModelIndex &current);
-    void updateAllCheckStates(int which);
     void selectAll();
     void deselectAll();
     void updateWidgetVisibility(bool show);
@@ -96,24 +97,23 @@ public slots:
 private:
     void storeHeaderResizeModes();
     void restoreHeaderResizeModes();
-    void setComboBoxItemEnabled(int index, bool enabled);
+    void addCategorySelection(QHBoxLayout *topHLayout);
 
 private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
-    QTabWidget *m_tabWidget;
     QWidget *m_descriptionBaseWidget;
     QLabel *m_sizeLabel;
     QLabel *m_descriptionLabel;
     QPushButton *m_createOfflinePushButton;
     QPushButton *m_qbspPushButton;
-    CustomComboBox *m_checkStateComboBox;
     QWidget *m_categoryWidget;
     QGroupBox *m_categoryGroupBox;
     QLabel *m_metadataProgressLabel;
     QProgressBar *m_progressBar;
     QGridLayout *m_mainGLayout;
+    QHBoxLayout *m_topHLayout;
     QVBoxLayout *m_rightSideVLayout;
     bool m_allowCreateOfflineInstaller;
     bool m_categoryLayoutVisible;
@@ -124,6 +124,13 @@ private:
     ComponentSortFilterProxyModel *m_proxyModel;
     QLineEdit *m_searchLineEdit;
     bool m_componentsResolved;
+    CategoryComboBox* m_categoryCombobox;
+    ClickableLabel *m_selectAll;
+    ClickableLabel *m_selectNone;
+    ClickableLabel *m_reset;
+    QLabel *m_advancedTitle;
+    QLabel *m_sizeRequiredLabel;
+    QAction *m_searchAction;
 
     bool m_headerStretchLastSection;
     QHash<int, QHeaderView::ResizeMode> m_headerResizeModes;

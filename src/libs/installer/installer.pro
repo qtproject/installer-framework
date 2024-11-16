@@ -147,7 +147,10 @@ HEADERS += packagemanagercore.h \
     directoryguard.h \
     archivefactory.h \
     operationtracer.h \
-    customcombobox.h
+    checkablecombobox.h \
+    clickablelabel.h \
+    categorycombobox.h \
+    horizontalruler.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -237,7 +240,10 @@ SOURCES += packagemanagercore.cpp \
     repositorycategory.cpp \
     componentselectionpage_p.cpp \
     commandlineparser.cpp \
-    customcombobox.cpp
+    checkablecombobox.cpp \
+    clickablelabel.cpp \
+    categorycombobox.cpp \
+    horizontalruler.cpp
 
 macos:SOURCES += fileutils_mac.mm
 
