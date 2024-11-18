@@ -1529,7 +1529,6 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
         m_msgLabel->setText(tr("Welcome to the %1 Setup.").arg(productName()));
     } else {
         setColoredTitle(tr("Maintenance Actions"));
-        setColoredSubTitle(tr("Configure your kind of setup"));
         m_msgLabel->setText(tr("Select from following options, which way you want to proceed."));
     }
 
@@ -2155,10 +2154,12 @@ void LicenseAgreementPage::updateUi()
     QString subTitleText;
     QString acceptButtonText;
     if (m_licenseListWidget->count() == 1) {
-        subTitleText = tr("Read and agree to the license for the components which will be installed");
+        subTitleText = tr("Please read the following license agreement. You must accept the terms "
+                          "contained in this agreement before continuing with the installation.");
         acceptButtonText = tr("I accept the license.");
     } else {
-        subTitleText = tr("Read and agree to the licenses for the components which will be installed");
+        subTitleText = tr("Please read the following license agreements. You must accept the terms "
+                          "contained in these agreements before continuing with the installation.");
         acceptButtonText = tr("I accept the licenses.");
     }
     m_licenseListWidget->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
@@ -2571,7 +2572,6 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setColoredTitle(tr("Choose a Start Menu folder"));
-    setColoredSubTitle(tr("Choose a Start Menu folder for the application shortcuts"));
 
     QLabel *infoLabel = new QLabel(this);
     infoLabel->setWordWrap(true);
@@ -2881,25 +2881,21 @@ void PerformInstallationPage::entering()
     if (packageManagerCore()->isUninstaller()) {
         setButtonText(QWizard::CommitButton, tr("U&ninstall"));
         setColoredTitle(tr("Uninstalling %1").arg(productName()));
-        setColoredSubTitle(tr("Please wait while your selected setup is being uninstalled"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runUninstaller()));
     } else if (packageManagerCore()->isMaintainer()) {
         setButtonText(QWizard::CommitButton, tr("&Update"));
         setColoredTitle(tr("Updating components of %1").arg(productName()));
-        setColoredSubTitle(tr("Please wait while your selected setup is being updated"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runPackageUpdater()));
     } else if (packageManagerCore()->isOfflineGenerator()) {
         setButtonText(QWizard::CommitButton, tr("&Create Offline Installer"));
-        setColoredSubTitle(tr("Please wait while your Offline Installer is being created"));
         setColoredTitle(tr("Creating Offline Installer for %1").arg(productName()));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runOfflineGenerator()));
     } else {
         setButtonText(QWizard::CommitButton, tr("&Install"));
         setColoredTitle(tr("Installing %1").arg(productName()));
-        setColoredSubTitle(tr("Please wait while your selected setup is being installed"));
 
         QTimer::singleShot(30, packageManagerCore(), SLOT(runInstaller()));
     }
@@ -3028,7 +3024,6 @@ FinishedPage::FinishedPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("FinishedPage"));
     setColoredTitle(tr("Finished"));
-    setColoredSubTitle(tr("Completed the %1 Setup").arg(productName()));
 
     m_msgLabel = new QLabel(this);
     m_msgLabel->setWordWrap(true);
@@ -3136,7 +3131,6 @@ void FinishedPage::entering()
         // TODO: how to handle this using the config.xml
         finishedText.prepend(tr("%1 installation was not complete or was interrupted by some reason.").arg(productName()));
         setColoredTitle(tr("%1 installation was unsuccessful.").arg(productName()));
-        setColoredSubTitle(QString());
         setPageListTitle(tr("Finished"));
     }
     m_msgLabel->setText(finishedText);
@@ -3216,7 +3210,6 @@ RestartPage::RestartPage(PackageManagerCore *core)
     setObjectName(QLatin1String("RestartPage"));
 
     setColoredTitle(tr("Finished"));
-    setColoredSubTitle(tr("Completed the %1 Setup").arg(productName()));
 
     // Never show this page on the page list
     setShowOnPageList(false);
