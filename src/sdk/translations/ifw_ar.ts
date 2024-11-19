@@ -564,48 +564,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>الافتراضي</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>حدد المكونات الافتراضية في العرض الشجري.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>أعد الضبط</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>إعادة تعيين جميع المكونات إلى حالة التحديد الأصلية في طريقة العرض الشجري.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>حدّد الكل</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>قم بتحديد جميع المكونات في عرض الشجري.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>ألغِ تحديد الكل</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>قم بإلغاء تحديد المكونات الافتراضية في عرض الشجري.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>حدد ملف حزمة دعم لوحة Qt لتثبيت محتوى إضافي غير متاح مباشرة في المستودعات التي عبر الإنترنت.</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>قم بتصفية فئات المستودع الممكنة للاختيار.</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>سيشغل هذا المكون %1 تقريباً على قرصك الصلب.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -644,10 +604,6 @@
         <translation>تصفح ملفات &amp;QBSP</translation>
     </message>
     <message>
-        <source>Select</source>
-        <translation>اختيار</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
@@ -663,16 +619,56 @@
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>رشّح</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>خطأ</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>معلومات المكون</translation>
+        <source>Details</source>
+        <translation>تفاصيل</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>متقدم</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>اختيار</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>الكل</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>قم بتحديد جميع المكونات في عرض الشجري.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>لا شيء</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>قم بإلغاء تحديد المكونات الافتراضية في عرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>الافتراضي</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>حدد المكونات الافتراضية في العرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>أعد الضبط</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>إعادة تعيين جميع المكونات إلى حالة التحديد الأصلية في طريقة العرض الشجري.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>إظهار</translation>
     </message>
 </context>
 <context>
@@ -2127,6 +2123,14 @@ Please copy the installer to a local drive</source>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>هناك تحديث هام متاح. الرجاء تحديد %1 أولا</translation>
     </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>إجراءات الصيانة</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>قم باختيار من الخيارات التالية الطريقة التي تريد المتابعة بها.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
@@ -2182,17 +2186,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Select Installation Folder</source>
         <translation>اختر مجلد التثبيت</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>اختصارات قائمة ابدأ</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>حدّد قائمة ابدأ التي تريد إنشاء اختصارات البرنامج فيها. يمكنك أيضاً إدخال اسم لإنشاء مجلد جديد.</translation>
     </message>
 </context>
 <context>
@@ -2304,16 +2297,8 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>إكمال معالج %1</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>مكتمل</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>اضغط %1 للخروج من معالج %2.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -2324,15 +2309,36 @@ Please copy the installer to a local drive</source>
         <translation>شغل %1 الآن.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>فشل معالج %1.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>اضغط %1 لإغلاق الإعداد %2.</translation>
     </message>
-</context>
-<context>
-    <name>QInstaller::RestartPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>إكمال معالج إعداد %1</translation>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>ستجد التثبيت الخاص بك في هذا الموقع على جهاز الكمبيوتر الخاص بك:</translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>لقد تم الآن إلغاء تثبيت %1 من جهاز الكمبيوتر الخاص بك.</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>تم الآن تحديث %1 على جهاز الكمبيوتر الخاص بك.</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>تم الآن إنشاء برنامج التثبيت دون اتصال بالإنترنت.</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>تم الآن تثبيت %1 على جهاز الكمبيوتر الخاص بك.</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>لم يكتمل تثبيت %1 أو تمت مقاطعته لسبب ما.</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>لم ينجح تثبيت %1.</translation>
     </message>
 </context>
 <context>
@@ -3162,6 +3168,42 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cache cleared successfully!</source>
         <translation>تم مسح ذاكرة التخزين المؤقت بنجاح!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>تأكيد</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>اختر مجلد من قائمة ابدأ</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>حدد مجلد قائمة ابدأ الذي ترغب في إنشاء اختصارات البرنامج فيه. يمكنك أيضًا إدخال اسم لإنشاء دليل جديد</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished">مكتمل</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>المساحة المطلوبة: %1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>المساحة المتوفرة: %1</translation>
     </message>
 </context>
 </TS>
