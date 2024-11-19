@@ -568,48 +568,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>기본:</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>트리 보기에서 기본 구성요소를 선택합니다.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>재설정</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>트리 보기에서 모든 구성요소를 원래 선택된 상태로 재설정합니다.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>모두 선택</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>트리 보기에서 모든 구성요소를 선택합니다.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>모두 선택 해제</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>트리 보기에서 모든 구성요소를 선택 해제합니다.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>QBSP(Qt Board Support Package) 파일을 선택하여 온라인 저장소에서 직접 사용할 수 없는 추가 콘텐츠를 설치합니다.</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>활성화된 저장소 범주를 필터링합니다.</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>이 구성요소는 하드디스크 드라이브의 약 %1 정도를 차지합니다.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -648,10 +608,6 @@
         <translation>QBSP 파일 탐색(&amp;Q)</translation>
     </message>
     <message>
-        <source>Select</source>
-        <translation>선택</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>오류</translation>
     </message>
@@ -667,16 +623,56 @@
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>필터</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="unfinished">구성요소 정보</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>오류</translation>
+    </message>
+    <message>
+        <source>Details</source>
+        <translation>세부사항</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>고급</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>선택</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>모두 선택</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>트리 보기의 모든 구성요소를 선택합니다.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>선택 없음</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>트리 보기의 모든 구성요소를 선택 해제합니다.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>기본:</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>트리 보기의 기본 구성요소를 선택합니다.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>재설정</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>트리 보기의 모든 구성요소를 원래 선택된 상태로 재설정합니다.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>표시</translation>
     </message>
 </context>
 <context>
@@ -2077,6 +2073,14 @@ Please copy the installer to a local drive</source>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>중요한 업데이트가 있습니다. 먼저 &amp;apos;%1&amp;apos; 을(를) 선택해 주십시오.</translation>
     </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>유지 관리 작업들</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>다음 중 진행할 옵션들을 선택하십시오.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
@@ -2132,17 +2136,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Select Installation Folder</source>
         <translation>설치 폴더 선택</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>메뉴 바로 가기 시작</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>프로그램 바로 가기를 생성하려는 시작 메뉴를 선택합니다. 이름을 직접 입력하여 새 디렉터리를 생성할 수도 있습니다.</translation>
     </message>
 </context>
 <context>
@@ -2254,16 +2247,8 @@ Please copy the installer to a local drive</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>%1 마법사 완료 중</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>완료됨</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>%2 마법사를 종료하려면 %1을(를) 클릭하십시오.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -2274,15 +2259,36 @@ Please copy the installer to a local drive</source>
         <translation>지금 %1을(를) 실행하십시오.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>%1 마법사가 실패했습니다.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>%2 설정을 닫기 위해 %1을(를) 클릭하십시오.</translation>
     </message>
-</context>
-<context>
-    <name>QInstaller::RestartPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>%1 설정 마법사 완료 중</translation>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>컴퓨터의 이 위치에서 설치파일을 찾을 수 있습니다.</translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>이제 %1이(가) 컴퓨터에서 제거되었습니다.</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>이제 %1이(가) 컴퓨터에서 업데이트되었습니다.</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>이제 %1이(가) 컴퓨터에서 업데이트되었습니다.</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>이제 %1이(가) 컴퓨터에 설치되었습니다.</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>%1 설치가 완료되지 않았거나 어떤 이유로 인해 중단되었습니다.</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>%1 설치가 실패했습니다.</translation>
     </message>
 </context>
 <context>
@@ -2413,7 +2419,7 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished">범주 선택</translation>
+        <translation>범주 선택</translation>
     </message>
 </context>
 <context>
@@ -3088,6 +3094,42 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cache cleared successfully!</source>
         <translation>캐시 삭제를 성공했습니다!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>확인</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>시작 메뉴 폴더를 선택하십시오.</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>프로그램의 바로가기를 생성할 시작 메뉴 폴더를 선택하십시오. 이름을 입력하여 새로운 디렉터리를 만들 수도 있습니다.</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation>완료</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>필요 공간: %1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>사용 가능 공간: %1</translation>
     </message>
 </context>
 </TS>
