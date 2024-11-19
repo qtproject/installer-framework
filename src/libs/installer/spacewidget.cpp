@@ -36,8 +36,8 @@
 #include "fileutils.h"
 
 const QLatin1String SPACE_ITEM("|");
-const QLatin1String SPACE_REQUIRED(QT_TR_NOOP("Space required: %1"));
-const QLatin1String SPACE_AVAILABLE(QT_TR_NOOP("Space available: %1"));
+static const char *scSpaceRequired(QT_TRANSLATE_NOOP("QInstaller::SpaceWidget", "Space required: %1"));
+static const char *scSpaceAvailable(QT_TRANSLATE_NOOP("QInstaller::SpaceWidget", "Space available: %1"));
 
 using namespace QInstaller;
 
@@ -68,14 +68,14 @@ SpaceWidget::SpaceWidget(PackageManagerCore *core, QWidget *parent)
 void SpaceWidget::updateSpaceRequiredText()
 {
     if (m_spaceRequiredLabel)
-        m_spaceRequiredLabel->setText(SPACE_REQUIRED.arg(humanReadableSize(m_core->requiredDiskSpace())));
+        m_spaceRequiredLabel->setText(tr(scSpaceRequired).arg(humanReadableSize(m_core->requiredDiskSpace())));
 }
 
 void SpaceWidget::installDirectoryChanged(const QString &newDirectory)
 {
     if (m_spaceAvailableLabel) {
         const KDUpdater::VolumeInfo targetVolume = KDUpdater::VolumeInfo::fromPath(newDirectory);
-        m_spaceAvailableLabel->setText(SPACE_AVAILABLE.arg(humanReadableSize(targetVolume.availableSize())));
+        m_spaceAvailableLabel->setText(tr(scSpaceAvailable).arg(humanReadableSize(targetVolume.availableSize())));
     }
 }
 
