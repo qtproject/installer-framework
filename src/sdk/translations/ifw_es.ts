@@ -858,48 +858,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>Predeterminado</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>Selecciona los componentes predeterminados en la vista de árbol.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Restablecer</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>Restablece todos los componentes a su estado de selección original en la vista de árbol.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Seleccionar todo</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>Selecciona todos los componentes en la vista de árbol.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>Anular selección de todo</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>Anula la selección de todos los componentes en la vista de árbol.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Selecciona un archivo de paquete de soporte de Qt Board para instalar contenido adicional que no esté disponible directamente en los repositorios en línea.</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>Filtra las categorías de repositorio habilitadas para la selección</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Este componente ocupará aproximadamente %1 en el disco duro.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -936,10 +896,6 @@
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>Examinar archivos &amp;QBSP</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Seleccionar</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1382,16 +1338,8 @@ Descargado: %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Completando el Asistente de %1</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>Terminado</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>Haga clic en %1 para salir del asistente de %2.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1402,8 +1350,36 @@ Descargado: %2</translation>
         <translation>Ejecute %1 ahora.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>Error del Asistente de %1.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>Haga clic en %1 para cerrar la configuración %2.</translation>
+    </message>
+    <message>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>Encontrará su instalación en esta ubicación en su computadora:</translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>%1 ya se ha desinstalado de tu ordenador.</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>%1 ya se ha actualizado en tu computadora.</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>Se ha generado el instalador sin conexión.</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>%1 ya se ha instalado en su ordenador.</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>La instalación de %1 no se completó o se interrumpió por algún motivo.</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>La instalación de %1 no fue exitosa.</translation>
     </message>
 </context>
 <context>
@@ -1460,15 +1436,15 @@ Descargado: %2</translation>
     </message>
     <message>
         <source>&amp;Add or remove components</source>
-        <translation>Agregar o quitar componentes</translation>
+        <translation>&amp;Agregar o quitar componentes</translation>
     </message>
     <message>
         <source>&amp;Update components</source>
-        <translation>Actualizar componentes</translation>
+        <translation>Act&amp;ualizar componentes</translation>
     </message>
     <message>
         <source>&amp;Remove all components</source>
-        <translation>Quitar todos los componentes</translation>
+        <translation>Quita&amp;r todos los componentes</translation>
     </message>
     <message>
         <source>Retrieving information from remote installation sources...</source>
@@ -1489,6 +1465,14 @@ Descargado: %2</translation>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>Hay una actualización importante disponible. Por favor seleccione &apos;%1&apos; primero</translation>
+    </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>Acciones de mantenimiento</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>Seleccione entre las siguientes opciones la forma en que desea proceder.</translation>
     </message>
 </context>
 <context>
@@ -1968,11 +1952,11 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     </message>
     <message>
         <source>Installation finished!</source>
-        <translation>Instalación completada.</translation>
+        <translation>Instalación completada!</translation>
     </message>
     <message>
         <source>Installation aborted!</source>
-        <translation>Instalación cancelada.</translation>
+        <translation>Instalación cancelada!</translation>
     </message>
     <message>
         <source>It is not possible to run that operation from a network location</source>
@@ -1984,11 +1968,11 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     </message>
     <message>
         <source>Update finished!</source>
-        <translation>Actualización completada.</translation>
+        <translation>Actualización completada!</translation>
     </message>
     <message>
         <source>Update aborted!</source>
-        <translation>Actualización cancelada.</translation>
+        <translation>Actualización cancelada!</translation>
     </message>
     <message>
         <source>Removal completed successfully.</source>
@@ -2020,7 +2004,7 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     </message>
     <message>
         <source>Cannot remove temporary directory &quot;%1&quot;.</source>
-        <translation>No se puede eliminar el directorio temporal &quot;%1&quot;:</translation>
+        <translation>No se puede eliminar el directorio temporal &quot;%1&quot;.</translation>
     </message>
     <message>
         <source>Offline generation completed successfully.</source>
@@ -2135,7 +2119,7 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     <name>QInstaller::PackageManagerGui</name>
     <message>
         <source>%1 Setup</source>
-        <translation>Programa de instalación de %1</translation>
+        <translation>%1 Configuración</translation>
     </message>
     <message>
         <source>Maintain %1</source>
@@ -2167,7 +2151,7 @@ No es recomendable instalar en este directorio, ya que la instalación podría g
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation>Configuración</translation>
+        <translation>Ajuste&amp;s</translation>
     </message>
     <message>
         <source>Specify proxy settings and configure repositories for add-on components.</source>
@@ -2289,7 +2273,7 @@ Copie el instalador en una unidad local</translation>
     </message>
     <message>
         <source>All required information is now available to begin removing %1 from your computer.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;The program directory %2 will be deleted completely&lt;/font&gt;, including all content in that directory!</source>
-        <translation>El programa de instalación está preparado para empezar a eliminar %1 del equipo.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directorio del programa %2 se eliminará completamente&lt;/font&gt;, incluido todo el contenido del directorio.</translation>
+        <translation>El programa de instalación está preparado para empezar a eliminar %1 del equipo.&lt;br&gt;&lt;font color=&quot;red&quot;&gt;El directorio del programa %2 se eliminará completamente&lt;/font&gt;, incluido todo el contenido del directorio!</translation>
     </message>
     <message>
         <source>U&amp;pdate</source>
@@ -2385,13 +2369,6 @@ Copie el instalador en una unidad local</translation>
     </message>
 </context>
 <context>
-    <name>QInstaller::RestartPage</name>
-    <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Completando el Asistente de instalación de %1</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open script file at %1: %2</source>
@@ -2476,17 +2453,6 @@ Copie el instalador en una unidad local</translation>
     <message>
         <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Moviendo el archivo &quot;%1&quot; a &quot;%2&quot;.</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>Accesos directos del menú de Inicio</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>Seleccione en menú de inicio donde desee crear los accesos directos del programa. También puede introducir un nombre para crear un directorio nuevo.</translation>
     </message>
 </context>
 <context>
@@ -2879,16 +2845,56 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>Filtro</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Error</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>Información</translation>
+        <source>Details</source>
+        <translation>Detalles</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>Avanzado</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Seleccionar</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Todo</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>Seleccionar todos los componentes en la vista de árbol.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Ninguno</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>Anula la selección de todos los componentes en la vista de árbol.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>Predeterminado</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>Selecciona los componentes predeterminados en la vista de árbol.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>Restablecer</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>Restablece todos los componentes a su estado de selección original en la vista de árbol.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Mostrar</translation>
     </message>
 </context>
 <context>
@@ -3104,6 +3110,42 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
     <message>
         <source>Cache cleared successfully!</source>
         <translation>¡Caché borrada con éxito!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>Confirmar</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>Elija una carpeta del menú Inicio</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>Seleccione la carpeta del menú Inicio en la que desea crear los accesos directos del programa. También puede introducir un nombre para crear un nuevo directorio</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation>Terminado</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>Espacio requerido: %1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>Espacio disponible: %1</translation>
     </message>
 </context>
 </TS>
