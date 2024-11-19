@@ -761,14 +761,6 @@
         <translation>Erro a descarregar</translation>
     </message>
     <message>
-        <source>Hash verification while downloading failed. This is a temporary error, please retry.</source>
-        <translation>A verificação do &quot;hash&quot; durante o descarregamento falhou. Este é um erro temporário. Por favor, tente novamente.</translation>
-    </message>
-    <message>
-        <source>Cannot verify Hash</source>
-        <translation>Não é possível verificar o &quot;hash&quot;</translation>
-    </message>
-    <message>
         <source>Cannot download archive %1: %2</source>
         <translation>Não é possível descarregar o ficheiro %1: %2</translation>
     </message>
@@ -1959,6 +1951,14 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>Está disponível uma actualização importante. Por falor selecione primeiro &apos;%1&apos;</translation>
     </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>Ações de Manutenção</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>Selecione como continuar a partir das seguintes opções.</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::LicenseAgreementPage</name>
@@ -1991,48 +1991,8 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>Defeito</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>Selecione os componentes por defeito na vista de árvore.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Reverter</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>Reverter todos os componentes para o seu estado original na visualização em árvore.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Selecionar Todos</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>Selecione todos os componentes na visualização em árvore.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>Desmarcar Todos</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>Desselecione todos os componentes na visualização em árvore.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Selecione ficheiro &quot;Qt Board Support Package&quot; para instalar conteúdo adicional que não está disponível nos repositórios online.</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>Filtrar as categorias de repositório habilitadas para seleção.</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Este componente ocupará aproximadamente %1 na sua unidade de disco rígido.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -2069,10 +2029,6 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>Selecionar ficheiros do tipo &amp;QBSP</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Selecione</translation>
     </message>
     <message>
         <source>Error</source>
@@ -2113,17 +2069,6 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
     <message>
         <source>Select Installation Folder</source>
         <translation>Selecione a Pasta de Instalação</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>Atalhos do Menu Iniciar</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>Selecione, no Menu Iniciar, o local onde criar os atalhos do programa. Também é possível inserir um nome para criar um novo diretório.</translation>
     </message>
 </context>
 <context>
@@ -2235,16 +2180,8 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>A concluir o Assistente %1</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>Concluído</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>Clique em %1 para fechar o Assistente %2.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -2255,15 +2192,36 @@ Por favor, copie o instalador para uma unidade de disco local</translation>
         <translation>Executar %1 agora.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>Ocorreu um erro no assistente %1.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>Clique em %1 para fechar a configuração %2. </translation>
     </message>
-</context>
-<context>
-    <name>QInstaller::RestartPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>A concluir o Assistente de Configuração %1</translation>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>Irá encontrar a sua instalação na seguinte localização:</translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>%1 foi desinstalado do seu computador.</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>%1 foi actualizado no seu computador.</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>O instalador offline foi criado.</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>%1 foi instalado no seu computador.</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>A instalação %1 não foi concluida.</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>A instalação falhou.</translation>
     </message>
 </context>
 <context>
@@ -2887,16 +2845,56 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>Filtro</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>Informação</translation>
+        <source>Details</source>
+        <translation>Detalhes</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>Avançado</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Selecione</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Todos</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>Selecione todos os componentes na vista de árvore.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Nenhum</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>Desselecione todos os componentes na vista de árvore.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>Defeito</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>Selecione os componentes por defeito na vista de árvore.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>Reverter</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>Reverter todos os componentes para o seu estado original na vista de árvore.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Mostrar</translation>
     </message>
 </context>
 <context>
@@ -3113,6 +3111,42 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
     <message>
         <source>Cache cleared successfully!</source>
         <translation>Cache limpo com sucesso!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>Confirmar</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>Escolha uma pasta no Menu Iniciar</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>Selecione a pasta no Menu Iniciar onde prefere criar os atalhos para o programa. Também pode escrever o nome para criar uma nova pasta</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation>Concluído</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>Espaço necessário: %1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>Espaço disponível: %1</translation>
     </message>
 </context>
 </TS>
