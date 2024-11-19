@@ -863,44 +863,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>По умолчанию</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>Выберите компоненты по умолчанию в древовидном представлении.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>Сбросьте все компоненты в исходное состояние выбора в древовидном представлении.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Выбрать всё</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>Выберите все компоненты в древовидном представлении.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>Отменить выделенное</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>Отмените выбор всех компонентов в древовидном представлении.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Выберите файл инструментальных средств для разработки Qt Board Support Package, чтобы установить дополнительное содержимое, которое недоступно непосредственно из сетевых хранилищ.</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Этот компонент займёт приблизительно %1 на жестком диске.</translation>
     </message>
     <message>
         <source>Select Components</source>
@@ -931,20 +895,12 @@
         <translation>Открытие файла</translation>
     </message>
     <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>Отфильтруйте категории включенного хранилища по выбору.</translation>
-    </message>
-    <message>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>Посмотреть &amp;QBSP файлы</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Выбрать</translation>
     </message>
     <message>
         <source>Error</source>
@@ -962,16 +918,56 @@
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>Отфильтровать</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>Информация</translation>
+        <source>Details</source>
+        <translation>Подробнее</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>Дополнительно</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>Выбрать</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Все</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>Выберите все компоненты в древовидном представлении.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Ничего</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>Отмените выбор всех компонентов в древовидном представлении.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>По умолчанию</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>Выберите компоненты по умолчанию в древовидном представлении.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>Отменить</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>Сбросьте все компоненты в исходное состояние выбора в древовидном представлении.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>Показать</translation>
     </message>
 </context>
 <context>
@@ -1433,10 +1429,6 @@ Downloaded: %2</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Завершение установки %1</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>Завершено</translation>
     </message>
@@ -1449,12 +1441,36 @@ Downloaded: %2</source>
         <translation>Запустить %1 сейчас.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>Установка %1 не удалась.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>Нажмите %1 для завершения %2 настройки.</translation>
     </message>
     <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>Нажмите «%1» для выхода из мастера %2.</translation>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>Вы найдете вашу установку в этом месте на вашем компьютере: </translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>%1 был удален с вашего компьютера.</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>%1 был обновлен на вашем компьютере.</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>Офлайн-установщик был сгенерирован.</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>%1 был установлен на ваш компьютер.</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>%1 установка не была завершена или была прервана по какой-то причине.</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>%1 установка не удалась.</translation>
     </message>
 </context>
 <context>
@@ -1540,6 +1556,14 @@ Downloaded: %2</source>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>Доступно важное обновление. Пожалуйста, сперва выберите &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>Действия по обслуживанию.</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>Выберите из следующих вариантов для продолжения.</translation>
     </message>
 </context>
 <context>
@@ -2436,13 +2460,6 @@ Please copy the installer to a local drive</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::RestartPage</name>
-    <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Завершение %1 мастера установки</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open script file at %1: %2</source>
@@ -2527,17 +2544,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Перемещение файла «%1» в «%2».</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>Ярлыки меню &quot;Пуск&quot;</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>Выберите папку в меню «Пуск» для размещения ярлыков программы. Чтобы создать новую папку, введите её имя.</translation>
     </message>
 </context>
 <context>
@@ -3119,6 +3125,42 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cache cleared successfully!</source>
         <translation>Кэш успешно очищен!</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>Подтвердить</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>Выберите папку для меню Пуск.</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>Выберите папку в меню Пуск, в которой вы хотите создать ярлыки программы. Вы так же можете ввести имя для создания новой директории</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation>Завершено</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>Необходимо: %1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>Доступно: %1</translation>
     </message>
 </context>
 </TS>
