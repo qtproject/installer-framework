@@ -19,8 +19,11 @@ Building the Qt Installer Framework from sources requires at least Qt version 6.
 Supported compilers are MSVC 2019 or newer, GCC 9 or newer,
 and Clang 13.0.0 or newer. Currently, the tested combination for Windows is Qt 6.6.0 with MSVC 2019 (Windows 10).
 
-If you want to ship your installer as a single file you have to build
-Qt and the Qt Installer Framework statically.
+> [!Important]
+> If you want to ship your installer as a single file you can use a binary release of the QTIFW.
+
+> [!Note]
+> If you whant to build the Qt Installer Framework you have to build Qt and the Qt Installer Framework statically.
 
 See the Qt documentation for the prerequisites and steps to build Qt from sources.
 Please read SSL Import and Export Restrictions from http://doc.qt.io/qt-6/ssl.html if
@@ -30,32 +33,49 @@ you are statically linking against OpenSSL libraries.
 
 Recommended configuration options for Microsoft Windows:
 
+```shell
 configure -prefix %CD%\qtbase -release -static -static-runtime -accessibility -no-icu -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests
+```
+
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
+```
+
 ### Linux
 
 Recommended configuration options for Linux:
 
+```shell
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -qt-libjpeg -qt-pcre -no-glib -no-cups -no-sql-sqlite -no-feature-gssapi -no-qml-debug -no-opengl -no-egl -no-xinput2 -no-sm -no-icu -nomake examples -nomake tests -no-libudev -bundled-xcb-xinput -qt-harfbuzz -qt-doubleconversion
+```
 
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
+```
+
 ### macOS
 
 Recommended configuration options for macOS:
 
+```shell
 configure -prefix $PWD/qtbase -release -static -accessibility -qt-zlib -qt-libpng -no-cups -no-sql-sqlite -no-qml-debug -nomake examples -nomake tests -no-freetype
+```
 
 Build Qt:
+
+```shell
 cmake --build . --parallel
 cmake --install .
-
+```
 
 Third party dependencies
----------------------
+------------------------
 
 The Qt Installer Framework sources contain a redistribution of parts of the
 libarchive compression and archive library, which requires you to link against
