@@ -14,7 +14,7 @@ Notes
 --------------------------
 
 To build an installer, it is advised to use a statically linked Qt (6.6.0 or
-newer). The tested and supported Qt version is 6.6.0
+newer). The tested and supported Qt version is 6.7.2
 
 See the documentation at
     https://doc.qt.io/qtinstallerframework/ifw-getting-started.html

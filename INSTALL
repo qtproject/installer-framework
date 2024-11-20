@@ -1,7 +1,7 @@
 How to build
 =====================
 
-The instructions should help you build the Installer Framework from scratch.
+The instructions should help you build the Installer Framework from scratch. Alternatively, you can use prebuilt binaries which are available in Qt Online Installer.
 
 
 Get the sources
@@ -17,7 +17,7 @@ Build a static Qt
 
 Building the Qt Installer Framework from sources requires at least Qt version 6.6.0.
 Supported compilers are MSVC 2019 or newer, GCC 9 or newer,
-and Clang 13.0.0 or newer. Currently, the tested combination for Windows is Qt 6.6.0 with MSVC 2019 (Windows 10).
+and Xcode 14 or newer. Currently, the tested combination for Windows is Qt 6.7.2 with MSVC 2019 (Windows 11).
 
 If you want to ship your installer as a single file you have to build
 Qt and the Qt Installer Framework statically.
@@ -97,7 +97,7 @@ to select the run-time library matches the configuration options for Qt
 The required third party compression libraries are likely available from
 your distribution's package manager repositories.
 
-For example, on Ubuntu 18.04 you can invoke the following to install the
+For example, on Ubuntu 22.04 you can invoke the following to install the
 missing development packages:
 
 $ sudo apt install zlib1g-dev liblzma-dev libbz2-dev
@@ -105,7 +105,7 @@ $ sudo apt install zlib1g-dev liblzma-dev libbz2-dev
 ### macOS
 
 The easiest way to install the missing libraries is with a third party
-package manager solution, like Homebrew or MacPorts. On macOS 10.15 you
+package manager solution, like Homebrew or MacPorts. On macOS 11 you
 should only need to additionally install the liblzma library.
 
 On Homebrew this would be:
