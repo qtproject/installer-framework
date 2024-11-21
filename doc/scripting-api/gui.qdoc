@@ -65,6 +65,13 @@
 */
 
 /*!
+    \qmlsignal gui::currentPageChanged(int oldId, int newId)
+
+    This signal is emitted when the page transition from \a oldId to \a newId
+    has been completed.
+*/
+
+/*!
     \qmlsignal gui::settingsButtonClicked()
 
     This signal is emitted when the \uicontrol Settings button is clicked.

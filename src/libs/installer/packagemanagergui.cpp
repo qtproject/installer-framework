@@ -305,6 +305,11 @@ public:
 */
 
 /*!
+    \fn void QInstaller::PackageManagerGui::currentPageChanged(int oldId, int newId)
+    \sa {gui::currentPageChanged}{gui.currentPageChanged}
+*/
+
+/*!
     \fn void QInstaller::PackageManagerGui::packageManagerCore() const
 
     Returns the package manager core.
@@ -423,7 +428,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
             this, &PackageManagerGui::showFinishedPage,
         Qt::QueuedConnection);
 
-    connect(this, &QWizard::currentIdChanged, this, &PackageManagerGui::currentPageChanged);
+    connect(this, &QWizard::currentIdChanged, this, &PackageManagerGui::onCurrentIdChanged);
     connect(this, &QWizard::currentIdChanged, m_core, &PackageManagerCore::currentPageChanged);
     connect(button(QWizard::FinishButton), &QAbstractButton::clicked,
             this, &PackageManagerGui::finishButtonClicked);
@@ -1162,11 +1167,13 @@ void PackageManagerGui::dependsOnLocalInstallerBinary()
     new page by calling executeControlScript(). Updates the page list set as QWizard::sideWidget().
 
 
-    Emits the left() and entered() signals.
+    Emits the left() and entered() signals. Emits \c currentPageChanged() signal after the page
+    transition has been completed.
 */
-void PackageManagerGui::currentPageChanged(int newId)
+void PackageManagerGui::onCurrentIdChanged(int newId)
 {
-    PackageManagerPage *oldPage = qobject_cast<PackageManagerPage *>(page(d->m_currentId));
+    const int oldId = d->m_currentId;
+    PackageManagerPage *oldPage = qobject_cast<PackageManagerPage *>(page(oldId));
     if (oldPage) {
         oldPage->leaving();
         emit oldPage->left();
@@ -1182,6 +1189,7 @@ void PackageManagerGui::currentPageChanged(int newId)
     }
 
     executeControlScript(newId);
+    emit currentPageChanged(oldId, newId);
 }
 
 // -- PackageManagerPage

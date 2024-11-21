@@ -103,6 +103,7 @@ Q_SIGNALS:
     void gotRestarted();
     void settingsButtonClicked();
     void aboutApplicationClicked();
+    void currentPageChanged(int oldId, int newId);
 
 public Q_SLOTS:
     void cancelButtonClicked();
@@ -129,7 +130,7 @@ private Q_SLOTS:
     void onLanguageChanged();
     void customButtonClicked(int which);
     void dependsOnLocalInstallerBinary();
-    void currentPageChanged(int newId);
+    void onCurrentIdChanged(int newId);
 
 protected:
     bool event(QEvent *event) override;
