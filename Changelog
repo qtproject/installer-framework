@@ -1,3 +1,20 @@
+4.9.0
+- Build IFW binaries with Qt6.7.2
+- Add search image to search -field
+- Fix ReadyForInstallation -page layout (QTIFW-3608)
+- Add possibility to add information about category usage (QTIFW-3597)
+- Add guide text to Start menu page (QTIFW-3603)
+- Move titles to the default location (QTIFW-3580)
+- Add size information to component selection page (QTIFW-3593)
+- Improve details view in component selection page (QTIFW-3592)
+- Update component selection "All/None/Reset" style (QTIFW-3591)
+- Move categories selection next to 'Search' bar (QTIFW-3545)
+- Introduce a new signal when gui elements are ready (QTIFW-3480)
+- Fix extracting when non-admin needs admin rights (QTIFW-3448)
+- Fix obsolete function usages (QTIFW-3507)
+- binarycreator: increase max file descriptor limit for Linux (QTIFW-3505)
+- Optimize component search with regexp (QTIFW-3417)
+
 4.8.1
 - Fix macos app bundle update (QTIFW-3408)
 - Fix maintenance tool update on restart (QTIFW-3397)
