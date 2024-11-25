@@ -316,7 +316,7 @@
     </message>
     <message>
         <source>Cannot download %1. Cannot create directory for &quot;%2&quot;</source>
-        <translation>无法下载%1。无法为“%2”创建目录。</translation>
+        <translation>无法下载%1。无法为“%2”创建目录</translation>
     </message>
 </context>
 <context>
@@ -853,48 +853,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>默认</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>在树视图中选择默认组件。</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>重置</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>在树视图中将所有组件重置为其原始选择状态。</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>全选</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>在树视图中选择所有组件。</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>取消全选</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>在树视图中删除所有组件。</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>选择 Qt Board Support Package 文件以安装无法直接从在线存储库中获得的附加内容。</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>过滤已启用的存储库类别</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>此组件大约占用您硬盘驱动器 %1 的空间。</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -931,10 +891,6 @@
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>浏览&amp;QBSP文件</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>选择</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1373,16 +1329,8 @@ Downloaded: %2</source>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>正在完成 %1 向导</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>已完成</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>单击 %1 退出 %2 向导。</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1393,8 +1341,36 @@ Downloaded: %2</source>
         <translation>立即运行 %1。</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>%1 向导失败。</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation>点击%1来关闭%2设置。</translation>
+    </message>
+    <message>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation>您可以在您的电脑的这个位置找到您的安装：</translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation>您的电脑中的%1已经被移除。</translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation>您的电脑中的%1已经被更新。</translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation>离线安装程序已经生成。</translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation>您的电脑中的%1已经被安装。</translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation>%1安装程序没有完成，或者因为某种原因被中断。</translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation>%1安装程序没有成功。</translation>
     </message>
 </context>
 <context>
@@ -1451,15 +1427,15 @@ Downloaded: %2</source>
     </message>
     <message>
         <source>&amp;Add or remove components</source>
-        <translation>添加或移除组件</translation>
+        <translation>添加(&amp;A)或移除组件</translation>
     </message>
     <message>
         <source>&amp;Update components</source>
-        <translation>更新组件</translation>
+        <translation>更新组件(&amp;U)</translation>
     </message>
     <message>
         <source>&amp;Remove all components</source>
-        <translation>移除所有组件</translation>
+        <translation>移除所有组件(&amp;R)</translation>
     </message>
     <message>
         <source>Retrieving information from remote installation sources...</source>
@@ -1475,11 +1451,19 @@ Downloaded: %2</source>
     </message>
     <message>
         <source>&amp;Quit</source>
-        <translation>退出</translation>
+        <translation>退出(&amp;Q)</translation>
     </message>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>有重要的更新可供使用，请先选择“%1”</translation>
+    </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation>维护动作</translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation>请按您想要处理的方式，在如下选项中进行选择。</translation>
     </message>
 </context>
 <context>
@@ -2110,7 +2094,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>Alias declares name that conflicts with an existing component &quot;%1&quot;</source>
-        <translation>别名声明的名称与已经存在的组件“%1”冲突。</translation>
+        <translation>别名声明的名称与已经存在的组件“%1”冲突</translation>
     </message>
     <message>
         <source>Unresolved component aliases</source>
@@ -2157,7 +2141,7 @@ Do you want to continue?</source>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation>设置</translation>
+        <translation>设置(&amp;S)</translation>
     </message>
     <message>
         <source>Specify proxy settings and configure repositories for add-on components.</source>
@@ -2375,13 +2359,6 @@ Please copy the installer to a local drive</source>
     </message>
 </context>
 <context>
-    <name>QInstaller::RestartPage</name>
-    <message>
-        <source>Finished the %1 Setup</source>
-        <translation>正在完成 %1 安装向导</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open script file at %1: %2</source>
@@ -2466,17 +2443,6 @@ Please copy the installer to a local drive</source>
     <message>
         <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>正在将文件“%1”移动到“%2”。</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>开始菜单快捷方式</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>选择您要在其中创建程序快捷方式的“开始”菜单。 您还可以输入名称以创建新目录。</translation>
     </message>
 </context>
 <context>
@@ -2867,16 +2833,56 @@ or accept the elevation of access rights if being asked.</source>
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>筛选</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>错误</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>组件信息</translation>
+        <source>Details</source>
+        <translation>详细信息</translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation>高级</translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation>选择</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>全部</translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation>在树视图中选择所有组件。</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation>在树视图中取消所有组件的选择。</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>默认</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation>在树视图中选择默认组件。</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>重置</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation>在树视图中将所有组件重置为其初始选择状态。</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation>显示</translation>
     </message>
 </context>
 <context>
@@ -3092,6 +3098,42 @@ or accept the elevation of access rights if being asked.</source>
     <message>
         <source>Cache cleared successfully!</source>
         <translation>缓存清空成功！</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation>确认</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation>选择一个开始菜单文件夹</translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation>选择一个您想要创建程序的快捷方式的开始菜单文件夹。您也可以输入名称来创建新目录</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation>已完成</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation>所需空间：%1</translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation>可用空间：%1</translation>
     </message>
 </context>
 </TS>
