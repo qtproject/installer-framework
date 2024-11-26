@@ -33,6 +33,14 @@
 
 class ProductKeyCheckPrivate
 {
+public:
+    ProductKeyCheckPrivate() {
+        m_uiLoader = new QUiLoader();
+    }
+    ~ProductKeyCheckPrivate() {
+        delete m_uiLoader;
+    }
+    QUiLoader * m_uiLoader;
 };
 
 ProductKeyCheck::ProductKeyCheck()
@@ -53,8 +61,7 @@ ProductKeyCheck *ProductKeyCheck::instance()
 
 QUiLoader *ProductKeyCheck::uiLoader()
 {
-    static QUiLoader loader;
-    return &loader;
+    return d->m_uiLoader;
 }
 
 void ProductKeyCheck::init(QInstaller::PackageManagerCore *core)

@@ -51,7 +51,7 @@ public:
     static ProductKeyCheck *instance();
     void init(QInstaller::PackageManagerCore *core);
 
-    static QUiLoader *uiLoader();
+    QUiLoader *uiLoader();
 
     // was validLicense
     bool hasValidKey();
