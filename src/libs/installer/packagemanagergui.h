@@ -335,6 +335,9 @@ public:
 
     void setAllowCreateOfflineInstaller(bool allow);
 
+Q_SIGNALS:
+    void componentsSelected(const QSet<Component*> &components);
+
 protected:
     void entering() override;
     void leaving() override;

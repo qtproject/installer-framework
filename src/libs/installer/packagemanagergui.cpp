@@ -2255,6 +2255,7 @@ void ComponentSelectionPage::leaving()
 {
     d->hideCompressedRepositoryButton();
     d->showCreateOfflineInstallerButton(false);
+    emit componentsSelected(d->m_currentModel->checked());
 }
 
 /*!
