@@ -123,13 +123,13 @@ public:
     static QFont virtualComponentsFont();
     static void setVirtualComponentsFont(const QFont &font);
 
-    static bool virtualComponentsVisible();
+    Q_INVOKABLE static bool virtualComponentsVisible();
     static void setVirtualComponentsVisible(bool visible);
 
-    static bool noForceInstallation();
+    Q_INVOKABLE static bool noForceInstallation();
     static void setNoForceInstallation(bool value);
 
-    static bool noDefaultInstallation();
+    Q_INVOKABLE static bool noDefaultInstallation();
     static void setNoDefaultInstallation(bool value);
 
     static bool createLocalRepositoryFromBinary();
