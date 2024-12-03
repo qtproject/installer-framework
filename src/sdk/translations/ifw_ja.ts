@@ -1179,13 +1179,13 @@ Error while loading %2</source>
 
 Expected: %1 
 Downloaded: %2</source>
-        <translation type="unfinished">ダウンロード中にハッシュを検証できませんでした。 これは一時的なエラーです。再試行してください。</translation>
+        <translation>ダウンロード中にハッシュを検証できませんでした。 これは一時的なエラーです。再試行してください。</translation>
     </message>
     <message>
         <source>Cannot verify Hash
 Expected: %1 
 Downloaded: %2</source>
-        <translation type="unfinished">ハッシュを検証できません</translation>
+        <translation>ハッシュを検証できません</translation>
     </message>
 </context>
 <context>
@@ -1333,35 +1333,35 @@ Downloaded: %2</source>
     </message>
     <message>
         <source>Click %1 to close the %2 Setup.</source>
-        <translation type="unfinished"></translation>
+        <translation>%2 セットアップを閉じるには、%1 をクリックします。</translation>
     </message>
     <message>
         <source>You will find your installation in this location on your computer:</source>
-        <translation type="unfinished"></translation>
+        <translation>インストールはコンピュータ上の次の場所にあります:</translation>
     </message>
     <message>
         <source>%1 has now been uninstalled from your computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 はコンピュータからアンインストールされました。</translation>
     </message>
     <message>
         <source>%1 has now been updated on your computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 がコンピュータ上で更新されました。</translation>
     </message>
     <message>
         <source>Offline installer has now been generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>オフライン インストーラーが生成されました。</translation>
     </message>
     <message>
         <source>%1 has now been installed on your computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 がコンピュータにインストールされました。</translation>
     </message>
     <message>
         <source>%1 installation was not complete or was interrupted by some reason.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 のインストールが完了しなかったか、何らかの理由で中断されました。</translation>
     </message>
     <message>
         <source>%1 installation was unsuccessful.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 のインストールに失敗しました。</translation>
     </message>
 </context>
 <context>
@@ -1450,11 +1450,11 @@ Downloaded: %2</source>
     </message>
     <message>
         <source>Maintenance Actions</source>
-        <translation type="unfinished"></translation>
+        <translation>メンテナンスアクション</translation>
     </message>
     <message>
         <source>Select from following options, which way you want to proceed.</source>
-        <translation type="unfinished"></translation>
+        <translation>次のオプションから、続行する方法を選択してください。</translation>
     </message>
 </context>
 <context>
@@ -2829,51 +2829,51 @@ or accept the elevation of access rights if being asked.</source>
     </message>
     <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>詳細</translation>
     </message>
     <message>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>高度な操作</translation>
     </message>
     <message>
         <source>Select</source>
-        <translation type="unfinished">選択</translation>
+        <translation>選択</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>全て</translation>
     </message>
     <message>
         <source>Select all components in the tree view.</source>
-        <translation type="unfinished">ツリー表示ですべてのコンポーネントを選択します。</translation>
+        <translation>ツリー表示ですべてのコンポーネントを選択します。</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>解除</translation>
     </message>
     <message>
         <source>Deselect all components in the tree view.</source>
-        <translation type="unfinished">ツリー表示ですべてのコンポーネントの選択を解除します。</translation>
+        <translation>ツリー表示からすべてのコンポーネントの選択を解除します。</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">デフォルト</translation>
+        <translation>デフォルト</translation>
     </message>
     <message>
         <source>Select default components in the tree view.</source>
-        <translation type="unfinished">ツリー表示でデフォルトのコンポーネントを選択します。</translation>
+        <translation>ツリー表示からデフォルトのコンポーネントを選択します。</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="unfinished">リセット</translation>
+        <translation>リセット</translation>
     </message>
     <message>
         <source>Reset all components to their original selection state in the tree view.</source>
-        <translation type="unfinished">ツリー表示ですべてのコンポーネントを元の選択状態にリセットします。</translation>
+        <translation>ツリー表示からすべてのコンポーネントを元の選択状態にリセットします。</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>表示内容</translation>
     </message>
 </context>
 <context>
@@ -3095,36 +3095,36 @@ or accept the elevation of access rights if being asked.</source>
     <name>QInstaller::CategoryComboBox</name>
     <message>
         <source>Confirm</source>
-        <translation type="unfinished"></translation>
+        <translation>確認</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::StartMenuDirectoryPage</name>
     <message>
         <source>Choose a Start Menu folder</source>
-        <translation type="unfinished"></translation>
+        <translation>スタートメニューフォルダの選択</translation>
     </message>
     <message>
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
-        <translation type="unfinished"></translation>
+        <translation>プログラムのショートカットを作成するスタートメニューフォルダを選択します。新しいディレクトリを作成するために名前を入力することも可能です。</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">終了</translation>
+        <translation>終了</translation>
     </message>
 </context>
 <context>
     <name>QInstaller::SpaceWidget</name>
     <message>
         <source>Space required: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>必要なスペース: %1</translation>
     </message>
     <message>
         <source>Space available: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>使用可能なスペース: %1</translation>
     </message>
 </context>
 </TS>
