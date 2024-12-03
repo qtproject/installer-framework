@@ -858,48 +858,8 @@
 <context>
     <name>QInstaller::ComponentSelectionPage</name>
     <message>
-        <source>Default</source>
-        <translation>Par défaut</translation>
-    </message>
-    <message>
-        <source>Select default components in the tree view.</source>
-        <translation>Sélectionner les composants par défaut dans l&apos;arborescence.</translation>
-    </message>
-    <message>
-        <source>Reset</source>
-        <translation>Réinitialiser</translation>
-    </message>
-    <message>
-        <source>Reset all components to their original selection state in the tree view.</source>
-        <translation>Réinitialiser tous les composants à leur état de sélection d&apos;origine dans l&apos;arborescence.</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation>Sélectionner tout</translation>
-    </message>
-    <message>
-        <source>Select all components in the tree view.</source>
-        <translation>Sélectionner tous les composants dans l&apos;arborescence.</translation>
-    </message>
-    <message>
-        <source>Deselect All</source>
-        <translation>Tout désélectionner</translation>
-    </message>
-    <message>
-        <source>Deselect all components in the tree view.</source>
-        <translation>Désélectionner tous les composants dans l&apos;arborescence.</translation>
-    </message>
-    <message>
         <source>Select a Qt Board Support Package file to install additional content that is not directly available from the online repositories.</source>
         <translation>Sélectionner un fichier Qt Board Support Package pour installer du contenu supplémentaire qui n&apos;est pas directement disponible à partir des référentiels en ligne.</translation>
-    </message>
-    <message>
-        <source>Filter the enabled repository categories</source>
-        <translation>Filtrer les catégories de référentiel activées à sélectionner.</translation>
-    </message>
-    <message>
-        <source>This component will occupy approximately %1 on your hard disk drive.</source>
-        <translation>Ce composant occupera environ %1 sur votre disque dur.</translation>
     </message>
     <message>
         <source>Open File</source>
@@ -936,10 +896,6 @@
     <message>
         <source>Browse &amp;QBSP files</source>
         <translation>Parcourir les fichiers QBSP</translation>
-    </message>
-    <message>
-        <source>Select</source>
-        <translation>Sélectionner</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1382,16 +1338,8 @@ Téléchargé: %2</translation>
 <context>
     <name>QInstaller::FinishedPage</name>
     <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Exécution de l’assistant de %1</translation>
-    </message>
-    <message>
         <source>Finished</source>
         <translation>Terminé</translation>
-    </message>
-    <message>
-        <source>Click %1 to exit the %2 Setup.</source>
-        <translation>Cliquez sur %1 pour quitter l’assistant de %2.</translation>
     </message>
     <message>
         <source>Restart</source>
@@ -1402,8 +1350,36 @@ Téléchargé: %2</translation>
         <translation>Exécutez %1 maintenant.</translation>
     </message>
     <message>
-        <source>The %1 Setup failed.</source>
-        <translation>L’assistant de %1 a échoué.</translation>
+        <source>Click %1 to close the %2 Setup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You will find your installation in this location on your computer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been uninstalled from your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been updated on your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline installer has now been generated.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has now been installed on your computer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 installation was not complete or was interrupted by some reason.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 installation was unsuccessful.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1489,6 +1465,14 @@ Téléchargé: %2</translation>
     <message>
         <source>There is an important update available. Please select &apos;%1&apos; first</source>
         <translation>Une mise a jour importante est disponible. Merci de commencer par sélectioner &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Maintenance Actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select from following options, which way you want to proceed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2385,13 +2369,6 @@ Copiez le programme d’installation sur un disque local</translation>
     </message>
 </context>
 <context>
-    <name>QInstaller::RestartPage</name>
-    <message>
-        <source>Finished the %1 Setup</source>
-        <translation>Exécution de l’assistant d’installation de %1</translation>
-    </message>
-</context>
-<context>
     <name>QInstaller::ScriptEngine</name>
     <message>
         <source>Cannot open script file at %1: %2</source>
@@ -2476,17 +2453,6 @@ Copiez le programme d’installation sur un disque local</translation>
     <message>
         <source>Moving file &quot;%1&quot; to &quot;%2&quot;.</source>
         <translation>Déplacement du fichier &quot;%1&quot; vers &quot;%2&quot;</translation>
-    </message>
-</context>
-<context>
-    <name>QInstaller::StartMenuDirectoryPage</name>
-    <message>
-        <source>Start Menu shortcuts</source>
-        <translation>Raccourcis du menu Démarrer</translation>
-    </message>
-    <message>
-        <source>Select the Start Menu in which you would like to create the program&apos;s shortcuts. You can also enter a name to create a new directory.</source>
-        <translation>Sélectionnez le menu Démarrer dans lequel créer les raccourcis du programme. Vous pouvez également saisir un nom pour créer un nouveau répertoire.</translation>
     </message>
 </context>
 <context>
@@ -2881,16 +2847,56 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
 <context>
     <name>QInstaller::ComponentSelectionPagePrivate</name>
     <message>
-        <source>Filter</source>
-        <translation>Filtre</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>Informations</translation>
+        <source>Details</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Advanced</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select</source>
+        <translation type="unfinished">Sélectionner</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all components in the tree view.</source>
+        <translation type="unfinished">Sélectionner tous les composants dans l&apos;arborescence.</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deselect all components in the tree view.</source>
+        <translation type="unfinished">Désélectionner tous les composants dans l&apos;arborescence.</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Par défaut</translation>
+    </message>
+    <message>
+        <source>Select default components in the tree view.</source>
+        <translation type="unfinished">Sélectionner les composants par défaut dans l&apos;arborescence.</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Réinitialiser</translation>
+    </message>
+    <message>
+        <source>Reset all components to their original selection state in the tree view.</source>
+        <translation type="unfinished">Réinitialiser tous les composants à leur état de sélection d&apos;origine dans l&apos;arborescence.</translation>
+    </message>
+    <message>
+        <source>Show</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3106,6 +3112,42 @@ Ou acceptez l’élévation des droits d’accès si un message vous y invite.</
     <message>
         <source>Cache cleared successfully!</source>
         <translation>Cache vidé avec succès !</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::CategoryComboBox</name>
+    <message>
+        <source>Confirm</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::StartMenuDirectoryPage</name>
+    <message>
+        <source>Choose a Start Menu folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::RestartPage</name>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished">Terminé</translation>
+    </message>
+</context>
+<context>
+    <name>QInstaller::SpaceWidget</name>
+    <message>
+        <source>Space required: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Space available: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
