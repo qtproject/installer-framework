@@ -27,3 +27,14 @@ If you think you found a bug, please report it to
 https://bugreports.qt.io/browse/QTIFW
 
 General questions are best asked on interest@qt-project.org.
+
+Licensing 
+----------------------------
+
+The QTIFW is a statically build project using the KDE-tools and is therefore licesned under the GPL3.0.
+
+> [!Note]
+> The open source license GPL3.0 does only apply to the project and changes to the source code of the project.
+> You are allowed to create installers with any license you choose,
+> even closed source licenses - as seen in the commercial licesne of Qt itself.
+
