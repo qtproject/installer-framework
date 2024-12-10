@@ -3130,6 +3130,10 @@ Em alternativa, pode aceitar a alteração de permissões de acesso caso seja so
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>Selecione a pasta no Menu Iniciar onde prefere criar os atalhos para o programa. Também pode escrever o nome para criar uma nova pasta</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>Pasta do Menu Iniciar</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>

@@ -3129,6 +3129,10 @@ O bien acepte la elevación de los derechos de acceso si se le pide.</translatio
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>Seleccione la carpeta del menú Inicio en la que desea crear los accesos directos del programa. También puede introducir un nombre para crear un nuevo directorio</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>Carpeta del menú Inicio</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>

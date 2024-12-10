@@ -3187,6 +3187,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>حدد مجلد قائمة ابدأ الذي ترغب في إنشاء اختصارات البرنامج فيه. يمكنك أيضًا إدخال اسم لإنشاء دليل جديد</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>مجلد قائمة ابدأ</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>

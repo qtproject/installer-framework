@@ -3144,6 +3144,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>Выберите папку в меню Пуск, в которой вы хотите создать ярлыки программы. Вы так же можете ввести имя для создания новой директории</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>Папка меню Пуск</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>

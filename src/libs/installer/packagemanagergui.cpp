@@ -2581,6 +2581,7 @@ StartMenuDirectoryPage::StartMenuDirectoryPage(PackageManagerCore *core)
     setPixmap(QWizard::WatermarkPixmap, QPixmap());
     setObjectName(QLatin1String("StartMenuDirectoryPage"));
     setColoredTitle(tr("Choose a Start Menu folder"));
+    setPageListTitle(tr("Start Menu Folder"));
 
     QLabel *infoLabel = new QLabel(this);
     infoLabel->setWordWrap(true);

@@ -3117,6 +3117,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>选择一个您想要创建程序的快捷方式的开始菜单文件夹。您也可以输入名称来创建新目录</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>开始菜单文件夹</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>

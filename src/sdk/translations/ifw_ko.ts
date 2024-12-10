@@ -3113,6 +3113,10 @@ or accept the elevation of access rights if being asked.</source>
         <source>Select the Start Menu folder in which you would like to create the program’s shortcuts. You can also enter a name to create a new directory</source>
         <translation>프로그램의 바로가기를 생성할 시작 메뉴 폴더를 선택하십시오. 이름을 입력하여 새로운 디렉터리를 만들 수도 있습니다.</translation>
     </message>
+    <message>
+        <source>Start Menu Folder</source>
+        <translation>시작 메뉴 폴더</translation>
+    </message>
 </context>
 <context>
     <name>QInstaller::RestartPage</name>
