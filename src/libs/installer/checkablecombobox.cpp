@@ -62,10 +62,14 @@ void CheckableComboBox::addCheckableItem(const QString &text, const QString &too
     // Add a fake transparent icon to make space for the checkbox, see bug PYSIDE-2906
 #ifdef Q_OS_WINDOWS
     if (QApplication::style()->name() == QLatin1String("windows11") || QApplication::style()->name().isEmpty()) {
-        QPixmap pixmap(32, 32);
-        pixmap.fill(Qt::transparent);
-        QIcon icon(pixmap);
-        item->setIcon(icon);
+        if (QApplication::isLeftToRight()) {
+            QPixmap pixmap(32, 32);
+            pixmap.fill(Qt::transparent);
+            QIcon icon(pixmap);
+            item->setIcon(icon);
+        } else {
+            item->setTextAlignment(Qt::AlignRight);
+        }
     }
 #endif
 
