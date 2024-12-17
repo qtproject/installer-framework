@@ -47,6 +47,11 @@ class ComponentPrivate
     QInstaller::Component* const q;
 
 public:
+    enum InstallState {
+        Uninstalled = 0,
+        Installed = 1
+    };
+
     explicit ComponentPrivate(PackageManagerCore *core, Component *qq);
     ~ComponentPrivate();
 
@@ -57,6 +62,7 @@ public:
     OperationList m_operations;
     Operation *m_licenseOperation;
     Operation *m_minimumProgressOperation;
+    InstallState m_installState;
 
     bool m_newlyInstalled;
     bool m_operationsCreated;

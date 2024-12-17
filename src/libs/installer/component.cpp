@@ -295,6 +295,7 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
     setValue(scDescription, package.description);
     setValue(scVersion, package.version);
     setValue(scInheritVersion, package.inheritVersionFrom);
+    setInstalled();
     setValue(scInstalledVersion, package.version);
     setValue(scLastUpdateDate, package.lastUpdateDate.toString());
     setValue(scInstallDate, package.installDate.toString());
@@ -305,7 +306,6 @@ void Component::loadDataFromPackage(const KDUpdater::LocalPackage &package)
 
     setValue(scForcedInstallation, package.forcedInstallation ? scTrue : scFalse);
     setValue(scVirtual, package.virtualComp ? scTrue : scFalse);
-    setValue(scCurrentState, scInstalled);
     setValue(scCheckable, package.checkable ? scTrue : scFalse);
     setValue(scExpandedByDefault, package.expandedByDefault ? scTrue : scFalse);
     setValue(scContentSha1, package.contentSha1);
@@ -1479,7 +1479,7 @@ QStringList Component::currentDependencies() const
 */
 void Component::setInstalled()
 {
-    setValue(scCurrentState, scInstalled);
+    d->m_installState = ComponentPrivate::InstallState::Installed;
 }
 
 /*!
@@ -1561,7 +1561,7 @@ bool Component::isDefault() const
 bool Component::isInstalled(const QString &version) const
 {
     if (version.isEmpty()) {
-        return scInstalled == d->m_vars.value(scCurrentState);
+        return d->m_installState == ComponentPrivate::InstallState::Installed;
     } else {
         return d->m_vars.value(scInstalledVersion) == version;
     }
@@ -1642,7 +1642,7 @@ bool Component::isForcedUpdate()
 */
 void Component::setUninstalled()
 {
-    setValue(scCurrentState, scUninstalled);
+    d->m_installState = ComponentPrivate::InstallState::Uninstalled;
 }
 
 /*!
@@ -1652,7 +1652,7 @@ void Component::setUninstalled()
 */
 bool Component::isUninstalled() const
 {
-    return scUninstalled == d->m_vars.value(scCurrentState);
+    return d->m_installState == ComponentPrivate::InstallState::Uninstalled;
 }
 
 /*!
