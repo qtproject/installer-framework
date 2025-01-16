@@ -49,6 +49,7 @@ private slots:
     void moveToExistingItemNoUnstableComponents();
     void moveWithChildrenChildConflictsAllowUnstable();
     void moveWithChildrenChildConflictsNoUnstable();
+    void moveWithOriginalNameStartsWithOtherComponentName();
 
     void moveToRootWithChildren();
     void moveToSubItemWithChildren();
@@ -191,6 +192,32 @@ void tst_TreeName::moveWithChildrenChildConflictsNoUnstable()
 
     QCOMPARE(PackageManagerCore::Success, core->installSelectedComponentsSilently(QStringList() << "componentD"));
     QVERIFY(!core->componentByName("componentD.sub1"));
+}
+
+void tst_TreeName::moveWithOriginalNameStartsWithOtherComponentName()
+{
+    QScopedPointer<PackageManagerCore> core(PackageManager::getPackageManagerWithInit
+        (m_installDir, ":///data/repository"));
+
+    QCOMPARE(core->installSelectedComponentsSilently(QStringList() << "componentRoot"), PackageManagerCore::Success);
+
+    const QList<Component*> installedComponents = core->orderedComponentsToInstall();
+    QCOMPARE(installedComponents.count(), 3);
+
+    Component const *root = installedComponents.at(0);
+    QCOMPARE(root->name(), "componentRoot");
+    QCOMPARE(root->treeName(), root->name());
+    QVERIFY(root->value(scAutoTreeName).isEmpty());
+
+    Component const *componentG = installedComponents.at(1);
+    QCOMPARE(componentG->name(), "component");
+    QCOMPARE(componentG->treeName(), "componentRoot.component");
+    QVERIFY(componentG->value(scAutoTreeName).isEmpty());
+
+    Component const *componentGChild = installedComponents.at(2);
+    QCOMPARE(componentGChild->name(), "component.subcomponent");
+    QCOMPARE(componentGChild->treeName(), "componentRoot.component.subcomponent");
+    QCOMPARE(componentGChild->value(scAutoTreeName), componentGChild->treeName());
 }
 
 void tst_TreeName::moveToRootWithChildren()

@@ -4794,7 +4794,7 @@ void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &compon
         QMap<QString, QString>::const_iterator j;
         for (j = treeNameComponents.begin(); j != treeNameComponents.end(); ++j) {
             const QString name = j.key();
-            if (!component->name().startsWith(name))
+            if (!component->name().startsWith(name + QLatin1Char('.')))
                 continue;
 
             const Component *parent = components.value(treeNameComponents.value(name));
@@ -4810,8 +4810,8 @@ void PackageManagerCore::createAutoTreeNames(QHash<QString, Component *> &compon
         if (newName.isEmpty()) // Nothing to do
             continue;
 
-        const QString treeName = component->name()
-            .replace(newName, treeNameComponents.value(newName));
+        QString treeName = component->name();
+        treeName.replace(treeName.indexOf(newName), newName.size(), treeNameComponents.value(newName));
 
         if (components.contains(treeName) || treeNameComponents.contains(treeName)) {
             // Can happen if the parent was moved to an existing identifier (which did not

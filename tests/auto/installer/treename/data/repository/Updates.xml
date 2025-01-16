@@ -132,4 +132,27 @@
   <ReleaseDate>2022-01-01</ReleaseDate>
   <Replaces>componentE</Replaces>
  </PackageUpdate>
+ <PackageUpdate>
+  <Name>componentRoot</Name>
+  <DisplayName>Root component</DisplayName>
+  <Description>Root component which name matches start of other component names</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>component</Name>
+  <DisplayName>A component</DisplayName>
+  <Description>Component that sets itself as a child of a root component with matching name start</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2022-01-01</ReleaseDate>
+  <TreeName moveChildren="true">componentRoot.component</TreeName>
+ </PackageUpdate>
+ <PackageUpdate>
+  <Name>component.subcomponent</Name>
+  <DisplayName>Component subcomponent</DisplayName>
+  <Description>Subcomponent for component</Description>
+  <Version>1.0.0</Version>
+  <ReleaseDate>2014-08-25</ReleaseDate>
+  <SortingPriority>100</SortingPriority>
+ </PackageUpdate>
 </Updates>
