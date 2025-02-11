@@ -306,6 +306,9 @@ public:
 
 /*!
     \fn void QInstaller::PackageManagerGui::currentPageChanged(int oldId, int newId)
+
+    Emitted when the current page changes, where \a oldId is the id of the
+    leaving page and \a newId is the id of the entering page.
     \sa {gui::currentPageChanged}{gui.currentPageChanged}
 */
 

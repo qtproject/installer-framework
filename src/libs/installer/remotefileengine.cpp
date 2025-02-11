@@ -104,7 +104,7 @@ private:
     QStringList entries;
 };
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
-/*!
+/*
     \reimp
 */
 bool RemoteFileEngineIterator::advance()
@@ -138,7 +138,7 @@ QString RemoteFileEngineIterator::next()
 }
 #endif
 
-/*!
+/*
     \reimp
 */
 QString RemoteFileEngineIterator::currentFileName() const
@@ -172,7 +172,7 @@ bool RemoteFileEngine::atEnd() const
     return m_fileEngine.atEnd();
 }
 
-/*!
+/*
     \reimp
 */
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
