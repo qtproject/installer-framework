@@ -1,5 +1,11 @@
 4.9.0
 - Build IFW binaries with Qt6.7.2
+- 3rdparty: update libarchive sources to 3.7.7 (QTIFW-3688)
+- Component: optimize retrieving install state (QTIFW-3650)
+- Fix silent errors on automatic tree name construction (QTIFW-3670)
+- Set details view width fixed size (QTIFW-3625)
+- Keep track of selected components (QTIFW-3486)
+- PackageManagerGui: add signal to indicate page transition is completed(QTIFW-3606)
 - Add search image to search -field
 - Fix ReadyForInstallation -page layout (QTIFW-3608)
 - Add possibility to add information about category usage (QTIFW-3597)
