@@ -554,7 +554,7 @@ bool RemoteFileEngine::renameOverwrite(const QString &newName)
     return m_fileEngine.renameOverwrite(newName);
 }
 
-QDateTime RemoteFileEngine::fileTime(FileTime time) const
+QDateTime RemoteFileEngine::fileTime(QFile::FileTime time) const
 {
     if ((const_cast<RemoteFileEngine *>(this))->connectToServer()) {
         return callRemoteMethod<QDateTime>

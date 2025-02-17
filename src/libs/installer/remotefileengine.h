@@ -87,7 +87,7 @@ public:
     QString fileName(FileName file = DefaultName) const override;
     uint ownerId(FileOwner owner) const override;
     QString owner(FileOwner owner) const override;
-    QDateTime fileTime(FileTime time) const override;
+    QDateTime fileTime(QFile::FileTime time) const override;
     void setFileName(const QString &fileName) override;
     int handle() const override;
     bool atEnd() const;

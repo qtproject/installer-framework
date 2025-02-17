@@ -580,7 +580,7 @@ void RemoteServerConnection::handleQFSFileEngine(RemoteServerReply *reply, const
     } else if (command == QLatin1String(Protocol::QAbstractFileEngineFileTime)) {
         qint32 filetime;
         data >> filetime;
-        reply->send(m_engine->fileTime(static_cast<QAbstractFileEngine::FileTime> (filetime)));
+        reply->send(m_engine->fileTime(static_cast<QFile::FileTime> (filetime)));
     } else if (!command.isEmpty()) {
         qCDebug(QInstaller::lcServer) << "Unknown QAbstractFileEngine command:" << command;
     }

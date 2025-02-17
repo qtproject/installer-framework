@@ -471,12 +471,14 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 */
 void PackageManagerGui::setMaxSize()
 {
-    QSize size = this->screen()->availableGeometry().size();
+    /*QSize size = this->screen()->availableGeometry().size();
     int windowFrameHeight = frameGeometry().height() - geometry().height();
     int availableHeight = size.height() - windowFrameHeight;
 
     size.setHeight(availableHeight);
-    setMaximumSize(size);
+    setMaximumSize(size);*/
+    QSize size(m_core->settings().wizardDefaultWidth(), m_core->settings().wizardDefaultHeight());
+        setMaximumSize(size);
 }
 
 /*!
