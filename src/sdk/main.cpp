@@ -164,6 +164,13 @@ int main(int argc, char *argv[])
             << CommandLineOptions::scStartServerLong
             << CommandLineOptions::scStartClientLong);
     }
+
+    if (mutually.isEmpty()) {
+        mutually = QInstaller::checkMutualOptions(parser, QStringList()
+            << CommandLineOptions::scHttpProxyHostNameLong
+            << CommandLineOptions::scFtpProxyHostNameLong);
+    }
+
     if (!mutually.isEmpty()) {
         sanityMessage = QString::fromLatin1("The following options are mutually exclusive: %1.")
             .arg(mutually.join(QLatin1String(", ")));
@@ -309,8 +316,12 @@ int main(int argc, char *argv[])
             // Make sure we honor the system's proxy settings
             QNetworkProxyFactory::setUseSystemConfiguration(true);
         }
+        else    //make sure the system config set to false when no proxy para passed otherwise it may interfere with settings read from network.xml
+        {
+            QNetworkProxyFactory::setUseSystemConfiguration(false);
+        }
 
-        if (parser.isSet(CommandLineOptions::scNoProxyLong))
+        if ((parser.isSet(CommandLineOptions::scNoProxyLong)) || (parser.isSet(CommandLineOptions::scManualProxyLong)))
             QNetworkProxyFactory::setUseSystemConfiguration(false);
 
         const SelfRestarter restarter(argc, argv);

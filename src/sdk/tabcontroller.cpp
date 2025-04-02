@@ -86,6 +86,16 @@ TabController::TabController(QObject *parent)
 
 TabController::~TabController()
 {
+    //try writing config file before writeMaintenanceTool 250324
+    bool gainedAdminRights = false;
+    if (!d->m_core->directoryWritable(d->m_core->value(scTargetDir))) {
+        d->m_core->gainAdminRights();
+        gainedAdminRights = true;
+    }
+    d->m_core->writeMaintenanceConfigFiles();
+    if (gainedAdminRights)
+        d->m_core->dropAdminRights();
+
     d->m_core->writeMaintenanceTool();
     delete d;
 }

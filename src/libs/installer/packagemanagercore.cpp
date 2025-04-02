@@ -3851,6 +3851,194 @@ QString PackageManagerCore::value(const QString &key, const QString &defaultValu
     return d->m_data.value(key, defaultValue, static_cast<QSettings::Format>(format)).toString();
 }
 
+QString PackageManagerCore::getProxyMode() const
+{
+    const Settings &settings = d->m_data.settings();
+    switch (settings.proxyType()) {
+        case Settings::NoProxy:
+            return QStringLiteral("no");
+            break;
+        case Settings::SystemProxy:
+            return QStringLiteral("system");
+            break;
+        case Settings::UserDefinedProxy:
+            return QStringLiteral("manual");
+            break;
+    }
+}
+
+void PackageManagerCore::setProxyMode(const QString &proxyType)
+{
+    if(proxyType == QStringLiteral("no"))
+    {
+        d->m_data.settings().setProxyType(QInstaller::Settings::NoProxy);
+    }
+    else if(proxyType == QStringLiteral("system"))
+    {
+        d->m_data.settings().setProxyType(QInstaller::Settings::SystemProxy);
+    }
+    else if(proxyType == QStringLiteral("manual"))
+    {
+        d->m_data.settings().setProxyType(QInstaller::Settings::UserDefinedProxy);
+    }
+    else
+    {
+        qWarning() << "proxy mode does not exist";
+    }
+
+}
+
+QString PackageManagerCore::getHttpProxyHost() const
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    qInfo() << "installer value: proxy hostname" << proxy.hostName();
+
+    return proxy.hostName();
+}
+
+void PackageManagerCore::setHttpProxyHost(const QString &hostName)
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setHostName(hostName);
+    qInfo() << "set proxy hostname" << proxy.hostName();
+}
+
+QString PackageManagerCore::getHttpProxyPort() const
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    qInfo() << "installer value: proxy port" << proxy.port();
+
+    return QString::number(proxy.port());
+}
+
+void PackageManagerCore::setHttpProxyPort(const QString &port)
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    bool boolVal;
+    proxy.setPort(port.toInt(&boolVal));
+    qInfo() << "set proxy port" << proxy.port();
+}
+
+QString PackageManagerCore::getHttpProxyUser() const
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    qInfo() << "installer value: proxy user" << proxy.user();
+
+    return proxy.user();
+}
+
+void PackageManagerCore::setHttpProxyUser(const QString &userName)
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setUser(userName);
+    qInfo() << "set proxy port" << proxy.user();
+}
+
+QString PackageManagerCore::getHttpProxyPwd() const
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    qInfo() << "installer value: proxy password" << proxy.password();
+
+    return proxy.password();
+}
+
+void PackageManagerCore::setHttpProxyPwd(const QString &password)
+{
+    QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setPassword(password);
+    qInfo() << "set proxy port" << proxy.password();
+}
+
+bool PackageManagerCore::getHttpProxyAuth() const
+{
+    QString userStr = getHttpProxyUser();
+    QString pwdStr = getHttpProxyPwd();
+    if(userStr.isEmpty() || pwdStr.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+
+}
+
+QString PackageManagerCore::getFtpProxyHost() const
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    qInfo() << "installer value: proxy hostname" << proxy.hostName();
+
+    return proxy.hostName();
+}
+
+void PackageManagerCore::setFtpProxyHost(const QString &hostName)
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    proxy.setHostName(hostName);
+    qInfo() << "set proxy hostname" << proxy.hostName();
+}
+
+QString PackageManagerCore::getFtpProxyPort() const
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    qInfo() << "installer value: proxy port" << proxy.port();
+
+    return QString::number(proxy.port());
+}
+
+void PackageManagerCore::setFtpProxyPort(const QString &port)
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    bool boolVal;
+    proxy.setPort(port.toInt(&boolVal));
+    qInfo() << "set proxy port" << proxy.port();
+}
+
+QString PackageManagerCore::getFtpProxyUser() const
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    qInfo() << "installer value: proxy user" << proxy.user();
+
+    return proxy.user();
+}
+
+void PackageManagerCore::setFtpProxyUser(const QString &userName)
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    proxy.setUser(userName);
+    qInfo() << "set proxy port" << proxy.user();
+}
+
+QString PackageManagerCore::getFtpProxyPwd() const
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    qInfo() << "installer value: proxy password" << proxy.password();
+
+    return proxy.password();
+}
+
+void PackageManagerCore::setFtpProxyPwd(const QString &password)
+{
+    QNetworkProxy proxy = d->m_data.settings().ftpProxy();
+    proxy.setPassword(password);
+    qInfo() << "set proxy port" << proxy.password();
+}
+
+bool PackageManagerCore::getFtpProxyAuth() const
+{
+    QString userStr = getFtpProxyUser();
+    QString pwdStr = getFtpProxyPwd();
+    if(userStr.isEmpty() || pwdStr.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 /*!
     Returns the installer value for \a key. If \a key is not known to the system, \a defaultValue is
     returned. Additionally, on Windows, \a key can be a registry key.
