@@ -5,7 +5,7 @@ ROOT=$(dirname "$(dirname "${BASH_SOURCE[@]}")")
 PKG="$ROOT/package"
 
 REPO="barcoopensource/di-qif-helper"
-VERSION="1.0.0"
+VERSION="1.0.1"
 QT_STAT_ASSET="static-qt-660.zip"
 BZIP2_ASSET="bzip2.zip"
 XZ_ASSET="xz.zip"

@@ -154,6 +154,8 @@ macx:LIBS += -framework Carbon -framework Security
 }
 
 CONFIG += static
+QMAKE_CFLAGS_RELEASE += -MT
+QMAKE_CXXFLAGS_RELEASE += -MT
 
 QT += uitools core-private
 CONFIG(static, static|shared) {
