@@ -272,6 +272,71 @@ public:
         } else if (QNetworkProxyFactory::usesSystemConfiguration()) {
             m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+        } else if(m_parser.isSet(CommandLineOptions::scManualProxyLong)) {
+            m_core->settings().setProxyType(QInstaller::Settings::UserDefinedProxy);
+            // get proxy type, name, port
+            if ((m_parser.isSet(CommandLineOptions::scHttpProxyHostNameLong)) && (m_parser.isSet(CommandLineOptions::scPortIdLong))) {
+                const QString httpProxyName = m_parser.value(CommandLineOptions::scHttpProxyHostNameLong);
+                bool isValid;
+                const quint16 portId = m_parser.value(CommandLineOptions::scPortIdLong).toInt(&isValid);
+                if(httpProxyName.isEmpty())
+                {
+                    errorMessage = QObject::tr("Manual proxy name empty.");
+                    return false;
+                }
+                if(isValid == false)
+                {
+                    errorMessage = QObject::tr("Manual proxy portId empty.");
+                    return false;
+                }
+                m_core->settings().setHttpProxy(QNetworkProxy(QNetworkProxy::HttpProxy, httpProxyName, portId));
+                KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+
+                // get username & password
+                if ((m_parser.isSet(CommandLineOptions::scProxyUserNameLong)) && (m_parser.isSet(CommandLineOptions::scProxyPasswordLong))) {
+                    const QString userName = m_parser.value(CommandLineOptions::scProxyUserNameLong);
+                    const QString password = m_parser.value(CommandLineOptions::scProxyPasswordLong);
+                    QNetworkProxy setParaProxy = m_core->settings().httpProxy();
+                    setParaProxy.setUser(userName);
+                    setParaProxy.setPassword(password);
+                    m_core->settings().setHttpProxy(setParaProxy);  //have to reset the QNetworkProxy, for the value stored in settings' m_data is a copy,it won't change
+                    m_core->proxyFactory()->setProxyCredentials(m_core->settings().httpProxy(),userName,password);
+                }
+                //if username & password not specified, it will require it in AuthenticationRequiredException, so not return false here if username/password not set
+
+            }else if((m_parser.isSet(CommandLineOptions::scFtpProxyHostNameLong))&& (m_parser.isSet(CommandLineOptions::scPortIdLong))){
+                const QString ftpProxyName = m_parser.value(CommandLineOptions::scFtpProxyHostNameLong);
+                bool isValid;
+                const quint16 portId = m_parser.value(CommandLineOptions::scPortIdLong).toInt(&isValid);
+                if(ftpProxyName.isEmpty())
+                {
+                    errorMessage = QObject::tr("Manual proxy name empty.");
+                    return false;
+                }
+                if(isValid == false)
+                {
+                    errorMessage = QObject::tr("Manual proxy portId empty.");
+                    return false;
+                }
+                m_core->settings().setFtpProxy(QNetworkProxy(QNetworkProxy::HttpProxy, ftpProxyName, portId));
+                KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
+
+                // get username & password
+                if ((m_parser.isSet(CommandLineOptions::scProxyUserNameLong)) && (m_parser.isSet(CommandLineOptions::scProxyPasswordLong))) {
+                    const QString userName = m_parser.value(CommandLineOptions::scProxyUserNameLong);
+                    const QString password = m_parser.value(CommandLineOptions::scProxyPasswordLong);
+                    QNetworkProxy setParaProxy = m_core->settings().ftpProxy();
+                    setParaProxy.setUser(userName);
+                    setParaProxy.setPassword(password);
+                    m_core->settings().setFtpProxy(setParaProxy);  //have to reset the QNetworkProxy, for the value stored in settings' m_data is a copy,it won't change
+                    m_core->proxyFactory()->setProxyCredentials(m_core->settings().ftpProxy(),userName,password);
+                }
+
+            }else {
+                errorMessage = QObject::tr("Manual proxy name and portId need to be specifed.");
+                return false;
+            }
+
         }
 
         if (m_parser.isSet(CommandLineOptions::scLocalCachePathLong)) {

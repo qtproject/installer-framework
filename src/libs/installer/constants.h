@@ -235,6 +235,20 @@ static const QLatin1String scSystemProxyShort("sp");
 static const QLatin1String scSystemProxyLong("system-proxy");
 static const QLatin1String scNoProxyShort("np");
 static const QLatin1String scNoProxyLong("no-proxy");
+static const QLatin1String scManualProxyShort("mp");
+static const QLatin1String scManualProxyLong("manual-proxy");
+
+// Custom Proxy options
+static const QLatin1String scHttpProxyHostNameShort("hph");
+static const QLatin1String scHttpProxyHostNameLong("http-proxy-host");
+static const QLatin1String scFtpProxyHostNameShort("fph");
+static const QLatin1String scFtpProxyHostNameLong("ftp-proxy-host");
+static const QLatin1String scPortIdShort("pi");
+static const QLatin1String scPortIdLong("port-id");
+static const QLatin1String scProxyUserNameShort("un");
+static const QLatin1String scProxyUserNameLong("user-name");
+static const QLatin1String scProxyPasswordShort("pp");
+static const QLatin1String scProxyPasswordLong("proxy-password");
 
 // Starting mode options
 static const QLatin1String scStartUpdaterShort("su");

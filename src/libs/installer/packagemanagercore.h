@@ -190,6 +190,27 @@ public:
     Q_INVOKABLE bool containsValue(const QString &key) const;
     Q_INVOKABLE void setValue(const QString &key, const QString &value);
     Q_INVOKABLE QString value(const QString &key, const QString &defaultValue = QString(), const int &format = QSettings::NativeFormat) const;
+    Q_INVOKABLE QString getProxyMode() const;
+    Q_INVOKABLE void setProxyMode(const QString &proxyType);
+    Q_INVOKABLE QString getHttpProxyHost() const;
+    Q_INVOKABLE void setHttpProxyHost(const QString &hostName);
+    Q_INVOKABLE QString getHttpProxyPort() const;
+    Q_INVOKABLE void setHttpProxyPort(const QString &port);
+    Q_INVOKABLE QString getHttpProxyUser() const;
+    Q_INVOKABLE void setHttpProxyUser(const QString &userName);
+    Q_INVOKABLE QString getHttpProxyPwd() const;
+    Q_INVOKABLE void setHttpProxyPwd(const QString &password);
+    Q_INVOKABLE bool getHttpProxyAuth() const;
+
+    Q_INVOKABLE QString getFtpProxyHost() const;
+    Q_INVOKABLE void setFtpProxyHost(const QString &hostName);
+    Q_INVOKABLE QString getFtpProxyPort() const;
+    Q_INVOKABLE void setFtpProxyPort(const QString &port);
+    Q_INVOKABLE QString getFtpProxyUser() const;
+    Q_INVOKABLE void setFtpProxyUser(const QString &userName);
+    Q_INVOKABLE QString getFtpProxyPwd() const;
+    Q_INVOKABLE void setFtpProxyPwd(const QString &password);
+    Q_INVOKABLE bool getFtpProxyAuth() const;
     Q_INVOKABLE QStringList values(const QString &key, const QStringList &defaultValue = QStringList()) const;
     Q_INVOKABLE QString key(const QString &value) const;
 
