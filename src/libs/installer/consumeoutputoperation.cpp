@@ -91,6 +91,7 @@ bool ConsumeOutputOperation::performOperation()
     int waitCount = 0;
     while (executableOutput.isEmpty() && waitCount < 3) {
         QProcess process;
+        process.setProcessChannelMode(QProcess::MergedChannels);
         process.start(executable, processArguments, QIODevice::ReadOnly);
         if (process.waitForFinished(10000)) {
             if (process.exitStatus() == QProcess::CrashExit) {
