@@ -1,7 +1,7 @@
 @echo on
 SetLocal EnableDelayedExpansion
 REM set msvc env
-CALL "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+CALL "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
 
 REM set env path
 set path=%path%;%~dp0..\package\qt-static-6.6.0\bin

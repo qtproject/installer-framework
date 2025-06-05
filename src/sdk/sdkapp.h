@@ -269,9 +269,6 @@ public:
         if (m_parser.isSet(CommandLineOptions::scNoProxyLong)) {
             m_core->settings().setProxyType(QInstaller::Settings::NoProxy);
             KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
-        } else if (QNetworkProxyFactory::usesSystemConfiguration()) {
-            m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
-            KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         } else if(m_parser.isSet(CommandLineOptions::scManualProxyLong)) {
             m_core->settings().setProxyType(QInstaller::Settings::UserDefinedProxy);
             // get proxy type, name, port
@@ -336,7 +333,9 @@ public:
                 errorMessage = QObject::tr("Manual proxy name and portId need to be specifed.");
                 return false;
             }
-
+        } else if (QNetworkProxyFactory::usesSystemConfiguration()) {
+            m_core->settings().setProxyType(QInstaller::Settings::SystemProxy);
+            KDUpdater::FileDownloaderFactory::instance().setProxyFactory(m_core->proxyFactory());
         }
 
         if (m_parser.isSet(CommandLineOptions::scLocalCachePathLong)) {

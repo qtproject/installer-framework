@@ -96,3 +96,5 @@ doc/codeattributions.qdoc
 /src/sdk/installerbase.qrc
 /src/sdk/translations/untranslated.ts
 /src/sdk/translations/ifw_en.ts
+
+package/*
