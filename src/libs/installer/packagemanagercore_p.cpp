@@ -2824,7 +2824,7 @@ void PackageManagerCorePrivate::registerMaintenanceTool()
     settings.setValue(QLatin1String("Comments"), m_data.value(scTitle));
     settings.setValue(QLatin1String("InstallDate"), QDateTime::currentDateTime().toString());
     settings.setValue(QLatin1String("InstallLocation"), QDir::toNativeSeparators(targetDir()));
-    settings.setValue(QLatin1String("UninstallString"), QString(quoted(maintenanceTool)
+    settings.setValue(QLatin1String("UninstallString"), "CMD /C" + QString(quoted(maintenanceTool)
         + QLatin1String(" --") + CommandLineOptions::scStartUninstallerLong));
     if (!isOfflineOnly()) {
         settings.setValue(QLatin1String("ModifyPath"), QString(quoted(maintenanceTool)
