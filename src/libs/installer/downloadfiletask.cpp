@@ -73,7 +73,8 @@ AuthenticationRequiredException::AuthenticationRequiredException(Type type, cons
 }
 
 Downloader::Downloader()
-    : m_finished(0)
+    : m_finished(0),
+    m_slbToken(QByteArray())
 {
     connect(&m_timer, &QTimer::timeout, this, &Downloader::onTimeout);
     connect(&m_nam, &QNetworkAccessManager::finished, this, &Downloader::onFinished);
@@ -404,6 +405,11 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
 
+    if(!m_slbToken.isEmpty()){
+        request.setRawHeader(QByteArrayLiteral("authorization"),
+                             QByteArrayLiteral("Bearer ") + m_slbToken);
+    }
+
     QNetworkReply *reply = m_nam.get(request);
     std::unique_ptr<Data> data(new Data(item));
     m_downloads[reply] = std::move(data);
@@ -416,6 +422,11 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
 #endif
     connect(reply, &QNetworkReply::downloadProgress, this, &Downloader::onDownloadProgress);
     return reply;
+}
+
+void Downloader::setSlbToken(const QByteArray &newSlbToken)
+{
+    m_slbToken = newSlbToken;
 }
 
 
@@ -461,6 +472,7 @@ void DownloadFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
 {
     QEventLoop el;
     Downloader downloader;
+    downloader.setSlbToken(m_slbToken);
     connect(&downloader, &Downloader::finished, &el, &QEventLoop::quit);
 
     QList<FileTaskItem> items = taskItems();
@@ -472,6 +484,11 @@ void DownloadFileTask::doTask(QFutureInterface<FileTaskResult> &fi)
     }
     downloader.download(fi, items, (m_proxyFactory.isNull() ? 0 : m_proxyFactory->clone()));
     el.exec();  // That's tricky here, we need to run our own event loop to keep QNAM working.
+}
+
+void DownloadFileTask::setSlbToken(const QByteArray &newSlbToken)
+{
+    m_slbToken = newSlbToken;
 }
 
 }   // namespace QInstaller

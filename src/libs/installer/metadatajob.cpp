@@ -352,6 +352,7 @@ bool MetadataJob::startXMLTask()
     if (tempPackages.length() > 0) {
         DownloadFileTask *const xmlTask = new DownloadFileTask(tempPackages);
         xmlTask->setProxyFactory(m_core->proxyFactory());
+        xmlTask->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
         connect(&m_xmlTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
                 &MetadataJob::progressChanged);
         m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));

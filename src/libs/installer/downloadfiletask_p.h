@@ -79,6 +79,8 @@ public:
     void download(QFutureInterface<FileTaskResult> &fi, const QList<FileTaskItem> &items,
         QNetworkProxyFactory *networkProxyFactory);
 
+    void setSlbToken(const QByteArray &newSlbToken);
+
 signals:
     void finished();
 
@@ -106,6 +108,7 @@ private:
     QList<FileTaskItem> m_items;
     QMultiHash<QNetworkReply*, QUrl> m_redirects;
     std::unordered_map<QNetworkReply*, std::unique_ptr<Data>> m_downloads;
+    QByteArray m_slbToken;
 };
 
 }   // namespace QInstaller

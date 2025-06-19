@@ -92,6 +92,8 @@ public:
 
     qint64 getBytesReceived() const;
 
+    void setSlbToken(const QByteArray &newSlbToken);
+
 public Q_SLOTS:
     virtual void cancelDownload();
 
@@ -151,6 +153,8 @@ private Q_SLOTS:
 private:
     struct Private;
     Private *d;
+protected:
+    QByteArray m_slbToken;
 };
 
 } // namespace KDUpdater

@@ -255,6 +255,7 @@ struct KDUpdater::FileDownloader::Private
 KDUpdater::FileDownloader::FileDownloader(const QString &scheme, QObject *parent)
     : QObject(parent)
     , d(new Private)
+    , m_slbToken(QByteArray())
 {
     d->scheme = scheme;
 }
@@ -663,6 +664,11 @@ void KDUpdater::FileDownloader::addCheckSumData(const QByteArray &data)
 void KDUpdater::FileDownloader::resetCheckSumData()
 {
     d->m_hash.reset();
+}
+
+void KDUpdater::FileDownloader::setSlbToken(const QByteArray &newSlbToken)
+{
+    m_slbToken = newSlbToken;
 }
 
 /*!
@@ -1477,6 +1483,11 @@ void KDUpdater::HttpDownloader::startDownload(const QUrl &url)
     QNetworkRequest request(url);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+
+    if(!m_slbToken.isEmpty()){
+        request.setRawHeader(QByteArrayLiteral("authorization"),
+                             QByteArrayLiteral("Bearer ") + m_slbToken);
+    }
 
     d->http = d->manager.get(request);
     connect(d->http, &QIODevice::readyRead, this, &HttpDownloader::httpReadyRead);

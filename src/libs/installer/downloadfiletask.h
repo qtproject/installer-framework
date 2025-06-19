@@ -100,10 +100,13 @@ public:
 
     void doTask(QFutureInterface<FileTaskResult> &fi) override;
 
+    void setSlbToken(const QByteArray &newSlbToken);
+
 private:
     friend class Downloader;
     QAuthenticator m_authenticator;
     QScopedPointer<KDUpdater::FileDownloaderProxyFactory> m_proxyFactory;
+    QByteArray m_slbToken;
 };
 
 }   // namespace QInstaller

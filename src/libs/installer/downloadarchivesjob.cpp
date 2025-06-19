@@ -380,6 +380,7 @@ KDUpdater::FileDownloader *DownloadArchivesJob::setupDownloader(const QString &s
         const QUrl url(m_archivesToDownload.first().sourceUrl + suffix + fullQueryString);
         const QString &scheme = url.scheme();
         downloader = FileDownloaderFactory::instance().create(scheme, this);
+        downloader->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
 
         if (downloader) {
             downloader->setUrl(url);
