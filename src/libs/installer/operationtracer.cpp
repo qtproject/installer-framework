@@ -107,6 +107,12 @@ void OperationTracer::trace(const QString &state)
     if (m_operation->requiresUnreplacedVariables())
         args = m_operation->packageManager()->replaceVariables(m_operation->arguments());
 
+    if(args.contains(QLatin1String("--regkey"))|| args.contains(QLatin1String("--proxyuser")))
+    {
+        args.replace(2,QLatin1String(""));
+        args.replace(4,QLatin1String(""));
+    }
+
     qCDebug(lcInstallerInstallLog).noquote() << QString::fromLatin1("\t- arguments: %1")
         .arg(args.join(QLatin1String(", ")));
 }
