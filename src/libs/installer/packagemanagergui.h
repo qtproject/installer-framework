@@ -277,6 +277,7 @@ private:
     QRadioButton *m_packageManager;
     QRadioButton *m_updateComponents;
     QRadioButton *m_removeAllComponents;
+    QRadioButton *m_configureSettings;
 
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;
