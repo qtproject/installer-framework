@@ -967,9 +967,9 @@ static QNetworkProxy readProxy(QXmlStreamReader &reader)
         else if (reader.name() == QLatin1String("Port"))
             proxy.setPort(reader.readElementText().toInt());
         else if (reader.name() == QLatin1String("Username"))
-            proxy.setUser(reader.readElementText());
+            proxy.setUser(QString::fromUtf8(QByteArray::fromBase64(reader.readElementText().toUtf8())));
         else if (reader.name() == QLatin1String("Password"))
-            proxy.setPassword(reader.readElementText());
+            proxy.setPassword(QString::fromUtf8(QByteArray::fromBase64(reader.readElementText().toUtf8())));
         else
             reader.skipCurrentElement();
     }
@@ -1051,15 +1051,15 @@ void PackageManagerCorePrivate::writeMaintenanceConfigFiles()
                 const QNetworkProxy &ftpProxy = m_data.settings().ftpProxy();
                 writer.writeTextElement(QLatin1String("Host"), ftpProxy.hostName());
                 writer.writeTextElement(QLatin1String("Port"), QString::number(ftpProxy.port()));
-                writer.writeTextElement(QLatin1String("Username"), ftpProxy.user());
-                writer.writeTextElement(QLatin1String("Password"), ftpProxy.password());
+                writer.writeTextElement(QLatin1String("Username"), QString::fromUtf8(ftpProxy.user().toUtf8().toBase64()));
+                writer.writeTextElement(QLatin1String("Password"), QString::fromUtf8(ftpProxy.password().toUtf8().toBase64()));
             writer.writeEndElement();
             writer.writeStartElement(QLatin1String("Http"));
                 const QNetworkProxy &httpProxy = m_data.settings().httpProxy();
                 writer.writeTextElement(QLatin1String("Host"), httpProxy.hostName());
                 writer.writeTextElement(QLatin1String("Port"), QString::number(httpProxy.port()));
-                writer.writeTextElement(QLatin1String("Username"), httpProxy.user());
-                writer.writeTextElement(QLatin1String("Password"), httpProxy.password());
+                writer.writeTextElement(QLatin1String("Username"), QString::fromUtf8(httpProxy.user().toUtf8().toBase64()));
+                writer.writeTextElement(QLatin1String("Password"), QString::fromUtf8(httpProxy.password().toUtf8().toBase64()));
             writer.writeEndElement();
 
             writer.writeStartElement(QLatin1String("Repositories"));

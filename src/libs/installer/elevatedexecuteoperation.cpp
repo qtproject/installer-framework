@@ -190,8 +190,15 @@ int ElevatedExecuteOperation::Private::run(QStringList &arguments, const Operati
     //readProcessOutput should only called from this current Thread -> Qt::DirectConnection
     QObject::connect(process, SIGNAL(readyRead()), q, SLOT(readProcessOutput()), Qt::DirectConnection);
     process->start(args.front(), args.mid(1));
-    qCDebug(QInstaller::lcInstallerInstallLog) << args.front() << "started, arguments:"
-        << QStringList(args.mid(1)).join(QLatin1String(" "));
+    if(args.contains(QLatin1String("--regkey")) || args.contains(QLatin1String("--proxyuser")))
+    {
+        qCDebug(QInstaller::lcInstallerInstallLog) << args.front() << "started, arguments:";
+    }
+    else
+    {
+        qCDebug(QInstaller::lcInstallerInstallLog) << args.front() << "started, arguments:"
+                                                   << QStringList(args.mid(1)).join(QLatin1String(" "));
+    }
 
     bool success = false;
     //we still like the none blocking possibility to perform this operation without threads

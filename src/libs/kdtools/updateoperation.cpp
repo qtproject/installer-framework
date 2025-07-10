@@ -543,18 +543,40 @@ QDomDocument UpdateOperation::toXml() const
 
     QDomElement args = doc.createElement(QLatin1String("arguments"));
     const QString target = m_core ? m_core->value(QInstaller::scTargetDir) : QString();
-    Q_FOREACH (const QString &s, arguments()) {
-        QDomElement arg = doc.createElement(QLatin1String("argument"));
-        // Do not call cleanPath to Execute operations paths. The operation might require the
-        // exact separators that are set in the operation call.
-        if (name() == QLatin1String("Execute")) {
-            arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
-                QLatin1String(QInstaller::scRelocatable), false)));
-        } else {
-            arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
-                QLatin1String(QInstaller::scRelocatable))));
+    if(arguments().contains(QLatin1String("--regkey")) || arguments().contains(QLatin1String("--proxyuser")))
+    {
+        QStringList refinedArgList = arguments();
+        refinedArgList.replace(2,QLatin1String(""));
+        refinedArgList.replace(4,QLatin1String(""));
+        Q_FOREACH (const QString &s, refinedArgList) {
+            QDomElement arg = doc.createElement(QLatin1String("argument"));
+            // Do not call cleanPath to Execute operations paths. The operation might require the
+            // exact separators that are set in the operation call.
+            if (name() == QLatin1String("Execute")) {
+                arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                                                                           QLatin1String(QInstaller::scRelocatable), false)));
+            } else {
+                arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                                                                           QLatin1String(QInstaller::scRelocatable))));
+            }
+            args.appendChild(arg);
         }
-        args.appendChild(arg);
+    }
+    else
+    {
+        Q_FOREACH (const QString &s, arguments()) {
+            QDomElement arg = doc.createElement(QLatin1String("argument"));
+            // Do not call cleanPath to Execute operations paths. The operation might require the
+            // exact separators that are set in the operation call.
+            if (name() == QLatin1String("Execute")) {
+                arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                                                                           QLatin1String(QInstaller::scRelocatable), false)));
+            } else {
+                arg.appendChild(doc.createTextNode(QInstaller::replacePath(s, target,
+                                                                           QLatin1String(QInstaller::scRelocatable))));
+            }
+            args.appendChild(arg);
+        }
     }
     root.appendChild(args);
     if (m_values.isEmpty())
