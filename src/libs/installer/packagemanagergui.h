@@ -90,7 +90,7 @@ public Q_SLOTS:
     void rejectWithoutPrompt();
     void showFinishedPage();
     void setModified(bool value);
-    void setMaxSize();
+    void setSizes();
     void updatePageListWidget();
 
 protected Q_SLOTS:

@@ -472,15 +472,19 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     m_core->setGuiObject(this);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
+    setBannerSizePolicy(QWizard::BannerSizePolicy::Stretch);
+#endif
+
     // We need to create this ugly hack so that the installer doesn't exceed the maximum size of the
     // screen. The screen size where the widget lies is not available until the widget is visible.
-    QTimer::singleShot(30, this, SLOT(setMaxSize()));
+    QTimer::singleShot(30, this, SLOT(setSizes()));
 }
 
 /*!
     Limits installer maximum size to screen size.
 */
-void PackageManagerGui::setMaxSize()
+void PackageManagerGui::setSizes()
 {
     QSize size = this->screen()->availableGeometry().size();
     int windowFrameHeight = frameGeometry().height() - geometry().height();
@@ -488,6 +492,9 @@ void PackageManagerGui::setMaxSize()
 
     size.setHeight(availableHeight);
     setMaximumSize(size);
+
+    if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
+        setMinimumWidth(m_core->settings().wizardDefaultWidth());
 }
 
 /*!
@@ -1344,16 +1351,6 @@ QPixmap PackageManagerPage::wizardPixmap(const QString &pixmapType) const
     QString pixmapStr = m_core->value(pixmapType);
     QInstaller::replaceHighDpiImage(pixmapStr);
     QPixmap pixmap(pixmapStr);
-    if (pixmapType == scBanner) {
-        if (!pixmap.isNull()) {
-            int width;
-            if (m_core->settings().containsValue(QLatin1String("WizardDefaultWidth")) )
-                width = m_core->settings().wizardDefaultWidth();
-            else
-                width = size().width();
-            pixmap = pixmap.scaledToWidth(width, Qt::SmoothTransformation);
-        }
-    }
     return pixmap;
 }
 
