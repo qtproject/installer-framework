@@ -1561,8 +1561,8 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_configureSettings->setObjectName(QLatin1String("ConfigureSettingsRadioButton"));
     boxLayout->addWidget(m_configureSettings);
     connect(m_configureSettings, &QAbstractButton::toggled, this, [&](bool toggled){
-        resetFetchedState();
-        PackageManagerCore().fetchRemotePackagesTree();
+        if (toggled)
+            resetFetchedState();
         setPackageManager(toggled);
     });
 
