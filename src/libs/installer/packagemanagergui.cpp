@@ -1562,7 +1562,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     boxLayout->addWidget(m_configureSettings);
     connect(m_configureSettings, &QAbstractButton::toggled, this, [&](bool toggled){
         resetFetchedState();
-        PackageManagerCore().fetchRemotePackagesTree();
+        m_allPackagesFetched = PackageManagerCore().fetchRemotePackagesTree();
         setPackageManager(toggled);
     });
 
