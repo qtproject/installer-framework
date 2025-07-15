@@ -170,6 +170,8 @@ versionAtLeast(QT_MAJOR_VERSION, 6) {
     CONFIG+=c++11
 }
 
+win32:CONFIG += console
+
 exists(".git") {
     GIT_SHA1 = $$system(git rev-list --abbrev-commit -n1 HEAD)
 }
