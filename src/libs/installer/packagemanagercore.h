@@ -151,7 +151,7 @@ public:
 
     PackagesList remotePackages();
     bool fetchRemotePackagesTree(const QStringList& components = QStringList());
-    bool fetchCompressedPackagesTree();
+    Q_INVOKABLE bool fetchCompressedPackagesTree();
     bool fetchPackagesWithFallbackRepositories(const QStringList& components, bool &fallBackReposFetched);
 
     bool run();
@@ -234,7 +234,7 @@ public:
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
     Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,
                                               bool replace = false, bool compressed = false);
-    bool addQBspRepositories(const QStringList &repositories);
+    Q_INVOKABLE bool addQBspRepositories(const QStringList &repositories);
     bool validRepositoriesAvailable() const;
     Q_INVOKABLE void setAllowCompressedRepositoryInstall(bool allow);
     bool allowCompressedRepositoryInstall() const;
