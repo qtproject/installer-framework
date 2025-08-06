@@ -232,6 +232,7 @@ public:
     void addAliasSource(const AliasSource &source);
 
     Q_INVOKABLE void addUserRepositories(const QStringList &repositories);
+    Q_INVOKABLE void removeUserRepositories();
     Q_INVOKABLE void setTemporaryRepositories(const QStringList &repositories,
                                               bool replace = false, bool compressed = false);
     Q_INVOKABLE bool addQBspRepositories(const QStringList &repositories);

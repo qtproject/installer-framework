@@ -2003,6 +2003,11 @@ void PackageManagerCore::addUserRepositories(const QStringList &repositories)
     settings().addUserRepositories(repositorySet);
 }
 
+void PackageManagerCore::removeUserRepositories()
+{
+    settings().removeUserRepositories();
+}
+
 /*!
     Sets additional \a repositories for this instance of the installer or updater
     if \a replace is \c false. \a compressed repositories can be added as well.

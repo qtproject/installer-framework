@@ -842,6 +842,11 @@ void Settings::addUserRepositories(const QSet<Repository> &repositories)
         d->m_data.insert(scUserRepositories, QVariant().fromValue(repository));
 }
 
+void Settings::removeUserRepositories()
+{
+    d->m_data.remove(scUserRepositories);
+}
+
 Settings::Update Settings::updateUserRepositories(const RepoHash &updates)
 {
     if (updates.isEmpty())

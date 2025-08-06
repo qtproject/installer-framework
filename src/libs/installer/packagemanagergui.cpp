@@ -1544,6 +1544,20 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
         m_msgLabel->setText(tr("Select from following options, which way you want to proceed."));
     }
 
+    QWidget *widgetLocalBundle = new QWidget(this);
+    QVBoxLayout *boxLayoutLocalBundle = new QVBoxLayout(widgetLocalBundle);
+    m_bundleSelectionLabel = new QLabel(this);
+    m_bundleSelectionLabel->setObjectName(QLatin1String("bundleSelectionLabel"));
+    m_bundleSelectionLabel->setText(tr("Specify whether you want to use a local application bundle or an online source."));
+    boxLayoutLocalBundle->addWidget(m_bundleSelectionLabel);
+    m_cloudBundleOption = new QRadioButton(tr("&Fetch bundle from Barco Cloud"), this);
+    m_cloudBundleOption->setObjectName(QLatin1String("cloudBundleOption"));
+    m_cloudBundleOption->setChecked(true);
+    boxLayoutLocalBundle->addWidget(m_cloudBundleOption);
+    m_localBundleOption = new QRadioButton(tr("&Offline installation"), this);
+    m_localBundleOption->setObjectName(QLatin1String("localBundleOption"));
+    boxLayoutLocalBundle->addWidget(m_localBundleOption);
+
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
 
@@ -1597,8 +1611,9 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
 
     layout->addWidget(m_msgLabel);
+    layout->addWidget(widgetLocalBundle);
+    layout->addItem(new QSpacerItem(1, 30, QSizePolicy::Minimum, QSizePolicy::Fixed));
     layout->addWidget(widget);
-    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
 
     connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
     connect(core, &PackageManagerCore::metaJobTotalProgress, this, &IntroductionPage::setTotalProgress);

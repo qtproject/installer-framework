@@ -141,6 +141,7 @@ public:
     QSet<Repository> userRepositories() const;
     void setUserRepositories(const QSet<Repository> &repositories);
     void addUserRepositories(const QSet<Repository> &repositories);
+    void removeUserRepositories();
     Settings::Update updateUserRepositories(const RepoHash &updates);
 
     bool allowSpaceInPath() const;
