@@ -3156,7 +3156,7 @@ void FinishedPage::entering()
     } else {
         // TODO: how to handle this using the config.xml
         finishedText.prepend(tr("%1 installation was not complete or was interrupted by some reason.").arg(productName()));
-        setColoredTitle(tr("%1 installation was unsuccessful.").arg(productName()));
+        // setColoredTitle(tr("%1 installation was unsuccessful.").arg(productName()));   //not changing page title, otherwise no way to change it back.
         setPageListTitle(tr("Finished"));
     }
     m_msgLabel->setText(finishedText);
