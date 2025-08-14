@@ -394,7 +394,7 @@ public:
     void setFoundEssentialUpdate(bool foundEssentialUpdate = true);
 
     bool needsHardRestart() const;
-    void setNeedsHardRestart(bool needsHardRestart = true);
+    Q_INVOKABLE void setNeedsHardRestart(bool needsHardRestart = true);
     bool finishedWithSuccess() const;
 
     QStringList filesForDelayedDeletion() const;
