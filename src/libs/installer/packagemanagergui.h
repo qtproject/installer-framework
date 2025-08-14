@@ -279,10 +279,6 @@ private:
     QRadioButton *m_removeAllComponents;
     QRadioButton *m_configureSettings;
 
-    QRadioButton *m_cloudBundleOption;
-    QRadioButton *m_localBundleOption;
-    QLabel *m_bundleSelectionLabel;
-
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;
 #endif
