@@ -2944,6 +2944,7 @@ PackagesList PackageManagerCorePrivate::remotePackages()
     m_updateFinder->setAutoDelete(false);
     m_updateFinder->setPackageSources(m_packageSources + m_compressedPackageSources);
     m_updateFinder->setLocalPackageHub(m_localPackageHub);
+    m_updateFinder->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
     m_updateFinder->run();
 
     if (m_updateFinder->updates().isEmpty()) {

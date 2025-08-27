@@ -732,6 +732,7 @@ bool MetadataJob::fetchMetaDataPackages()
         setProcessedAmount(0);
         DownloadFileTask *const metadataTask = new DownloadFileTask(tempPackages);
         metadataTask->setProxyFactory(m_core->proxyFactory());
+        metadataTask->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
         m_metadataTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataTask));
         setInfoMessage(tr("Retrieving meta information from remote repository..."));
         return true;

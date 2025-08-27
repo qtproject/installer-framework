@@ -77,6 +77,7 @@ UpdateFinder::UpdateFinder()
     , m_downloadsToComplete(0)
     , m_updatesXmlTasks(0)
     , m_updatesXmlTasksToComplete(0)
+    , m_slbToken(QByteArray())
 {
 }
 
@@ -110,6 +111,11 @@ void UpdateFinder::setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub)
 void UpdateFinder::setPackageSources(const QSet<PackageSource> &sources)
 {
     m_packageSources = sources;
+}
+
+void UpdateFinder::setSlbToken(const QByteArray &newSlbToken)
+{
+    m_slbToken = newSlbToken;
 }
 
 /*!
@@ -296,6 +302,7 @@ bool UpdateFinder::downloadUpdateXMLFiles()
             if (!downloader)
                 break;
 
+            downloader->setSlbToken(m_slbToken);
             downloader->setUrl(url);
             downloader->setAutoRemoveDownloadedFile(true);
             connect(downloader, SIGNAL(downloadCanceled()), this, SLOT(slotDownloadDone()));

@@ -102,6 +102,7 @@ public:
 
     void setLocalPackageHub(std::weak_ptr<LocalPackageHub> hub);
     void setPackageSources(const QSet<QInstaller::PackageSource> &sources);
+    void setSlbToken(const QByteArray &newSlbToken);
 
 private:
     void doRun() override;
@@ -137,6 +138,7 @@ private:
     int m_updatesXmlTasks;
     int m_updatesXmlTasksToComplete;
     QList<ParseXmlFilesTask*> m_xmlFileTasks;
+    QByteArray m_slbToken;
 };
 
 } // namespace KDUpdater
