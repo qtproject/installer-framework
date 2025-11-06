@@ -44,6 +44,19 @@
 #include <QSettings>
 #include <QModelIndex>
 
+// For windows api calls
+#include <Windows.h>
+// For window drivers calls
+#include <setupapi.h>
+#include <RegStr.h>
+#include <devguid.h>
+#include <cfgmgr32.h>
+
+// Link required Windows libraries
+#pragma comment(lib, "setupapi.lib")
+#pragma comment(lib, "cfgmgr32.lib")
+#pragma comment(lib, "advapi32.lib")
+
 namespace QInstaller {
 
 struct AliasSource;
@@ -152,6 +165,7 @@ public:
     PackagesList remotePackages();
     bool fetchRemotePackagesTree(const QStringList& components = QStringList());
     Q_INVOKABLE bool fetchCompressedPackagesTree();
+    Q_INVOKABLE QStringList getGraphicsDeviceIds();
     bool fetchPackagesWithFallbackRepositories(const QStringList& components, bool &fallBackReposFetched);
 
     bool run();

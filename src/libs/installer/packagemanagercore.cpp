@@ -1700,6 +1700,57 @@ bool PackageManagerCore::fetchCompressedPackagesTree()
     return fetchPackagesTree(packages, installedPackages);
 }
 
+QStringList PackageManagerCore::getGraphicsDeviceIds()
+{
+    std::vector<std::wstring> graphicsDeviceIds;
+    SP_DEVINFO_DATA deviceInfoData = {};
+    deviceInfoData.cbSize = sizeof(deviceInfoData);
+    HDEVINFO DeviceInfoSet = SetupDiGetClassDevs(
+        (LPGUID)&GUID_DEVCLASS_DISPLAY,
+        REGSTR_KEY_PCIENUM,
+        NULL,
+        DIGCF_ALLCLASSES | DIGCF_PRESENT);
+
+    // Iterate through all devices in the set
+    for (DWORD deviceIndex = 0; SetupDiEnumDeviceInfo(DeviceInfoSet, deviceIndex, &deviceInfoData); deviceIndex++)
+    {
+        const DWORD MAX_HARDWARD_ID = MAX_DEVICE_ID_LEN * 2; // Document says MAX_DEVICE_ID_LEN, but found it's 292
+        WCHAR hardwareID[MAX_HARDWARD_ID] = {};
+        DWORD reqSize = 0;
+        if (!SetupDiGetDeviceRegistryProperty(DeviceInfoSet,
+                                              &deviceInfoData,
+                                              SPDRP_HARDWAREID,
+                                              NULL,
+                                              (PBYTE)hardwareID,
+                                              MAX_HARDWARD_ID,
+                                              &reqSize))
+        {
+            std::wstring errorMessage = L"DeviceIndex " + std::to_wstring(deviceIndex) + L" had an error " + std::to_wstring(GetLastError());
+        }
+        else
+        {
+            // Remove the revision part of the hardware ID for comparison
+            std::wstring hardwareIdString = hardwareID;
+            hardwareIdString = hardwareIdString.substr(0, hardwareIdString.rfind(L"&REV_"));
+            graphicsDeviceIds.push_back(hardwareIdString);
+        }
+    }
+
+    if(graphicsDeviceIds.empty())
+    {
+        return QStringList();
+    }
+    else{
+        QStringList retList;
+        retList.reserve(graphicsDeviceIds.size()); // pre-allocate for efficiency
+
+        for (const auto& wstr : graphicsDeviceIds) {
+            retList << QString::fromStdWString(wstr);
+        }
+        return retList;
+    }
+}
+
 bool PackageManagerCore::fetchPackagesWithFallbackRepositories(const QStringList& components, bool &fallBackReposFetched)
 {
     auto checkComponents = [&]() {
