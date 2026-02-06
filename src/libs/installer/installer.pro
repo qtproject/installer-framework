@@ -88,6 +88,7 @@ HEADERS += packagemanagercore.h \
     init.h \
     adminauthorization.h \
     elevatedexecuteoperation.h \
+    executeundoonlyuninstalloperation.h\
     fakestopprocessforupdateoperation.h \
     progresscoordinator.h \
     minimumprogressoperation.h \
@@ -196,6 +197,7 @@ SOURCES += packagemanagercore.cpp \
     downloadarchivesjob.cpp \
     init.cpp \
     elevatedexecuteoperation.cpp \
+    executeundoonlyuninstalloperation.cpp\
     fakestopprocessforupdateoperation.cpp \
     progresscoordinator.cpp \
     minimumprogressoperation.cpp \

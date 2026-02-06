@@ -37,6 +37,7 @@
 #include "selfrestartoperation.h"
 #include "installiconsoperation.h"
 #include "elevatedexecuteoperation.h"
+#include "executeundoonlyuninstalloperation.h"
 #include "fakestopprocessforupdateoperation.h"
 #include "createlinkoperation.h"
 #include "simplemovefileoperation.h"
@@ -92,6 +93,7 @@ void QInstaller::init()
     factory.registerUpdateOperation<SelfRestartOperation>(QLatin1String("SelfRestart"));
     factory.registerUpdateOperation<InstallIconsOperation>(QLatin1String("InstallIcons"));
     factory.registerUpdateOperation<ElevatedExecuteOperation>(QLatin1String("Execute"));
+    factory.registerUpdateOperation<ExecuteUndoOnlyUninstallOperation>(QLatin1String("ExecuteUndoOnlyUninstall"));
     factory.registerUpdateOperation<FakeStopProcessForUpdateOperation>(QLatin1String("FakeStopProcessForUpdate"));
     factory.registerUpdateOperation<CreateLinkOperation>(QLatin1String("CreateLink"));
     factory.registerUpdateOperation<SimpleMoveFileOperation>(QLatin1String("SimpleMoveFile"));

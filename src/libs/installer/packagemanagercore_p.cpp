@@ -2066,6 +2066,12 @@ bool PackageManagerCorePrivate::runPackageUpdater()
                 componentsByName.insert(name, component);
 
             if (isUpdater()) {
+                //Customized operation with 'keep-when-update' value won't be reverted when updating
+                if (operation->value(QLatin1String("keep-when-update")).toBool()) {
+                    nonRevertedOperations.append(operation);
+                    continue;
+                }
+
                 // We found the component, the component is not scheduled for update, the dependency solver
                 // did not add the component as install dependency and there is no replacement, keep it.
                 if ((component && !component->updateRequested() && !componentsToInstall.contains(component)
