@@ -184,6 +184,9 @@ int main(int argc, char **argv)
             parsedArgs.configFile = *it;
         } else if (*it == QLatin1String("-r") || *it == QLatin1String("--resources")) {
             ++it;
+            if (parsedArgs.compileResource)
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --resources and --compile-resource are "
+                                                                     "mutually exclusive. Use either one or the other."));
             if (it == args.end() || it->startsWith(QLatin1String("-")))
                 return printErrorAndUsageAndExit(QString::fromLatin1("Error: Resource files to include are missing."));
             parsedArgs.resources = it->split(QLatin1Char(','));
@@ -191,6 +194,9 @@ int main(int argc, char **argv)
             || *it == QLatin1String("--ignore-invalid-packages")) {
                 continue;
         } else if (*it == QLatin1String("-rcc") || *it == QLatin1String("--compile-resource")) {
+            if (!parsedArgs.resources.isEmpty())
+                return printErrorAndUsageAndExit(QString::fromLatin1("Error: --resources and --compile-resource are "
+                                                                     "mutually exclusive. Use either one or the other."));
             parsedArgs.compileResource = true;
         } else if (*it == QLatin1String("--af") || *it == QLatin1String("--archive-format")) {
             ++it;
