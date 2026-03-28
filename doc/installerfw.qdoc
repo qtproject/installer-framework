@@ -1400,6 +1400,10 @@
             \li Comma-separated list of resources to include in the installer
                 binary.
         \row
+            \li -rcc or --compile-resource
+            \li Create the resource file (update.rcc) containing the maintenance
+                tool configuration and related files.
+        \row
             \li --ignore-translations
             \li Disable the use of translation files to make testing faster.
         \row
