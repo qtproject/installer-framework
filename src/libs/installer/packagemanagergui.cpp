@@ -473,7 +473,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
     m_core->setGuiObject(this);
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 11, 0)
-    setBannerSizePolicy(QWizard::BannerSizePolicy::Stretch);
+    setOption(QWizard::WizardOption::StretchBanner, true);
 #endif
 
     // We need to create this ugly hack so that the installer doesn't exceed the maximum size of the
