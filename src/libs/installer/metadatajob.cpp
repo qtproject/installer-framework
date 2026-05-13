@@ -507,7 +507,11 @@ void MetadataJob::xmlTaskFinished()
             const QNetworkProxy proxy = e.proxy();
             if (m_core->isCommandLineInstance()) {
                 qCDebug(QInstaller::lcInstallerInstallLog).noquote() << QString::fromLatin1("The proxy %1:%2 requires a username and password").arg(proxy.hostName(), proxy.port());
-                askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+                // askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+                //without console output, not asking for credentials, as that would cause infinite loop - MI0304-409
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Missing or wrong proxy credentials."));
+                return;
             } else {
                 ProxyCredentialsDialog proxyCredentials(proxy);
                 if (proxyCredentials.exec() == QDialog::Accepted) {
@@ -533,7 +537,10 @@ void MetadataJob::xmlTaskFinished()
             if (m_core->isCommandLineInstance()) {
                 qCDebug(QInstaller::lcInstallerInstallLog) << "Server Requires Authentication";
                 qCDebug(QInstaller::lcInstallerInstallLog) << "You need to supply a username and password to access this site.";
-                askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+                // askForCredentials(&username, &password, QLatin1String("Username: "), QLatin1String("Password: "));
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Missing or wrong server credentials."));
+                return;
             } else {
                 ServerAuthenticationDialog dlg(e.message(), e.taskItem());
                 if (dlg.exec() == QDialog::Accepted) {
