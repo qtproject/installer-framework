@@ -285,11 +285,12 @@ void Downloader::errorOccurred(QNetworkReply::NetworkError error)
         if (data.taskItem.source().contains(QLatin1String("Updates.xml"), Qt::CaseInsensitive)) {
         //Do not throw error if Updates.xml not found. The repository might be removed
         //with RepositoryUpdate in Updates.xml later.
-            if (error == QNetworkReply::ContentNotFoundError || error == QNetworkReply::ContentGoneError || error == QNetworkReply::UnknownContentError) {
-                qCWarning(QInstaller::lcServer) << QString::fromLatin1("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString());
+            if (error == QNetworkReply::ProxyConnectionRefusedError || error == QNetworkReply::ProxyConnectionClosedError || error == QNetworkReply::ProxyNotFoundError
+            || error == QNetworkReply::ProxyTimeoutError || error == QNetworkReply::UnknownProxyError) {
+                m_futureInterface->reportException(TaskException(tr("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString())));
             } else {
-                m_futureInterface->reportException(
-                    TaskException(tr("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString())));
+                qCWarning(QInstaller::lcServer) << QString::fromLatin1("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString());
+
             }
         } else if (data.taskItem.source().contains(QLatin1String("_meta"), Qt::CaseInsensitive)) {
             QString errorString = tr("Network error while downloading '%1': %2.").arg(data.taskItem.source(), reply->errorString());
