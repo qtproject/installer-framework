@@ -222,14 +222,14 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
     !isEmpty(IFW_OPENSSL_CRYPTO_LIBRARY) {
         LIBS += $$IFW_OPENSSL_CRYPTO_LIBRARY
     } else {
-        unix:LIBS += -llibcrypto
-        win32:LIBS += -lliblibcrypto
+        unix:LIBS += -lcrypto
+        win32:LIBS += -llibcrypto
     }
     !isEmpty(IFW_OPENSSL_SSL_LIBRARY) {
         LIBS += $$IFW_OPENSSL_SSL_LIBRARY
     } else {
-        unix:LIBS += -llibssl
-        win32:LIBS += -lliblibssl
+        unix:LIBS += -lssl
+        win32:LIBS += -llibssl
     }
     macos {
         !isEmpty(IFW_ICONV_LIBRARY) {
