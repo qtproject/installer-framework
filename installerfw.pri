@@ -119,10 +119,13 @@ INCLUDEPATH += \
 INCLUDEPATH += $$PWD/package/bzip2/include
 INCLUDEPATH += $$PWD/package/xz/include
 INCLUDEPATH += $$PWD/package/zlib/include
+INCLUDEPATH += $$PWD/package/openssl/include
 
 IFW_BZIP2_LIBRARY = $$PWD/package/bzip2/lib/bz2_static.lib
 IFW_LZMA_LIBRARY = $$PWD/package/xz/lib/lzma.lib
 IFW_ZLIB_LIBRARY = $$PWD/package/zlib/lib/zlibstatic.lib
+IFW_OPENSSL_CRYPTO_LIBRARY = $$PWD/package/openssl/lib/libcrypto.lib
+IFW_OPENSSL_SSL_LIBRARY = $$PWD/package/openssl/lib/libssl.lib
 
 CONFIG(libarchive): INCLUDEPATH += $$IFW_SOURCE_TREE/src/libs/3rdparty/libarchive
 
@@ -215,6 +218,18 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
     } else {
         unix:LIBS += -llzma
         win32:LIBS += -lliblzma
+    }
+    !isEmpty(IFW_OPENSSL_CRYPTO_LIBRARY) {
+        LIBS += $$IFW_OPENSSL_CRYPTO_LIBRARY
+    } else {
+        unix:LIBS += -llibcrypto
+        win32:LIBS += -lliblibcrypto
+    }
+    !isEmpty(IFW_OPENSSL_SSL_LIBRARY) {
+        LIBS += $$IFW_OPENSSL_SSL_LIBRARY
+    } else {
+        unix:LIBS += -llibssl
+        win32:LIBS += -lliblibssl
     }
     macos {
         !isEmpty(IFW_ICONV_LIBRARY) {
