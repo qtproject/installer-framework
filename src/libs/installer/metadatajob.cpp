@@ -266,16 +266,18 @@ void MetadataJob::doStart()
                     // also append a random string to avoid proxy caches
                     url.append(randomQueryString);
 
-                    // Check if we can skip downloading already cached repositories
-                    const Status foundStatus = findCachedUpdatesFile(repo, url);
-                    if (foundStatus == XmlDownloadSuccess) {
-                        // Found existing Updates.xml
-                        ++cachedCount;
-                        continue;
-                    } else if (foundStatus == XmlDownloadRetry) {
-                         // Repositories changed, restart with the new repositories
-                        QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
-                        return;
+                    if (m_core->settings().persistentLocalCache()) {
+                        // Check if we can skip downloading already cached repositories
+                        const Status foundStatus = findCachedUpdatesFile(repo, url);
+                        if (foundStatus == XmlDownloadSuccess) {
+                            // Found existing Updates.xml
+                            ++cachedCount;
+                            continue;
+                        } else if (foundStatus == XmlDownloadRetry) {
+                            // Repositories changed, restart with the new repositories
+                            QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+                            return;
+                        }
                     }
 
                     // Creating a directory with QDir as QTemporaryDir does not have right permissions
@@ -832,14 +834,17 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
         }
 
         bool refreshed;
-        // Check if we have cached the metadata for this repository already
-        Status status = refreshCacheItem(result, updatesChecksum, &refreshed);
-        if (status != XmlDownloadSuccess)
-            return status;
 
-        if (refreshed) // Found existing metadata
-            continue;
+        Status status = XmlDownloadSuccess;
+        if (m_core->settings().persistentLocalCache()) {
+            // Check if we have cached the metadata for this repository already
+            status = refreshCacheItem(result, updatesChecksum, &refreshed);
+            if (status != XmlDownloadSuccess)
+                return status;
 
+            if (refreshed) // Found existing metadata
+                continue;
+        }
         metadata->setChecksum(updatesChecksum);
 
         file.seek(0);
