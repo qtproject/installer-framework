@@ -42,6 +42,8 @@ static const QLatin1String scAllUsersStartMenuProgramsPath("AllUsersStartMenuPro
 static const QLatin1String scUserStartMenuProgramsPath("UserStartMenuProgramsPath");
 static const QLatin1String scUILanguage("UILanguage");
 static const QLatin1String scUpdatesXML("Updates.xml");
+static const QLatin1String scPublicKeyPrimary("PublicKeyPrimary");
+static const QLatin1String scPublicKeySecondary("PublicKeySecondary");
 
 static const QLatin1String scName("Name");
 static const QLatin1String scVersion("Version");

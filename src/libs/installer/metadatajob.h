@@ -62,6 +62,12 @@ class INSTALLER_EXPORT MetadataJob : public Job
         XmlDownloadSuccess
     };
 
+    enum SignatureStatus {
+        SignatureDownloadRetry,
+        SignatureDownloadFailure,
+        SignatureDownloadSuccess,
+    };
+
 public:
     explicit MetadataJob(QObject *parent = 0);
     ~MetadataJob();
@@ -80,6 +86,7 @@ private slots:
     void doStart() override;
     void doCancel() override;
 
+    void signatureTaskFinished();
     void xmlTaskFinished();
     void unzipTaskFinished();
     void metadataTaskFinished();
@@ -88,6 +95,7 @@ private slots:
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
     bool startXMLTask();
+    bool startSignatureTask();
 
 private:
     bool fetchMetaDataPackages();
@@ -119,13 +127,16 @@ private:
 
     QList<FileTaskItem> m_packages;
     QList<FileTaskItem> m_updatesXmlItems;
+    QList<FileTaskItem> m_signatureItems;
     TempPathDeleter m_tempDirDeleter;
+    QFutureWatcher<FileTaskResult> m_signatureTask; //Updates.xml signature
     QFutureWatcher<FileTaskResult> m_xmlTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QFutureWatcher<void> m_updateCacheTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipRepositoryTasks;
     DownloadType m_downloadType;
+    QList<FileTaskResult> m_signatureResult;
     QList<FileTaskResult> m_metadataResult;
     QList<FileTaskResult> m_updatesXmlResult;
     int m_downloadableChunkSize;

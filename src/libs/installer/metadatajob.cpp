@@ -42,6 +42,7 @@
 #include <QtMath>
 #include <QRandomGenerator>
 #include <QApplication>
+#include "opensslsignerverifier.h"
 
 namespace QInstaller {
 
@@ -94,6 +95,7 @@ MetadataJob::MetadataJob(QObject *parent)
     }
 
     setCapabilities(Cancelable);
+    connect(&m_signatureTask, &QFutureWatcherBase::finished, this, &MetadataJob::signatureTaskFinished);
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::progressValueChanged, this, &MetadataJob::progressChanged);
@@ -242,6 +244,7 @@ void MetadataJob::doStart()
         if (onlineInstaller || m_core->isMaintainer()
                 || (m_core->settings().allowRepositoriesForOfflineInstaller() && !repositories.isEmpty())) {
             static const QString updateFilePath(QLatin1Char('/') + scUpdatesXML + QLatin1Char('?'));
+            static const QString updateSigFilePath(QLatin1Char('/') + scUpdatesXML + QLatin1String(".sig") + QLatin1Char('?'));
             static const QString randomQueryString = QString::number(QRandomGenerator::global()->generate());
 
             quint64 cachedCount = 0;
@@ -259,12 +262,14 @@ void MetadataJob::doStart()
                     if (repo.isCompressed())
                         continue;
 
-                    QString url;
+                    QString url, signatureUrl;
                     url = repo.url().toString() + updateFilePath;
+                    signatureUrl = repo.url().toString() + updateSigFilePath;
                     if (!m_core->value(scUrlQueryString).isEmpty())
                         url += m_core->value(scUrlQueryString) + QLatin1Char('&');
                     // also append a random string to avoid proxy caches
                     url.append(randomQueryString);
+                    signatureUrl.append(randomQueryString);
 
                     if (m_core->settings().persistentLocalCache()) {
                         // Check if we can skip downloading already cached repositories
@@ -290,6 +295,8 @@ void MetadataJob::doStart()
                     FileTaskItem item(url, tmp.path() + QLatin1String("/Updates.xml"));
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+                    FileTaskItem itemSignature(signatureUrl, tmp.path() + QLatin1String("/Updates.xml.sig"));
+                    m_signatureItems.append(itemSignature);
                     m_updatesXmlItems.append(item);
                 }
             }
@@ -307,7 +314,7 @@ void MetadataJob::doStart()
                 double taskCount = m_updatesXmlItems.length()/static_cast<double>(m_downloadableChunkSize);
                 m_totalTaskCount = qCeil(taskCount);
                 m_taskNumber = 0;
-                startXMLTask();
+                startSignatureTask();
             } else {
                 emitFinished();
             }
@@ -346,6 +353,24 @@ void MetadataJob::doStart()
     }
 }
 
+bool MetadataJob::startSignatureTask()
+{
+    int chunkSize = qMin(m_signatureItems.length(), m_downloadableChunkSize);
+    QList<FileTaskItem> tempPackages = m_signatureItems.mid(0, chunkSize);
+    m_signatureItems = m_signatureItems.mid(chunkSize, m_signatureItems.length());
+    if (tempPackages.length() > 0) {
+        DownloadFileTask *const signatureTask = new DownloadFileTask(tempPackages);
+        signatureTask->setProxyFactory(m_core->proxyFactory());
+        signatureTask->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
+        connect(&m_signatureTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
+                &MetadataJob::progressChanged);
+        m_signatureTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, signatureTask));
+        setInfoMessage(tr("Retrieving information from remote repositories..."));
+        return true;
+    }
+    return false;
+}
+
 bool MetadataJob::startXMLTask()
 {
     int chunkSize = qMin(m_updatesXmlItems.length(), m_downloadableChunkSize);
@@ -358,8 +383,6 @@ bool MetadataJob::startXMLTask()
         connect(&m_xmlTask, &QFutureWatcher<FileTaskResult>::progressValueChanged, this,
                 &MetadataJob::progressChanged);
         m_xmlTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, xmlTask));
-
-        setInfoMessage(tr("Retrieving information from remote repositories..."));
         return true;
     }
     return false;
@@ -449,7 +472,10 @@ void MetadataJob::unzipRepositoryTaskFinished()
                     FileTaskItem item(url, tmp.path() + QLatin1String("/Updates.xml"));
 
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                    QString signatureUrl = url + QLatin1String(".sig");
+                    FileTaskItem signatureItem(signatureUrl, tmp.path() + QLatin1String("/Updates.xml.sig"));
                     m_updatesXmlItems.append(item);
+                    m_signatureItems.append(signatureItem);
                 } else {
                     //Repository is not valid, remove it
                     Settings &s = m_core->settings();
@@ -470,7 +496,7 @@ void MetadataJob::unzipRepositoryTaskFinished()
         //One can specify many zipped repository items at once. As the repositories are
         //unzipped one by one, we collect here all items before parsing xml files from those.
        if (m_updatesXmlItems.count() > 0 && m_unzipRepositoryTasks.isEmpty()) {
-            startXMLTask();
+            startSignatureTask();
         } else {
             if (error != Job::NoError) {
                 emitFinishedWithError(QInstaller::DownloadError, errorString);
@@ -489,15 +515,20 @@ void MetadataJob::unzipRepositoryTaskFinished()
     }
 }
 
-void MetadataJob::xmlTaskFinished()
+void MetadataJob::signatureTaskFinished()
 {
-    Status status = XmlDownloadFailure;
+    qCWarning(QInstaller::lcInstallerInstallLog) << "signatureTaskFinished start";
+    SignatureStatus status = SignatureDownloadFailure;
     try {
-        m_xmlTask.waitForFinished();
-        m_updatesXmlResult.append(m_xmlTask.future().results());
-        if (!startXMLTask()) {
-            status = parseUpdatesXml(m_updatesXmlResult);
-            m_updatesXmlResult.clear();
+        m_signatureTask.waitForFinished();
+        m_signatureResult.append(m_signatureTask.future().results());
+        for (int var = 0; var < m_signatureResult.size(); ++var) {
+            qCWarning(QInstaller::lcInstallerInstallLog) << QStringLiteral("signature file:%1").arg(m_signatureResult[var].target());
+        }
+        if (!startSignatureTask()) {
+            status = SignatureDownloadSuccess;
+            setInfoMessage(tr("signature task finished..."));
+            startXMLTask();
         } else {
             return;
         }
@@ -527,7 +558,7 @@ void MetadataJob::xmlTaskFinished()
 
                 factory->setProxyCredentials(proxy, username, password);
                 m_core->setProxyFactory(factory);
-                status = XmlDownloadRetry;
+                status = SignatureDownloadRetry;
             } else {
                 reset();
                 emitFinishedWithError(QInstaller::DownloadError, tr("Missing proxy credentials."));
@@ -584,11 +615,91 @@ void MetadataJob::xmlTaskFinished()
                             }
                     }
                 }
-                status = XmlDownloadRetry;
+                status = SignatureDownloadRetry;
             } else {
                 reset();
                 emitFinishedWithError(QInstaller::DownloadError, tr("Authentication failed."));
             }
+        }
+    } catch (const TaskException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, e.message());
+    } catch (const QUnhandledException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
+    } catch (...) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during download."));
+    }
+
+    if (error() != Job::NoError)
+        return;
+
+    if (status == SignatureDownloadSuccess) {
+        ;
+    } else if (status == SignatureDownloadRetry) {
+        reset();
+        QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
+    } else {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, tr("Failure to fetch repositories."));
+    }
+}
+
+void MetadataJob::xmlTaskFinished()
+{
+    setInfoMessage(tr("Processing repository information..."));
+    Status status = XmlDownloadFailure;
+    try {
+        m_xmlTask.waitForFinished();
+        m_updatesXmlResult.append(m_xmlTask.future().results());
+        for (int var = 0; var < m_updatesXmlResult.size(); ++var) {
+            qCWarning(QInstaller::lcInstallerInstallLog) << QStringLiteral("xml file:%1").arg(m_updatesXmlResult.at(var).target());
+        }
+        for (const FileTaskResult & result : m_updatesXmlResult)
+        {
+            QFileInfo fi(result.target());
+            QString xmlPath = fi.absolutePath();
+            QString signatureFilePath = result.target() + QLatin1String(".sig");
+            if (!QFile::exists(signatureFilePath)) {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Signature file not found for %1.").arg(result.target()));
+                return;
+            }
+            QFile signatureFile(signatureFilePath);
+            if (!signatureFile.open(QIODevice::ReadOnly)) {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Open signature file failed for %1.").arg(result.target()));
+                return;
+            }
+            const QByteArray signatureData = signatureFile.readAll();
+            signatureFile.close();
+
+            QFile xmlFile(result.target());
+            if (!xmlFile.open(QIODevice::ReadOnly)) {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Open xml file failed for %1.").arg(result.target()));
+                return;
+            }
+            const QByteArray xmlData = xmlFile.readAll();
+            xmlFile.close();
+            QList<QByteArray> publicKeyList;
+            if (!m_core->value(scPublicKeyPrimary).isEmpty())
+                publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
+            if (!m_core->value(scPublicKeySecondary).isEmpty())
+                publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
+            bool verified = OpenSslSignerVerifier::verifyEd25519(xmlData, signatureData, publicKeyList);
+            if (!verified) {
+                reset();
+                emitFinishedWithError(QInstaller::DownloadError, tr("Signature verification failed for %1.").arg(result.target()));
+                return;
+            }
+        }
+        if (!startXMLTask()) {
+            status = parseUpdatesXml(m_updatesXmlResult);
+            m_updatesXmlResult.clear();
+        } else {
+            return;
         }
     } catch (const TaskException &e) {
         reset();
@@ -610,9 +721,6 @@ void MetadataJob::xmlTaskFinished()
             // for refreshed repositories.
             startUpdateCacheTask();
         }
-    } else if (status == XmlDownloadRetry) {
-        reset();
-        QMetaObject::invokeMethod(this, "doStart", Qt::QueuedConnection);
     } else {
         reset();
         emitFinishedWithError(QInstaller::DownloadError, tr("Failure to fetch repositories."));
@@ -753,6 +861,7 @@ void MetadataJob::reset()
 {
     m_packages.clear();
     m_updatesXmlItems.clear();
+    m_signatureItems.clear();
     m_defaultRepositoriesFetched = false;
     m_fetchedCategorizedRepositories.clear();
 
@@ -764,12 +873,15 @@ void MetadataJob::reset()
     setCapabilities(Cancelable);
 
     try {
+        m_signatureTask.cancel();
+        m_signatureTask.waitForFinished();
         m_xmlTask.cancel();
         m_xmlTask.waitForFinished();
         m_metadataTask.cancel();
         m_metadataTask.waitForFinished();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
+    m_signatureResult.clear();
     m_metadataResult.clear();
     m_updatesXmlResult.clear();
     m_taskNumber = 0;
