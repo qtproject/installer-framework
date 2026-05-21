@@ -833,11 +833,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                 << repository.xmlChecksum() << Qt::endl;
         }
 
-        bool refreshed;
 
         Status status = XmlDownloadSuccess;
         if (m_core->settings().persistentLocalCache()) {
             // Check if we have cached the metadata for this repository already
+            bool refreshed;
             status = refreshCacheItem(result, updatesChecksum, &refreshed);
             if (status != XmlDownloadSuccess)
                 return status;
