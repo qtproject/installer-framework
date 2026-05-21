@@ -231,6 +231,7 @@ CONFIG(libarchive):equals(TEMPLATE, app) {
         unix:LIBS += -lssl
         win32:LIBS += -llibssl
     }
+    win32:LIBS += -lcrypt32 -lws2_32 -ladvapi32 -luser32
     macos {
         !isEmpty(IFW_ICONV_LIBRARY) {
             LIBS += $$IFW_ICONV_LIBRARY

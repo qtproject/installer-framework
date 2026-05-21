@@ -152,7 +152,8 @@ HEADERS += packagemanagercore.h \
     clickablelabel.h \
     categorycombobox.h \
     horizontalruler.h \
-    spacewidget.h
+    spacewidget.h   \
+    opensslsignerverifier.h
 
 SOURCES += packagemanagercore.cpp \
     abstractarchive.cpp \
@@ -247,7 +248,8 @@ SOURCES += packagemanagercore.cpp \
     clickablelabel.cpp \
     categorycombobox.cpp \
     horizontalruler.cpp \
-    spacewidget.cpp
+    spacewidget.cpp \
+    opensslsignerverifier.cpp
 
 macos:SOURCES += fileutils_mac.mm
 
