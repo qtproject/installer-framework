@@ -7,12 +7,15 @@
 
 #include "downloadfiletask_p.h"
 #include "globals.h"
+#include "loggingutils.h"
 #include "productkeycheck.h"
 
 #include <QCoreApplication>
 #include <QDir>
 #include <QEventLoop>
 #include <QFileInfo>
+#include <QHostAddress>
+#include <QHostInfo>
 #include <QNetworkProxyFactory>
 #include <QSslError>
 #include <QTemporaryFile>
@@ -472,6 +475,20 @@ QNetworkReply *Downloader::startDownload(const FileTaskItem &item)
             .arg(source.toString(), source.errorString())));
         return 0;
     }
+
+    if (QInstaller::lcServer().isDebugEnabled()
+            && LoggingHandler::instance().verboseLevel() == LoggingHandler::Detailed
+            && QFileInfo(source.toString()).suffix() != QLatin1String("sha1")) {
+        const QString hostName = source.host();
+        const QHostInfo info = QHostInfo::fromName(hostName);
+        QStringList hostAddresses;
+        const auto addresses = info.addresses();
+        for (const QHostAddress &address : addresses)
+            hostAddresses << address.toString();
+        qCDebug(QInstaller::lcServer) << "Using host:" << hostName
+                << "for" << source.fileName() << "\nIP:" << hostAddresses;
+    }
+
     QNetworkRequest request(source);
     request.setAttribute(QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy);
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
