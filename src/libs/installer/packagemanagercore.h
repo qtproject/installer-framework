@@ -101,7 +101,7 @@ public:
         NoPackagesFound = 7
     };
     Status status() const;
-    QString error() const;
+    Q_INVOKABLE QString error() const;
 
     enum WizardPage {
         Introduction = 0x1000,

@@ -3036,6 +3036,7 @@ bool PackageManagerCorePrivate::fetchMetaInformationFromRepositories(DownloadTyp
             default:
                 if(isCompressedRepo){
                     qCWarning(QInstaller::lcInstallerInstallLog) << m_metadataJob.errorString();
+                    m_error = m_metadataJob.errorString();
                     return m_repoFetched;   //previous false compressed repo will block next right compressed one
                 }
                 setStatus(PackageManagerCore::Failure, m_metadataJob.errorString());   
