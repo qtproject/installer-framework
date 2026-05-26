@@ -1,4 +1,4 @@
-#include "opensslsignerverifier.h"
+#include "signatureverifier.h"
 
 #include <QList>
 
@@ -132,7 +132,7 @@ EVP_PKEY *loadPrivateKey(const QByteArray &privateKeyData)
 }
 
 //sign with ED25519 and verify with ED25519, which is supported by OpenSSL 1.1.1 and later
-QByteArray OpenSslSignerVerifier::signEd25519(const QByteArray &data,
+QByteArray SignatureVerifier::sign(const QByteArray &data,
                                              const QByteArray &privateKeyPem,
                                              QString *errorMessage)
 {
@@ -188,7 +188,7 @@ QByteArray OpenSslSignerVerifier::signEd25519(const QByteArray &data,
     return signature;
 }
 
-bool OpenSslSignerVerifier::verifyEd25519(const QByteArray &data,
+bool SignatureVerifier::verify(const QByteArray &data,
                                          const QByteArray &signature,
                                          const QByteArray &publicKeyPem,
                                          QString *errorMessage)
@@ -236,13 +236,13 @@ bool OpenSslSignerVerifier::verifyEd25519(const QByteArray &data,
     return false;
 }
 
-bool OpenSslSignerVerifier::verifyEd25519(const QByteArray &data,
+bool SignatureVerifier::verify(const QByteArray &data,
                                          const QByteArray &signature,
                                          const QList<QByteArray> &publicKeyPemList,
                                          QString *errorMessage)
 {
     for (const QByteArray &publicKeyPem : publicKeyPemList) {
-        if (verifyEd25519(data, signature, publicKeyPem, errorMessage)) {
+        if (verify(data, signature, publicKeyPem, errorMessage)) {
             return true;
         }
     }

@@ -42,7 +42,7 @@
 #include <QtMath>
 #include <QRandomGenerator>
 #include <QApplication>
-#include "opensslsignerverifier.h"
+#include "signatureverifier.h"
 
 namespace QInstaller {
 
@@ -688,7 +688,7 @@ void MetadataJob::xmlTaskFinished()
                 publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
             if (!m_core->value(scPublicKeySecondary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
-            bool verified = OpenSslSignerVerifier::verifyEd25519(xmlData, signatureData, publicKeyList);
+            bool verified = SignatureVerifier::verify(xmlData, signatureData, publicKeyList);
             if (!verified) {
                 reset();
                 emitFinishedWithError(QInstaller::DownloadError, tr("Signature verification failed for %1.").arg(result.target()));

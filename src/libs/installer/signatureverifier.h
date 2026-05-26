@@ -4,20 +4,20 @@
 #include <QString>
 #include <QList>
 
-class OpenSslSignerVerifier
+class SignatureVerifier
 {
 public:
 
-    static QByteArray signEd25519(const QByteArray &data,
+    static QByteArray sign(const QByteArray &data,
                                  const QByteArray &privateKeyPem,
                                  QString *errorMessage = nullptr);
 
-    static bool verifyEd25519(const QByteArray &data,
+    static bool verify(const QByteArray &data,
                              const QByteArray &signature,
                             const QByteArray &publicKeyPem,
                             QString *errorMessage = nullptr);
 
-    static bool verifyEd25519(const QByteArray &data,
+    static bool verify(const QByteArray &data,
                              const QByteArray &signature,
                             const QList<QByteArray> &publicKeyPemList,
                               QString *errorMessage = nullptr);
