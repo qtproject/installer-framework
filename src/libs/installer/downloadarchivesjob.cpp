@@ -36,6 +36,7 @@
 
 #include "filedownloader.h"
 #include "filedownloaderfactory.h"
+#include "signatureverifier.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>
@@ -100,7 +101,7 @@ void DownloadArchivesJob::doStart()
 {
     m_totalDownloadSpeedTimer.start();
     m_archivesDownloaded = 0;
-    fetchNextArchiveHash();
+    fetchNextArchiveSignature();
 }
 
 /*!
@@ -111,6 +112,32 @@ void DownloadArchivesJob::doCancel()
     m_canceled = true;
     if (m_downloader != nullptr)
         m_downloader->cancelDownload();
+}
+
+void DownloadArchivesJob::fetchNextArchiveSignature()
+{
+    if (m_archivesToDownload.isEmpty()) {
+        emitFinished();
+        return;
+    }
+    if (m_canceled) 
+    {
+        finishWithError(tr("Canceled"));
+        return;
+    }
+    if (m_downloader)
+        m_downloader->deleteLater();
+
+    m_downloader = setupDownloader(QLatin1String(".sig"));
+    if (!m_downloader) {
+        m_archivesToDownload.removeFirst();
+        QMetaObject::invokeMethod(this, "fetchNextArchiveSignature", Qt::QueuedConnection);
+        return;
+    }
+
+    connect(m_downloader, &FileDownloader::downloadCompleted,
+            this, &DownloadArchivesJob::finishedSignatureDownload, Qt::QueuedConnection);
+    m_downloader->download();
 }
 
 void DownloadArchivesJob::fetchNextArchiveHash()
@@ -132,7 +159,7 @@ void DownloadArchivesJob::fetchNextArchiveHash()
         m_downloader = setupDownloader(QLatin1String(".sha1"));
         if (!m_downloader) {
             m_archivesToDownload.removeFirst();
-            QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "fetchNextArchiveSignature", Qt::QueuedConnection);
             return;
         }
 
@@ -144,17 +171,49 @@ void DownloadArchivesJob::fetchNextArchiveHash()
     }
 }
 
+void DownloadArchivesJob::finishedSignatureDownload()
+{
+    Q_ASSERT(m_downloader != nullptr);
+    QFile signatureFile(m_downloader->downloadedFileName());
+    emit outputTextChanged(tr("signature file path: %1").arg(m_downloader->downloadedFileName()));
+    if (signatureFile.open(QFile::ReadOnly)) {
+        emit signatureDownloadReady(m_downloader->downloadedFileName());
+        signatureFile.close();
+        fetchNextArchiveHash();
+    } else {
+        finishWithError(tr("Downloading signature failed."));
+    }
+}
+
 void DownloadArchivesJob::finishedHashDownload()
 {
     Q_ASSERT(m_downloader != nullptr);
-
     QFile sha1HashFile(m_downloader->downloadedFileName());
+    QString signatureFileName = m_downloader->downloadedFileName();
+    signatureFileName.chop(5); // remove ".sha1"
+    signatureFileName.append(QStringLiteral(".sig"));
+    if (!QFile::exists(signatureFileName)) {
+        finishWithError(tr("Downloading signature failed."));
+    }
+    QFile signatureFile(signatureFileName);
+    if (!signatureFile.open(QFile::ReadOnly)) {
+        finishWithError(tr("Open signature file failed."));
+    }
     if (sha1HashFile.open(QFile::ReadOnly)) {
         emit hashDownloadReady(m_downloader->downloadedFileName());
         m_currentHash = sha1HashFile.readAll();
         fetchNextArchive();
     } else {
         finishWithError(tr("Downloading hash signature failed."));
+    }
+    QByteArray signature = signatureFile.readAll();
+    QList<QByteArray> publicKeyList;
+    if (!m_core->value(scPublicKeyPrimary).isEmpty())
+        publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
+    if (!m_core->value(scPublicKeySecondary).isEmpty())
+        publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
+    if (!SignatureVerifier::verify(m_currentHash, signature, publicKeyList)) {
+        finishWithError(tr("Signature verification failed. hash value: %1").arg(QString::fromLatin1(m_currentHash)));
     }
 }
 
@@ -179,7 +238,7 @@ void DownloadArchivesJob::fetchNextArchive()
     m_downloader = setupDownloader(QString(), m_core->value(scUrlQueryString));
     if (!m_downloader) {
         m_archivesToDownload.removeFirst();
-        QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "fetchNextArchiveSignature", Qt::QueuedConnection);
         return;
     }
 
@@ -325,7 +384,7 @@ void DownloadArchivesJob::registerFile()
 
         emit fileDownloadReady(m_downloader->downloadedFileName());
     }
-    fetchNextArchiveHash();
+    fetchNextArchiveSignature();
 }
 
 void DownloadArchivesJob::downloadCanceled()
@@ -352,7 +411,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
             return;
          }
 
-        QMetaObject::invokeMethod(this, "fetchNextArchiveHash", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "fetchNextArchiveSignature", Qt::QueuedConnection);
     } else {
         downloadCanceled();
     }

@@ -884,6 +884,8 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
             d, &PackageManagerCorePrivate::addPathForDeletion);
     connect(&archivesJob, &DownloadArchivesJob::hashDownloadReady,
             d, &PackageManagerCorePrivate::addPathForDeletion);
+    connect(&archivesJob, &DownloadArchivesJob::signatureDownloadReady,
+            d, &PackageManagerCorePrivate::addPathForDeletion);
 
     ProgressCoordinator::instance()->registerPartProgress(&archivesJob,
         SIGNAL(progressChanged(double)), partProgressSize);

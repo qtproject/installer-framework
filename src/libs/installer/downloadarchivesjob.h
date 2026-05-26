@@ -63,6 +63,7 @@ Q_SIGNALS:
     void outputTextChanged(const QString &progress);
     void downloadStatusChanged(const QString &status);
 
+    void signatureDownloadReady(const QString &localPath);
     void hashDownloadReady(const QString &localPath);
     void fileDownloadReady(const QString &localPath);
 
@@ -81,7 +82,9 @@ protected Q_SLOTS:
     void finishWithError(const QString &error);
     void fetchNextArchive();
     void fetchNextArchiveHash();
+    void fetchNextArchiveSignature();
     void finishedHashDownload();
+    void finishedSignatureDownload();
     void emitDownloadProgress(double progress);
 
 private:
