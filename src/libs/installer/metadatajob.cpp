@@ -661,6 +661,14 @@ void MetadataJob::xmlTaskFinished()
             QFileInfo fi(result.target());
             QString xmlPath = fi.absolutePath();
             QString signatureFilePath = result.target() + QLatin1String(".sig");
+
+            QFile xmlFile(result.target());
+            if (!xmlFile.open(QIODevice::ReadOnly)) {
+                continue;
+            }
+            const QByteArray xmlData = xmlFile.readAll();
+            xmlFile.close();
+
             if (!QFile::exists(signatureFilePath)) {
                 reset();
                 emitFinishedWithError(QInstaller::DownloadError, tr("Signature file not found for %1.").arg(result.target()));
@@ -675,14 +683,6 @@ void MetadataJob::xmlTaskFinished()
             const QByteArray signatureData = signatureFile.readAll();
             signatureFile.close();
 
-            QFile xmlFile(result.target());
-            if (!xmlFile.open(QIODevice::ReadOnly)) {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Open xml file failed for %1.").arg(result.target()));
-                return;
-            }
-            const QByteArray xmlData = xmlFile.readAll();
-            xmlFile.close();
             QList<QByteArray> publicKeyList;
             if (!m_core->value(scPublicKeyPrimary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
