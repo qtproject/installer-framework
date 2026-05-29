@@ -296,6 +296,8 @@ void MetadataJob::doStart()
                     item.insert(TaskRole::UserRole, QVariant::fromValue(repo));
                     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                     FileTaskItem itemSignature(signatureUrl, tmp.path() + QLatin1String("/Updates.xml.sig"));
+                    itemSignature.insert(TaskRole::UserRole, QVariant::fromValue(repo));
+                    itemSignature.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
                     m_signatureItems.append(itemSignature);
                     m_updatesXmlItems.append(item);
                 }
