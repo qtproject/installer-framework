@@ -40,7 +40,6 @@
 
 class QTreeView;
 class QLabel;
-class QScrollArea;
 class QPushButton;
 class QGroupBox;
 class QListWidgetItem;
@@ -104,9 +103,6 @@ private:
     ComponentSelectionPage *q;
     PackageManagerCore *m_core;
     QTreeView *m_treeView;
-    QWidget *m_descriptionBaseWidget;
-    QLabel *m_sizeLabel;
-    QLabel *m_descriptionLabel;
     QPushButton *m_createOfflinePushButton;
     QPushButton *m_qbspPushButton;
     QWidget *m_categoryWidget;

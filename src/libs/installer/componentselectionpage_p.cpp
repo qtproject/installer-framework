@@ -43,7 +43,6 @@
 
 #include <QTreeView>
 #include <QLabel>
-#include <QScrollArea>
 #include <QPushButton>
 #include <QGroupBox>
 #include <QProgressBar>
@@ -72,7 +71,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
         : q(qq)
         , m_core(core)
         , m_treeView(new QTreeView(q))
-        , m_descriptionBaseWidget(nullptr)
         , m_categoryWidget(Q_NULLPTR)
         , m_allowCreateOfflineInstaller(false)
         , m_categoryLayoutVisible(false)
@@ -93,24 +91,6 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     captionFont.setPixelSize(16);
 
     m_rightSideVLayout = new QVBoxLayout;
-
-    QLabel *detailsLabel = new QLabel(tr("Details"));
-    detailsLabel->setFont(captionFont);
-    m_rightSideVLayout->addWidget(detailsLabel);
-
-    QScrollArea *descriptionScrollArea = new QScrollArea(q);
-    descriptionScrollArea->setWidgetResizable(true);
-    descriptionScrollArea->setFrameShape(QFrame::NoFrame);
-    descriptionScrollArea->setObjectName(QLatin1String("DescriptionScrollArea"));
-
-    m_descriptionLabel = new QLabel(m_descriptionBaseWidget);
-    m_descriptionLabel->setWordWrap(true);
-    m_descriptionLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    m_descriptionLabel->setOpenExternalLinks(true);
-    m_descriptionLabel->setObjectName(QLatin1String("ComponentDescriptionLabel"));
-    m_descriptionLabel->setAlignment(Qt::AlignTop);
-    descriptionScrollArea->setWidget(m_descriptionLabel);
-    m_rightSideVLayout->addWidget(descriptionScrollArea);
 
     m_advancedTitle = new QLabel(tr("Advanced"), q);
     m_advancedTitle->setFont(captionFont);
@@ -220,8 +200,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
     m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
 
-    int detailsViewWidth = std::max(m_core->settings().wizardDefaultWidth()/4, 100);
-    m_mainGLayout->setColumnMinimumWidth(1, detailsViewWidth);
+    m_mainGLayout->setColumnMinimumWidth(1, 40);
     m_mainGLayout->setColumnStretch(0, 3);
     m_mainGLayout->setColumnStretch(1, 0);
     m_stackedLayout = new QStackedLayout(q);
@@ -408,10 +387,6 @@ void ComponentSelectionPagePrivate::currentSelectedChanged(const QModelIndex &cu
     if (!current.isValid())
         return;
 
-    QString description = m_proxyModel->data(m_proxyModel->index(current.row(),
-        ComponentModelHelper::NameColumn, current.parent()), Qt::ToolTipRole).toString();
-
-    m_descriptionLabel->setText(description);
     if (m_spaceWidget)
         m_spaceWidget->updateSpaceRequiredText();
 }
