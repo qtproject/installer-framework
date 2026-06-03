@@ -1657,7 +1657,8 @@ bool IntroductionPage::validatePage()
 
     gui()->setSettingsButtonEnabled(false);
     if (core->isMaintainer()) {
-        showAll();
+        m_label->setVisible(true);
+        m_progressBar->setVisible(true);
         setMaintenanceToolsEnabled(false);
     } else {
         showMetaInfoUpdate();
