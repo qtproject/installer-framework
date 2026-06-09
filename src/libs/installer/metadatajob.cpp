@@ -524,9 +524,6 @@ void MetadataJob::signatureTaskFinished()
     try {
         m_signatureTask.waitForFinished();
         m_signatureResult.append(m_signatureTask.future().results());
-        for (int var = 0; var < m_signatureResult.size(); ++var) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << QStringLiteral("signature file:%1").arg(m_signatureResult[var].target());
-        }
         if (!startSignatureTask()) {
             status = SignatureDownloadSuccess;
             setInfoMessage(tr("signature task finished..."));
@@ -655,9 +652,6 @@ void MetadataJob::xmlTaskFinished()
     try {
         m_xmlTask.waitForFinished();
         m_updatesXmlResult.append(m_xmlTask.future().results());
-        for (int var = 0; var < m_updatesXmlResult.size(); ++var) {
-            qCWarning(QInstaller::lcInstallerInstallLog) << QStringLiteral("xml file:%1").arg(m_updatesXmlResult.at(var).target());
-        }
         for (const FileTaskResult & result : m_updatesXmlResult)
         {
             QFileInfo fi(result.target());
@@ -679,7 +673,7 @@ void MetadataJob::xmlTaskFinished()
             QFile signatureFile(signatureFilePath);
             if (!signatureFile.open(QIODevice::ReadOnly)) {
                 reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Open signature file failed for %1.").arg(result.target()));
+                emitFinishedWithError(QInstaller::DownloadError, tr("Open signature file failed."));
                 return;
             }
             const QByteArray signatureData = signatureFile.readAll();
@@ -693,7 +687,7 @@ void MetadataJob::xmlTaskFinished()
             bool verified = SignatureVerifier::verify(xmlData, signatureData, publicKeyList);
             if (!verified) {
                 reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Signature verification failed for %1.").arg(result.target()));
+                emitFinishedWithError(QInstaller::DownloadError, tr("Signature verification failed."));
                 return;
             }
         }

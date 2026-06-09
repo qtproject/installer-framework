@@ -175,7 +175,6 @@ void DownloadArchivesJob::finishedSignatureDownload()
 {
     Q_ASSERT(m_downloader != nullptr);
     QFile signatureFile(m_downloader->downloadedFileName());
-    emit outputTextChanged(tr("signature file path: %1").arg(m_downloader->downloadedFileName()));
     if (signatureFile.open(QFile::ReadOnly)) {
         emit signatureDownloadReady(m_downloader->downloadedFileName());
         signatureFile.close();
@@ -213,7 +212,7 @@ void DownloadArchivesJob::finishedHashDownload()
     if (!m_core->value(scPublicKeySecondary).isEmpty())
         publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
     if (!SignatureVerifier::verify(m_currentHash, signature, publicKeyList)) {
-        finishWithError(tr("Signature verification failed. hash value: %1").arg(QString::fromLatin1(m_currentHash)));
+        finishWithError(tr("Signature verification failed."));
     }
 }
 
