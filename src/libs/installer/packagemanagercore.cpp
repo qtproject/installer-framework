@@ -83,6 +83,10 @@
 #endif
 
 #include <QStandardPaths>
+#include <QUrlQuery>
+#include <QUuid>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 /*!
     \namespace QInstaller
@@ -5252,4 +5256,119 @@ QStringList PackageManagerCore::parseNames(const QStringList &requirements)
         names.append(name);
     }
     return names;
+}
+
+void PackageManagerCore::healthCheck(const QString& url) const
+{
+    stopHealthCheck();
+    QNetworkRequest request(QUrl(url + QStringLiteral("/health")));
+    request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+    d->m_healthCheckReply = d->m_nam.get(request);
+    connect(d->m_healthCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onHealthCheckFinished);
+}
+
+void PackageManagerCore::stopHealthCheck() const
+{
+    if (!d->m_healthCheckReply)
+    {
+        return;
+    }   
+    disconnect(d->m_healthCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onHealthCheckFinished);
+    if (d->m_healthCheckReply->isRunning())
+        d->m_healthCheckReply->abort();
+
+    d->m_healthCheckReply->deleteLater();
+    d->m_healthCheckReply = nullptr;
+}
+
+void PackageManagerCore::onHealthCheckFinished()
+{
+    if (!d->m_healthCheckReply)
+    {
+        Q_EMIT healthCheckFinished(false);
+        return;
+    }
+    disconnect(d->m_healthCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onHealthCheckFinished);
+    const bool success = (d->m_healthCheckReply->error() == QNetworkReply::NoError);
+    Q_EMIT healthCheckFinished(success);
+    d->m_healthCheckReply->deleteLater();
+    d->m_healthCheckReply = nullptr;
+}
+
+void PackageManagerCore::productKeyCheck(const QString& url, const QString& orgid,
+    const QString& orgkey, const QString& clientID) const
+{
+    stopProductKeyCheck();
+    QString agentUuid = d->macAddress();
+    if (agentUuid.isEmpty()) {
+        agentUuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    }
+
+    QUrl baseUrl(url);
+    const QString alternativeHost = QString::fromUtf8(qgetenv("IAM_ALTERNATIVE_HOST"));
+    if (!alternativeHost.isEmpty()) {
+        baseUrl.setUrl(alternativeHost);
+    }
+    baseUrl.setPath(baseUrl.path() + QStringLiteral("/iam/admin/") + orgid + QStringLiteral("/agents/") + agentUuid + QStringLiteral("/registrationtokens"));
+
+    QUrlQuery query;
+    query.addQueryItem(QStringLiteral("client_id"), clientID);
+    baseUrl.setQuery(query.query());
+    baseUrl = baseUrl.url(QUrl::FullyEncoded);
+
+    const QString authentication = QStringLiteral("%1:%2").arg(orgid).arg(orgkey);
+    const QByteArray authenticationValue = QByteArrayLiteral("Basic ") +
+                                           authentication.toUtf8().toBase64();
+
+    QNetworkRequest registrationRequest(baseUrl);
+    registrationRequest.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+    registrationRequest.setHeader(QNetworkRequest::ContentTypeHeader,
+                                  QByteArrayLiteral("application/json"));
+    registrationRequest.setRawHeader(QStringLiteral("authorization").toUtf8(),
+                                     authenticationValue);
+
+    d->m_productKeyCheckReply = d->m_nam.post(registrationRequest, QByteArray());
+    connect(d->m_productKeyCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onProductKeyCheckFinished);
+}
+
+void PackageManagerCore::stopProductKeyCheck() const
+{
+    if (!d->m_productKeyCheckReply)
+    {
+        return;
+    }
+    disconnect(d->m_productKeyCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onProductKeyCheckFinished);
+    if (d->m_productKeyCheckReply->isRunning())
+        d->m_productKeyCheckReply->abort();
+
+    d->m_productKeyCheckReply->deleteLater();
+    d->m_productKeyCheckReply = nullptr;
+}
+
+void PackageManagerCore::onProductKeyCheckFinished()
+{
+    if (!d->m_productKeyCheckReply)
+    {
+        Q_EMIT productKeyCheckFinished(false);
+        return;
+    }
+    disconnect(d->m_productKeyCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onProductKeyCheckFinished);
+    const bool success = (d->m_productKeyCheckReply->error() == QNetworkReply::NoError);
+    if (!success)
+    {
+        Q_EMIT productKeyCheckFinished(false);
+    }
+    else
+    {
+        const QByteArray serverToken = d->m_productKeyCheckReply->readAll();
+        QJsonParseError parseError;
+        const QJsonObject tokenObject = QJsonDocument::fromJson(serverToken, &parseError).object();
+        if ((parseError.error == QJsonParseError::NoError) && !tokenObject.isEmpty()) {
+            Q_EMIT productKeyCheckFinished(true);
+        } else {
+            Q_EMIT productKeyCheckFinished(false);
+        }
+    }
+    d->m_productKeyCheckReply->deleteLater();
+    d->m_productKeyCheckReply = nullptr;
 }

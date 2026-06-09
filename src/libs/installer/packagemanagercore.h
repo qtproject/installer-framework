@@ -284,6 +284,13 @@ public:
     bool installationAllowedToDirectory(const QString &targetDirectory);
     QString targetDirWarning(const QString &targetDirectory) const;
 
+    //network check
+    Q_INVOKABLE void healthCheck(const QString& url) const;
+    Q_INVOKABLE void stopHealthCheck() const;
+    Q_INVOKABLE void productKeyCheck(const QString& url, const QString& orgid, 
+        const QString& orgkey, const QString& clientID) const;
+    Q_INVOKABLE void stopProductKeyCheck() const;
+
 public:
     ScriptEngine *componentScriptEngine() const;
     ScriptEngine *controlScriptEngine() const;
@@ -447,6 +454,8 @@ public Q_SLOTS:
     void cancelMetaInfoJob();
     void componentsToInstallNeedsRecalculation(); // TODO: deprecated, remove
     void clearComponentsToInstallCalculated() {} // TODO: deprecated, remove
+    void onHealthCheckFinished();
+    void onProductKeyCheckFinished();
 
 Q_SIGNALS:
     void aboutCalculateComponentsToInstall() const;
@@ -499,6 +508,9 @@ Q_SIGNALS:
     void componentsRecalculated();
     void guiElementsReady();
     void installDirectoryChanged(const QString &newDirectory);
+
+    void healthCheckFinished(bool success);
+    void productKeyCheckFinished(bool success);
 
 private:
     struct Data {

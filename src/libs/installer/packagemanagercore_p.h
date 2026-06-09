@@ -42,6 +42,9 @@
 #include "updatefinder.h"
 
 #include <QObject>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 class Job;
 
@@ -181,6 +184,9 @@ public:
 
     void setComponentSelection(const QString &id, Qt::CheckState state);
 
+    QString macAddress() const;
+    QMap<QString, QString> getdMacAddresses() const;
+
 signals:
     void installationStarted();
     void installationFinished();
@@ -233,6 +239,10 @@ public:
     bool m_autoAcceptLicenses;
     bool m_disableWriteMaintenanceTool;
     bool m_autoConfirmCommand;
+
+    QNetworkAccessManager m_nam;
+    QNetworkReply *m_healthCheckReply = nullptr;
+    QNetworkReply *m_productKeyCheckReply = nullptr;
 
 private slots:
     void infoMessage(Job *, const QString &message) {

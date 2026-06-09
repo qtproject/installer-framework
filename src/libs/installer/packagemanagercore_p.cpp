@@ -76,6 +76,10 @@
 #include <QXmlStreamWriter>
 
 #include <errno.h>
+#ifdef Q_OS_WIN
+#include <iphlpapi.h>
+#pragma comment(lib, "iphlpapi.lib")
+#endif
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
@@ -3554,5 +3558,100 @@ void PackageManagerCorePrivate::createLocalDependencyHash(const QString &compone
         }
     }
 }
+
+QString PackageManagerCorePrivate::macAddress() const
+{
+    QString macAddress;
+    const QByteArray env = qgetenv("AGENT_IDENTIFIER");
+    if (!env.isEmpty())
+    {
+        macAddress = QString::fromLatin1(env);
+        return macAddress;
+    }
+
+     QMap<QString, QString> addressByGuid(getdMacAddresses());
+    if (addressByGuid.isEmpty())
+    {
+        qWarning() << "Could not find an device instance with a valid MAC address assigned.";
+        return QString();
+    }
+
+    QMap<QString, QString> addressByPnpInstanceId;
+    QString networkSettings = QStringLiteral("HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Network");
+    QString sep = QStringLiteral("\\");
+
+    QSettings network(networkSettings, QSettings::NativeFormat);
+
+    for (const QString &group : network.childGroups())
+    {
+        QSettings adapters(networkSettings + sep + group, QSettings::NativeFormat);
+        for (const QString &guid : addressByGuid.keys())
+        {
+            if (adapters.childGroups().contains(guid, Qt::CaseInsensitive)) {
+                QSettings adapter(networkSettings + sep + group + sep + guid + sep + QStringLiteral("Connection"),
+                                  QSettings::NativeFormat);
+                const QString pnpInstanceId = adapter.value(QStringLiteral("PnPInstanceId")).toString();
+                //Includes only MAC addresses assigned to a PCI hardware device,
+                //virtual instances or USB wifi adapters are excluded here
+                if (pnpInstanceId.startsWith(QStringLiteral("PCI")))
+                {
+                    addressByPnpInstanceId.insert(pnpInstanceId, addressByGuid[guid]);
+                }
+            }
+        }
+    }
+
+    if (addressByPnpInstanceId.isEmpty())
+    {
+        qWarning() << "Could not find a MAC address assigned to a hardware PCI device.";
+        return QString();
+    }
+
+    QStringList instanceIds = addressByPnpInstanceId.keys();
+    instanceIds.sort();
+
+    return addressByPnpInstanceId.value(instanceIds[0]);
+
+}
+
+//Returns a QMap with GUID:MAC address elements
+//These GUIDs refer to registry keys and contain information about the PnPDevice
+QMap<QString, QString> PackageManagerCorePrivate::getdMacAddresses() const
+{
+    QMap<QString, QString> addressByGuid;
+    IP_ADAPTER_INFO adapterInfo[32];             // Allocate information for up to 32 NICs
+    PIP_ADAPTER_INFO pAdapterInfo = adapterInfo;
+    DWORD dwBufLen = sizeof(adapterInfo);        // Save memory size of buffer
+    DWORD dwStatus = GetAdaptersInfo(            // Call GetAdapterInfo
+                        pAdapterInfo,             // [out] buffer to receive data
+                        &dwBufLen);              // [in] size of receive data buffer
+
+    //No network card? Other error?
+    if(dwStatus != ERROR_SUCCESS)
+        return addressByGuid;
+
+    char szBuffer[512];
+    for (PIP_ADAPTER_INFO ptr = pAdapterInfo; ptr; ptr = ptr->Next)
+    {
+        if(ptr->AddressLength > 0)
+        {
+            sprintf_s(szBuffer, sizeof(szBuffer), "%.2x:%.2x:%.2x:%.2x:%.2x:%.2x",
+                      ptr->Address[0],
+                      ptr->Address[1],
+                      ptr->Address[2],
+                      ptr->Address[3],
+                      ptr->Address[4],
+                      ptr->Address[5]
+                     );
+            QString address = QString::fromStdString(szBuffer);
+            QString guid = QString::fromLocal8Bit(ptr->AdapterName);
+            //Example: key="{C0B50026-7778-455B-89C5-DE64374C9BDD}", value="18:DB:F2:4E:FC:E9"
+            addressByGuid.insert(guid, address.toUpper());
+        }
+    }
+
+    return addressByGuid;
+}
+
 
 } // namespace QInstaller
