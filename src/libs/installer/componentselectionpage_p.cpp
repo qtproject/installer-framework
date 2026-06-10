@@ -185,6 +185,13 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     connect(q, &ComponentSelectionPage::entered, m_searchLineEdit, &QLineEdit::clear);
     m_topHLayout->addWidget(m_searchLineEdit);
 
+    for (int i = 0; i < m_topHLayout->count(); ++i) {
+        if (QLayoutItem *item = m_topHLayout->itemAt(i)) {
+            if (QWidget *w = item->widget())
+                w->setVisible(false);
+        }
+    }
+
     QVBoxLayout *treeViewVLayout = new QVBoxLayout;
     treeViewVLayout->setObjectName(QLatin1String("TreeviewLayout"));
     treeViewVLayout->addWidget(m_treeView, 3);
