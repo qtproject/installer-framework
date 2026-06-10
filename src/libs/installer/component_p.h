@@ -99,10 +99,10 @@ class INSTALLER_EXPORT ComponentModelHelper
 public:
     enum Roles {
         Action = Qt::UserRole + 1,
+        UncompressedSize,
         LocalDisplayVersion,
         RemoteDisplayVersion,
         ReleaseDate,
-        UncompressedSize,
         ExpandedByDefault
     };
 
@@ -117,10 +117,10 @@ public:
     enum Column {
         NameColumn = 0,
         ActionColumn,
+        UncompressedSizeColumn,
         InstalledVersionColumn,
         NewVersionColumn,
         ReleaseDateColumn,
-        UncompressedSizeColumn,
         LastColumn
     };
 
