@@ -4035,6 +4035,11 @@ bool PackageManagerCore::getHttpProxyAuth() const
 
 }
 
+bool PackageManagerCore::proxyConnectionTest(const QString &probeUrlStr, const int proxyConnectionTestTimeoutMs) const
+{
+    return d->proxyConnectionTest(probeUrlStr, proxyConnectionTestTimeoutMs);
+}
+
 QString PackageManagerCore::getFtpProxyHost() const
 {
     QNetworkProxy proxy = d->m_data.settings().ftpProxy();

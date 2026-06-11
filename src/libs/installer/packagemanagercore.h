@@ -215,7 +215,7 @@ public:
     Q_INVOKABLE QString getHttpProxyPwd() const;
     Q_INVOKABLE void setHttpProxyPwd(const QString &password);
     Q_INVOKABLE bool getHttpProxyAuth() const;
-
+    Q_INVOKABLE bool proxyConnectionTest(const QString &probeUrl = QString(), const int proxyConnectionTestTimeoutMs = 5000) const;
     Q_INVOKABLE QString getFtpProxyHost() const;
     Q_INVOKABLE void setFtpProxyHost(const QString &hostName);
     Q_INVOKABLE QString getFtpProxyPort() const;
@@ -508,6 +508,7 @@ Q_SIGNALS:
     void componentsRecalculated();
     void guiElementsReady();
     void installDirectoryChanged(const QString &newDirectory);
+    void proxyTestErrorOccurred(const QString &error);
 
     void healthCheckFinished(bool success);
     void productKeyCheckFinished(bool success);

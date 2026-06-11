@@ -51,6 +51,7 @@ class Job;
 QT_FORWARD_DECLARE_CLASS(QFile)
 QT_FORWARD_DECLARE_CLASS(QFileDevice)
 QT_FORWARD_DECLARE_CLASS(QFileInfo)
+QT_FORWARD_DECLARE_CLASS(QTcpSocket)
 
 using namespace KDUpdater;
 
@@ -298,6 +299,7 @@ private:
     void enableRepositoryCategory(const RepositoryCategory &repoCategory, const bool enable);
 
     bool installablePackagesFound(const QStringList& components);
+    bool proxyConnectionTest(const QString &probeUrlStr, const int proxyConnectionTestTimeoutMs = 5000);
 
     void deferredRename(const QString &oldName, const QString &newName, bool restart = false);
 

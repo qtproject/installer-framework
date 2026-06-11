@@ -74,6 +74,12 @@
 
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
+#include <QNetworkProxyFactory>
+#include <QNetworkProxyQuery>
+#include <QEventLoop>
+#include <QTimer>
+#include <QTcpSocket>
+#include <QUrl>
 
 #include <errno.h>
 #ifdef Q_OS_WIN
@@ -282,6 +288,90 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
             m_core, &PackageManagerCore::offlineGenerationStarted);
     connect(this, &PackageManagerCorePrivate::offlineGenerationFinished,
             m_core, &PackageManagerCore::offlineGenerationFinished);
+}
+
+bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, const int proxyConnectionTestTimeoutMs)
+{
+    const Settings &settings = m_data.settings();
+    QNetworkProxy proxy;
+
+    if (settings.proxyType() == Settings::NoProxy) {
+        qWarning() << "Proxy test skipped: No Proxy is used.";
+        return true;
+    }
+
+    if (settings.proxyType() == Settings::UserDefinedProxy) {
+        proxy = settings.httpProxy();
+    } else {
+        const QUrl probeUrl(probeUrlStr);
+        const QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery(
+            QNetworkProxyQuery(probeUrl));
+
+        if (proxies.isEmpty()) {
+            qWarning() << "Proxy test skipped: No proxy is returned by system proxy query.";
+            return true;
+        }
+
+        for (const QNetworkProxy &candidate : proxies) {
+            if (candidate.type() != QNetworkProxy::NoProxy && !candidate.hostName().isEmpty()
+                    && candidate.port() > 0) {
+                proxy = candidate;
+                break;
+            }
+        }
+    }
+
+    if (proxy.hostName().isEmpty() || proxy.port() <= 0) {
+        qWarning() << "Proxy test skipped: no usable HTTP proxy endpoint.";
+        return true;
+    }
+
+    QTcpSocket testSocket;
+    testSocket.connectToHost(proxy.hostName(), proxy.port());
+
+    QEventLoop loop;
+    bool isConnected = false;
+    QAbstractSocket::SocketError socketError = QAbstractSocket::UnknownSocketError;
+    QString errorString;
+
+    QTimer timeoutTimer;
+    timeoutTimer.setSingleShot(true);
+
+    connect(&testSocket, &QTcpSocket::connected, &loop, [&]() {
+        isConnected = true;
+        loop.quit();
+    });
+
+    connect(&testSocket, &QTcpSocket::errorOccurred, &loop,
+        [&](QAbstractSocket::SocketError error) {
+            socketError = error;
+            errorString = testSocket.errorString();
+            loop.quit();
+        });
+
+    connect(&timeoutTimer, &QTimer::timeout, &loop, [&]() {
+        socketError = QAbstractSocket::SocketTimeoutError;
+        errorString = QString::fromLatin1("Proxy test timed out.");
+        testSocket.abort();
+        loop.quit();
+    });
+
+    timeoutTimer.start(proxyConnectionTestTimeoutMs);
+    loop.exec();
+    timeoutTimer.stop();
+
+    if (isConnected) {
+        testSocket.disconnectFromHost();
+        return true;
+    }
+
+    if (errorString.isEmpty())
+        errorString = testSocket.errorString();
+
+    qWarning() << "Proxy test failed:" << errorString << "Error code:" << socketError;
+    emit m_core->proxyTestErrorOccurred(errorString);
+    return false;
+
 }
 
 PackageManagerCorePrivate::~PackageManagerCorePrivate()
