@@ -5164,15 +5164,15 @@ ComponentModel *PackageManagerCore::componentModel(PackageManagerCore *core, con
 
     model->setObjectName(objectName);
     model->setHeaderData(ComponentModelHelper::NameColumn, Qt::Horizontal,
-        ComponentModel::tr("Component Name"));
+        ComponentModel::tr("Component name"));
     model->setHeaderData(ComponentModelHelper::ActionColumn, Qt::Horizontal,
         ComponentModel::tr("Action"));
     model->setHeaderData(ComponentModelHelper::InstalledVersionColumn, Qt::Horizontal,
-        ComponentModel::tr("Installed Version"));
+        ComponentModel::tr("Old version"));
     model->setHeaderData(ComponentModelHelper::NewVersionColumn, Qt::Horizontal,
-        ComponentModel::tr("New Version"));
+        ComponentModel::tr("New version"));
     model->setHeaderData(ComponentModelHelper::ReleaseDateColumn, Qt::Horizontal,
-        ComponentModel::tr("Release Date"));
+        ComponentModel::tr("Release date"));
     model->setHeaderData(ComponentModelHelper::UncompressedSizeColumn, Qt::Horizontal,
         ComponentModel::tr("Size"));
 

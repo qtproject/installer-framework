@@ -301,6 +301,11 @@ void ComponentSelectionPagePrivate::updateTreeView()
     if (!installActionColumnVisible)
         m_treeView->hideColumn(ComponentModelHelper::ActionColumn);
 
+    if (m_core->isPackageManager())
+    {
+        m_treeView->hideColumn(ComponentModelHelper::InstalledVersionColumn);
+    }
+
     m_treeView->header()->setSectionResizeMode(
                 ComponentModelHelper::NameColumn, QHeaderView::ResizeToContents);
     if (m_core->isInstaller()) {
