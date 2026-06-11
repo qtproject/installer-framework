@@ -362,6 +362,7 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
 
     if (isConnected) {
         m_proxyTestSocket->disconnectFromHost();
+        m_proxyTestSocket.reset();
         return true;
     }
 
@@ -370,12 +371,13 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
 
     qWarning() << "Proxy test failed:" << errorString << "Error code:" << socketError;
     emit m_core->proxyTestErrorOccurred(errorString);
+    m_proxyTestSocket.reset();
     return false;
 }
 
 void PackageManagerCorePrivate::stopProxyConnectionTest()
 {
-    if (m_proxyTestSocket) {
+    if (!m_proxyTestSocket.isNull()) {
         m_proxyTestSocket->abort();
         m_proxyTestEventLoop.quit();
     }
