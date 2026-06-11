@@ -366,11 +366,12 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
         return true;
     }
 
-    if (errorString.isEmpty())
-        errorString = m_proxyTestSocket->errorString();
-
-    qWarning() << "Proxy test failed:" << errorString << "Error code:" << socketError;
-    emit m_core->proxyTestErrorOccurred(errorString);
+    if (!errorString.isEmpty()){
+        qWarning() << "Proxy test failed:" << errorString << "Error code:" << socketError;
+        emit m_core->proxyTestErrorOccurred(errorString);
+    }else{
+        qWarning() << "Proxy test aborted.";
+    }
     m_proxyTestSocket.reset();
     return false;
 }
