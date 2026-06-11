@@ -4040,6 +4040,11 @@ bool PackageManagerCore::proxyConnectionTest(const QString &probeUrlStr, const i
     return d->proxyConnectionTest(probeUrlStr, proxyConnectionTestTimeoutMs);
 }
 
+void PackageManagerCore::stopProxyConnectionTest()
+{
+    d->stopProxyConnectionTest();
+}
+
 QString PackageManagerCore::getFtpProxyHost() const
 {
     QNetworkProxy proxy = d->m_data.settings().ftpProxy();

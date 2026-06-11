@@ -215,7 +215,8 @@ public:
     Q_INVOKABLE QString getHttpProxyPwd() const;
     Q_INVOKABLE void setHttpProxyPwd(const QString &password);
     Q_INVOKABLE bool getHttpProxyAuth() const;
-    Q_INVOKABLE bool proxyConnectionTest(const QString &probeUrl = QString(), const int proxyConnectionTestTimeoutMs = 5000) const;
+    Q_INVOKABLE bool proxyConnectionTest(const QString &probeUrlStr = QString(), const int proxyConnectionTestTimeoutMs = 5000) const;
+    Q_INVOKABLE void stopProxyConnectionTest();
     Q_INVOKABLE QString getFtpProxyHost() const;
     Q_INVOKABLE void setFtpProxyHost(const QString &hostName);
     Q_INVOKABLE QString getFtpProxyPort() const;

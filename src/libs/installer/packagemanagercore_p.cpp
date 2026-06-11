@@ -205,6 +205,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core)
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(nullptr)
     , m_datFileName(QString())
+    , m_proxyTestSocket(nullptr)
 #ifdef INSTALLCOMPRESSED
     , m_allowCompressedRepositoryInstall(true)
 #else
@@ -252,6 +253,7 @@ PackageManagerCorePrivate::PackageManagerCorePrivate(PackageManagerCore *core, q
     , m_guiObject(nullptr)
     , m_remoteFileEngineHandler(new RemoteFileEngineHandler)
     , m_datFileName(datFileName)
+    , m_proxyTestSocket(nullptr)
 #ifdef INSTALLCOMPRESSED
     , m_allowCompressedRepositoryInstall(true)
 #else
@@ -326,10 +328,8 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
         return true;
     }
 
-    QTcpSocket testSocket;
-    testSocket.connectToHost(proxy.hostName(), proxy.port());
-
-    QEventLoop loop;
+    m_proxyTestSocket.reset(new QTcpSocket);
+    m_proxyTestSocket->connectToHost(proxy.hostName(), proxy.port());
     bool isConnected = false;
     QAbstractSocket::SocketError socketError = QAbstractSocket::UnknownSocketError;
     QString errorString;
@@ -337,42 +337,50 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
     QTimer timeoutTimer;
     timeoutTimer.setSingleShot(true);
 
-    connect(&testSocket, &QTcpSocket::connected, &loop, [&]() {
+    connect(m_proxyTestSocket.data(), &QTcpSocket::connected, &m_proxyTestEventLoop, [&]() {
         isConnected = true;
-        loop.quit();
+        m_proxyTestEventLoop.quit();
     });
 
-    connect(&testSocket, &QTcpSocket::errorOccurred, &loop,
+    connect(m_proxyTestSocket.data(), &QTcpSocket::errorOccurred, &m_proxyTestEventLoop,
         [&](QAbstractSocket::SocketError error) {
             socketError = error;
-            errorString = testSocket.errorString();
-            loop.quit();
+            errorString = m_proxyTestSocket->errorString();
+            m_proxyTestEventLoop.quit();
         });
 
-    connect(&timeoutTimer, &QTimer::timeout, &loop, [&]() {
+    connect(&timeoutTimer, &QTimer::timeout, &m_proxyTestEventLoop, [&]() {
         socketError = QAbstractSocket::SocketTimeoutError;
         errorString = QString::fromLatin1("Proxy test timed out.");
-        testSocket.abort();
-        loop.quit();
+        m_proxyTestSocket->abort();
+        m_proxyTestEventLoop.quit();
     });
 
     timeoutTimer.start(proxyConnectionTestTimeoutMs);
-    loop.exec();
+    m_proxyTestEventLoop.exec();
     timeoutTimer.stop();
 
     if (isConnected) {
-        testSocket.disconnectFromHost();
+        m_proxyTestSocket->disconnectFromHost();
         return true;
     }
 
     if (errorString.isEmpty())
-        errorString = testSocket.errorString();
+        errorString = m_proxyTestSocket->errorString();
 
     qWarning() << "Proxy test failed:" << errorString << "Error code:" << socketError;
     emit m_core->proxyTestErrorOccurred(errorString);
     return false;
-
 }
+
+void PackageManagerCorePrivate::stopProxyConnectionTest()
+{
+    if (m_proxyTestSocket) {
+        m_proxyTestSocket->abort();
+        m_proxyTestEventLoop.quit();
+    }
+}
+
 
 PackageManagerCorePrivate::~PackageManagerCorePrivate()
 {
