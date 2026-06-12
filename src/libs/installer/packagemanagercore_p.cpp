@@ -328,6 +328,7 @@ bool PackageManagerCorePrivate::proxyConnectionTest(const QString &probeUrlStr, 
         return true;
     }
 
+    //Reason for not using 'waitForConnected': from official document-"This function may fail randomly on Windows. Consider using the event loop and the connected() signal if your software will run on Windows."
     m_proxyTestSocket.reset(new QTcpSocket);
     m_proxyTestSocket->connectToHost(proxy.hostName(), proxy.port());
     bool isConnected = false;
