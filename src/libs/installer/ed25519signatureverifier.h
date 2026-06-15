@@ -14,13 +14,11 @@ public:
 protected:
   virtual bool verify(const QByteArray &data,
                       const QByteArray &signature,
-                      const QByteArray &publicKeyPem,
-                      QString *errorMessage = nullptr) override;
+                      const QByteArray &publicKeyPem) override;
 
   virtual bool verify(const QByteArray &data,
                       const QByteArray &signature,
-                      const QList<QByteArray> &publicKeyPemList,
-                      QString *errorMessage = nullptr) override;
+                      const QList<QByteArray> &publicKeyPemList) override;
 
   virtual EVP_PKEY *loadPublicKey(const QByteArray &publicKeyPem) const override;
 };

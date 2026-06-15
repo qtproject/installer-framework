@@ -36,24 +36,23 @@ EVP_PKEY* ECDSAP256SignatureVerifier::loadPublicKey(const QByteArray &publicKeyP
 
 bool ECDSAP256SignatureVerifier::verify(const QByteArray &data,
                                          const QByteArray &signature,
-                                         const QByteArray &publicKeyPem,
-                                         QString *errorMessage)
+                                         const QByteArray &publicKeyPem)
 {
     EVP_PKEY *publicKey = loadPublicKey(publicKeyPem);
     if (!publicKey) {
-        setError(errorMessage, QStringLiteral("Failed to parse public key."));
+        m_errorString = QStringLiteral("Failed to parse public key.");
         return false;
     }
 
     EVP_MD_CTX *ctx = EVP_MD_CTX_new();
     if (!ctx) {
         EVP_PKEY_free(publicKey);
-        setError(errorMessage, QStringLiteral("EVP_MD_CTX_new failed"));
+        m_errorString = QStringLiteral("EVP_MD_CTX_new failed");
         return false;
     }
 
     if (EVP_DigestVerifyInit(ctx, nullptr, nullptr, nullptr, publicKey) != 1) {
-        setError(errorMessage, QStringLiteral("OpenSSL verify init failed: %1").arg(readOpenSslError()));
+        m_errorString = QStringLiteral("OpenSSL verify init failed: %1").arg(readOpenSslError());
         EVP_MD_CTX_free(ctx);
         EVP_PKEY_free(publicKey);
         return false;
@@ -72,21 +71,20 @@ bool ECDSAP256SignatureVerifier::verify(const QByteArray &data,
     if (verifyResult == 1) {
         return true;
     } else {
-        setError(errorMessage, QStringLiteral("Signature verification failed: %1").arg(readOpenSslError()));
+        m_errorString = QStringLiteral("Signature verification failed: %1").arg(readOpenSslError());
         return false;
     }
 }
 
 bool ECDSAP256SignatureVerifier::verify(const QByteArray &data,
                                          const QByteArray &signature,
-                                         const QList<QByteArray> &publicKeyPemList,
-                                         QString *errorMessage)
+                                         const QList<QByteArray> &publicKeyPemList)
 {
     for (const QByteArray &publicKeyPem : publicKeyPemList) {
-        if (verify(data, signature, publicKeyPem, errorMessage)) {
+        if (verify(data, signature, publicKeyPem)) {
             return true;
         }
     }
-    setError(errorMessage, QStringLiteral("Signature verification failed with all provided public keys"));
+    m_errorString = QStringLiteral("Signature verification failed with all provided public keys");
     return false;
 }
