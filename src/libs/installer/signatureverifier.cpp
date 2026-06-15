@@ -1,250 +1,154 @@
 #include "signatureverifier.h"
 
-#include <QList>
-
 #include <openssl/err.h>
 #include <openssl/evp.h>
-#include <openssl/pem.h>
-#include <openssl/x509.h>
+#include <QFile>
 
-QString readOpenSslError()
-{
-    const unsigned long errorCode = ERR_get_error();
-    if (errorCode == 0) {
-        return QStringLiteral("Unknown OpenSSL error");
-    }
-
-    char buffer[256] = {0};
-    ERR_error_string_n(errorCode, buffer, sizeof(buffer));
-    return QString::fromLatin1(buffer);
-}
-
-void setError(QString *errorMessage, const QString &message)
+void SignatureVerifier::setError(QString *errorMessage, const QString &message) const
 {
     if (errorMessage) {
         *errorMessage = message;
     }
 }
 
-quint32 readBigEndianUint32(const unsigned char *data)
+QString SignatureVerifier::readOpenSslError() const
 {
-    return (static_cast<quint32>(data[0]) << 24)
-           | (static_cast<quint32>(data[1]) << 16)
-           | (static_cast<quint32>(data[2]) << 8)
-           | static_cast<quint32>(data[3]);
+    unsigned long errCode = ERR_get_error();
+    if (errCode == 0) {
+        return QStringLiteral("No OpenSSL error");
+    }
+    char errBuffer[256];
+    ERR_error_string_n(errCode, errBuffer, sizeof(errBuffer));
+    return QString::fromUtf8(errBuffer);
 }
 
-EVP_PKEY *parseOpenSshEd25519PublicKey(const QByteArray &publicKeyData)
+SignatureVerifier::VerificationResult SignatureVerifier::hardSha256(const QString& filePath, QByteArray &hash, QString *errorMessage) const
 {
-    const QList<QByteArray> parts = publicKeyData.trimmed().split(' ');
-    if (parts.size() < 2 || parts.at(0) != "ssh-ed25519") {
-        return nullptr;
+    unsigned char hashBuffer[EVP_MAX_MD_SIZE];
+    unsigned int hashLength = 0;
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly)) {
+        setError(errorMessage, QStringLiteral("Failed to open file: %1").arg(file.errorString()));
+        return VerificationResult::DataFileError;
     }
 
-    const QByteArray decoded = QByteArray::fromBase64(parts.at(1));
-    if (decoded.size() < 4) {
-        return nullptr;
-    }
-
-    const unsigned char *cursor = reinterpret_cast<const unsigned char *>(decoded.constData());
-    int remaining = decoded.size();
-
-    if (remaining < 4) {
-        return nullptr;
-    }
-    const quint32 typeLength = readBigEndianUint32(cursor);
-    cursor += 4;
-    remaining -= 4;
-
-    if (typeLength > static_cast<quint32>(remaining)) {
-        return nullptr;
-    }
-    const QByteArray keyType(reinterpret_cast<const char *>(cursor), static_cast<int>(typeLength));
-    cursor += typeLength;
-    remaining -= static_cast<int>(typeLength);
-
-    if (keyType != "ssh-ed25519" || remaining < 4) {
-        return nullptr;
-    }
-
-    const quint32 keyLength = readBigEndianUint32(cursor);
-    cursor += 4;
-    remaining -= 4;
-
-    if (keyLength != 32 || keyLength > static_cast<quint32>(remaining)) {
-        return nullptr;
-    }
-
-    return EVP_PKEY_new_raw_public_key(
-        EVP_PKEY_ED25519,
-        nullptr,
-        cursor,
-        static_cast<size_t>(keyLength));
-}
-
-EVP_PKEY *loadPublicKey(const QByteArray &publicKeyData)
-{
-    // Try PEM first (BEGIN PUBLIC KEY / BEGIN OPENSSH PRIVATE KEY not applicable here).
-    BIO *bio = BIO_new_mem_buf(publicKeyData.constData(), publicKeyData.size());
-    if (bio) {
-        EVP_PKEY *publicKey = PEM_read_bio_PUBKEY(bio, nullptr, nullptr, nullptr);
-        BIO_free(bio);
-        if (publicKey) {
-            return publicKey;
-        }
-        ERR_clear_error();
-    }
-
-    // Try DER SubjectPublicKeyInfo.
-    const unsigned char *derPtr = reinterpret_cast<const unsigned char *>(publicKeyData.constData());
-    EVP_PKEY *publicKey = d2i_PUBKEY(nullptr, &derPtr, publicKeyData.size());
-    if (publicKey) {
-        return publicKey;
-    }
-    ERR_clear_error();
-
-    // Try OpenSSH one-line public key (ssh-ed25519 AAAA...).
-    return parseOpenSshEd25519PublicKey(publicKeyData);
-}
-
-EVP_PKEY *loadPrivateKey(const QByteArray &privateKeyData)
-{
-    // Try PEM/OpenSSH private key text first.
-    BIO *bio = BIO_new_mem_buf(privateKeyData.constData(), privateKeyData.size());
-    if (bio) {
-        EVP_PKEY *privateKey = PEM_read_bio_PrivateKey(bio, nullptr, nullptr, nullptr);
-        BIO_free(bio);
-        if (privateKey) {
-            return privateKey;
-        }
-        ERR_clear_error();
-    }
-
-    // Try DER PKCS#8 private key.
-    const unsigned char *derPtr = reinterpret_cast<const unsigned char *>(privateKeyData.constData());
-    EVP_PKEY *privateKey = d2i_AutoPrivateKey(nullptr, &derPtr, privateKeyData.size());
-    if (privateKey) {
-        return privateKey;
-    }
-    ERR_clear_error();
-
-    return nullptr;
-}
-
-//sign with ED25519 and verify with ED25519, which is supported by OpenSSL 1.1.1 and later
-QByteArray SignatureVerifier::sign(const QByteArray &data,
-                                             const QByteArray &privateKeyPem,
-                                             QString *errorMessage)
-{
-    EVP_PKEY *privateKey = loadPrivateKey(privateKeyPem);
-    if (!privateKey) {
-        setError(errorMessage, QStringLiteral("Failed to parse private key. Supported formats: PEM, DER, OpenSSH"));
-        return {};
-    }
-
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    if (!ctx) {
-        EVP_PKEY_free(privateKey);
+    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
+    if (!mdctx)
+    {
         setError(errorMessage, QStringLiteral("EVP_MD_CTX_new failed"));
-        return {};
+        return VerificationResult::CalculateHashError;
     }
 
-    size_t signatureLength = 0;
-    if (EVP_DigestSignInit(ctx, nullptr, nullptr, nullptr, privateKey) != 1) {
-        setError(errorMessage, QStringLiteral("OpenSSL signing init failed: %1").arg(readOpenSslError()));
-        EVP_MD_CTX_free(ctx);
-        EVP_PKEY_free(privateKey);
-        return {};
+    if (EVP_DigestInit_ex(mdctx, EVP_sha256(), nullptr) != 1) {
+        EVP_MD_CTX_free(mdctx);
+        setError(errorMessage, readOpenSslError());
+        return VerificationResult::CalculateHashError;
+    }
+
+    constexpr qint64 kChunkSize = 100 *1024 * 1024; // 100 MB
+    while (!file.atEnd()) {
+        const QByteArray chunk = file.read(kChunkSize);
+        if (chunk.isEmpty() && file.error() != QFile::NoError) {
+            EVP_MD_CTX_free(mdctx);
+            setError(errorMessage, QStringLiteral("Failed to read file: %1").arg(file.errorString()));
+            return VerificationResult::CalculateHashError;
+        }
+
+        if (!chunk.isEmpty()
+                && EVP_DigestUpdate(mdctx, chunk.constData(), chunk.size()) != 1) {
+            EVP_MD_CTX_free(mdctx);
+            setError(errorMessage, readOpenSslError());
+            return VerificationResult::CalculateHashError;
+        }
+    }
+
+    if (EVP_DigestFinal_ex(mdctx, hashBuffer, &hashLength) != 1) {
+        EVP_MD_CTX_free(mdctx);
+        setError(errorMessage, readOpenSslError());
+        return VerificationResult::CalculateHashError;
+    }
+
+    EVP_MD_CTX_free(mdctx);
+    hash = QByteArray(reinterpret_cast<char *>(hashBuffer), hashLength);
+    return VerificationResult::Success;
+}
+
+bool SignatureVerifier::getSignatureData(const QString &filePath, QByteArray &data, QString *errorMessage) const
+{
+    QFile signatureFile(filePath);
+    if (!signatureFile.open(QIODevice::ReadOnly)) {
+        setError(errorMessage, QStringLiteral("Failed to open signature file: %1").arg(signatureFile.errorString()));
+        return false;
+    }
+    data = signatureFile.readAll();
+    return true;
+}
+
+SignatureVerifier::VerificationResult SignatureVerifier::getFileData(const QString &filePath, QByteArray &data, bool calculateHashFromFile, QString *errorMessage) const
+{
+    if (calculateHashFromFile) {
+        SignatureVerifier::VerificationResult result = hardSha256(filePath, data, errorMessage);
+        if (result != SignatureVerifier::VerificationResult::Success) {
+            return result;
+        }
+    } else {
+        QFile dataFile(filePath);
+        if (!dataFile.open(QIODevice::ReadOnly)) {
+            setError(errorMessage, QStringLiteral("Failed to open data file: %1").arg(dataFile.errorString()));
+            return SignatureVerifier::VerificationResult::DataFileError;
+        }
+        data = dataFile.readAll();
+    }
+    return SignatureVerifier::VerificationResult::Success;
+}
+
+SignatureVerifier::VerificationResult SignatureVerifier::verify(const QString &filePath,
+                                         const QString &signaturePath,
+                                         const QByteArray &publicKeyPem,
+                                         bool calculateHashFromFile,
+                                         QString *errorMessage)
+{
+    QByteArray data;
+    SignatureVerifier::VerificationResult result = getFileData(filePath, data, calculateHashFromFile, errorMessage);
+    if (result != SignatureVerifier::VerificationResult::Success) {
+        return result;
     }
 
     QByteArray signature;
-    if (EVP_DigestSign(ctx,
-                       nullptr,
-                       &signatureLength,
-                       reinterpret_cast<const unsigned char *>(data.constData()),
-                       static_cast<size_t>(data.size())) != 1) {
-        setError(errorMessage, QStringLiteral("OpenSSL signing length query failed: %1").arg(readOpenSslError()));
-        EVP_MD_CTX_free(ctx);
-        EVP_PKEY_free(privateKey);
-        return {};
+    bool signatureDataSuccess = getSignatureData(signaturePath, signature, errorMessage);
+    if (!signatureDataSuccess) {
+        return SignatureVerifier::VerificationResult::SignatureFileError;
     }
 
-    signature.resize(static_cast<int>(signatureLength));
-    if (EVP_DigestSign(ctx,
-                       reinterpret_cast<unsigned char *>(signature.data()),
-                       &signatureLength,
-                       reinterpret_cast<const unsigned char *>(data.constData()),
-                       static_cast<size_t>(data.size())) != 1) {
-        setError(errorMessage, QStringLiteral("OpenSSL signing failed: %1").arg(readOpenSslError()));
-        EVP_MD_CTX_free(ctx);
-        EVP_PKEY_free(privateKey);
-        return {};
+    if (verify(data, signature, publicKeyPem, errorMessage)) {
+        return SignatureVerifier::VerificationResult::Success;
+    } else {
+        return SignatureVerifier::VerificationResult::SignatureVerificationFailed;
     }
-
-    signature.resize(static_cast<int>(signatureLength));
-
-    EVP_MD_CTX_free(ctx);
-    EVP_PKEY_free(privateKey);
-    return signature;
 }
 
-bool SignatureVerifier::verify(const QByteArray &data,
-                                         const QByteArray &signature,
-                                         const QByteArray &publicKeyPem,
-                                         QString *errorMessage)
-{
-    EVP_PKEY *publicKey = loadPublicKey(publicKeyPem);
-    if (!publicKey) {
-        setError(errorMessage, QStringLiteral("Failed to parse public key. Supported formats: PEM, DER, OpenSSH (ssh-ed25519)"));
-        return false;
-    }
-
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    if (!ctx) {
-        EVP_PKEY_free(publicKey);
-        setError(errorMessage, QStringLiteral("EVP_MD_CTX_new failed"));
-        return false;
-    }
-
-    if (EVP_DigestVerifyInit(ctx, nullptr, nullptr, nullptr, publicKey) != 1) {
-        setError(errorMessage, QStringLiteral("OpenSSL verify init failed: %1").arg(readOpenSslError()));
-        EVP_MD_CTX_free(ctx);
-        EVP_PKEY_free(publicKey);
-        return false;
-    }
-
-    const int verifyResult = EVP_DigestVerify(
-        ctx,
-        reinterpret_cast<const unsigned char *>(signature.constData()),
-        static_cast<size_t>(signature.size()),
-        reinterpret_cast<const unsigned char *>(data.constData()),
-        static_cast<size_t>(data.size()));
-
-    EVP_MD_CTX_free(ctx);
-    EVP_PKEY_free(publicKey);
-
-    if (verifyResult == 1) {
-        return true;
-    }
-
-    if (verifyResult == 0) {
-        setError(errorMessage, QStringLiteral("Signature verification failed"));
-        return false;
-    }
-
-    setError(errorMessage, QStringLiteral("OpenSSL verify failed: %1").arg(readOpenSslError()));
-    return false;
-}
-
-bool SignatureVerifier::verify(const QByteArray &data,
-                                         const QByteArray &signature,
+SignatureVerifier::VerificationResult SignatureVerifier::verify(const QString &filePath,
+                                         const QString &signaturePath,
                                          const QList<QByteArray> &publicKeyPemList,
+                                         bool calculateHashFromFile,
                                          QString *errorMessage)
 {
-    for (const QByteArray &publicKeyPem : publicKeyPemList) {
-        if (verify(data, signature, publicKeyPem, errorMessage)) {
-            return true;
-        }
+    QByteArray data;
+    SignatureVerifier::VerificationResult result = getFileData(filePath, data, calculateHashFromFile, errorMessage);
+    if (result != SignatureVerifier::VerificationResult::Success) {
+        return result;
     }
-    return false;
+
+    QByteArray signature;
+    bool signatureDataSuccess = getSignatureData(signaturePath, signature, errorMessage);
+    if (!signatureDataSuccess) {
+        return SignatureVerifier::VerificationResult::SignatureFileError;
+    }
+
+    if (verify(data, signature, publicKeyPemList, errorMessage)) {
+        return SignatureVerifier::VerificationResult::Success;
+    } else {
+        return SignatureVerifier::VerificationResult::SignatureVerificationFailed;
+    }
 }

@@ -42,7 +42,7 @@
 #include <QtMath>
 #include <QRandomGenerator>
 #include <QApplication>
-#include "signatureverifier.h"
+#include "ed25519signatureverifier.h"
 
 namespace QInstaller {
 
@@ -658,37 +658,32 @@ void MetadataJob::xmlTaskFinished()
             QString xmlPath = fi.absolutePath();
             QString signatureFilePath = result.target() + QLatin1String(".sig");
 
-            QFile xmlFile(result.target());
-            if (!xmlFile.open(QIODevice::ReadOnly)) {
-                continue;
-            }
-            const QByteArray xmlData = xmlFile.readAll();
-            xmlFile.close();
-
-            if (!QFile::exists(signatureFilePath)) {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Signature file not found for %1.").arg(result.target()));
-                return;
-            }
-            QFile signatureFile(signatureFilePath);
-            if (!signatureFile.open(QIODevice::ReadOnly)) {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Open signature file failed."));
-                return;
-            }
-            const QByteArray signatureData = signatureFile.readAll();
-            signatureFile.close();
-
             QList<QByteArray> publicKeyList;
             if (!m_core->value(scPublicKeyPrimary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
             if (!m_core->value(scPublicKeySecondary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
-            bool verified = SignatureVerifier::verify(xmlData, signatureData, publicKeyList);
-            if (!verified) {
-                reset();
-                emitFinishedWithError(QInstaller::DownloadError, tr("Signature verification failed."));
-                return;
+            ED25519SignatureVerifier verifier;
+            SignatureVerifier::VerificationResult verifyResult = verifier.verify(xmlPath, signatureFilePath, publicKeyList, false);
+            switch (verifyResult) {
+                case SignatureVerifier::VerificationResult::Success:
+                    break;
+                case SignatureVerifier::VerificationResult::SignatureFileError:
+                    reset();
+                    emitFinishedWithError(QInstaller::DownloadError, tr("Downloading hash signature failed."));
+                    return;
+                case SignatureVerifier::VerificationResult::SignatureVerificationFailed:
+                    reset();
+                    emitFinishedWithError(QInstaller::DownloadError, tr("Hash signature verification failed."));
+                    return;
+                case SignatureVerifier::VerificationResult::CalculateHashError:
+                    reset();
+                    emitFinishedWithError(QInstaller::DownloadError, tr("Calculating hash failed."));
+                    return;
+                case SignatureVerifier::VerificationResult::DataFileError:
+                    continue;
+                default:
+                    break;
             }
         }
         if (!startXMLTask()) {

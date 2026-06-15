@@ -98,3 +98,4 @@ doc/codeattributions.qdoc
 /src/sdk/translations/ifw_en.ts
 
 package/*
+build/*

@@ -36,7 +36,7 @@
 
 #include "filedownloader.h"
 #include "filedownloaderfactory.h"
-#include "signatureverifier.h"
+#include "ed25519signatureverifier.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>
@@ -191,28 +191,51 @@ void DownloadArchivesJob::finishedHashDownload()
     QString signatureFileName = m_downloader->downloadedFileName();
     signatureFileName.chop(5); // remove ".sha1"
     signatureFileName.append(QStringLiteral(".sig"));
-    if (!QFile::exists(signatureFileName)) {
-        finishWithError(tr("Downloading signature failed."));
-    }
-    QFile signatureFile(signatureFileName);
-    if (!signatureFile.open(QFile::ReadOnly)) {
-        finishWithError(tr("Open signature file failed."));
-    }
+
     if (sha1HashFile.open(QFile::ReadOnly)) {
-        emit hashDownloadReady(m_downloader->downloadedFileName());
         m_currentHash = sha1HashFile.readAll();
-        fetchNextArchive();
     } else {
         finishWithError(tr("Downloading hash signature failed."));
+        return;
     }
-    QByteArray signature = signatureFile.readAll();
+
     QList<QByteArray> publicKeyList;
     if (!m_core->value(scPublicKeyPrimary).isEmpty())
         publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
     if (!m_core->value(scPublicKeySecondary).isEmpty())
         publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
-    if (!SignatureVerifier::verify(m_currentHash, signature, publicKeyList)) {
-        finishWithError(tr("Signature verification failed."));
+    
+    ED25519SignatureVerifier verifier;
+    SignatureVerifier::VerificationResult result = verifier.verify(m_downloader->downloadedFileName(), signatureFileName, publicKeyList, false);
+    switch (result) {
+        case SignatureVerifier::VerificationResult::Success:
+        {
+            emit hashDownloadReady(m_downloader->downloadedFileName());
+            fetchNextArchive();
+        }
+            break;
+        case SignatureVerifier::VerificationResult::SignatureFileError:
+        {
+            finishWithError(tr("Downloading hash signature failed."));
+        }
+            break;
+        case SignatureVerifier::VerificationResult::SignatureVerificationFailed:
+        {
+            finishWithError(tr("Hash signature verification failed."));
+        }
+            break;
+        case SignatureVerifier::VerificationResult::CalculateHashError:
+        {
+            finishWithError(tr("Calculating hash failed."));
+        }
+            break;
+        case SignatureVerifier::VerificationResult::DataFileError:
+        {
+            finishWithError(tr("Downloading hash failed."));
+        }
+            break;
+        default:
+            break;
     }
 }
 
