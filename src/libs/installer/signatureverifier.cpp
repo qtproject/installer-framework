@@ -3,6 +3,7 @@
 #include <openssl/err.h>
 #include <openssl/evp.h>
 #include <QFile>
+#include <QCryptographicHash>
 
 QString SignatureVerifier::errorString() const
 {
@@ -20,55 +21,29 @@ QString SignatureVerifier::readOpenSslError() const
     return QString::fromUtf8(errBuffer);
 }
 
-SignatureVerifier::VerificationResult SignatureVerifier::hardSha256(const QString& filePath, QByteArray &hash) const
+SignatureVerifier::VerificationResult SignatureVerifier::calculateSha256(const QString& filePath, QByteArray &hash) const
 {
-    unsigned char hashBuffer[EVP_MAX_MD_SIZE];
-    unsigned int hashLength = 0;
-
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly)) {
         m_errorString = QStringLiteral("Failed to open file: %1").arg(file.errorString());
         return VerificationResult::DataFileError;
     }
 
-    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
-    if (!mdctx)
-    {
-        m_errorString = QStringLiteral("EVP_MD_CTX_new failed");
-        return VerificationResult::CalculateHashError;
-    }
-
-    if (EVP_DigestInit_ex(mdctx, EVP_sha256(), nullptr) != 1) {
-        EVP_MD_CTX_free(mdctx);
-        m_errorString = readOpenSslError();
-        return VerificationResult::CalculateHashError;
-    }
-
-    constexpr qint64 kChunkSize = 100 *1024 * 1024; // 100 MB
+    QCryptographicHash hasher(QCryptographicHash::Sha256);
+    constexpr qint64 kChunkSize = 100 * 1024 * 1024; // 100 MB
     while (!file.atEnd()) {
         const QByteArray chunk = file.read(kChunkSize);
         if (chunk.isEmpty() && file.error() != QFile::NoError) {
-            EVP_MD_CTX_free(mdctx);
             m_errorString = QStringLiteral("Failed to read file: %1").arg(file.errorString());
             return VerificationResult::CalculateHashError;
         }
 
-        if (!chunk.isEmpty()
-                && EVP_DigestUpdate(mdctx, chunk.constData(), chunk.size()) != 1) {
-            EVP_MD_CTX_free(mdctx);
-            m_errorString = readOpenSslError();
-            return VerificationResult::CalculateHashError;
+        if (!chunk.isEmpty()) {
+            hasher.addData(chunk);
         }
     }
 
-    if (EVP_DigestFinal_ex(mdctx, hashBuffer, &hashLength) != 1) {
-        EVP_MD_CTX_free(mdctx);
-        m_errorString = readOpenSslError();
-        return VerificationResult::CalculateHashError;
-    }
-
-    EVP_MD_CTX_free(mdctx);
-    hash = QByteArray(reinterpret_cast<char *>(hashBuffer), hashLength);
+    hash = hasher.result();
     return VerificationResult::Success;
 }
 
@@ -86,7 +61,7 @@ bool SignatureVerifier::getSignatureData(const QString &filePath, QByteArray &da
 SignatureVerifier::VerificationResult SignatureVerifier::getFileData(const QString &filePath, QByteArray &data, bool calculateHashFromFile) const
 {
     if (calculateHashFromFile) {
-        SignatureVerifier::VerificationResult result = hardSha256(filePath, data);
+        SignatureVerifier::VerificationResult result = calculateSha256(filePath, data);
         if (result != SignatureVerifier::VerificationResult::Success) {
             return result;
         }

@@ -43,7 +43,7 @@ protected:
 protected:
   QString readOpenSslError() const;
 
-  VerificationResult hardSha256(const QString& filePath,
+  VerificationResult calculateSha256(const QString& filePath,
                                 QByteArray &hash) const;
   bool getSignatureData(const QString &filePath,
                         QByteArray &data) const;
