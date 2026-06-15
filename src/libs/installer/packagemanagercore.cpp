@@ -5295,12 +5295,13 @@ void PackageManagerCore::onHealthCheckFinished()
 {
     if (!d->m_healthCheckReply)
     {
-        Q_EMIT healthCheckFinished(false);
+        Q_EMIT healthCheckFinished(QNetworkReply::UnknownNetworkError);
         return;
     }
     disconnect(d->m_healthCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onHealthCheckFinished);
-    const bool success = (d->m_healthCheckReply->error() == QNetworkReply::NoError);
-    Q_EMIT healthCheckFinished(success);
+    const QNetworkReply::NetworkError error = d->m_healthCheckReply->error();
+
+    Q_EMIT healthCheckFinished(error);
     d->m_healthCheckReply->deleteLater();
     d->m_healthCheckReply = nullptr;
 }
@@ -5359,14 +5360,14 @@ void PackageManagerCore::onProductKeyCheckFinished()
 {
     if (!d->m_productKeyCheckReply)
     {
-        Q_EMIT productKeyCheckFinished(false);
+        Q_EMIT productKeyCheckFinished(QNetworkReply::UnknownNetworkError);
         return;
     }
     disconnect(d->m_productKeyCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onProductKeyCheckFinished);
-    const bool success = (d->m_productKeyCheckReply->error() == QNetworkReply::NoError);
-    if (!success)
+    const QNetworkReply::NetworkError error = d->m_productKeyCheckReply->error();
+    if (error != QNetworkReply::NoError)
     {
-        Q_EMIT productKeyCheckFinished(false);
+        Q_EMIT productKeyCheckFinished(error);
     }
     else
     {
@@ -5374,9 +5375,9 @@ void PackageManagerCore::onProductKeyCheckFinished()
         QJsonParseError parseError;
         const QJsonObject tokenObject = QJsonDocument::fromJson(serverToken, &parseError).object();
         if ((parseError.error == QJsonParseError::NoError) && !tokenObject.isEmpty()) {
-            Q_EMIT productKeyCheckFinished(true);
+            Q_EMIT productKeyCheckFinished(QNetworkReply::NoError);
         } else {
-            Q_EMIT productKeyCheckFinished(false);
+            Q_EMIT productKeyCheckFinished(QNetworkReply::ProtocolFailure);
         }
     }
     d->m_productKeyCheckReply->deleteLater();

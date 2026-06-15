@@ -51,6 +51,7 @@
 #include <RegStr.h>
 #include <devguid.h>
 #include <cfgmgr32.h>
+#include <QNetworkReply>
 
 // Link required Windows libraries
 #pragma comment(lib, "setupapi.lib")
@@ -511,8 +512,8 @@ Q_SIGNALS:
     void installDirectoryChanged(const QString &newDirectory);
     void proxyTestErrorOccurred(const QString &error);
 
-    void healthCheckFinished(bool success);
-    void productKeyCheckFinished(bool success);
+    void healthCheckFinished(QNetworkReply::NetworkError error);
+    void productKeyCheckFinished(QNetworkReply::NetworkError error);
 
 private:
     struct Data {
