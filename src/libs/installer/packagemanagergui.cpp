@@ -715,6 +715,14 @@ void PackageManagerGui::setWizardPageButtonText(int pageId, int buttonId, const 
         p->setButtonText(static_cast<QWizard::WizardButton>(buttonId), buttonText);
 }
 
+void PackageManagerGui::setButtonVisible(int buttonId, bool visible)
+{
+    if (QAbstractButton *btn = button(static_cast<QWizard::WizardButton>(buttonId)))
+        btn->setVisible(visible);
+    else
+        qCWarning(QInstaller::lcDeveloperBuild) << "Button with type: " << d->buttonType(buttonId) << "not found!";
+}
+
 /*!
     Sets a validator for the custom page specified by \a name and
     \a callbackName requested by \a component.

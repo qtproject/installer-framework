@@ -195,6 +195,12 @@ void GuiProxy::setWizardPageButtonText(int pageId, int buttonId, const QString &
         m_gui->setWizardPageButtonText(pageId, buttonId, buttonText);
 }
 
+void GuiProxy::setButtonVisible(int wizardButton, bool visible)
+{
+    if (m_gui)
+        m_gui->setButtonVisible(wizardButton, visible);
+}
+
 void GuiProxy::showSettingsButton(bool show)
 {
     if (m_gui)

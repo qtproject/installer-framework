@@ -83,6 +83,7 @@ public:
     void clickButton(const QString &objectName, int delayInMs = 0) const;
     bool isButtonEnabled(int wizardButton);
     void setWizardPageButtonText(int pageId, int buttonId, const QString &buttonText);
+    void setButtonVisible(int wizardButton, bool visible);
 
     void showSettingsButton(bool show);
     void requestSettingsButtonByInstaller(bool request);
