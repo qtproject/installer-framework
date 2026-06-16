@@ -1688,6 +1688,7 @@ PackagesList PackageManagerCore::remotePackages()
 */
 bool PackageManagerCore::fetchCompressedPackagesTree()
 {
+    emit startAllComponentsReset();
     const LocalPackagesMap installedPackages = d->localInstalledPackages();
     if (!isInstaller() && status() == Failure)
         return false;
@@ -2091,7 +2092,7 @@ bool PackageManagerCore::addQBspRepositories(const QStringList &repositories)
         set.insert(repository);
     }
     if (set.count() > 0) {
-        settings().addTemporaryRepositories(set, false);
+        settings().setTemporaryRepositories(set, true);
         return true;
     }
     return false;
