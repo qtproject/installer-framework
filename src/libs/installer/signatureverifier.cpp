@@ -94,6 +94,7 @@ SignatureVerifier::VerificationResult SignatureVerifier::verify(const QString &f
     }
 
     if (verify(data, signature, publicKeyPem)) {
+        m_errorString.clear();
         return SignatureVerifier::VerificationResult::Success;
     } else {
         return SignatureVerifier::VerificationResult::SignatureVerificationFailed;
@@ -118,6 +119,7 @@ SignatureVerifier::VerificationResult SignatureVerifier::verify(const QString &f
     }
 
     if (verify(data, signature, publicKeyPemList)) {
+        m_errorString.clear();
         return SignatureVerifier::VerificationResult::Success;
     } else {
         return SignatureVerifier::VerificationResult::SignatureVerificationFailed;
