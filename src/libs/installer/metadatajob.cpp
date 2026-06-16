@@ -888,6 +888,24 @@ void MetadataJob::resetCompressedFetch()
     setError(Job::NoError);
     setErrorString(QString());
 
+    // Remove previously staged compressed repo metadata
+    for (auto it = m_fetchedMetadata.begin(); it != m_fetchedMetadata.end(); ) {
+        if (it.value() && it.value()->repository().isCompressed()) {
+            delete it.value();
+            it = m_fetchedMetadata.erase(it);
+        } else {
+            ++it;
+        }
+    }
+
+    // Deactivate items committed to the persistent cache, so that it won't be loaded in metadata()
+    for (auto *item : m_metaFromCache.items()) {
+        if (item && item->repository().isCompressed()) {
+            item->setRepository(Repository());
+            item->setAvailableFromDefaultRepository(false);
+        }
+    }
+
     try {
         foreach (QFutureWatcher<void> *const watcher, m_unzipTasks.keys()) {
             watcher->cancel();
