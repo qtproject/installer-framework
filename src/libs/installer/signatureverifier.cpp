@@ -30,7 +30,7 @@ SignatureVerifier::VerificationResult SignatureVerifier::calculateSha256(const Q
     }
 
     QCryptographicHash hasher(QCryptographicHash::Sha256);
-    constexpr qint64 kChunkSize = 100 * 1024 * 1024; // 100 MB
+    constexpr qint64 kChunkSize = 1024; // 1 KB
     while (!file.atEnd()) {
         const QByteArray chunk = file.read(kChunkSize);
         if (chunk.isEmpty() && file.error() != QFile::NoError) {
