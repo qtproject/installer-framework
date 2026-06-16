@@ -42,7 +42,7 @@
 #include <QtMath>
 #include <QRandomGenerator>
 #include <QApplication>
-#include "ed25519signatureverifier.h"
+#include "signatureverifier.h"
 
 namespace QInstaller {
 
@@ -97,6 +97,7 @@ MetadataJob::MetadataJob(QObject *parent)
     setCapabilities(Cancelable);
     connect(&m_signatureTask, &QFutureWatcherBase::finished, this, &MetadataJob::signatureTaskFinished);
     connect(&m_xmlTask, &QFutureWatcherBase::finished, this, &MetadataJob::xmlTaskFinished);
+    connect(&m_metadataSignatureTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataSignatureTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::finished, this, &MetadataJob::metadataTaskFinished);
     connect(&m_metadataTask, &QFutureWatcherBase::progressValueChanged, this, &MetadataJob::progressChanged);
     connect(&m_updateCacheTask, &QFutureWatcherBase::finished, this, &MetadataJob::updateCacheTaskFinished);
@@ -316,7 +317,7 @@ void MetadataJob::doStart()
                 double taskCount = m_updatesXmlItems.length()/static_cast<double>(m_downloadableChunkSize);
                 m_totalTaskCount = qCeil(taskCount);
                 m_taskNumber = 0;
-                startSignatureTask();
+                startXMLSignatureTask();
             } else {
                 emitFinished();
             }
@@ -355,7 +356,7 @@ void MetadataJob::doStart()
     }
 }
 
-bool MetadataJob::startSignatureTask()
+bool MetadataJob::startXMLSignatureTask()
 {
     int chunkSize = qMin(m_signatureItems.length(), m_downloadableChunkSize);
     QList<FileTaskItem> tempPackages = m_signatureItems.mid(0, chunkSize);
@@ -498,7 +499,7 @@ void MetadataJob::unzipRepositoryTaskFinished()
         //One can specify many zipped repository items at once. As the repositories are
         //unzipped one by one, we collect here all items before parsing xml files from those.
        if (m_updatesXmlItems.count() > 0 && m_unzipRepositoryTasks.isEmpty()) {
-            startSignatureTask();
+            startXMLSignatureTask();
         } else {
             if (error != Job::NoError) {
                 emitFinishedWithError(QInstaller::DownloadError, errorString);
@@ -524,7 +525,7 @@ void MetadataJob::signatureTaskFinished()
     try {
         m_signatureTask.waitForFinished();
         m_signatureResult.append(m_signatureTask.future().results());
-        if (!startSignatureTask()) {
+        if (!startXMLSignatureTask()) {
             status = SignatureDownloadSuccess;
             setInfoMessage(tr("signature task finished..."));
             startXMLTask();
@@ -663,8 +664,8 @@ void MetadataJob::xmlTaskFinished()
                 publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
             if (!m_core->value(scPublicKeySecondary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
-            ED25519SignatureVerifier verifier;
-            SignatureVerifier::VerificationResult verifyResult = verifier.verify(xmlPath, signatureFilePath, publicKeyList, false);
+            QSharedPointer<SignatureVerifier> verifier = SignatureVerifier::createVerifier(SignatureVerifier::SignatureAlgorithm::ECDSA_P256);
+            SignatureVerifier::VerificationResult verifyResult = verifier->verify(xmlPath, signatureFilePath, publicKeyList, true);
             switch (verifyResult) {
                 case SignatureVerifier::VerificationResult::Success:
                     break;
@@ -707,10 +708,12 @@ void MetadataJob::xmlTaskFinished()
         return;
 
     if (status == XmlDownloadSuccess) {
-        if (!fetchMetaDataPackages()) {
-            // No new metadata packages to fetch, still need to update the cache
-            // for refreshed repositories.
-            startUpdateCacheTask();
+        if (!fetchMetaDataSignatures()) 
+        {
+            if (!fetchMetaDataPackages()) 
+            {
+                startUpdateCacheTask();
+            }
         }
     } else {
         reset();
@@ -779,6 +782,36 @@ void MetadataJob::metadataTaskFinished()
                         }
                         continue;
                     }
+
+                    QSharedPointer<SignatureVerifier> verifier = SignatureVerifier::createVerifier(SignatureVerifier::SignatureAlgorithm::ECDSA_P256);
+                    QList<QByteArray> publicKeyList;
+                    if (!m_core->value(scPublicKeyPrimary).isEmpty())
+                        publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
+                    if (!m_core->value(scPublicKeySecondary).isEmpty())
+                        publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
+                    SignatureVerifier::VerificationResult verifyResult = verifier->verify(result.target(), result.target() + QLatin1String(".sig"), publicKeyList, true);
+                    switch (verifyResult) {
+                        case SignatureVerifier::VerificationResult::Success:
+                            break;
+                        case SignatureVerifier::VerificationResult::SignatureFileError:
+                            reset();
+                            emitFinishedWithError(QInstaller::DownloadError, tr("Downloading hash signature failed."));
+                            return;
+                        case SignatureVerifier::VerificationResult::SignatureVerificationFailed:
+                            reset();
+                            emitFinishedWithError(QInstaller::DownloadError, tr("Hash signature verification failed."));
+                            return;
+                        case SignatureVerifier::VerificationResult::CalculateHashError:
+                            reset();
+                            emitFinishedWithError(QInstaller::DownloadError, tr("Calculating hash failed for \"%1\".").arg(item.value(TaskRole::SourceFile).toString()));
+                            return;
+                        case SignatureVerifier::VerificationResult::DataFileError:
+                            reset();
+                            emitFinishedWithError(QInstaller::DownloadError, tr("Data file error for \"%1\".").arg(item.value(TaskRole::SourceFile).toString()));
+                            return;
+                        default:
+                            break;
+                    }
                     UnzipArchiveTask *task = new UnzipArchiveTask(result.target(),
                         item.value(TaskRole::UserRole).toString());
                     task->setRemoveArchive(true);
@@ -830,6 +863,22 @@ void MetadataJob::updateCacheTaskFinished()
 
 // -- private
 
+bool MetadataJob::fetchMetaDataSignatures()
+{
+    int chunkSize = qMin(m_packageSignatures.length(), m_downloadableChunkSize);
+    QList<FileTaskItem> tempPackages = m_packageSignatures.mid(0, chunkSize);
+    m_packageSignatures = m_packageSignatures.mid(chunkSize, m_packageSignatures.length());
+    if (tempPackages.length() > 0) {
+        DownloadFileTask *const metadataSignatureTask = new DownloadFileTask(tempPackages);
+        metadataSignatureTask->setProxyFactory(m_core->proxyFactory());
+        metadataSignatureTask->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
+        m_metadataSignatureTask.setFuture(QtConcurrent::run(&DownloadFileTask::doTask, metadataSignatureTask));
+        setInfoMessage(tr("Retrieving meta information signatures from remote repository..."));
+        return true;
+    }
+    return false;
+}
+
 bool MetadataJob::fetchMetaDataPackages()
 {
     //Download files in chunks. QtConcurrent will choke if too many task is given to it
@@ -837,7 +886,6 @@ bool MetadataJob::fetchMetaDataPackages()
     QList<FileTaskItem> tempPackages = m_packages.mid(0, chunkSize);
     m_packages = m_packages.mid(chunkSize, m_packages.length());
     if (tempPackages.length() > 0) {
-        setProcessedAmount(0);
         DownloadFileTask *const metadataTask = new DownloadFileTask(tempPackages);
         metadataTask->setProxyFactory(m_core->proxyFactory());
         metadataTask->setSlbToken(m_core->value(QLatin1String("sessionToken")).toUtf8());
@@ -848,9 +896,35 @@ bool MetadataJob::fetchMetaDataPackages()
     return false;
 }
 
+void MetadataJob::metadataSignatureTaskFinished()
+{
+    try {
+        m_metadataSignatureTask.waitForFinished();
+        m_metadataSignatureResult.append(m_metadataSignatureTask.future().results());
+        if (!fetchMetaDataSignatures()) {
+            // All signature batches downloaded, now proceed to fetch package batches
+            setInfoMessage(tr("Retrieving meta information from remote repository..."));
+            if (!fetchMetaDataPackages()) {
+                // No packages to fetch either, start cache update
+                startUpdateCacheTask();
+            }
+        }
+    } catch (const TaskException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, e.message());
+    } catch (const QUnhandledException &e) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, QLatin1String(e.what()));
+    } catch (...) {
+        reset();
+        emitFinishedWithError(QInstaller::DownloadError, tr("Unknown exception during download."));
+    }
+}
+
 void MetadataJob::reset()
 {
     m_packages.clear();
+    m_packageSignatures.clear();
     m_updatesXmlItems.clear();
     m_signatureItems.clear();
     m_defaultRepositoriesFetched = false;
@@ -870,10 +944,13 @@ void MetadataJob::reset()
         m_xmlTask.waitForFinished();
         m_metadataTask.cancel();
         m_metadataTask.waitForFinished();
+        m_metadataSignatureTask.cancel();
+        m_metadataSignatureTask.waitForFinished();
     } catch (...) {}
     m_tempDirDeleter.releaseAndDeleteAll();
     m_signatureResult.clear();
     m_metadataResult.clear();
+    m_metadataSignatureResult.clear();
     m_updatesXmlResult.clear();
     m_taskNumber = 0;
 }
@@ -1001,6 +1078,11 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
             addFileTaskItem(QString::fromLatin1("%1/%2").arg(repoUrl, metadataName),
                 metadata->path() + QString::fromLatin1("/%1").arg(metadataName),
                 metadata.get(), sha1.toElement().text(), QString());
+            
+            // Add corresponding signature file
+            addPackageSignatureItem(QString::fromLatin1("%1/%2.sig").arg(repoUrl, metadataName),
+                metadata->path() + QString::fromLatin1("/%1.sig").arg(metadataName),
+                metadata.get());
         } else {
             bool metaFound = false;
             for (int i = 0; i < children.count(); ++i) {
@@ -1017,6 +1099,12 @@ MetadataJob::Status MetadataJob::parseUpdatesXml(const QList<FileTaskResult> &re
                         addFileTaskItem(QString::fromLatin1("%1/%2/%3meta.7z").arg(repoUrl, packageName, packageVersion),
                             metadata->path() + QString::fromLatin1("/%1-%2-meta.7z").arg(packageName, packageVersion),
                             metadata.get(), packageHash, packageName);
+                        
+                        // Add corresponding signature file
+                        const QString packageMetaName = QString::fromLatin1("%1-%2-meta.7z").arg(packageName, packageVersion);
+                        addPackageSignatureItem(QString::fromLatin1("%1/%2/%3.sig").arg(repoUrl, packageName, packageMetaName),
+                            metadata->path() + QString::fromLatin1("/%1.sig").arg(packageMetaName),
+                            metadata.get());
                     } else {
                         QString fileName = metadata->path() + QLatin1Char('/') + packageName;
                         QDir directory(fileName);
@@ -1181,6 +1269,18 @@ void MetadataJob::addFileTaskItem(const QString &source, const QString &target, 
     item.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
     item.insert(TaskRole::Name, packageName);
     m_packages.append(item);
+}
+
+void MetadataJob::addPackageSignatureItem(const QString &source, const QString &target, Metadata *metadata)
+{
+    FileTaskItem sigItem(source, target);
+    QAuthenticator authenticator;
+    authenticator.setUser(metadata->repository().username());
+    authenticator.setPassword(metadata->repository().password());
+    sigItem.insert(TaskRole::UserRole, metadata->path());
+    sigItem.insert(TaskRole::Authenticator, QVariant::fromValue(authenticator));
+    sigItem.insert(TaskRole::Name, QFileInfo(target).fileName());
+    m_packageSignatures.append(sigItem);
 }
 
 bool MetadataJob::parsePackageUpdate(const QDomNodeList &c2, QString &packageName,

@@ -3,6 +3,7 @@
 #include <QByteArray>
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 
 struct evp_pkey_st;
 typedef struct evp_pkey_st EVP_PKEY;
@@ -17,6 +18,13 @@ public:
       SignatureFileError,
       CalculateHashError,
   };
+
+  enum class SignatureAlgorithm {
+      Ed25519,
+      ECDSA_P256,
+  };
+
+  static QSharedPointer<SignatureVerifier> createVerifier(SignatureAlgorithm algorithm);
   virtual ~SignatureVerifier() = default;
   VerificationResult verify(const QString &filePath,
                       const QString &signaturePath,

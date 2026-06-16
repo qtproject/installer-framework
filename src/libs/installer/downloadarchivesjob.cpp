@@ -36,7 +36,7 @@
 
 #include "filedownloader.h"
 #include "filedownloaderfactory.h"
-#include "ed25519signatureverifier.h"
+#include "signatureverifier.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QTimerEvent>
@@ -186,56 +186,15 @@ void DownloadArchivesJob::finishedSignatureDownload()
 
 void DownloadArchivesJob::finishedHashDownload()
 {
-    Q_ASSERT(m_downloader != nullptr);
+Q_ASSERT(m_downloader != nullptr);
+
     QFile sha1HashFile(m_downloader->downloadedFileName());
-    QString signatureFileName = m_downloader->downloadedFileName();
-    signatureFileName.chop(5); // remove ".sha1"
-    signatureFileName.append(QStringLiteral(".sig"));
-
     if (sha1HashFile.open(QFile::ReadOnly)) {
+        emit hashDownloadReady(m_downloader->downloadedFileName());
         m_currentHash = sha1HashFile.readAll();
+        fetchNextArchive();
     } else {
-        finishWithError(tr("Downloading hash signature failed."));
-        return;
-    }
-
-    QList<QByteArray> publicKeyList;
-    if (!m_core->value(scPublicKeyPrimary).isEmpty())
-        publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
-    if (!m_core->value(scPublicKeySecondary).isEmpty())
-        publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
-    
-    ED25519SignatureVerifier verifier;
-    SignatureVerifier::VerificationResult result = verifier.verify(m_downloader->downloadedFileName(), signatureFileName, publicKeyList, false);
-    switch (result) {
-        case SignatureVerifier::VerificationResult::Success:
-        {
-            emit hashDownloadReady(m_downloader->downloadedFileName());
-            fetchNextArchive();
-        }
-            break;
-        case SignatureVerifier::VerificationResult::SignatureFileError:
-        {
-            finishWithError(tr("Downloading hash signature failed."));
-        }
-            break;
-        case SignatureVerifier::VerificationResult::SignatureVerificationFailed:
-        {
-            finishWithError(tr("Hash signature verification failed."));
-        }
-            break;
-        case SignatureVerifier::VerificationResult::CalculateHashError:
-        {
-            finishWithError(tr("Calculating hash failed."));
-        }
-            break;
-        case SignatureVerifier::VerificationResult::DataFileError:
-        {
-            finishWithError(tr("Downloading hash failed."));
-        }
-            break;
-        default:
-            break;
+        finishWithError(tr("Downloading component hash failed."));
     }
 }
 
@@ -392,6 +351,40 @@ void DownloadArchivesJob::registerFile()
     } else {
         m_retryCount = scMaxRetries;
 
+        QList<QByteArray> publicKeyList;
+        if (!m_core->value(scPublicKeyPrimary).isEmpty())
+            publicKeyList.append(m_core->value(scPublicKeyPrimary).toLatin1());
+        if (!m_core->value(scPublicKeySecondary).isEmpty())
+            publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
+        
+        QSharedPointer<SignatureVerifier> verifier = SignatureVerifier::createVerifier(SignatureVerifier::SignatureAlgorithm::ECDSA_P256);
+        SignatureVerifier::VerificationResult result = verifier->verify(m_downloader->downloadedFileName(), m_downloader->downloadedFileName() + QLatin1String(".sig"), publicKeyList, true);
+        switch (result) {
+            case SignatureVerifier::VerificationResult::Success:
+                break;
+            case SignatureVerifier::VerificationResult::SignatureFileError:
+            {
+                finishWithError(tr("Downloading component signature failed."));
+            }
+                return;
+            case SignatureVerifier::VerificationResult::SignatureVerificationFailed:
+            {
+                finishWithError(tr("Component signature verification failed."));
+            }
+                return;
+            case SignatureVerifier::VerificationResult::CalculateHashError:
+            {
+                finishWithError(tr("Calculating component hash failed."));
+            }
+                return;
+            case SignatureVerifier::VerificationResult::DataFileError:
+            {
+                finishWithError(tr("Downloading component hash failed."));
+            }
+                return;
+            default:
+                break;
+        }
         ++m_archivesDownloaded;
         m_totalSizeDownloaded += QFile(m_downloader->downloadedFileName()).size();
         if (m_progressChangedTimerId) {

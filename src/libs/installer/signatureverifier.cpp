@@ -4,6 +4,21 @@
 #include <openssl/evp.h>
 #include <QFile>
 #include <QCryptographicHash>
+#include "ed25519signatureverifier.h"
+#include "ecdsap256signatureverifier.h"
+
+QSharedPointer<SignatureVerifier> SignatureVerifier::createVerifier(SignatureAlgorithm algorithm)
+{
+    switch (algorithm) {
+        case SignatureAlgorithm::Ed25519:
+            return QSharedPointer<ED25519SignatureVerifier>::create();
+        case SignatureAlgorithm::ECDSA_P256:
+            return QSharedPointer<ECDSAP256SignatureVerifier>::create();
+        default:
+            break;
+    }
+    return nullptr;
+}
 
 QString SignatureVerifier::errorString() const
 {

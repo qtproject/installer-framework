@@ -95,9 +95,11 @@ private slots:
     void setProgressTotalAmount(int maximum);
     void unzipRepositoryTaskFinished();
     bool startXMLTask();
-    bool startSignatureTask();
+    bool startXMLSignatureTask();
+    void metadataSignatureTaskFinished();
 
 private:
+    bool fetchMetaDataSignatures();
     bool fetchMetaDataPackages();
     void startUnzipRepositoryTask(const Repository &repo);
     void startUpdateCacheTask();
@@ -111,6 +113,7 @@ private:
     QSet<Repository> getRepositories();
     void addFileTaskItem(const QString &source, const QString &target, Metadata *metadata,
                          const QString &sha1, const QString &packageName);
+    void addPackageSignatureItem(const QString &source, const QString &target, Metadata *metadata);
     static bool parsePackageUpdate(const QDomNodeList &c2, QString &packageName, QString &packageVersion,
                             QString &packageHash, bool online, bool testCheckSum);
     QMultiHash<QString, QPair<Repository, Repository> > searchAdditionalRepositories(const QDomNode &repositoryUpdate,
@@ -126,11 +129,13 @@ private:
     PackageManagerCore *m_core;
 
     QList<FileTaskItem> m_packages;
+    QList<FileTaskItem> m_packageSignatures;
     QList<FileTaskItem> m_updatesXmlItems;
     QList<FileTaskItem> m_signatureItems;
     TempPathDeleter m_tempDirDeleter;
     QFutureWatcher<FileTaskResult> m_signatureTask; //Updates.xml signature
     QFutureWatcher<FileTaskResult> m_xmlTask;
+    QFutureWatcher<FileTaskResult> m_metadataSignatureTask;
     QFutureWatcher<FileTaskResult> m_metadataTask;
     QFutureWatcher<void> m_updateCacheTask;
     QHash<QFutureWatcher<void> *, QObject*> m_unzipTasks;
@@ -138,6 +143,7 @@ private:
     DownloadType m_downloadType;
     QList<FileTaskResult> m_signatureResult;
     QList<FileTaskResult> m_metadataResult;
+    QList<FileTaskResult> m_metadataSignatureResult;
     QList<FileTaskResult> m_updatesXmlResult;
     int m_downloadableChunkSize;
     int m_taskNumber;
