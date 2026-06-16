@@ -3126,6 +3126,8 @@ void FinishedPage::entering()
     if (m_commitButton) {
         disconnect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
         connect(m_commitButton, &QAbstractButton::clicked, this, &FinishedPage::handleFinishClicked);
+        if (QPushButton *const b = qobject_cast<QPushButton *>(m_commitButton))
+            b->setDefault(true);
     }
 
     QString finishedText;
