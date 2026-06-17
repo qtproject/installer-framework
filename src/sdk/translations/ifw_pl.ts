@@ -2312,7 +2312,7 @@ Please copy the installer to a local drive</source>
         <translation>&amp;Zainstaluj</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Gotowy do instalacji</translation>
     </message>
     <message>

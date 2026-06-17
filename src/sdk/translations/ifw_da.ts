@@ -2297,7 +2297,7 @@ Kopiér venligst installeren til et lokalt drev</translation>
         <translation>&amp;Installer</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Klar til installation</translation>
     </message>
     <message>

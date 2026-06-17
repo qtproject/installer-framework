@@ -2169,7 +2169,7 @@ Please copy the installer to a local drive</source>
         <translation>설치(&amp;I)</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>설치 준비 완료</translation>
     </message>
     <message>

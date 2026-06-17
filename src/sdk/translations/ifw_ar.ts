@@ -2219,7 +2219,7 @@ Please copy the installer to a local drive</source>
         <translation>&amp;ثبت</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>جاهز للتثبيت</translation>
     </message>
     <message>

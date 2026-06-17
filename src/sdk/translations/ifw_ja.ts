@@ -2273,7 +2273,7 @@ Please copy the installer to a local drive</source>
         <translation>インストール(&amp;I)</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>インストールの準備ができました</translation>
     </message>
     <message>

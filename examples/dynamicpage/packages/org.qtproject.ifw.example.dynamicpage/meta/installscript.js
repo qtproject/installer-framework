@@ -88,7 +88,7 @@ Component.prototype.installerLoaded = function () {
             var widget = gui.pageWidgetByObjectName("DynamicReadyToInstallWidget");
             if (widget != null) {
                 widget.showDetails.checked = false;
-                widget.windowTitle = "Ready to Install";
+                widget.windowTitle = "Selection Overview";
             }
             var page = gui.pageByObjectName("DynamicReadyToInstallWidget");
             if (page != null) {

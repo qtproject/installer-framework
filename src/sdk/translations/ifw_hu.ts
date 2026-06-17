@@ -2342,7 +2342,7 @@ Másolja a telepítőt egy helyi meghajtóra</translation>
         <translation>&amp;Telepítés</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Telepítésre készen</translation>
     </message>
     <message>

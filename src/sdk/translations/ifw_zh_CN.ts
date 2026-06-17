@@ -2282,7 +2282,7 @@ Please copy the installer to a local drive</source>
         <translation>安装(&amp;I)</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>准备安装</translation>
     </message>
     <message>

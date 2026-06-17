@@ -2292,7 +2292,7 @@ Copie el instalador en una unidad local</translation>
         <translation>&amp;Instalar</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Preparado para instalar</translation>
     </message>
     <message>

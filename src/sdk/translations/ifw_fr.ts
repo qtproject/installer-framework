@@ -2292,7 +2292,7 @@ Copiez le programme d’installation sur un disque local</translation>
         <translation>&amp;Installer</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Prêt pour l’installation</translation>
     </message>
     <message>

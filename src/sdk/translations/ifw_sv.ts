@@ -2604,7 +2604,7 @@ Kopiera installeraren till en lokal enhet</translation>
         <translation>&amp;Installera</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Redo att installera</translation>
     </message>
     <message>

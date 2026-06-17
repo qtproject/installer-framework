@@ -2378,7 +2378,7 @@ Bitte kopieren Sie den Installer auf ein lokales Laufwerk</translation>
         <translation>&amp;Installieren</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Bereit zum Installieren</translation>
     </message>
     <message>

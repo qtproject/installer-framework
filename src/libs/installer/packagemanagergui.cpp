@@ -2753,7 +2753,7 @@ void ReadyForInstallationPage::entering()
     } else {
         Q_ASSERT(packageManagerCore()->isInstaller());
         setButtonText(QWizard::CommitButton, tr("&Install"));
-        setColoredTitle(tr("Ready to Install"));
+        setColoredTitle(tr("Selection Overview"));
         m_msgLabel->setText(tr("All required information is now available to begin installing %1 on your computer.")
             .arg(productName()));
     }
@@ -2792,7 +2792,7 @@ void ReadyForInstallationPage::updatePageListTitle()
     if (core->isOfflineGenerator())
         setPageListTitle(tr("Ready to Create Offline Installer"));
     else if (core->isInstaller())
-        setPageListTitle(tr("Ready to Install"));
+        setPageListTitle(tr("Selection Overview"));
     else if (core->isMaintainer())
         setPageListTitle(tr("Ready to Update"));
     else if (core->isUninstaller())

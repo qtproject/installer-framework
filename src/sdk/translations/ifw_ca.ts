@@ -2331,7 +2331,7 @@ Copieu l&apos;instal·lador en una unitat local</translation>
         <translation>&amp;Instal·la</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Llest per a instal·lar</translation>
     </message>
     <message>

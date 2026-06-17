@@ -2297,7 +2297,7 @@ Copiare il programma di installazione in un&apos;unità locale</translation>
         <translation>&amp;Installa</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Pronto all&apos;installazione</translation>
     </message>
     <message>

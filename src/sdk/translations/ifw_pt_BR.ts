@@ -2138,7 +2138,7 @@ Por favor, copie o instalador para uma unidade local</translation>
         <translation>&amp;Instalar</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Pronto para Instalar</translation>
     </message>
     <message>

@@ -2168,7 +2168,7 @@ Kopiraj program za instaliranje na računalo</translation>
         <translation>&amp;Instaliraj</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Spremno za instaliranje</translation>
     </message>
     <message>

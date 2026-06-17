@@ -2383,7 +2383,7 @@ Please copy the installer to a local drive</source>
         <translation>&amp;Установить</translation>
     </message>
     <message>
-        <source>Ready to Install</source>
+        <source>Selection Overview</source>
         <translation>Всё готово к установке</translation>
     </message>
     <message>
