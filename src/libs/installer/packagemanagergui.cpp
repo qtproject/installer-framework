@@ -35,6 +35,7 @@
 #include "packagemanagercore.h"
 #include "progresscoordinator.h"
 #include "performinstallationform.h"
+#include "qpainter.h"
 #include "settings.h"
 #include "utils.h"
 #include "scriptengine.h"
@@ -59,6 +60,7 @@
 #include <QComboBox>
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QButtonGroup>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -75,6 +77,13 @@
 #include <QStringListModel>
 #include <QTextBrowser>
 #include <QFontDatabase>
+#include <QStyleFactory>
+#include <QRadioButton>
+#include <QHBoxLayout>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QtSvg/QSvgRenderer>
+#include <QDebug>
 
 #include <QVBoxLayout>
 #include <QShowEvent>
@@ -92,6 +101,81 @@
 
 using namespace KDUpdater;
 using namespace QInstaller;
+
+class MaintenanceTileButton : public QRadioButton
+{
+    Q_OBJECT
+public:
+    explicit MaintenanceTileButton(const QString& defaultSvgPath, const QString& hoverSvgPath, const QString& selectedSvgPath, QWidget *parent = nullptr)
+        : QRadioButton(parent)
+        , m_defaultRenderer()
+        , m_hoverRenderer()
+        , m_selectedRenderer()
+        , m_targetRatio(57.0 / 50.0)
+    {
+        setFocusPolicy(Qt::NoFocus);
+        setAttribute(Qt::WA_Hover, true);
+
+        m_defaultRenderer.load(defaultSvgPath);
+        m_hoverRenderer.load(hoverSvgPath);
+        m_selectedRenderer.load(selectedSvgPath);
+
+        setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    }
+
+    QHBoxLayout * m_actionLayout;
+
+protected:
+    // Completely replaced resizeEvent with paintEvent to handle dynamic scaling cleanly
+    void paintEvent(QPaintEvent *event) override
+    {
+        Q_UNUSED(event);
+
+        QPainter painter(this);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        const int widgetW = width();
+        const int widgetH = height();
+
+        if (widgetW <= 0 || widgetH <= 0)
+            return;
+
+        int targetW = widgetW;
+        int targetH = static_cast<int>(targetW * m_targetRatio);
+
+        if (targetH > widgetH) 
+        {
+            targetH = widgetH;
+            targetW = static_cast<int>(targetH / m_targetRatio);
+        }
+
+        int targetX = (widgetW - targetW) / 2;
+        int targetY = (widgetH - targetH) / 2;
+        QRect renderRect(targetX, targetY, targetW, targetH);
+
+        bool isSelected = isChecked();
+        bool isHovered = underMouse();
+
+        QSvgRenderer* activeRenderer = &m_defaultRenderer;
+        if (isSelected) 
+        {
+            activeRenderer = &m_selectedRenderer;
+        } 
+        else if (isHovered) 
+        {
+            activeRenderer = &m_hoverRenderer;
+        }
+
+        activeRenderer->render(&painter, renderRect);
+    }
+
+private:
+
+    QSvgRenderer m_defaultRenderer;
+    QSvgRenderer m_hoverRenderer;
+    QSvgRenderer m_selectedRenderer;
+    const qreal m_targetRatio;
+};
 
 
 class DynamicInstallerPage : public PackageManagerPage
@@ -393,6 +477,11 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
         m_pageListWidget->viewport()->setAutoFillBackground(false);
         m_pageListWidget->setFrameShape(QFrame::NoFrame);
         m_pageListWidget->setMinimumWidth(200);
+
+        QSizePolicy sp = m_pageListWidget->sizePolicy();
+        sp.setRetainSizeWhenHidden(false); 
+        m_pageListWidget->setSizePolicy(sp);
+
         // The widget should be view-only but we do not want it to be grayed out,
         // so instead of calling setEnabled(false), do not accept focus.
         m_pageListWidget->setFocusPolicy(Qt::NoFocus);
@@ -607,6 +696,11 @@ void PackageManagerGui::setTextItems(QObject *object, const QStringList &items)
 
     qCWarning(QInstaller::lcDeveloperBuild) << "Cannot set text items on object of type"
              << object->metaObject()->className() << ".";
+}
+
+QListWidget *PackageManagerGui::pageListWidget()
+{
+    return m_pageListWidget;
 }
 
 /*!
@@ -1540,41 +1634,86 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
         setColoredTitle(tr("Welcome"));
         m_msgLabel->setText(tr("Welcome to the %1 Setup.").arg(productName()));
     } else {
-        setColoredTitle(tr("Maintenance Actions"));
-        m_msgLabel->setText(tr("Select from following options, which way you want to proceed."));
+        m_msgLabel->setText(tr("<h1>Select the action you want to perform</h1>"));
     }
 
     QWidget *widget = new QWidget(this);
     QVBoxLayout *boxLayout = new QVBoxLayout(widget);
+    widget->setContentsMargins(0,0,40,0);
+    boxLayout->setAlignment(Qt::AlignCenter);
 
-    m_packageManager = new QRadioButton(tr("&Add or remove components"), this);
+    if (!packageManagerCore()->isInstaller()) {
+        widget->setStyleSheet(QLatin1String(
+            "QRadioButton#PackageManagerRadioButton,"
+            "QRadioButton#UpdaterRadioButton,"
+            "QRadioButton#ConfigureSettingsRadioButton,"
+            "QRadioButton#UninstallerRadioButton,"
+            "QRadioButton#PackageManagerRadioButton::indicator,"
+            "QRadioButton#UpdaterRadioButton::indicator,"
+            "QRadioButton#ConfigureSettingsRadioButton::indicator,"
+            "QRadioButton#UninstallerRadioButton::indicator,"
+            "QRadioButton#PackageManagerRadioButton:hover,"
+            "QRadioButton#PackageManagerRadioButton:checked,"
+            "QRadioButton#UpdaterRadioButton:hover,"
+            "QRadioButton#UpdaterRadioButton:checked,"
+            "QRadioButton#UninstallerRadioButton:hover,"
+            "QRadioButton#UninstallerRadioButton:checked,"
+            "QRadioButton#ConfigureSettingsRadioButton:hover,"
+            "QRadioButton#ConfigureSettingsRadioButton:checked{}"
+        ));
+    }
+
+    m_packageManager = new MaintenanceTileButton(QStringLiteral(":/cards/manage_default.svg"),
+                                                  QStringLiteral(":/cards/manage_hover.svg"),
+                                                  QStringLiteral(":/cards/manage_selected.svg"),this);
     m_packageManager->setObjectName(QLatin1String("PackageManagerRadioButton"));
-    boxLayout->addWidget(m_packageManager);
     connect(m_packageManager, &QAbstractButton::toggled, this, &IntroductionPage::setPackageManager);
 
-    m_updateComponents = new QRadioButton(tr("&Update components"), this);
+    m_updateComponents = new MaintenanceTileButton(QStringLiteral(":/cards/update_default.svg"),
+                                                    QStringLiteral(":/cards/update_hover.svg"),
+                                                    QStringLiteral(":/cards/update_selected.svg"),this);
     m_updateComponents->setObjectName(QLatin1String("UpdaterRadioButton"));
-    boxLayout->addWidget(m_updateComponents);
     connect(m_updateComponents, &QAbstractButton::toggled, this, &IntroductionPage::setUpdater);
 
-    m_configureSettings = new QRadioButton(tr("&Configure Settings"), this);
+    m_configureSettings = new MaintenanceTileButton(QStringLiteral(":/cards/modify_default.svg"),
+                                                     QStringLiteral(":/cards/modify_hover.svg"),
+                                                     QStringLiteral(":/cards/modify_selected.svg"),this);
     m_configureSettings->setObjectName(QLatin1String("ConfigureSettingsRadioButton"));
-    boxLayout->addWidget(m_configureSettings);
     connect(m_configureSettings, &QAbstractButton::toggled, this, [&](bool toggled){
         if (toggled)
             resetFetchedState();
         setPackageManager(toggled);
     });
 
-    m_removeAllComponents = new QRadioButton(tr("&Remove all components"), this);
+    m_removeAllComponents = new MaintenanceTileButton(QStringLiteral(":/cards/uninstall_default.svg"),
+                                                       QStringLiteral(":/cards/uninstall_hover.svg"),
+                                                       QStringLiteral(":/cards/uninstall_selected.svg"),this);
     m_removeAllComponents->setObjectName(QLatin1String("UninstallerRadioButton"));
-    boxLayout->addWidget(m_removeAllComponents);
     connect(m_removeAllComponents, &QAbstractButton::toggled,
             this, &IntroductionPage::setUninstaller);
     connect(m_removeAllComponents, &QAbstractButton::toggled,
             core, &PackageManagerCore::setCompleteUninstallation);
 
-    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    if (!packageManagerCore()->isInstaller()) 
+    {
+        QHBoxLayout *actionsRow = new QHBoxLayout;
+        actionsRow->setSpacing(16);
+        actionsRow->setContentsMargins(50,0,50,0);
+        actionsRow->setAlignment(Qt::AlignHCenter);
+        QButtonGroup *const maintenanceActionsGroup = new QButtonGroup(this);
+        maintenanceActionsGroup->setExclusive(true);
+        maintenanceActionsGroup->addButton(m_packageManager);
+        maintenanceActionsGroup->addButton(m_updateComponents);
+        maintenanceActionsGroup->addButton(m_configureSettings);
+        maintenanceActionsGroup->addButton(m_removeAllComponents);
+        actionsRow->addWidget(m_packageManager, 1);
+        actionsRow->addWidget(m_updateComponents, 1);
+        actionsRow->addWidget(m_configureSettings, 1);
+        actionsRow->addWidget(m_removeAllComponents, 1);
+        boxLayout->addLayout(actionsRow, 1);
+    }
+
+    boxLayout->addSpacing(6);
 
     m_label = new QLabel(this);
     m_label->setWordWrap(true);
@@ -1587,18 +1726,17 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     boxLayout->addWidget(m_progressBar);
     m_progressBar->setObjectName(QLatin1String("InformationProgressBar"));
 
-    boxLayout->addItem(new QSpacerItem(1, 1, QSizePolicy::Minimum, QSizePolicy::Expanding));
-
     m_errorLabel = new QLabel(this);
     m_errorLabel->setWordWrap(true);
     m_errorLabel->setTextFormat(Qt::RichText);
     m_errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
-    boxLayout->addWidget(m_errorLabel);
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
+    m_errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+    boxLayout->addWidget(m_errorLabel);
 
     layout->addWidget(m_msgLabel);
-    layout->addWidget(widget);
-    layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Minimum, QSizePolicy::Expanding));
+    widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
+    layout->addWidget(widget, 0);
 
     connect(core, &PackageManagerCore::metaJobProgress, this, &IntroductionPage::onProgressChanged);
     connect(core, &PackageManagerCore::metaJobTotalProgress, this, &IntroductionPage::setTotalProgress);
@@ -1855,9 +1993,12 @@ void IntroductionPage::setErrorMessage(const QString &error)
     } else {
         palette.setColor(QPalette::WindowText, palette.color(QPalette::WindowText));
     }
+    if (m_errorLabel)
+    {
+        m_errorLabel->setText(error);
+        m_errorLabel->setPalette(palette);
+    }
 
-    m_errorLabel->setText(error);
-    m_errorLabel->setPalette(palette);
 
 #ifdef Q_OS_WIN
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -1978,6 +2119,12 @@ void IntroductionPage::entering()
         m_packageManager->setEnabled(false);
 
     setSettingsButtonRequested((!core->isOfflineOnly()));
+
+    if (!core->isInstaller())
+    {
+        gui()->pageListWidget()->hide();
+        gui()->pageListWidget()->parentWidget()->layout()->activate();
+    }
 }
 
 /*!
@@ -1989,6 +2136,9 @@ void IntroductionPage::leaving()
     m_progressBar->setValue(0);
     m_progressBar->setRange(0, 0);
     setButtonText(QWizard::CancelButton, gui()->defaultButtonText(QWizard::CancelButton));
+
+    gui()->pageListWidget()->show();
+    gui()->pageListWidget()->parentWidget()->layout()->activate();
 }
 
 /*!

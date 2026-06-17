@@ -1,4 +1,4 @@
-QT += widgets concurrent network qml xml
+QT += widgets concurrent network qml xml svg
 
 DOC_TARGETDIR = html
 INSTALL_DOC_PATH = $$IFW_BUILD_TREE/doc/$$DOC_TARGETDIR

@@ -205,11 +205,7 @@ ComponentSelectionPagePrivate::ComponentSelectionPagePrivate(ComponentSelectionP
     m_mainGLayout->setSpacing(10);
     m_mainGLayout->addLayout(m_topHLayout, 0, 0);
     m_mainGLayout->addLayout(treeViewVLayout, 1, 0);
-    m_mainGLayout->addLayout(m_rightSideVLayout, 0, 1, 0, -1);
-
-    m_mainGLayout->setColumnMinimumWidth(1, 40);
-    m_mainGLayout->setColumnStretch(0, 3);
-    m_mainGLayout->setColumnStretch(1, 0);
+    m_mainGLayout->setColumnStretch(0, 1);
     m_stackedLayout = new QStackedLayout(q);
     m_stackedLayout->addWidget(mainStackedWidget);
     m_stackedLayout->addWidget(progressStackedWidget);

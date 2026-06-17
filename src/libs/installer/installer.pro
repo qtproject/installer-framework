@@ -35,6 +35,7 @@ QT += \
     qml \
     network \
     xml \
+    svg \
     concurrent \
     widgets \
     core-private \

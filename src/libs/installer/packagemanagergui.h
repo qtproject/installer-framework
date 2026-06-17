@@ -96,6 +96,8 @@ public:
 
     void setTextItems(QObject *object, const QStringList &items);
 
+    QListWidget *pageListWidget();
+
 Q_SIGNALS:
     void interrupted();
     void languageChanged();
