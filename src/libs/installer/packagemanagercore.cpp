@@ -2092,7 +2092,7 @@ bool PackageManagerCore::addQBspRepositories(const QStringList &repositories)
         set.insert(repository);
     }
     if (set.count() > 0) {
-        settings().setTemporaryRepositories(set, true);
+        settings().addTemporaryRepositories(set, false);
         return true;
     }
     return false;
