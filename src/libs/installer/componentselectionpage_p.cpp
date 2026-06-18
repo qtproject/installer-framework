@@ -56,6 +56,7 @@
 #include <QLineEdit>
 #include <QStandardItemModel>
 #include <QStyledItemDelegate>
+#include <QStyle>
 
 namespace QInstaller {
 
@@ -308,6 +309,27 @@ void ComponentSelectionPagePrivate::updateTreeView()
 
     m_treeView->header()->setSectionResizeMode(
                 ComponentModelHelper::NameColumn, QHeaderView::ResizeToContents);
+
+    m_treeView->resizeColumnToContents(ComponentModelHelper::UncompressedSizeColumn);
+    int sizeMinW = m_treeView->header()->sectionSize(ComponentModelHelper::UncompressedSizeColumn);
+
+    QStyle *headerStyle = m_treeView->header()->style();
+    const int headerMargin = headerStyle->pixelMetric(
+        QStyle::PM_HeaderMargin, nullptr, m_treeView->header());
+    const int focusMargin = headerStyle->pixelMetric(
+        QStyle::PM_FocusFrameHMargin, nullptr, m_treeView->header());
+    const int frameWidth = headerStyle->pixelMetric(
+        QStyle::PM_DefaultFrameWidth, nullptr, m_treeView->header());
+    const int gripMargin = headerStyle->pixelMetric(
+        QStyle::PM_HeaderGripMargin, nullptr, m_treeView->header());
+
+    int dynamicPadding = qMax(0, headerMargin) * 2
+        + qMax(0, focusMargin) * 2
+        + qMax(0, frameWidth) * 2
+        + qMax(0, gripMargin);
+
+    m_treeView->header()->setMinimumSectionSize(sizeMinW + dynamicPadding);
+
     if (m_core->isInstaller()) {
         m_treeView->setHeaderHidden(true);
         for (int i = ComponentModelHelper::InstalledVersionColumn; i < m_currentModel->columnCount(); ++i)
@@ -534,6 +556,9 @@ void ComponentSelectionPagePrivate::onModelStateChanged(QInstaller::ComponentMod
     // update the current selected node (important to reflect possible sub-node changes)
     if (m_treeView->selectionModel())
         currentSelectedChanged(m_treeView->selectionModel()->currentIndex());
+
+    if (state.testFlag(ComponentModel::Empty) == false)
+        m_treeView->resizeColumnToContents(ComponentModelHelper::UncompressedSizeColumn);
 }
 
 /*!
