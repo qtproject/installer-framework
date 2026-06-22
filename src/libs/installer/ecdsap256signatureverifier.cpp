@@ -44,28 +44,43 @@ bool ECDSAP256SignatureVerifier::verify(const QByteArray &data,
         return false;
     }
 
-    EVP_MD_CTX *ctx = EVP_MD_CTX_new();
-    if (!ctx) {
-        EVP_PKEY_free(publicKey);
-        m_errorString = QStringLiteral("EVP_MD_CTX_new failed");
-        return false;
-    }
-
-    if (EVP_DigestVerifyInit(ctx, nullptr, nullptr, nullptr, publicKey) != 1) {
-        m_errorString = QStringLiteral("OpenSSL verify init failed: %1").arg(readOpenSslError());
-        EVP_MD_CTX_free(ctx);
+    //create a new EVP_PKEY_CTX for verification
+    EVP_PKEY_CTX* ctx = EVP_PKEY_CTX_new(publicKey, nullptr);
+    if (!ctx)
+    {
+        m_errorString = QStringLiteral("create PKEY_CTX failed: %1").arg(readOpenSslError());
         EVP_PKEY_free(publicKey);
         return false;
     }
 
-    const int verifyResult = EVP_DigestVerify(
+    //init the context for verification
+    if (EVP_PKEY_verify_init(ctx) != 1)
+    {
+        m_errorString = QStringLiteral("verify_init failed: %1").arg(readOpenSslError());
+        EVP_PKEY_CTX_free(ctx);
+        EVP_PKEY_free(publicKey);
+        return false;
+    }
+
+    //set the signature digest type to SHA-256
+    if (EVP_PKEY_CTX_set_signature_md(ctx, EVP_sha256()) != 1)
+    {
+        m_errorString = QStringLiteral("set_signature_md failed: %1").arg(readOpenSslError());
+        EVP_PKEY_CTX_free(ctx);
+        EVP_PKEY_free(publicKey);
+        return false;
+    }
+
+    //perform the signature verification
+    const int verifyResult = EVP_PKEY_verify(
         ctx,
-        reinterpret_cast<const unsigned char *>(signature.constData()),
-        static_cast<size_t>(signature.size()),
-        reinterpret_cast<const unsigned char *>(data.constData()),
-        static_cast<size_t>(data.size()));
+        reinterpret_cast<const unsigned char*>(signature.constData()),
+        (size_t)signature.size(),
+        reinterpret_cast<const unsigned char*>(data.constData()),
+        (size_t)data.size()
+    );
 
-    EVP_MD_CTX_free(ctx);
+    EVP_PKEY_CTX_free(ctx);
     EVP_PKEY_free(publicKey);
 
     if (verifyResult == 1) {
