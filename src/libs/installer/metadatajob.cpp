@@ -665,7 +665,7 @@ void MetadataJob::xmlTaskFinished()
             if (!m_core->value(scPublicKeySecondary).isEmpty())
                 publicKeyList.append(m_core->value(scPublicKeySecondary).toLatin1());
             QSharedPointer<SignatureVerifier> verifier = SignatureVerifier::createVerifier(SignatureVerifier::SignatureAlgorithm::ECDSA_P256);
-            SignatureVerifier::VerificationResult verifyResult = verifier->verify(xmlPath, signatureFilePath, publicKeyList, true);
+            SignatureVerifier::VerificationResult verifyResult = verifier->verify(result.target(), signatureFilePath, publicKeyList, true);
             switch (verifyResult) {
                 case SignatureVerifier::VerificationResult::Success:
                     break;
