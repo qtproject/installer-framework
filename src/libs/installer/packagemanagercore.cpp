@@ -3961,6 +3961,7 @@ QString PackageManagerCore::getHttpProxyHost() const
 void PackageManagerCore::setHttpProxyHost(const QString &hostName)
 {
     QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setType(QNetworkProxy::HttpProxy);
     proxy.setHostName(hostName);
     d->m_data.settings().setHttpProxy(proxy);
     qInfo() << "set proxy hostname" << proxy.hostName();
@@ -3977,6 +3978,7 @@ QString PackageManagerCore::getHttpProxyPort() const
 void PackageManagerCore::setHttpProxyPort(const QString &port)
 {
     QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setType(QNetworkProxy::HttpProxy);
     bool boolVal;
     proxy.setPort(port.toInt(&boolVal));
     if (boolVal)
@@ -4002,6 +4004,7 @@ QString PackageManagerCore::getHttpProxyUser() const
 void PackageManagerCore::setHttpProxyUser(const QString &userName)
 {
     QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setType(QNetworkProxy::HttpProxy);
     proxy.setUser(userName);
     d->m_data.settings().setHttpProxy(proxy);
 }
@@ -4017,6 +4020,7 @@ QString PackageManagerCore::getHttpProxyPwd() const
 void PackageManagerCore::setHttpProxyPwd(const QString &password)
 {
     QNetworkProxy proxy = d->m_data.settings().httpProxy();
+    proxy.setType(QNetworkProxy::HttpProxy);
     proxy.setPassword(password);
     d->m_data.settings().setHttpProxy(proxy);
 }
