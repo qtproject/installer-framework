@@ -399,14 +399,19 @@ quint64 Component::updateUncompressedSize()
     if (installOrKeepInstalled)
         size = d->m_vars.value(scUncompressedSize).toLongLong();
 
+    quint64 showSize = d->m_vars.value(scUncompressedSize).toLongLong();
     foreach (Component* comp, d->m_allChildComponents)
-        size += comp->updateUncompressedSize();
+    {
+        quint64 childSize = comp->updateUncompressedSize();
+        showSize += childSize;
+        size += childSize;
+    }
 
-    setValue(scUncompressedSizeSum, QString::number(size));
-    if (size == 0 && !installOrKeepInstalled)
+    setValue(scUncompressedSizeSum, QString::number(showSize));
+    if (showSize == 0)
         setData(QVariant(), UncompressedSize);
     else
-        setData(humanReadableSize(size), UncompressedSize);
+        setData(humanReadableSize(showSize), UncompressedSize);
 
     return size;
 }
