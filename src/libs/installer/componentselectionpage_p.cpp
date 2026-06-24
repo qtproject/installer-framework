@@ -297,6 +297,7 @@ void ComponentSelectionPagePrivate::updateTreeView()
     m_proxyModel->setSourceModel(m_currentModel);
     m_treeView->setModel(m_proxyModel);
     expandDefault();
+    m_treeView->header()->setStretchLastSection(false);
 
     const bool installActionColumnVisible = m_core->settings().installActionColumnVisible();
     if (!installActionColumnVisible)
@@ -311,8 +312,8 @@ void ComponentSelectionPagePrivate::updateTreeView()
                 ComponentModelHelper::NameColumn, QHeaderView::ResizeToContents);
 
     m_treeView->resizeColumnToContents(ComponentModelHelper::UncompressedSizeColumn);
+    m_treeView->resizeColumnToContents(ComponentModelHelper::ReleaseDateColumn);
     int sizeMinW = m_treeView->header()->sectionSize(ComponentModelHelper::UncompressedSizeColumn);
-
     QStyle *headerStyle = m_treeView->header()->style();
     const int headerMargin = headerStyle->pixelMetric(
         QStyle::PM_HeaderMargin, nullptr, m_treeView->header());
@@ -329,29 +330,31 @@ void ComponentSelectionPagePrivate::updateTreeView()
         + qMax(0, gripMargin);
 
     m_treeView->header()->setMinimumSectionSize(sizeMinW + dynamicPadding);
+    int minReleaseDateColumn = m_treeView->header()->sectionSize(ComponentModelHelper::ReleaseDateColumn) + dynamicPadding;
 
     if (m_core->isInstaller()) {
         m_treeView->setHeaderHidden(true);
         for (int i = ComponentModelHelper::InstalledVersionColumn; i < m_currentModel->columnCount(); ++i)
             m_treeView->hideColumn(i);
+        m_treeView->header()->setSectionResizeMode(
+                    ComponentModelHelper::NameColumn, QHeaderView::Stretch);
 
         if (installActionColumnVisible) {
-            m_treeView->header()->setStretchLastSection(false);
-            m_treeView->header()->setSectionResizeMode(
-                        ComponentModelHelper::NameColumn, QHeaderView::Stretch);
             m_treeView->header()->setSectionResizeMode(
                         ComponentModelHelper::ActionColumn, QHeaderView::ResizeToContents);
         }
     } else {
-        m_treeView->header()->setStretchLastSection(true);
+        m_treeView->header()->setSectionResizeMode(
+                    ComponentModelHelper::NameColumn, QHeaderView::Stretch);
         if (installActionColumnVisible) {
-            m_treeView->header()->setSectionResizeMode(
-                        ComponentModelHelper::NameColumn, QHeaderView::Interactive);
             m_treeView->header()->setSectionResizeMode(
                         ComponentModelHelper::ActionColumn, QHeaderView::Interactive);
         }
-        for (int i = 0; i < m_currentModel->columnCount(); ++i)
+        for (int i = 0; i < m_currentModel->columnCount(); ++i) {
+            if (i == ComponentModelHelper::NameColumn)
+                continue;
             m_treeView->resizeColumnToContents(i);
+        }
     }
 
     bool hasChildren = false;
@@ -364,6 +367,12 @@ void ComponentSelectionPagePrivate::updateTreeView()
         this, &ComponentSelectionPagePrivate::currentSelectedChanged);
 
     m_treeView->setCurrentIndex(m_proxyModel->index(0, 0));
+    if (!m_treeView->isColumnHidden(ComponentModelHelper::ReleaseDateColumn))
+    {
+        int currentSize = m_treeView->header()->sectionSize(ComponentModelHelper::ReleaseDateColumn);
+        if (currentSize < minReleaseDateColumn)
+            m_treeView->header()->resizeSection(ComponentModelHelper::ReleaseDateColumn, minReleaseDateColumn);
+    }
 }
 
 /*!
