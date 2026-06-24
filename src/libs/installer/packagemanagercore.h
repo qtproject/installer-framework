@@ -315,13 +315,13 @@ public:
     QString componentResolveReasons() const;
 
     Q_INVOKABLE bool calculateComponentsToUninstall() const;
-    QList<Component*> componentsToUninstall() const;
+    Q_INVOKABLE QList<Component*> componentsToUninstall() const;
 
     QList<Component *> componentsMarkedForInstallation() const;
     QList<ComponentAlias *> aliasesMarkedForInstallation() const;
 
-    QString componentsToInstallError() const;
-    QString componentsToUninstallError() const;
+    Q_INVOKABLE QString componentsToInstallError() const;
+    Q_INVOKABLE QString componentsToUninstallError() const;
     QString installReason(Component *component) const;
     QString uninstallReason(Component *component) const;
 
