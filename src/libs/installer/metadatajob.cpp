@@ -527,7 +527,6 @@ void MetadataJob::signatureTaskFinished()
         m_signatureResult.append(m_signatureTask.future().results());
         if (!startXMLSignatureTask()) {
             status = SignatureDownloadSuccess;
-            setInfoMessage(tr("signature task finished..."));
             startXMLTask();
         } else {
             return;
@@ -903,7 +902,6 @@ void MetadataJob::metadataSignatureTaskFinished()
         m_metadataSignatureResult.append(m_metadataSignatureTask.future().results());
         if (!fetchMetaDataSignatures()) {
             // All signature batches downloaded, now proceed to fetch package batches
-            setInfoMessage(tr("Retrieving meta information from remote repository..."));
             if (!fetchMetaDataPackages()) {
                 // No packages to fetch either, start cache update
                 startUpdateCacheTask();
