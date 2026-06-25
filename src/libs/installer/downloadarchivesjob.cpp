@@ -407,6 +407,11 @@ void DownloadArchivesJob::downloadCanceled()
     emitFinishedWithError(Job::Canceled, m_downloader->errorString());
 }
 
+void DownloadArchivesJob::downloadCanceledWithMessage(const QString &error)
+{
+    emitFinishedWithError(Job::Canceled, error);
+}
+
 void DownloadArchivesJob::downloadFailed(const QString &error)
 {
     if (m_canceled)
@@ -428,7 +433,7 @@ void DownloadArchivesJob::downloadFailed(const QString &error)
 
         QMetaObject::invokeMethod(this, "fetchNextArchiveSignature", Qt::QueuedConnection);
     } else {
-        downloadCanceled();
+        downloadCanceledWithMessage(error);
     }
 }
 

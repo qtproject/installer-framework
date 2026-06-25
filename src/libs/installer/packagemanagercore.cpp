@@ -898,9 +898,13 @@ int PackageManagerCore::downloadNeededArchives(double partProgressSize)
     archivesJob.waitForFinished();
 
     if (archivesJob.error() == Job::Canceled)
-        interrupt();
-    else if (archivesJob.error() != Job::NoError)
+    {
+        interruptWithMessage(tr(" Server connection failed. Please check your network, registration and try again."));
         throw Error(archivesJob.errorString());
+    }
+    else if (archivesJob.error() != Job::NoError){
+        throw Error(archivesJob.errorString());
+    }
 
     if (d->statusCanceledOrFailed())
         throw Error(tr("Installation canceled by user."));
@@ -4242,6 +4246,20 @@ void PackageManagerCore::setCanceled()
         cancelMetaInfoJob();
     d->setStatus(PackageManagerCore::Canceled);
 }
+
+void PackageManagerCore::interruptWithMessage(const QString &str)
+{
+    setCanceledWithMessage(str);
+    emit installationInterrupted();
+}
+
+void PackageManagerCore::setCanceledWithMessage(const QString &str)
+{
+    if (!d->m_repoFetched)
+        cancelMetaInfoJob();
+    d->setStatus(PackageManagerCore::Canceled, str);
+}
+
 
 /*!
     Replaces all variables within \a str by their respective values and returns the result.

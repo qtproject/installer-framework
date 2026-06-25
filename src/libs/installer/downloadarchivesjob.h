@@ -78,6 +78,7 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void registerFile();
     void downloadCanceled();
+    void downloadCanceledWithMessage(const QString &error);
     void downloadFailed(const QString &error);
     void finishWithError(const QString &error);
     void fetchNextArchive();

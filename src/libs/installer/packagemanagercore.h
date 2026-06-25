@@ -451,6 +451,8 @@ public Q_SLOTS:
     bool runOfflineGenerator();
     void interrupt();
     void setCanceled();
+    void interruptWithMessage(const QString &str);
+    void setCanceledWithMessage(const QString &str);
     void languageChanged();
     void setCompleteUninstallation(bool complete);
     void cancelMetaInfoJob();
