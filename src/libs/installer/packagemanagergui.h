@@ -99,6 +99,7 @@ public:
 
 Q_SIGNALS:
     void interrupted();
+    void interruptedWithMessage(const QString &msg);
     void languageChanged();
     void finishButtonClicked();
     void gotRestarted();

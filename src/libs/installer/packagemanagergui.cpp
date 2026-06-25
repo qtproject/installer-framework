@@ -419,6 +419,7 @@ PackageManagerGui::PackageManagerGui(PackageManagerCore *core, QWidget *parent)
 
     connect(this, &QDialog::rejected, m_core, &PackageManagerCore::setCanceled);
     connect(this, &PackageManagerGui::interrupted, m_core, &PackageManagerCore::interrupt);
+    connect(this, &PackageManagerGui::interruptedWithMessage, m_core, &PackageManagerCore::interruptWithMessage);
 
     // all queued to show the finished page once everything is done
     connect(m_core, &PackageManagerCore::installationFinished,
@@ -1038,7 +1039,7 @@ void PackageManagerGui::cancelButtonClicked()
 
     if (button == QMessageBox::Yes) {
         if (interrupt)
-            emit interrupted();
+            emit interruptedWithMessage(tr(" Installation canceled by user."));
         else
             QDialog::reject();
     }
