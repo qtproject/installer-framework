@@ -1281,7 +1281,7 @@ void PackageManagerCorePrivate::stopProcessesForUpdates(const QList<Component*> 
         if (button == QMessageBox::Ignore)
             return;
         if (button == QMessageBox::Cancel) {
-            m_core->setCanceled();
+            m_core->setCanceledWithMessage(tr("Installation canceled by user."));
             throw Error(tr("Installation canceled by user"));
         }
         if (!m_core->isCommandLineInstance())
@@ -2100,6 +2100,9 @@ bool PackageManagerCorePrivate::runInstaller()
                 << m_performedOperationsCurrentSession.count();
         }
 
+        if(m_error.isEmpty())
+            m_error = err.message();         
+
         m_core->rollBackInstallation();
 
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
@@ -2288,6 +2291,9 @@ bool PackageManagerCorePrivate::runPackageUpdater()
                 << m_performedOperationsCurrentSession.count();
         }
 
+        if(m_error.isEmpty())
+            m_error = err.message(); 
+
         m_core->rollBackInstallation();
 
         ProgressCoordinator::instance()->emitLabelAndDetailTextChanged(QLatin1Char('\n')
@@ -2359,6 +2365,9 @@ bool PackageManagerCorePrivate::runUninstaller()
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
+
+        if(m_error.isEmpty())
+            m_error = err.message(); 
     }
 
     const bool success = (m_core->status() == PackageManagerCore::Success);
@@ -2480,6 +2489,9 @@ bool PackageManagerCorePrivate::runOfflineGenerator()
             MessageBoxHandler::critical(MessageBoxHandler::currentBestSuitParent(),
                 QLatin1String("installationError"), tr("Error"), err.message());
         }
+
+        if(m_error.isEmpty())
+            m_error = err.message(); 
     }
     QFile tempBinary(offlineBinaryTempName);
     if (tempBinary.exists() && !tempBinary.remove()) {
@@ -2518,7 +2530,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
     for (auto *component : components) {
         const OperationList operations = component->operations(Operation::Unpack);
         if (!component->operationsCreatedSuccessfully())
-            m_core->setCanceled();
+            m_core->setCanceledWithMessage(tr("Failed to create operations for component %1.").arg(component->name()));
 
         for (auto &op : operations) {
             if (statusCanceledOrFailed())
@@ -2622,7 +2634,7 @@ void PackageManagerCorePrivate::unpackComponents(const QList<Component *> &compo
             else if (button == QMessageBox::Ignore)
                 ignoreError = true;
             else if (button == QMessageBox::Cancel)
-                m_core->interrupt();
+                m_core->interruptWithMessage(tr("The installation was interrupted because an error occurred when installing component %1. Please try again.").arg(component));
         }
 
         if (ok || operation->error() > Operation::InvalidArguments) {
@@ -2650,7 +2662,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
 {
     OperationList operations = component->operations(Operation::Install);
     if (!component->operationsCreatedSuccessfully())
-        m_core->setCanceled();
+        m_core->setCanceledWithMessage(tr("Failed to create operations for component %1.").arg(component->name()));
 
     const int opCount = operations.count();
     // show only components which do something, MinimumProgress is only for progress calculation safeness
@@ -2696,7 +2708,7 @@ void PackageManagerCorePrivate::installComponent(Component *component, double pr
             else if (button == QMessageBox::Ignore)
                 ignoreError = true;
             else if (button == QMessageBox::Cancel)
-                m_core->interrupt();
+                m_core->interruptWithMessage(tr("The installation was interrupted because an error occurred when installing component %1. Please try again.").arg(component->displayName()));
         }
 
         if (ok || operation->error() > Operation::InvalidArguments) {
