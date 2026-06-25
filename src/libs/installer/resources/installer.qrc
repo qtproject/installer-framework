@@ -9,6 +9,18 @@
         <file>keepuninstalled.png</file>
         <file>search.png</file>
         <file>search@2x.png</file>
+        <file>cards/manage_default.svg</file>
+        <file>cards/manage_hover.svg</file>
+        <file>cards/manage_selected.svg</file>
+        <file>cards/modify_default.svg</file>
+        <file>cards/modify_hover.svg</file>
+        <file>cards/modify_selected.svg</file>
+        <file>cards/uninstall_default.svg</file>
+        <file>cards/uninstall_hover.svg</file>
+        <file>cards/uninstall_selected.svg</file>
+        <file>cards/update_default.svg</file>
+        <file>cards/update_hover.svg</file>
+        <file>cards/update_selected.svg</file>
         <file>qt/etc/qt.conf</file>
     </qresource>
 </RCC>

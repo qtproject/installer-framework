@@ -97,6 +97,8 @@ public:
 
     void setTextItems(QObject *object, const QStringList &items);
 
+    QListWidget *pageListWidget();
+
 Q_SIGNALS:
     void interrupted();
     void interruptedWithMessage(const QString &msg);
@@ -145,6 +147,28 @@ private:
     Private *const d;
     PackageManagerCore *m_core;
     QListWidget *m_pageListWidget;
+
+protected:
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
+private:
+    void updateResizeEdges(const QPoint &globalPos);
+
+    QPoint m_dragPosition;
+    bool m_isDragging = false;
+    bool m_isResizing = false;
+
+    // Tracking active resizing borders
+    bool m_edgeLeft = false;
+    bool m_edgeRight = false;
+    bool m_edgeTop = false;
+    bool m_edgeBottom = false;
+
+    const int m_borderPadding = 8; // Border thickness in pixels for resizing detection
+
+    void addVerticalButtonDivider();
 };
 
 
@@ -280,11 +304,14 @@ private:
     QRadioButton *m_updateComponents;
     QRadioButton *m_removeAllComponents;
     QRadioButton *m_configureSettings;
+    QWidget *m_loadingGroupMainWidget;
+    QWidget *m_actionGroupMainWidget;
 
 #ifdef Q_OS_WIN
     QWinTaskbarButton *m_taskButton;
 #endif
 };
+
 
 
 // -- LicenseAgreementPage

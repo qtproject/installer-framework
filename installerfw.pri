@@ -163,7 +163,7 @@ QMAKE_CXXFLAGS_RELEASE += -MT
 QT += uitools core-private
 CONFIG(static, static|shared) {
     win32:lessThan(QT_MAJOR_VERSION, 6):QT += winextras
-    QT += concurrent network qml xml
+    QT += concurrent network qml xml svg
     greaterThan(QT_MAJOR_VERSION, 5):QT += core5compat
 }
 CONFIG += depend_includepath no_private_qt_headers_warning
