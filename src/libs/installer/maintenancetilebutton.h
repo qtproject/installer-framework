@@ -22,11 +22,13 @@ public:
 protected:
     void paintEvent(QPaintEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
+    void leaveEvent(QEvent *event) override;
 
 private:
     QSvgRenderer m_defaultRenderer;
     QSvgRenderer m_hoverRenderer;
     QSvgRenderer m_selectedRenderer;
     const qreal m_targetRatio;
+    bool m_isHovered = false;
 };
 
