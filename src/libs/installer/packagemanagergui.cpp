@@ -903,7 +903,8 @@ void PackageManagerGui::mouseReleaseEvent(QMouseEvent *event)
 {
     m_isDragging = false;
     m_isResizing = false;
-    SetCursor(Qt::ArrowCursor);
+    setCursor(Qt::ArrowCursor);
+    event->accept();
     updateResizeEdges(GET_GLOBAL_POS(event));
     QWizard::mouseReleaseEvent(event);
 }
