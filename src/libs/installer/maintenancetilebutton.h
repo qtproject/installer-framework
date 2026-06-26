@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QtSvg/QSvgRenderer>
 #include <QDebug>
+#include <QMouseEvent>
 
 /**
  * @brief Selectable tile button unit that handles additional resize events to ensure smooth dynamic button resizing
@@ -20,6 +21,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event) override;
+    void mouseMoveEvent(QMouseEvent *event) override;
 
 private:
     QSvgRenderer m_defaultRenderer;

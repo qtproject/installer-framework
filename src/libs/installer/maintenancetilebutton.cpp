@@ -49,7 +49,7 @@ void MaintenanceTileButton::paintEvent(QPaintEvent *event)
     QRect renderRect(targetX, targetY, targetW, targetH);
 
     bool isSelected = isChecked();
-    bool isHovered = underMouse();
+    bool isHovered = renderRect.contains(mapFromGlobal(QCursor::pos()));
 
     QSvgRenderer* activeRenderer = &m_defaultRenderer;
     if (isSelected)
@@ -62,4 +62,10 @@ void MaintenanceTileButton::paintEvent(QPaintEvent *event)
     }
 
     activeRenderer->render(&painter, renderRect);
+}
+
+void MaintenanceTileButton::mouseMoveEvent(QMouseEvent *event)
+{
+    update();
+    QRadioButton::mouseMoveEvent(event);
 }

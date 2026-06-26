@@ -815,24 +815,59 @@ void PackageManagerGui::mousePressEvent(QMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         QPoint globalPos = GET_GLOBAL_POS(event);
+        const QPoint localPos = mapFromGlobal(globalPos);
         updateResizeEdges(globalPos);
 
         if (m_edgeLeft || m_edgeRight || m_edgeTop || m_edgeBottom)
         {
             m_isResizing = true;
+            m_isDragging = false;
         }
         else
         {
-            m_isDragging = true;
-            m_dragPosition = globalPos - frameGeometry().topLeft();
+            // Start dragging from non-button widgets as well, but never from buttons.
+            QWidget *hitWidget = childAt(localPos);
+            bool hitButton = false;
+            for (QWidget *w = hitWidget; w; w = w->parentWidget()) {
+                if (qobject_cast<QAbstractButton *>(w)) {
+                    hitButton = true;
+                    break;
+                }
+                if (w == this)
+                    break;
+            }
+
+            if (!hitButton) {
+                m_isDragging = true;
+                m_dragPosition = globalPos - frameGeometry().topLeft();
+            } else {
+                m_isDragging = false;
+            }
+            m_isResizing = false;
         }
-        event->accept();
+
+        if (m_isDragging || m_isResizing)
+            event->accept();
+        else
+            QWizard::mousePressEvent(event);
+        return;
     }
+
+    QWizard::mousePressEvent(event);
 }
 
 void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
 {
     QPoint globalPos = GET_GLOBAL_POS(event);
+
+    // Robustness: if no mouse button is pressed, never keep stale drag/resize states.
+    if (!(event->buttons() & Qt::LeftButton)) {
+        m_isDragging = false;
+        m_isResizing = false;
+        updateResizeEdges(globalPos);
+        QWizard::mouseMoveEvent(event);
+        return;
+    }
 
     if (m_isDragging)
     {
@@ -860,6 +895,7 @@ void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
     {
         // Dynamic cursor alteration during basic hovering
         updateResizeEdges(globalPos);
+        QWizard::mouseMoveEvent(event);
     }
 }
 
@@ -867,8 +903,9 @@ void PackageManagerGui::mouseReleaseEvent(QMouseEvent *event)
 {
     m_isDragging = false;
     m_isResizing = false;
-    setCursor(Qt::ArrowCursor);
-    event->accept();
+    SetCursor(Qt::ArrowCursor);
+    updateResizeEdges(GET_GLOBAL_POS(event));
+    QWizard::mouseReleaseEvent(event);
 }
 
 void PackageManagerGui::updateResizeEdges(const QPoint &globalPos)
@@ -1818,6 +1855,7 @@ bool IntroductionPage::validatePage()
         m_label->setVisible(true);
         m_progressBar->setVisible(true);
         m_loadingGroupMainWidget->setVisible(true);
+        m_actionGroupMainWidget->setVisible(false);
         setMaintenanceToolsEnabled(false);
     } else {
         showMetaInfoUpdate();
@@ -1930,6 +1968,7 @@ void IntroductionPage::showMetaInfoUpdate()
     m_progressBar->setVisible(true);
     m_msgLabel->setVisible(false);
     m_loadingGroupMainWidget->setVisible(true);
+    m_actionGroupMainWidget->setVisible(false);
 }
 
 /*!
@@ -1946,6 +1985,7 @@ void IntroductionPage::showMaintenanceTools()
     m_configureSettings->setVisible(true);
     m_removeAllComponents->setVisible(true);
     m_loadingGroupMainWidget->setVisible(false);
+    m_actionGroupMainWidget->setVisible(true);
 }
 
 /*!
