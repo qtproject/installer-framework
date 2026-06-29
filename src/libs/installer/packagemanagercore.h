@@ -309,7 +309,7 @@ public:
     ComponentAlias *aliasByName(const QString &name) const;
 
     Q_INVOKABLE bool calculateComponentsToInstall() const;
-    QList<Component*> orderedComponentsToInstall() const;
+    Q_INVOKABLE QList<Component*> orderedComponentsToInstall() const;
 
     Q_INVOKABLE bool recalculateAllComponents();
     QString componentResolveReasons() const;
@@ -322,8 +322,8 @@ public:
 
     Q_INVOKABLE QString componentsToInstallError() const;
     Q_INVOKABLE QString componentsToUninstallError() const;
-    QString installReason(Component *component) const;
-    QString uninstallReason(Component *component) const;
+    Q_INVOKABLE QString installReason(Component *component) const;
+    Q_INVOKABLE QString uninstallReason(Component *component) const;
 
     QList<Component*> dependees(const Component *component) const;
     bool isDependencyForRequestedComponent(const Component *component) const;
