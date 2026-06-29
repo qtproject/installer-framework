@@ -5296,6 +5296,9 @@ void PackageManagerCore::healthCheck(const QString& url) const
     stopHealthCheck();
     QNetworkRequest request(QUrl(url + QStringLiteral("/health")));
     request.setAttribute(QNetworkRequest::Http2AllowedAttribute, false);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    request.setTransferTimeout(10000);
+#endif
     d->m_nam.setProxyFactory(proxyFactory()->clone());
     d->m_healthCheckReply = d->m_nam.get(request);
     connect(d->m_healthCheckReply, &QNetworkReply::finished, this, &PackageManagerCore::onHealthCheckFinished);
@@ -5361,6 +5364,9 @@ void PackageManagerCore::productKeyCheck(const QString& url, const QString& orgi
                                   QByteArrayLiteral("application/json"));
     registrationRequest.setRawHeader(QStringLiteral("authorization").toUtf8(),
                                      authenticationValue);
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+    registrationRequest.setTransferTimeout(10000);
+#endif
     
     d->m_nam.setProxyFactory(proxyFactory()->clone());
     d->m_productKeyCheckReply = d->m_nam.post(registrationRequest, QByteArray());
