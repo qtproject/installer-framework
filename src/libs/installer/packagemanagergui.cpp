@@ -88,6 +88,9 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QScreen>
+#include <QWindow>
+#include <QDialogButtonBox>
+#include <QGuiApplication>
 
 #ifdef Q_OS_WIN
 # include <qt_windows.h>
@@ -558,6 +561,79 @@ void PackageManagerGui::updatePageListWidget()
     }
 }
 
+void PackageManagerGui::onScreenLogicalDpiChanged(qreal dpi)
+{
+    Q_UNUSED(dpi);
+    onScreenGeometryChanged(this->screen()->availableGeometry());
+}
+
+void PackageManagerGui::onScreenGeometryChanged(const QRect &availableGeometry)
+{
+    Q_UNUSED(availableGeometry);
+    QTimer::singleShot(0, this, [&](){
+            const qreal newDpr = window()->devicePixelRatioF();
+    const QRect curGeo = frameGeometry();
+    int oldLogicW = width();
+    int oldLogicH = height();
+
+    // 1、计算窗口固定物理像素（跨屏保持不变）
+    qreal physW = oldLogicW * m_lastDpr;
+    qreal physH = oldLogicH * m_lastDpr;
+
+    // 2、用新DPR换算新逻辑尺寸
+    int targetLogicW = qRound(physW / newDpr);
+    int targetLogicH = qRound(physH / newDpr);
+
+    // 3、双重限制：不能超过首次打开的窗口上限，不能超过屏幕80%
+    int screenMaxW = this->screen()->availableGeometry().width() * 0.8;
+    int screenMaxH = this->screen()->availableGeometry().height() * 0.8;
+    int finalW = qMin(targetLogicW, screenMaxW);
+    int finalH = qMin(targetLogicH, screenMaxH);
+
+    // 4、坐标边界修正
+    const QRect avail = this->screen()->availableGeometry();
+    int maxX = avail.right() - finalW + 1;
+    int maxY = avail.bottom() - finalH + 1;
+    int finalX = qBound(avail.left(), curGeo.x(), maxX);
+    int finalY = qBound(avail.top(), curGeo.y(), maxY);
+
+    // 一次性修改位置+尺寸，仅一次重绘
+    setGeometry(QRect(finalX, finalY, finalW, finalH));
+    qInfo() << "onScreenGeometryChanged: DPR changed from" << m_lastDpr << "to" << newDpr
+        << ", oldLogicSize=" << QSize(oldLogicW, oldLogicH)
+        << ", targetLogicSize=" << QSize(targetLogicW, targetLogicH)
+        << ", finalSize=" << QSize(finalW, finalH)
+        << ", finalPos=" << QPoint(finalX, finalY);
+    //print current display
+    qInfo() << "Current screen:" << this->screen()->name() << ", availableGeometry=" << this->screen()->availableGeometry()
+        << ", devicePixelRatio=" << this->screen()->devicePixelRatio();
+    // 更新当前DPR，下一次跨屏作为旧值
+    m_lastDpr = newDpr;
+    });
+
+}
+
+void PackageManagerGui::onWindowScreenChanged(QScreen* screen)
+{
+    if (m_currentScreen)
+    {
+        disconnect(m_currentScreen, &QScreen::geometryChanged, this, &PackageManagerGui::onScreenGeometryChanged);
+        disconnect(m_currentScreen, &QScreen::availableGeometryChanged, this, &PackageManagerGui::onScreenGeometryChanged);
+    }
+    m_currentScreen = screen;
+    if (m_currentScreen)
+    {
+        connect(m_currentScreen, &QScreen::geometryChanged, this, &PackageManagerGui::onScreenGeometryChanged, Qt::UniqueConnection);
+        connect(m_currentScreen, &QScreen::availableGeometryChanged, this, &PackageManagerGui::onScreenGeometryChanged, Qt::UniqueConnection);
+        connect(m_currentScreen, &QScreen::logicalDotsPerInchChanged, this, &PackageManagerGui::onScreenLogicalDpiChanged, Qt::UniqueConnection);
+    }
+    if (!screen)
+        return;
+
+    onScreenGeometryChanged(screen->availableGeometry());
+
+}
+
 /*!
     Destructs a package manager UI.
 */
@@ -840,6 +916,9 @@ void PackageManagerGui::mousePressEvent(QMouseEvent *event)
             if (!hitButton) {
                 m_isDragging = true;
                 m_dragPosition = globalPos - frameGeometry().topLeft();
+                m_dragScreen = QGuiApplication::screenAt(globalPos);
+                if (!m_dragScreen && windowHandle())
+                    m_dragScreen = windowHandle()->screen();
             } else {
                 m_isDragging = false;
             }
@@ -871,7 +950,36 @@ void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
 
     if (m_isDragging)
     {
-        move(globalPos - m_dragPosition);
+        QPoint newTopLeft = globalPos - m_dragPosition;
+
+        // Pick target screen by maximal overlap to avoid border oscillation.
+        QScreen *targetScreen = nullptr;
+        int bestArea = -1;
+        const QRect projectedRect(newTopLeft, size());
+        const QList<QScreen *> screens = QGuiApplication::screens();
+        for (QScreen *s : screens) {
+            const QRect overlap = projectedRect.intersected(s->availableGeometry());
+            const int area = overlap.isValid() ? overlap.width() * overlap.height() : 0;
+            if (area > bestArea) {
+                bestArea = area;
+                targetScreen = s;
+            }
+        }
+        if (!targetScreen)
+            targetScreen = QGuiApplication::screenAt(globalPos);
+        if (!targetScreen && windowHandle())
+            targetScreen = windowHandle()->screen();
+
+        if (targetScreen && targetScreen != m_dragScreen) {
+            const QRect avail = targetScreen->availableGeometry();
+            const QSize bounded(qMin(width(), avail.width()),
+                qMin(height(), avail.height()));
+            if (bounded != size())
+                resize(bounded);
+            m_dragScreen = targetScreen;
+        }
+
+        move(newTopLeft);
         event->accept();
     }
     else if (m_isResizing)
@@ -901,8 +1009,13 @@ void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
 
 void PackageManagerGui::mouseReleaseEvent(QMouseEvent *event)
 {
+    if (m_isDragging || m_isResizing)
+    {
+        updateGeometry();
+    }
     m_isDragging = false;
     m_isResizing = false;
+    m_dragScreen = nullptr;
     setCursor(Qt::ArrowCursor);
     event->accept();
     updateResizeEdges(GET_GLOBAL_POS(event));
@@ -959,6 +1072,24 @@ bool PackageManagerGui::event(QEvent *event)
     return QWizard::event(event);
 }
 
+void PackageManagerGui::resizeEvent(QResizeEvent *event)
+{
+    if (currentPage())
+    {
+        currentPage()->layout()->update();
+        currentPage()->layout()->activate();
+        currentPage()->updateGeometry();
+    }
+    QDialogButtonBox* btnBox = findChild<QDialogButtonBox*>();
+    if (btnBox)
+    {
+        btnBox->layout()->activate();
+        btnBox->updateGeometry();
+        btnBox->adjustSize();
+    }
+    QWizard::resizeEvent(event);
+}
+
 /*!
     \reimp
 */
@@ -975,6 +1106,7 @@ void PackageManagerGui::showEvent(QShowEvent *event)
                 }
             }
         }
+        m_lastDpr = window()->devicePixelRatioF();
         QSize minimumSize;
         minimumSize.setWidth(m_core->settings().wizardMinimumWidth()
             ? m_core->settings().wizardMinimumWidth()
@@ -984,13 +1116,31 @@ void PackageManagerGui::showEvent(QShowEvent *event)
             ? m_core->settings().wizardMinimumHeight()
             : height());
 
-        setMinimumSize(minimumSize);
         if (minimumWidth() < m_core->settings().wizardDefaultWidth())
             resize(m_core->settings().wizardDefaultWidth(), height());
         if (minimumHeight() < m_core->settings().wizardDefaultHeight())
             resize(width(), m_core->settings().wizardDefaultHeight());
     }
     QWizard::showEvent(event);
+
+    // Hook screen-related signals only when native window is available.
+    if (QWindow *win = windowHandle()) {
+        connect(win, &QWindow::screenChanged, this, &PackageManagerGui::onWindowScreenChanged,
+            Qt::UniqueConnection);
+
+        QScreen *screen = win->screen();
+        if (screen != m_currentScreen)
+            onWindowScreenChanged(screen);
+        if (m_currentScreen) {
+            connect(m_currentScreen, &QScreen::geometryChanged, this, &PackageManagerGui::onScreenGeometryChanged,
+                Qt::UniqueConnection);
+            connect(m_currentScreen, &QScreen::availableGeometryChanged, this, &PackageManagerGui::onScreenGeometryChanged,
+                Qt::UniqueConnection);
+            connect(m_currentScreen, &QScreen::logicalDotsPerInchChanged, this, &PackageManagerGui::onScreenLogicalDpiChanged,
+                Qt::UniqueConnection);
+        }
+    }
+
     QMetaObject::invokeMethod(this, "dependsOnLocalInstallerBinary", Qt::QueuedConnection);
 }
 

@@ -37,6 +37,7 @@
 
 #include <QWizard>
 #include <QWizardPage>
+#include <QResizeEvent>
 
 // FIXME: move to private classes
 QT_BEGIN_NAMESPACE
@@ -50,6 +51,8 @@ class QProgressBar;
 class QRadioButton;
 class QTextBrowser;
 class QWinTaskbarButton;
+class QScreen;
+class QRect;
 QT_END_NAMESPACE
 
 namespace QInstaller {
@@ -117,6 +120,9 @@ public Q_SLOTS:
     void setModified(bool value);
     void setMaxSize();
     void updatePageListWidget();
+    void onScreenGeometryChanged(const QRect&);
+    void onScreenLogicalDpiChanged(qreal dpi);
+    void onWindowScreenChanged(QScreen* screen);
 
 protected Q_SLOTS:
     void wizardPageInsertionRequested(QWidget *widget, QInstaller::PackageManagerCore::WizardPage page);
@@ -141,12 +147,14 @@ protected:
     void showEvent(QShowEvent *event) override;
     PackageManagerCore *packageManagerCore() const { return m_core; }
     void executeControlScript(int pageId);
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     class Private;
     Private *const d;
     PackageManagerCore *m_core;
     QListWidget *m_pageListWidget;
+    QScreen* m_currentScreen = nullptr;
 
 protected:
     void mousePressEvent(QMouseEvent *event) override;
@@ -157,15 +165,18 @@ private:
     void updateResizeEdges(const QPoint &globalPos);
 
     QPoint m_dragPosition;
+    QScreen *m_dragScreen = nullptr;
+    qreal m_lastDpr = 1.0;
     bool m_isDragging = false;
     bool m_isResizing = false;
-
     // Tracking active resizing borders
     bool m_edgeLeft = false;
     bool m_edgeRight = false;
     bool m_edgeTop = false;
     bool m_edgeBottom = false;
 
+    int m_baseWidth = 0;
+    int m_baseHeight = 0;
     const int m_borderPadding = 8; // Border thickness in pixels for resizing detection
 
     void addVerticalButtonDivider();
