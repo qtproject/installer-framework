@@ -106,6 +106,36 @@
 #define GET_GLOBAL_POS(ev) (ev->globalPos())
 #endif
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+
+QRect getMonitorWorkPhysical(HWND hwnd)
+{
+    HMONITOR hMon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    MONITORINFOEXW mi;
+    mi.cbSize = sizeof(MONITORINFOEXW);
+    GetMonitorInfoW(hMon, &mi);
+    return QRect(mi.rcWork.left,
+                 mi.rcWork.top,
+                 mi.rcWork.right - mi.rcWork.left,
+                 mi.rcWork.bottom - mi.rcWork.top);
+}
+
+QRect calcLogicalAvailableGeometry(QWidget* win)
+{
+    HWND hwnd = reinterpret_cast<HWND>(win->winId());
+    QRect phyWork = getMonitorWorkPhysical(hwnd);
+    qreal dpr = win->devicePixelRatioF();
+
+    int l = qRound(phyWork.left() / dpr);
+    int t = qRound(phyWork.top() / dpr);
+    int w = qRound(phyWork.width() / dpr);
+    int h = qRound(phyWork.height() / dpr);
+
+    return QRect(l, t, w, h);
+}
+#endif
+
 using namespace KDUpdater;
 using namespace QInstaller;
 
@@ -564,53 +594,44 @@ void PackageManagerGui::updatePageListWidget()
 void PackageManagerGui::onScreenLogicalDpiChanged(qreal dpi)
 {
     Q_UNUSED(dpi);
-    onScreenGeometryChanged(this->screen()->availableGeometry());
+    if (QScreen *screen = this->screen())
+        onScreenGeometryChanged(screen->availableGeometry());
 }
 
 void PackageManagerGui::onScreenGeometryChanged(const QRect &availableGeometry)
 {
     Q_UNUSED(availableGeometry);
     QTimer::singleShot(0, this, [&](){
-            const qreal newDpr = window()->devicePixelRatioF();
-    const QRect curGeo = frameGeometry();
-    int oldLogicW = width();
-    int oldLogicH = height();
+        const qreal newDpr = window()->devicePixelRatioF();
+        const QRect curGeo = frameGeometry();
+        int oldLogicW = width();
+        int oldLogicH = height();
 
-    // 1、计算窗口固定物理像素（跨屏保持不变）
-    qreal physW = oldLogicW * m_lastDpr;
-    qreal physH = oldLogicH * m_lastDpr;
+        // 1、calculate physical size based on old logical size and last DPR
+        qreal physW = oldLogicW * m_lastDpr;
+        qreal physH = oldLogicH * m_lastDpr;
 
-    // 2、用新DPR换算新逻辑尺寸
-    int targetLogicW = qRound(physW / newDpr);
-    int targetLogicH = qRound(physH / newDpr);
+        // 2、use new DPR to calculate target logical size
+        int targetLogicW = qRound(physW / newDpr);
+        int targetLogicH = qRound(physH / newDpr);
 
-    // 3、双重限制：不能超过首次打开的窗口上限，不能超过屏幕80%
-    int screenMaxW = this->screen()->availableGeometry().width() * 0.8;
-    int screenMaxH = this->screen()->availableGeometry().height() * 0.8;
-    int finalW = qMin(targetLogicW, screenMaxW);
-    int finalH = qMin(targetLogicH, screenMaxH);
+        // 3、double limit: cannot exceed the initial window maximum, cannot exceed 80% of the screen
+        // usegetMonitorWorkPhysical
+        int screenMaxW = calcLogicalAvailableGeometry(this).width() * 0.8;
+        int screenMaxH = calcLogicalAvailableGeometry(this).height() * 0.8;
+        int finalW = qMin(targetLogicW, screenMaxW);
+        int finalH = qMin(targetLogicH, screenMaxH);
 
-    // 4、坐标边界修正
-    const QRect avail = this->screen()->availableGeometry();
-    int maxX = avail.right() - finalW + 1;
-    int maxY = avail.bottom() - finalH + 1;
-    int finalX = qBound(avail.left(), curGeo.x(), maxX);
-    int finalY = qBound(avail.top(), curGeo.y(), maxY);
+        // 4、calculate the new position to keep the window centered on the screen
+        const QRect avail = calcLogicalAvailableGeometry(this);
+        int maxX = avail.right() - finalW + 1;
+        int maxY = avail.bottom() - finalH + 1;
+        int finalX = qBound(avail.left(), curGeo.x(), maxX);
+        int finalY = qBound(avail.top(), curGeo.y(), maxY);
 
-    // 一次性修改位置+尺寸，仅一次重绘
-    setGeometry(QRect(finalX, finalY, finalW, finalH));
-    qInfo() << "onScreenGeometryChanged: DPR changed from" << m_lastDpr << "to" << newDpr
-        << ", oldLogicSize=" << QSize(oldLogicW, oldLogicH)
-        << ", targetLogicSize=" << QSize(targetLogicW, targetLogicH)
-        << ", finalSize=" << QSize(finalW, finalH)
-        << ", finalPos=" << QPoint(finalX, finalY);
-    //print current display
-    qInfo() << "Current screen:" << this->screen()->name() << ", availableGeometry=" << this->screen()->availableGeometry()
-        << ", devicePixelRatio=" << this->screen()->devicePixelRatio();
-    // 更新当前DPR，下一次跨屏作为旧值
-    m_lastDpr = newDpr;
+        setGeometry(QRect(finalX, finalY, finalW, finalH));
+        m_lastDpr = newDpr;
     });
-
 }
 
 void PackageManagerGui::onWindowScreenChanged(QScreen* screen)
@@ -1009,9 +1030,24 @@ void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
 
 void PackageManagerGui::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_isDragging || m_isResizing)
+    if (m_isDragging)
     {
-        updateGeometry();
+        const QRect avail = calcLogicalAvailableGeometry(this);
+        const QSize frameSize = frameGeometry().size();
+        const int maxX = avail.right() - frameSize.width() + 1;
+        const int maxY = avail.bottom() - frameSize.height() + 1;
+        QPoint clampedTopLeft = frameGeometry().topLeft();
+
+        if (maxX >= avail.left())
+            clampedTopLeft.setX(qBound(avail.left(), clampedTopLeft.x(), maxX));
+        else
+            clampedTopLeft.setX(avail.left());
+        if (maxY >= avail.top())
+            clampedTopLeft.setY(qBound(avail.top(), clampedTopLeft.y(), maxY));
+        else
+            clampedTopLeft.setY(avail.top());
+
+        move(clampedTopLeft);
     }
     m_isDragging = false;
     m_isResizing = false;
