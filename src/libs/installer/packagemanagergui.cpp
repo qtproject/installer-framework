@@ -1687,10 +1687,17 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
 {
     setObjectName(QLatin1String("IntroductionPage"));
 
-    setSubTitle(QStringLiteral(
-        "<span style='color: #b3b3b3; font-weight: bold; font-size: 16px;'>"
-        "Barco Workstation Apps Manager"
-        "</span>"));
+    if (packageManagerCore()->isInstaller()) {
+            setSubTitle(QStringLiteral(
+            "<span style='color: #b3b3b3; font-weight: bold; font-size: 16px;'>"
+            "Barco Workstation Apps Installer"
+            "</span>"));
+    } else {
+            setSubTitle(QStringLiteral(
+            "<span style='color: #b3b3b3; font-weight: bold; font-size: 16px;'>"
+            "Barco Workstation Apps Manager"
+            "</span>"));
+    }
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     if (packageManagerCore()->settings().wizardShowPageList())
