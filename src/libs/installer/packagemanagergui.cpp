@@ -1961,7 +1961,8 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
     m_errorLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
     m_errorLabel->setObjectName(QLatin1String("ErrorLabel"));
     m_errorLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-    boxLayout->addWidget(m_errorLabel);
+    m_errorLabel->hide();
+    m_errorLabel->raise();
 
     layout->addWidget(m_msgLabel);
     m_loadingGroupMainWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -1976,6 +1977,7 @@ IntroductionPage::IntroductionPage(PackageManagerCore *core)
             this, &IntroductionPage::onCoreNetworkSettingsChanged);
 
     m_updateComponents->setEnabled(!m_offlineMaintenanceTool && ProductKeyCheck::instance()->hasValidKey());
+    updateErrorLabelPosition();
 
 #ifdef Q_OS_WIN
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -2055,8 +2057,13 @@ bool IntroductionPage::validatePage()
     if (core->isUpdater()) {
         if (!m_updatesFetched) {
             m_updatesFetched = core->fetchRemotePackagesTree();
-            if (!m_updatesFetched)
-                setErrorMessage(core->error());
+            if (!m_updatesFetched) {
+                const QString fetchError = core->error();
+                if (!fetchError.isEmpty())
+                    setErrorMessage(fetchError);
+                else
+                    setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
+            }
         }
 
         if (m_updatesFetched) {
@@ -2092,8 +2099,26 @@ bool IntroductionPage::validatePage()
             }
         }
 
-        if (m_allPackagesFetched)
-            setComplete(true);
+        if (m_allPackagesFetched) {
+            if (core->isPackageManager()) {
+                bool hasUpdatableComponent = false;
+                const QList<Component *> rootComponents =
+                    core->components(QInstaller::PackageManagerCore::ComponentType::Root);
+                foreach (Component *component, rootComponents) {
+                    if (component && component->isUpdateAvailable()) {
+                        hasUpdatableComponent = true;
+                        break;
+                    }
+                }
+
+                if (!hasUpdatableComponent)
+                    setErrorMessage(QString::fromLatin1("<b>%1</b>").arg(tr("No updates available.")));
+                else
+                    setComplete(true);
+            } else {
+                setComplete(true);
+            }
+        }
     }
 
     if (core->isMaintainer()) {
@@ -2159,6 +2184,7 @@ void IntroductionPage::showMaintenanceTools()
     m_updateComponents->setVisible(true);
     m_configureSettings->setVisible(true);
     m_removeAllComponents->setVisible(true);
+    // Error label is absolutely positioned; keep loading area hidden to avoid layout shifts.
     m_loadingGroupMainWidget->setVisible(false);
     m_actionGroupMainWidget->setVisible(true);
 }
@@ -2245,6 +2271,8 @@ void IntroductionPage::setErrorMessage(const QString &error)
     {
         m_errorLabel->setText(error);
         m_errorLabel->setPalette(palette);
+        m_errorLabel->setVisible(!error.isEmpty());
+        updateErrorLabelPosition();
     }
 
 
@@ -2256,6 +2284,32 @@ void IntroductionPage::setErrorMessage(const QString &error)
     }
 #endif
 #endif
+}
+
+void IntroductionPage::resizeEvent(QResizeEvent *event)
+{
+    PackageManagerPage::resizeEvent(event);
+    updateErrorLabelPosition();
+}
+
+void IntroductionPage::updateErrorLabelPosition()
+{
+    if (!m_errorLabel)
+        return;
+
+    static const int kErrorLabelMargin = 32;
+    const int maxWidth = qMax(0, width() - (kErrorLabelMargin * 2));
+    m_errorLabel->setWordWrap(false);
+    m_errorLabel->setMaximumWidth(QWIDGETSIZE_MAX);
+    m_errorLabel->adjustSize();
+
+    if (m_errorLabel->sizeHint().width() > maxWidth) {
+        m_errorLabel->setWordWrap(true);
+        m_errorLabel->setMaximumWidth(maxWidth);
+    }
+
+    m_errorLabel->adjustSize();
+    m_errorLabel->move(kErrorLabelMargin, height() - kErrorLabelMargin - m_errorLabel->height());
 }
 
 

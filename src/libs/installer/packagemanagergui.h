@@ -295,11 +295,13 @@ private Q_SLOTS:
 
 private:
     void initializePage() override;
+    void resizeEvent(QResizeEvent *event) override;
 
     void entering() override;
     void leaving() override;
 
     void showWidgets(bool show);
+    void updateErrorLabelPosition();
 
 private:
     bool m_updatesFetched;
