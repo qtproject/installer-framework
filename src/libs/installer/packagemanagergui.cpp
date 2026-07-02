@@ -109,30 +109,39 @@
 #ifdef Q_OS_WIN
 #include <Windows.h>
 
-QRect getMonitorWorkPhysical(HWND hwnd)
+
+struct WinMonitorInfo
 {
-    HMONITOR hMon = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
-    MONITORINFOEXW mi;
-    mi.cbSize = sizeof(MONITORINFOEXW);
-    GetMonitorInfoW(hMon, &mi);
-    return QRect(mi.rcWork.left,
-                 mi.rcWork.top,
-                 mi.rcWork.right - mi.rcWork.left,
-                 mi.rcWork.bottom - mi.rcWork.top);
-}
+    QRect rcMonitor;    
+    QRect rcWork; 
+    bool isPrimary;    
+    QString deviceName; 
+};
 
 QRect calcLogicalAvailableGeometry(QWidget* win)
 {
-    HWND hwnd = reinterpret_cast<HWND>(win->winId());
-    QRect phyWork = getMonitorWorkPhysical(hwnd);
     qreal dpr = win->devicePixelRatioF();
+    HWND hwnd = reinterpret_cast<HWND>(win->winId());
+    WinMonitorInfo empty;
+#ifdef Q_OS_WIN
+    HMONITOR hMonitor = MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST);
+    if (!hMonitor) return empty.rcWork;
 
-    int l = qRound(phyWork.left() / dpr);
-    int t = qRound(phyWork.top() / dpr);
-    int w = qRound(phyWork.width() / dpr);
-    int h = qRound(phyWork.height() / dpr);
+    MONITORINFOEXW miex;
+    miex.cbSize = sizeof(MONITORINFOEXW);
+    if (!GetMonitorInfoW(hMonitor, &miex)) return empty.rcWork;
 
-    return QRect(l, t, w, h);
+
+    empty.rcWork = QRect(
+        miex.rcWork.left,
+        miex.rcWork.top,
+        (miex.rcWork.right - miex.rcWork.left) / dpr,
+        (miex.rcWork.bottom - miex.rcWork.top) / dpr
+    );
+    empty.isPrimary = (miex.dwFlags & MONITORINFOF_PRIMARY);
+    empty.deviceName = QString::fromWCharArray(miex.szDevice);
+#endif
+    return empty.rcWork;
 }
 #endif
 
@@ -972,34 +981,6 @@ void PackageManagerGui::mouseMoveEvent(QMouseEvent *event)
     if (m_isDragging)
     {
         QPoint newTopLeft = globalPos - m_dragPosition;
-
-        // Pick target screen by maximal overlap to avoid border oscillation.
-        QScreen *targetScreen = nullptr;
-        int bestArea = -1;
-        const QRect projectedRect(newTopLeft, size());
-        const QList<QScreen *> screens = QGuiApplication::screens();
-        for (QScreen *s : screens) {
-            const QRect overlap = projectedRect.intersected(s->availableGeometry());
-            const int area = overlap.isValid() ? overlap.width() * overlap.height() : 0;
-            if (area > bestArea) {
-                bestArea = area;
-                targetScreen = s;
-            }
-        }
-        if (!targetScreen)
-            targetScreen = QGuiApplication::screenAt(globalPos);
-        if (!targetScreen && windowHandle())
-            targetScreen = windowHandle()->screen();
-
-        if (targetScreen && targetScreen != m_dragScreen) {
-            const QRect avail = targetScreen->availableGeometry();
-            const QSize bounded(qMin(width(), avail.width()),
-                qMin(height(), avail.height()));
-            if (bounded != size())
-                resize(bounded);
-            m_dragScreen = targetScreen;
-        }
-
         move(newTopLeft);
         event->accept();
     }
