@@ -1,3 +1,9 @@
+4.11.1
+- Disable Brotli support in Qt builds used for IFW (QTIFW-4008)
+- Restore logging of download host and IP addresses (QTIFW-3950)
+- 3rdparty: update libarchive sources to 3.8.11 (QTIFW-4013)
+- 3rdparty: update OpenSSL to version 3.5.9 in prebuilt binaries
+
 4.11.0
 - 3rdparty: update libarchive sources to 3.8.5
 - Fix mac maintenance tool update (QTIFW-3759)
