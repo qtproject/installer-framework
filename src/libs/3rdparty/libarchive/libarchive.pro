@@ -17,14 +17,13 @@ HEADERS += $$PWD/archive.h \
     $$PWD/archive_entry.h \
     $$PWD/archive_acl_private.h \
     $$PWD/archive_cmdline_private.h \
-    $$PWD/archive_crc32.h \
     $$PWD/archive_cryptor_private.h \
     $$PWD/archive_digest_private.h \
     $$PWD/archive_endian.h \
     $$PWD/archive_entry_locale.h \
     $$PWD/archive_entry_private.h \
-    $$PWD/archive_getdate.h \
     $$PWD/archive_hmac_private.h \
+    $$PWD/archive_integer.h \
     $$PWD/archive_openssl_evp_private.h \
     $$PWD/archive_openssl_hmac_private.h \
     $$PWD/archive_options_private.h \
@@ -45,15 +44,18 @@ HEADERS += $$PWD/archive.h \
     $$PWD/archive_string.h \
     $$PWD/archive_string_composition.h \
     $$PWD/archive_time_private.h \
+    $$PWD/archive_umask_private.h \
     $$PWD/archive_write_disk_private.h \
     $$PWD/archive_write_private.h \
     $$PWD/archive_write_set_format_private.h \
+    $$PWD/archive_xml_private.h \
     $$PWD/archive_xxhash.h \
     $$PWD/filter_fork.h
 
 SOURCES += $$PWD/archive_acl.c \
     $$PWD/archive_check_magic.c \
     $$PWD/archive_cmdline.c \
+    $$PWD/archive_crc32.c \
     $$PWD/archive_cryptor.c \
     $$PWD/archive_digest.c \
     $$PWD/archive_entry.c \
@@ -63,7 +65,6 @@ SOURCES += $$PWD/archive_acl.c \
     $$PWD/archive_entry_stat.c \
     $$PWD/archive_entry_strmode.c \
     $$PWD/archive_entry_xattr.c \
-    $$PWD/archive_getdate.c \
     $$PWD/archive_hmac.c \
     $$PWD/archive_match.c \
     $$PWD/archive_options.c \
@@ -123,6 +124,7 @@ SOURCES += $$PWD/archive_acl.c \
     $$PWD/archive_string.c \
     $$PWD/archive_string_sprintf.c \
     $$PWD/archive_time.c \
+    $$PWD/archive_umask.c \
     $$PWD/archive_util.c \
     $$PWD/archive_version_details.c \
     $$PWD/archive_virtual.c \

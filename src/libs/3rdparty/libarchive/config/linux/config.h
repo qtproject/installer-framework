@@ -204,6 +204,9 @@ typedef uint64_t uintmax_t;
 /* MD5 via ARCHIVE_CRYPTO_MD5_LIBC supported. */
 /* #undef ARCHIVE_CRYPTO_MD5_LIBC */
 
+/* MD5 via ARCHIVE_CRYPTO_MD5_LIBMD supported. */
+/* #undef ARCHIVE_CRYPTO_MD5_LIBMD */
+
 /* MD5 via ARCHIVE_CRYPTO_MD5_LIBSYSTEM supported. */
 /* #undef ARCHIVE_CRYPTO_MD5_LIBSYSTEM */
 
@@ -219,6 +222,9 @@ typedef uint64_t uintmax_t;
 /* RMD160 via ARCHIVE_CRYPTO_RMD160_LIBC supported. */
 /* #undef ARCHIVE_CRYPTO_RMD160_LIBC */
 
+/* RMD160 via ARCHIVE_CRYPTO_RMD160_LIBMD supported. */
+/* #undef ARCHIVE_CRYPTO_RMD160_LIBMD */
+
 /* RMD160 via ARCHIVE_CRYPTO_RMD160_NETTLE supported. */
 /* #undef ARCHIVE_CRYPTO_RMD160_NETTLE */
 
@@ -227,6 +233,9 @@ typedef uint64_t uintmax_t;
 
 /* SHA1 via ARCHIVE_CRYPTO_SHA1_LIBC supported. */
 /* #undef ARCHIVE_CRYPTO_SHA1_LIBC */
+
+/* SHA1 via ARCHIVE_CRYPTO_SHA1_LIBMD supported. */
+/* #undef ARCHIVE_CRYPTO_SHA1_LIBMD */
 
 /* SHA1 via ARCHIVE_CRYPTO_SHA1_LIBSYSTEM supported. */
 /* #undef ARCHIVE_CRYPTO_SHA1_LIBSYSTEM */
@@ -248,6 +257,9 @@ typedef uint64_t uintmax_t;
 
 /* SHA256 via ARCHIVE_CRYPTO_SHA256_LIBC3 supported. */
 /* #undef ARCHIVE_CRYPTO_SHA256_LIBC3 */
+
+/* SHA256 via ARCHIVE_CRYPTO_SHA256_LIBMD supported. */
+/* #undef ARCHIVE_CRYPTO_SHA256_LIBMD */
 
 /* SHA256 via ARCHIVE_CRYPTO_SHA256_LIBSYSTEM supported. */
 /* #undef ARCHIVE_CRYPTO_SHA256_LIBSYSTEM */
@@ -291,6 +303,9 @@ typedef uint64_t uintmax_t;
 /* SHA512 via ARCHIVE_CRYPTO_SHA512_LIBC3 supported. */
 /* #undef ARCHIVE_CRYPTO_SHA512_LIBC3 */
 
+/* SHA512 via ARCHIVE_CRYPTO_SHA512_LIBMD supported. */
+/* #undef ARCHIVE_CRYPTO_SHA512_LIBMD */
+
 /* SHA512 via ARCHIVE_CRYPTO_SHA512_LIBSYSTEM supported. */
 /* #undef ARCHIVE_CRYPTO_SHA512_LIBSYSTEM */
 
@@ -302,6 +317,9 @@ typedef uint64_t uintmax_t;
 
 /* SHA512 via ARCHIVE_CRYPTO_SHA512_WIN supported. */
 /* #undef ARCHIVE_CRYPTO_SHA512_WIN */
+
+/* Use Windows CNG(Crypto Next Generation) */
+/* #undef ARCHIVE_CRYPTO_WIN */
 
 /* AIX xattr support */
 /* #undef ARCHIVE_XATTR_AIX */
@@ -687,6 +705,18 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <blake2.h> header file. */
 /* #undef HAVE_BLAKE2_H */
 
+/* Define to 1 if you have the 'explicit_bzero' function. */
+/* #undef HAVE_EXPLICIT_BZERO */
+
+/* Define to 1 if you have the 'getegid' function. */
+#define HAVE_GETEGID 1
+
+/* Define to 1 if you have the 'gettimeofday' function. */
+#define HAVE_GETTIMEOFDAY 1
+
+/* Define to 1 if you have the <intsafe.h> header file. */
+/* #undef HAVE_INTSAFE_H */
+
 /* Define to 1 if you have the `charset' library (-lcharset). */
 /* #undef HAVE_LIBCHARSET */
 
@@ -725,6 +755,9 @@ typedef uint64_t uintmax_t;
 
 /* Define to 1 if you have the `xml2' library (-lxml2). */
 /* #undef HAVE_LIBXML2 */
+
+/* Define to 1 if you have the 'xmllite' library (-lxmllite). */
+/* #undef HAVE_LIBXMLLITE */
 
 /* Define to 1 if you have the <libxml/xmlreader.h> header file. */
 /* #undef HAVE_LIBXML_XMLREADER_H */
@@ -832,6 +865,9 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
 
+/* Define to 1 if you have the 'memset_explicit' function. */
+/* #undef HAVE_MEMSET_EXPLICIT */
+
 /* Define to 1 if you have the `mkdir' function. */
 #define HAVE_MKDIR 1
 
@@ -861,6 +897,12 @@ typedef uint64_t uintmax_t;
 
 /* Define to 1 if you have the <nettle/ripemd160.h> header file. */
 /* #undef HAVE_NETTLE_RIPEMD160_H */
+
+/* Define to 1 if you have the <nettle/sha1.h> header file. */
+/* #undef HAVE_NETTLE_SHA1_H */
+
+/* Define to 1 if you have the <nettle/sha2.h> header file. */
+/* #undef HAVE_NETTLE_SHA2_H */
 
 /* Define to 1 if you have the <nettle/sha.h> header file. */
 /* #undef HAVE_NETTLE_SHA_H */
@@ -950,8 +992,14 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <stdarg.h> header file. */
 #define HAVE_STDARG_H 1
 
+/* Define to 1 if you have the <stdckdint.h> header file. */
+/* #undef HAVE_STDCKDINT_H */
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
@@ -1072,6 +1120,9 @@ typedef uint64_t uintmax_t;
 /* Define to 1 if you have the <sys/select.h> header file. */
 #define HAVE_SYS_SELECT_H 1
 
+/* Define to 1 if you have the <sys/single_threaded.h> header file. */
+/* #undef HAVE_SYS_SINGLE_THREADED_H */
+
 /* Define to 1 if you have the <sys/statfs.h> header file. */
 #define HAVE_SYS_STATFS_H 1
 
@@ -1147,6 +1198,9 @@ typedef uint64_t uintmax_t;
 
 /* Define to 1 if you have the `vprintf' function. */
 #define HAVE_VPRINTF 1
+
+/* Define to 1 if you have the 'waitpid' function. */
+#define HAVE_WAITPID 1
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #define HAVE_WCHAR_H 1

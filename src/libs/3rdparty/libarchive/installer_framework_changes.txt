@@ -5,40 +5,41 @@ MS documentation states applications should call GetTempPath2 instead of GetTemp
 === output of: git diff --diff-filter=M ===
 
 diff --git a/src/libs/3rdparty/libarchive/archive_util.c b/src/libs/3rdparty/libarchive/archive_util.c
-index 3a8caad5..8f3ee283 100644
+index b0a5f2dd..ac7e2a0e 100644
 --- a/src/libs/3rdparty/libarchive/archive_util.c
 +++ b/src/libs/3rdparty/libarchive/archive_util.c
-@@ -257,13 +257,23 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
-        ws = NULL;
-        archive_string_init(&temp_name);
+@@ -239,6 +239,16 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
+ 	ws = NULL;
+ 	archive_string_init(&temp_name);
  
-+       typedef DWORD(WINAPI * GetTempPathFuncPtr)(DWORD, LPWSTR);
-+       // We try to resolve GetTempPath2 and use that, otherwise fall back to GetTempPath:
-+       static GetTempPathFuncPtr getTempPathW = 0;
-+       if (!getTempPathW) {
-+               const HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
-+               getTempPathW = (GetTempPathFuncPtr) GetProcAddress(kernel32, "GetTempPath2W");
-+               if (!getTempPathW)
-+                       getTempPathW = GetTempPathW;
-+       }
++	typedef DWORD(WINAPI * GetTempPathFuncPtr)(DWORD, LPWSTR);
++	// We try to resolve GetTempPath2 and use that, otherwise fall back to GetTempPath:
++	static GetTempPathFuncPtr getTempPathW = 0;
++	if (!getTempPathW) {
++		const HMODULE kernel32 = GetModuleHandleW(L"kernel32.dll");
++		getTempPathW = (GetTempPathFuncPtr) GetProcAddress(kernel32, "GetTempPath2W");
++		if (!getTempPathW)
++			getTempPathW = GetTempPathW;
++	}
 +
-        if (template == NULL) {
-                /* Get a temporary directory. */
-                if (tmpdir == NULL) {
-                        size_t l;
-                        wchar_t *tmp;
+ 	if (template == NULL) {
+ 		/* Get a temporary directory. */
+ 		if (tmpdir == NULL) {
+@@ -247,7 +257,7 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
+ 			size_t l, s;
  
--                       l = GetTempPathW(0, NULL);
-+                       l = getTempPathW(0, NULL);
-                        if (l == 0) {
-                                la_dosmaperr(GetLastError());
-                                goto exit_tmpfile;
-@@ -273,7 +283,7 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
-                                errno = ENOMEM;
-                                goto exit_tmpfile;
-                        }
--                       GetTempPathW((DWORD)l, tmp);
-+                       getTempPathW((DWORD)l, tmp);
-                        archive_wstrcpy(&temp_name, tmp);
-                        free(tmp);
-                } else {
+ 			s = MAX_PATH + 1;
+-			l = GetTempPathW((DWORD)s, buf);
++			l = getTempPathW((DWORD)s, buf);
+ 			if (l == 0) {
+ 				la_dosmaperr(GetLastError());
+ 				goto exit_tmpfile;
+@@ -263,7 +273,7 @@ __archive_mktempx(const char *tmpdir, wchar_t *template)
+ 					goto exit_tmpfile;
+ 				}
+ 				p = buf2 = tmp;
+-				l = GetTempPathW((DWORD)s, buf2);
++				l = getTempPathW((DWORD)s, buf2);
+ 				if (l == 0) {
+ 					free(buf2);
+ 					la_dosmaperr(GetLastError());

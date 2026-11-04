@@ -45,6 +45,7 @@
 #endif
 
 #include "archive.h"
+#include "archive_integer.h"
 #include "archive_private.h"
 #include "archive_read_private.h"
 #include "archive_write_disk_private.h"
@@ -134,7 +135,8 @@ lookup_gid(void *private_data, const char *gname, int64_t gid)
 				break;
 			if (r != ERANGE)
 				break;
-			bufsize *= 2;
+			if (archive_ckd_mul_size(&bufsize, bufsize, 2))
+				break;
 			free(allocated);
 			allocated = malloc(bufsize);
 			if (allocated == NULL)
@@ -156,6 +158,8 @@ lookup_gid(void *private_data, const char *gname, int64_t gid)
 #  endif /* HAVE_GETGRNAM_R */
 #elif defined(_WIN32) && !defined(__CYGWIN__)
 	/* TODO: do a gname->gid lookup for Windows. */
+#elif defined(__wasi__)
+	/* WASI has no way to perform GID lookups, so just pass through */
 #else
 	#error No way to perform gid lookups on this platform
 #endif
@@ -203,7 +207,8 @@ lookup_uid(void *private_data, const char *uname, int64_t uid)
 				break;
 			if (r != ERANGE)
 				break;
-			bufsize *= 2;
+			if (archive_ckd_mul_size(&bufsize, bufsize, 2))
+				break;
 			free(allocated);
 			allocated = malloc(bufsize);
 			if (allocated == NULL)
@@ -225,6 +230,8 @@ lookup_uid(void *private_data, const char *uname, int64_t uid)
 #endif	/* HAVE_GETPWNAM_R */
 #elif defined(_WIN32) && !defined(__CYGWIN__)
 	/* TODO: do a uname->uid lookup for Windows. */
+#elif defined(__wasi__)
+	/* WASI has no way to perform GID lookups, so just pass through */
 #else
 	#error No way to look up uids on this platform
 #endif

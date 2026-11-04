@@ -190,6 +190,8 @@ equals(TEMPLATE, app) {
         unix:LIBS += -llzma
         win32:LIBS += -llzma
     }
+    # libarchive uses BCryptGenRandom() on Windows
+    msvc:LIBS += -lbcrypt
     macos {
         !isEmpty(IFW_ICONV_LIBRARY) {
             LIBS += $$IFW_ICONV_LIBRARY

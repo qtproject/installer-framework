@@ -68,6 +68,7 @@ archive_read_open_memory2(struct archive *a, const void *buff,
     size_t size, size_t read_size)
 {
 	struct read_memory_data *mine;
+	int r;
 
 	mine = calloc(1, sizeof(*mine));
 	if (mine == NULL) {
@@ -82,7 +83,11 @@ archive_read_open_memory2(struct archive *a, const void *buff,
 	archive_read_set_seek_callback(a, memory_read_seek);
 	archive_read_set_skip_callback(a, memory_read_skip);
 	archive_read_set_close_callback(a, memory_read_close);
-	archive_read_set_callback_data(a, mine);
+	r = archive_read_set_callback_data(a, mine);
+	if (r < 0) {
+		free(mine);
+		return (r);
+	}
 	return (archive_read_open1(a));
 }
 
@@ -146,29 +151,27 @@ static int64_t
 memory_read_seek(struct archive *a, void *client_data, int64_t offset, int whence)
 {
 	struct read_memory_data *mine = (struct read_memory_data *)client_data;
+	const unsigned char *p;
 
 	(void)a; /* UNUSED */
 	switch (whence) {
 	case SEEK_SET:
-		mine->p = mine->start + offset;
+		p = mine->start + offset;
 		break;
 	case SEEK_CUR:
-		mine->p += offset;
+		p = mine->p + offset;
 		break;
 	case SEEK_END:
-		mine->p = mine->end + offset;
+		p = mine->end + offset;
 		break;
 	default:
-		return ARCHIVE_FATAL;
-	}
-	if (mine->p < mine->start) {
-		mine->p = mine->start;
 		return ARCHIVE_FAILED;
 	}
-	if (mine->p > mine->end) {
-		mine->p = mine->end;
+	if (p < mine->start)
 		return ARCHIVE_FAILED;
-	}
+	if (p > mine->end)
+		return ARCHIVE_FAILED;
+	mine->p = p;
 	return (mine->p - mine->start);
 }
 

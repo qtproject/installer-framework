@@ -84,6 +84,7 @@
 #include "archive_string.h"
 #include "archive_cryptor_private.h"
 #include "archive_digest_private.h"
+#include "archive_xml_private.h"
 
 static void
 archive_regex_version(struct archive_string* str)
@@ -102,13 +103,16 @@ archive_regex_version(struct archive_string* str)
 static void
 archive_xml_version(struct archive_string* str)
 {
-#if HAVE_LIBXML_XMLVERSION_H && HAVE_LIBXML2
+#if defined(ARCHIVE_XML_USE_XML2)
 	archive_strcat(str, " libxml2/");
 	archive_strcat(str, archive_libxml2_version());
-#elif HAVE_BSDXML_H && HAVE_LIBBSDXML
+#elif defined(ARCHIVE_XML_USE_XMLLITE)
+	archive_strcat(str, " xmllite/");
+	archive_strcat(str, archive_xmllite_version());
+#elif defined(ARCHIVE_XML_USE_BSDXML)
 	archive_strcat(str, " bsdxml/");
 	archive_strcat(str, archive_libbsdxml_version());
-#elif HAVE_EXPAT_H && HAVE_LIBEXPAT
+#elif defined(ARCHIVE_XML_USE_EXPAT)
 	archive_strcat(str, " expat/");
 	archive_strcat(str, archive_libexpat_version());
 #else
@@ -158,10 +162,6 @@ archive_crypto_version(struct archive_string* str)
 	archive_strcat(str, " libmd/");
 	archive_strcat(str, archive_libmd_version());
 #endif
-#if defined(ARCHIVE_CRYPTOR_USE_WINCRYPT)
-	archive_strcat(str, " WinCrypt/");
-	archive_strcat(str, archive_wincrypt_version());
-#endif
 	// Just in case
 	(void)str; /* UNUSED */
 }
@@ -180,7 +180,7 @@ archive_version_details(void)
 	const char *libiconv = archive_libiconv_version();
 	const char *libacl = archive_libacl_version();
 	const char *librichacl = archive_librichacl_version();
-	const char *libattr = archive_libacl_version();
+	const char *libattr = archive_libattr_version();
 
 	if (!init) {
 		archive_string_init(&str);
@@ -234,6 +234,7 @@ archive_version_details(void)
 			archive_strcat(&str, " libiconv/");
 			archive_strcat(&str, libiconv);
 		}
+		init = 1;
 	}
 	return str.s;
 }
@@ -323,7 +324,7 @@ archive_liblzo2_version(void)
 const char *
 archive_libbsdxml_version(void)
 {
-#if HAVE_BSDXML_H && HAVE_LIBBSDXML
+#if defined(ARCHIVE_XML_USE_BSDXML)
 	return XML_ExpatVersion();
 #else
 	return NULL;
@@ -333,7 +334,7 @@ archive_libbsdxml_version(void)
 const char *
 archive_libxml2_version(void)
 {
-#if HAVE_LIBXML_XMLVERSION_H && HAVE_LIBXML2
+#if defined(ARCHIVE_XML_USE_XML2)
 	return LIBXML_DOTTED_VERSION;
 #else
 	return NULL;
@@ -343,8 +344,18 @@ archive_libxml2_version(void)
 const char *
 archive_libexpat_version(void)
 {
-#if HAVE_EXPAT_H && HAVE_LIBEXPAT
+#if defined(ARCHIVE_XML_USE_EXPAT)
 	return XML_ExpatVersion();
+#else
+	return NULL;
+#endif
+}
+
+const char *
+archive_xmllite_version(void)
+{
+#if defined(ARCHIVE_XML_USE_XMLLITE)
+	return "system";
 #else
 	return NULL;
 #endif
@@ -431,27 +442,7 @@ archive_cng_version(void)
 const char *
 archive_wincrypt_version(void)
 {
-#if defined(ARCHIVE_CRYPTOR_USE_WINCRYPT) || defined(ARCHIVE_CRYPTO_WINCRYPT)
-	HCRYPTPROV prov;
-	if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
-		if (GetLastError() != (DWORD)NTE_BAD_KEYSET)
-			return NULL;
-		if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_NEWKEYSET))
-			return NULL;
-	}
-	DWORD version, length = sizeof(version);
-	if (!CryptGetProvParam(prov, PP_VERSION, (BYTE *)&version, &length, 0)) {
-		return NULL;
-	} else {
-		char major = (version >> 8) & 0xFF;
-		char minor = version & 0xFF;
-		static char wincrypt_version[6];
-		snprintf(wincrypt_version, 6, "%hhd.%hhd", major, minor);
-		return wincrypt_version;
-	}
-#else
 	return NULL;
-#endif
 }
 
 const char *

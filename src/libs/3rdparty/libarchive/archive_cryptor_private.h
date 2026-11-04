@@ -29,16 +29,6 @@
 #ifndef __LIBARCHIVE_BUILD
 #error This header is only to be used internally to libarchive.
 #endif
-/*
- * On systems that do not support any recognized crypto libraries,
- * the archive_cryptor.c file will normally define no usable symbols.
- *
- * But some compilers and linkers choke on empty object files, so
- * define a public symbol that will always exist.  This could
- * be removed someday if this file gains another always-present
- * symbol definition.
- */
-int __libarchive_cryptor_build_hack(void);
 
 #ifdef __APPLE__
 # include <AvailabilityMacros.h>
@@ -62,7 +52,7 @@ typedef struct {
 	size_t		encr_pos;
 } archive_crypto_ctx;
 
-#elif defined(_WIN32) && !defined(__CYGWIN__) && defined(HAVE_BCRYPT_H) && _WIN32_WINNT >= _WIN32_WINNT_VISTA
+#elif defined(_WIN32) && !defined(__CYGWIN__) && defined(ARCHIVE_CRYPTO_WIN)
 #include <bcrypt.h>
 #define	ARCHIVE_CRYPTOR_USE_CNG 1
 
@@ -109,6 +99,10 @@ typedef struct {
 #include <nettle/version.h>
 #define	ARCHIVE_CRYPTOR_USE_NETTLE 1
 
+#ifndef AES_MAX_KEY_SIZE
+#define AES_MAX_KEY_SIZE AES256_KEY_SIZE
+#endif
+
 typedef struct {
 #if NETTLE_VERSION_MAJOR < 3
 	struct aes_ctx	ctx;
@@ -143,16 +137,6 @@ typedef struct {
 } archive_crypto_ctx;
 
 #else
-
-#if defined(ARCHIVE_CRYPTO_MD5_WIN)    ||\
-	defined(ARCHIVE_CRYPTO_SHA1_WIN)   ||\
-	defined(ARCHIVE_CRYPTO_SHA256_WIN) ||\
-	defined(ARCHIVE_CRYPTO_SHA384_WIN) ||\
-	defined(ARCHIVE_CRYPTO_SHA512_WIN)
-#if defined(_WIN32) && !defined(__CYGWIN__) && !(defined(HAVE_BCRYPT_H) && _WIN32_WINNT >= _WIN32_WINNT_VISTA)
-#define ARCHIVE_CRYPTOR_USE_WINCRYPT 1
-#endif
-#endif
 
 #define AES_BLOCK_SIZE	16
 #define AES_MAX_KEY_SIZE 32

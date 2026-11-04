@@ -101,8 +101,7 @@ static const char tooManyFields[] = "too many fields for format";
 #define apd_makedev(maj, min) makedev((maj), (min))
 #endif
 
-/* exported */
-dev_t
+static dev_t
 pack_native(int n, unsigned long numbers[], const char **error)
 {
 	dev_t dev = 0;
@@ -317,9 +316,9 @@ compare_format(const void *key, const void *element)
 
 
 pack_t *
-pack_find(const char *name)
+__archive_pack_find(const char *name)
 {
-	struct format	*format;
+	const struct format	*format;
 
 	format = bsearch(name, formats,
 	    sizeof(formats)/sizeof(formats[0]),
