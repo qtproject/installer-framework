@@ -70,7 +70,7 @@ instructions:
 
   - type: EnvironmentVariable
     variableName: IFW_LZMA_LIBRARY
-    variableValue: "/usr/local/opt/xz/lib/liblzma.a"
+    variableValue: "/usr/local/lib/liblzma.a"
     enable_if:
       condition: property
       property: host.os
@@ -78,7 +78,7 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: C_INCLUDE_PATH
-    variableValue: "/usr/local/opt/xz/include:"
+    variableValue: "/usr/local/include:"
     enable_if:
       condition: property
       property: host.os
@@ -86,7 +86,7 @@ instructions:
 
   - type: PrependToEnvironmentVariable
     variableName: CPLUS_INCLUDE_PATH
-    variableValue: "/usr/local/opt/xz/include:"
+    variableValue: "/usr/local/include:"
     enable_if:
       condition: property
       property: host.os
